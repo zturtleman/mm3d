@@ -1,0 +1,97 @@
+      <h1>Texture Coordinates Window</h1>
+
+      <p>
+      The <b>Texture Coordinates Window</b> is used to change how a texture is
+      applied to the faces of the model.  It applies each vertex of a face
+      to a point on a texture.  The texture is then stretched between each
+      vertex on the face to create the final texture appearance on the model.
+      To change the texture coordinates, select faces you wish to modify
+      and select <b>Edit Texture Coordinates</b> in the 
+      <a href="olh_viewwin.html">View Windows</a>'s <b>Groups</b> menu.
+      </p>
+
+      <p>
+      The <b>Texture Coordinates Window</b> contains three major elements:
+      </p>
+
+      <ul>
+         <li> <b>Texture Frame</b> - Shows the texture image with vertices
+         and faces drawn over it.</li>
+         <li> <b>Mouse Tool Buttons</b> - Determine what happens when you use
+         the mouse on the <b>Texture Frame</b>.</li>
+         <li> <b>Map Scheme Buttons</b> - Change the initial coordinate mapping
+         scheme for the selected faces.</li>
+      </ul>
+
+      <p>
+      The <b>Texture Frame</b> shows the texture used by the selected faces.
+      Faces and vertices are drawn over the texture to show where each face's
+      vertices are applied to the texture.  Vertices can be selected, unselected
+      and moved using the left and right mouse buttons.  The exact operation
+      performed by the mouse depends on which <b>Mouse Tool</b> is selected.
+      Below the texture frame is a slider that changes how many times the
+      texture is repeated inside of the texture frame.
+      </p>
+
+      <p>
+      You can pan around the <b>Texture Frame</b> by using the arrow buttons inside
+      the frame window, or by middle-click dragging. You can zoom in or out by using the
+      <b>Zoom Buttons</b> or by using the mouse scroll wheel.
+      </p>
+
+      <p>
+      The <b>Mouse Tool</b> buttons determine what the mouse buttons do when
+      used in the <b>Texture Frame</b>.  Most tools operate in a similar fashion
+      as the tools in the view window (an exception is that you may 
+      only select vertices).
+      </p>
+
+      <ul>
+         <li>The <b>Select</b> button allows you
+         to select vertices with the left mouse button and unselect vertices with
+         the right mouse button.  You can hold the shift key to make your selection
+         cumulative.</li>
+         <li>The <b>Move</b> button allows you
+         to move selected vertices.</li>
+         <li>The <b>Scale</b> button allows you
+         to scale the distance between selected vertices.</li>
+      </ul>
+
+      <p>
+      The <b>Map Scheme</b> buttons are used to set the initial coordinates for
+      the faces.  The <b>Triangle</b> mapping uses the same coordinates for all
+      three vertices of each face.  The <b>Quad</b> mapping uses three coordinates
+      from two triangles for alternating faces.  The <b>Group</b> mapping projects
+      the selected faces from a specified direction onto the texture image.  Each
+      vertex has its own coordinate and may be moved independently.
+      </p>
+
+      <p>
+      When you click on the <b>Group</b> radio button you will be prompted to chose
+      one of six directions.  Misfit will take the selected faces as they appear
+      in the orthographic view of your chosing, scale them to the size of the
+      texture image, and project them onto the texture image.
+      </p>
+
+      <p>
+      The <b>Reset Coordinates</b> button is used to reapply the current map scheme
+      to the texture coordinates.  If you click this button while using the <b>Group</b>
+      mapping scheme you will be asked to pick a direction again.
+      </p>
+
+      <p>
+      The next time you open the <b>Texture Coordinates Window</b> with the
+      same faces selected, it will show the vertex coordinates that you set
+      previously.
+      </p>
+
+      <p>
+      Press <b>Ok</b> to keep your changes or press <b>Cancel</b> 
+      to ignore any changes.
+      </p>
+
+      <p>
+      For more details on adding textures to your model, see the 
+      <a href="olh_texturewin.html">Materials Window</a> and the 
+      <a href="olh_groupwin.html">Groups Window</a>.
+      </p>

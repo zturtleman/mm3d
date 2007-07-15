@@ -1,0 +1,196 @@
+      <h1>View Window</h1>
+
+      <p>
+      The <b>View Window</b> is the main Misfit Model 3D window.
+      It allows you to modify a model.  The View
+      Window has a menu bar, a tool bar, a status bar, and a number of 
+      viewports that let
+      you see the model from various directions.
+      </p>
+
+      <p>
+      The <b>View Window</b> has a menu bar that allows you to operate on the
+      model in the window's viewports as well as creating new models and opening
+      existing models.
+      The specific contents of these menus
+      may change based on installed plugins.
+      </p>
+      
+      <p>
+      The <b>Toolbar</b> has a set of tool buttons.  The tool buttons
+      select tools that allow you to manipulate a model interactively.
+      For example, you can select the &quot;Create Cube&quot; tool
+      and then click and drag the mouse in a viewport to create a cube.
+      </p>
+
+      <p>
+      There are two types of tools in the toolbar: Creation tools and 
+      manipulation tools.  Creation tools create new vertices and faces interactively
+      in various shapes such as cubes and spheres.  Manipulation tools
+      allow you to interactively change faces and vertices that already exist.  
+      Manipulation tools include moving, scaling, and rotation tools.  Typically
+      manipulation tools only operate on vertices or faces that have been selected
+      with the "Select" tool.  
+      </p>
+      
+      <p>It is important to note that faces often share
+      vertices.  Unselected faces may be modified by changes to vertices that
+      are also part of a selected face.  To disconnect faces from each other
+      so that they do not share vertices, see the <b>Unweld vertices</b> command.
+      </p>
+
+      <p>
+      Some tools have additional options, which appear in a separate
+      toolbar.  For example, the sphere tool has an option that specifies
+      how many triangles the sphere will be composed of.
+      </p>
+
+      <p>  The menu bar has several menus that provide other functions to
+      modify or create a model.
+      In addition to opening and
+      saving models, the <b>File</b> menu also allows
+      you to run scripts, merge two model files, and view available plugins.
+      </p>
+
+      <p>
+      The <b>View</b> menu allows you to change the number and layout of the
+      viewports in the view window (you may have 1, 2, 4, 6, or 9 viewports).
+      You can force the viewports to show the whole model or selected
+      region by selecing either the <b>Frame All</b> or <b>Frame Selected</b> options,
+      respectively.
+      You can select how to display the model in the othographic and 3D perspective
+      viewports based on four options.
+      </p>
+
+      <ul>
+         <li> Wireframe - Shows the model as an outline of all faces.
+         <li> Flat - Shows the model as a set of flat polygons (with lighting).
+         <li> Smooth - Shows the model as a set of smoothed polygons (vertex normals
+            are averaged between all polygons that share them; with lighting).
+         <li> Texture - Shows the model as a set of smoothed, lit polygons with
+            textures applied.
+         <li> Alpha Blend - Shows the model as a set of smoothed, lit polygons with
+            alpha blended (transparent) textures applied.
+      </ul>
+
+      <p>
+      You can also choose how you want bone joints to be displayed (as bones,
+      lines, or hidden) and how you want unloadable textures to be rendered (untextured
+      polygons, or polygons textured with a black 'X' on a red background).
+      Use the Render/Hide 3D Selection option to indicate if you want your selection 
+      to be visible in the 3D view.
+      </p>
+
+      <p>
+      The <b>Tools</b> menu lists all the available tools.
+      It also includes the <b>Undo</b> and <b>Redo</b> options.
+      </p>
+
+      <p>
+      The <b>Primtives</b> menu lists non-interactive operations that modify
+      vertices or faces.
+      </p>
+
+      <p>
+      The <b>Groups</b> menu lists non-interactive operations that modify
+      groups, including texturing.
+      </p>
+
+      <p>
+      The <b>Animations</b> menu provides functions to manipulate model animations.
+      There are interactive and non-interactive functions provided by this menu.
+      </p>
+
+      <p>
+      The <b>Help</b> menu brings you to this ridiculously helpful documentation.
+      </p>
+
+      <p>
+      The status bar contains text (on the left side) that describes the results of 
+      recent operations on the model.  On the right side it shows you how many vertices,
+      faces, groups, and materials exist in the current model.  If you have any vertices,
+      faces, or bone joints selected the count will be shown with the selected separated from the
+      total with a slash ('/').
+      </p>
+
+
+      <p>
+      The <b>Viewports</b> in the center of the View Window are where you 
+      view and modify a model.  There are two types of viewport views: <b>3D View</b>
+      and <b>Orthographic Views</b>.  The view type and direction is indicated
+      in a combo box above the viewport on the left.  The field of view is
+      indicated in a text entry box above the viewport to the right of the
+      view direction.  Larger numbers mean you can see more of the model canvas (think
+      of the opposite of zoom).  Three short colored lines indicate the origin.
+      Each color extends in the positive direction along an axis.  The red line
+      extends along the X axis, the green line extends along the Y axis, and the blue
+      line extends along the Z axis.
+      </p>
+
+      <p>
+      You can scroll the active viewport by clicking on the arrows in the upper-right
+      corner.  The four-way arrow allows you to click
+      and drag the viewport.  You can also use the middle mouse button to drag the viewport.
+      You can zoom in and out by using the magnifying glass buttons above the viewport
+      scroll buttons.
+      </p>
+
+      <p>
+      The view type and direction can be changed to see the model from various
+      angles.  The <b>3D View</b> is a perspective view.  Near portions of the
+      model appear larger, far portions of the model appear smaller.  The 3D View
+      may also have visible lighting and texture effects.  This view only allows
+      you to view the model.  You cannot modify the model from a viewport in
+      3D mode.
+      </p>
+
+      <p>
+      By left-clicking and dragging your mouse pointer you can rotate the 3D view
+      along the horizontal axis or vertical axis.  By middle-clicking and
+      dragging you can move the viewport left, right, up, and down.  Using the
+      scroll wheel will zoom in or out.  The
+      right mouse button has no effect in the 3D View.
+      </p>
+
+      <p>
+      The <b>Orthographic Views</b> show the model from one of six directions:
+      Front, Back, Left, Right, Top, or Bottom.  These views are a CAD-like
+      projection of the model from the specified direction.  These views are
+      not modified by perspective.  Two cubes of equal size will always appear
+      the same size in this view regardless of how "far" they are from the
+      viewing plane.  Each of the six orthographic views is a canvas view, where 
+      you can create and manipulate model vertices and faces.  The othrographic
+      viewports may also render the model as a wireframe, solid-flat polygons,
+      solid-smooth polygons, or textured polygons.
+      </p>
+
+      <p>
+      The effect of the left and right mouse buttons depends on the tool that is
+      currently selected.  The left mouse button is the main tool button and
+      the right button is an alternate button.  For example, using the
+      select tool you can select vertices and faces with the left mouse button
+      and unselect them with the right mouse button.
+      By middle-clicking and dragging you can drag the viewport left, right, 
+      up, and down.  Using the scroll wheel will zoom in or out.
+      </p>
+
+      <p>
+      The active viewport (the viewport under the mouse) 
+      will have a slightly lighter background color
+      than the others.  Some keyboard shortcuts will modify the selected
+      viewport.  For example + and - will zoom in and out.  0 (zero) will
+      center the viewport on the origin.  The backtick (left quote) will
+      flip an orthographic view to the opposite side (front view will become
+      a back view).
+      </p>
+
+      <p>
+      There are two modes for the view window.  The default one is the
+      <b>Model Edit Mode</b>.  This is the mode you are in when you start
+      Misfit Model 3D and are viewing a model.  In this mode changes you make
+      affect the position of polygons and bone joints.
+      The other mode is
+      <b>Animation Mode</b>.  This mode is active when you have the 
+      <b>Animation Mode Window</b> open.  In this mode changes you make affect
+      the current animation frame.
+      </p>

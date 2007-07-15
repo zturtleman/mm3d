@@ -1,0 +1,216 @@
+      <h1>Animation Mode Window</h1>
+
+      <h2> Overview </h2>
+
+      <p>
+      The <b>Animation Mode Window</b> allows you to create animations and
+      animate models.  You can change frame counts and frame rates as well as
+      set skeletal keyframes or frame vertex positions.  You can also
+      play animations from this window.  Animation playback only works
+      for 3D viewports.
+      </p>
+
+      <p>
+      While the <b>Animation Mode Window</b> is open you can use the view
+      window's toolbar to manipulate the model in animation mode.  Most
+      selection and manipulation tools work the same as they do in model
+      edit mode, though some (such as the rotate tool in skeletal animation
+      mode) will behave differently.
+      </p>
+
+      <p>
+      The behavior of various tools in animation mode is described in
+      the <a href="olh_tools.html">Tools</a> documentation.
+      </p>
+
+      <p>
+      The <b>Animation Mode Window</b> has two tabs, one for <b>Skeletal</b>
+      animations and one for <b>Frame</b> animations.  The combo box in
+      the tab page will list all of the animations of the animation type
+      for the tab you have selected.  All operations (with the exception of
+      the <b>New</b> button) operate on the animation that is named in
+      the combo box.
+      </p>
+
+      <p>
+      You can use the frame slider to select the animation frame that you want
+      to view or edit.  All viewports on the view window will display the
+      frame of the model you have selected.  
+      </p>
+
+      <p>
+      You can use the selection tools to select vertices for <b>Frame</b>
+      animations or bone joints for <b>Skeletal</b> animations.  You
+      can use the move or rotate tool to change the position or orientation
+      of selected primitives.
+      </p>
+
+      <p>
+      In <b>Skeletal</b> animation mode the rotate tool works differently than
+      it does in standard edit mode.  The rotation only applies to one bone
+      joint, and the rotation is always centered on the joint.  In other words,
+      you are rotating the bone joint itself, not the position of the bone joint.
+      In <b>Skeletal</b> animation mode, the delete command also behaves differently.
+      The delete command will delete any translation or rotation keyframes for
+      all the selected joints in the current frame.  Keyframes in other animation
+      frames will not be affected.
+      </p>
+
+      <p>
+      You can use <b>Undo</b> and <b>Redo</b> from the <b>Animation Mode Window</b>
+      just as you would in the standard model edit mode.  You can select
+      <b>Undo</b> and <b>Redo</b> from the menu on the <b>View Window</b>, or use
+      Ctrl-Z and Ctrl-Y from either the <b>Animation Mode Window</b> or the
+      <b>View Window</b>.
+      </p>
+
+      <p>
+      For more information about creating animations with Misfit Model 3D,
+      see the <a href="olh_use.html#animations">Animations</a> section of the usage
+      document.
+      </p>
+
+      <h2> Animation Operations </h2>
+
+      <h3> New </h3>
+
+      <p>
+      The <b>New</b> button creates a new animation.  It will prompt you for an
+      animation name.  The new animation will be a skeletal or frame animation
+      depending on the animation type tab you are working on.
+      </p>
+
+      <h3> Rename </h3>
+
+      <p>
+      The <b>Rename</b> button change the name of the selected animation.  
+      It will prompt you for a new animation name.
+      </p>
+
+      <h3> Delete </h3>
+
+      <p>
+      The <b>Delete</b> button will delete the current animation.
+      </p>
+
+      <h3> Frames Spin Box </h3>
+
+      <p>
+      The <b>Frames Spin Box</b> will change the frame count of the current
+      animation.  You can use the up and down arrows, or type the number directly
+      in the box.
+      </p>
+
+      <h3> FPS Text Box </h3>
+
+      <p>
+      The <b>FPS Text Box</b> will change the frame rate of the current animation.
+      </p>
+
+      <h3> Frame Slider </h3>
+
+      <p>
+      The <b>Frame Slider </b> will change the current frame of the current animation.
+      You can use this to edit the model position for any frame in the animation.
+      The <b>Copy Frame</b>, <b>Paste Frame</b>, and <b>Clear Frame</b> buttons
+      also operate on the current frame.
+      </p>
+
+      <h3> Copy Frame </h3>
+
+      <p>
+      The <b>Copy Frame</b> button saves the position of the model primitives in
+      the current frame of the animation.  You can then select another frame 
+      or animation and use the <b>Paste Frame</b> button to copy the position
+      and orientation of the model primitives to a different animation frame.
+      </p>
+
+      <p>
+      For skeletal animations only joints that have keyframes set are copied and
+      pasted.  Any joints that have keyframes set in the target frame will not
+      be affected if the source frame did not have a keyframe for that joint.
+      If this is not desired behavior, you can use <b>Clear Frame</b> on the
+      target frame before using <b>Paste Frame</b>.
+      </p>
+
+      <h3> Paste Frame </h3>
+
+      <p>
+      The <b>Paste Frame</b> button takes the animation data saved from one animation
+      frame by the <b>Copy Frame</b> button and copies it into the current 
+      animation frame.
+      </p>
+
+      <p>
+      For skeletal animations only joints that have keyframes set are copied and
+      pasted.  Any joints that have keyframes set in the target frame will not
+      be affected if the source frame did not have a keyframe for that joint.
+      If this is not desired behavior, you can use <b>Clear Frame</b> on the
+      target frame before using <b>Paste Frame</b>.
+      </p>
+
+      <h3> Clear Frame </h3>
+
+      <p>
+      The <b>Clear Frame</b> button clears all position information for the
+      current animation frame.  All model primitives will be restored to the
+      same position they occupy in model edit mode.  In the case of a skeletal
+      animation it deletes keyframes for this frame.  In this case joints
+      will be interpolated between the keyframes in previous frames and the
+      keyframes in following frames.
+      </p>
+
+      <h3> Play / Pause </h3>
+
+      <p>
+      The <b>Play</b> button runs the current animation at its specified
+      frame rate.  The <b>Play</b> button becomes a <b>Pause</b> during
+      playback so that you can pause an animation and resume it later.
+      Paused animations resume from the time at which they were paused.
+      </p>
+
+      <p>
+      Use the <b>Stop</b> button to stop an animation completely.
+      Use the <b>Loop Checkbox</b> to control whether the animation should
+      start from the beginning again when it completes.
+      </p>
+
+      <p>
+      Animation playback only works in 3D viewports.  Orthographic viewports
+      will not animate.  This is for performance reasons, and may become a
+      configurable option at a later time.
+      </p>
+
+      <h3> Stop </h3>
+
+      <p>
+      The <b>Stop</b> button will stop a running animation.  An animation
+      that is stoped and then played again will play starting from the 
+      first frame.
+      </p>
+
+      <h3> Loop Checkbox </h3>
+
+      <p>
+      The <b>Loop Checkbox</b> controls whether the animations loops when it
+      completes or not.  If the animation completes and the <b>Loop Checkbox</b>
+      is checked, the animation will restart from the first frame.  If the animation
+      completes and the <b>Loop Checkbox</b> is not checked, the animation
+      will stop.
+      </p>
+
+      <p>
+      If you have <b>loop</b> checked, skeletal animation keyframe interpolation
+      will wrap to the first frame.  This interpolation begins on the last keyframe set
+      for a given joint and ends on the first keyframe for that join.  
+      If you have an animation with 10 frames and a rotation keyframe
+      on Joint A for frames 1 and 10, then the animation will interpolate
+      from 1 to 10, and then from 10 to 1.  If Joint B has keyframes in frames 3 and 7, 
+      it will interpolate from 3 to 7, and then again from 7 to 3.
+      </p>
+
+      <h3> Close </h3>
+
+      <p>
+      The <b>Close</b> button will close the <b>Animation Mode</b> window.
+      </p>

@@ -1,0 +1,71 @@
+Misfit Model 3D Installation For Win32
+======================================
+
+Misfit Model 3D is known to run on Windows 2000 and Windows XP.
+Windows 95, 98, and ME are untested and may or may not work.
+
+Misfit Model 3D for Win32 requires the mingw environment and
+the Open Source version of Qt 4 for Win32.  To run binaries
+of mm3d you only need the qt and mingw DLLs, which are provided 
+with the binary distribution.  To build from source you must
+have a development environment set up with mingw and qt4.
+
+Note that plugins are not currently available on Windows.
+
+
+Binary Installation
+===================
+
+Get the latest installer from the web site.  It should have
+a filename like 'mm3d-X_X_X-win32-installer.exe'.  Run
+the installer and select an install location.
+
+Optionally you may choose to enable file assciations with
+Misfit Model 3D.  By default only .mm3d is associated.
+
+
+Prerequisites
+=============
+
+You can get Qt 4 here:
+
+   http://www.trolltech.com/download/qt/windows.html
+
+You can get mingw using Qt 4's binary installer, or download
+and install mingw yourself from the official website:
+
+   http://www.mingw.org/
+
+You must have your QTDIR environment variable set to the root
+Qt directory (for example, c:\Qt\4.0.1).  The Mingw and Qt bin
+directories must be in your path.
+
+
+Build Instructions
+==================
+
+Once you have installed mingw and Qt, do the following steps:
+
+1. Make sure QTDIR is set and mingw's bin directory and Qt's bin
+   directory is in your PATH
+2. Open a cmd prompt and go to the mm3d-X.X.X directory
+3. Run 'mingw32-make -f Makefile.mingw'
+
+
+Install Instructions
+====================
+
+1. Run 'install.bat' from the mm3d-X.X.X directory.
+
+The install.bat file does not create any program menu or desktop 
+shortcuts.  If you want shortcuts you must create them manually,
+or use the binary installer.
+
+Optionally, you can install NSIS and put the qt and mingw dlls
+in your mm3d-X.X.X/dll directory and then build the installer.
+This will create shortcuts and some registry keys.
+
+You can get NSIS here:
+
+   http://nsis.sourceforge.net/
+

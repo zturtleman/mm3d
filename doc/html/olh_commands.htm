@@ -1,0 +1,444 @@
+      <h1>Commands</h1>
+      <ul>
+        <li> <a href="#undo">Undo</a>
+        <li> <a href="#redo">Redo</a>
+        <li> <a href="#invsel">Invert Selection</a>
+        <li> <a href="#hide">Hide</a>
+        <li> <a href="#delete">Delete</a>
+        <li> <a href="#duplicate">Duplicate</a>
+        <li> <a href="#copy">Copy Selected to Clipboard</a>
+        <li> <a href="#paste">Paste from Clipboard</a>
+        <li> <a href="#flip">Flip</a>
+        <li> <a href="#flatten">Flatten</a>
+        <li> <a href="#extrude">Extrude</a>
+        <li> <a href="#invnorm">Invert Normals</a>
+        <li> <a href="#weld">Weld Vertices</a>
+        <li> <a href="#unweld">Unweld Vertices</a>
+        <li> <a href="#snap">Snap Vertices Together</a>
+        <li> <a href="#subdivide">Subdivide Faces</a>
+        <li> <a href="#makeface">Make Face From Vertices</a>
+        <li> <a href="#rotatetex">Rotate Texture Coordinates</a>
+        <li> <a href="#align">Align Selected</a>
+        <li> <a href="#spherify">Spherify</a>
+        <li> <a href="#assigntojoint">Assign Vertices to Bone Joint</a>
+        <li> <a href="#joints">Joints</a>
+      </ul>
+
+      <a name="undo">
+      <h1>Undo</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Undo</b> reverses the last operation (if available).  The last operation could
+      be the last use of the mouse on a model canvas, the last requested command 
+      (except in the case of undo or redo), or a set of changes within one dialog
+      box.  
+      </p>
+
+      <p>
+      Undo can be used multiple times.  The number of undo items available is limited
+      by memory.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>Ctrl-Z</b> - Undo
+      </ul>
+
+      <a name="redo">
+      <h1>Redo</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Redo</b> reverses the effects of undo (if the preceeding operations where undo
+      commands).  Redo can be used multiple times.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>Ctrl-R</b> - Redo
+      </ul>
+
+      <a name="invsel">
+      <h1>Invert Selection</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Invert Selection</b> will select unselected portions of the model,
+      and unselect selected portions of the model according to the current selection
+      mode.
+      </p>
+
+      <p>
+      If you are in group selection mode, ungrouped faces are ignored and will
+      never be selected.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>None</b>
+      </ul>
+
+      <a name="hide">
+      <h1>Hide</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Hide</b> will make faces or vertices of your choice invisible.  This can be
+      useful if some faces are blocking your view of the part of the model with which
+      you are working.
+      </p>
+
+      <p>
+      You can hide the selected portion of the model or the unselected portion of the
+      model.  When you are ready to see the complete model again you can select
+      <b>Unhide all</b> to make the invisible portions visible again.
+      <p>
+
+      <p>
+      Hidden model portions cannot be selected.  Any commands or tools which operate 
+      on selected portions of the model will not modify hidden model objects.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>H</b> - Hide unselected
+         <li> <b>Shift-H</b> - Hide selected
+         <li> <b>U</b> - Unhide all
+      </ul>
+
+      <a name="delete">
+      <h1>Delete</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Delete</b> removes selected vertices, faces, and bone joints.  
+      If a vertex is removed, any
+      faces which rely on that vertex will also be deleted.  If a face is deleted
+      which shares vertices with other faces, the vertices and unselected faces
+      will not be deleted.  If a bone joint is deleted it will delete keyframes
+      for that bone joint and may cause animation problems for children of the
+      deleted joint.
+      </p>
+
+      <p>
+      Delete can be used in <b>Animation Mode</b> to delete a skeletal animation keyframe
+      for selected bone joints.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>Delete</b> - Delete selection
+      </ul>
+
+      <a name="duplicate">
+      <h1>Duplicate</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Duplicate</b> creates a copy of the current selection.  The old selection
+      is unselected and the new faces will be selected for further manipulation.
+      This is similar to a combined Copy/Paste action.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+          <li> <b>None</b>
+      </ul>
+
+      <a name="copy">
+      <h1>Copy Selected to Clipboard</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Copy Selected</b> will copy all selected faces (along with groups and textures) 
+      into an internal clipboard.  This selection can then be merged with another
+      model using the <b>Paste</b> command.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+      <li> <b>Ctrl-C</b> - Copy selection
+      </ul>
+
+      <a name="paste">
+      <h1>Paste from Clipboard</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Paste</b> will merge the selected portion from a previous <b>Copy</b> command
+      into the current model.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+      <li> <b>None</b>
+      </ul>
+
+      <a name="flip">
+      <h1>Flip</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Flip</b> will move selected vertices and faces so that they
+      face a different direction.  You can flip in the X, Y, or Z directions.
+      For example, a <b>Flip X</b> would cause the selected part of the model 
+      to change to its mirror image from the front or back canvas view (the actual
+      model is affected, not just the view).
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>None</b>
+      </ul>
+
+      <a name="flatten">
+      <h1>Flatten</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Flatten</b> will move selected vertices so that they
+      share the same coordinate along a specific axis.  You can flatten in the X, Y, or Z dimensions.
+      For example, a <b>Flatten X</b> would cause the selected vertices to all
+      have the same X coordinate.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>None</b>
+      </ul>
+
+      <a name="extrude">
+      <h1>Extrude</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Extrude</b> takes faces that you have selected
+      and extends them in a direction you specify.  When those faces are extended,
+      each edge becomes another face which is connected to the faces' original locations.
+      </p>
+
+      <p>
+      Use the X, Y, and Z text entry boxes to specify how far faces
+      should be offset from their current location.  If the &quot;Make Back Faces&quot;
+      option is checked new polygons will be created where the old ones were, but
+      facing the opposite direction (the extruded area will be completely enclosed
+      by the extrusion).
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>Insert</b>
+      </ul>
+
+      <a name="invnorm">
+      <h1>Invert Normals</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Invert Normals</b> will cause normals to extend from the opposite plane of
+      selected faces.  This is useful if some sections of the model have been
+      manipulated in such a way that polygons are facing the wrong direction.
+      </p>
+
+      <p>
+      If you have very dark polygon faces or if some polygon faces don't
+      show up in a different rendering engine, it may be because your normals
+      are facing the wrong direction.  In these cases, inverting normals will
+      fix the problem.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>None</b>
+      </ul>
+
+      <a name="weld">
+      <h1>Weld Vertices</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Weld Vertices</b> will join selected vertices into one vertex.
+      The vertices must be very close to each other.
+      </p>
+
+      <p>
+      More than one set of vertices can be welded at one time. 
+      If you have a model which has been duplicated and flipped you can weld the
+      seam between the two portions by moving the seams together, selecting all
+      vertices along the seam, and using a single weld command.  Only vertices
+      near each other will be welded so that you can weld the entire seam in
+      one operation.
+      </p>
+
+      <p>
+      Vertices can be disconnected again by using the unweld command.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>Ctrl-W</b>
+      </ul>
+
+      <a name="unweld">
+      <h1>Unweld Vertices</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Unweld Vertices</b> will create a separate vertex for each face
+      which uses a vertex.
+      </p>
+
+      <p>
+      Vertices can be reconnected by using the weld command.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>None</b>
+      </ul>
+
+      <a name="snap">
+      <h1>Snap Vertices Together</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Snap Vertices Together</b> will join a set of selected vertices
+      and optionally weld them together.  This command has four different 
+      behavaiors:
+      </p>
+
+      <ul>
+      <li> Snap All Selected - All selected vertices snap to the same location, they remain separate vertices </li>
+      <li> Snap Nearest Selected - Every two closest selected vertices snap to the same location, they remain separate vertices </li>
+      <li> Snap All and Weld - All selected vertices snap to the same location, all vertices are welded into one </li>
+      <li> Snap Nearest and Weld - Every two closest selected vertices snap to the same location, each pair of vertices is welded into one vertex</li>
+      </ul>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>None</b>
+      </ul>
+
+      <a name="subdivide">
+      <h1>Subdivide Faces</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Subdivide Faces</b> will divide a triangle face into four triangles
+      which share vertices.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>None</b>
+      </ul>
+
+      <a name="makeface">
+      <h1>Make Face From Vertices</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Make Face</b> will create a new face from three selected vertices.
+      You must have exactly three vertices selected for this command to operate.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>None</b>
+      </ul>
+
+      <a name="rotatetex">
+      <h1>Rotate Texture Coordinates</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Rotate Texture Coordinates</b> allows you to rotate the texture coordinates
+      of a face or group of faces.  If you use the <b>Face</b> version, the texture coordinates are
+      rotated among each vertex of each selected face.  If you use the <b>Group</b> version, the
+      texture coordinates are rotated 90 degrees around the center of the material texture.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>None</b>
+      </ul>
+
+      <a name="align">
+      <h1>Align Selected</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Align Selected</b> opens a window to move the selected
+      portion of the model so that the minimum, maximum, or center values 
+      of a given coordinate axis
+      are aligned along a specified value of the axis.  For example,
+      if you have a cube you can use the <b>Align Selection</b> window
+      to align the left or right (minimum or maximum, respectively) side of 
+      the cube with the axis (0.0) or any other value for X.  The shape
+      of the selected portion of the model remains unchanged.
+      </p>
+      
+      <p>
+      See the 
+      <a href="olh_alignwin.html">Align Selection Window</a> for more details.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>None</b>
+      </ul>
+
+      <a name="spherify">
+      <h1>Spherify</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Spherify</b> opens a window to interactively morph the
+      selected portion of the model into a spherical shape.  See the
+      <a href="olh_spherifywin.html">Spherify Window</a> for details.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>None</b>
+      </ul>
+
+      <a name="assigntojoint">
+      <h1>Assign Vertices to Bone Joint</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Assign Vertices to Bone Joint</b> assigns the currently
+      selected vertices to the currently selected bone joint.
+      You must have only one bone joint selected to use this command.
+      </p>
+      
+      <p>
+      Select a bone joint, chose any vertex selection tool, and then use 
+      Shift-Select to select vertices without unselecting the bone joint.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>None</b>
+      </ul>
+
+      <a name="joints">
+      <h1>Joints</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Joints</b> opens a window to allow you to rename
+      joints or assign vertices to the selected joint.  
+      </p>
+      
+      <p>
+      See the <a href="olh_jointwin.html">Joints Window</a>
+      for more details.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>None</b>
+      </ul>

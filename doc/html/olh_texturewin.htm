@@ -1,0 +1,85 @@
+      <h1>Materials Window</h1>
+
+      <p>
+      The <b>Materials Window</b> is used to add or remove model materials (aka, textures) 
+      You may also modify the reflective properties of the material.
+      Select <b>Edit Materials</b> from the <a href="olh_viewwin.html">View Window</a>'s 
+      <b>Groups</b> menu.
+      </p>
+
+      <p>
+      The combo box at the top of the window contains the names of all materials
+      associated with this model.  You can select a material name and use the
+      lighting property sliders and the 
+      to adjust the reflective properties 
+      (<b>Ambient</b>, <b>Diffuse</b>, <b>Specular</b>, 
+      <b>Emissive</b>, and <b>Shininess</b>) 
+      of the material.
+      </p>
+
+      <ul>
+         <li> Ambient - Light reflected from no particular direction.
+         <li> Diffuse - Light reflected from the primary light source.
+         <li> Specular - Light reflected which brings out highlights in the material.
+         <li> Emmisive - Light emmited from the material's surface.
+      </ul>
+
+      <p>
+      Each lighting color value ranges from -1.0 to 1.0.
+      You can drag the slider left to decrease a color's value, or drag it right to 
+      increase a color's value.  You can also change a value by typing a new
+      value into the text box next to the slider.
+      </p>
+
+      <p>
+      The material preview can be a flat texture image or a 3D preview of the 
+      texture mapped onto a cube.  Use the material preview combo box to
+      switch between preview modes.
+      </p>
+
+      <p>
+      To add a new texture material click the <b>New Texture</b> 
+      button and select a file.  The
+      file dialog box will show you which image file formats are supported.  You
+      should select an image with dimensions that are a power of 2 (ie, 32x32,
+      128x256, etc...).  Other sizes should work with Misfit, but may not work with
+      other rendering engines.
+      </p>
+
+      <p>
+      To add a new solid color material click the <b>New Color</b>.
+      Use the lighting properties buttons to adjust the color of the material.
+      </p>
+
+      <p>
+      To remove a material from the model, select the material name in the combo box
+      and click the <b>Delete</b> button (this only removes the material from the model,
+      the actual file on disk is not modified in any way).
+      </p>
+
+      <p>
+      To rename a material click the <b>Rename</b> button.  This may be useful if you
+      want the material name to match a group name, or if you have two materials with
+      the same image but different lighting values.  Names do not need to be unique
+      (though duplicate names may be confusing for other people using the model).
+      </p>
+
+      <p>
+      You can change the texture wrapping behavior by changing the
+      value of the the Wrap/Clamp combo boxes.  Wrap will cause the texture
+      to wrap for texture coordinates that are outside of the 0.0 to 1.0 range.
+      Clamp will cause the renderer to extend the edge of the texture in
+      the desired direction.  The X and Y clamp values can be changed
+      independently.
+      </p>
+
+      <p>
+      Press <b>Ok</b> to keep your changes or press <b>Cancel</b> 
+      to ignore any changes.
+      </p>
+
+      <p>
+      For details on how to apply a material to the model, see the
+      <a href="olh_groupwin.html">Groups Window</a> and the
+      <a href="olh_texturecoordwin.html">Texture Coordinates Window</a>.
+      </p>

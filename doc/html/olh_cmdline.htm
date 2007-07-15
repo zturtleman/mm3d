@@ -1,0 +1,146 @@
+      <h1>Command Line</h1>
+
+      <a name="overview">
+      <h2>Overview</h2>
+      <p>
+      The Misfit Model 3D command line allows you to specify models to open
+      at start time, operations to run on those models, and other start-time
+      configuration options.
+      </p>
+
+      <p>
+      A complete command line reference is included below.
+      </p>
+
+      <a name="options">
+      <h2>Command Line Options</h2>
+
+      <h3>-h --help</h3>
+
+      <p>
+      Prints a brief summary of command line options.
+      </p>
+
+      <h3>-v --version</h3>
+
+      <p>
+      The version option prints the version information for Misfit Model 3D.
+      </p>
+
+      <h3>-b --batch</h3>
+
+      <p>
+      The batch option runs all commands specified
+      on the command line and then exits.  Often this is used along with
+      <code>--save</code> or <code>--convert</code>.
+      </p>
+
+      <h3>-s --save</h3>
+
+      <p>
+      The save option saves models after command line processing is complete.
+      Often this is used along with <code>--batch</code>.
+      </p>
+
+      <h3>--script</h3>
+
+      <p>
+      The script option runs a script on every model specified on the command line.
+      The script option may be specified more than once in order to run multiple
+      scripts.  The scripts will be run in the order specified (first to last).
+      </p>
+
+      <p>
+      The script option takes one argument, which is the filename of the script to 
+      run.  If no model files are specified on the command line, a new model
+      is created and the script is run on that new model.
+      </p>
+
+      <h3>--convert</h3>
+
+      <p>
+      The convert option saves every model file specified on the command
+      line in the specified format.  The format is a string that is the
+      filename extension.  The existing filename extension will be replaced
+      by the new extension to create the new filename.  If a file already
+      exists by this name it will be overwritten (if you're converting files
+      in batches from the command line mm3d assumes you know what you're doing).
+      </p>
+
+      <p>
+      The convert option takes one argument, which is the extension 
+      that specifies the format you want to save.  You can only specify
+      this argument once.  If it is used multiple times only the last
+      format will be used.
+      </p>
+
+      <p>
+      Often this is used with the <code>--batch</code> option.
+      </p>
+
+      <h3>--no-plugins</h3>
+
+      <p>
+      The no-plugins option disables all plugins (this may be useful if
+      you suspect a plugin is causing a crash on initialization).
+      </p>
+
+      <h3>--no-plugin</h3>
+
+      <p>
+      The no-plugin option disables a specific plugin.  This option takes
+      an argument which is the name of the plugin to disable (the filename,
+      without the .so extension).  Misfit model will still get the plugin
+      information from this plugin, but will not initialize it and
+      will report it as disabled in the 
+      <a href="olh_pluginwin.html">Plugins Window</a>.
+      </p>
+
+      <h3>--sysinfo</h3>
+
+      <p>
+      The sysinfo option prints system information.  This is present
+      for bug-reporting reasons.  If you want to submit a bug, include
+      the output of this option with your bug report.
+      </p>
+
+      <h3>--debug</h3>
+
+      <p>
+      The debug option prints debug log messages to standard error output.
+      This the by default in debug builds.
+      </p>
+
+      <h3>--warning</h3>
+
+      <p>
+      The warning option prints warning log messages to standard error output.
+      This is the default in debug builds.
+      </p>
+
+      <h3>--error</h3>
+
+      <p>
+      The error option prints error log messages to standard error output.
+      This is the default in all build configurations.
+      </p>
+
+      <h3>--no-debug</h3>
+
+      <p>
+      The no-debug option disables debug log messages.
+      This is the default in release builds.
+      </p>
+
+      <h3>--no-warning</h3>
+
+      <p>
+      The no-warning option desiables warning log messages.
+      This is the default in release builds.
+      </p>
+
+      <h3>--no-error</h3>
+
+      <p>
+      The no-error option disables error log messages.
+      </p>

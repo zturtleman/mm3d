@@ -1,0 +1,494 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>GroupWinBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>GroupWinBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>374</width>
+            <height>351</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Groups</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>11</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="QComboBox">
+            <item>
+                <property name="text">
+                    <string>No group</string>
+                </property>
+            </item>
+            <property name="name">
+                <cstring>m_groupComboBox</cstring>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout10</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_newButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>New</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_renameButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Rename</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_deleteButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Delete</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>107</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout9</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_selectFacesButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Select Faces In Group</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_unselectFacesButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Unselect Faces In Group</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>91</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout10</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout9</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>m_smoothLabel</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>150</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Smoothness: 100</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>m_angleLabel</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Max Angle: 000</string>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout8</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QSlider">
+                            <property name="name">
+                                <cstring>m_smoothSlider</cstring>
+                            </property>
+                            <property name="maxValue">
+                                <number>255</number>
+                            </property>
+                            <property name="value">
+                                <number>255</number>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                        </widget>
+                        <widget class="QSlider">
+                            <property name="name">
+                                <cstring>m_angleSlider</cstring>
+                            </property>
+                            <property name="maxValue">
+                                <number>180</number>
+                            </property>
+                            <property name="pageStep">
+                                <number>18</number>
+                            </property>
+                            <property name="value">
+                                <number>0</number>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout7</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QGroupBox">
+                    <property name="name">
+                        <cstring>m_facesGroupBox</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Faces</string>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>11</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>m_assignAsGroupButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Assign As Group</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>m_addToGroupButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Add To Group</string>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+                <widget class="QGroupBox">
+                    <property name="name">
+                        <cstring>m_textureGroupBox</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Texture</string>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>11</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QComboBox">
+                            <item>
+                                <property name="text">
+                                    <string>No texture</string>
+                                </property>
+                            </item>
+                            <property name="name">
+                                <cstring>m_textureComboBox</cstring>
+                            </property>
+                        </widget>
+                        <widget class="TextureFrame">
+                            <property name="name">
+                                <cstring>m_textureFrame</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>7</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout15</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel4</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Press F1 for help</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer3</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>40</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_okButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Ok</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_cancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<customwidgets>
+    <customwidget>
+        <class>TextureFrame</class>
+        <header location="local">textureframe.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+        <slot access="public" specifier="">textureChangedEvent(int)</slot>
+    </customwidget>
+</customwidgets>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="12721">789ced975b6f62cb1185dfe75758536f47511d2e1bd828ca838df11ddbe0cbd84479a8de185fc13660633bca7f4fedae551de94889382f99938899419b8fbe55ad5addbde7d75f36ae4e7b1bbffcfa6dbe90c57db151dcc96ce397d1db64f2f9d7bffde5efdfbe37b30dfd572b3fdffff4ed7b7fb1516c5025fe29594625572b95c298b2c8b9721edb5f8dabe84fe789ad5dc059d5daaf4bae55aa99b5d341e4762dab46e6cd92eb55ed61e367e0bcd68efdafc045cde63b8ddc2e578c7c6b5cc37ab20b2e6cbc9c959ce97c68df491cd70b4be37aa55e8dbc0067187fee6ced72032eeab13dc4f533a923fe70e06cf1ca04ece31b60c4179e4a6ed43c3fbe354ef36d82a1976c3b63fe0118f9d01bb8403e17c65905f1ce234b56c9acfd089c1bd357c9cd5a0df5e486b1c663f19d82114f683963bd2db0afff629cb99ec791935e3473467df78d33d45fa6ce986f0c76fd32e346c3f2a33b67e4d3482c31fe985fab9e41bf42c0b98d97187f2bd473c4b3699c793d33b0c7f36cdc6837e27ee2185f5eaff97eb937aea3bed236cea05f41914386f6d02cb99d797c7262dc68603ff48d9b55d4d3b8d0fccd5fc39225cb7c3ff5c0f087b0b1ebc557c6ad86c51f46e05123ea25d13f52b4aaa69fb49cadbfccc1a3a6e57f5972c89a6d8b87b78c5bd05ff6c06d9b3fc4fd1446cd11f45f1ab7aad0f72eb1e57b0e46bc0583313e544a563946a617df1837abd0af071e21be85715a6f9ad8fa3f80a1bfec3b43efdc38f7fe1f9147cd06ead74d6ced2d701bfb7d1f3c028f125b7f72467c3367f3375bbeaa0ff2dd7646ff4e62d3a7ee6ce3e51d8cf8f8de19e38f135bfb04dc467c5367e8514b6c7a559d71deec3b5bfd89c1a81f2d8d73c45f14896dbe4767ccf7e90cff0ec0d8ffe107d8f512e3428a515c2f8e1f359a0dec0f67d48376139b7ef7ced0e7d058f5b7fe92d8f47a73b6fed401bbdeafce686f83a12f3f3a438f1bb0fb7bcf197e3e4b6c7a1e19bb9e7c9ed8f42c9ce1875330ea1dc819fad5c0a86fd87186de8857f5b6fd3e76b6f3215c19b7b11e45ff8e6e9ad04f6ec1d81ff49cd8f2ad83bd3eb5c496efd038d56392d8c6ef3843ef00f6fde9eda8071f82ddef8fcef07b3fb1e99183bd3e7367acb79d38b6172363af4fd84e6ce35bced0770fec7e394e6cf5bc7646bddec1888f9f9da1ff56623b8fdfc0a81f7f18a77a35c1d8bf12cffb9ba6d7ab182736bd7e8051aff060ecf591e7c4a6df9933f4c578af4f28c0582f5c27b6fcdf9ce17fefeffb77e80cbd77139b3ee01cf1c89533f4be316ee3fee118df785cc3fb51a882fd3e9f18ebfb8dcdd704e37d885ec1783f0d89a10f398fc771bd137081f3aae28cfec119f12e8cfdfd259c26b678eace36bf6c82f13e4767e002eb67c60d7f3f6567cc77046ee3fdeec419fbb19ed8fa3f38a3de7760d447be8cfd7ce0e3c4a65f0ec67d4bef89adde97cef02fea93eedf83c416cf8b33fcf1e16cf5a63db0dfd745625b2f3863fc57628b17f3bbff7998d8fcd771c6f9f394d8daef9c715e1f82913f1f25b6fe5d67cc574d6cf9227fdf4ff494d8c63f3863fc34b1b5379da1ef7d623b1fa05fcbf77f2db18d773dfcfe9a25b6f816ce38ffe027df9f7ced8cf17962ab873843af2767bcafb6c1aecf67629b7fe96ce38b90d8de5f0e9d71bff5c0d08b2e135bfdbbced06b9ed8ce5f6f77ff3412dbf89133c68f13dbf877678b47e0a7b6bf9f5e38e37da99dd8ce7be45788ed771a1897275c6cef27367d7aced02ff5877e17ceb88fc8d9e6ef2f7eee5f8b8189e5e77d10434901bffeb79ff407d2e1676910fe603aacfdb0f6c3da0f6b3facfdb0f6c3da0f6b3ffc3ff8a1e0917e6e78ccb77cc7f7fcc08ffcc4139ef233bff02bcf788ee7427f7fd3e73b2ff9433feffcc95fbcc95bdce16deef28e3e77f5b73dedb7cf077cb8b21f8eb8a72b131ff3099feab3abfca8cf077dbe44eeebf792077ca6cf17fdfd5c9f4bbee04bfec157ca6566d7fa3c8abf0fe2b3505ed50f43ae70956bfaa973c60d6e6aae0fdce25cf369137387888724baf639bf50e02e1534a21b1aeb94b77447f7f4a0f9cff5f7477aa209cf68aa639ef988c2bfd5e137b15199eb50636f974f7aa5993ea77c41f3a8c140b5b5dc7268669a681f5ad01bbeab66f46e5ad1529f1dd5eefa77f861481faadbbdc6aedea04ffaa24dcd738b46aa7c953a9cd33675694773dca5177aa63ddad198e7b44f0774485bbaee8eea53eab9c30f74a47af474ae097fd2f1ca7e186acc15d4bfabba9cd029f59573cdfd11fed0dfb55603cd4feb4c038de78cd413741135ebe91c444fea8f6dcca3dad0a5f28a7ea03dae53e9f7d2fb5dfac14f7445d7eaf5290d55fbb9e6a64f7ad43a07d5ac4255aa519d326a5053e3dc29f791c6d4d2fd72aeb1be69df095d6adf251dad7c3e9439e4dca776cca52f1a96880429b4ed00da68bbe61b35d3ef2423b99131f64a3b7aaa17fdd2b13d416368b8aa1f665ae75c6e35c789dcc9bd3cc8a33cc944a69a9379a4a57ed9d6a7d65c9ee5455e6526739acbb36aa4fae83950f0a12c4affe8f78ebcf152def5b95cd50ff2a1b9abf7e54b36652be640a275976dade702da74e39ee8eb77921dd995bdf87b4ff695552b398ce783eda14f7d2e70aeac7c3ec8ad1c494f8ee584ba72ca5dd5a4237dcd77a079e9f9a71e3f524f3c94b9ca999ccb85f6b9d435b655bb5daeca0f39942b9e6944b95cab36531dd3d6feaf2bfb41eb2743a948356ad08fe745a1b9d7a42e99d6f91575d673431ad294167c21768ee0ec1c486eda94fd754f0c4acd56f583e6db0e1ccabdf81844732ea8164228f8218c64126ee23df0a267c2328cc36db8e36ab8d7f6079e9663828ed1553f695bfbd434cebdd2239acbbcf4d7aa7e084f6112d4f3e4f742b90772db2fe199cee2b9a01e0f2fe135ccfee5fdb84ff2786ef4346fd2f57b5ac9528b014dcd3fabfa21ccc3829b41ef43cde34815ae6aed0bf9d433b116dec3327c84cff01536c356e8c41acfc276e8ea19380b3bfad98de7c652f747ceef41348aa7b0a7bed4efffe1defc4d6c41bd1d0ef8221cc6fdded79bdccefb4ecc8d42e99733e5b2ee9a637997869ed6fdda720fe589dc4e7ba2174ed8eed6e1ef381f0ab90da7a1cfc330503f4bdc074fba5b87e18c3be13c5cd041b80c3f54fb579dfb4dfd71aedf1fd503aa83fed6516f94e7e967d0bd11aef9250cf51cd3bb57db57bd2ff47c0f955015f576e98750d3fada1ea150d74fa6df4b6dcaf7853db6bb54cfc6d050b63bb70f0d077ac3c53d2187348877f1aae74357471e856668f1ab9efbc6d3908776a15ba4902268ad97fc4ce3a250ffc5ba735e8c785adcf053310e41ef9bf2ae79511f0d55873c7ae35cf75167e5f3e18ff03ef95ffdacff7fb1f6c3da0f6b3facfdb0f6c3da0f6b3facfdf0bfed87f2f933ff7effc79fbffd13ec7a2129</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>m_okButton</sender>
+        <signal>clicked()</signal>
+        <receiver>GroupWinBase</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>m_groupComboBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>GroupWinBase</receiver>
+        <slot>groupSelectedEvent(int)</slot>
+    </connection>
+    <connection>
+        <sender>m_newButton</sender>
+        <signal>clicked()</signal>
+        <receiver>GroupWinBase</receiver>
+        <slot>newClickedEvent()</slot>
+    </connection>
+    <connection>
+        <sender>m_renameButton</sender>
+        <signal>clicked()</signal>
+        <receiver>GroupWinBase</receiver>
+        <slot>renameClickedEvent()</slot>
+    </connection>
+    <connection>
+        <sender>m_deleteButton</sender>
+        <signal>clicked()</signal>
+        <receiver>GroupWinBase</receiver>
+        <slot>deleteClickedEvent()</slot>
+    </connection>
+    <connection>
+        <sender>m_selectFacesButton</sender>
+        <signal>clicked()</signal>
+        <receiver>GroupWinBase</receiver>
+        <slot>selectFacesClickedEvent()</slot>
+    </connection>
+    <connection>
+        <sender>m_unselectFacesButton</sender>
+        <signal>clicked()</signal>
+        <receiver>GroupWinBase</receiver>
+        <slot>unselectFacesClickedEvent()</slot>
+    </connection>
+    <connection>
+        <sender>m_assignAsGroupButton</sender>
+        <signal>clicked()</signal>
+        <receiver>GroupWinBase</receiver>
+        <slot>assignAsGroupClickedEvent()</slot>
+    </connection>
+    <connection>
+        <sender>m_addToGroupButton</sender>
+        <signal>clicked()</signal>
+        <receiver>GroupWinBase</receiver>
+        <slot>addToGroupClickedEvent()</slot>
+    </connection>
+    <connection>
+        <sender>m_textureComboBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>GroupWinBase</receiver>
+        <slot>textureSelectedEvent(int)</slot>
+    </connection>
+    <connection>
+        <sender>m_cancelButton</sender>
+        <signal>clicked()</signal>
+        <receiver>GroupWinBase</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>m_smoothSlider</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>GroupWinBase</receiver>
+        <slot>smoothChangedEvent(int)</slot>
+    </connection>
+    <connection>
+        <sender>m_angleSlider</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>GroupWinBase</receiver>
+        <slot>angleChangedEvent(int)</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>addToGroupClickedEvent()</slot>
+    <slot>assignAsGroupClickedEvent()</slot>
+    <slot>deleteClickedEvent()</slot>
+    <slot>groupSelectedEvent(int)</slot>
+    <slot>newClickedEvent()</slot>
+    <slot>smoothChangedEvent(int)</slot>
+    <slot>renameClickedEvent()</slot>
+    <slot>selectFacesClickedEvent()</slot>
+    <slot>unselectFacesClickedEvent()</slot>
+    <slot>textureSelectedEvent(int)</slot>
+    <slot>angleChangedEvent(int)</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>textureframe.h</includehint>
+</includehints>
+</UI>

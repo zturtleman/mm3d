@@ -1,0 +1,26 @@
+
+/* Define if the X Window System is missing or not being used.  */
+#undef X_DISPLAY_MISSING
+
+#undef CODE_DEBUG
+#undef HAVE_QT4
+#undef PREFIX
+#undef HAVE_LUA
+#undef HAVE_LUALIB
+#undef HAVE_DLOPEN
+#undef HAVE_XFONT
+#undef HAVE_GETTIMEOFDAY
+#undef IS_OSX
+
+/* Name of package */
+#undef PACKAGE
+
+/* Version number of package */
+#undef VERSION
+
+/* whether byteorder is bigendian */
+#undef WORDS_BIGENDIAN
+
+/* 1234 = LIL_ENDIAN, 4321 = BIGENDIAN */
+#undef BYTEORDER
+

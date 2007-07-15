@@ -1,0 +1,151 @@
+Changes for 1.3.6
+   Better MD3_PATH handling
+      Get MD3_PATH from skins as well as model header
+      Allow separate MD3_PATH for each skin
+   Corrected capitalization for "Normals Face Out" command
+   Replaced lex/yacc code with custom preferences parser
+      lex/yacc parser was having parse failures on some archs
+   Removed several unused modules
+   Added script for making source code tags
+   Updated configuration for newer autoconf (2.61) and automake (1.9)
+
+Changes for 1.3.5
+   Re-organized menus
+   Added "Rotate" tool in texture coordinate window
+   Added "Face Out" command to make triangle normals point outward from
+      enclosed hulls
+   Added File|Export... to save without changing working filename or 
+      clearing unsaved flag
+   Restrict Save and Save As to types with more complete support (everything
+      else must use "Export...")
+   Added Copy/Paste selected keyframe (for skeletal and frame)
+   Write texture coordinates for MM3D even if there are no materials
+   MM3D no longer uses packed structs for mm3d, ms3d, tga, and pcx formats
+   Improved material support for COB export
+   Animation using Quaternion interpolation (prevent strange rotations when
+      rotating on more than one axis)
+   Fixed animation image export
+   Fixed "Clear Animation Frame" for skeletal (broken when anim window was 
+      make dockable)
+   Fix (hack) for Perspective label on all viewports
+   Fixes for projection mapping at vertical extremes
+   MD3 fixes: save case-insensitive animation names, cancel load if user
+      selects "cancel" on player model
+
+Changes for 1.3.4
+   Support for internationalization
+   Initial Slovak translation
+   Show tool key accelerators in toolbar tool tip
+   Rename bone joints and points from properties context panel
+   Automatic bone joint assignment
+   Extrude tool
+   Option to create sphere from center
+   Option to create torus from center
+   Bring non-modal dialogs to front on open request when already open
+   Fixes for MD2 (rotate orientation to match MM3D, prevent inversion of 
+      left/right, don't require animations to save/load), use MD2_PATH
+      meta data for skin path instead of always assuming player model
+   Fix for empty joint weight boxes
+   Fix for starting in animation mode with animation toolbar hidden
+
+Changes for 1.3.3a
+   Compilation fix for 64-bit architectures
+
+Changes for 1.3.3
+   Global transforms (translate, rotate, scale, arbitrary matrix)
+   Disabled Lua by default
+   Plane projection mapping
+   Rotation on center of 3D viewport rather than origin
+   Allow group material change from group properties panel
+   Open group, material window from properties panel
+   Can use orthographic projection from any angle (including tools)
+   Can use Ctrl+Keyboard and Ctrl+ScrollButtons to rotate
+   Rotate on Z axis (Ctrl+Mouse Wheel or Ctrl+Plus/Minus)
+   Rotating fixed orthographic view switches to free orthographic automatically
+   Hot key for saving and restoring viewport (Ctrl+Number to save, Number to restore)
+   Tool to drag vertex on triangle
+   Use tool keyboard shortcuts in texture coord window (Select Vertex, Move, Scale)
+   Made texture coordinate window non-modal
+   Texture coordinate window shows all selected faces (even if they do not
+      belong to the same group)
+   Scale tool in texture coordinate window has options for keeping aspect
+      ratio and scaling from center
+   Use Qt for drawing text in viewport instead of GLXFont (more portable)
+   Fixed crash on alpha blending for non-texture materials
+   Fixed OBJ material file creation on Win32
+   Fixed render menu selection indicators in Qt4/Win32
+
+Changes for 1.3.2
+   Added "Influences Menu", all non-animation joint functions moved here
+   Vertices and points can be assigned to multiple weighted bone joints
+   Added "Paint Texture" window that saves a texture with the faces mapped
+      onto it so that it can be painted over with a paint program
+   Sphere and Cylinder mapping (Texture projection)
+   Pan and zoom on texture coordinate edit window
+   Keyboard shortcut customization (text file)
+   Moved rendering options into a submenu of the View menu
+   Added render option to turn off drawing of back-facing polygons
+   Rotate tool rotation point defaults to center of selected objects
+   Can create a new group by selecting "<New>" in the group context panel
+   Vertices can be created individually
+   Made "Snap to Vertex" apply to bone joints, points, and projections
+   Prevent viewport zoom/pan changes while tool is active
+   Fixed MD3 crash on save without animations
+   Fixed MD3 texture paths
+   Fixed texture coordinates in MD2 for non-square skin images
+   Fixed undo/redo selection on polygon tool
+   Standardized enum declarations
+   Standardized struct declarations
+   Re-organized directory structure
+   Corrected a typo in the View Window documentation
+   Purge intermediate status bar messages if queue is too long (error 
+      messages not purged)
+   Updated MM3D format documentation to include Points and Frame Anim Points
+   Updated copyright dates
+
+Changes for 1.3.1
+   Added initial MD3 support (Initial filter written by Russell Valentine)
+   Added Boolean operations (Union, Subtraction, Intersection)
+   Added Simplify Mesh command
+   Tint selected faces (uses lighting)
+   User-defined viewport grid settings
+   Allow setting multiple joint rotations at once (experimental)
+   Allow changing/removing a texture on an existing material
+   Added point rotation to properties window
+   Added joint keyframe rotation to properties window
+   Added points to the status bar primitive count
+   Added .TXT model file format
+   Added .RAW texture file format
+   Use entire texture frame for 3D texture preview
+   Do not exit on preferences parse failure
+   Fixed looping animation frame time bug
+   Fixed bolt point rotation and translation on model merge
+   Fix for NaN in Matrix::getRotation()
+   Fixed scoping error for gcc 4.1.1
+   Added virtual destructor for Model::Observer
+
+Changes for 1.3.0 (from 1.2.0-final)
+   Snap to Grid
+   Snap to Vertex
+   Converted animation window to smaller, dockable window
+   Added context-sensitive panel for editing position and 
+      group properties (more functionality to come)
+      See View -> Show Properties
+   Edge Turn command
+   Edge Divide command
+   Cap holes command
+   Fixes for ./configure with 64-bit libraries
+   Fixes for 64-bit safe (draw context, and pointer debug output)
+   Initial bolt point support
+   Initial .cob and .dxf support (read/write geometry and materials)
+   Fixed crash on calculateFrameNormals if animation is out of range
+   Append underscore to MD2 animation names that end in numbers
+      to prevent truncation of animation name
+   Change MD2 loading code to remove trailing digits instead of truncating
+      at the first digit
+   Polygon tool creates triangle to face tool viewport
+   Fix for Face select in Frame Animation mode (patch from Russell Valentine)
+   Fix for MD2 GL commands section (terminate with 0)
+   Fixed scaling for co-axial points (division by zero causing undefined
+      coordinates)
+   Removed qpixmap uic hack in the Makefile

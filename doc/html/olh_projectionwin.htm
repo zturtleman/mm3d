@@ -1,0 +1,107 @@
+      <h1>Texture Projection Window</h1>
+
+      <p>
+      The <b>Texture Projection Window</b> is used to adjust how a texture is
+      applied to the faces of the model in a sphere or cylinder mapping.  
+      This window is used after you have created a texture projection with
+      the <a href="olh_tools.html#projection">Projection tool.</a>
+      The <b>Texture Projection Window</b>
+      </p>
+
+      <p>
+      To change the texture projection properties, select the projection
+      you wish to modify 
+      and select <b>Edit Projection</b> in the 
+      <a href="olh_viewwin.html">View Windows</a>'s <b>Groups</b> menu.
+      </p>
+
+      <p>
+      The texture projection window allows you to change the projection type,
+      rename the projection, adjust the UV range that the texture coordinates
+      are mapped to, adjust where the seam (wrap point) is on the sphere or cylinder, 
+      and add and remove faces from the projection. It does not allow you to
+      change individual vertex texture coordinates. If you want to move each
+      vertex individually, use the 
+      <a href="olh_texturecoordwin.html">Texture Coordinates Window</a>.
+      </p>
+      
+      <p>
+      The <b>Texture Coordinates Window</b> contains a drop-down box at the top
+      of the window with the current projection name, a Texture Frame that shows
+      how the faces are projected onto the texture, and various buttons to change
+      the projection's properties.
+      </p>
+
+      <p>
+      The <b>Texture Frame</b> shows the texture used by the selected faces.
+      Faces and vertices are drawn over the texture to show where each face's
+      vertices are applied to the texture.  There is also a white box that
+      shows the UV range where the faces are mapped onto the texture.
+      </p>
+      
+      <p>
+      You can modify the UV Range with the left mouse button.
+      Click and drag on the edges or corners of the UV Range box 
+      to move resize the range. Click and drag inside the UV Range box to 
+      move the UV Range to a new location on the texture.
+      </p>
+
+      <p>
+      You can move the seam (the location where the texture wraps on the cylinder or
+      sphere) by using the right mouse button. Click inside the UV Range box
+      and drag to move the seam left or right. You will see faces wrap from one
+      side of the UV Range box to the other.
+      </p>
+
+      <p>
+      You can pan around the <b>Texture Frame</b> by using the arrow buttons inside
+      the frame window, or by middle-click dragging. You can zoom in or out by using the
+      <b>Zoom Buttons</b> or by using the mouse scroll wheel.
+      </p>
+
+      <p>
+      Use the <b>Type</b> drop-down box to change projection types between
+      sphere and cylinder.
+      </p>
+
+      <p>
+      Use the <b>Rename</b> button to rename the selected projection.
+      </p>
+
+      <p>
+      Use the <b>Zoom Edit Box</b> or <b>Zoom Buttons</b> (magnifying glasses)
+      to zoom the texture view in or out.
+      </p>
+
+      <p>
+      The <b>Apply Projection</b> button to remaps the faces on this projection
+      to the projection location. Normally this is automatic when the projection is
+      modified. You may need to use this button if you move the texture coordinates
+      manually and want to restore them to the projection location without modifying
+      the projection itself.
+      </p>
+
+      <p>
+      The <b>Reset UV Range</b> button sets the minimum and maximum UV coordinates
+      to the edges of the texture (0.0 to 1.0).
+      </p>
+
+      <p>
+      The <b>Add Faces to Projection</b> button adds the selected faces to the projection in
+      the <b>Texture Projection Window</b>.
+      </p>
+
+      <p>
+      The <b>Remove Faces</b> button removes the selected faces from the projection.
+      </p>
+
+      <p>
+      Press <b>Close</b> to close the <b>Texture Projection Window</b>.
+      </p>
+
+      <p>
+      For more details on adding textures to your model, see the 
+      <a href="olh_texturewin.html">Materials Window</a> ,
+      the <a href="olh_groupwin.html">Groups Window</a>,
+      and the <a href="olh_texturecoordwin.html">Texture Coordinates Window</a>.
+      </p>

@@ -1,0 +1,529 @@
+CC=mingw32-gcc
+CXX=mingw32-g++
+WINDRES=windres
+#DEL=del
+DEL=rm -f
+#CXXFLAGS=-Wall -g3
+CXXFLAGS=-O1
+DEFS=-DMM3D_EDIT -DQT3_SUPPORT -DWIN32 -I.. -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${QTDIR}/include  -I${QTDIR}/include/QtCore -I${QTDIR}/include/QtGui -I${QTDIR}/include/QtOpenGL -I${QTDIR}/include/QtNetwork -I${QTDIR}/include/Qt3Support 
+#DEFS=-DMM3D_EDIT -DQT3_SUPPORT -DCODE_DEBUG -DWIN32 -I.. -I. -I./src -I./src/libmm3d -I${QTDIR}/include -I${QTDIR}/QtCore -I${QTDIR}/QtGui -I${QTDIR}/QtOpenGL -I${QTDIR}/QtNetwork -I${QTDIR}/Qt3Support 
+UIC=${QTDIR}/bin/uic3.exe
+MOC=${QTDIR}/bin/moc.exe
+LINK=-L${QTDIR}/lib -mwindows -lQtCore4 -lQtGui4 -lQtOpenGL4 -lQtNetwork4 -lQt3Support4 -lopengl32 -lglu32 -lwsock32 
+#-lpsapi
+
+LIB_OBJ= \
+	src/libmm3d/bsptree.o \
+	src/libmm3d/cal3dfilter.o \
+	src/libmm3d/cobfilter.o \
+	src/libmm3d/dxffilter.o \
+	src/libmm3d/filtermgr.o \
+	src/libmm3d/glmath.o \
+	src/libmm3d/log.o \
+	src/libmm3d/lwofilter.o \
+	src/libmm3d/md2filter.o \
+	src/libmm3d/md3filter.o \
+	src/libmm3d/mesh.o \
+	src/libmm3d/misc.o \
+	src/libmm3d/mm3dfilter.o \
+	src/libmm3d/mm3dport.o \
+	src/libmm3d/mm3dreg.o \
+	src/libmm3d/model.o \
+	src/libmm3d/model_anim.o \
+	src/libmm3d/model_bool.o \
+	src/libmm3d/model_draw.o \
+	src/libmm3d/model_group.o \
+	src/libmm3d/model_influence.o \
+	src/libmm3d/model_inner.o \
+	src/libmm3d/model_insert.o \
+	src/libmm3d/model_meta.o \
+	src/libmm3d/model_ops.o \
+	src/libmm3d/model_proj.o \
+	src/libmm3d/model_select.o \
+	src/libmm3d/model_texture.o \
+	src/libmm3d/model_test.o \
+	src/libmm3d/modelfilter.o \
+	src/libmm3d/modelstatus.o \
+	src/libmm3d/modelundo.o \
+	src/libmm3d/modelutil.o \
+	src/libmm3d/ms3dfilter.o \
+	src/libmm3d/msg.o \
+	src/libmm3d/objfilter.o \
+	src/libmm3d/pcxtex.o \
+	src/libmm3d/rawtex.o \
+	src/libmm3d/texmgr.o \
+	src/libmm3d/texscale.o \
+	src/libmm3d/texture.o \
+	src/libmm3d/tgatex.o \
+	src/libmm3d/triprim.o \
+	src/libmm3d/txtfilter.o \
+	src/libmm3d/undo.o \
+	src/libmm3d/undomgr.o \
+	src/libmm3d/weld.o \
+
+MM3D_UI= \
+	src/qtui/alignwin.base.h \
+	src/qtui/animconvertwin.base.h \
+	src/qtui/animexportwin.base.h \
+	src/qtui/animsetwin.base.h \
+	src/qtui/animwidget.base.h \
+	src/qtui/autoassignjointwin.base.h \
+	src/qtui/backgroundselect.base.h \
+	src/qtui/backgroundwin.base.h \
+	src/qtui/boolwin.base.h \
+	src/qtui/contextgroup.base.h \
+	src/qtui/contextinfluences.base.h \
+	src/qtui/contextname.base.h \
+	src/qtui/contextposition.base.h \
+	src/qtui/contextprojection.base.h \
+	src/qtui/contextrotation.base.h \
+	src/qtui/debugwin.base.h \
+	src/qtui/editkeyframe.base.h \
+	src/qtui/extrudewin.base.h \
+	src/qtui/groupwin.base.h \
+	src/qtui/helpwin.base.h \
+	src/qtui/jointwin.base.h \
+	src/qtui/painttexturewin.base.h \
+	src/qtui/pointwin.base.h \
+	src/qtui/projectionwin.base.h \
+	src/qtui/keyvaluewin.base.h \
+	src/qtui/mapdirection.base.h \
+	src/qtui/mergewin.base.h \
+	src/qtui/metawin.base.h \
+	src/qtui/modelview.base.h \
+	src/qtui/newanim.base.h \
+	src/qtui/objprompt.base.h \
+	src/qtui/pluginwin.base.h \
+	src/qtui/rgbawin.base.h \
+	src/qtui/statusbar.base.h \
+	src/qtui/texturecoord.base.h \
+	src/qtui/textwin.base.h \
+	src/qtui/texwin.base.h \
+	src/qtui/transformwin.base.h \
+	src/qtui/valuewin.base.h \
+	src/qtui/viewportsettings.base.h
+
+MM3D_UI_OBJ= \
+	src/qtui/alignwin.base.h.o \
+	src/qtui/animconvertwin.base.h.o \
+	src/qtui/animexportwin.base.h.o \
+	src/qtui/animsetwin.base.h.o \
+	src/qtui/animwidget.base.h.o \
+	src/qtui/autoassignjointwin.base.h.o \
+	src/qtui/backgroundselect.base.h.o \
+	src/qtui/backgroundwin.base.h.o \
+	src/qtui/boolwin.base.h.o \
+	src/qtui/contextgroup.base.h.o \
+	src/qtui/contextinfluences.base.h.o \
+	src/qtui/contextname.base.h.o \
+	src/qtui/contextposition.base.h.o \
+	src/qtui/contextprojection.base.h.o \
+	src/qtui/contextrotation.base.h.o \
+	src/qtui/debugwin.base.h.o \
+	src/qtui/editkeyframe.base.h.o \
+	src/qtui/extrudewin.base.h.o \
+	src/qtui/groupwin.base.h.o \
+	src/qtui/helpwin.base.h.o \
+	src/qtui/jointwin.base.h.o \
+	src/qtui/painttexturewin.base.h.o \
+	src/qtui/pointwin.base.h.o \
+	src/qtui/projectionwin.base.h.o \
+	src/qtui/keyvaluewin.base.h.o \
+	src/qtui/mapdirection.base.h.o \
+	src/qtui/mergewin.base.h.o \
+	src/qtui/metawin.base.h.o \
+	src/qtui/modelview.base.h.o \
+	src/qtui/newanim.base.h.o \
+	src/qtui/objprompt.base.h.o \
+	src/qtui/pluginwin.base.h.o \
+	src/qtui/rgbawin.base.h.o \
+	src/qtui/statusbar.base.h.o \
+	src/qtui/texturecoord.base.h.o \
+	src/qtui/textwin.base.h.o \
+	src/qtui/texwin.base.h.o \
+	src/qtui/transformwin.base.h.o \
+	src/qtui/valuewin.base.h.o \
+	src/qtui/viewportsettings.base.h.o
+
+MM3D_MOC= \
+	src/implui/alignwin.moc.cc \
+	src/implui/aboutwin.moc.cc \
+	src/implui/animconvertwin.moc.cc \
+	src/implui/animexportwin.moc.cc \
+	src/implui/animsetwin.moc.cc \
+	src/implui/animwidget.moc.cc \
+	src/implui/autoassignjointwin.moc.cc \
+	src/implui/backgroundselect.moc.cc \
+	src/implui/backgroundwin.moc.cc \
+	src/implui/boolpanel.moc.cc \
+	src/implui/boolwin.moc.cc \
+	src/implui/contextinfluences.moc.cc \
+	src/implui/contextname.moc.cc \
+	src/implui/contextpanel.moc.cc \
+	src/implui/contextposition.moc.cc \
+	src/implui/contextprojection.moc.cc \
+	src/implui/contextrotation.moc.cc \
+	src/tools/cubetoolwidget.moc.cc \
+	src/tools/cylindertoolwidget.moc.cc \
+	src/tools/ellipsetoolwidget.moc.cc \
+	src/depui/errorobj.moc.cc \
+	src/implui/extrudewin.moc.cc \
+	src/implui/groupwin.moc.cc \
+	src/implui/helpwin.moc.cc \
+	src/implui/jointwin.moc.cc \
+	src/implui/painttexturewin.moc.cc \
+	src/implui/pointwin.moc.cc \
+	src/implui/projectionwin.moc.cc \
+	src/implui/keyvaluewin.moc.cc \
+	src/implui/licensewin.moc.cc \
+	src/implui/mergewin.moc.cc \
+	src/implui/metawin.moc.cc \
+	src/implui/mview.moc.cc \
+	src/depui/modelviewport.moc.cc \
+	src/implui/newanim.moc.cc \
+	src/implui/objprompt.moc.cc \
+	src/implui/pluginwin.moc.cc \
+	src/tools/polytoolwidget.moc.cc \
+	src/implui/rgbawin.moc.cc \
+	src/tools/scaletoolwidget.moc.cc \
+	src/tools/selectfacetoolwidget.moc.cc \
+	src/implui/spherifywin.moc.cc \
+	src/implui/statusbar.moc.cc \
+	src/depui/textureframe.moc.cc \
+	src/implui/texturecoord.moc.cc \
+	src/depui/texwidget.moc.cc \
+	src/implui/texwin.moc.cc \
+	src/implui/transformwin.moc.cc \
+	src/implui/valuewin.moc.cc \
+	src/implui/viewportsettings.moc.cc \
+	src/implui/viewpanel.moc.cc \
+	src/implui/viewwin.moc.cc \
+	src/qtui/alignwin.base.moc.cc \
+	src/qtui/animconvertwin.base.moc.cc \
+	src/qtui/animexportwin.base.moc.cc \
+	src/qtui/animsetwin.base.moc.cc \
+	src/qtui/animwidget.base.moc.cc \
+	src/qtui/autoassignjointwin.base.moc.cc \
+	src/qtui/backgroundselect.base.moc.cc \
+	src/qtui/backgroundwin.base.moc.cc \
+	src/qtui/boolwin.base.moc.cc \
+	src/qtui/contextgroup.base.moc.cc \
+	src/qtui/contextinfluences.base.moc.cc \
+	src/qtui/contextname.base.moc.cc \
+	src/qtui/contextposition.base.moc.cc \
+	src/qtui/contextprojection.base.moc.cc \
+	src/qtui/contextrotation.base.moc.cc \
+	src/qtui/debugwin.base.moc.cc \
+	src/qtui/editkeyframe.base.moc.cc \
+	src/qtui/extrudewin.base.moc.cc \
+	src/qtui/groupwin.base.moc.cc \
+	src/qtui/helpwin.base.moc.cc \
+	src/qtui/jointwin.base.moc.cc \
+	src/qtui/painttexturewin.base.moc.cc \
+	src/qtui/pointwin.base.moc.cc \
+	src/qtui/projectionwin.base.moc.cc \
+	src/qtui/keyvaluewin.base.moc.cc \
+	src/qtui/mapdirection.base.moc.cc \
+	src/qtui/mergewin.base.moc.cc \
+	src/qtui/metawin.base.moc.cc \
+	src/qtui/modelview.base.moc.cc \
+	src/qtui/newanim.base.moc.cc \
+	src/qtui/objprompt.base.moc.cc \
+	src/qtui/pluginwin.base.moc.cc \
+	src/qtui/rgbawin.base.moc.cc \
+	src/qtui/statusbar.base.moc.cc \
+	src/qtui/texturecoord.base.moc.cc \
+	src/qtui/textwin.base.moc.cc \
+	src/qtui/texwin.base.moc.cc \
+	src/qtui/transformwin.base.moc.cc \
+	src/tools/torustoolwidget.moc.cc \
+	src/qtui/valuewin.base.moc.cc \
+	src/qtui/viewportsettings.base.moc.cc
+
+MM3D_MOC_OBJ= \
+	src/implui/alignwin.moc.o \
+	src/implui/aboutwin.moc.o \
+	src/implui/animconvertwin.moc.o \
+	src/implui/animexportwin.moc.o \
+	src/implui/animsetwin.moc.o \
+	src/implui/animwidget.moc.o \
+	src/implui/autoassignjointwin.moc.o \
+	src/implui/backgroundselect.moc.o \
+	src/implui/backgroundwin.moc.o \
+	src/implui/boolpanel.moc.o \
+	src/implui/boolwin.moc.o \
+	src/implui/contextgroup.moc.o \
+	src/implui/contextinfluences.moc.o \
+	src/implui/contextname.moc.o \
+	src/implui/contextpanel.moc.o \
+	src/implui/contextposition.moc.o \
+	src/implui/contextprojection.moc.o \
+	src/implui/contextrotation.moc.o \
+	src/tools/cubetoolwidget.moc.o \
+	src/tools/cylindertoolwidget.moc.o \
+	src/tools/ellipsetoolwidget.moc.o \
+	src/depui/errorobj.moc.o \
+	src/implui/extrudewin.moc.o \
+	src/implui/groupwin.moc.o \
+	src/implui/helpwin.moc.o \
+	src/implui/jointwin.moc.o \
+	src/implui/painttexturewin.moc.o \
+	src/implui/pointwin.moc.o \
+	src/implui/projectionwin.moc.o \
+	src/implui/keyvaluewin.moc.o \
+	src/implui/licensewin.moc.o \
+	src/implui/mapdirection.moc.o \
+	src/implui/mergewin.moc.o \
+	src/implui/metawin.moc.o \
+	src/implui/mview.moc.o \
+	src/depui/modelviewport.moc.o \
+	src/implui/newanim.moc.o \
+	src/implui/objprompt.moc.o \
+	src/implui/pluginwin.moc.o \
+	src/tools/polytoolwidget.moc.o \
+	src/implui/rgbawin.moc.o \
+	src/tools/scaletoolwidget.moc.o \
+	src/tools/selectfacetoolwidget.moc.o \
+	src/implui/spherifywin.moc.o \
+	src/implui/statusbar.moc.o \
+	src/depui/textureframe.moc.o \
+	src/implui/texturecoord.moc.o \
+	src/depui/texwidget.moc.o \
+	src/implui/texwin.moc.o \
+	src/implui/transformwin.moc.o \
+	src/implui/valuewin.moc.o \
+	src/implui/viewportsettings.moc.o \
+	src/implui/viewpanel.moc.o \
+	src/implui/viewwin.moc.o \
+	src/qtui/alignwin.base.moc.o \
+	src/qtui/animconvertwin.base.moc.o \
+	src/qtui/animexportwin.base.moc.o \
+	src/qtui/animsetwin.base.moc.o \
+	src/qtui/animwidget.base.moc.o \
+	src/qtui/autoassignjointwin.base.moc.o \
+	src/qtui/backgroundselect.base.moc.o \
+	src/qtui/backgroundwin.base.moc.o \
+	src/qtui/boolwin.base.moc.o \
+	src/qtui/contextgroup.base.moc.o \
+	src/qtui/contextinfluences.base.moc.o \
+	src/qtui/contextname.base.moc.o \
+	src/qtui/contextposition.base.moc.o \
+	src/qtui/contextprojection.base.moc.o \
+	src/qtui/contextrotation.base.moc.o \
+	src/qtui/debugwin.base.moc.o \
+	src/qtui/editkeyframe.base.moc.o \
+	src/qtui/extrudewin.base.moc.o \
+	src/qtui/groupwin.base.moc.o \
+	src/qtui/helpwin.base.moc.o \
+	src/qtui/jointwin.base.moc.o \
+	src/qtui/painttexturewin.base.moc.o \
+	src/qtui/pointwin.base.moc.o \
+	src/qtui/projectionwin.base.moc.o \
+	src/qtui/keyvaluewin.base.moc.o \
+	src/qtui/mapdirection.base.moc.o \
+	src/qtui/mergewin.base.moc.o \
+	src/qtui/metawin.base.moc.o \
+	src/qtui/modelview.base.moc.o \
+	src/qtui/newanim.base.moc.o \
+	src/qtui/objprompt.base.moc.o \
+	src/qtui/pluginwin.base.moc.o \
+	src/qtui/rgbawin.base.moc.o \
+	src/qtui/statusbar.base.moc.o \
+	src/qtui/texturecoord.base.moc.o \
+	src/qtui/textwin.base.moc.o \
+	src/qtui/texwin.base.moc.o \
+	src/qtui/transformwin.base.moc.o \
+	src/tools/torustoolwidget.moc.o \
+	src/qtui/valuewin.base.moc.o \
+	src/qtui/viewportsettings.base.moc.o
+
+MM3D_OBJ= \
+	src/3dm.o \
+	src/mm3dcore/3dmprefs.o \
+	src/implui/aboutwin.o \
+ 	src/mm3dcore/align.o \
+	src/commands/aligncmd.o \
+	src/implui/alignwin.o \
+	src/mm3dcore/allocstats.o \
+	src/implui/animconvertwin.o \
+	src/implui/animexportwin.o \
+	src/implui/animsetwin.o \
+	src/implui/animwidget.o \
+	src/tools/atrfartool.o \
+	src/tools/atrneartool.o \
+	src/commands/backgroundcmd.o \
+	src/implui/autoassignjointwin.o \
+	src/implui/backgroundselect.o \
+	src/implui/backgroundwin.o \
+	src/implui/boolpanel.o \
+	src/implui/boolwin.o \
+	src/implui/contextgroup.o \
+	src/implui/contextinfluences.o \
+	src/implui/contextname.o \
+	src/implui/contextpanel.o \
+	src/implui/contextposition.o \
+	src/implui/contextprojection.o \
+	src/implui/contextrotation.o \
+	src/mm3dcore/contextwidget.o \
+	src/tools/bgmovetool.o \
+	src/tools/bgscaletool.o \
+	src/mm3dcore/bounding.o \
+	src/mm3dcore/cmdline.o \
+	src/mm3dcore/cmdmgr.o \
+	src/mm3dcore/command.o \
+	src/commands/capcmd.o \
+	src/commands/copycmd.o \
+	src/tools/cubetool.o \
+	src/tools/cubetoolwidget.o \
+	src/tools/cylindertool.o \
+	src/tools/cylindertoolwidget.o \
+	src/mm3dcore/decal.o \
+	src/mm3dcore/decalmgr.o \
+	src/commands/deletecmd.o \
+	src/commands/dupcmd.o \
+	src/commands/edgedivcmd.o \
+	src/commands/edgeturncmd.o \
+	src/tools/ellipsetool.o \
+	src/tools/ellipsetoolwidget.o \
+	src/tools/extrudetool.o \
+	src/depui/errorobj.o \
+	src/commands/extrudecmd.o \
+	src/implui/extrudewin.o \
+	src/commands/faceoutcmd.o \
+	src/commands/flattencmd.o \
+	src/commands/flipcmd.o \
+	src/implui/groupwin.o \
+	src/implui/helpwin.o \
+	src/commands/hidecmd.o \
+	src/commands/invertcmd.o \
+	src/commands/invnormalcmd.o \
+	src/commands/jointcmd.o \
+	src/commands/pointcmd.o \
+	src/commands/assignjointcmd.o \
+	src/tools/jointtool.o \
+	src/tools/pointtool.o \
+	src/tools/projtool.o \
+	src/implui/jointwin.o \
+	src/implui/painttexturewin.o \
+	src/implui/pointwin.o \
+	src/implui/projectionwin.o \
+	src/implui/keycfg.o \
+	src/implui/keyvaluewin.o \
+	src/implui/licensewin.o \
+	src/mm3dcore/luaif.o \
+	src/mm3dcore/luascript.o \
+	src/commands/makefacecmd.o \
+	src/implui/mapdirection.o \
+	src/mm3dcore/memguard.o \
+	src/implui/mergewin.o \
+	src/implui/metawin.o \
+	src/mm3dcore/modeltest.o \
+	src/tools/movetool.o \
+	src/implui/msgqt.o \
+	src/implui/mview.o \
+	src/depui/modelviewport.o \
+	src/commands/pastecmd.o \
+	src/mm3dcore/pluginmgr.o \
+	src/implui/newanim.o \
+	src/implui/objprompt.o \
+	src/implui/pluginwin.o \
+	src/tools/polytool.o \
+	src/tools/polytoolwidget.o \
+	src/mm3dcore/preflex.o \
+	src/mm3dcore/prefparse.tab.o \
+	src/mm3dcore/prefs.o \
+	src/implui/qtmain.o \
+	src/implui/qttex.o \
+	src/tools/rectangletool.o \
+	src/implui/rgbawin.o \
+	src/mm3dcore/rotatepoint.o \
+	src/commands/rotatetexcmd.o \
+	src/tools/rotatetool.o \
+	src/tools/scaletool.o \
+	src/tools/scaletoolwidget.o \
+	src/tools/selectfacetoolwidget.o \
+	src/mm3dcore/scriptif.o \
+	src/tools/selectbonetool.o \
+	src/tools/selectpointtool.o \
+	src/tools/selectprojtool.o \
+	src/tools/selectconnectedtool.o \
+	src/tools/selectfacetool.o \
+	src/tools/selectgrouptool.o \
+	src/tools/selectvertextool.o \
+	src/tools/sheartool.o \
+	src/commands/selectfreecmd.o \
+	src/commands/simplifycmd.o \
+	src/commands/snapcmd.o \
+	src/commands/spherifycmd.o \
+	src/implui/spherifywin.o \
+	src/implui/statusbar.o \
+	src/stdcmds.o \
+	src/stdfilters.o \
+	src/stdtexfilters.o \
+	src/stdtools.o \
+	src/commands/subdividecmd.o \
+	src/mm3dcore/sysconf.o \
+	src/depui/textureframe.o \
+	src/implui/texturecoord.o \
+	src/mm3dcore/texturetest.o \
+	src/depui/texwidget.o \
+	src/implui/texwin.o \
+	src/implui/transformwin.o \
+	src/implui/transimp.o \
+	src/libmm3d/translate.o \
+	src/mm3dcore/tool.o \
+	src/mm3dcore/toolbox.o \
+	src/mm3dcore/toolpoly.o \
+	src/tools/torustool.o \
+	src/tools/torustoolwidget.o \
+	src/commands/unweldcmd.o \
+	src/implui/valuewin.o \
+	src/tools/vertextool.o \
+	src/tools/dragvertextool.o \
+	src/implui/viewportsettings.o \
+	src/implui/viewpanel.o \
+	src/implui/viewwin.o \
+	src/implui/viewwin_influences.o \
+	src/commands/weldcmd.o \
+	src/mm3dcore/checkupdate.o \
+	src/mm3dcore/glxfont.o
+
+.PHONY: all mm3d_ui mm3d_moc mm3d clean
+
+all: config mm3d_ui mm3d_moc mm3d
+
+config:
+	cmd /c copy config.h.mingw config.h
+
+mm3d_ui: ${MM3D_UI}
+
+mm3d_moc: ${MM3D_MOC}
+
+mm3d: ${MM3D_UI_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} ${MM3D_OBJ}
+	${WINDRES} src/icon.rc src/icon.o
+	${CXX} ${CXXFLAGS} ${DEFS} -o mm3d.exe ${MM3D_OBJ} ${MM3D_UI_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} src/icon.o ${LINK}
+
+%.o : %.cc
+	${CXX} ${DEFS} -c $< -o $@ ${CXXFLAGS}
+
+%.o : %.c
+	${CC} ${DEFS} -c $< -o $@ ${CXXFLAGS}
+
+%.base.h %.base.h.cc: %.ui
+	${UIC} $< -o $@
+	${UIC} $< -impl $@ -o $@.cc
+
+%.moc.cc: %.h
+	${MOC} $< -o $@
+
+clean:
+	${DEL} ${LIB_OBJ}
+	${DEL} ${MM3D_UI}
+	${DEL} ${MM3D_MOC}
+	${DEL} ${MM3D_OBJ}
+	${DEL} ${MM3D_UI_OBJ}
+	${DEL} ${MM3D_MOC_OBJ}
+	${DEL} src/*.base.*
+	${DEL} src/icon.o
+	${DEL} mm3d.exe
+

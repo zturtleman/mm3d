@@ -1,0 +1,215 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>ObjPromptBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>ObjPromptBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>315</width>
+            <height>226</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>OBJ Filter Options</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>m_normalsValue</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Save normals</string>
+            </property>
+            <property name="accel">
+                <string>Alt+S</string>
+            </property>
+            <property name="checked">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout14</cstring>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>m_normalPlacesLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Normal Decimal Places</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>m_normalPlacesValue</cstring>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="2" column="1">
+                    <property name="name">
+                        <cstring>m_normalPlacesValue</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>6</number>
+                    </property>
+                    <property name="minValue">
+                        <number>1</number>
+                    </property>
+                    <property name="value">
+                        <number>6</number>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="0" column="1">
+                    <property name="name">
+                        <cstring>m_placesValue</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>6</number>
+                    </property>
+                    <property name="minValue">
+                        <number>1</number>
+                    </property>
+                    <property name="value">
+                        <number>6</number>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="1" column="1">
+                    <property name="name">
+                        <cstring>m_texPlacesValue</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>6</number>
+                    </property>
+                    <property name="minValue">
+                        <number>1</number>
+                    </property>
+                    <property name="value">
+                        <number>6</number>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>m_texPlacesLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Texture Decimal Places</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>m_texPlacesValue</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>m_placesLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Vertex Decimal Places</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>m_placesValue</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>30</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout1</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>91</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_okButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Ok</string>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_cancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>m_okButton</sender>
+        <signal>clicked()</signal>
+        <receiver>ObjPromptBase</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>m_cancelButton</sender>
+        <signal>clicked()</signal>
+        <receiver>ObjPromptBase</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>m_normalsValue</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>m_normalPlacesValue</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>m_normalsValue</tabstop>
+    <tabstop>m_placesValue</tabstop>
+    <tabstop>m_texPlacesValue</tabstop>
+    <tabstop>m_normalPlacesValue</tabstop>
+    <tabstop>m_okButton</tabstop>
+    <tabstop>m_cancelButton</tabstop>
+</tabstops>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

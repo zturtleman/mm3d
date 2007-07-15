@@ -1,0 +1,136 @@
+For 1.4:
+   Set cleanfiles for depui
+   MD3
+      Finish MD3_PATH changes (save with separate MD3_PATH variables)
+      Make sure we include replaceBackslash (around md3filter.cc:340)
+   MS3D multiple bone joints ??
+   Finish CAL3D (notify user[s] who are waiting)
+
+   Save/restore window size
+   Note difference between Save/Export on website (features) and in help docs
+   Test merge on multiple bone joint assignments (and points)
+   Test binary and ASCII convenience functions for model read/write
+   Documentation
+      Feature list that tells you where the tool/command is in the
+         menu system
+      Texture Paint Window
+      Point window
+      New tools/commands
+      GL zoom/grid units
+      Context Panel
+      Save/Export
+
+   Texture Projections
+      Types
+         Icosahedron
+      Have toolbar option on proj tool to create specific projection type
+      Either open projection window from context, or remove button for it
+      Include projection in frame all/selected command
+
+Post 1.4:
+   Coloring on texture paint (??)
+   Bone Joints
+      Interactive influence weight adjustment
+      IK Considerations
+   Adjust texture coordinates on turn edge?
+   Adjust texture coordinates on split edge?
+   Export/Import MM3D
+      Geometry
+      Materials
+      Skeleton
+      Animations
+   On user path input, always replace backslashes with slashes
+   Integrate libmisfit
+   Qt 4.x (probably need to continue with Qt 3.x compatibility classes for 1.4)
+      Only list supported image formats in animation capture export
+      Qt4 - On startup every window says "Perspective" (make permanent fix)
+   MD3
+      Custom export dialog to select groups, tags, and animations
+      Handle missing/out-of-order animations more sanely
+   Center viewport on mouse position
+   Make middle mouse button scroll zoom in on point under the mouse
+   Point meta data?
+   Save selected (or just require copy/paste into new model)?
+   Change animation playback speed
+   Check flipping on 3DS texture coordinates
+   Save viewport as JPEG
+   Import heightmap as "terrain"
+   Transformation - scale translation keyframes (??)
+   MM3D Unsupported data
+      Load/save unknown type info
+      UI for unknown type info
+   Cylinder/Sphere Mapping
+      Projection Window
+       - Show test pattern
+       - Move pole on sphere?
+       - Move pole on icosahedron?
+   Bone Joints
+      Multiple root joints
+      Allowing reparenting and re-rooting of bone structure
+         will invalidate keyframe animations
+         have to deal with parents defined after children
+   Allow setting of other OpenGL options?
+   Delay normal calculation when manipulating a large number of vertices
+   Commands
+      Increase poly count to smooth (see blender?)
+      Text
+   Fix MM3D data size problem (assume size instead of using read size)
+   Force save of a specific type
+   Report OpenGL status (supported options)
+   Embedded textures
+      Implement embedded textures
+      Extract embedded textures to external files
+   Unified drawing code
+   Consider using glVertexPointer, glInterleavedArrays, or other draw optimization
+   Allow double-sided polygons
+   Custom lighting
+   Tool
+      Align to line
+      Align to plane
+      Select
+         Select Edge
+         Click repeatedly to cycle through faces under the mouse (Ctrl-click?)
+   Import/Export
+      .X (DirectX)
+      Lightwave Export
+      3DS
+      AC3D
+      Wings
+      FBX
+      MD5
+      AC3D
+      SMD
+      ASE
+      Gamestudio MDL
+      Renderman
+      Blender
+      Maya ASCII
+   Direct primitive property edit
+      Scale
+      UV
+      Normal
+   Tools
+      Make built-in truly built-in with separators and better organization
+      Sculpt tool (surface that pushes selected vertices)
+      Ruler
+      Chamfered primitives
+   More complete plugin window
+      Allow enabling/disabling of plugins
+      Allow plugin initialization order changes?
+   Animation
+      Add frame relative
+   Scripting
+      Make copy of model
+   Finish MenuManager
+   Striping in low-priority background thread
+   Hooks for add/remove model elements (for plugins)
+   Script UI
+      Script directories grafted into menu
+   Scripting
+      Script debugger
+      Selection
+         Select All Created (or all of type)
+   Attempt to correct bad data in mm3d load, and allow user to attempt to continue
+   Apply heightmap to selected faces
+   Bilinear autoscale on non-power-of-two textures
+

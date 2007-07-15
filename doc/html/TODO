@@ -1,0 +1,31 @@
+DONE:
+    olh_index text
+    olh_scriptguide text
+    olh_scriptref text
+    olh_cmdline text
+    olh_quakemd2 text
+    olh_commands text
+    olh_tools text
+    olh_viewwin text
+    olh_valuewin text
+    olh_rgbawin text
+    olh_mergewin text
+    olh_pluginwin text
+    olh_animconvertwin text
+    olh_licensewin text
+    olh_startprompt text
+    olh_texurewin text
+    olh_texurecoordswin text
+    olh_groupwin text
+    olh_animwin text
+    olh_alignwin text
+    olh_metawin text
+    olh_spherifywin text
+    olh_backgroundwin text
+
+TODO:
+    olh_mm3dformat text FIXME's (and bump version number in mm3d)
+    Zoom and pan buttons on viewport
+    Snap command
+    Texture reload
+

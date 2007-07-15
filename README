@@ -1,0 +1,32 @@
+This is the README file for Misfit Model 3D
+
+Misfit Model 3D is a 3D model editor.  It was written and tested on Linux.
+It may work on other Unix-like operating systems.  See INSTALL.WIN32
+for Windows-specific instructions.
+
+The home page is here:
+   http://www.misfitcode.com/misfitmodel3d/
+
+The help and developer mailing lists (including archives) are here:
+   http://www.misfitcode.com/misfitmodel3d/mailinglist.html
+
+Misfit Model 3D requires Qt (3.x) with OpenGL support.  You should also
+have Lua installed for scripting.  See the INSTALL file for details
+on where to get these packages.
+
+This program uses autoconf and automake for building from source.  What this
+means is that if you are lucky you can install this program with these
+easy steps:
+
+   ./configure
+   make
+   su [become root]
+   make install
+
+This will build an 'mm3d' executable and install it in /usr/local/bin.
+Documentation will be in /usr/local/share/doc/mm3d.
+
+On Mac OS X you must run "make mm3d.app" after "make".
+
+For more detailed installation instructions, see the INSTALL file.
+See INSTALL.WIN32 for Windows-specific instructions.

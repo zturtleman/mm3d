@@ -1,0 +1,114 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>ContextProjectionBase</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>ContextProjectionBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>217</width>
+            <height>82</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Projection</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>Projection Type</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout9</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QComboBox">
+                    <item>
+                        <property name="text">
+                            <string>Cylinder</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Sphere</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Plane</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>m_typeValue</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_projectionProperties</cstring>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>16</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>m_typeValue</sender>
+        <signal>activated(int)</signal>
+        <receiver>ContextProjectionBase</receiver>
+        <slot>typeChanged()</slot>
+    </connection>
+    <connection>
+        <sender>m_projectionProperties</sender>
+        <signal>clicked()</signal>
+        <receiver>ContextProjectionBase</receiver>
+        <slot>projectionPropertiesClicked()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>typeChanged()</slot>
+    <slot>projectionPropertiesClicked()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

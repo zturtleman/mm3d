@@ -1,0 +1,166 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>BoolWinBase</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>BoolWinBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>215</width>
+            <height>280</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Boolean Operation</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QButtonGroup">
+            <property name="name">
+                <cstring>m_opGroup</cstring>
+            </property>
+            <property name="title">
+                <string>Operation</string>
+            </property>
+            <property name="exclusive">
+                <bool>true</bool>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>m_fuseButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Fuse</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>m_unionButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Union</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>m_subtractButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Subtraction</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>m_intersectButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Intersection</string>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>m_setButton</cstring>
+            </property>
+            <property name="text">
+                <string>Set Object A</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>m_setLabel</cstring>
+            </property>
+            <property name="text">
+                <string>Select faces to set</string>
+            </property>
+            <property name="alignment">
+                <set>WordBreak|AlignVCenter</set>
+            </property>
+        </widget>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>m_opButton</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+            <property name="text">
+                <string>Subtract Selected</string>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>30</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>m_fuseButton</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>BoolWinBase</receiver>
+        <slot>operationChangedEvent(bool)</slot>
+    </connection>
+    <connection>
+        <sender>m_unionButton</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>BoolWinBase</receiver>
+        <slot>operationChangedEvent(bool)</slot>
+    </connection>
+    <connection>
+        <sender>m_subtractButton</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>BoolWinBase</receiver>
+        <slot>operationChangedEvent(bool)</slot>
+    </connection>
+    <connection>
+        <sender>m_intersectButton</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>BoolWinBase</receiver>
+        <slot>operationChangedEvent(bool)</slot>
+    </connection>
+    <connection>
+        <sender>m_setButton</sender>
+        <signal>clicked()</signal>
+        <receiver>BoolWinBase</receiver>
+        <slot>setObjectEvent()</slot>
+    </connection>
+    <connection>
+        <sender>m_opButton</sender>
+        <signal>clicked()</signal>
+        <receiver>BoolWinBase</receiver>
+        <slot>doOperationEvent()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>operationChangedEvent(bool)</slot>
+    <slot>setObjectEvent()</slot>
+    <slot>doOperationEvent()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

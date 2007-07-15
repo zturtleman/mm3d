@@ -1,0 +1,424 @@
+      <h1>Using Misfit Model 3D</h1>
+
+      <p>
+      This is a general guide on how to create models using Misfit.  If you have
+      not already read the <a href="olh_index.html#overview">Overview</a> you should 
+      do that now.  This section assumes you are familiar with terms defined
+      in that section and know how to navigate around Misfit's windows and menus.
+      </p>
+
+      <p>
+      There are also links to many tools and commands in this document.  If you
+      can't figure out how to use a specific feature, follow the link to get
+      more information on that feature.
+      </p>
+
+      <ul>
+         <li> <a href="#faces">Faces</a>
+         <li> <a href="#group">Grouping</a>
+         <li> <a href="#texture">Texturing</a>
+         <li> <a href="#joints">Joints</a>
+         <li> <a href="#animations">Animations</a>
+      </ul>
+
+      <a name="faces">
+      <h1>Faces</h1>
+
+      <p>
+      Faces are sets of 3 connected vertices that form a polygon.  The polygon
+      is filled and may have a texture applied to it.  The polygons of the
+      model can be drawn as a wireframe, a set of flat polygons, a set of
+      smooth polygons, and a set of smooth textured polygons.
+      When you start Misfit Model 3D for the first time, the 3D viewport will
+      display textured polygons and the orthographic canvas viewports will
+      display polygon wireframes with vertices.  The drawing mode for the canvas
+      and 3d perspective viewports can be changed using the <b>View</b> menu.
+      </p>
+
+      <p>
+      Creating faces is generally done by selecting a creation tool and
+      left-clicking in a model canvas view.  In addition to tools, some commands 
+      may also create faces.
+      Faces are often created in connected meshes.  In these cases the polygons will
+      share vertices.  For example, the cube tool creates 12 triangular faces which
+      form the 6 sides of the cube; however, it creates only 8 vertices between 
+      them, rather than 36.  Keep this in mind when moving faces, since moving
+      a face will likely move the vertex of one or more other adjacent faces.
+      </p>
+
+      <p>
+      Use the <a href="olh_tools.html#cube">Cube</a> tool to create a cube.  After
+      you have created the cube you can use the <a href="olh_tools.html#move">Move</a>,
+      <a href="olh_tools.html#rotate">Rotate</a>,
+      <a href="olh_tools.html#scale">Scale</a>,
+      and <a href="olh_tools.html#shear">Shear</a>,
+      tools to change the position, size, or shape of the cube.  
+      </p>
+      
+      <p>Notice that if
+      you create a second cube, only the vertices which are selected (in red) are
+      modified by using the tools.  To change the current selection click on a 
+      <a href="olh_tools.html#select">Select</a> tool. Try using
+      both the Vertices and Faces selection tools.  Groups can be ignored for
+      now, but will be useful later when you have a more complex model to work with.
+      </p>
+
+      <p>
+      You may want to manipulate faces on one side of an object without changing the
+      faces on the far side.  The easiest way to select faces on one side of an
+      object is uncheck the <b>Include Back-facing</b> checkbox. Alternate you may
+      Select the faces (both sides), then use a canvas view from
+      another angle and right-click to unselect the faces on the far side.
+      </p>
+
+      <p>
+      The <b>Select Connected</b> tool is useful for reselecting faces in a
+      connected mesh.  When you select faces
+      with the Select Connected tool, it recursively selects any faces that
+      share an edges with newly-selected faces.  Objects like cubes,
+      spheres, and cylinders can be reselected easily using this tool.
+      </p>
+
+      <p>
+      In addition to using tools you can also modify the model with 
+      <a href="olh_commands.html">Commands</a>.  Commands are non-interactive
+      model operations.  Some are rather self-explanatory, such as 
+      <a href="olh_commands.html#duplicate">Duplicate</a> and
+      <a href="olh_commands.html#delete">Delete</a>.  Others require some explanation
+      and are covered below.
+      </p>
+
+      <p>
+      If you continue to create vertices and faces you may end up with a number
+      of objects in your viewport at once.  If you need to work on a specific
+      section of the model and don't want other parts to get in your way you can
+      use the <a href="olh_commands.html#hide">Hide</a> command to temporarily hide
+      faces.
+      </p>
+
+      <p>
+      Faces are often created in connected meshes.  In some cases you may want to
+      disconnect a face from the mesh it was created with.  Select the
+      face in question and use the <a href="olh_commands.html#unweld">Unweld vertices</a> command.
+      To rejoin the vertices, select the vertices that you want to
+      join and use the <a href="olh_commands.html#weld">Weld vertices</a> command.
+      Note that vertices have to be very close to each other to be welded.
+      If the vertices are far apart you can use the <a href="olh_commands.html#snap">Snap Together</a> command.
+      </p>
+
+      <p>
+      <a href="olh_commands.html#extrude">Extrude</a> takes faces that you have selected
+      and extends them in a direction you specify.  When those faces are extended,
+      each edge becomes another face which is connected to the face's original locations.
+      For example if you select the front of a cube and extrude it along the
+      positive Z axis two times, you will have three connected cubes which form
+      one long bar along the Z axis.
+      </p>
+
+      <p>
+      Some users create their models using existing images or scanned hand-drawn
+      sketches as a reference. 
+      You can do this by selecting the 
+      <b>Set Background Image</b> option from the <b>File</b> menu.  
+      Select the view direction to which
+      the background should apply by clicking on the appropriate tab.
+      Chose the image you want to use
+      as a reference You can then use the <b>Scale Background Image</b> and 
+      <b>Move Background Image</b> tools to reposition the background image.
+      </p>
+
+      <a name="group">
+      <h1>Grouping</h1>
+
+      <p>
+      Faces can be organized into groups.  Grouping is required if you 
+      want to apply textures to your model.  You may also want to use
+      groups for the convenience of selecting a set of faces at once
+      for manipulation.
+      </p>
+
+      <p>
+      To create a new group, select the faces you want to group and
+      open the <a href="olh_groupwin.html">Groups Window</a>.
+      Use the <b>New group</b> button to create a group.  That group will appear
+      in the group drop-down box at the top of the window.  While you have
+      that group name in the drop-down box click the <b>Assign as group</b>
+      button or the <b>Add to group</b> button.
+      </p>
+
+      <p>
+      When you close the <a href="olh_groupwin.html">Groups Window</a> you can use the <b>Select Groups</b> tool
+      to select this group or others in a canvas view.  Ungrouped faces
+      cannot be selected while in group selection mode.
+      </p>
+
+      <p>
+      You can also set a group's texture from the <a href="olh_groupwin.html">Groups Window</a>.
+      Texturing is covered in the next section.
+      </p>
+
+      <a name="texture">
+      <h1>Texturing</h1>
+
+      <p>
+      Once you have faces organized into one or more groups, you can apply textures
+      to those groups.  To begin applying textures, open the 
+      <a href="olh_texturewin.html">Materials Window</a> from the <b>Groups</b> menu.
+      Use the <b>New Texture</b> button to select an image to use as a material.
+      USe the <b>New Color</b> button to create a solid color material.
+      </p>
+
+      <p>
+      <b>Important note:</b> Texture image dimensions should be a power of 2.
+      In other words the height and width should be 16, 32, 64, 128 and so
+      on.  The height and width do not need to be equal to each other (256x128 is
+      legitimate).  MM3D should handle improperly sized textures, but other
+      rendering systems may not.
+      </p>
+
+      <p>
+      When you have created one or more materials you can close that
+      window by selecting <b>Ok</b> and open the group window again.
+      </p>
+
+      <p>
+      Open the <a href="olh_groupwin.html">Groups Window</a> again and select a group.  
+      Then select
+      a texture in the texture drop-down box.  This texture will now be
+      applied to the specified group.  You can then select another group and
+      assign a texture to it as well.
+      <p>
+
+      <p>
+      The default texture coordinates
+      will probably not be appropriate for your model.  
+      To change how the texture is applied to your group, select a group and use the 
+      <a href="olh_texturecoordwin.html">Texture Coordinates Window</a>.
+      </p>
+
+      <p>
+      The texture coordinate window gives you three options for starting to edit
+      texture coordinates.  The first is a <b>triangle</b> mapping.  If you select
+      this mode the same three texture coordinates will be applied to all faces
+      in your group.
+      </p>
+
+      <p>
+      The second mapping option is <b>quad</b>.  The quad option will create two triangles
+      and each will be mapped to every other face in your group.
+      </p>
+
+      <p>
+      The third mapping option is <b>group</b>.  The group option creates coordinates
+      for each vertex in your group which you can move independently (though you
+      may not be able to select individual vertices if they overlap).  When you
+      select this mode you will be prompted for a direction.  This direction
+      is the angle from which the vertex coordinates will be projected onto the
+      texture.  From there you can modify the coordinates by moving them around
+      as needed.
+      </p>
+
+      <p>
+      You may also select a subset of faces from within your group and then
+      open the <a href="olh_texturecoordwin.html">Texture Coordinates Window</a>.  
+      This will allow you to modify the texture coordinates of specific faces 
+      without altering the texture coordinates of the rest of the group's faces.
+      </p>
+
+      <p>
+      More useful methods of texturing are planned for future versions.  If you
+      have any specific suggestions for improving texture coordinate editing, 
+      contact me and I'll see what I can do about getting those featuers in
+      a future version.
+      </p>
+
+      <a name="joints">
+      <h1>Joints</h1>
+
+      <p>
+      You can give your model a skeleton by creating bone joints.  Bone joints
+      are primitives that you can attach vertices to.  When animating a model
+      if you move or rotate a bone joint, the attached vertices will move with the
+      joint.  Generally you
+      only need to create bone joints if you want to use <b>Skeletal Animations</b>.
+      </p>
+
+      <p>
+      Select the <a href="olh_tools.html#joint">Create Bone Joint</a> tool.  
+      Click in a canvas view to
+      create the root bone joint.  You should see a single dot appear under
+      the cursor.  Click the mouse again to create a second bone joint.
+      The bone joints will be connected to each other.
+      </p>
+      
+      <p>
+      The first bone joint will be the <b>parent</b> of the second (<b>child</b>)
+      bone joint.  The <b>child</b> joint is always connected to the nearest
+      joint to its creation point.  If you want to create a joint that is
+      parented by a joint other than the one closest to its creation point, 
+      create the joint near the parent and then move it to the desired location.
+      </p>
+
+      <p>
+      You can move, rotate, and scale bone joints just like you manipulate 
+      vertices.  Use the <b>Select Bone Joints</b> tool to select bone joints
+      and then use the <b>Move</b>, <b>Rotate</b>, or <b>Scale</b> tool to
+      reposition the bone joints as you desire.
+      </p>
+
+      <p>
+      To assign vertices to a joint, select the vertices you want to assign
+      and then select <b>Joints...</b> from the <b>Primitives</b> menu.
+      This will open the <a href="olh_jointwin.html">Joints Window</a>.
+      Select the bone joint you want to assign the vertices to from the
+      combo box, and then
+      click the <b>Assign Vertices to Joint</b> button.  This button
+      will connect all the selected vertices to the bone joint named in the
+      combo box.
+      </p>
+
+      <p>
+      If other vertices are already assigned to the same joint,
+      they will be unaffected.  If the selected vertices are assigned to another
+      joint, they will no longer be connected to the first joint (a vertex can
+      only be assigned to one joint).
+      </p>
+
+      <p>
+      If you have a joint selected when you open the <b>Joints Window</b>, that
+      joint will be the joint selected in the combo box.  Knowing this, if you
+      already have a joint selected you can use the <b>Select Vertices</b> tool
+      and Shift-Select the vertices to add them to the current selection.
+      This will allow you to skip the joint selection step in the <b>Joints Window</b>
+      </p>
+
+      You can also use the 
+      <a href="olh_commands.html#assigntojoint">Assign Vertices to Bone Joint</a>
+      command to assign the currently
+      selected vertices to the currently selected bone joint.
+      </p>
+      
+      <p>
+      When animating a model, moving a <b>parent</b> joint will cause all the 
+      <b>child</b> joints to move also (as opposed to model edit, where mode all 
+      bone joints move
+      and rotate independently of each other).  Attached vertices will also move
+      with the bone joint.
+      </p>
+
+      <a name="animations">
+      <h1>Animations</h1>
+
+      <p>
+      Animations can be <b>Skeletal</b> animations or <b>Frame</b> animations.
+      <b>Frame</b> animations are animations where you specify the position
+      of each vertex for each frame of the animation.
+      <b>Skeletal</b> animations are animations where you attach vertices to
+      bone joints and then you rotate or move bone joints.
+      The vertices attached to those joints move with the joints.
+      </p>
+
+      <p>
+      <b>Skeletal</b> animations are generally easier and quicker to work
+      with.  If you need to create frame animations (for example, so that
+      you can save your model in the Quake MD2 or MD3 format) it is often easier to create
+      the animations as <b>skeletal</b> animations and convert them
+      to <b>Frame</b> animations before you export the model to a 
+      specific format.
+      </p>
+
+      <p>
+      To create animations select <a href="olh_animwin.html">Start Animation Mode</a> 
+      from the <b>Animations</b>
+      menu.  Select either the <b>Skeletal</b> or <b>Frame</b> tab and then use the
+      <b>New</b> button to create an animation.  Set the number of frames and
+      frame rate (in frames-per-second).
+      </p>
+
+      <p>
+      Once you have created an animation you can use the frame slider to set
+      a current frame.  After setting a frame you can use the standard tools
+      and commands to move the model to the position you want for the current
+      frame.  How you move the model depends on the type of animation you
+      want to create.
+      </p>
+
+      <p>
+      <b>Frame</b> animations are simple to create, but can be rather tedious to
+      edit.  Each vertex of a polygon must be positioned where you want it for 
+      every frame of the animation.  Use the vertex or face selection tools
+      to select vertices and then you can move them with the move, rotate,
+      or scale tools.
+      </p>
+
+      <p>
+      Note that if you have frame animations you will be unable to add or
+      delete polygons.  You may only use the <b>Merge</b> function to
+      add polygons to the model.  If you need to change the number of polygons
+      in a model after creating frame animations, you will have to delete the
+      frame animations.
+      </p>
+      
+      <p>
+      If you need frame animations (for example, if you want to create
+      a quake MD2 or MD3 model), it is generally
+      a better idea to create <b>Skeletal</b> animations and then convert
+      them to <b>Frame</b> animations.  Any time you need to change an
+      animation you can change the skeletal version and then convert it
+      to a frame animation.
+      </p>
+
+      <p>
+      <b>Skeletal</b> animations are animations where you manipulate the
+      bone joints that vertices are attached to rather than manipulating
+      the vertices directly.  
+      </p>
+
+      <p>
+      Use the <b>Select Bone Joints</b> tool to select a bone joint and then
+      use <b>Rotate</b> or <b>Move</b> to change the orientation or position
+      of the joint for the current frame.  Most of the time you will want
+      to use the <b>Rotate</b> tool instead of the <b>Move</b> tool.  If you
+      consider the way your own skeleton moves, you will notice that your
+      joints only move relative to each other as the result of a joint rotation.
+      The <b>Move</b> tool is typically only useful for moving the root joint
+      for an animation in which the entire model moves.
+      </p>
+
+      <p>
+      Any time you move or rotate a joint it sets a <b>keyframe</b> for the
+      joint.  <b>Keyframes</b> can be rotation or translation keyframes.  
+      A joint can have a rotation keyframe, translation keyframe, both or
+      neither for every frame of an animation.
+      </p>
+
+      <p>
+      You can also set a rotation or translation keyframe by selecting the
+      <b>Set Rotation Keyframe</b> and <b>Set Translation Keyframe</b>
+      commands from the <b>Animation</b> menu.
+      </p>
+
+      <p>
+      Unselected joints that have a keyframe for the current animation will 
+      appear green.  Unselected joints without a keyframe in the current
+      animation will appear blue.
+      </p>
+
+      <p>
+      Joint positions and orientations are interpolated between keyframes.  This
+      means that if you set a joint's rotation in frames 1 and 5 of an animation,
+      frames 2 through 4 will show the joint rotating between those two keyframes
+      even if you did not explicitly set the rotation for the intermediate frames.
+      This also means that if the frame rate of an application is running faster
+      than your animation's frame rate the joints can be interpolated between frames.
+      Also note that if you set the animation to loop then keyframe interpolation
+      will wrap at the beginning and end of the animation--so the model will animate
+      back to its first frame during its last frame.
+      </p>
+
+      <p>
+      If you want to make copies of animations, split one animation into separate
+      animations, join animations together, or convert skeletal animations to
+      frame animations; you can use the 
+      <a href="olh_animsetwin.html">Animation Sets Window</a> to perform these operations.
+      </p>

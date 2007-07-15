@@ -1,0 +1,375 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>AlignWinBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>AlignWinBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>577</width>
+            <height>290</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Align Selection</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout8</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QButtonGroup">
+                    <property name="name">
+                        <cstring>buttonGroup1</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Align X</string>
+                    </property>
+                    <property name="exclusive">
+                        <bool>true</bool>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QRadioButton">
+                            <property name="name">
+                                <cstring>m_xMin</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Align minimum</string>
+                            </property>
+                        </widget>
+                        <widget class="QRadioButton">
+                            <property name="name">
+                                <cstring>m_xCenter</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Align center</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QRadioButton">
+                            <property name="name">
+                                <cstring>m_xMax</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Align maximum</string>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>m_xValue</cstring>
+                            </property>
+                            <property name="text">
+                                <string>0.0</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>m_xButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Align &amp;X Now</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+X</string>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+                <widget class="QButtonGroup">
+                    <property name="name">
+                        <cstring>buttonGroup1_2</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Align Y</string>
+                    </property>
+                    <property name="exclusive">
+                        <bool>true</bool>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QRadioButton">
+                            <property name="name">
+                                <cstring>m_yMin</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Align minimum</string>
+                            </property>
+                        </widget>
+                        <widget class="QRadioButton">
+                            <property name="name">
+                                <cstring>m_yCenter</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Align center</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QRadioButton">
+                            <property name="name">
+                                <cstring>m_yMax</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Align maximum</string>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>m_yValue</cstring>
+                            </property>
+                            <property name="text">
+                                <string>0.0</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>m_yButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Align &amp;Y Now</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+Y</string>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+                <widget class="QButtonGroup">
+                    <property name="name">
+                        <cstring>buttonGroup1_2_2</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Align Z</string>
+                    </property>
+                    <property name="exclusive">
+                        <bool>true</bool>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QRadioButton">
+                            <property name="name">
+                                <cstring>m_zMin</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Align minimum</string>
+                            </property>
+                        </widget>
+                        <widget class="QRadioButton">
+                            <property name="name">
+                                <cstring>m_zCenter</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Align center</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QRadioButton">
+                            <property name="name">
+                                <cstring>m_zMax</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Align maximum</string>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>m_zValue</cstring>
+                            </property>
+                            <property name="text">
+                                <string>0.0</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>m_zButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Align &amp;Z Now</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+Z</string>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout9</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel7</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Press F1 for help</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer4</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>170</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_okButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Ok</string>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_cancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>m_okButton</sender>
+        <signal>clicked()</signal>
+        <receiver>AlignWinBase</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>m_cancelButton</sender>
+        <signal>clicked()</signal>
+        <receiver>AlignWinBase</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>m_xMin</sender>
+        <signal>clicked()</signal>
+        <receiver>AlignWinBase</receiver>
+        <slot>selectedXMin()</slot>
+    </connection>
+    <connection>
+        <sender>m_xCenter</sender>
+        <signal>clicked()</signal>
+        <receiver>AlignWinBase</receiver>
+        <slot>selectedXCenter()</slot>
+    </connection>
+    <connection>
+        <sender>m_xMax</sender>
+        <signal>clicked()</signal>
+        <receiver>AlignWinBase</receiver>
+        <slot>selectedXMax()</slot>
+    </connection>
+    <connection>
+        <sender>m_xButton</sender>
+        <signal>clicked()</signal>
+        <receiver>AlignWinBase</receiver>
+        <slot>alignX()</slot>
+    </connection>
+    <connection>
+        <sender>m_yMin</sender>
+        <signal>clicked()</signal>
+        <receiver>AlignWinBase</receiver>
+        <slot>selectedYMin()</slot>
+    </connection>
+    <connection>
+        <sender>m_yCenter</sender>
+        <signal>clicked()</signal>
+        <receiver>AlignWinBase</receiver>
+        <slot>selectedYCenter()</slot>
+    </connection>
+    <connection>
+        <sender>m_yMax</sender>
+        <signal>clicked()</signal>
+        <receiver>AlignWinBase</receiver>
+        <slot>selectedYMax()</slot>
+    </connection>
+    <connection>
+        <sender>m_yButton</sender>
+        <signal>clicked()</signal>
+        <receiver>AlignWinBase</receiver>
+        <slot>alignY()</slot>
+    </connection>
+    <connection>
+        <sender>m_zMin</sender>
+        <signal>clicked()</signal>
+        <receiver>AlignWinBase</receiver>
+        <slot>selectedZMin()</slot>
+    </connection>
+    <connection>
+        <sender>m_zCenter</sender>
+        <signal>clicked()</signal>
+        <receiver>AlignWinBase</receiver>
+        <slot>selectedZCenter()</slot>
+    </connection>
+    <connection>
+        <sender>m_zMax</sender>
+        <signal>clicked()</signal>
+        <receiver>AlignWinBase</receiver>
+        <slot>selectedZMax()</slot>
+    </connection>
+    <connection>
+        <sender>m_zButton</sender>
+        <signal>clicked()</signal>
+        <receiver>AlignWinBase</receiver>
+        <slot>alignZ()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>alignX()</slot>
+    <slot>alignY()</slot>
+    <slot>alignZ()</slot>
+    <slot>selectedXCenter()</slot>
+    <slot>selectedXMin()</slot>
+    <slot>selectedXMax()</slot>
+    <slot>selectedYCenter()</slot>
+    <slot>selectedYMin()</slot>
+    <slot>selectedYMax()</slot>
+    <slot>selectedZCenter()</slot>
+    <slot>selectedZMax()</slot>
+    <slot>selectedZMin()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

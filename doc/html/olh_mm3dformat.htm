@@ -1,0 +1,929 @@
+<h1> MM3D File Format </h1>
+
+<h2> Contents </h2>
+<ul>
+   <li> <a href="#overview">Overview</a> </li>
+   <li> <a href="#header">File Header</a> </li>
+   <li> <a href="#dataoffsets">Data Offsets</a> </li>
+   <li> <a href="#datatypes">Data Offset Types</a> </li>
+   <li> <a href="#datablocks">Data Blocks</a> </li>
+   <li> <a href="#datablocktypes">Data Block Types</a> </li>
+   <li> <a href="#example">Example Hex Dump</a> </li>
+</ul>
+
+<a name="overview"></a>
+<h2> Overview </h2>
+
+<p>
+This document describes version 1.4 of the MM3D file format.  Data
+that is available only in specific versions will be noted below.  All other data
+is common to every version of the file format.  Previous releases of 
+Misfit Model 3D that do not read all data segments should still be able to
+load model files, though some information may be lost.
+</p>
+
+<p>
+Version 1.6 is in progress. Some details of version 1.6 will be
+included in this document.
+</p>
+
+<p>
+The MM3D file format was designed to be easy to extend and easy to
+read to extract just the information you want.  The header will tell you
+what information is included in the file and give you offsets to the location
+where the information is in the file.
+</p>
+
+<p>
+Data sections have their own header before the data.  Each data type 
+is either a fixed size or a variable size.
+If the data size is fixed 
+(constant, <b>Type B</b>) the data size immediatley preceeds the data block of the
+data section.
+If the data size is variable (<b>Type A)</b> the data size preceeds
+each data element.
+</p>
+
+<p>
+MM3D uses Intel byte order (least significant byte first).  Bytes are 8 bits.
+The types specified in the <b>Type</b> fields below are <b>ints</b> (signed integers)
+or <b>uints</b> (unsigned integers).  The type designation is followed by a number
+which designates the number of bits in that integer.  The type may be multiplied
+by a constant or variable number to get the full length of the field.  Variables
+are generally data fields from earlier sections in the file.  In the data chunks
+there is also a <b>float32</b> which is a 32-bit floating point number and an 
+<b>ASCIIZ</b> which is every byte up to and including the next null byte.  ASCIIZ
+strings are truncated to 1024 bytes (including the terminating null) if necessary.
+</p>
+
+<p>
+As of version 1.4 (and later 1.3 versions) all text strings are encoded as UTF-8.
+Versions 1.2 and earlier (as well as early 1.3 versions) used extended ASCII encoding.
+If you want your MM3D models to be usable in new and older versions of MM3D you should 
+use only standard ASCII characters (0-127) for model object names and texture
+filenames.
+</p>
+
+<p><b>NOTE:</b>  Items marked in <font color="red">red</font> are still under
+development.  They will not be finalized until the next revision of the file
+format is complete.  They are provided for reference in the interim and 
+are subject to change without notice.
+</p>
+
+<a name="header"></a>
+<h2> File Header </h2>
+
+<p>
+The file header is 12 bytes.
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>          <th>Type</th>     <th>Notes</th>           <th>Description</th></tr>
+   <tr><td>MAGIC_NUMBER</td>  <td>int8 * 8</td> <td>'MISFIT3D'</td>      <td>If the first 8 bytes do not match this string it is not an MM3D file</td></tr>
+   <tr><td>MAJOR_VERSION</td> <td>uint8</td>    <td>0x01</td>            <td>Major version number, the file format may be incompatible with newer or older filters if the major version number does not match</td></tr>
+   <tr><td>MINOR_VERSION</td> <td>uint8</td>    <td>0x04</td>            <td>Minor version number, older filters should be able to get useful data from the file but may not understand the value of all flags or data segments</td></tr>
+   <tr><td>MODEL_FLAGS</td>   <td>uint8</td>    <td>0x00 (reserved)</td> <td>Currently there are no model-wide flags, this byte is reserved in case such flags are ever needed</td></tr>
+   <tr><td>OFFSET_COUNT</td>  <td>uint8</td>    <td>&nbsp;</td>          <td>This is the number of data segments.  It tells you how many offsets are in the next section of the file</td></tr>
+</table>
+
+<a name="dataoffsets"></a>
+<h2> Data Offsets </h2>
+
+<p>
+Data offsets are 6 bytes each.  The value of [OFFSET_COUNT] in the header specifies
+how many data offsets are in this section.
+</p>
+
+<p>
+The data offsets section is [OFFSET_COUNT] instances of:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>         <th>Type</th>   <th>Description</th></tr>
+   <tr><td>OFFSET_TYPE</td>  <td>uint16</td> <td>Type of data for this offset (types listed in the next section)</td></tr>
+   <tr><td>OFFSET_VALUE</td> <td>uint32</td> <td>Offset to the data segment for this type (offset is from the start of the file)</td></tr>
+</table>
+
+<a name="datatypes"></a>
+<h2> Data Offset Types </h2>
+
+<p>
+The following is a list of known data segment types.  Types are 16 bits.
+Bit 15 (0x8000) is a &quot;uniform&quot; flag, meaning data of that
+type is a fixed (constant) size.
+</p>
+
+<p>
+Bit 14 (0x4000) is the dirty flag.  If Mifit Model 3D
+encounters a data segment it does not understand it will keep a copy of the
+raw data and write that data to a file if the model is saved again.  It will
+add the dirty bit to indicate to other model readers that this data was
+written by a version of the program that did not understand the data.  It 
+is therefore &quot;dirty&quot; and may be inconsistent with the model.
+Under these circumstances the reader may chose to discard the data or attempt
+to verify and use it.
+</p>
+
+<p>
+The end of file offset is a special offset and indicates the file size.  You
+should always check this value against the file size to be certain that
+the file is complete.  There is no data at the end of file offset.
+</p>
+
+<h3> Type A (variable) </h3>
+
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Type A</th> <th>Version</th> <th>Description</th></tr>
+   <tr><td>0x1001</td> <td>1.4+  </td> <td><a href="#data_type_meta">Meta data</a></td></tr>
+   <tr><td>0x1002</td> <td>&nbsp;</td> <td>Unknown type information (not implemented)</td></tr>
+   <tr><td>0x0101</td> <td>&nbsp;</td> <td><a href="#data_type_groups">Groups</a></td></tr>
+   <tr><td>0x0141</td> <td>&nbsp;</td> <td>Embedded textures (not implemented)</td></tr>
+   <tr><td>0x0142</td> <td>&nbsp;</td> <td><a href="#data_type_external_textures">External textures</a></td></tr>
+   <tr><td>0x0161</td> <td>&nbsp;</td> <td><a href="#data_type_materials">Materials</a></td></tr>
+   <tr><td>0x016c</td> <td bgcolor="red">1.6+  </td> <td><a href="#data_type_texture_projection_triangles">Texture Projections Triangles</a></td></tr>
+   <tr><td>0x0191</td> <td>1.4+  </td> <td><a href="#data_type_canvas_background_images">Canvas Background Images</a></td></tr>
+   <tr><td>0x0301</td> <td>&nbsp;</td> <td><a href="#data_type_skeletal_animations">Skeletal Animations</a></td></tr>
+   <tr><td>0x0321</td> <td>&nbsp;</td> <td><a href="#data_type_frame_animations">Frame Animations</a></td></tr>
+   <tr><td>0x0321</td> <td bgcolor="red">1.6+  </td> <td><a href="#data_type_frame_points">Frame Animation Points</a></td></tr>
+   <tr><td>0x0341</td> <td>&nbsp;</td> <td>Frame Relative Animations (not implemented)</td></tr>
+   <tr><td>0x3fff</td> <td>&nbsp;</td> <td>End of file (offset is file size)</td></tr>
+</table>
+
+<h3> Type B (fixed) </h3>
+
+<table border="1" cellpadding="4" cellspacing="0">
+    <tr><th>Type B</th> <th>Version</th> <th>Description</th></tr>
+   <tr><td>0x8001</td> <td>&nbsp;</td> <td><a href="#data_type_vertices">Vertices</a></td></tr>
+   <tr><td>0x8021</td> <td>&nbsp;</td> <td><a href="#data_type_triangles">Triangles</a></td></tr>
+   <tr><td>0x8026</td> <td>&nbsp;</td> <td><a href="#data_type_triangle_normals">Triangle Normals</a></td></tr>
+   <tr><td>0x8041</td> <td>&nbsp;</td> <td><a href="#data_type_joints">Joints</a></td></tr>
+   <tr><td>0x8046</td> <td>&nbsp;</td> <td><a href="#data_type_joint_vertices">Joint Vertices</a></td></tr>
+   <tr><td>0x8061</td> <td bgcolor="red">1.6+  </td> <td><a href="#data_type_points">Points</a></td></tr>
+   <tr><td>0x8106</td> <td>1.4+  </td> <td><a href="#data_type_smoothness_angles">Smoothness Angles</a></td></tr>
+   <tr><td>0x8168</td> <td bgcolor="red">1.6+  </td> <td><a href="#data_type_weighted_influences">Weighted Influences</a></td></tr>
+   <tr><td>0x8168</td> <td bgcolor="red">1.6+  </td> <td><a href="#data_type_texture_projections">Texture Projections (sphere/cylinder map)</a></td></tr>
+   <tr><td>0x8121</td> <td>&nbsp;</td> <td><a href="#data_type_texture_coordinates">Texture Coordinates</a></td></tr>
+</table>
+
+<h3> User Defined Blocks </h3>
+
+<p>
+Types 0x0000 through 0x1fff are reserved for Misfit Model 3D defined types.  
+0x4000 through 0xffff are reserved for the uniform and dirty bit versions of each type.
+If you want to add a type for
+your own use it is recommended that you use a value in the 0x2000 through 0x2fff
+range.  Suggestions for types which may be useful to other uses are welcome and
+may be incorporated into future versions.
+</p>
+
+<a name="datablocks"></a>
+<h2> Data Blocks </h2>
+
+<p>
+Data Blocks have a header and a data chunk.  The data blocks are similar between
+types A and B.  The only difference is how the size of each data element is handled.
+In <b>Type A</b> the size is included before each data element in the data chunk.
+In <b>Type B</b> the size is included at the end of the header and before the 
+data chunk itself.
+</p>
+
+<p>
+The size of a data element may change.  When reading data from an MM3D file it
+is important to note if the size of the element is different from the expected
+size.  If it is smaller, data at the end of the element has been omitted.  If larger,
+data has been appended to the end of the element's data type and must be skipped
+over during data parsing.  These situations may happen if your filter is reading
+a file written by a newer or older version of Misfit Model 3D.  Data size changes
+will be rare but should be accounted for.
+</p>
+
+<h3> Type A </h3>
+
+<p>
+Data header:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>         <th>Type</th>   <th>Description</th></tr>
+   <tr><td>DATA_FLAGS</td>   <td>uint16</td> <td>Flags for the data segment (currently unused, should be 0x0000)</td></tr>
+   <tr><td>DATA_COUNT_A</td> <td>uint32</td> <td>The number of elements in each data chunk</td></tr>
+</table>
+
+<p>
+Data chunk:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>         <th>Type</th>   <th>Description</th></tr>
+   <tr><td>DATA_SIZE_A</td>  <td>uint32</td> <td>Size of this element of data</td></tr>
+   <tr><td>DATA_CHUNK_A</td> <td>uint8 * [DATA_SIZE_A] </td> <td>One element of [DATA_SIZE_A] size, <b>Data Block Types</b> are defined below</td></tr>
+</table>
+
+<h3> Type B </h3>
+
+<p>
+Data header:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>         <th>Type</th>   <th>Description</th></tr>
+   <tr><td>DATA_FLAGS</td>   <td>uint16</td> <td>Flags for the data segment (currently unused, should be 0x0000)</td></tr>
+   <tr><td>DATA_COUNT_B</td> <td>uint32</td> <td>The number of elements in each data chunk</td></tr>
+   <tr><td>DATA_SIZE_B</td>  <td>uint32</td> <td>Size of each element of data</td></tr>
+</table>
+
+<p>
+Data chunk:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>         <th>Type</th>   <th>Description</th></tr>
+   <tr><td>DATA_CHUNK_B</td> <td>uint8 * [DATA_SIZE_B] * [DATA_COUNT_B]</td> <td>[DATA_COUNT_B] elements of [DATA_SIZE_B] size, <b>Data Block Types</b> are defined below</td></tr>
+</table>
+
+<a name="datablocktypes"></a>
+<h2> Data Block Types </h2>
+
+<a name="data_type_meta"></a>
+<h3>Meta Data</h3>
+
+<p>
+<b>Version 1.4 and later.</b>
+</p>
+
+<p>
+The meta data section contains key/values pairs of ASCIIZ strings.  These key/value
+pairs do not affect model display in any way.  These are purely information strings
+for things like copyright, contact, urls, etc.
+</p>
+
+<p>
+Keys are case-sensitive and do not have to be unique (though having two identical
+keys is bad form).
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>       <th>Version </th>    <th>Type</th>    <th>Description</th></tr>
+   <tr><td>META_KEY</td>   <td>1.4+  </td>      <td>ASCIIZ</td>  <td>Key for this meta data key/value pair</td></tr>
+   <tr><td>META_VALUE</td> <td>1.4+  </td>      <td>ASCIIZ</td>  <td>Value associated with meta data key</td></tr>
+</table>
+
+<a name="data_type_vertices"></a>
+<h3> Vertices </h3>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>           <th>Type</th>    <th>Description</th></tr>
+   <tr><td>VERTEX_FLAGS</td>   <td>uint16</td>  <td>See vertex flags below</td></tr>
+   <tr><td>VERTEX_COORD_X</td> <td>float32</td> <td>X coordinate of the vertex</td></tr>
+   <tr><td>VERTEX_COORD_Y</td> <td>float32</td> <td>Y coordinate of the vertex</td></tr>
+   <tr><td>VERTEX_COORD_Z</td> <td>float32</td> <td>Z coordinate of the vertex</td></tr>
+</table>
+
+<p>
+Vertex flags:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Bits</th> <th>Version</th>   <th>Data</th>        <th>Description</th></tr>
+   <tr><td>0</td>    <td>&nbsp; </td>   <td>Hidden</td>      <td>Set if hidden, clear if visible</td></tr>
+   <tr><td>1</td>    <td>&nbsp; </td>   <td>Selected</td>    <td>Set if selected, clear if unselected</td></tr>
+   <tr><td>2</td>    <td bgcolor="red">1.6+   </td>   <td>Free Vertex</td> <td>Set if vertex does not have to be connected to a face (don't auto-delete when face is deleted)</td></tr>
+</table>
+
+<a name="data_type_triangles"></a>
+<h3> Triangles </h3>
+
+<p>
+The triangles section describes the triangular faces of the model.  The vertex indices
+are 0-based indices into the vertex array from the vertices section.
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>              <th>Type</th>   <th>Description</th></tr>
+   <tr><td>TRIANGLE_FLAGS</td>    <td>uint16</td> <td>See triangle flags below</td></tr>
+   <tr><td>TRIANGLE_VERTEX_1</td> <td>uint32</td> <td>Index of vertex 1 of the triangle</td></tr>
+   <tr><td>TRIANGLE_VERTEX_2</td> <td>uint32</td> <td>Index of vertex 2 of the triangle</td></tr>
+   <tr><td>TRIANGLE_VERTEX_3</td> <td>uint32</td> <td>Index of vertex 3 of the triangle</td></tr>
+</table>
+
+<p>
+Triangle flags:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Bits</th> <th>Data</th>     <th>Description</th></tr>
+   <tr><td>0</td>    <td>Hidden</td>   <td>Set if hidden, clear if visible</td></tr>
+   <tr><td>1</td>    <td>Selected</td> <td>Set if selected, clear if unselected</td></tr>
+</table>
+
+
+<a name="data_type_triangle_normals"></a>
+<h3> Triangle Normals </h3>
+
+<p>
+<b>Version 1.4 and later.</b>
+</p>
+
+<p>
+The triangle normals section describes the normals for each face of the model.
+Each block is composed of a triangle index that indicates to which triangle
+the normals apply to, followed by three sets (one for each triangle vertex) 
+of three floating point numbers (one for each dimension).
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>              <th>Version</th>   <th>Type</th>   <th>Description</th></tr>
+   <tr><td>TRI_NORM_FLAGS</td>    <td>1.4+   </td>   <td>uint16</td> <td>Reserved, should be 0</td></tr>
+   <tr><td>TRI_NORM_INDEX</td>    <td>1.4+   </td>   <td>uint32</td> <td>Triangle index (0 based)</td></tr>
+   <tr><td>TRI_NORM_V1_NORM</td>  <td>1.4+   </td>   <td>float32 * 3</td> <td>Normals for vertex 1 (XYZ)</td></tr>
+   <tr><td>TRI_NORM_V2_NORM</td>  <td>1.4+   </td>   <td>float32 * 3</td> <td>Normals for vertex 2 (XYZ)</td></tr>
+   <tr><td>TRI_NORM_V3_NORM</td>  <td>1.4+   </td>   <td>float32 * 3</td> <td>Normals for vertex 3 (XYZ)</td></tr>
+</table>
+
+
+<a name="data_type_joints"></a>
+<h3> Joints </h3>
+
+<p>
+The joint section describes joints used for skeletal animations.
+Their orientation information is relative to their parent joint's orientation.
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>                <th>Type</th>    <th>Description</th></tr>
+   <tr><td>JOINT_FLAGS</td>         <td>uint16</td>  <td>See joint flags below</td></tr>
+   <tr><td>JOINT_NAME</td>          <td>int8 * 40</td>  <td>Joint name</td></tr>
+   <tr><td>JOINT_PARENT</td>        <td>uint32</td>  <td>Index of parent joint</td></tr>
+   <tr><td>JOINT_LOCAL_ROT_X</td>   <td>float32</td> <td>X rotation of joint relative to parent (in radians)</td></tr>
+   <tr><td>JOINT_LOCAL_ROT_Y</td>   <td>float32</td> <td>Y rotation of joint relative to parent</td></tr>
+   <tr><td>JOINT_LOCAL_ROT_Z</td>   <td>float32</td> <td>Z rotation of joint relative to parent</td></tr>
+   <tr><td>JOINT_LOCAL_TRANS_X</td> <td>float32</td> <td>X offset of joint relative to parent (or origin if root joint)</td></tr>
+   <tr><td>JOINT_LOCAL_TRANS_Y</td> <td>float32</td> <td>Y offset of joint relative to parent</td></tr>
+   <tr><td>JOINT_LOCAL_TRANS_Z</td> <td>float32</td> <td>Z offset of joint relative to parent</td></tr>
+</table>
+
+<p>
+Joint flags:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Bits</th> <th>Data</th>               <th>Description</th></tr>
+   <tr><td>0</td>    <td>Hidden (ingored)</td>   <td>Set if hidden, clear if visible</td></tr>
+   <tr><td>1</td>    <td>Selected</td>           <td>Set if selected, clear if unselected</td></tr>
+</table>
+
+
+<a name="data_type_joint_vertices"></a>
+<h3> Joint Vertices </h3>
+
+<p>
+The joint vertices section associates vertices with joints.
+</p>
+
+<p>
+<font color="red"><b>NOTE: In version 1.6 and later this data will be deprecated.</b> 
+Use the <a href="#data_type_weighted_influences">Weighted Influences</a> data
+instead. This data section is maintained for backwards compatibility.
+Newer files should have this data and the Weighted Influences data. If the
+Weighted Influences section is present it takes precedence over this data.
+When writing this data, only one joint per vertex is allowed. The joint
+with the most influence (highest weight) on the vertex is the joint index
+that should be used.  </font>
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>           <th>Type</th>    <th>Description</th></tr>
+   <tr><td>VERTEX_INDEX</td>   <td>uint32</td>  <td>Index into vertex array</td></tr>
+   <tr><td>JOINT_INDEX</td>    <td>uint32</td>  <td>Index into joint array for this vertex</td></tr>
+</table>
+
+
+<a name="data_type_points"></a>
+<h3> Points </h3>
+
+<p>
+<font color="red"><b>Version 1.6 and later.</b></font>
+</p>
+
+<p>
+Points are objects that have a position and orientation. They can be
+attached to bone joints for animation purposes. Points do not affect
+model geometry in any way. They are simply reference objects for 
+specifying a location in the model. One potential use for this is bolt
+points for attaching one model to another (such as tags in MD3 models).
+</p>
+
+<p>
+Note that the POINT_JOINT element is deprecated. It should still be set
+in MM3D files (or -1 if no bone joint assignment). If the point is assigned
+to multiple bone joints, the joint with the most influence (highest weight)
+should be used. When reading MM3D files, the POINT_JOINT element should
+usable, but any data in the 
+<a href="#data_type_weighted_influences">Weighted Influences</a> section takes
+precedence over this value.
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>                <th>Type</th>    <th>Description</th></tr>
+   <tr><td>POINT_FLAGS</td>         <td>uint16</td>  <td>See point flags below</td></tr>
+   <tr><td>POINT_NAME</td>          <td>int8 * 40</td>  <td>Point name</td></tr>
+   <tr><td>POINT_TYPE</td>          <td>int32</td>   <td>Type of point (reserved, should be zero)</td></tr>
+   <tr><td>POINT_JOINT</td>         <td>int32</td>   <td>Index of parent joint (deprecated, use <a href="#data_type_weighted_influences">Weighted Influences</a>)</td></tr>
+   <tr><td>POINT_ROT_X</td>         <td>float32</td> <td>X rotation of point (in radians)</td></tr>
+   <tr><td>POINT_ROT_Y</td>         <td>float32</td> <td>Y rotation of point </td></tr>
+   <tr><td>POINT_ROT_Z</td>         <td>float32</td> <td>Z rotation of point </td></tr>
+   <tr><td>POINT_TRANS_X</td>       <td>float32</td> <td>X position of point </td></tr>
+   <tr><td>POINT_TRANS_Y</td>       <td>float32</td> <td>Y position of point </td></tr>
+   <tr><td>POINT_TRANS_Z</td>       <td>float32</td> <td>Z position of point </td></tr>
+</table>
+
+<p>
+Point flags:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Bits</th> <th>Data</th>               <th>Description</th></tr>
+   <tr><td>0</td>    <td>Hidden (ingored)</td>   <td>Set if hidden, clear if visible</td></tr>
+   <tr><td>1</td>    <td>Selected</td>           <td>Set if selected, clear if unselected</td></tr>
+</table>
+
+
+<a name="data_type_smoothness_angles"></a>
+<h3> Smoothness Angles </h3>
+
+<p>
+<b>Version 1.4 and later.</b>
+</p>
+
+<p>
+The joint vertices section associates vertices with joints.
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>         <th>Version</th>   <th>Type</th>    <th>Description</th></tr>
+   <tr><td>GROUP_INDEX</td>  <td>1.4+   </td>   <td>uint32</td>  <td>Index into group array</td></tr>
+   <tr><td>ANGLE</td>        <td>1.4+   </td>   <td>uint8</td>   <td>Maximum angle (in degrees) to use in smoothing normals (0-180)</td></tr>
+</table>
+
+
+<a name="data_type_groups"></a>
+<h3> Groups </h3>
+
+<p>
+The groups section groups faces (triangles) for editing or texturing purposes.
+Textures are applied to groups, so faces must be grouped in order to have a texture
+applied.
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>             <th>Type</th>    <th>Description</th></tr>
+   <tr><td>GROUP_FLAGS</td>      <td>uint16</td>  <td>See group flags below</td></tr>
+   <tr><td>GROUP_NAME</td>       <td>ASCIIZ</td>  <td>Name of the group of faces</td></tr>
+   <tr><td>TRIANGLE_COUNT</td>   <td>uint32</td>  <td>Number of triangles in the group</td></tr>
+   <tr><td>TRIANGLE_INDICES</td> <td>uint32 * [TRIANGLE_COUNT]</td>  <td>Index of each triangle belonging to the group</td></tr>
+   <tr><td>GROUP_SMOOTHNESS</td> <td>uint8</td>   <td>Determines how the face normals are interpolated between faces.  0 = flat along face plane, ff=averaged between all planes that share the vertex</td></tr>
+   <tr><td>GROUP_MATERIAL</td>   <td>uint32</td>  <td>Index into material list (0xffffffff for none)</td></tr>
+</table>
+
+<p>
+Group flags:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Bits</th> <th>Data</th>               <th>Description</th></tr>
+   <tr><td>0</td>    <td>Hidden (ingored)</td>   <td>Set if hidden, clear if visible</td></tr>
+   <tr><td>1</td>    <td>Selected</td>           <td>Set if selected, clear if unselected</td></tr>
+</table>
+
+
+<a name="data_type_weighted_influences"></a>
+<h3> Weighted Influences </h3>
+
+<p>
+<font color="red"><b>Version 1.6 and later.</b></font>
+</p>
+
+<p>
+The weighted influences section describes how vertices and points are assigned
+to bone joints. Objects can be assigned to multiple bone joints. This is the
+preferred method to save and load bone joint assignments for vertices and
+points. New versions of Misfit Model 3D will use this data if it is present
+and the deprecated data sections if this data is not present.
+</p>
+
+<p>
+The type of influence can be automatic (based on the position of the object
+relative to the bone joint), remainder (100 minus the sum of all other joint
+weights), or custom (manually entered by the user). If the type is 
+&quot;Remainder&quot; and the sum of the influence of other joints is greater
+than 100, the remainder value is 0 (it is never negative).
+</p>
+
+<p>
+The weight of each influence ranges from 0 to 100. The relative influence of 
+each joint is the percentage of the total influence of all joints. The sum
+off all influence weights does not have to be 100. For example a single joint
+with a weight of 80 will have 100% influence. Two joints that each have a 
+weight of 80 will each have 50% influence. One joint with a weight of 40 and
+another with a weight of 80 will have 33% and 67% influence respectively.
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>                <th>Type</th>       <th>Description</th></tr>
+   <tr><td>POS_TYPE</td>            <td>uint8</td>      <td>Type of object influenced by joint (see position types below)</td></tr>
+   <tr><td>POS_INDEX</td>           <td>uint32</td>     <td>Index into vertex or point array (based on position type)</td></tr>
+   <tr><td>INF_INDEX</td>           <td>uint32</td>     <td>Bone joint index</td></tr>
+   <tr><td>INF_TYPE</td>            <td>uint8</td>      <td>Type influence by joint (see influence types below)</td></tr>
+   <tr><td>INF_WEIGHT</td>          <td>int8</td>       <td>Weight of this joint's influence (0 to 100)</td></tr>
+</table>
+
+<p>
+Position Types:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Number</th>     <th>Version</th> <th>Type</th></tr>
+   <tr><td>0</td>          <td>1.6+   </td> <td>Vertex</td></tr>
+   <tr><td>2</td>          <td>1.6+   </td> <td>Point</td></tr>
+</table>
+
+<p>
+Influence Types:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Number</th>     <th>Version</th> <th>Type</th></tr>
+   <tr><td>0</td>          <td>1.6+   </td> <td>Custom (manually entered by user)</td></tr>
+   <tr><td>1</td>          <td>1.6+   </td> <td>Automatic</td></tr>
+   <tr><td>2</td>          <td>1.6+   </td> <td>Remainder</td></tr>
+</table>
+
+
+<a name="data_type_texture_projections"></a>
+<h3> Texture Projections </h3>
+
+<p>
+<font color="red"><b>Version 1.6 and later.</b></font>
+</p>
+
+<p>
+The texture projection section describes objects that map triangle texture
+coordinates onto a texture as a cylinder or sphere. The &quot;up&quot;
+vector defines which direction is the U component of the texture projection.
+In some cases (such as cylinder) the magnitude of this vector determines
+the size of the projection area.
+The &quot;seam&quot; vector indicates where the V texture component
+starts and 0.0 and wraps back to 0.0 after reaching 1.0.
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>                <th>Type</th>       <th>Description</th></tr>
+   <tr><td>PROJ_FLAGS</td>          <td>uint16</td>     <td>See projection flags below</td></tr>
+   <tr><td>PROJ_NAME</td>           <td>int8 * 40</td>  <td>Projection name</td></tr>
+   <tr><td>PROJ_TYPE</td>           <td>int32</td>      <td>Type of Projection (see types below)</td></tr>
+   <tr><td>PROJ_POS_X</td>          <td>float32</td>    <td>X coordinate of projection center</td></tr>
+   <tr><td>PROJ_POS_Y</td>          <td>float32</td>    <td>Y coordinate of projection center</td></tr>
+   <tr><td>PROJ_POS_Z</td>          <td>float32</td>    <td>Z coordinate of projection center</td></tr>
+   <tr><td>PROJ_UPVEC_X</td>        <td>float32</td>    <td>X component of up vector</td></tr>
+   <tr><td>PROJ_UPVEC_Y</td>        <td>float32</td>    <td>Y component of up vector</td></tr>
+   <tr><td>PROJ_UPVEC_Z</td>        <td>float32</td>    <td>Z component of up vector</td></tr>
+   <tr><td>PROJ_SEAMVEC_X</td>      <td>float32</td>    <td>X component of seam vector</td></tr>
+   <tr><td>PROJ_SEAMVEC_Y</td>      <td>float32</td>    <td>Y component of seam vector</td></tr>
+   <tr><td>PROJ_SEAMVEC_Z</td>      <td>float32</td>    <td>Z component of seam vector</td></tr>
+   <tr><td>PROJ_MIN_U</td>          <td>float32</td>    <td>Minimum U texture coordinate</td></tr>
+   <tr><td>PROJ_MIN_V</td>          <td>float32</td>    <td>Minimum V texture coordinate</td></tr>
+   <tr><td>PROJ_MAX_U</td>          <td>float32</td>    <td>Maximum U texture coordinate</td></tr>
+   <tr><td>PROJ_MAX_V</td>          <td>float32</td>    <td>Maximum V texture coordinate</td></tr>
+</table>
+
+<p>
+Projection flags:
+</p>
+
+<p>None</p>
+
+<p>
+Projection types:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Number</th>     <th>Version</th> <th>Type</th></tr>
+   <tr><td>0</td>          <td>1.6+   </td> <td>Cylinder</td></tr>
+   <tr><td>1</td>          <td>1.6+   </td> <td>Sphere</td></tr>
+</table>
+
+
+<a name="data_type_texture_coordinates"></a>
+<h3> Texture Coordinates </h3>
+
+<p>
+The texture coordinates section maps the vertices of a triangle onto a material's
+texture.  Texture coordinates range from (0.0, 0.0) to (1.0, 1.0).  The origin (0,0)
+of a texture is the <b>lower-left</b> corner, not the upper-left.  Values outside of
+the 0.0 to 1.0 range are valid.
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>                <th>Type</th>    <th>Description</th></tr>
+   <tr><td>TEXCOORD_FLAGS</td>      <td>uint16</td>  <td>Unused</td></tr>
+   <tr><td>TEXCOORD_TRIANGLE</td>   <td>uint32</td>  <td>Triangle for this texture coordinate set</td></tr>
+   <tr><td>TEXCOORD_VERTEX_1_S</td> <td>float32</td> <td>S (x) coordinate for triangle vertex 1</td></tr>
+   <tr><td>TEXCOORD_VERTEX_2_S</td> <td>float32</td> <td>S (x) coordinate for triangle vertex 2</td></tr>
+   <tr><td>TEXCOORD_VERTEX_3_S</td> <td>float32</td> <td>S (x) coordinate for triangle vertex 3</td></tr>
+   <tr><td>TEXCOORD_VERTEX_1_T</td> <td>float32</td> <td>T (y) coordinate for triangle vertex 1</td></tr>
+   <tr><td>TEXCOORD_VERTEX_2_T</td> <td>float32</td> <td>T (y) coordinate for triangle vertex 2</td></tr>
+   <tr><td>TEXCOORD_VERTEX_3_T</td> <td>float32</td> <td>T (y) coordinate for triangle vertex 3</td></tr>
+</table>
+
+
+<a name="data_type_external_textures"></a>
+<h3> External textures </h3>
+
+<p>
+The external textures section describes the textures in the model.  The textures
+are assigned to materials which describe the lighting properties.  Groups reference
+materials.  Currently there is a 1-to-1 relationship between materials and
+textures, but this is not required and should not be expected in the future.
+One texture may be referenced by many materials in later file versions.
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>          <th>Type</th>    <th>Description</th></tr>
+   <tr><td>TEXTURE_FLAGS</td> <td>uint16</td> <td>Flags for texture (unused)</td></tr>
+   <tr><td>TEXTURE_PATH</td>  <td>ASCIIZ</td> <td>File path to texture relative to model (directory separator is backslash)</td></tr>
+</table>
+   
+
+<a name="data_type_materials"></a>
+<h3> Materials </h3>
+
+<p>
+The materials section describes the materials in the model.  The materials
+reference textures and describe the lighting properties.  Groups reference
+materials.  Some materials do not have textures. For materials without
+textures, the MATERIAL_TEXTURE element is still present but the value 
+is ignored. The MATERIAL_FLAGS element indicates if the material has
+a texture (see below).
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>               <th>Type</th>        <th>Description</th></tr>
+   <tr><td>MATERIAL_FLAGS</td>     <td>uint16</td>      <td>See material flags below</td></tr>
+   <tr><td>MATERIAL_TEXTURE</td>   <td>uint32</td>      <td>Texture index for this material</td></tr>
+   <tr><td>MATERIAL_NAME</td>      <td>ASCIIZ</td>      <td>Name of the material</td></tr>
+   <tr><td>MATERIAL_AMBIENT</td>   <td>float32 * 4</td> <td>Ambient light properties (RGBA)</td></tr>
+   <tr><td>MATERIAL_DIFFUSE</td>   <td>float32 * 4</td> <td>Diffuse light properties (RGBA)</td></tr>
+   <tr><td>MATERIAL_SPECULAR</td>  <td>float32 * 4</td> <td>Specular light properties (RGBA)</td></tr>
+   <tr><td>MATERIAL_EMISSIVE</td>  <td>float32 * 4</td> <td>Emissive light properties (RGBA)</td></tr>
+   <tr><td>MATERIAL_SHININESS</td> <td>float32</td>     <td>Shininess</td></tr>
+</table>
+   
+<p>
+Material flags:
+</p>
+
+<p>
+The Clamp S and Clamp T values specify whether texture coordinates outside
+of the 0.0 to 1.0 range should wrap or not.  If the bit is set, the texture
+wraps.  If the bit is clear the colors at the edge of the texture are 
+stretched.
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Bits</th> <th>Version</th> <th>Data</th>               <th>Description</th></tr>
+   <tr><td>0-3</td>  <td>&nbsp; </td> <td>Material type</td>      <td>0 = external texture, 1-15 = reserved </td></tr>
+   <tr><td>4</td>    <td>1.4+   </td> <td>Clamp S</td>            <td>Clamp S texture coordinates (do not tile/repeat)</td></tr>
+   <tr><td>5</td>    <td>1.4+   </td> <td>Clamp T</td>            <td>Clamp T texture coordinates (do not tile/repeat)</td></tr>
+</table>
+
+
+<a name="data_type_texture_projection_triangles"></a>
+<h3> Texture Projection Triangles </h3>
+
+<p>
+<font color="red"><b>Version 1.6 and later.</b></font>
+</p>
+
+<p>
+The texture projection section describes objects that map triangle texture
+coordinates onto a texture as a cylinder or sphere. The &quot;up&quot;
+vector defines which direction is the U component of the texture projection.
+In some cases (such as cylinder) the magnitude of this vector determines
+the size of the projection area.
+The &quot;seam&quot; vector indicates where the V texture component
+starts and 0.0 and wraps back to 0.0 after reaching 1.0.
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>                <th>Type</th>       <th>Description</th></tr>
+   <tr><td>PROJ_INDEX</td>          <td>uint32</td>     <td>Texture Projection Index to which these triangles are assigned</td></tr>
+   <tr><td>TRI_COUNT</td>           <td>uint32</td>     <td>Number of triangles assigned to this projection</td></tr>
+   <tr><td>TRI_INDICES</td>         <td>uint32 * [TRI_COUNT] </td>      <td>List of triangle indices that are assigned to projection</td></tr>
+</table>
+
+
+<a name="data_type_canvas_background_images"></a>
+<h3> Canvas Background Images </h3>
+
+<p>
+<b>Version 1.4 and later.</b>
+</p>
+
+<p>
+The Canvas Background Image section describes background images that appear
+in canvas views.  There can be one background image for each of the six
+canvas views (Front, Back, Left, Right, Top, Bottom) and each can be scaled
+and positioned independently.  Canvas background images are for editing
+purposes only and should not be rendered as part of the model itself.
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>                    <th>Version</th> <th>Type</th>        <th>Description</th></tr>
+   <tr><td>CANVBACKIMAGE_FLAGS</td>     <td>1.4+   </td> <td>uint16</td>      <td>Reserved, should be 0</td></tr>
+   <tr><td>CANVBACKIMAGE_VIEWINDEX</td> <td>1.4+   </td> <td>uint8</td>       <td>View direction (see below)</td></tr>
+   <tr><td>CANVBACKIMAGE_SCALE</td>     <td>1.4+   </td> <td>float32</td>     <td>Image scale (1.0 = center to top/left is 1.0 OpenGL unit)</td></tr>
+   <tr><td>CANVBACKIMAGE_CENTER</td>    <td>1.4+   </td> <td>float32 * 3</td> <td>Center coordinates of image</td></tr>
+   <tr><td>CANVBACKIMAGE_FILENAME</td>  <td>1.4+   </td> <td>ASCIIZ</td>      <td>Filename of the image to load (relative path)</td></tr>
+</table>
+   
+<p>
+Canvas Background Image View Directions
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>View Index</th> <th>Version</th> <th>Direction</th></tr>
+   <tr><td>0</td>          <td>1.4+   </td> <td>Front</td></tr>
+   <tr><td>1</td>          <td>1.4+   </td> <td>Back</td></tr>
+   <tr><td>2</td>          <td>1.4+   </td> <td>Left</td></tr>
+   <tr><td>3</td>          <td>1.4+   </td> <td>Right</td></tr>
+   <tr><td>4</td>          <td>1.4+   </td> <td>Top</td></tr>
+   <tr><td>5</td>          <td>1.4+   </td> <td>Bottom</td></tr>
+</table>
+
+
+<a name="data_type_skeletal_animations"></a>
+<h3> Skeletal Animations </h3>
+
+<p>
+The skeletal animations section describes the skeletal animations in the model.
+It includes all frames of all skeletal animations.  This mostly consists of
+animation data and joint keyframes.
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>             <th>Type</th>        <th>Description</th></tr>
+   <tr><td>SKEL_FLAGS</td>       <td>uint16</td>      <td>Flags for skeletal animation (unused)</td></tr>
+   <tr><td>SKEL_NAME</td>        <td>ASCIIZ</td>      <td>Name of animation</td></tr>
+   <tr><td>SKEL_FPS</td>         <td>float32</td>     <td>Frames per second</td></tr>
+   <tr><td>SKEL_FRAME_COUNT</td> <td>uint32</td>      <td>Number of frames in animation</td></tr>
+   <tr><td>SKEL_FRAME_DATA</td>  <td>SKEL_FRAME_TYPE * [SKEL_FRAME_COUNT]</td>      <td>Frame data for skeletal animation, see below</td></tr>
+</table>
+
+<p>
+Skeletal frame data type:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>                       <th>Type</th>        <th>Description</th></tr>
+   <tr><td>SKEL_KEYFRAME_COUNT</td>  <td>uint32</td>      <td>Number of joint keyframes for this skeletal animation frame</td></tr>
+   <tr><td>SKEL_KEYFRAME_DATA</td>   <td>SKEL_KEYFRAME_TYPE * [SKEL_KEYFRAME_COUNT]</td>      <td>Keyframe data for this frame, see below</td></tr>
+</table>
+
+<p>
+Skeletal keyframe data type:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>                    <th>Type</th>        <th>Description</th></tr>
+   <tr><td>SKEL_KEYFRAME_JOINT</td>     <td>uint32</td>      <td>Joint that this keyframe is for</td></tr>
+   <tr><td>SKEL_KEYFRAME_ANIM_TYPE</td> <td>uint8</td>       <td>Keyframe type: 0 = translation, 1 = rotation</td></tr>
+   <tr><td>SKEL_KEYFRAME_POS_X</td>     <td>float32</td>     <td>X position data (translation or rotation [in radians])</td></tr>
+   <tr><td>SKEL_KEYFRAME_POS_Y</td>     <td>float32</td>     <td>Y position data</td></tr>
+   <tr><td>SKEL_KEYFRAME_POS_Z</td>     <td>float32</td>     <td>Z position data</td></tr>
+</table>
+
+
+<a name="data_type_frame_animations"></a>
+<h3> Frame Animations </h3>
+
+<p>
+The frame animations section describes the frame animations in the model.
+It includes all frames of all frame animations.  This mostly consists of
+animation data and vertex positions for each animation frame (each frame is
+vertex positions for every vertex in the model).
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>             <th>Type</th>        <th>Description</th></tr>
+   <tr><td>FRAME_FLAGS</td>       <td>uint16</td>      <td>Flags for skeletal animation (unused)</td></tr>
+   <tr><td>FRAME_NAME</td>        <td>ASCIIZ</td>      <td>Name of animation</td></tr>
+   <tr><td>FRAME_FPS</td>         <td>float32</td>     <td>Frames per second</td></tr>
+   <tr><td>FRAME_COUNT</td>       <td>uint32</td>      <td>Number of frames in animation</td></tr>
+   <tr><td>FRAME_DATA</td>        <td>FRAME_ANIM_DATA * [FRAME_COUNT]</td>      <td>Vertex position data for each frame, see below</td></tr>
+</table>
+
+<p>
+Frame animation frame data type:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>                <th>Type</th>        <th>Description</th></tr>
+   <tr><td>FRAME_VERTEX_DATA</td>   <td>FRAME_VERTEX_TYPE * [VERTEX_COUNT]</td>      <td>Vertex position data for each vertex in this frame, see below</td></tr>
+</table>
+
+<p>
+Frame animation vertex data type:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>                 <th>Type</th>        <th>Description</th></tr>
+   <tr><td>FRAME_VERTEX_COORD_X</td> <td>float32</td>     <td>X coordinate for vertex</td></tr>
+   <tr><td>FRAME_VERTEX_COORD_Y</td> <td>float32</td>     <td>Y coordinate for vertex</td></tr>
+   <tr><td>FRAME_VERTEX_COORD_Z</td> <td>float32</td>     <td>Z coordinate for vertex</td></tr>
+</table>
+
+
+<a name="data_type_frame_points"></a>
+<h3> Frame Animation Points </h3>
+
+<p>
+<font color="red"><b>Version 1.6 and later.</b></font>
+</p>
+
+<p>
+The frame animations points section describes the location and rotation of points
+in frame animations.
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>             <th>Type</th>        <th>Description</th></tr>
+   <tr><td>FPOINT_FLAGS</td>       <td>uint16</td>      <td>Flags for skeletal animation (unused)</td></tr>
+   <tr><td>FPOINT_ANIM</td>        <td>uint32</td>      <td>Index of frame animation</td></tr>
+   <tr><td>FPOINT_FRAME_COUNT</td> <td>uint32</td>      <td>Number of frames that follow</td></tr>
+   <tr><td>FPOINT_POINT_DATA</td>  <td>FPOINT_FRAME_DATA * [FPOINT_FRAME_COUNT] * [POINT_COUNT]</td>      <td>Point position and rotation data for each frame, see below</td></tr>
+</table>
+
+<p>
+There is one of these data structures for each point for each animation frame.
+Frame animation point data type:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Data</th>                 <th>Type</th>        <th>Description</th></tr>
+   <tr><td>FPOINT_ROT_X</td>         <td>float32</td> <td>X rotation of point (in radians)</td></tr>
+   <tr><td>FPOINT_ROT_Y</td>         <td>float32</td> <td>Y rotation of point </td></tr>
+   <tr><td>FPOINT_ROT_Z</td>         <td>float32</td> <td>Z rotation of point </td></tr>
+   <tr><td>FPOINT_TRANS_X</td>       <td>float32</td> <td>X position of point </td></tr>
+   <tr><td>FPOINT_TRANS_Y</td>       <td>float32</td> <td>Y position of point </td></tr>
+   <tr><td>FPOINT_TRANS_Z</td>       <td>float32</td> <td>Z position of point </td></tr>
+</table>
+
+<a name="example"></a>
+<h2> Example Hex Dump </h2>
+
+<p>
+This is an example hex dump of a cube with grouped faces.
+It is color-coded to highlight the different parts of the file.
+</p>
+
+<p>
+Key:
+</p>
+
+<ul>
+   <li> File header <font color="#00aa00">green</font> </li>
+   <li> Offsets <font color="#0000aa">blue</font> </li>
+   <li> Vertices <font color="#880000">dark red</font> </li>
+   <li> Faces <font color="#cc00cc">magenta</font> </li>
+   <li> Groups <font color="#ff0000">light red</font> </li>
+</ul>
+
+<code>
+0000000: <font color="#00aa00">4d49 5346 4954 3344 0101 0004</font> <font color="#0000aa">0180 2400</font>  MISFIT3D......$.<br/>
+0000010: <font color="#0000aa">0000 2180 9e00 0000 0101 5001 0000 ff3f</font>  ..!.......P...ÿ?<br/>
+0000020: <font color="#0000aa">a001 0000</font> <font color="#880000">0000 0800 0000 0e00 0000 0200</font>  ................<br/>
+0000030: <font color="#880000">0000 803f 0000 80bf 0000 803f 0200 0000</font>  ...?.......?....<br/>
+0000040: <font color="#880000">80bf 0000 80bf 0000 803f 0200 0000 803f</font>  .........?.....?<br/>
+0000050: <font color="#880000">0000 803f 0000 803f 0200 0000 80bf 0000</font>  ...?...?........<br/>
+0000060: <font color="#880000">803f 0000 803f 0000 0000 80bf 0000 80bf</font>  .?...?..........<br/>
+0000070: <font color="#880000">0000 80bf 0000 0000 803f 0000 80bf 0000</font>  .........?......<br/>
+0000080: <font color="#880000">80bf 0000 0000 80bf 0000 803f 0000 80bf</font>  ...........?....<br/>
+0000090: <font color="#880000">0000 0000 803f 0000 803f 0000 80bf</font> <font color="#cc00cc">0000</font>  .....?...?......<br/>
+00000a0: <font color="#cc00cc">0c00 0000 0e00 0000 0000 0300 0000 0100</font>  ................<br/>
+00000b0: <font color="#cc00cc">0000 0000 0000 0000 0000 0000 0200 0000</font>  ................<br/>
+00000c0: <font color="#cc00cc">0300 0000 0000 0700 0000 0500 0000 0400</font>  ................<br/>
+00000d0: <font color="#cc00cc">0000 0000 0400 0000 0600 0000 0700 0000</font>  ................<br/>
+00000e0: <font color="#cc00cc">0000 0200 0000 0000 0000 0500 0000 0000</font>  ................<br/>
+00000f0: <font color="#cc00cc">0500 0000 0700 0000 0200 0000 0000 0600</font>  ................<br/>
+0000100: <font color="#cc00cc">0000 0400 0000 0100 0000 0000 0100 0000</font>  ................<br/>
+0000110: <font color="#cc00cc">0300 0000 0600 0000 0000 0700 0000 0600</font>  ................<br/>
+0000120: <font color="#cc00cc">0000 0300 0000 0000 0300 0000 0200 0000</font>  ................<br/>
+0000130: <font color="#cc00cc">0700 0000 0000 0000 0000 0100 0000 0400</font>  ................<br/>
+0000140: <font color="#cc00cc">0000 0000 0400 0000 0500 0000 0000 0000</font>  ................<br/>
+0000150: <font color="#ff0000">0000 0100 0000 4600 0000 0000 6772 6f75</font>  ......F.....grou<br/>
+0000160: <font color="#ff0000">7020 6e61 6d65 000c 0000 0000 0000 0001</font>  p name..........<br/>
+0000170: <font color="#ff0000">0000 0002 0000 0003 0000 0004 0000 0005</font>  ................<br/>
+0000180: <font color="#ff0000">0000 0006 0000 0007 0000 0008 0000 0009</font>  ................<br/>
+0000190: <font color="#ff0000">0000 000a 0000 000b 0000 00ff ffff ffff</font>  ...........ÿÿÿÿÿ<br/>
+</code>

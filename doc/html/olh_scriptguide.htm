@@ -1,0 +1,134 @@
+      <h1>Scripting Guide</h1>
+
+      <a name="overview">
+      <h2> Overview </h2>
+
+      <p>
+      Misfit Model scripts provide a way to quickly manipulate several models in a
+      uniform manner.  Scripts can apply matrix transformations, create new primitives,
+      apply textures, and create or manipulate animations.
+      </p>
+
+      <p>
+      Misfit Model 3D uses a lua-based scripting system.  For general lua programming
+      information, go to http://www.lua.org/docs.html.
+      For functions specifically added to lua for model manipulation, see the
+      <a href="olh_scriptref.html">Scripting Reference</a> page.
+      </p>
+
+      <p>
+      The lua language for Misfit Model is restricted to the standard control
+      structures, the math library, and the model manipulation functions.
+      </p>
+
+      <p>
+      A the time of this writing, the scripting system was tested against
+      Lua 5.0.3.  Other 5.x versions should work fine.
+      </p>
+
+      <a name="scriptfiles">
+      <h2> Script files </h2>
+
+      <p>
+      Script files are text files with functions that perform operations on
+      models.  The open script dialog box will look for files with a .lua extension
+      by default, so you will probably want to use .lua as the script extension.
+      A script run from the Misfit Model 3D UI is run on a single model at a time.  
+      </p>
+
+      <p>
+      Scripts work similarly to the UI in that some operations work on the base model
+      and some work on the current animation (if you are in animation mode).  Functions
+      like <code>selectedRotate</code> and <code>selectedTranslate</code> will work on the model itself or
+      on animation frames if you have used <code>setAnimByIndex</code> and <code>animSetFrame</code>.
+      </p>
+
+      <p>
+      A simple example script is included below.  Lines beginning with 
+      &quot;<code>--</code>&quot; are comments.  They are marked in blue below for the
+      sake of clarity.  This script is included in the Misfit Model 3D
+      distribution in the scripts directory.  There are a few other scripts
+      that are also included for reference.
+      </p>
+
+      <hr width="50%">
+<pre>x1 = -1.0
+y1 = -1.0
+z1 = -1.0
+x2 =  1.0
+y2 =  1.0
+z2 =  1.0
+
+<font color="blue">-- front</font>
+modelCreateMeshRectangle( x2, y1, z2, x1, y1, z2,
+   x1, y2, z2, x2, y2, z2 )
+
+<font color="blue">-- back</font>
+modelCreateMeshRectangle( x1, y1, z1, x2, y1, z1,
+   x2, y2, z1, x1, y2, z1 )
+
+<font color="blue">-- right</font>
+modelCreateMeshRectangle( x2, y1, z1, x2, y1, z2,
+   x2, y2, z2, x2, y2, z1 )
+
+<font color="blue">-- left</font>
+modelCreateMeshRectangle( x1, y1, z2, x1, y1, z1,
+   x1, y2, z1, x1, y2, z2 )
+
+<font color="blue">-- top</font>
+modelCreateMeshRectangle( x1, y2, z2, x1, y2, z1,
+   x2, y2, z1, x2, y2, z2 )
+
+<font color="blue">-- bottom</font>
+modelCreateMeshRectangle( x1, y1, z1, x1, y1, z2,
+   x2, y1, z2, x2, y1, z1 )
+
+modelSelectAllVertices()
+selectedWeldVertices()
+</pre>
+      <hr width="50%">
+
+      <a name="ui">
+      <h2> User interface </h2>
+
+      <p>
+      To run a script in the graphical user interface, select 
+      &quot;Run&nbsp;Script...&quot; from the &quot;File&quot; menu.  This will
+      allow you to chose a script file to run on the current model.  The result
+      of the script will be displayed in the status bar.
+      </p>
+      
+      <p>
+      If there was an error
+      running the script the error will be displayed in the status bar.  
+      Long errors may be truncated.  In these cases the entire error may be visible
+      by hovering the mouse over the status bar to see a tool tip.
+      </p>
+
+      <p>
+      Once you have run a script, you can run it again by selecting the script name
+      from the &quot;Recent&nbsp;scripts&quot; submenu in the &quot;File&quot; menu.
+      </p>
+
+      <a name="cmdline">
+      <h2> Command line </h2>
+
+      <p>
+      To run a script from the command line, use the <code>--script</code> option.
+      The <code>--script</code> option requires a script filename as an argument.
+      </p>
+
+      <p>
+      The script will run on every model file specified on the command line.  If
+      no model files are specified, a new model will be created.  After the script
+      has been run on every model file, Misfit Model 3D will continue processing
+      as usual.  If no other command line options are specified, the modified 
+      model files will each be opened in a view window.
+      </p>
+
+      <p>
+      If you wish to do command-line processing only without opening a view window
+      in the User Interface, see the <code>--save</code> and <code>--batch</code>
+      options in the <a href="olh_cmdline.html">Command Line</a> documentation.  
+      There may be other options that are useful in batch processing as well.
+      </p>

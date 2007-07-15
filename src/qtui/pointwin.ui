@@ -1,0 +1,193 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>PointWinBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>PointWinBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>286</width>
+            <height>265</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Points</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>11</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="QComboBox">
+            <property name="name">
+                <cstring>m_pointName</cstring>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout2</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_renameButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Rename</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_deleteButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Delete</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>GroupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Bone Joint</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QComboBox">
+                    <item>
+                        <property name="text">
+                            <string>(none)</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>m_pointJoint</cstring>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout9</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>F1 for help</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_okButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Ok</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_cancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>m_okButton</sender>
+        <signal>clicked()</signal>
+        <receiver>PointWinBase</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>m_cancelButton</sender>
+        <signal>clicked()</signal>
+        <receiver>PointWinBase</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>m_pointName</sender>
+        <signal>activated(int)</signal>
+        <receiver>PointWinBase</receiver>
+        <slot>pointNameSelected(int)</slot>
+    </connection>
+    <connection>
+        <sender>m_renameButton</sender>
+        <signal>clicked()</signal>
+        <receiver>PointWinBase</receiver>
+        <slot>renameClicked()</slot>
+    </connection>
+    <connection>
+        <sender>m_pointJoint</sender>
+        <signal>activated(int)</signal>
+        <receiver>PointWinBase</receiver>
+        <slot>pointJointSelected(int)</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>m_pointName</tabstop>
+    <tabstop>m_renameButton</tabstop>
+    <tabstop>m_deleteButton</tabstop>
+    <tabstop>m_pointJoint</tabstop>
+    <tabstop>m_okButton</tabstop>
+    <tabstop>m_cancelButton</tabstop>
+</tabstops>
+<slots>
+    <slot>pointNameSelected(int)</slot>
+    <slot>renameClicked()</slot>
+    <slot>pointJointSelected(int)</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

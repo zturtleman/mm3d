@@ -1,0 +1,17 @@
+If you're seeing this file it is probably because you used Subversion to get
+the source code for this program. If that is the case you may be wondering
+how to build it (since there isn't a ./configure script to run).
+
+To build MM3D:
+Run the ./autosetup.sh script. This runs autoconf and automake. If those run
+successfully you will have a ./configure script you can run to start the
+normal build process. To start the normal build process, see the INSTALL
+file.
+
+To build i18n files:
+You must have Qt's lrelease program in your path. If this is in your path you
+should be able to just run "make" in the i18n directory. You do not need to
+build i18n files to get an mm3d executable. If you get an error that the shell
+can't find the lrelease program and you don't care about translation files,
+then you can safely ignore this error.
+
