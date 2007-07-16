@@ -6,4 +6,4 @@ Makefile.in
 *.moc.*
 *.base.*
 .deps
-.svnignore
+.*.swp
