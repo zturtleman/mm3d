@@ -61,7 +61,7 @@ Section "Misfit Model 3D"
 
     File COPYING
     File mm3d.exe
-    File /r /x *.htm /x Makefile /x Makefile.* /x *.ts doc imageformats i18n
+    File /r /x .svn /x *.htm /x Makefile /x Makefile.* /x *.ts doc imageformats i18n
     File dll\*.dll
 
     WriteUninstaller "Uninstall.exe"
