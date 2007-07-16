@@ -77,8 +77,6 @@ MM3D_UI= \
 	src/qtui/contextposition.base.h \
 	src/qtui/contextprojection.base.h \
 	src/qtui/contextrotation.base.h \
-	src/qtui/debugwin.base.h \
-	src/qtui/editkeyframe.base.h \
 	src/qtui/extrudewin.base.h \
 	src/qtui/groupwin.base.h \
 	src/qtui/helpwin.base.h \
@@ -119,8 +117,6 @@ MM3D_UI_OBJ= \
 	src/qtui/contextposition.base.h.o \
 	src/qtui/contextprojection.base.h.o \
 	src/qtui/contextrotation.base.h.o \
-	src/qtui/debugwin.base.h.o \
-	src/qtui/editkeyframe.base.h.o \
 	src/qtui/extrudewin.base.h.o \
 	src/qtui/groupwin.base.h.o \
 	src/qtui/helpwin.base.h.o \
@@ -213,8 +209,6 @@ MM3D_MOC= \
 	src/qtui/contextposition.base.moc.cc \
 	src/qtui/contextprojection.base.moc.cc \
 	src/qtui/contextrotation.base.moc.cc \
-	src/qtui/debugwin.base.moc.cc \
-	src/qtui/editkeyframe.base.moc.cc \
 	src/qtui/extrudewin.base.moc.cc \
 	src/qtui/groupwin.base.moc.cc \
 	src/qtui/helpwin.base.moc.cc \
@@ -310,8 +304,6 @@ MM3D_MOC_OBJ= \
 	src/qtui/contextposition.base.moc.o \
 	src/qtui/contextprojection.base.moc.o \
 	src/qtui/contextrotation.base.moc.o \
-	src/qtui/debugwin.base.moc.o \
-	src/qtui/editkeyframe.base.moc.o \
 	src/qtui/extrudewin.base.moc.o \
 	src/qtui/groupwin.base.moc.o \
 	src/qtui/helpwin.base.moc.o \
@@ -414,7 +406,6 @@ MM3D_OBJ= \
 	src/mm3dcore/luascript.o \
 	src/commands/makefacecmd.o \
 	src/implui/mapdirection.o \
-	src/mm3dcore/memguard.o \
 	src/implui/mergewin.o \
 	src/implui/metawin.o \
 	src/mm3dcore/modeltest.o \
@@ -429,8 +420,7 @@ MM3D_OBJ= \
 	src/implui/pluginwin.o \
 	src/tools/polytool.o \
 	src/tools/polytoolwidget.o \
-	src/mm3dcore/preflex.o \
-	src/mm3dcore/prefparse.tab.o \
+	src/mm3dcore/prefparse.o \
 	src/mm3dcore/prefs.o \
 	src/implui/qtmain.o \
 	src/implui/qttex.o \
@@ -484,9 +474,7 @@ MM3D_OBJ= \
 	src/implui/viewpanel.o \
 	src/implui/viewwin.o \
 	src/implui/viewwin_influences.o \
-	src/commands/weldcmd.o \
-	src/mm3dcore/checkupdate.o \
-	src/mm3dcore/glxfont.o
+	src/commands/weldcmd.o 
 
 .PHONY: all mm3d_ui mm3d_moc mm3d clean
 
