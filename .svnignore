@@ -7,3 +7,4 @@ Makefile.in
 *.base.*
 .deps
 .*.swp
+tags
