@@ -256,7 +256,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
 
    connect( m_animWidget, SIGNAL(animWindowClosed()), this, SLOT(animationModeDone()) );
 
-   m_contextPanel = new ContextPanel( this, m_viewPanel );
+   m_contextPanel = new ContextPanel( this, m_viewPanel, this );
    m_contextPanel->setCaption( tr( "Properties" ) );
 
    connect( this, SIGNAL(modelChanged(Model*)), m_contextPanel, SLOT(setModel(Model*)));
@@ -1599,6 +1599,12 @@ void ViewWindow::paintTextureEvent()
    {
       msg_info( (const char *) tr("You must select faces first.\nUse the 'Select Faces' tool.", "Notice that user must have faces selected to open 'paint texture' window").utf8() );
    }
+}
+
+// ContextPanelObserver method
+void ViewWindow::showProjectionEvent()
+{
+   projectionWindowEvent();
 }
 
 void ViewWindow::projectionWindowEvent()

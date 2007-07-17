@@ -24,6 +24,8 @@
 #ifndef __CONTEXTGROUP_H
 #define __CONTEXTGROUP_H
 
+class ContextPanelObserver;
+
 #include "contextgroup.base.h"
 
 #include "mq3macro.h"
@@ -36,7 +38,7 @@ class ContextGroup : public ContextGroupBase, public ContextWidget
 {
    Q_OBJECT
    public:
-      ContextGroup( QWidget * parent );
+      ContextGroup( QWidget * parent, ContextPanelObserver * ob );
       virtual ~ContextGroup();
 
       // ContextWidget methods
@@ -58,6 +60,7 @@ class ContextGroup : public ContextGroupBase, public ContextWidget
 
    protected:
       Model * m_model;
+      ContextPanelObserver * m_observer;
       bool    m_change;
       bool    m_update;
       int     m_lastGroup;

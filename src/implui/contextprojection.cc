@@ -23,6 +23,7 @@
 #include "contextprojection.h"
 
 #include "model.h"
+#include "contextpanelobserver.h"
 #include "groupwin.h"
 #include "texwin.h"
 
@@ -31,8 +32,10 @@
 #include <qcombobox.h>
 #include <stdlib.h>
 
-ContextProjection::ContextProjection( QWidget * parent )
+ContextProjection::ContextProjection( QWidget * parent, ContextPanelObserver * ob )
    : ContextProjectionBase( parent ),
+     m_model( NULL ),
+     m_observer( ob ),
      m_change( false ),
      m_update( false )
 {
@@ -98,3 +101,7 @@ void ContextProjection::typeChanged()
    }
 }
 
+void ContextProjection::projectionPropertiesClicked()
+{
+   m_observer->showProjectionEvent();
+}

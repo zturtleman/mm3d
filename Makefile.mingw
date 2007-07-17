@@ -357,6 +357,7 @@ MM3D_OBJ= \
 	src/implui/contextprojection.o \
 	src/implui/contextrotation.o \
 	src/mm3dcore/contextwidget.o \
+	src/mm3dcore/contextpanelobserver.o \
 	src/tools/bgmovetool.o \
 	src/tools/bgscaletool.o \
 	src/mm3dcore/bounding.o \

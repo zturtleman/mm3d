@@ -38,8 +38,11 @@
 #include <QContextMenuEvent>
 #endif // HAVE_QT4
 
-ContextPanel::ContextPanel( QWidget * parent, ViewPanel * panel )
+ContextPanel::ContextPanel( QWidget * parent,
+      ViewPanel * panel, ContextPanelObserver * ob )
    : QDockWindow( QDockWindow::InDock, parent ),
+     m_model( NULL ),
+     m_observer( ob ),
      m_panel( panel )
 {
    m_layout = boxLayout();
@@ -171,7 +174,7 @@ void ContextPanel::modelChanged( int changeBits )
       {
          if ( m_model->isTriangleSelected( t ) )
          {
-            ContextGroup * grp = new ContextGroup( this );
+            ContextGroup * grp = new ContextGroup( this, m_observer );
             grp->setModel( m_model );
             m_layout->addWidget( grp );
             grp->show();
@@ -188,7 +191,7 @@ void ContextPanel::modelChanged( int changeBits )
       {
          if ( m_model->isProjectionSelected( p ) )
          {
-            ContextProjection * prj = new ContextProjection( this );
+            ContextProjection * prj = new ContextProjection( this, m_observer );
             prj->setModel( m_model );
             m_layout->addWidget( prj );
             prj->show();

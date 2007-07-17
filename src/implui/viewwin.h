@@ -29,6 +29,8 @@
 #include "mq3macro.h"
 #include "mq3compat.h"
 
+#include "contextpanelobserver.h"
+
 #include <list>
 
 
@@ -64,7 +66,7 @@ class Toolbox;
 class CommandManager;
 class QAccel;
 
-class ViewWindow : public QMainWindow
+class ViewWindow : public QMainWindow, public ContextPanelObserver
 {
    Q_OBJECT
 
@@ -89,6 +91,9 @@ class ViewWindow : public QMainWindow
       void setAbortQuit( bool o ) { m_abortQuit = o; };
       
       Model *getModel() { return m_model; };
+
+      // ContextPanelObserver methods
+      void showProjectionEvent();
 
    signals:
       void modelChanged( Model * m );

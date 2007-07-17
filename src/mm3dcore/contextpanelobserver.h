@@ -21,44 +21,16 @@
  */
 
 
-#ifndef __CONTEXTPROJECTION_H
-#define __CONTEXTPROJECTION_H
+#ifndef __CONTEXTPANELOBSERVER_H
+#define __CONTEXTPANELOBSERVER_H
 
-#include "contextprojection.base.h"
-
-#include "mq3macro.h"
-
-#include "contextwidget.h"
-
-class ContextPanelObserver;
-
-class Model;
-
-class ContextProjection : public ContextProjectionBase, public ContextWidget
+class ContextPanelObserver
 {
-   Q_OBJECT
    public:
-      ContextProjection( QWidget * parent, ContextPanelObserver * ob );
-      virtual ~ContextProjection();
+      ContextPanelObserver();
+      virtual ~ContextPanelObserver();
 
-      // ContextWidget methods
-      void setModel( Model * );
-      void modelChanged( int changeBits );
-      bool isUpdating() { return m_update; };
-
-   signals:
-      void panelChange();
-
-   public slots:
-      // Projection slots
-      void typeChanged();
-      void projectionPropertiesClicked();
-
-   protected:
-      Model * m_model;
-      ContextPanelObserver * m_observer;
-      bool    m_change;
-      bool    m_update;
+      virtual void showProjectionEvent() = 0;
 };
 
-#endif // __CONTEXTPROJECTION_H
+#endif // __CONTEXTPANELOBSERVER_H

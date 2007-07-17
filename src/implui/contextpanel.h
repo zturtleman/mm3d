@@ -27,17 +27,19 @@
 #include "mq3macro.h"
 #include "mq3compat.h"
 
+#include "contextpanelobserver.h"
 #include "contextwidget.h"
 #include "model.h"
 
 class ViewPanel;
+class ContextPanelObserver;
 
 class ContextPanel : public QDockWindow, public Model::Observer
 {
    Q_OBJECT
 
    public:
-      ContextPanel( QWidget * parent, ViewPanel * panel );
+      ContextPanel( QWidget * parent, ViewPanel * panel, ContextPanelObserver * ob );
       virtual ~ContextPanel();
 
       // QDockWindow methods
@@ -57,6 +59,7 @@ class ContextPanel : public QDockWindow, public Model::Observer
    protected:
       void contextMenuEvent( QContextMenuEvent * e );
       Model * m_model;
+      ContextPanelObserver * m_observer;
       ViewPanel * m_panel;
 
       QBoxLayout * m_layout;

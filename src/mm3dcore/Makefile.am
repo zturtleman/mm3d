@@ -9,6 +9,7 @@ libmm3dcore_HFILES = \
 	cmdline.h \
 	cmdmgr.h \
 	command.h \
+	contextpanelobserver.h \
 	contextwidget.h \
 	decal.h \
 	decalmgr.h \
@@ -40,6 +41,7 @@ libmm3dcore_a_SOURCES = \
 	cmdline.cc \
 	cmdmgr.cc \
 	command.cc \
+	contextpanelobserver.cc \
 	contextwidget.cc \
 	decal.cc \
 	decalmgr.cc \

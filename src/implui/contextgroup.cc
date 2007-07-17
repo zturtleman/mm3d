@@ -23,6 +23,7 @@
 #include "contextgroup.h"
 
 #include "model.h"
+#include "contextpanelobserver.h"
 #include "groupwin.h"
 #include "texwin.h"
 #include "projectionwin.h"
@@ -34,8 +35,10 @@
 #include <qinputdialog.h>
 #include <stdlib.h>
 
-ContextGroup::ContextGroup( QWidget * parent )
+ContextGroup::ContextGroup( QWidget * parent, ContextPanelObserver * ob )
    : ContextGroupBase( parent ),
+     m_model( NULL ),
+     m_observer( ob ),
      m_change( false ),
      m_update( false )
 {
@@ -178,6 +181,17 @@ void ContextGroup::groupChanged()
             m_model->addSelectedToGroup( g );
             m_model->operationComplete( tr( "Set Group", "operation complete" ).utf8() );
          }
+
+         int texId = m_model->getGroupTextureId( g );
+         if ( texId >= 0 )
+         {
+            m_materialValue->setCurrentItem( texId + 1 );
+         }
+         else
+         {
+            m_materialValue->setCurrentItem( 0 );
+         }
+
       }
       else
       {
@@ -246,6 +260,11 @@ void ContextGroup::projectionChanged()
       if ( proj >= 0 )
       {
          m_model->applyProjection( proj );
+         m_projectionProperties->setEnabled( true );
+      }
+      else
+      {
+         m_projectionProperties->setEnabled( false );
       }
 
       m_model->operationComplete( tr( "Set Projection", "operation complete" ).utf8() );
@@ -270,8 +289,6 @@ void ContextGroup::materialPropertiesClicked()
 
 void ContextGroup::projectionPropertiesClicked()
 {
-   // FIXME show the existing one (implement)
-   //ProjectionWin * win = new ProjectionWin( m_model );
-   //win->show();
+   m_observer->showProjectionEvent();
 }
 
