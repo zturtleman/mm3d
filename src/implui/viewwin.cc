@@ -87,6 +87,7 @@
 #ifdef HAVE_QT4
 #include <q3toolbar.h>
 #include <QMenu>
+#include <QResizeEvent>
 #else
 #include <qtoolbar.h>
 #endif
@@ -701,6 +702,28 @@ bool ViewWindow::getSaved()
       return m_model->getSaved();
    }
    return true;
+}
+
+void ViewWindow::resizeEvent ( QResizeEvent * e )
+{
+   int w = e->size().width();
+   int h = e->size().height();
+
+   /*
+   m_menuBar->move( 0, 0 );
+   m_menuBar->resize( w, m_menuBar->height() );
+
+   m_viewPanel->move( 0, m_menuBar->height() );
+   m_viewPanel->resize( w, h - m_menuBar->height() - m_statusBar->height() );
+
+   m_statusBar->move( 0, h - m_statusBar->height() );
+   m_statusBar->resize( w, m_statusBar->height() );
+   */
+
+   g_prefs( "ui_viewwin_width" )  = w;
+   g_prefs( "ui_viewwin_height" ) = h;
+
+   QMainWindow::resizeEvent(e);
 }
 
 /*

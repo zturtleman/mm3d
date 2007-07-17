@@ -1,12 +1,10 @@
 For 1.4:
-   Set cleanfiles for depui
    MD3
       Finish MD3_PATH changes (save with separate MD3_PATH variables)
       Make sure we include replaceBackslash (around md3filter.cc:340)
    MS3D multiple bone joints ??
    Finish CAL3D (notify user[s] who are waiting)
 
-   Save/restore window size
    Note difference between Save/Export on website (features) and in help docs
    Test merge on multiple bone joint assignments (and points)
    Test binary and ASCII convenience functions for model read/write

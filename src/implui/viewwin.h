@@ -207,7 +207,7 @@ class ViewWindow : public QMainWindow
       void initializeCommands();
 
       void closeEvent( QCloseEvent * e );
-      //void resizeEvent( QResizeEvent * );
+      void resizeEvent( QResizeEvent * );
 
       // returns id in menu
       int insertMenuItem( QPopupMenu * parentMenu,
