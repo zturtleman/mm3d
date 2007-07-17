@@ -23,7 +23,6 @@ For 1.4:
          Icosahedron
       Have toolbar option on proj tool to create specific projection type
       Either open projection window from context, or remove button for it
-      Include projection in frame all/selected command
 
 Post 1.4:
    Coloring on texture paint (??)

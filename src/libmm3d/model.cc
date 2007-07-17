@@ -3065,6 +3065,82 @@ bool Model::getBoundingRegion( double *x1, double *y1, double *z1, double *x2, d
          visible++;
       }
 
+      for ( unsigned p = 0; p < m_projections.size(); p++ )
+      {
+         double coord[3];
+         double m = mag3(m_projections[p]->m_upVec);
+
+         coord[0] = m_projections[p]->m_pos[0] + m;
+         coord[1] = m_projections[p]->m_pos[1] + m;
+         coord[2] = m_projections[p]->m_pos[2] + m;
+
+         if ( havePoint )
+         {
+            if ( coord[0] < *x1 )
+            {
+               *x1 = coord[0];
+            }
+            if ( coord[0] > *x2 )
+            {
+               *x2 = coord[0];
+            }
+            if ( coord[1] < *y1 )
+            {
+               *y1 = coord[1];
+            }
+            if ( coord[1] > *y2 )
+            {
+               *y2 = coord[1];
+            }
+            if ( coord[2] < *z1 )
+            {
+               *z1 = coord[2];
+            }
+            if ( coord[2] > *z2 )
+            {
+               *z2 = coord[2];
+            }
+         }
+         else
+         {
+            *x1 = *x2 = coord[0];
+            *y1 = *y2 = coord[1];
+            *z1 = *z2 = coord[2];
+            havePoint = true;
+         }
+
+         coord[0] = m_projections[p]->m_pos[0] - m;
+         coord[1] = m_projections[p]->m_pos[1] - m;
+         coord[2] = m_projections[p]->m_pos[2] - m;
+
+         if ( coord[0] < *x1 )
+         {
+            *x1 = coord[0];
+         }
+         if ( coord[0] > *x2 )
+         {
+            *x2 = coord[0];
+         }
+         if ( coord[1] < *y1 )
+         {
+            *y1 = coord[1];
+         }
+         if ( coord[1] > *y2 )
+         {
+            *y2 = coord[1];
+         }
+         if ( coord[2] < *z1 )
+         {
+            *z1 = coord[2];
+         }
+         if ( coord[2] > *z2 )
+         {
+            *z2 = coord[2];
+         }
+
+         visible++;
+      }
+
       return ( visible != 0 ) ? true : false;
    }
 
