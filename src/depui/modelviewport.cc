@@ -2302,8 +2302,8 @@ void ModelViewport::getParentXYValue( int x, int y, double & xval, double & yval
       int curIndex = -1;
       Model::PositionTypeE curType = Model::PT_Vertex;
       const Matrix & mat = getParentViewMatrix();
-      double coord[3];
-      double saveCoord[3];
+      double coord[3] = { 0, 0, 0 };
+      double saveCoord[3] = { 0, 0, 0 };
 
       size_t vcount = m_model->getVertexCount();
       for ( size_t v = 0; v < vcount; v++ )
