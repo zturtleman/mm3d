@@ -1,0 +1,73 @@
+      <h1>Vertex Details</h1>
+
+      <h2> Overview </h2>
+
+      <p>
+      A vertex is a geometric point. A model triangle (or face) 
+      is defined by the
+      three vertices that are connected to form the triangle. Triangles
+      may share vertices. In general vertices are created when a tool 
+      is used to create triangles and deleted when all the triangles that
+      use the vertex are deleted. However, it is possible to create a
+      vertex independant of any triangle.
+      </p>
+
+      <a name="creating"></a>
+      <h2> Creating a Vertex </h2>
+      
+      <p>
+      A vertex is created implicitly when triangles are created. Select
+      any tool that creates a geometric shape (such as a cube, sphere, or
+      cylinder) and it will create new vertices for the triangles that it
+      creates. 
+      </p>
+
+      <p>
+      You may also create a vertex without any triangles attached by
+      using the Create Vertex tool.
+      </p>
+
+      <p>
+      Note that a vertex that is created implicitly will be deleted implicitly
+      when all the geometry that uses it is deleted. By contrast, a vertex 
+      that was created with the Create Vertex tool must be explicitly selected
+      and deleted by the user. To find unused vertices, see the 
+      Select&nbsp;Free&nbsp;Vertices command.
+      <!-- FIXME link -->
+      </p>
+
+      <a name="other"></a>
+      <h2> Other Vertex Details </h2>
+
+      <p>
+      If two triangles share a vertex and you want to force them to each
+      have a separate vertex, you can use the Unweld&nbsp;Vertices command.
+      <!-- FIXME link -->
+      If you want to combine two vertices into one, use the
+      Weld&nbsp;Vertices command. 
+      <!-- FIXME link -->
+      </p>
+
+      <p>
+      In order for weld to work, the vertices must be very close in 3D space.
+      If the vertices are too far apart you can force them together
+      by using the Snap&nbsp;Together command.
+      <!-- FIXME link -->
+      You can also enable the Snap&nbsp;To&nbsp;Vertex feature to make it
+      easier to line up vertices with each other.
+      </p>
+
+      <p>
+      Vertices can be attached to one or more bone joints to animate
+      geometry in animation mode.
+      </p>
+
+      <a name="seealso"></a>
+      <h2> See Also </h2>
+
+      <ul>
+      <li> <a href="olh_facedetails.html">Faces</a> </li>
+      <li> Bone Joints <!-- FIXME link --> </li>
+      <li> Animations <!-- FIXME link --> </li>
+      </ul>
+

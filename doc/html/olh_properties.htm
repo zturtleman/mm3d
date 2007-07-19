@@ -1,0 +1,102 @@
+      <h1>Properties Panel</h1>
+
+      <h2> Overview </h2>
+
+      <p>
+      The <b>Properties Panel</b> is a dockable window. It contains 
+      context-sensitive model data so that you can edit some model
+      properties directly. For example, if you have the faces of
+      a mesh selected, it will allow you to directly edit the center
+      position as well as assign groups and materials.
+      </p>
+
+      <p>
+      To open the Properties Panel, select
+      "View&nbsp;|&nbsp;Show&nbsp;Properties".
+      To hide the Properties Panel, select
+      "View&nbsp;|&nbsp;Hide&nbsp;Properties" or click the "X" in the
+      upper-right corner of the panel.
+      </p>
+
+      <p>
+      The Properties Panel has several sub-panels that appear depending
+      on what you have selected. Below is a table that lists which
+      panels appear when various items are selected.
+      </p>
+      
+      <table border="1" cellpadding="3" cellspacing="0" >
+          <tr> <td> Selection              </td> <td> Panel               </td>  </tr>
+          <tr> <td> Point or Bone Joint<br/>
+                    (exactly one selected) </td> <td> Name                </td>  </tr>
+          <tr> <td> Any Geometry           </td> <td> Position (center)   </td>  </tr>
+          <tr> <td> Point or Bone Joint<br/>
+                    (exactly one selected) </td> <td> Rotation            </td>  </tr>
+          <tr> <td> Faces (triangles)      </td> <td> Group               </td>  </tr>
+          <tr> <td> Texture Projections    </td> <td> Projection          </td>  </tr>
+          <tr> <td> Vertices or Points<br/>
+                    (if bone joints exist) </td> <td> Influences          </td>  </tr>
+      </table>
+
+      <a name="name"></a>
+      <h2> Name </h2>
+
+      <p>
+      The Name Panel has a text box with the name of the selected point
+      or bone joint. You can change this text to change the name of the
+      selection. This panel only appears if you have exactly one
+      point or bone joint selected.
+      </p>
+
+      <a name="position"></a>
+      <h2> Position </h2>
+
+      <p>
+      The Position Panel has text boxes that list the center coordinates for 
+      the selected geometry. You can edit the position directly by changing
+      these numbers.
+      </p>
+
+      <a name="rotation"></a>
+      <h2> Rotation </h2>
+
+      <p>
+      The Rotation Panel allows you to change the rotation of a point
+      or a bone joint. The point rotation applies to non-animated points
+      or points in a frame animation. The joint rotation only applies
+      during skeletal animations (it sets a rotation keyframe).
+      </p>
+
+      <a name="group"></a>
+      <h2> Group </h2>
+
+      <p>
+      The Group Panel appears when you have one or more faces (triangles)
+      selected. With this panel you can select the group that the selected
+      faces belong to. You can select the material for the group (note 
+      that material assignments apply to the entire group;
+      so this changes the material for all faces in the group, not just
+      the selected faces). You can also select a Texture Projection
+      to the selected faces if you want to apply a sphere or cylinder
+      texture map.
+      </p>
+
+      <a name="projection"></a>
+      <h2> Projection </h2>
+
+      <p>
+      The Projection Panel has a drop-down box that allows you to change
+      the projection type. See Texture Projections for more details.
+      <!-- FIXME write up details for texture projections -->
+      </p>
+
+      <a name="influences"></a>
+      <h2> Influences </h2>
+
+      <p>
+      The Influences Panel appears when there are bone joints in the model
+      and you have some geometry selected. With the Influences panel you
+      can assign up to four bone joints to influence the movement of
+      the selected geometry. See Bone Joints for more details.
+      <!-- FIXME write up details for Influences -->
+      </p>
+

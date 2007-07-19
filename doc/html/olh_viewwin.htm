@@ -1,55 +1,54 @@
-      <h1>View Window</h1>
+      <h1>Main Window</h1>
+
+      <h2> Overview </h2>
 
       <p>
-      The <b>View Window</b> is the main Misfit Model 3D window.
-      It allows you to modify a model.  The View
+      The <b>Main Window</b> is where you modify a model.  The Main
       Window has a menu bar, a tool bar, a status bar, and a number of 
       viewports that let
       you see the model from various directions.
+      There are also several dockable windows that are hidden by default.
+      The <a href="olh_properties.html">Properties Panel</a>
+      in particular can be very useful.
       </p>
 
       <p>
-      The <b>View Window</b> has a menu bar that allows you to operate on the
+      The <b>Main Window</b> has a menu bar that allows you to operate on the
       model in the window's viewports as well as creating new models and opening
       existing models.
-      The specific contents of these menus
-      may change based on installed plugins.
       </p>
       
+      <a name="toolbar"></a>
+      <h2> Toolbar </h2>
+
       <p>
       The <b>Toolbar</b> has a set of tool buttons.  The tool buttons
       select tools that allow you to manipulate a model interactively.
-      For example, you can select the &quot;Create Cube&quot; tool
+      For example, you can select the &quot;Draw Cube&quot; tool
       and then click and drag the mouse in a viewport to create a cube.
+      Each of the tools in the toolbar is also available in the Main Window's
+      <b>Tools</b> menu.
       </p>
+
+      <a name="menubar"></a>
+      <h2> Menu Bar </h2>
+
+      <!-- FIXME move the meat of the menu stuff into separate files? -->
 
       <p>
-      There are two types of tools in the toolbar: Creation tools and 
-      manipulation tools.  Creation tools create new vertices and faces interactively
-      in various shapes such as cubes and spheres.  Manipulation tools
-      allow you to interactively change faces and vertices that already exist.  
-      Manipulation tools include moving, scaling, and rotation tools.  Typically
-      manipulation tools only operate on vertices or faces that have been selected
-      with the "Select" tool.  
-      </p>
-      
-      <p>It is important to note that faces often share
-      vertices.  Unselected faces may be modified by changes to vertices that
-      are also part of a selected face.  To disconnect faces from each other
-      so that they do not share vertices, see the <b>Unweld vertices</b> command.
-      </p>
-
-      <p>
-      Some tools have additional options, which appear in a separate
-      toolbar.  For example, the sphere tool has an option that specifies
-      how many triangles the sphere will be composed of.
-      </p>
-
-      <p>  The menu bar has several menus that provide other functions to
+      The menu bar has several menus that provide other functions to
       modify or create a model.
-      In addition to opening and
-      saving models, the <b>File</b> menu also allows
-      you to run scripts, merge two model files, and view available plugins.
+      </p>
+
+      <p>
+      The <b>File</b> menu allows you to open and save models. There is also 
+      an export option to allow you to save in experimental formats. If the
+      file format you want to save as does not appear in the "Save As" dialog,
+      try the Export function. The most recent files you have opened or saved
+      are listed in the "Recent Models" menu. You can load one of these models
+      by selecting the filename from that menu.
+      Additionally, the <b>File</b> menu also allows you to view available
+      plugins.
       </p>
 
       <p>
@@ -58,66 +57,155 @@
       You can force the viewports to show the whole model or selected
       region by selecing either the <b>Frame All</b> or <b>Frame Selected</b> options,
       respectively.
-      You can select how to display the model in the othographic and 3D perspective
-      viewports based on four options.
+      You can select how to display the model in the othographic (canvas)
+      and perspective viewports based on four options.
       </p>
 
       <ul>
-         <li> Wireframe - Shows the model as an outline of all faces.
-         <li> Flat - Shows the model as a set of flat polygons (with lighting).
+         <li> Wireframe - Shows the model as an outline of all faces. </li>
+         <li> Flat - Shows the model as a set of flat polygons (with lighting). </li>
          <li> Smooth - Shows the model as a set of smoothed polygons (vertex normals
-            are averaged between all polygons that share them; with lighting).
+            are averaged between all polygons that share them; with lighting). </li>
          <li> Texture - Shows the model as a set of smoothed, lit polygons with
-            textures applied.
+            textures applied. </li>
          <li> Alpha Blend - Shows the model as a set of smoothed, lit polygons with
-            alpha blended (transparent) textures applied.
+            alpha blended (transparent) textures applied. </li>
       </ul>
 
       <p>
-      You can also choose how you want bone joints to be displayed (as bones,
-      lines, or hidden) and how you want unloadable textures to be rendered (untextured
-      polygons, or polygons textured with a black 'X' on a red background).
-      Use the Render/Hide 3D Selection option to indicate if you want your selection 
-      to be visible in the 3D view.
+      There are also some rendering options in the <b>Render Options</b> View submenu.
+      These options include
+      how bone joints are displayed, whether or not texture projections objects
+      are visible, how missing textures are rendered, whether polygon edges (3d lines)
+      are displayed in the perspective views, and whether or not back-facing polygons
+      are drawn.
+      </p>
+
+      <p>
+      You can choose how you want bone joints to be displayed. Bones draw a 
+      diamond-like object that is thicker toward the parent joint and thinner
+      near the child joint. The Lines option just draws one line between each
+      parent and child joint. The hidden option disables drawing of bone joints.
+      </p>
+
+      <p>
+      The Error Texture options indicate how you want unloadable textures to be
+      displayed. The Red Error Texture is a black 'X' on a red background. It is
+      designed to be an obvious indication that textures are missing. If you do
+      not care about missing textures you can use the Blank Error Texture which
+      will render missing textures as if the mesh had no texture applied (material
+      lighting properties will still apply).
+      </p>
+
+      <p>
+      The Render/Hide 3D Lines option is used to enable/disable drawing of lines in
+      the perspective viewports. This can be useful if you want to see selected
+      edges in the perspective viewport.
+      </p>
+
+      <p>
+      The Draw/Hide back-facing triangles option is used to enable/disable drawing
+      of triangles that are facing away from the viewport camera. By default 
+      these are rendered as darkened polygons. In some cases you may want to
+      these polygons to be invisible if they are not facing the camera.
       </p>
 
       <p>
       The <b>Tools</b> menu lists all the available tools.
+      </p>
+
+      <p>
+      The <b>Model</b> menu has features that affect the model as a whole
+      or large portions of the geometry.
       It also includes the <b>Undo</b> and <b>Redo</b> options.
       </p>
 
       <p>
-      The <b>Primtives</b> menu lists non-interactive operations that modify
-      vertices or faces.
+      <b>Edit Model Meta Data</b> allows you to attach user-defined text values
+      to the model as key/value pairs. In general these have no influence on the
+      model or its geometry, the are just a place for you to store arbitrary
+      information (such as author/artist information, copyright, URLs, etc.).
       </p>
 
       <p>
-      The <b>Groups</b> menu lists non-interactive operations that modify
-      groups, including texturing.
+      <b>Transform Model</b> allows you to apply a transformation Matrix to the
+      model. It opens a tab window with different types of transformations.
+      There are tabs for translation, rotation, and scaling, as well as a tab
+      for a user-defined matrix. In some cases the Matrix you want to apply
+      may not be undo-able. If this is the case, the program will warn you
+      before performing the transformation.
+      </p>
+
+      <p>
+      <b>Boolean Operation</b> allows you to combine two object into one.
+      See the Boolean Operation Window for more details.
+      <!-- FIXME link to bool win-->
+      </p>
+
+      <p>
+      <b>Set Background Image</b> adds a background image to one or more of the six
+      pre-defined orthographic projections.
+      <!-- FIXME link to info on background images in modeling -->
+      </p>
+
+      <p>
+      <b>Merge</b> imports the geometry, materials, and animations from
+      another model file into the current model. See the 
+      <a href="olh_mergewin.html">Merge Window</a> documentation for details.
+      </p>
+
+      <p>
+      <b>Import Animations</b> imports the animations from another model file
+      into the current model. The skeletons of the two models must match.
+      <!-- FIXME link to import animations window -->
+      </p>
+
+      <p>
+      The <b>Geometry</b> menu lists non-interactive operations that modify
+      model geometry.
+      <!-- FIXME link to geometry documentation -->
+      </p>
+
+      <p>
+      The <b>Materials</b> menu lists non-interactive operations that modify
+      groups and materials.
+      <!-- FIXME write up more complete material information -->
+      </p>
+
+      <p>
+      The <b>Influences</b> menu includes functionality for dealing with bone
+      joints and how they influence the model geometry.
+      <!-- FIXME write up more complete bone joint information -->
       </p>
 
       <p>
       The <b>Animations</b> menu provides functions to manipulate model animations.
       There are interactive and non-interactive functions provided by this menu.
+      <!-- FIXME write up more complete animation documentation -->
       </p>
 
       <p>
-      The <b>Help</b> menu brings you to this ridiculously helpful documentation.
+      The <b>Help</b> menu brings you to this documentation.
       </p>
 
       <p>
       The status bar contains text (on the left side) that describes the results of 
       recent operations on the model.  On the right side it shows you how many vertices,
-      faces, groups, and materials exist in the current model.  If you have any vertices,
-      faces, or bone joints selected the count will be shown with the selected separated from the
+      faces, groups, bone joints, points, and materials exist in the current model.
+      If you have any vertices,
+      faces, bone joints, or points selected
+      the count will be shown with the selected separated from the
       total with a slash ('/').
       </p>
 
-
       <p>
-      The <b>Viewports</b> in the center of the View Window are where you 
-      view and modify a model.  There are two types of viewport views: <b>3D View</b>
-      and <b>Orthographic Views</b>.  The view type and direction is indicated
+      The <b>Viewports</b> in the center of the Main Window are where you 
+      view and modify a model.  There are two types of viewport views:
+      <b>Perspective Views</b> and <b>Orthographic Views</b>.
+      In this documentation orthographic views are sometimes called 
+      canvas views because those are the views in which you can use tools 
+      to change the model (like a drawing canvas in a 2D paint program).
+      The view type and direction is indicated
       in a combo box above the viewport on the left.  The field of view is
       indicated in a text entry box above the viewport to the right of the
       view direction.  Larger numbers mean you can see more of the model canvas (think
@@ -137,11 +225,12 @@
 
       <p>
       The view type and direction can be changed to see the model from various
-      angles.  The <b>3D View</b> is a perspective view.  Near portions of the
-      model appear larger, far portions of the model appear smaller.  The 3D View
+      angles.  In the <b>Perspective View</b> near portions of the
+      model appear larger, far portions of the model appear smaller.  The 
+      Perspective View
       may also have visible lighting and texture effects.  This view only allows
       you to view the model.  You cannot modify the model from a viewport in
-      3D mode.
+      Perspective mode.
       </p>
 
       <p>
@@ -149,7 +238,7 @@
       along the horizontal axis or vertical axis.  By middle-clicking and
       dragging you can move the viewport left, right, up, and down.  Using the
       scroll wheel will zoom in or out.  The
-      right mouse button has no effect in the 3D View.
+      right mouse button has no effect in the Perspective View.
       </p>
 
       <p>
@@ -162,6 +251,13 @@
       you can create and manipulate model vertices and faces.  The othrographic
       viewports may also render the model as a wireframe, solid-flat polygons,
       solid-smooth polygons, or textured polygons.
+      </p>
+
+      <p>
+      An orthographic viewport can be rotated by holding the Ctrl button
+      and click-dragging with the left mouse button.
+      <!-- FIXME note keyboard shortcut for toggling ortho/persp -->
+      <!-- FIXME viewport "bookmarks" -->
       </p>
 
       <p>
@@ -191,6 +287,6 @@
       affect the position of polygons and bone joints.
       The other mode is
       <b>Animation Mode</b>.  This mode is active when you have the 
-      <b>Animation Mode Window</b> open.  In this mode changes you make affect
+      <b>Animation Mode Toolbar</b> open.  In this mode changes you make affect
       the current animation frame.
       </p>

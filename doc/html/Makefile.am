@@ -1,6 +1,9 @@
 SUBDIRS=olh_images
 
 PAGES =  \
+	olh_vertexdetails.html \
+	olh_facedetails.html \
+	olh_meshdetails.html \
 	olh_alignwin.html \
 	olh_animconvertwin.html \
 	olh_animexportwin.html \
@@ -22,6 +25,7 @@ PAGES =  \
 	olh_mm3dformat.html \
 	olh_pluginwin.html \
 	olh_projectionwin.html \
+	olh_properties.html \
 	olh_rgbawin.html \
 	olh_scriptguide.html \
 	olh_scriptref.html \
