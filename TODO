@@ -1,4 +1,5 @@
 For 1.4:
+   Update ad3dsfilter with canExport
    MD3
       Finish MD3_PATH changes (save with separate MD3_PATH variables)
       Make sure we include replaceBackslash (around md3filter.cc:340)
