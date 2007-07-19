@@ -36,7 +36,7 @@ PAGES =  \
 	olh_use.html \
 	olh_valuewin.html \
 	olh_viewportsettings.html \
-	olh_viewwin.html
+	olh_mainwin.html
 
 EXTRA_DIST = ${PAGES}
 
