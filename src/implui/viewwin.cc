@@ -748,7 +748,7 @@ void ViewWindow::resizeEvent ( QResizeEvent * e )
 
 void ViewWindow::helpNowEvent( int id )
 {
-   HelpWin * win = new HelpWin( "olh_viewwin.html", false );
+   HelpWin * win = new HelpWin( "olh_mainwin.html", false );
    win->show();
 }
 
