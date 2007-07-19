@@ -43,10 +43,12 @@ EXTRA_DIST = ${PAGES}
 COMMON = template.htm
 DOCDIR = ${datadir}/doc/mm3d/html
 
+all: docs
+
 docs: ${PAGES}
 
 %.html: %.page %.htm ${COMMON}
-	hpagemake.pl $*.page > $*.html
+	$(top_srcdir)/util/hpagemake.pl $*.page > $*.html
 
 install: all
 	${INSTALL} -d      $(DESTDIR)${DOCDIR}/olh_images/tools
