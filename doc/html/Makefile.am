@@ -1,5 +1,43 @@
 SUBDIRS=olh_images
 
+SPAGES =  \
+	olh_vertexdetails.htm \
+	olh_facedetails.htm \
+	olh_meshdetails.htm \
+	olh_alignwin.htm \
+	olh_animconvertwin.htm \
+	olh_animexportwin.htm \
+	olh_animsetwin.htm \
+	olh_animwin.htm \
+	olh_autoassignjointwin.htm \
+	olh_backgroundwin.htm \
+	olh_cmdline.htm \
+	olh_commands.htm \
+	olh_develop.htm \
+	olh_quakemd2.htm \
+	olh_quakemd3.htm \
+	olh_groupwin.htm \
+	olh_index.htm \
+	olh_jointwin.htm \
+	olh_license.htm \
+	olh_mergewin.htm \
+	olh_metawin.htm \
+	olh_mm3dformat.htm \
+	olh_pluginwin.htm \
+	olh_projectionwin.htm \
+	olh_properties.htm \
+	olh_rgbawin.htm \
+	olh_scriptguide.htm \
+	olh_scriptref.htm \
+	olh_spherifywin.htm \
+	olh_texturecoordwin.htm \
+	olh_texturewin.htm \
+	olh_tools.htm \
+	olh_use.htm \
+	olh_valuewin.htm \
+	olh_viewportsettings.htm \
+	olh_mainwin.htm
+
 PAGES =  \
 	olh_vertexdetails.html \
 	olh_facedetails.html \
@@ -38,7 +76,7 @@ PAGES =  \
 	olh_viewportsettings.html \
 	olh_mainwin.html
 
-EXTRA_DIST = ${PAGES}
+EXTRA_DIST = ${SPAGES} ${PAGES}
 
 COMMON = template.htm
 DOCDIR = ${datadir}/doc/mm3d/html
