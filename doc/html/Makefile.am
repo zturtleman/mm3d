@@ -4,6 +4,13 @@ SPAGES =  \
 	olh_vertexdetails.htm \
 	olh_facedetails.htm \
 	olh_meshdetails.htm \
+	olh_normaldetails.htm \
+	olh_groupdetails.htm \
+	olh_materialdetails.htm \
+	olh_texturecoorddetails.htm \
+	olh_projectiondetails.htm \
+	olh_jointdetails.htm \
+	olh_pointdetails.htm \
 	olh_alignwin.htm \
 	olh_animconvertwin.htm \
 	olh_animexportwin.htm \
@@ -42,6 +49,13 @@ PAGES =  \
 	olh_vertexdetails.html \
 	olh_facedetails.html \
 	olh_meshdetails.html \
+	olh_normaldetails.html \
+	olh_groupdetails.html \
+	olh_materialdetails.html \
+	olh_texturecoorddetails.html \
+	olh_projectiondetails.html \
+	olh_jointdetails.html \
+	olh_pointdetails.html \
 	olh_alignwin.html \
 	olh_animconvertwin.html \
 	olh_animexportwin.html \

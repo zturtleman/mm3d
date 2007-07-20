@@ -5,6 +5,13 @@ DONE:
       Vertices
       Faces
       Meshes
+      Normals
+      Groups
+      Materials
+      Textrure Coordinates
+      Textrure Projections
+      Bone Joints
+      Points
 
 Docs:
    olh_alignwin.htm

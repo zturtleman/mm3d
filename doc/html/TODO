@@ -1,6 +1,7 @@
 TODO:
    grep FIXME
    Update table of contents
+   Add "tell me more..." links to window-specific documentation
    Boolean operations window
    Rename viewwin.htm to mainwin.htm (when I have svn up)
    Rename commands.html to primitives.html (when I have svn up)
@@ -24,18 +25,10 @@ TODO:
       Finish this list
    Detail docs:
       Model
-      Normals
-      Groups
-      Bone Joints
-      Influences
-      Points
-      Materials
-      Textrure Coordinates
-      Textrure Projections
       Animations
-      Model Files (importing/exporting)
       Tools
       Background images
+      Model Files (importing/exporting)
 
    Tutorial
       UI Tour
