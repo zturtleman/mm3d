@@ -14,15 +14,7 @@ TODO:
    Remove all scripting references
    Add any other missing window documentation
 
-   Tips doc:
-      Scroll wheel to zoom in/out
-      Middle mouse button to pan
-      Viewport bookmarks
-      Rotating orthographic viewports
-      Toggling ortho/perspective
-      Background images
-      Extrude tool
-      Finish this list
+   Write up details for tips doc
 
    Tutorial
       UI Tour

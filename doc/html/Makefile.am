@@ -40,6 +40,7 @@ SPAGES =  \
 	olh_spherifywin.htm \
 	olh_texturecoordwin.htm \
 	olh_texturewin.htm \
+	olh_tips.htm \
 	olh_tools.htm \
 	olh_use.htm \
 	olh_valuewin.htm \
@@ -86,6 +87,7 @@ PAGES =  \
 	olh_spherifywin.html \
 	olh_texturecoordwin.html \
 	olh_texturewin.html \
+	olh_tips.html \
 	olh_tools.html \
 	olh_use.html \
 	olh_valuewin.html \
