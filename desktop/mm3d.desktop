@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Exec=mm3d %U
+Icon=mm3d
+DocPath=mm3d/index.html
+GenericName=3D Modeler
+Comment=3D modeling program
+Terminal=false
+Name=mm3d
+MimeType=application/x-mm3d
+Categories=Qt;Application;Graphics;
+X-AppInstall-Package=mm3d
+X-AppInstall-Section=universe

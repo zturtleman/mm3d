@@ -105,6 +105,7 @@ AC_CONFIG_FILES([ Makefile
           src/pixmap/Makefile
           plugins/Makefile
           i18n/Makefile
+          desktop/Makefile
           doc/Makefile
           doc/html/Makefile
           doc/html/olh_images/Makefile

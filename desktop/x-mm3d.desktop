@@ -1,0 +1,7 @@
+[Desktop Entry]
+Encoding=UTF-8
+Comment=mm3d model
+Type=MimeType
+MimeType=application/x-mm3d
+Icon=mm3d
+Patterns=*.mm3d;*.MM3D
