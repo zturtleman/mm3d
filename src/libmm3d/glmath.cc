@@ -408,7 +408,6 @@ void Matrix::apply3( float * pVec ) const
             = pVec[ 0 ] * m_val[ ( 0<<2 ) + c ]
             + pVec[ 1 ] * m_val[ ( 1<<2 ) + c ]
             + pVec[ 2 ] * m_val[ ( 2<<2 ) + c ];
-//            + 1.0f      * m_val[ ( 3<<2 ) + c ];
       }
 
       pVec[0] = vec[0];
@@ -428,7 +427,6 @@ void Matrix::apply3( double * pVec ) const
             = pVec[ 0 ] * m_val[ ( 0<<2 ) + c ]
             + pVec[ 1 ] * m_val[ ( 1<<2 ) + c ]
             + pVec[ 2 ] * m_val[ ( 2<<2 ) + c ];
-//            + 1.0       * m_val[ ( 3<<2 ) + c ] ;
       }
 
       pVec[0] = vec[0];
@@ -550,17 +548,6 @@ Matrix Matrix::getSubMatrix( int i, int j ) const
          ret.set( di, dj, m_val[si * 4 + sj] );
       }
    }
-
-   // This shouldn't be necessary, ret should be 
-   // initialized to the identity matrix
-   /*
-   for ( int t = 0; t < 3; t++ )
-   {
-      ret.set( t, 3, 0.0 );
-      ret.set( 3, t, 0.0 );
-   }
-   ret.set( 3, 3, 1.0 );
-   */
 
    return ret;
 }
@@ -941,26 +928,6 @@ void Quaternion::setEulerAngles( const double * radians )
    z = z * y;
    z = z * x;
    *this = z;
-   /*
-   x = x * y;
-   x = x * z;
-   *this = x;
-   */
-
-   /*
-   double c1 = cos(radians[1]/2);  // heading
-   double s1 = sin(radians[1]/2);
-   double c2 = cos(radians[2]/2); // attitude
-   double s2 = sin(radians[2]/2);
-   double c3 = cos(radians[0]/2);     // bank
-   double s3 = sin(radians[0]/2);
-   double c1c2 = c1*c2;
-   double s1s2 = s1*s2;
-   m_val[4] = c1c2*c3 - s1s2*s3;
-   m_val[0] = c1c2*s3 + s1s2*c3;
-   m_val[1] = s1*c2*c3 + c1*s2*s3;
-   m_val[2] = c1*s2*c3 - s1*c2*s3;
-   */
 }
 
 void Quaternion::setRotationOnAxis( const double * axis, double radians )
@@ -1010,12 +977,12 @@ void Quaternion::setRotationToPoint( const double & faceX, const double & faceY,
    float anglec = v1.get(0) * v2.get(0) + v1.get(1) * v2.get(1) + v1.get(2) * v2.get(2);
    double angle  = acos( anglec );
 
-// Plane equation: (given three points)
-//
-//     A = y1 (z2 - z3) + y2 (z3 - z1) + y3 (z1 - z2)
-//     B = z1 (x2 - x3) + z2 (x3 - x1) + z3 (x1 - x2)
-//     C = x1 (y2 - y3) + x2 (y3 - y1) + x3 (y1 - y2)
-//   - D = x1 (y2 z3 - y3 z2) + x2 (y3 z1 - y1 z3) + x3 (y1 z2 - y2 z1)
+   // Plane equation: (given three points)
+   //
+   //     A = y1 (z2 - z3) + y2 (z3 - z1) + y3 (z1 - z2)
+   //     B = z1 (x2 - x3) + z2 (x3 - x1) + z3 (x1 - x2)
+   //     C = x1 (y2 - y3) + x2 (y3 - y1) + x3 (y1 - y2)
+   //   - D = x1 (y2 z3 - y3 z2) + x2 (y3 z1 - y1 z3) + x3 (y1 z2 - y2 z1)
 
    float A = v1.get(1) * v2.get(2) - v2.get(1) * v1.get(2);
    float B = v1.get(2) * v2.get(0) - v2.get(3) * v1.get(0);
