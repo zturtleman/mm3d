@@ -1,0 +1,72 @@
+.TH MM3D 1 "May 31, 2007"
+.SH NAME
+mm3d \- Misfit Model 3D
+.SH SYNOPSIS
+.B mm3d
+.RI [ options ] " files" ...
+.br
+.SH DESCRIPTION
+This manual page documents briefly the
+.B mm3d
+command.
+.PP
+\fBmm3d\fP is an OpenGL\-based 3D model editor that works with triangle\-based
+models. It supports multi\-level undo, skeletal animations, simple texturing,
+scripting, command\-line batch processing, and a plugin system for adding new
+model and image filters. Complete online help is included. It is designed to
+be easy to use and easy to extend with plugins and scripts.
+.SH OPTIONS
+These programs follow the usual GNU command line syntax, with long
+options starting with two dashes (`-').
+A summary of options is included below.
+For a complete description, see the Info files.
+.TP
+.B \-h, \-\-help
+Print command line help and exit
+.TP
+.B \-v, \-\-version
+Print version information and exit
+.TP
+.B \-b, \-\-batch
+Batch mode (exit after processing command line)
+.TP
+.B \-s, \-\-save
+Save command line changes to model files
+.TP
+.B \-\-convert [format]
+Save models to format [format]
+.TP
+.B \-\-no-plugins
+Disable all plugins
+.TP
+.B \-\-no-plugin [foo]
+Disable plugin [foo]
+.TP
+.B \-\-sysinfo
+Display system information (for bug reports)
+.TP
+.B \-\-debug
+Display debug messages in console
+.TP
+.B \-\-warnings
+Display warning messages in console
+.TP
+.B \-\-errors
+Display error messages in console
+.TP
+.B \-\-no-debug
+Do not display debug messages in console
+.TP
+.B \-\-no-warnings
+Do not display warning messages in console
+.TP
+.B \-\-no-errors
+Do not display error messages in console
+.SH SEE ALSO
+.BR blender (1),
+.BR wings3d (1).
+.SH AUTHOR
+mm3d was written by Kevin Worcester.
+.PP
+This manual page was written by G\[:u]rkan Seng\[:u]n <gurkan@linuks.mine.nu>,
+for the Debian project (but may be used by others).

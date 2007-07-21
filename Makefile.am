@@ -7,7 +7,7 @@ EXTRA_DIST = Makefile.mingw \
 	install.bat \
 	mm3d.reg 
 
-SUBDIRS = src plugins i18n doc desktop
+SUBDIRS = src plugins i18n doc desktop man
 
 DESTDIR = src
 

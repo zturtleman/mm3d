@@ -104,6 +104,7 @@ AC_CONFIG_FILES([ Makefile
           src/commands/Makefile
           src/pixmap/Makefile
           plugins/Makefile
+          man/Makefile
           i18n/Makefile
           desktop/Makefile
           doc/Makefile
