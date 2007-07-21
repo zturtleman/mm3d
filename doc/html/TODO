@@ -1,4 +1,5 @@
 TODO:
+   What's new?
    grep FIXME
    Update table of contents
    Add "tell me more..." links to window-specific documentation
@@ -11,7 +12,6 @@ TODO:
    Zoom and pan buttons on viewport
    Snap command
    Texture reload
-   Rename "3D Views" to "Perspective Views"
    Screenshot for Persp/Ortho comparison
 
    Tips doc:
