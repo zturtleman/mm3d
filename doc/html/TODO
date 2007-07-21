@@ -4,15 +4,15 @@ TODO:
    Update table of contents
    Add "tell me more..." links to window-specific documentation
    Boolean operations window
-   Rename viewwin.htm to mainwin.htm (when I have svn up)
    Rename commands.html to primitives.html (when I have svn up)
    Import animations window
    Note that ortho/persp can be toggled
    olh_mm3dformat text FIXME's (and bump version number in mm3d)
-   Zoom and pan buttons on viewport
-   Snap command
+   Viewport pan/zoom buttons, Ctrl+pan/zoom, Ctrl+ScrollWheel
    Texture reload
    Screenshot for Persp/Ortho comparison
+   Remove all scripting references
+   Add any other missing window documentation
 
    Tips doc:
       Scroll wheel to zoom in/out
@@ -49,20 +49,7 @@ Docs:
    olh_develop.htm
    olh_index.htm
    olh_mainwin.htm
-   olh_mergewin.htm
-   olh_metawin.htm
    olh_mm3dformat.htm
-   olh_pluginwin.htm
-   olh_projectionwin.htm
-   olh_quakemd2.htm
-   olh_quakemd3.htm
-   olh_rgbawin.htm
-   olh_scriptguide.htm
-   olh_scriptref.htm
-   olh_spherifywin.htm
    olh_texturecoordwin.htm
-   olh_texturewin.htm
    olh_tools.htm
    olh_use.htm
-   olh_valuewin.htm
-   olh_viewportsettings.htm

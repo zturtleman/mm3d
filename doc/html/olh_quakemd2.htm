@@ -1,28 +1,17 @@
 <h2>Contents</h2>
 
 <ul>
-   <li> <a href="#orientation">Orientation</a>
    <li> <a href="#textures">Loading Skins And Textures</a>
    <li> <a href="#animations">Animations</a>
    <li> <a href="#trianglestrips">Triangle Strips</a>
 </ul>
 
-<a name="orientation">
-<h2>Orientation</h2>
-
-<p>
-For now the orientation of MD2 models are different than other models.
-MD2 models &quot;face&quot; to their left.  So the &quot;Left&quot;
-canvas view is actually the &quot;Front&quot; view and the &quot;Front&quot;
-view is actually the &quot;Right&quot; view.
-</p>
+<a name="textures">
+<h2>Loading Skins and Textures</h2>
 
 <p>
 MD2 models should be about 44 GL units tall and centered on the origin.
 </p>
-
-<a name="textures">
-<h2>Loading Skins and Textures</h2>
 
 <p>
 MD2 skins are a bit tricky to load.  In general the MD2 filter attempts to load
@@ -45,7 +34,7 @@ When saving models as MD2 it is important to note that MD2 models only use
 one texture as a skin at any given time.  All vertices of the model must
 be mapped to the same texture.  You may include different colorings of the
 same texture for different skins and add those to the model as additional
-textures.  Those textures should be available as alternate skins for the model.
+textures. Those textures should be available as alternate skins for the model.
 </p>
 
 <a name="animations">
@@ -78,3 +67,9 @@ MD2 files save triangle strip information for optimized model drawing.  Misfit M
 for each triangle.  If you want smarter triangle strips see the ACTC triangle
 stripping plugin on the website.
 </p>
+
+<p>
+Note that plugins are only available on Linux and Mac OS X systems. Plugin
+support is not available on Windows systems at this time.
+</p>
+
