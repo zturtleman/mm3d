@@ -1,18 +1,6 @@
 DONE:
    Rename "View Window" to "Main Window"
 
-   Detail docs:
-      Vertices
-      Faces
-      Meshes
-      Normals
-      Groups
-      Materials
-      Textrure Coordinates
-      Textrure Projections
-      Bone Joints
-      Points
-
 Docs:
    olh_alignwin.htm
    olh_animconvertwin.htm

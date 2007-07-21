@@ -11,6 +11,7 @@ SPAGES =  \
 	olh_projectiondetails.htm \
 	olh_jointdetails.htm \
 	olh_pointdetails.htm \
+	olh_animationdetails.htm \
 	olh_alignwin.htm \
 	olh_animconvertwin.htm \
 	olh_animexportwin.htm \
@@ -56,6 +57,7 @@ PAGES =  \
 	olh_projectiondetails.html \
 	olh_jointdetails.html \
 	olh_pointdetails.html \
+	olh_animationdetails.html \
 	olh_alignwin.html \
 	olh_animconvertwin.html \
 	olh_animexportwin.html \
