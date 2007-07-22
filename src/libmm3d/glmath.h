@@ -152,6 +152,7 @@ class Quaternion : public Vector
 
       void show() const;
       void setEulerAngles( const double * radians );
+      void setRotationOnAxis( double x, double y, double z, double radians );
       void setRotationOnAxis( const double * axis, double radians );
       void setRotationToPoint( const double & faceX, const double & faceY, const double & faceZ,
             const double & pointX, const double & pointY, const double & pointZ );
@@ -161,6 +162,8 @@ class Quaternion : public Vector
       double get( int c ) const { return m_val[c]; };
 
       void normalize();
+
+      Quaternion swapHandedness();
 
       const double * getVector() const { return m_val; };
 

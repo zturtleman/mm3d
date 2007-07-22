@@ -300,7 +300,7 @@ void Matrix::getRotationQuaternion( Quaternion & quat )
    {
       if ( m_val[0] > m_val[5] && m_val[0] > m_val[10] ) // Column 0
       {
-         s  = sqrt( 1.0 + m_val[0] - m_val[5] - m_val[10] ) * 2;
+         s = sqrt( 1.0 + m_val[0] - m_val[5] - m_val[10] ) * 2;
          quat.set( 0, 0.25 * s );
          quat.set( 1, (m_val[1] + m_val[4] ) / s );
          quat.set( 2, (m_val[8] + m_val[2] ) / s );
@@ -308,7 +308,7 @@ void Matrix::getRotationQuaternion( Quaternion & quat )
       }
       else if ( m_val[5] > m_val[10] ) // Column 1
       {
-         s  = sqrt( 1.0 + m_val[5] - m_val[0] - m_val[10] ) * 2;
+         s = sqrt( 1.0 + m_val[5] - m_val[0] - m_val[10] ) * 2;
          quat.set( 0, (m_val[1] + m_val[4] ) / s );
          quat.set( 1, 0.25 * s );
          quat.set( 2, (m_val[6] + m_val[9] ) / s );
@@ -316,7 +316,7 @@ void Matrix::getRotationQuaternion( Quaternion & quat )
       }
       else // Column 2
       {
-         s  = sqrt( 1.0 + m_val[10] - m_val[0] - m_val[5] ) * 2;
+         s = sqrt( 1.0 + m_val[10] - m_val[0] - m_val[5] ) * 2;
          quat.set( 0, (m_val[8] + m_val[2] ) / s );
          quat.set( 1, (m_val[6] + m_val[9] ) / s );
          quat.set( 2, 0.25 * s );
@@ -939,7 +939,29 @@ void Quaternion::setRotationOnAxis( const double * axis, double radians )
          m_val[t] = axis[t];
       }
       m_val[3] = 0;
-      normalize();
+      normalize3();
+
+      double a = sin( radians / 2 );
+      double b = cos( radians / 2 );
+
+      m_val[0] *= a;
+      m_val[1] *= a;
+      m_val[2] *= a;
+      m_val[3]  = b;
+   }
+}
+
+void Quaternion::setRotationOnAxis( double x, double y, double z, double radians )
+{
+   double m = sqrt( x*x + y*y + z*z );
+   if ( m > 0.00001 )
+   {
+      m_val[0] = x;
+      m_val[1] = y;
+      m_val[2] = z;
+      m_val[3] = 0;
+
+      normalize3();
 
       double a = sin( radians / 2 );
       double b = cos( radians / 2 );
@@ -1030,6 +1052,19 @@ void Quaternion::normalize()
    {
       m_val[t] = m_val[t] / mag;
    }
+}
+
+Quaternion Quaternion::swapHandedness()
+{
+   double axis[3] = { 0, 0, 0 };
+   double rad = 0;
+
+   this->getRotationOnAxis( axis, rad );
+
+   Quaternion rval;
+   rval.setRotationOnAxis( axis, -rad );
+
+   return rval;
 }
 
 double distance ( const Vector & v1, const Vector & v2 )
