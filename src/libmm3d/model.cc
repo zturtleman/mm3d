@@ -3510,6 +3510,19 @@ bool Model::getVertexCoords( const unsigned & vertexNumber, double *coord )
    return false;
 }
 
+bool Model::getVertexCoordsUnanimated( const unsigned & vertexNumber, double *coord )
+{
+   if ( coord && vertexNumber < m_vertices.size() )
+   {
+      for ( int t = 0; t < 3; t++ )
+      {
+         coord[t] = m_vertices[ vertexNumber ]->m_coord[t];
+      }
+      return true;
+   }
+   return false;
+}
+
 bool Model::getVertexCoords2d( const unsigned & vertexNumber, const ProjectionDirectionE & dir, double *coord )
 {
    if ( coord && vertexNumber >= 0 && (unsigned) vertexNumber < m_vertices.size() )

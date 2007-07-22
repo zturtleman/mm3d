@@ -795,6 +795,7 @@ class Model
       bool getPositionCoords( const Position & pos, double * coord );
       bool getPositionCoords( PositionTypeE ptype, unsigned pindex, double * coord );
 
+      bool getVertexCoordsUnanimated( const unsigned & vertexNumber, double *coord );
       bool getVertexCoords( const unsigned & vertexNumber, double *coord );
       bool getVertexCoords2d( const unsigned & vertexNumber, const ProjectionDirectionE & dir, double *coord );
       int getVertexBoneJoint( const unsigned & vertexNumber );
