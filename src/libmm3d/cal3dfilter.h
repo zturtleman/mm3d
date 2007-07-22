@@ -152,7 +152,7 @@ class Cal3dFilter : public ModelFilter
       void writeBInt32( int32_t );
       void writeBFloat( float );
       void writeBVector3( const Vector & vec );
-      void writeBVector4( const Vector & vec );
+      void writeBQuaternion( const Quaternion & quat );
 
       void writeBString( const std::string & );
       void writeBColor( const float * fval );

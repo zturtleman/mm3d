@@ -33,7 +33,6 @@
 #include "endianconfig.h"
 #include "texmgr.h"
 #include "mesh.h"
-//#include "weld.h" // FIXME
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -57,6 +56,7 @@ static Cal3dFilter * s_filter = NULL;
 
 // Yes, that's supposed to be decimal
 #define CAL3D_VERSION  700
+#define CAL3D_VERSION2 799
 #define CAL3D_XVERSION 900
 
 #define CAL3D_MAGIC_SIZE      4
@@ -68,19 +68,6 @@ static Cal3dFilter * s_filter = NULL;
 const Model::AnimationModeE MODE = Model::ANIMMODE_SKELETAL;
 
 typedef float float32_t; // FIXME standardize this
-
-struct intlt
-{
-    bool operator() ( int lhs, int rhs ) const
-    {
-        if ( lhs < rhs )
-            return true;
-        else
-            return false;
-    }
-};
-
-typedef std::map< int, int, intlt > IntMap; // FIXME
 
 static char * _skipSpace( char * str )
 {
@@ -169,58 +156,13 @@ Model::ModelErrorE Cal3dFilter::readFile( Model * model, const char * const file
       log_debug( "  bones:     %d\n", m_model->getBoneJointCount() );
       log_debug( "  materials: %d\n", m_model->getTextureCount() );
 
-      // FIXME BEGIN TESTING
-#if 0
-      unsigned int gcount = m_model->getGroupCount();
-      for ( unsigned int g = 0; g < gcount; g++ )
-      {
-         log_debug( "  group %d: %s\n", g, m_model->getGroupName(g) );
-      }
-
-      unsigned int mcount = m_model->getTextureCount();
-      for ( unsigned int m = 0; m < mcount; m++ )
-      {
-         log_debug( "  material %d: %s\n", m, m_model->getTextureName(m) );
-      }
-
-      unsigned int vcount = m_model->getVertexCount();
-      for ( unsigned int v = 0; v < vcount; v++ )
-      {
-         m_model->selectVertex( v );
-      }
-      weldSelectedVertices( m_model );
-
-      log_debug( "Welded Model:\n" );
-      log_debug( "  vertices:  %d\n", m_model->getVertexCount() );
-      log_debug( "  faces:     %d\n", m_model->getTriangleCount() );
-      log_debug( "  groups:    %d\n", m_model->getGroupCount() );
-      log_debug( "  bones:     %d\n", m_model->getBoneJointCount() );
-      log_debug( "  materials: %d\n", m_model->getTextureCount() );
-
-      MeshList ml;
-      mesh_create_list( ml, m_model );
-      unsigned int mcount = ml.size();
-      log_debug( "Mesh list:\n" );
-      log_debug( "  meshes:   %d\n", mcount );
-      int vc = 0;
-      int fc = 0;
-      for ( unsigned int m = 0; m < mcount; m++ )
-      {
-         vc += ml[m].vertices.size();
-         fc += ml[m].faces.size();
-      }
-      log_debug( "  vertices: %d\n", vc );
-      log_debug( "  faces:    %d\n", fc );
-#endif // 0
-      // FIXME END TESTING
-
       freeFileBuffer( m_fileBuf );
       m_fileBuf = NULL;
       m_bufPos  = NULL;
 
       if ( !success && err == Model::ERROR_NONE )
       {
-         // FIXME re-enable this
+         // FIXME re-enable this (or report error by status line)
          //err = Model::ERROR_BAD_DATA;
       }
    }
@@ -251,52 +193,52 @@ Model::ModelErrorE Cal3dFilter::writeFile( Model * model, const char * const fil
    const char * ext = strrchr( filename, '.' );
    if ( ext )
    {
-       ext++;
+      ext++;
 
-       if ( strcasecmp( ext, "CSF" ) == 0 )
-       {
-           return writeSkeletonFile( filename, model );
-       }
-       else if ( strcasecmp( ext, "CAF" ) == 0 )
-       {
-           if ( model->getAnimCount( MODE ) > 0 )
-           {
-               return writeAnimationFile( filename, model, 0 );
-           }
-           return Model::ERROR_BAD_DATA;
-       }
-       else if ( strcasecmp( ext, "CMF" ) == 0 )
-       {
-           return writeMeshFile( filename, model );
-       }
-       else if ( strcasecmp( ext, "CRF" ) == 0 )
-       {
-           if ( model->getTextureCount() > 0 )
-           {
-               return writeMaterialFile( filename, model, 0 );
-           }
-           return Model::ERROR_BAD_DATA;
-       }
-       else if ( strcasecmp( ext, "XRF" ) == 0 )
-       {
-           if ( model->getTextureCount() > 0 )
-           {
-               return writeXMaterialFile( filename, model, 0 );
-           }
-           return Model::ERROR_BAD_DATA;
-       }
-       else if ( toupper(ext[0]) == 'X' )
-       {
-           // Assume XML file
-           return Model::ERROR_UNSUPPORTED_VERSION;
-       }
+      if ( strcasecmp( ext, "CSF" ) == 0 )
+      {
+         return writeSkeletonFile( filename, model );
+      }
+      else if ( strcasecmp( ext, "CAF" ) == 0 )
+      {
+         if ( model->getAnimCount( MODE ) > 0 )
+         {
+            return writeAnimationFile( filename, model, 0 );
+         }
+         return Model::ERROR_BAD_DATA;
+      }
+      else if ( strcasecmp( ext, "CMF" ) == 0 )
+      {
+         return writeMeshFile( filename, model );
+      }
+      else if ( strcasecmp( ext, "CRF" ) == 0 )
+      {
+         if ( model->getTextureCount() > 0 )
+         {
+            return writeMaterialFile( filename, model, 0 );
+         }
+         return Model::ERROR_BAD_DATA;
+      }
+      else if ( strcasecmp( ext, "XRF" ) == 0 )
+      {
+         if ( model->getTextureCount() > 0 )
+         {
+            return writeXMaterialFile( filename, model, 0 );
+         }
+         return Model::ERROR_BAD_DATA;
+      }
+      else if ( toupper(ext[0]) == 'X' )
+      {
+         // Assume XML file
+         return Model::ERROR_UNSUPPORTED_VERSION;
+      }
 
-       // Assume Cal3D master file
-       return writeCal3dFile( filename, model, o );
+      // Assume Cal3D master file
+      return writeCal3dFile( filename, model, o );
    }
    else
    {
-       return writeCal3dFile( filename, model, o );
+      return writeCal3dFile( filename, model, o );
    }
 }
 
@@ -369,25 +311,24 @@ list< string > Cal3dFilter::getWriteTypes()
 
 Model::ModelErrorE Cal3dFilter::errnoToModelError( int err )
 {
-    switch ( errno )
-    {
-        case EACCES:
-        case EPERM:
-            return Model::ERROR_NO_ACCESS;
-        case ENOENT:
-            return Model::ERROR_NO_FILE;
-        case EISDIR:
-            return Model::ERROR_BAD_DATA;
-        default:
-            break;
-    }
-    return Model::ERROR_FILE_OPEN;
+   switch ( errno )
+   {
+      case EACCES:
+      case EPERM:
+         return Model::ERROR_NO_ACCESS;
+      case ENOENT:
+         return Model::ERROR_NO_FILE;
+      case EISDIR:
+         return Model::ERROR_BAD_DATA;
+      default:
+         break;
+   }
+   return Model::ERROR_FILE_OPEN;
 }
 
 bool Cal3dFilter::versionIsValid( FileTypeE type, int version )
 {
-   if ( version == CAL3D_VERSION 
-         || version == 799 ) // FIXME 799 hack
+   if ( version == CAL3D_VERSION || version == CAL3D_VERSION2 )
    {
       return true;
    }
@@ -506,43 +447,43 @@ Model::ModelErrorE Cal3dFilter::readXSubFile( uint8_t * buf, size_t len )
    // If we see a HEADER element, get the MAGIC attribute
    if ( findXElement( "HEADER" ) )
    {
-       log_debug( "XML file has a <HEADER/> element\n" );
-       std::string magic = readXAttribute( "MAGIC" );
+      log_debug( "XML file has a <HEADER/> element\n" );
+      std::string magic = readXAttribute( "MAGIC" );
 
-       if ( strcmp( magic.c_str(), "XRF" ) == 0 )
-       {
-           log_debug( "XML file is a material file\n" );
-           if ( readXMaterialFile( buf, len ) )
-           {
-               err = Model::ERROR_NONE;
-           }
-           else
-           {
-               err = Model::ERROR_BAD_DATA;
-           }
-       }
-       else
-       {
-           log_warning( "XML file is an unknown type: %s\n", magic.c_str() );
-       }
+      if ( strcmp( magic.c_str(), "XRF" ) == 0 )
+      {
+         log_debug( "XML file is a material file\n" );
+         if ( readXMaterialFile( buf, len ) )
+         {
+            err = Model::ERROR_NONE;
+         }
+         else
+         {
+            err = Model::ERROR_BAD_DATA;
+         }
+      }
+      else
+      {
+         log_warning( "XML file is an unknown type: %s\n", magic.c_str() );
+      }
    }
    else if ( findXElement( "MATERIAL" ) )
    {
-       log_debug( "XML file does not have a header\n" );
-       log_debug( "XML file is a material file\n" );
-       if ( readXMaterialFile( buf, len ) )
-       {
-           err = Model::ERROR_NONE;
-       }
-       else
-       {
-           err = Model::ERROR_BAD_DATA;
-       }
+      log_debug( "XML file does not have a header\n" );
+      log_debug( "XML file is a material file\n" );
+      if ( readXMaterialFile( buf, len ) )
+      {
+         err = Model::ERROR_NONE;
+      }
+      else
+      {
+         err = Model::ERROR_BAD_DATA;
+      }
    }
    else
    {
-       log_debug( "XML file does not have a header\n" );
-       log_warning( "XML file is an unsupported type\n" );
+      log_debug( "XML file does not have a header\n" );
+      log_warning( "XML file is an unsupported type\n" );
    }
 
    m_fileBuf    = oldFileBuf;
@@ -585,106 +526,106 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
 
    while ( readBLine( line, len - (m_bufPos - m_fileBuf) ) )
    {
-       if ( modelSection )
-       {
-           const char * str = _skipSpace( (char *) line.c_str() );
+      if ( modelSection )
+      {
+         const char * str = _skipSpace( (char *) line.c_str() );
 
-           // only parse lines that are not empty or comments
-           if ( str[0] && str[0] != '#' )
-           {
-               if ( strncasecmp( str, "skeleton", 8 ) == 0 )
+         // only parse lines that are not empty or comments
+         if ( str[0] && str[0] != '#' )
+         {
+            if ( strncasecmp( str, "skeleton", 8 ) == 0 )
+            {
+               subfile = readLineFile( str );
+               if ( !subfile.empty()  )
                {
-                   subfile = readLineFile( str );
-                   if ( !subfile.empty()  )
-                   {
-                       log_debug( "loading skeleton file %s\n", subfile.c_str() );
-                       readSubFile( subfile.c_str() );
-                   }
+                  log_debug( "loading skeleton file %s\n", subfile.c_str() );
+                  readSubFile( subfile.c_str() );
                }
-               else if ( strncasecmp( str, "mesh", 4 ) == 0 )
+            }
+            else if ( strncasecmp( str, "mesh", 4 ) == 0 )
+            {
+               subfile = readLineFile( str );
+               if ( !subfile.empty()  )
                {
-                   subfile = readLineFile( str );
-                   if ( !subfile.empty()  )
-                   {
-                       meshFiles.push_back( subfile );
-                   }
+                  meshFiles.push_back( subfile );
                }
-               else if ( strncasecmp( str, "animation", 9 ) == 0 )
+            }
+            else if ( strncasecmp( str, "animation", 9 ) == 0 )
+            {
+               subfile = readLineFile( str );
+               if ( !subfile.empty()  )
                {
-                   subfile = readLineFile( str );
-                   if ( !subfile.empty()  )
-                   {
-                       animFiles.push_back( subfile );
-                   }
+                  animFiles.push_back( subfile );
                }
-               else if ( strncasecmp( str, "material", 8 ) == 0 )
+            }
+            else if ( strncasecmp( str, "material", 8 ) == 0 )
+            {
+               subfile = readLineFile( str );
+               if ( !subfile.empty()  )
                {
-                   subfile = readLineFile( str );
-                   if ( !subfile.empty()  )
-                   {
-                       matFiles.push_back( subfile );
-                   }
+                  matFiles.push_back( subfile );
                }
-               else if ( str[0] == '[' )
-               {
-                   // looks like a new section, see if it's a model section
-                   str++;
-                   while ( isspace( str[0] ) )
-                   {
-                       str++;
-                   }
-
-                   if ( strncasecmp( str, "model", 5 ) == 0 )
-                   {
-                       modelSection = true;
-                   }
-                   else
-                   {
-                       // Not a model section, skip it
-                       log_debug( "skipping [%s section\n", str );
-                       modelSection = false;
-                   }
-               }
-           }
-
-           if ( (m_bufPos - m_fileBuf) >= (int) m_fileLength )
-           {
-               break;
-           }
-       }
-       else
-       {
-           // Not in the model section, the only parsing we want
-           // to do is to find the model section...
-           const char * str = _skipSpace( (char *) line.c_str() );
-           if ( str[0] == '[' )
-           {
+            }
+            else if ( str[0] == '[' )
+            {
                // looks like a new section, see if it's a model section
-
                str++;
                while ( isspace( str[0] ) )
                {
-                   str++;
+                  str++;
                }
 
                if ( strncasecmp( str, "model", 5 ) == 0 )
                {
-                   // Yes, it's a model section, enable the parsing logic
-                   log_debug( "entering model section\n" );
-                   modelSection = true;
+                  modelSection = true;
                }
                else
                {
-                   log_debug( "skipping [%s section\n", str );
-                   modelSection = false;
+                  // Not a model section, skip it
+                  log_debug( "skipping [%s section\n", str );
+                  modelSection = false;
                }
-           }
+            }
+         }
 
-           if ( (m_bufPos - m_fileBuf) >= (int) m_fileLength )
-           {
-               break;
-           }
-       }
+         if ( (m_bufPos - m_fileBuf) >= (int) m_fileLength )
+         {
+            break;
+         }
+      }
+      else
+      {
+         // Not in the model section, the only parsing we want
+         // to do is to find the model section...
+         const char * str = _skipSpace( (char *) line.c_str() );
+         if ( str[0] == '[' )
+         {
+            // looks like a new section, see if it's a model section
+
+            str++;
+            while ( isspace( str[0] ) )
+            {
+               str++;
+            }
+
+            if ( strncasecmp( str, "model", 5 ) == 0 )
+            {
+               // Yes, it's a model section, enable the parsing logic
+               log_debug( "entering model section\n" );
+               modelSection = true;
+            }
+            else
+            {
+               log_debug( "skipping [%s section\n", str );
+               modelSection = false;
+            }
+         }
+
+         if ( (m_bufPos - m_fileBuf) >= (int) m_fileLength )
+         {
+            break;
+         }
+      }
    }
 
    std::list< std::string >::iterator it;
@@ -736,7 +677,7 @@ bool Cal3dFilter::readSkeletonFile( uint8_t * buf, size_t len )
       int fileVersion = readBInt32();
       int numBones    = readBInt32();
 
-      log_warning( "skel version: %d (%x)\n", fileVersion, fileVersion );
+      log_debug( "skel version: %d (%x)\n", fileVersion, fileVersion );
 
       if ( versionIsValid( FT_Skeleton, fileVersion ) )
       {
@@ -782,7 +723,7 @@ bool Cal3dFilter::readMeshFile( uint8_t * buf, size_t len )
       int fileVersion  = readBInt32();
       int numSubMeshes = readBInt32();
 
-      log_warning( "mesh version: %d (%x)\n", fileVersion, fileVersion );
+      log_debug( "mesh version: %d (%x)\n", fileVersion, fileVersion );
 
       if ( versionIsValid( FT_Mesh, fileVersion ) )
       {
@@ -827,7 +768,7 @@ bool Cal3dFilter::readMaterialFile( uint8_t * buf, size_t len )
 
       int fileVersion = readBInt32();
 
-      log_warning( "mat version: %d (%x)\n", fileVersion, fileVersion );
+      log_debug( "mat version: %d (%x)\n", fileVersion, fileVersion );
 
       if ( versionIsValid( FT_Material, fileVersion ) )
       {
@@ -935,81 +876,81 @@ bool Cal3dFilter::readXMaterialFile( uint8_t * buf, size_t len )
       // don't worry about magic and version, just get to the material tag
       if ( findXElement( "MATERIAL" ) )
       {
-          rval = true;
+         rval = true;
 
-          Vector ambient( 0, 0, 0, 1 );
-          Vector diffuse( 1, 1, 1, 1 );
-          Vector specular( 0, 0, 0, 1 );
-          string matFile = "";
+         Vector ambient( 0, 0, 0, 1 );
+         Vector diffuse( 1, 1, 1, 1 );
+         Vector specular( 0, 0, 0, 1 );
+         string matFile = "";
 
-          float  shiny = 0.0f;
+         float  shiny = 0.0f;
 
-          if ( findXElement( "AMBIENT" ) )
-          {
-              ambient = readAVector4( readXElement( "AMBIENT" ).c_str() );
-              ambient[0] /= 255.0;
-              ambient[1] /= 255.0;
-              ambient[2] /= 255.0;
-              ambient[3] /= 255.0;
-          }
-          if ( findXElement( "DIFFUSE" ) )
-          {
-              diffuse = readAVector4( readXElement( "DIFFUSE" ).c_str() );
-              diffuse[0] /= 255.0;
-              diffuse[1] /= 255.0;
-              diffuse[2] /= 255.0;
-              diffuse[3] /= 255.0;
-          }
-          if ( findXElement( "SPECULAR" ) )
-          {
-              specular = readAVector4( readXElement( "SPECULAR" ).c_str() );
-              specular[0] /= 255.0;
-              specular[1] /= 255.0;
-              specular[2] /= 255.0;
-              specular[3] /= 255.0;
-          }
-          if ( findXElement( "SHININESS" ) )
-          {
-              shiny = atof( readXElement( "SHININESS" ).c_str() );
-          }
-          if ( findXElement( "MAP" ) )
-          {
-              matFile = readAString( readXElement( "MAP" ).c_str() );
-          }
+         if ( findXElement( "AMBIENT" ) )
+         {
+            ambient = readAVector4( readXElement( "AMBIENT" ).c_str() );
+            ambient[0] /= 255.0;
+            ambient[1] /= 255.0;
+            ambient[2] /= 255.0;
+            ambient[3] /= 255.0;
+         }
+         if ( findXElement( "DIFFUSE" ) )
+         {
+            diffuse = readAVector4( readXElement( "DIFFUSE" ).c_str() );
+            diffuse[0] /= 255.0;
+            diffuse[1] /= 255.0;
+            diffuse[2] /= 255.0;
+            diffuse[3] /= 255.0;
+         }
+         if ( findXElement( "SPECULAR" ) )
+         {
+            specular = readAVector4( readXElement( "SPECULAR" ).c_str() );
+            specular[0] /= 255.0;
+            specular[1] /= 255.0;
+            specular[2] /= 255.0;
+            specular[3] /= 255.0;
+         }
+         if ( findXElement( "SHININESS" ) )
+         {
+            shiny = atof( readXElement( "SHININESS" ).c_str() );
+         }
+         if ( findXElement( "MAP" ) )
+         {
+            matFile = readAString( readXElement( "MAP" ).c_str() );
+         }
 
-          Model::Material * mat = Model::Material::get();
+         Model::Material * mat = Model::Material::get();
 
-          mat->m_type     = Model::Material::MATTYPE_BLANK; // assume
-          mat->m_name     = m_modelPartName; // this should be a sensible name
-          mat->m_filename = ""; // none by default
+         mat->m_type     = Model::Material::MATTYPE_BLANK; // assume
+         mat->m_name     = m_modelPartName; // this should be a sensible name
+         mat->m_filename = ""; // none by default
 
-          if ( !matFile.empty() )
-          {
-              mat->m_type = Model::Material::MATTYPE_TEXTURE;
-              mat->m_filename = m_currentPath + std::string( "/" ) +  matFile;
-          }
+         if ( !matFile.empty() )
+         {
+            mat->m_type = Model::Material::MATTYPE_TEXTURE;
+            mat->m_filename = m_currentPath + std::string( "/" ) +  matFile;
+         }
 
-          log_debug( "Reading material %d\n", m_model->getTextureCount() );
-          log_debug( "  name %s\n", mat->m_name.c_str() );
-          log_debug( "  file %s\n", mat->m_filename.c_str() );
-          log_debug( "  diffuse %f,%f,%f\n", 
-                  diffuse[0], diffuse[1], diffuse[2] );
-          log_debug( "  ambient %f,%f,%f\n", 
-                  ambient[0], ambient[1], ambient[2] );
-          log_debug( "  specular %f,%f,%f\n", 
-                  specular[0], specular[1], specular[2] );
-          log_debug( "  shininess %f\n", shiny );
+         log_debug( "Reading material %d\n", m_model->getTextureCount() );
+         log_debug( "  name %s\n", mat->m_name.c_str() );
+         log_debug( "  file %s\n", mat->m_filename.c_str() );
+         log_debug( "  diffuse %f,%f,%f\n", 
+               diffuse[0], diffuse[1], diffuse[2] );
+         log_debug( "  ambient %f,%f,%f\n", 
+               ambient[0], ambient[1], ambient[2] );
+         log_debug( "  specular %f,%f,%f\n", 
+               specular[0], specular[1], specular[2] );
+         log_debug( "  shininess %f\n", shiny );
 
-          for ( int t = 0; t < 4; t++ )
-          {
-              mat->m_diffuse[t]  = diffuse[t];
-              mat->m_ambient[t]  = ambient[t];
-              mat->m_specular[t] = specular[t];
-              mat->m_emissive[t] = 0.0f;
-          }
-          mat->m_shininess = shiny;
+         for ( int t = 0; t < 4; t++ )
+         {
+            mat->m_diffuse[t]  = diffuse[t];
+            mat->m_ambient[t]  = ambient[t];
+            mat->m_specular[t] = specular[t];
+            mat->m_emissive[t] = 0.0f;
+         }
+         mat->m_shininess = shiny;
 
-          getMaterialList( m_model ).push_back( mat );
+         getMaterialList( m_model ).push_back( mat );
       }
       else
       {
@@ -1048,21 +989,21 @@ bool Cal3dFilter::readAnimationFile( uint8_t * buf, size_t len )
       float duration   = readBFloat();
       int numTracks    = readBInt32();
 
-      log_warning( "anim version: %d (%x)\n", fileVersion, fileVersion );
+      log_debug( "anim version: %d (%x)\n", fileVersion, fileVersion );
 
       if ( versionIsValid( FT_Animation, fileVersion ) )
       {
          std::string name = m_modelPartName;
 
-         log_debug( "  tracks: %d\n", numTracks );
-         log_debug( "  seconds: %f\n", duration );
+         //log_debug( "  tracks: %d\n", numTracks );
+         //log_debug( "  seconds: %f\n", duration );
 
          // create animation
          // NOTE: assume 30 fps, may want to be smarter about this
          m_anim = m_model->addAnimation( MODE, name.c_str() );
          m_model->setAnimFPS( MODE, m_anim, 30.0 );
 
-         m_model->setAnimFrameCount( MODE, m_anim, timeToFrame(duration, 30.0) );
+         m_model->setAnimFrameCount( MODE, m_anim, timeToFrame(duration, 30.0) + 1);
 
          rval = true;
          for ( int t = 0; rval && t < numTracks; t++ )
@@ -1141,6 +1082,13 @@ bool Cal3dFilter::readBBone()
    Vector transLocal   = readBVector3();
    Vector rotQuatLocal = readBVector4();
 
+   log_debug( "  pos = %.4f,%.4f,%.4f\n", trans[0], trans[1], trans[2] );
+   log_debug( "  rot = %.4f,%.4f,%.4f,%.4f\n",
+         rotVec[0], rotVec[1], rotVec[2], rotVec[3] );
+   log_debug( "  lpos = %.4f,%.4f,%.4f\n", transLocal[0], transLocal[1], transLocal[2] );
+   log_debug( "  lrot = %.4f,%.4f,%.4f,%.4f\n",
+         rotQuatLocal[0], rotQuatLocal[1], rotQuatLocal[2], rotQuatLocal[3] );
+
    // Parent bone joint
    int parent = readBInt32();
    log_debug( "  parent %d\n", parent );
@@ -1153,15 +1101,11 @@ bool Cal3dFilter::readBBone()
       readBInt32();
    }
 
-   //Quaternion rotQuat( rotQuatLocal );
    Quaternion rotQuat( rotVec );
    Vector rot;
 
    // left-handed to right-handed conversion
-   double axis[3] = { 0, 0, 0 };
-   double radians = 0.0;
-   rotQuat.getRotationOnAxis( axis, radians );
-   rotQuat.setRotationOnAxis( axis, -radians );
+   rotQuat = rotQuat.swapHandedness();
 
    Matrix bmat;
    bmat.setRotationQuaternion( rotQuat );
@@ -1185,21 +1129,21 @@ bool Cal3dFilter::readBBone()
       }
    }
 
-   log_debug( "  pre trans %f,%f,%f\n", 
-         (float) trans[0], (float) trans[1], (float) trans[2] );
+   //log_debug( "  pre trans %f,%f,%f\n", 
+   //      (float) trans[0], (float) trans[1], (float) trans[2] );
 
    bmat.getTranslation( trans );
    bmat.getRotation( rot );
 
-   log_debug( "  post trans %f,%f,%f\n", 
-         (float) trans[0], (float) trans[1], (float) trans[2] );
+   //log_debug( "  post trans %f,%f,%f\n", 
+   //      (float) trans[0], (float) trans[1], (float) trans[2] );
 
    /*
    log_debug( "  rot %f,%f,%f\n", 
-         (float) rot[0], (float) rot[1], (float) rot[2] );
+   (float) rot[0], (float) rot[1], (float) rot[2] );
 
    log_debug( "  local trans %f,%f,%f\n", 
-         (float) transLocal[0], (float) transLocal[1], (float) transLocal[2] );
+   (float) transLocal[0], (float) transLocal[1], (float) transLocal[2] );
    */
 
    m_model->addBoneJoint( name.c_str(), 
@@ -1240,7 +1184,6 @@ bool Cal3dFilter::readBSubMesh()
    int group = m_model->addGroup( name.c_str() );
    m_model->setGroupTextureId( group, matId );
 
-   IntMap lodVertex; // FIXME this is for debugging purposes
    UVList uvlist;
 
    // read vertices
@@ -1250,7 +1193,7 @@ bool Cal3dFilter::readBSubMesh()
       readBVector3();  // normal, ignore it
 
       // LOD stuff, we ignore it
-      lodVertex[ readBInt32() ]++;  // vertex to collapse to
+      readBInt32();  // vertex to collapse to
       readBInt32();  // number of faces collapsed
 
       // Add the vertex itself
@@ -1287,7 +1230,7 @@ bool Cal3dFilter::readBSubMesh()
          }
          else
          {
-            log_debug( "  bone joint %d for vertex %d is out of range\n",
+            log_warning( "  bone joint %d for vertex %d is out of range\n",
                   boneId, vert );
          }
       }
@@ -1298,14 +1241,6 @@ bool Cal3dFilter::readBSubMesh()
          readBFloat();
       }
    }
-
-   /*
-   IntMap::iterator it;
-   for ( it = lodVertex.begin(); it != lodVertex.end(); it++ )
-   {
-       log_debug( "%d = %d\n", (*it).first, (*it).second );
-   }
-   */
 
    // read (and ignore) springs
    for ( int s = 0; s < numSprings; s++ )
@@ -1378,13 +1313,9 @@ bool Cal3dFilter::readBAnimTrack()
       Vector trans  = readBVector3();
       Vector rotVec = readBVector4();
 
-      double axis[3] = { 0, 0, 0 };
-      double angle = 0;
-
       Quaternion quat( rotVec );
 
-      quat.getRotationOnAxis( axis, angle );
-      quat.setRotationOnAxis( axis, -angle );
+      quat = quat.swapHandedness();
 
       Matrix m;
 
@@ -1537,12 +1468,12 @@ std::string Cal3dFilter::readAString( const char * str )
 {
    while ( isspace( str[0] ) )
    {
-       str++;
+      str++;
    }
    int len = strlen( str ) - 1;
    while ( len >= 0 && isspace( str[len] ) )
    {
-       len--;
+      len--;
    }
    len++;
 
@@ -1570,13 +1501,13 @@ std::string Cal3dFilter::readLineFile( const char * str )
       }
       else
       {
-          // No quotes... uh... do... something
-          eq++; // skip '='
-          while ( isspace( eq[0] ) )
-          {
-              eq++;
-          }
-          return eq;
+         // No quotes... uh... do... something
+         eq++; // skip '='
+         while ( isspace( eq[0] ) )
+         {
+            eq++;
+         }
+         return eq;
       }
    }
 
@@ -1606,7 +1537,7 @@ std::string Cal3dFilter::readLineFile( const char * str )
 //    - Can't ensure that an element is a sub-element (just looks at the
 //      tags, not the document hierarchy)
 //    - Attribute names must not be substrings of other attribute names
-//      or attribute values in the same element (is there is you could
+//      or attribute values in the same element (if there is you could
 //      get a false attribute lookup)
 //    - Text in an attribute value that looks like an element will be
 //      parsed as an element
@@ -1620,16 +1551,16 @@ bool Cal3dFilter::findXElement( const char * tag )
 
    while ( pos < m_fileLength )
    {
-       if ( m_fileBuf[pos] == '<' )
-       {
-           if ( strncasecmp( &buf[pos+1], tag, tagLen ) == 0)
-           {
-               m_bufPos = &m_fileBuf[pos];
-               //log_debug( "found tag %s at %p\n", tag, m_bufPos );
-               return true;
-           }
-       }
-       pos++;
+      if ( m_fileBuf[pos] == '<' )
+      {
+         if ( strncasecmp( &buf[pos+1], tag, tagLen ) == 0)
+         {
+            m_bufPos = &m_fileBuf[pos];
+            //log_debug( "found tag %s at %p\n", tag, m_bufPos );
+            return true;
+         }
+      }
+      pos++;
    }
    return false;
 }
@@ -1645,46 +1576,46 @@ std::string Cal3dFilter::readXAttribute( const char * attr )
 
    while ( pos < m_fileLength - 1 )
    {
-       if ( inAttr )
-       {
-           if ( buf[pos] == '"' )
-           {
-               std::string rval;
-               rval.assign( &buf[ start ], pos - start );
-               //log_debug( "attribute: %s = %s\n", attr, rval.c_str() );
-               return rval;
-           }
-       }
-       else
-       {
-           if ( strncmp( &buf[pos], attr, attrLen ) == 0 )
-           {
-               pos += attrLen;
-               while ( !inAttr && pos < m_fileLength - 1 )
+      if ( inAttr )
+      {
+         if ( buf[pos] == '"' )
+         {
+            std::string rval;
+            rval.assign( &buf[ start ], pos - start );
+            //log_debug( "attribute: %s = %s\n", attr, rval.c_str() );
+            return rval;
+         }
+      }
+      else
+      {
+         if ( strncmp( &buf[pos], attr, attrLen ) == 0 )
+         {
+            pos += attrLen;
+            while ( !inAttr && pos < m_fileLength - 1 )
+            {
+               // NOTE: This assumes that no attribute name occures 
+               // as a sub-string of another attribute name or value.
+               // It also assumes the '=' is present
+               if ( buf[pos] == '"' )
                {
-                   // NOTE: This assumes that no attribute name occures 
-                   // as a sub-string of another attribute name or value.
-                   // It also assume the '=' is present
-                   if ( buf[pos] == '"' )
-                   {
-                       start = pos + 1;
-                       inAttr = true;
+                  start = pos + 1;
+                  inAttr = true;
 
-                       // pos will get incremeneted at the end of the
-                       // outter loop to skip the quote char
-                   }
-                   else
-                   {
-                       pos++;
-                   }
+                  // pos will get incremeneted at the end of the
+                  // outter loop to skip the quote char
                }
-           }
-           else if ( buf[pos] == '>' )
-           {
-               return "";
-           }
-       }
-       pos++;
+               else
+               {
+                  pos++;
+               }
+            }
+         }
+         else if ( buf[pos] == '>' )
+         {
+            return "";
+         }
+      }
+      pos++;
    }
    return "";
 }
@@ -1702,36 +1633,36 @@ std::string Cal3dFilter::readXElement( const char * tag )
 
    while ( pos < m_fileLength - 1 )
    {
-       if ( inTag )
-       {
-           if ( buf[pos] == '/' && buf[pos+1] == '>' )
-           {
-               m_bufPos = &m_fileBuf[pos+2];
-               return "";
-           }
-           else if ( buf[pos] == '>' )
-           {
-               inTag = false;
-               start = pos + 1;
-           }
-       }
-       else
-       {
-           if ( buf[pos] == '<' )
-           {
-               if ( strncasecmp( &buf[pos+1], endTag.c_str(), tagLen ) == 0)
-               {
-                   m_bufPos = &m_fileBuf[pos];
-                   //log_debug( "found end of tag %s at %p\n", tag, m_bufPos );
+      if ( inTag )
+      {
+         if ( buf[pos] == '/' && buf[pos+1] == '>' )
+         {
+            m_bufPos = &m_fileBuf[pos+2];
+            return "";
+         }
+         else if ( buf[pos] == '>' )
+         {
+            inTag = false;
+            start = pos + 1;
+         }
+      }
+      else
+      {
+         if ( buf[pos] == '<' )
+         {
+            if ( strncasecmp( &buf[pos+1], endTag.c_str(), tagLen ) == 0)
+            {
+               m_bufPos = &m_fileBuf[pos];
+               //log_debug( "found end of tag %s at %p\n", tag, m_bufPos );
 
-                   std::string rval;
-                   rval.assign( &buf[ start ], pos - start );
-                   //log_debug( "tag data: %s\n", rval.c_str() );
-                   return rval;
-               }
-           }
-       }
-       pos++;
+               std::string rval;
+               rval.assign( &buf[ start ], pos - start );
+               //log_debug( "tag data: %s\n", rval.c_str() );
+               return rval;
+            }
+         }
+      }
+      pos++;
    }
    return "";
 }
@@ -1741,585 +1672,655 @@ std::string Cal3dFilter::readXElement( const char * tag )
 
 Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * model, ModelFilter::Options * o )
 {
-    Model::ModelErrorE rval = Model::ERROR_NONE;
+   Model::ModelErrorE rval = Model::ERROR_NONE;
 
-    FILE * fp = fopen( filename, "w" );
-    if ( fp )
-    {
-        m_fp = fp;
+   FILE * fp = fopen( filename, "w" );
+   if ( fp )
+   {
+      std::string base = m_modelPath += "/";
+      m_fp = fp;
 
-        // We need to create one to make sure that the default options we
-        // use in the filter match the default options presented to the
-        // user in the dialog box.
-        m_options = dynamic_cast< Cal3dOptions *>( o );
+      // We need to create one to make sure that the default options we
+      // use in the filter match the default options presented to the
+      // user in the dialog box.
+      m_options = dynamic_cast< Cal3dOptions *>( o );
 
-        fprintf( m_fp, "#\n# cal3d model configuration file\n#\n" );
+      fprintf( m_fp, "#\n# cal3d model configuration file\n#\n" );
 
-        //fprintf( m_fp, "# File written by Misfit Model 3D %s\n", VERSION_STRING );
-        fprintf( m_fp, "# File written by Misfit Model 3D\n" );
-        fprintf( m_fp, "# http://www.misfitcode.com/misfitmodel3d/\n\n" );
+      fprintf( m_fp, "# File written by Misfit Model 3D\n" );
+      fprintf( m_fp, "# http://www.misfitcode.com/misfitmodel3d/\n\n" );
 
-        fprintf( m_fp, "[model]\n\n" );
+      fprintf( m_fp, "[model]\n\n" );
 
-        // FIXME save path
-        // FIXME save scale
-        // FIXME save rotation
+      // FIXME save path
+      // FIXME save scale
+      // FIXME save rotation
 
-        fprintf( m_fp, "# --- Skeleton ---\n" );
-        std::string skelFile = replaceExtension( filename, "csf" );
-        fprintf( m_fp, "skeleton = \"%s\"\n\n", skelFile.c_str() );
-        writeSkeletonFile( skelFile.c_str(), model );
+      fprintf( m_fp, "# --- Skeleton ---\n" );
+      std::string skelFile = replaceExtension( m_modelBaseName.c_str(), "csf" );
+      fprintf( m_fp, "skeleton = \"%s\"\n\n", skelFile.c_str() );
+      writeSkeletonFile( (base + skelFile).c_str(), model );
 
-        fprintf( m_fp, "# --- Animations ---\n" );
-        std::string animFile;
-        unsigned int acount = model->getAnimCount( MODE );
-        for ( unsigned int a = 0; a < acount; a++ )
-        {
-            const char * animName = model->getAnimName( MODE, a );
-            animFile =  animName;
-            animFile += ".caf";
-            fprintf( m_fp, "animation_%s = \"%s\"\n\n", animName, animFile.c_str() );
-            writeAnimationFile( animFile.c_str(), model, a );
-        }
-        fprintf( m_fp, "\n" );
+      // FIXME some models (squirrel) have multiple anims using the same source
+      // file, want to avoid saving twice, and probably avoid loading twice.
+      fprintf( m_fp, "# --- Animations ---\n" );
+      std::string animFile;
+      unsigned int acount = model->getAnimCount( MODE );
+      for ( unsigned int a = 0; a < acount; a++ )
+      {
+         const char * animName = model->getAnimName( MODE, a );
+         animFile = animName;
+         animFile += ".caf";
+         fprintf( m_fp, "animation_%s = \"%s\"\n", animName, animFile.c_str() );
+         writeAnimationFile( (base + animFile).c_str(), model, a );
+      }
+      fprintf( m_fp, "\n" );
 
-        fprintf( m_fp, "# --- Meshes ---\n" );
-        if ( (m_options == NULL) || m_options->m_singleMeshFile )
-        {
-            std::string meshFile = replaceExtension( filename, "cmf" );
-            fprintf( m_fp, "mesh_file = \"%s\"\n\n", meshFile.c_str() );
-            writeMeshFile( meshFile.c_str(), model );
-        }
-        else
-        {
-            std::string meshName;
-            std::string meshFile;
+      fprintf( m_fp, "# --- Meshes ---\n" );
+      if ( (m_options == NULL) || m_options->m_singleMeshFile )
+      {
+         std::string meshFile = replaceExtension( m_modelBaseName.c_str(), "cmf" );
+         fprintf( m_fp, "mesh_file = \"%s\"\n\n", meshFile.c_str() );
+         writeMeshFile( (base + meshFile).c_str(), model );
+      }
+      else
+      {
+         std::string meshName;
+         std::string meshFile;
 
-            // Create meshes split on groups, with UVs and 
-            // normals unique to each vertex
-            MeshList ml;
-            mesh_create_list( ml, model );
+         // Create meshes split on groups, with UVs and 
+         // normals unique to each vertex
+         MeshList ml;
+         mesh_create_list( ml, model );
 
-            unsigned int meshCount = ml.size();
-            unsigned int meshNum;
+         unsigned int meshCount = ml.size();
+         unsigned int meshNum;
 
-            char digitstr[10];
+         char digitstr[10];
 
-            // Write the meshes for each group
-            int gcount = model->getGroupCount();
-            for ( int g = 0; g < gcount; g++ )
+         // Write the meshes for each group
+         int gcount = model->getGroupCount();
+         for ( int g = 0; g < gcount; g++ )
+         {
+            // FIXME this doesn't account for two groups that have
+            // the same name
+
+            // Get a count of how many meshes make up this group
+            // (probably 1, but you never know)
+            int groupMeshes = 0;
+            for ( meshNum = 0; meshNum < meshCount; meshNum++ )
             {
-                // FIXME this doesn't account for two groups that have
-                // the same name
-
-                // Get a count of how many meshes make up this group
-                // (probably 1, but you never know)
-                int groupMeshes = 0;
-                for ( meshNum = 0; meshNum < meshCount; meshNum++ )
-                {
-                    if ( ml[meshNum].group == g )
-                    {
-                        groupMeshes++;
-                    }
-                }
-
-                // Write any mesh that matches the current group
-                int currentMesh = 0;
-                for ( meshNum = 0; meshNum < meshCount; meshNum++ )
-                {
-                    if ( ml[meshNum].group == g )
-                    {
-                        // Append a digit if there's more than one mesh
-                        // for this group
-                        digitstr[0] = '\0';
-                        if ( groupMeshes > 1 )
-                        {
-                            sprintf( digitstr, "%02d", currentMesh + 1 );
-                        }
-                        
-                        // Create mesh name and filename strings
-                        meshName  = "mesh";
-                        meshName += digitstr;
-                        meshFile  = meshName + ".cmf";
-
-                        // Write mesh file
-                        fprintf( m_fp, "mesh_%s = \"%s\"\n\n", meshName.c_str(), meshFile.c_str() );
-                        writeMeshFile( meshFile.c_str(), model );
-
-                        currentMesh++;
-                    }
-                }
+               if ( ml[meshNum].group == g )
+               {
+                  groupMeshes++;
+               }
             }
-        }
 
-        fprintf( m_fp, "# --- Materials ---\n" );
-        std::string matFile;
-        unsigned int mcount = model->getTextureCount();
-        for ( unsigned int m = 0; m < mcount; m++ )
-        {
-            const char * matName = model->getTextureName( m );
-            matFile =  matName;
-            if ( m_options && !m_options->m_xmlMatFile )
+            // Write any mesh that matches the current group
+            int currentMesh = 0;
+            for ( meshNum = 0; meshNum < meshCount; meshNum++ )
             {
-                matFile += ".crf";
-                writeMaterialFile( matFile.c_str(), model, m );
-            }
-            else 
-            {
-                matFile += ".xrf";
-                writeXMaterialFile( matFile.c_str(), model, m );
-            }
-            fprintf( m_fp, "material_%s = \"%s\"\n\n", matName, matFile.c_str() );
-        }
-        fprintf( m_fp, "\n" );
+               if ( ml[meshNum].group == g )
+               {
+                  // Append a digit if there's more than one mesh
+                  // for this group
+                  digitstr[0] = '\0';
+                  if ( groupMeshes > 1 )
+                  {
+                     sprintf( digitstr, "%02d", currentMesh + 1 );
+                  }
 
-        fclose( fp );
-        rval = Model::ERROR_NONE;
-    }
-    else
-    {
-        rval = errnoToModelError( errno );
-    }
+                  // Create mesh name and filename strings
+                  meshName  = "mesh";
+                  meshName += digitstr;
+                  meshFile  = meshName + ".cmf";
 
-    return rval;
+                  // Write mesh file
+                  fprintf( m_fp, "mesh_%s = \"%s\"\n\n", meshName.c_str(), meshFile.c_str() );
+                  writeGroupMeshFile( (base + meshFile).c_str(), model, g, ml[meshNum] );
+
+                  currentMesh++;
+               }
+            }
+         }
+      }
+
+      fprintf( m_fp, "# --- Materials ---\n" );
+      std::string matFile;
+      unsigned int mcount = model->getTextureCount();
+      for ( unsigned int m = 0; m < mcount; m++ )
+      {
+         const char * matName = model->getTextureName( m );
+         matFile = matName;
+         if ( m_options && !m_options->m_xmlMatFile )
+         {
+            matFile += ".crf";
+            writeMaterialFile( (base + matFile).c_str(), model, m );
+         }
+         else 
+         {
+            matFile += ".xrf";
+            writeXMaterialFile( (base + matFile).c_str(), model, m );
+         }
+         fprintf( m_fp, "material_%s = \"%s\"\n\n", matName, matFile.c_str() );
+      }
+      fprintf( m_fp, "\n" );
+
+      fclose( fp );
+      rval = Model::ERROR_NONE;
+   }
+   else
+   {
+      rval = errnoToModelError( errno );
+   }
+
+   return rval;
 }
 
 Model::ModelErrorE Cal3dFilter::writeXMaterialFile( const char * filename, Model * model, unsigned int materialId )
 {
-    Model::ModelErrorE rval = Model::ERROR_NONE;
-    FILE * oldFp = m_fp;
+   Model::ModelErrorE rval = Model::ERROR_NONE;
+   FILE * oldFp = m_fp;
 
-    FILE * fp = fopen( filename, "w" );
-    if ( fp )
-    {
-        m_fp = fp;
+   FILE * fp = fopen( filename, "w" );
+   if ( fp )
+   {
+      m_fp = fp;
 
-        // Header
-        fprintf( m_fp, "<HEADER MAGIC=\"XRF\" VERSION=\"%d\" />\n", CAL3D_XVERSION );
+      // Header
+      fprintf( m_fp, "<HEADER MAGIC=\"XRF\" VERSION=\"%d\" />\n", CAL3D_XVERSION );
 
-        Model::Material::MaterialTypeE type = model->getMaterialType( materialId );
+      Model::Material::MaterialTypeE type = model->getMaterialType( materialId );
 
-        // Start material element
-        fprintf( m_fp, "<MATERIAL NUMMAPS=\"%d\">\n", 
-                ( type == Model::Material::MATTYPE_TEXTURE ) ? 1 : 0 );
+      // Start material element
+      fprintf( m_fp, "<MATERIAL NUMMAPS=\"%d\">\n", 
+            ( type == Model::Material::MATTYPE_TEXTURE ) ? 1 : 0 );
 
-        // Material lighting properties
-        float fval[4];
+      // Material lighting properties
+      float fval[4];
 
-        model->getTextureAmbient( materialId, fval );
-        writeXColor( "AMBIENT", fval );
-        model->getTextureDiffuse( materialId, fval );
-        writeXColor( "DIFFUSE", fval );
-        model->getTextureSpecular( materialId, fval );
-        writeXColor( "SPECULAR", fval );
+      model->getTextureAmbient( materialId, fval );
+      writeXColor( "AMBIENT", fval );
+      model->getTextureDiffuse( materialId, fval );
+      writeXColor( "DIFFUSE", fval );
+      model->getTextureSpecular( materialId, fval );
+      writeXColor( "SPECULAR", fval );
 
-        model->getTextureShininess( materialId, fval[0] );
-        fprintf( m_fp, "    <SHININESS>%f</SHININESS>\n", fval[0] );
+      model->getTextureShininess( materialId, fval[0] );
+      fprintf( m_fp, "    <SHININESS>%f</SHININESS>\n", fval[0] );
 
-        // Texture map
-        if ( type == Model::Material::MATTYPE_TEXTURE )
-        {
-            std::string textureFile = model->getTextureFilename( materialId );
+      // Texture map
+      if ( type == Model::Material::MATTYPE_TEXTURE )
+      {
+         std::string textureFile = model->getTextureFilename( materialId );
 
-            std::string fullName;
-            std::string fullPath;
-            std::string baseName;
-            normalizePath( filename, fullName, fullPath, baseName );
+         std::string fullName;
+         std::string fullPath;
+         std::string baseName;
+         normalizePath( filename, fullName, fullPath, baseName );
 
-            std::string relativeFile = getRelativePath( 
-                    fullPath.c_str(), textureFile.c_str() );
+         std::string relativeFile = getRelativePath( 
+               fullPath.c_str(), textureFile.c_str() );
 
-            fprintf( m_fp, "    <MAP>%s</MAP>\n", relativeFile.c_str() );
-        }
+         fprintf( m_fp, "    <MAP>%s</MAP>\n", relativeFile.c_str() );
+      }
 
-        // close material element
-        fprintf( m_fp, "</MATERIAL>\n" );
+      // close material element
+      fprintf( m_fp, "</MATERIAL>\n" );
 
-        fclose( fp );
-        rval = Model::ERROR_NONE;
-    }
-    else
-    {
-        rval = errnoToModelError( errno );
-    }
+      fclose( fp );
+      rval = Model::ERROR_NONE;
+   }
+   else
+   {
+      rval = errnoToModelError( errno );
+   }
 
-    m_fp = oldFp;
-    return rval;
+   m_fp = oldFp;
+   return rval;
 }
 
 Model::ModelErrorE Cal3dFilter::writeSkeletonFile( const char * filename, Model * model )
 {
-    Model::ModelErrorE rval = Model::ERROR_NONE;
-    FILE * oldFp = m_fp;
+   Model::ModelErrorE rval = Model::ERROR_NONE;
+   FILE * oldFp = m_fp;
 
-    FILE * fp = fopen( filename, "wb" );
-    if ( fp )
-    {
-        m_fp = fp;
+   FILE * fp = fopen( filename, "wb" );
+   if ( fp )
+   {
+      m_fp = fp;
 
-        unsigned int bcount = model->getBoneJointCount();
+      unsigned int bcount = model->getBoneJointCount();
 
-        // Header
-        fwrite( CAL3D_MAGIC_SKELETON, CAL3D_MAGIC_SIZE, 1, fp );
-        writeBInt32( CAL3D_VERSION );
-        writeBInt32( bcount );
+      // Header
+      fwrite( CAL3D_MAGIC_SKELETON, CAL3D_MAGIC_SIZE, 1, fp );
+      writeBInt32( CAL3D_VERSION );
+      writeBInt32( bcount );
 
-        for ( unsigned int b = 0; b < bcount; b++ )
-        {
-            writeBBone( b );
-        }
+      for ( unsigned int b = 0; b < bcount; b++ )
+      {
+         writeBBone( b );
+      }
 
-        fclose( fp );
-        rval = Model::ERROR_NONE;
-    }
-    else
-    {
-        rval = errnoToModelError( errno );
-    }
+      fclose( fp );
+      rval = Model::ERROR_NONE;
+   }
+   else
+   {
+      rval = errnoToModelError( errno );
+   }
 
-    m_fp = oldFp;
-    return rval;
+   m_fp = oldFp;
+   return rval;
 }
 
 Model::ModelErrorE Cal3dFilter::writeMeshFile( const char * filename, Model * model )
 {
-    Model::ModelErrorE rval = Model::ERROR_NONE;
-    FILE * oldFp = m_fp;
+   Model::ModelErrorE rval = Model::ERROR_NONE;
+   FILE * oldFp = m_fp;
 
-    FILE * fp = fopen( filename, "wb" );
-    if ( fp )
-    {
-        m_fp = fp;
+   FILE * fp = fopen( filename, "wb" );
+   if ( fp )
+   {
+      m_fp = fp;
 
-        // Create a list of all meshes
-        MeshList ml;
-        mesh_create_list( ml, model );
+      // Create a list of all meshes
+      MeshList ml;
+      mesh_create_list( ml, model );
 
-        // Header
-        fwrite( CAL3D_MAGIC_MESH, CAL3D_MAGIC_SIZE, 1, fp );
-        writeBInt32( CAL3D_VERSION );
-        writeBInt32( ml.size() );
+      // Header
+      fwrite( CAL3D_MAGIC_MESH, CAL3D_MAGIC_SIZE, 1, fp );
+      writeBInt32( CAL3D_VERSION );
+      writeBInt32( ml.size() );
 
-        // Save all meshes in one file
-        MeshList::iterator mit;
-        for ( mit = ml.begin(); mit != ml.end(); mit++ )
-        {
-            writeBMesh( *mit );
-        }
+      // Save all meshes in one file
+      MeshList::iterator mit;
+      for ( mit = ml.begin(); mit != ml.end(); mit++ )
+      {
+         writeBMesh( *mit );
+      }
 
-        fclose( fp );
-        rval = Model::ERROR_NONE;
-    }
-    else
-    {
-        rval = errnoToModelError( errno );
-    }
+      fclose( fp );
+      rval = Model::ERROR_NONE;
+   }
+   else
+   {
+      rval = errnoToModelError( errno );
+   }
 
-    m_fp = oldFp;
-    return rval;
+   m_fp = oldFp;
+   return rval;
 }
 
 Model::ModelErrorE Cal3dFilter::writeGroupMeshFile( const char * filename, Model * model, unsigned int groupId, Mesh & mesh )
 {
-    Model::ModelErrorE rval = Model::ERROR_NONE;
-    FILE * oldFp = m_fp;
+   Model::ModelErrorE rval = Model::ERROR_NONE;
+   FILE * oldFp = m_fp;
 
-    FILE * fp = fopen( filename, "wb" );
-    if ( fp )
-    {
-        m_fp = fp;
+   FILE * fp = fopen( filename, "wb" );
+   if ( fp )
+   {
+      m_fp = fp;
 
-        // Header
-        fwrite( CAL3D_MAGIC_MESH, CAL3D_MAGIC_SIZE, 1, fp );
-        writeBInt32( CAL3D_VERSION );
-        writeBInt32( 1 );
+      // Header
+      fwrite( CAL3D_MAGIC_MESH, CAL3D_MAGIC_SIZE, 1, fp );
+      writeBInt32( CAL3D_VERSION );
+      writeBInt32( 1 );
 
-        writeBMesh( mesh );
+      writeBMesh( mesh );
 
-        fclose( fp );
-        rval = Model::ERROR_NONE;
-    }
-    else
-    {
-        rval = errnoToModelError( errno );
-    }
+      fclose( fp );
+      rval = Model::ERROR_NONE;
+   }
+   else
+   {
+      rval = errnoToModelError( errno );
+   }
 
-    m_fp = oldFp;
-    return rval;
+   m_fp = oldFp;
+   return rval;
 }
 
 Model::ModelErrorE Cal3dFilter::writeMaterialFile( const char * filename, Model * model, unsigned int materialId )
 {
-    Model::ModelErrorE rval = Model::ERROR_NONE;
-    FILE * oldFp = m_fp;
+   Model::ModelErrorE rval = Model::ERROR_NONE;
+   FILE * oldFp = m_fp;
 
-    FILE * fp = fopen( filename, "wb" );
-    if ( fp )
-    {
-        m_fp = fp;
+   FILE * fp = fopen( filename, "wb" );
+   if ( fp )
+   {
+      m_fp = fp;
 
-        // Header
-        fwrite( CAL3D_MAGIC_MATERIAL, CAL3D_MAGIC_SIZE, 1, fp );
-        writeBInt32( CAL3D_VERSION );
+      // Header
+      fwrite( CAL3D_MAGIC_MATERIAL, CAL3D_MAGIC_SIZE, 1, fp );
+      writeBInt32( CAL3D_VERSION );
 
-        // Material lighting properties
-        float fval[4];
+      // Material lighting properties
+      float fval[4];
 
-        model->getTextureAmbient( materialId, fval );
-        writeBColor( fval );
-        model->getTextureDiffuse( materialId, fval );
-        writeBColor( fval );
-        model->getTextureSpecular( materialId, fval );
-        writeBColor( fval );
-        model->getTextureShininess( materialId, fval[0] );
-        writeBFloat( fval[0] );
+      model->getTextureAmbient( materialId, fval );
+      writeBColor( fval );
+      model->getTextureDiffuse( materialId, fval );
+      writeBColor( fval );
+      model->getTextureSpecular( materialId, fval );
+      writeBColor( fval );
+      model->getTextureShininess( materialId, fval[0] );
+      writeBFloat( fval[0] );
 
-        // Texture map
-        if ( model->getMaterialType( materialId ) == Model::Material::MATTYPE_TEXTURE )
-        {
-            writeBInt32( 1 );
+      // Texture map
+      if ( model->getMaterialType( materialId ) == Model::Material::MATTYPE_TEXTURE )
+      {
+         writeBInt32( 1 );
 
-            std::string textureFile = model->getTextureFilename( materialId );
+         std::string textureFile = model->getTextureFilename( materialId );
 
-            std::string fullName;
-            std::string fullPath;
-            std::string baseName;
-            normalizePath( filename, fullName, fullPath, baseName );
+         std::string fullName;
+         std::string fullPath;
+         std::string baseName;
+         normalizePath( filename, fullName, fullPath, baseName );
 
-            std::string relativeFile = getRelativePath( 
-                    fullPath.c_str(), textureFile.c_str() );
+         std::string relativeFile = getRelativePath( 
+               fullPath.c_str(), textureFile.c_str() );
 
-            writeBString( relativeFile );
-        }
-        else
-        {
-            writeBInt32( 0 );
-        }
+         writeBString( relativeFile );
+      }
+      else
+      {
+         writeBInt32( 0 );
+      }
 
-        fclose( fp );
-        rval = Model::ERROR_NONE;
-    }
-    else
-    {
-        rval = errnoToModelError( errno );
-    }
+      fclose( fp );
+      rval = Model::ERROR_NONE;
+   }
+   else
+   {
+      rval = errnoToModelError( errno );
+   }
 
-    m_fp = oldFp;
-    return rval;
+   m_fp = oldFp;
+   return rval;
 }
 
 Model::ModelErrorE Cal3dFilter::writeAnimationFile( const char * filename, Model * model, unsigned int animationId )
 {
-    Model::ModelErrorE rval = Model::ERROR_NONE;
-    FILE * oldFp = m_fp;
+   Model::ModelErrorE rval = Model::ERROR_NONE;
+   FILE * oldFp = m_fp;
 
-    FILE * fp = fopen( filename, "wb" );
-    if ( fp )
-    {
-        m_fp = fp;
+   FILE * fp = fopen( filename, "wb" );
+   if ( fp )
+   {
+      m_fp = fp;
 
-        // get anim header info
-        float fps = model->getAnimFPS( MODE, animationId );
-        unsigned int frameCount = model->getAnimFrameCount( MODE, animationId );
-        float duration = fps * frameCount;
+      // get anim header info
+      float fps = model->getAnimFPS( MODE, animationId );
+      unsigned int frameCount = model->getAnimFrameCount( MODE, animationId );
+      float duration = (double) frameCount / fps;
+      if ( frameCount > 0 )
+      {
+         duration = ((double) frameCount - 1) / fps;
+      }
 
-        // build track list
-        std::list<int> tracks;
-        bool found = false;
+      // build track list
+      std::list<int> tracks;
+      bool found = false;
 
-        double kf[3];
+      double kf[3];
 
-        unsigned int bcount = model->getBoneJointCount();
-        for ( unsigned int b = 0; b < bcount; b++ )
-        {
-            found = false;
-            for ( unsigned int f = 0; !found && f < frameCount; f++ )
+      unsigned int bcount = model->getBoneJointCount();
+      for ( unsigned int b = 0; b < bcount; b++ )
+      {
+         found = false;
+         for ( unsigned int f = 0; !found && f < frameCount; f++ )
+         {
+            if ( model->getSkelAnimKeyframe( animationId, f, b, false, kf[0], kf[1], kf[2] )
+                  || model->getSkelAnimKeyframe( animationId, f, b, false, kf[0], kf[1], kf[2] ) )
             {
-                if ( model->getSkelAnimKeyframe( animationId, f, b, false, kf[0], kf[1], kf[2] )
-                        || model->getSkelAnimKeyframe( animationId, f, b, false, kf[0], kf[1], kf[2] ) )
-                {
-                    found = true;
-                    tracks.push_back( b );
-                }
+               found = true;
+               tracks.push_back( b );
             }
-        }
+         }
+      }
 
-        // write header
-        fwrite( CAL3D_MAGIC_ANIMATION, CAL3D_MAGIC_SIZE, 1, fp );
-        writeBInt32( CAL3D_VERSION );
-        writeBFloat( duration );
-        writeBInt32( tracks.size() );
+      // write header
+      fwrite( CAL3D_MAGIC_ANIMATION, CAL3D_MAGIC_SIZE, 1, fp );
+      writeBInt32( CAL3D_VERSION );
+      writeBFloat( duration );
+      writeBInt32( tracks.size() );
 
-        // write tracks
-        std::list<int>::iterator it;
-        for ( it = tracks.begin(); it != tracks.end(); it++ )
-        {
-            writeBAnimTrack( animationId, *it );
-        }
+      // write tracks
+      std::list<int>::iterator it;
+      for ( it = tracks.begin(); it != tracks.end(); it++ )
+      {
+         writeBAnimTrack( animationId, *it );
+      }
 
-        fclose( fp );
-        rval = Model::ERROR_NONE;
-    }
-    else
-    {
-        rval = errnoToModelError( errno );
-    }
+      fclose( fp );
+      rval = Model::ERROR_NONE;
+   }
+   else
+   {
+      rval = errnoToModelError( errno );
+   }
 
-    m_fp = oldFp;
-    return rval;
+   m_fp = oldFp;
+   return rval;
 }
 
 void Cal3dFilter::writeBBone( unsigned int b )
 {
-    std::string name = m_model->getBoneJointName( b );
-    writeBString( name );
+   std::string name = m_model->getBoneJointName( b );
+   writeBString( name );
 
-    // FIXME initialize these
-    Vector trans;
-    Vector rot;
-    writeBVector3( trans );  // relative to parent
-    writeBVector4( rot );
-    writeBVector3( trans );  // model space
-    writeBVector4( rot );
+   Matrix m;
+   m_model->getBoneJointAbsoluteMatrix( b, m );
 
-    // write parent
-    int parent = m_model->getBoneJointParent( b );
-    writeBInt32( parent );
+   Matrix pinv;
+   int parent = m_model->getBoneJointParent( b );
+   if ( parent >= 0 )
+   {
+      m_model->getBoneJointAbsoluteMatrix( parent, pinv );
+      pinv = pinv.getInverse();
+   }
 
-    // find children
-    std::list<int> children;
-    unsigned bcount = m_model->getBoneJointCount();
-    for ( unsigned int child = 0; child < bcount; child++ )
-    {
-        int cparent = m_model->getBoneJointParent( child );
+   Matrix lm;
+   lm = m * pinv;
 
-        if ( (unsigned int) cparent == b )
-        {
-            children.push_back( child );
-        }
-    }
+   Vector trans;
+   Quaternion rot;
+   lm.getTranslation( trans );
+   lm.getRotationQuaternion( rot );
 
-    // write children
-    writeBInt32( children.size() );
-    std::list<int>::iterator it;
-    for ( it = children.begin(); it != children.end(); it++ )
-    {
-        writeBInt32( *it );
-    }
+   rot = rot.swapHandedness();
+
+   writeBVector3( trans );  // relative to parent
+   writeBQuaternion( rot );
+
+   m = m.getInverse();
+   m.getTranslation( trans );
+   m.getRotationQuaternion( rot );
+
+   rot = rot.swapHandedness();
+
+   writeBVector3( trans );  // model space
+   writeBQuaternion( rot );
+
+   // write parent
+   writeBInt32( parent );
+
+   // find children
+   std::list<int> children;
+   unsigned bcount = m_model->getBoneJointCount();
+   for ( unsigned int child = 0; child < bcount; child++ )
+   {
+      int cparent = m_model->getBoneJointParent( child );
+
+      if ( (unsigned int) cparent == b )
+      {
+         children.push_back( child );
+      }
+   }
+
+   // write children
+   writeBInt32( children.size() );
+   std::list<int>::iterator it;
+   for ( it = children.begin(); it != children.end(); it++ )
+   {
+      writeBInt32( *it );
+   }
 }
 
 void Cal3dFilter::writeBAnimTrack( unsigned int anim, unsigned int bone )
 {
-    float fps = m_model->getAnimFPS( MODE, anim );
-    unsigned int frameCount = m_model->getAnimFrameCount( MODE, anim );
+   float fps = m_model->getAnimFPS( MODE, anim );
+   unsigned int frameCount = m_model->getAnimFrameCount( MODE, anim );
 
-    std::list<int> frames;
+   std::list<int> frames;
 
-    double kf[3];
+   double kf[3];
 
-    for ( unsigned int f = 0; f < frameCount; f++ )
-    {
-        if ( m_model->getSkelAnimKeyframe( anim, f, bone, false, kf[0], kf[1], kf[2] )
-                || m_model->getSkelAnimKeyframe( anim, f, bone, true, kf[0], kf[1], kf[2] ) )
-        {
-            frames.push_back( f );
-        }
-    }
+   for ( unsigned int f = 0; f < frameCount; f++ )
+   {
+      // FIXME MM3D allows one type of keyframe without the other, Cal3D requires
+      // both rotation and translation for each keyframe. If we have one and the
+      // other is missing, we must do interpolation here.
+      if ( m_model->getSkelAnimKeyframe( anim, f, bone, false, kf[0], kf[1], kf[2] )
+            || m_model->getSkelAnimKeyframe( anim, f, bone, true, kf[0], kf[1], kf[2] ) )
+      {
+         frames.push_back( f );
+      }
+   }
 
-    // write track info
-    writeBInt32( bone );
-    writeBInt32( frames.size() );
+   // write track info
+   writeBInt32( bone );
+   writeBInt32( frames.size() );
 
-    // write keyframe data
-    std::list<int>::iterator it;
-    for ( it = frames.begin(); it != frames.end(); it++ )
-    {
-        writeBFloat( (*it) * fps );
+   // write keyframe data
+   std::list<int>::iterator it;
+   for ( it = frames.begin(); it != frames.end(); it++ )
+   {
+      writeBFloat( ((double) (*it)) / fps );
 
-        Vector trans;
-        Vector rot;
+      // FIXME get translation and rotation keyframe for each frame
+      // (create missing keyframe for trans or rot as needed)
+      double krot[3] = { 0, 0, 0};
+      double ktran[3] = { 0, 0, 0};
 
-        // FIXME get translation and rotation keyframe for each frame
-        // (create missing keyframe for trans or rot as needed)
-        writeBVector3( trans );
-        writeBVector4( rot );
-    }
+      m_model->getSkelAnimKeyframe( anim, (*it), bone,
+            true, krot[0], krot[1], krot[2] );
+      m_model->getSkelAnimKeyframe( anim, (*it), bone,
+            false, ktran[0], ktran[1], ktran[2] );
+
+      Matrix m;
+      m.setRotation( krot );
+      m.setTranslation( ktran );
+
+      Matrix rm;
+      m_model->getBoneJointRelativeMatrix( bone, rm );
+
+      m = m * rm;
+
+      Vector trans;
+      Quaternion rot;
+
+      m.getRotationQuaternion( rot );
+      m.getTranslation( trans );
+
+      rot = rot.swapHandedness();
+
+      writeBVector3( trans );
+      writeBQuaternion( rot );
+   }
 }
 
 void Cal3dFilter::writeBMesh( Mesh & mesh )
 {
-    int materialId = -1;
-    if ( mesh.group >= 0 )
-    {
-        materialId = m_model->getGroupTextureId( mesh.group );
-    }
+   // FIXME write *unanimated* position, please
 
-    writeBInt32( materialId );
-    writeBInt32( mesh.vertices.size() );
-    writeBInt32( mesh.faces.size() );
-    writeBInt32( 0 );
-    writeBInt32( 0 );
-    if ( materialId >= 0 )
-    {
-        writeBInt32( 1 );
-    }
-    else
-    {
-        writeBInt32( 0 );
-    }
+   int materialId = -1;
+   if ( mesh.group >= 0 )
+   {
+      materialId = m_model->getGroupTextureId( mesh.group );
+   }
 
-    double coord[3];
-    Mesh::VertexList::iterator vit;
-    for ( vit = mesh.vertices.begin(); vit != mesh.vertices.end(); vit++ )
-    {
-        Mesh::Vertex & mv = *vit;
+   writeBInt32( materialId );
+   writeBInt32( mesh.vertices.size() );
+   writeBInt32( mesh.faces.size() );
+   writeBInt32( 0 );
+   writeBInt32( 0 );
+   if ( materialId >= 0 )
+   {
+      writeBInt32( 1 );
+   }
+   else
+   {
+      writeBInt32( 0 );
+   }
 
-        m_model->getVertexCoords( mv.v, coord );
-        writeBFloat( coord[0] );
-        writeBFloat( coord[1] );
-        writeBFloat( coord[2] );
+   double coord[3];
+   Mesh::VertexList::iterator vit;
+   for ( vit = mesh.vertices.begin(); vit != mesh.vertices.end(); vit++ )
+   {
+      Mesh::Vertex & mv = *vit;
 
-        writeBFloat( mv.norm[0] );
-        writeBFloat( mv.norm[1] );
-        writeBFloat( mv.norm[2] );
+      m_model->getVertexCoordsUnanimated( mv.v, coord );
+      writeBFloat( coord[0] );
+      writeBFloat( coord[1] );
+      writeBFloat( coord[2] );
 
-        writeBInt32( -1 );
-        writeBInt32( 0 );
+      writeBFloat( mv.norm[0] );
+      writeBFloat( mv.norm[1] );
+      writeBFloat( mv.norm[2] );
 
-        if ( materialId >= 0 )
-        {
-            writeBFloat( mv.uv[0] );
-            writeBFloat( mv.uv[1] );
-        }
+      writeBInt32( -1 );
+      writeBInt32( 0 );
 
-        // FIXME support multiple bone joints
-        int b = m_model->getVertexBoneJoint( mv.v );
-        if ( b >= 0 )
-        {
-            writeBInt32( 1 );
-            writeBInt32( b );
-            writeBFloat( 1.0f );
-        }
-        else
-        {
-            writeBInt32( 0 );
-        }
+      if ( materialId >= 0 )
+      {
+         writeBFloat( mv.uv[0] );
+         writeBFloat( mv.uv[1] );
+      }
 
-        // No springs, don't need to write weight
-    }
+      Model::InfluenceList il;
+      Model::InfluenceList::iterator it;
+      m_model->getVertexInfluences( mv.v, il );
 
-    // Write springs... we don't have any... don't write anything
+      // Our weights don't always equal 100%, get total weigth so we can normalize
+      double total = 0.0;
+      for ( it = il.begin(); it != il.end(); it++ )
+      {
+         total += it->m_weight;
+      }
 
-    // Write faces
-    Mesh::FaceList::iterator fit;
-    for ( fit = mesh.faces.begin(); fit != mesh.faces.end(); fit++ )
-    {
-        Mesh::Face & mf = *fit;
+      // Don't allow negative weights, or divide by zero
+      if ( total < 0.0005 )
+      {
+         total = 1.0;
+      }
 
-        writeBInt32( mf.v[0] );
-        writeBInt32( mf.v[1] );
-        writeBInt32( mf.v[2] );
-    }
+      // Write out influence list
+      writeBInt32( il.size() ); // number of influences
+
+      for ( it = il.begin(); it != il.end(); it++ )
+      {
+         writeBInt32( it->m_boneId );          // bone
+         writeBFloat( it->m_weight / total );  // normalized weight
+      }
+
+      // No springs, don't need to write weight
+   }
+
+   // Write springs... we don't have any... don't write anything
+
+   // Write faces
+   Mesh::FaceList::iterator fit;
+   for ( fit = mesh.faces.begin(); fit != mesh.faces.end(); fit++ )
+   {
+      Mesh::Face & mf = *fit;
+
+      writeBInt32( mf.v[0] );
+      writeBInt32( mf.v[1] );
+      writeBInt32( mf.v[2] );
+   }
 }
 
 //------------------------------------------------------------------
@@ -2356,12 +2357,12 @@ void Cal3dFilter::writeBVector3( const Vector & vec )
    writeBFloat( vec[2] );
 }
 
-void Cal3dFilter::writeBVector4( const Vector & vec )
+void Cal3dFilter::writeBQuaternion( const Quaternion & quat )
 {
-   writeBFloat( vec[0] );
-   writeBFloat( vec[1] );
-   writeBFloat( vec[2] );
-   writeBFloat( vec[3] );
+   writeBFloat( quat[0] );
+   writeBFloat( quat[1] );
+   writeBFloat( quat[2] );
+   writeBFloat( quat[3] );
 }
 
 void Cal3dFilter::writeBString( const std::string & str )
@@ -2374,32 +2375,33 @@ void Cal3dFilter::writeBString( const std::string & str )
 
 void Cal3dFilter::writeBColor( const float * fval )
 {
-    uint32_t dval;
-    for ( int i = 0; i < 4; i++ )
-    {
-        dval = (uint32_t) (fval[i] * 255.0);
-        if ( dval > 255 )
-        {
-            dval = 255;
-        }
-        writeBUInt8( dval );
-    }
+   uint32_t dval;
+   for ( int i = 0; i < 4; i++ )
+   {
+      dval = (uint32_t) (fval[i] * 255.0);
+      if ( dval > 255 )
+      {
+         dval = 255;
+      }
+      writeBUInt8( dval );
+   }
 }
 
 void Cal3dFilter::writeXColor( const char * tag, const float * fval )
 {
-    fprintf( m_fp, "    <%s>", tag );
-    uint32_t dval;
-    for ( int i = 0; i < 4; i++ )
-    {
-        dval = (uint32_t) (fval[i] * 255.0);
-        if ( dval > 255 )
-        {
-            dval = 255;
-        }
-        fprintf( m_fp, "%d", dval );
-    }
-    fprintf( m_fp, "</%s>\n", tag );
+   fprintf( m_fp, "    <%s>", tag );
+   uint32_t dval;
+   for ( int i = 0; i < 4; i++ )
+   {
+      dval = (uint32_t) (fval[i] * 255.0);
+      if ( dval > 255 )
+      {
+         dval = 255;
+      }
+      fprintf( m_fp, "%d%s", dval,
+            (i < 3) ? " " : "" );
+   }
+   fprintf( m_fp, "</%s>\n", tag );
 }
 
 int Cal3dFilter::timeToFrame( double tsec, double fps )
@@ -2409,7 +2411,7 @@ int Cal3dFilter::timeToFrame( double tsec, double fps )
    {
       frame++;
    }
-   log_debug( "  time %f is frame %d\n", tsec, frame );
+   //log_debug( "  time %f is frame %d\n", tsec, frame );
    return frame;
 }
 
