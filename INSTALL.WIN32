@@ -29,7 +29,7 @@ Prerequisites
 
 You can get Qt 4 here:
 
-   http://www.trolltech.com/download/qt/windows.html
+   http://trolltech.com/developer/downloads/qt/windows
 
 You can get mingw using Qt 4's binary installer, or download
 and install mingw yourself from the official website:
