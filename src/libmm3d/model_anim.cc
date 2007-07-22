@@ -1010,8 +1010,8 @@ int Model::setSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, c
          && frame < m_skelAnims[anim]->m_frameCount
          && joint < m_joints.size() )
    {
-      log_debug( "set %s of %d (%f,%f,%f) at frame %d\n", 
-            (isRotation ? "rotation" : "translation"), joint, x, y, z, frame );
+      //log_debug( "set %s of %d (%f,%f,%f) at frame %d\n", 
+      //      (isRotation ? "rotation" : "translation"), joint, x, y, z, frame );
 
       while ( joint >= m_skelAnims[anim]->m_jointKeyframes.size() )
       {
@@ -2559,8 +2559,8 @@ bool Model::getSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, 
       bool found = false;
       if ( m_skelAnims[anim]->m_jointKeyframes[joint].find_sorted( kf, index ) )
       {
-         log_debug( "found keyframe anim %d, frame %d, joint %d, %s\n",
-               anim, frame, joint, isRotation ? "rotation" : "translation" );
+//         log_debug( "found keyframe anim %d, frame %d, joint %d, %s\n",
+//               anim, frame, joint, isRotation ? "rotation" : "translation" );
          x = m_skelAnims[anim]->m_jointKeyframes[joint][index]->m_parameter[0];
          y = m_skelAnims[anim]->m_jointKeyframes[joint][index]->m_parameter[1];
          z = m_skelAnims[anim]->m_jointKeyframes[joint][index]->m_parameter[2];
