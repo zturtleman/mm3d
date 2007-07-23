@@ -8,18 +8,13 @@ For 1.4:
 
    Correct "Triangle Projection" typo in group panel
    Split keyboard shortcut for flip front/back view and flip ortho/persp
-   Note difference between Save/Export on website (features) and in help docs
    Test merge on multiple bone joint assignments (and points)
-   Test binary and ASCII convenience functions for model read/write
    Documentation
       Feature list that tells you where the tool/command is in the
          menu system
-      Texture Paint Window
       Point window
       New tools/commands
       GL zoom/grid units
-      Context Panel
-      Save/Export
 
    Texture Projections
       Types
