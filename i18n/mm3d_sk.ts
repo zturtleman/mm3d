@@ -603,17 +603,12 @@ počet rámcov sa líši.</translation>
 <context>
     <name>AnimWindow</name>
     <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation></translation>
-    </message>
-    <message>
         <source>Misfit 3D</source>
-        <translation>Misfit 3D</translation>
+        <translation type="obsolete">Misfit 3D</translation>
     </message>
     <message>
         <source>New name:</source>
-        <translation>Nové meno: </translation>
+        <translation type="obsolete">Nové meno: </translation>
     </message>
 </context>
 <context>
@@ -1157,7 +1152,7 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>Normals face out</source>
-        <translation>Normálami von</translation>
+        <translation type="obsolete">Normálami von</translation>
     </message>
     <message>
         <source>Vertices</source>
@@ -1174,6 +1169,10 @@ Chcete pokračovať?</translation>
     <message>
         <source>Normals</source>
         <translation>Normály</translation>
+    </message>
+    <message>
+        <source>Normals Face Out</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1471,19 +1470,19 @@ Chcete pokračovať?</translation>
     <message>
         <source>Deleting joints may destroy skeletal animations
 Do you wish to continue?</source>
-        <translation>Zmazanie kĺbov môže zničiť kostrovú animáciu
+        <translation type="obsolete">Zmazanie kĺbov môže zničiť kostrovú animáciu
 Chcete pokračovať?</translation>
     </message>
     <message>
         <source>Primitives deleted</source>
-        <translation>Útvary zmazané</translation>
+        <translation type="obsolete">Útvary zmazané</translation>
     </message>
 </context>
 <context>
     <name>EditKeyframeWin</name>
     <message>
         <source>Set keyframe %1</source>
-        <translation>Nastaviť kľúčový rámec</translation>
+        <translation type="obsolete">Nastaviť kľúčový rámec</translation>
     </message>
 </context>
 <context>
@@ -1908,7 +1907,7 @@ Chcete pokračovať?</translation>
     <message>
         <source>Delete</source>
         <comment>Delete Command Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vymazať</translation>
     </message>
     <message>
         <source>Ctrl+D</source>
@@ -2897,11 +2896,6 @@ Chcete načítať všetky sekcie?</translation>
 </context>
 <context>
     <name>StartPrompt</name>
-    <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>StatusBar</name>

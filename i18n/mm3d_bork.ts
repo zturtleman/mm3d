@@ -612,15 +612,15 @@
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
     <message>
         <source>Misfit 3D</source>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
     <message>
         <source>New name:</source>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
 </context>
 <context>
@@ -1480,18 +1480,18 @@ Do you wish to continue?</source>
     <message>
         <source>Deleting joints may destroy skeletal animations
 Do you wish to continue?</source>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
     <message>
         <source>Primitives deleted</source>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
 </context>
 <context>
     <name>EditKeyframeWin</name>
     <message>
         <source>Set keyframe %1</source>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
 </context>
 <context>
@@ -2906,7 +2906,7 @@ Do you want to load all sections?</source>
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
 </context>
 <context>

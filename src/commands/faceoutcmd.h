@@ -35,7 +35,7 @@ class FaceOutCommand : public Command
 
       int getCommandCount() { return 1; };
       const char * getPath();
-      const char * getName( int arg ) { return "Normals face out"; };
+      const char * getName( int arg ) { return "Normals Face Out"; };
       bool getKeyBinding( int arg, int & keyBinding ) { return false; };
 
       bool activated( int arg, Model * model );

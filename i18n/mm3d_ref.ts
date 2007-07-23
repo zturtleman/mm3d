@@ -526,19 +526,6 @@
 </context>
 <context>
     <name>AnimWindow</name>
-    <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Misfit 3D</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New name:</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>AutoAssignJointWin</name>
@@ -1390,22 +1377,9 @@ Do you wish to continue?</source>
 </context>
 <context>
     <name>DeleteCommand</name>
-    <message>
-        <source>Deleting joints may destroy skeletal animations
-Do you wish to continue?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Primitives deleted</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>EditKeyframeWin</name>
-    <message>
-        <source>Set keyframe %1</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>EllipsoidToolWidget</name>
@@ -2816,11 +2790,6 @@ Do you want to load all sections?</source>
 </context>
 <context>
     <name>StartPrompt</name>
-    <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StatusBar</name>
