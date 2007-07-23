@@ -2234,8 +2234,6 @@ void Cal3dFilter::writeBAnimTrack( unsigned int anim, unsigned int bone )
 
 void Cal3dFilter::writeBMesh( Mesh & mesh )
 {
-   // FIXME write *unanimated* position, please
-
    int materialId = -1;
    if ( mesh.group >= 0 )
    {
