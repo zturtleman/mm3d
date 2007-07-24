@@ -4,7 +4,6 @@ TODO:
    Update table of contents
    Add "tell me more..." links to window-specific documentation
    Boolean operations window
-   Rename commands.html to primitives.html (when I have svn up)
    Import animations window
    Note that ortho/persp can be toggled
    olh_mm3dformat text FIXME's (and bump version number in mm3d)
@@ -37,11 +36,9 @@ TODO:
 
 Docs:
    olh_animwin.htm
-   olh_commands.htm
-   olh_develop.htm
    olh_index.htm
    olh_mainwin.htm
    olh_mm3dformat.htm
-   olh_texturecoordwin.htm
-   olh_tools.htm
+ + olh_objprompt.htm
+ + olh_painttexturewin.htm
    olh_use.htm

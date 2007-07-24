@@ -9,13 +9,17 @@ Docs:
    olh_animsetwin.htm
    olh_autoassignjointwin.htm
    olh_backgroundwin.htm
+ + olh_boolwin.htm
    olh_cmdline.htm
+   olh_commands.htm
+   olh_develop.htm
    olh_groupwin.htm
    olh_jointwin.htm
    olh_license.htm
    olh_mergewin.htm
    olh_metawin.htm
    olh_pluginwin.htm
+ + olh_pointwin.htm
    olh_projectionwin.htm
    olh_quakemd2.htm
    olh_quakemd3.htm
@@ -23,6 +27,9 @@ Docs:
    olh_scriptguide.htm
    olh_scriptref.htm
    olh_spherifywin.htm
+   olh_texturecoordwin.htm
    olh_texturewin.htm
+   olh_tools.htm
+ + olh_transformwin.htm
    olh_valuewin.htm
    olh_viewportsettings.htm

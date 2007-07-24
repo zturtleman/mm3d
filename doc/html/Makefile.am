@@ -31,6 +31,7 @@ SPAGES =  \
 	olh_mergewin.htm \
 	olh_metawin.htm \
 	olh_mm3dformat.htm \
+	olh_pointwin.htm \
 	olh_pluginwin.htm \
 	olh_projectionwin.htm \
 	olh_properties.htm \
@@ -78,6 +79,7 @@ PAGES =  \
 	olh_mergewin.html \
 	olh_metawin.html \
 	olh_mm3dformat.html \
+	olh_pointwin.html \
 	olh_pluginwin.html \
 	olh_projectionwin.html \
 	olh_properties.html \

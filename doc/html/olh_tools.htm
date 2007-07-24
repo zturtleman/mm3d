@@ -11,17 +11,18 @@
          <li> <a href="#rotate">Rotate</a> </li>
          <li> <a href="#scale">Scale</a> </li>
          <li> <a href="#shear">Shear</a> </li>
+         <li> <a href="#dragvertex">Drag Vertex on Edge</a> </li>
          <li> <a href="#atrnear">Attract Near</a> </li>
          <li> <a href="#atrfar">Attract Far</a> </li>
          <li> <a href="#bgmove">Move Background Image</a> </li>
          <li> <a href="#bgscale">Scale Background Image</a> </li>
          <li> <a href="#vertex">Create Vertex</a> </li>
-         <li> <a href="#rectangle">Create Rectangle</a> </li>
          <li> <a href="#cube">Create Cube</a> </li>
          <li> <a href="#ellipsoid">Create Ellipsoid</a> </li>
          <li> <a href="#cylinder">Create Cylinder</a> </li>
          <li> <a href="#torus">Create Torus</a> </li>
          <li> <a href="#polygon">Create Polygon</a> </li>
+         <li> <a href="#rectangle">Create Rectangle</a> </li>
          <li> <a href="#joint">Create Bone Joint</a> </li>
          <li> <a href="#point">Create Point</a> </li>
          <li> <a href="#projection">Create Texture Projection</a> </li>
@@ -306,6 +307,36 @@
       <p>
       In animation mode the shear tool shears vertices for frame animations.
       It has no effect on skeletal animations.
+      </p>
+
+      <p>
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>None</b> </li>
+      </ul>
+      </p>
+
+      <a name="dragvertex"></a>
+      <h2>Drag Vertex on Edge</h2>
+
+      <h3>Overview</h3>
+      <p>
+      <!-- FIXME image -->
+      <img alt="Drag vertex tool icon" src="olh_images/tools/sheartool.png"/><br/>
+      <b>Drag Vertex on Edge</b> of a triangle toward connected vertices.
+      </p>
+
+      <h3>Mouse operations</h3>
+      <p>
+      Press and hold a mouse button to begin a drag operation. As you move the
+      vertex it will follow the closest edge of a triangle that the vertex
+      belongs to.
+      </p>
+
+      <h3>Animation mode</h3>
+      <p>
+      In animation mode the drag vertex tool moves vertices for
+      frame animations.  It has no effect on skeletal animations.
       </p>
 
       <p>
@@ -772,7 +803,8 @@
 
       <p>
       You can use the rotate tool to rotate a point into a new direction, or
-      explicitly set the rotation using the properties panel. <!-- FIXME refrence properties panel -->
+      explicitly set the rotation using the
+      <a href="olh_properties.html#rotation">Rotation Properties Panel</a>.
       </p>
 
       <p>
@@ -813,8 +845,9 @@
       
       <p> 
       A sphere is created by default. You can change the sphere to a cylinder
-      using the Texture Projections  Window <!-- FIXME reference proj window --> or the 
-      properties panel. <!-- FIXME reference properties -->
+      using the
+      <a href="olh_projectionwin.html">Texture Projections Window</a> or the 
+      <a href="olh_properties.html#projection">Projection Properties Panel</a>.
       </p>
 
       <p>
