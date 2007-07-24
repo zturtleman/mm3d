@@ -1825,6 +1825,30 @@ void ModelViewport::keyPressEvent( QKeyEvent * e )
                int newDir = 0;
                switch ( m_viewDirection )
                {
+                  case ViewPerspective:
+                     newDir = ViewOrtho;
+                     break;
+                  case ViewFront:
+                  case ViewBack:
+                  case ViewRight:
+                  case ViewLeft:
+                  case ViewTop:
+                  case ViewBottom:
+                  case ViewOrtho:
+                     newDir = ViewPerspective;
+                     break;
+                  default:
+                     break;
+               }
+
+               emit viewDirectionChanged( newDir );
+            }
+            break;
+         case Key_Backslash:
+            {
+               int newDir = 0;
+               switch ( m_viewDirection )
+               {
                   case ViewFront:
                      newDir = ViewBack;
                      break;
@@ -1854,7 +1878,6 @@ void ModelViewport::keyPressEvent( QKeyEvent * e )
                }
 
                emit viewDirectionChanged( newDir );
-               //viewChangeEvent( newDir );
             }
             break;
          case Key_0:

@@ -8,8 +8,6 @@ For 1.4:
 
    Add delete button to animwidget
    Correct "Triangle Projection" typo in group panel
-   Split keyboard shortcut for flip front/back (backslash) view
-      and flip ortho/persp (backtick)
    Test merge on multiple bone joint assignments (and points)
    Documentation
       Feature list that tells you where the tool/command is in the
