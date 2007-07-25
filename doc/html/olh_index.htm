@@ -163,15 +163,22 @@
       <h2>Help! What should I read first!?</h2>
 
       <p>
-      If you are new to Misfit Model 3D, this page and the 
-      <a href="olh_use.html">Using Misfit Model</a> page will be the most useful 
-      guides to getting started with Misfit Model.  This introduction page is a 
-      basic roadmap
-      that explains how to get around in Misfit Model.  The <b>Using Misfit Model</b> 
-      page will help you get started on creating models.  The rest of
-      the documentation is reference material that discusses specific features
-      in more detail.
+      Here is a short list of the most useful documentation.
       </p>
+
+      <ul>
+         <li>This page is a very brief introduction to Misfit Model 3D.
+         If you are new to MM3D, read this first</li>
+         <li> The <a href="olh_mainwin.html">Main Window</a> documentation
+         gives you an overview of the user interface and a high-level
+         description of the program's features.
+         <li> <!-- FIXME need index for model details.--> See the model
+         details page for information on specific topics. </li>
+         <li> The <a href="olh_tutorial_index.html">Tutorial</a>
+         walks you through using MM3D with real examples.
+         <!-- FIXME create tutorial --> </li>
+         <li>Everything else is reference material for specific topics.</li>
+      </ul>
 
       <p>
       <b>Note:</b> This documentation is in the process of being updated for
@@ -184,20 +191,11 @@
 
       <p>
       Misfit Model 3D is an application that allows users to create and modify
-      triangle based models.  It currently supports a variety of 3D vertex
+      triangle-based models.  It currently supports a variety of 3D vertex
       manipulation tools as well as texturing and animations.
       There is a plugin system
       so that extensions can be written to provide more tools, commands, or
       model import and export filters.  
-      </p>
-
-      <p>
-      This overview should give you a basic understanding of how to get around
-      Misfit Model 3D and teach you terminology that will be useful in other sections of
-      the documentation.  Once you have finished this section and are familiar
-      with the Misfit Model's layout, you will probably
-      want to look at the <a href="olh_use.html">Using Misfit Model</a> section to 
-      get tips on how to effectively create models.
       </p>
 
       <p>
@@ -216,192 +214,9 @@
       Main Windows, one for each model that is open.
       </p>
 
-      <a name="mainwindow"></a>
-      <h2>Main Window</h2>
-
       <p>
-      The <b>Main Window</b> is where you modify a model.  The Main
-      Window has a menu bar, a tool bar, a status bar, and a number of 
-      viewports that let
-      you see the model from various directions.
-      There are also several dockable windows that are hidden by default.
-      The <a href="olh_properties.html">Properties Panel</a>
-      in particular can be very useful.
+      See the <a href="olh_mainwin.html">Main Window</a> documentation
+      to get an overview of Misfit Model 3D's user interface as well as
+      links to more specific feature information.
       </p>
 
-      <p>
-      The <b>Main Window</b> has a menu bar that allows you to operate on the
-      model in the window's viewports as well as creating new models and opening
-      existing models.
-      </p>
-      
-      <p>
-      The <b>Toolbar</b> has a set of tool buttons.  The tool buttons
-      select tools that allow you to manipulate a model interactively.
-      For example, you can select the &quot;Draw Cube&quot; tool
-      and then click and drag the mouse in a viewport to create a cube.
-      Each of the tools in the toolbar is also available in the Main Window's
-      <b>Tools</b> menu.
-      </p>
-
-      <p>
-      There are two types of tools in the toolbar: Creation tools and 
-      manipulation tools.  Creation tools create new vertices and faces interactively
-      in various shapes such as cubes and spheres.  Manipulation tools
-      allow you to interactively change faces and vertices that already exist.  
-      Manipulation tools include moving, scaling, and rotation tools.
-      Manipulation tools only operate on vertices or faces that have been selected
-      with the "Select" tool.  
-      </p>
-      
-      <p>It is important to note that faces often share
-      vertices.  Unselected faces may be modified by changes to vertices that
-      are also part of a selected face.  To disconnect faces from each other
-      so that they do not share vertices, use the <b>Unweld vertices</b> command.
-      </p>
-
-      <p>
-      Some tools have additional options, which appear in an a separate
-      toolbar.  For example, the sphere tool has an option that specifies
-      how many triangles the sphere will be composed of.
-      </p>
-
-      <p>  The menu bar has several menus that provide other functions to
-      modify or create a model. See the
-      <a href="olh_mainwin.html#menubar">Menu&nbsp;Bar</a> documentation
-      for more complete documentation.
-      </p>
-
-      <p>
-      The <b>View</b> menu allows you to change the number and layout of the
-      viewports in the view window (you may have 1, 2, 4, 6, or 9 viewports).
-      You can force the viewports to show the whole model or selected
-      region by selecing either the <b>Frame All</b> or <b>Frame Selected</b> options,
-      respectively.
-      You can select how to display the model in the othographic (canvas)
-      and perspective viewports based on four options.
-      </p>
-
-      <ul>
-         <li> Wireframe - Shows the model as an outline of all faces. </li>
-         <li> Flat - Shows the model as a set of flat polygons (with lighting). </li>
-         <li> Smooth - Shows the model as a set of smoothed polygons (vertex normals
-            are averaged between all polygons that share them; with lighting). </li>
-         <li> Texture - Shows the model as a set of smoothed, lit polygons with
-            textures applied. </li>
-         <li> Alpha Blend - Shows the model as a set of smoothed, lit polygons with
-            alpha blended (transparent) textures applied. </li>
-      </ul>
-
-      <p>
-      There are also some rendering options in the <b>Render Options</b> View submenu.
-      These options include
-      how bone joints are displayed, whether or not texture projections objects
-      are visible, how missing textures are rendered, whether polygon edges (3d lines)
-      are displayed in the perspective views, and whether or not back-facing polygons
-      are drawn. The <a href="olh_mainwin.html#menubar">Menu&nbsp;Bar</a>
-      documentation has more details.
-      </p>
-
-      <p>
-      The status bar contains text (on the left side) that describes the results of 
-      recent operations on the model.  On the right side it shows you how many vertices,
-      faces, groups, bone joints, points, and materials exist in the current model.
-      If you have any vertices,
-      faces, bone joints, or points selected
-      the count will be shown with the selected separated from the
-      total with a slash ('/').
-      </p>
-
-      <p>
-      The <b>Viewports</b> in the center of the Main Window are where you 
-      view and modify a model.  There are two types of viewport views:
-      <b>Perspective Views</b> and <b>Orthographic Views</b>.
-      In this documentation orthographic views are sometimes called 
-      canvas views because those are the views in which you can use tools 
-      to change the model (like a drawing canvas in a 2D paint program).
-      The view type and direction is indicated
-      in a combo box above the viewport on the left.  The field of view is
-      indicated in a text entry box above the viewport to the right of the
-      view direction.  Larger numbers mean you can see more of the model canvas (think
-      of the opposite of zoom).  Three short colored lines indicate the origin.
-      Each color extends in the positive direction along an axis.  The red line
-      extends along the X axis, the green line extends along the Y axis, and the blue
-      line extends along the Z axis.
-      </p>
-
-      <p>
-      You can scroll the active viewport by clicking on the arrows in the upper-right
-      corner.  The four-way arrow allows you to click
-      and drag the viewport.  You can also use the middle mouse button to drag the viewport.
-      You can zoom in and out by using the magnifying glass buttons above the viewport
-      scroll buttons.
-      </p>
-
-      <p>
-      The view type and direction can be changed to see the model from various
-      angles.  In the <b>Perspective View</b> near portions of the
-      model appear larger, far portions of the model appear smaller.  The 
-      Perspective View
-      may also have visible lighting and texture effects.  This view only allows
-      you to view the model.  You cannot modify the model from a viewport in
-      Perspective mode.
-      </p>
-
-      <p>
-      By left-clicking and dragging your mouse pointer you can rotate the
-      perspective view
-      along the horizontal axis or vertical axis.  By middle-clicking and
-      dragging you can move the viewport left, right, up, and down.  Using the
-      scroll wheel will zoom in or out.  The
-      right mouse button has no effect in the Perspective View.
-      </p>
-
-      <p>
-      The <b>Orthographic Views</b> show the model from one of six directions:
-      Front, Back, Left, Right, Top, or Bottom.  These views are a CAD-like
-      projection of the model from the specified direction.  These views are
-      not modified by perspective.  Two cubes of equal size will always appear
-      the same size in this view regardless of how "far" they are from the
-      viewing plane.  Each of the six orthographic views is a canvas view, where 
-      you can create and manipulate model vertices and faces.  The othrographic
-      viewports may also render the model as a wireframe, solid-flat polygons,
-      solid-smooth polygons, or textured polygons.
-      </p>
-
-      <p>
-      An orthographic viewport can be rotated by holding the Ctrl button
-      and click-dragging with the left mouse button.
-      <!-- FIXME note keyboard shortcut for toggling ortho/persp -->
-      </p>
-
-      <p>
-      The effect of the left and right mouse buttons depends on the tool that is
-      currently selected.  The left mouse button is the main tool button and
-      the right button is an alternate button.  For example, using the
-      select tool you can select vertices and faces with the left mouse button
-      and unselect them with the right mouse button.
-      By middle-clicking and dragging you can drag the viewport left, right, 
-      up, and down.  Using the scroll wheel will zoom in or out.
-      </p>
-
-      <p>
-      The active viewport (the viewport under the mouse) 
-      will have a slightly lighter background color
-      than the others.  Some keyboard shortcuts will modify the selected
-      viewport.  For example + and - will zoom in and out.  0 (zero) will
-      center the viewport on the origin.  The backtick (left quote) will
-      flip an orthographic view to the opposite side (front view will become
-      a back view).
-      </p>
-
-      <p>
-      There are two modes for the view window.  The default one is the
-      <b>Model Edit Mode</b>.  This is the mode you are in when you start
-      Misfit Model 3D and are viewing a model.  In this mode changes you make
-      affect the position of polygons and bone joints.
-      The other mode is
-      <b>Animation Mode</b>.  This mode is active when you have the 
-      <b>Animation Mode Toolbar</b> open.  In this mode changes you make affect
-      the current animation frame.
-      </p>
