@@ -134,7 +134,7 @@
                         <cstring>textLabel3</cstring>
                     </property>
                     <property name="text">
-                        <string>Triangle Projection</string>
+                        <string>Texture Projection</string>
                     </property>
                 </widget>
             </grid>
