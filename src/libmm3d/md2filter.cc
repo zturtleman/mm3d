@@ -352,12 +352,12 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
 
       for ( i = 0; i < numTexCoords; i++ )
       {
-         uint16_t s;
-         uint16_t t;
+         int16_t s;
+         int16_t t;
          bin_read( s, bufPtr, readLength );
-         s = ltoh_u16(s);
+         s = ltoh_16(s);
          bin_read( t, bufPtr, readLength );
-         t = ltoh_u16(t);
+         t = ltoh_16(t);
          texCoordsList[i].s = (float) s / skinWidth;
          texCoordsList[i].t = 1.0 - (float) t / skinHeight;
       }
@@ -841,10 +841,10 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
 
             td = 1.0 - td;
 
-            si = (uint16_t) (sd * (double) skinWidth);
-            si = htol_u16(si);
-            ti = (uint16_t) (td * (double) skinHeight);
-            ti = htol_u16(ti);
+            si = (int16_t) (sd * (double) skinWidth);
+            si = htol_16(si);
+            ti = (int16_t) (td * (double) skinHeight);
+            ti = htol_16(ti);
             fwrite( &si, sizeof(si), 1, fp );
             fwrite( &ti, sizeof(ti), 1, fp );
          }
