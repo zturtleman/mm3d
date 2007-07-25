@@ -5,10 +5,8 @@ TODO:
    Add "tell me more..." links to window-specific documentation
    Boolean operations window
    Import animations window
-   Note that ortho/persp can be toggled
    olh_mm3dformat text FIXME's (and bump version number in mm3d)
    Viewport pan/zoom buttons, Ctrl+pan/zoom, Ctrl+ScrollWheel
-   Texture reload
    Screenshot for Persp/Ortho comparison
    Remove all scripting references
    Add any other missing window documentation
@@ -16,16 +14,19 @@ TODO:
    Write up details for tips doc
 
    Tutorial
-      UI Tour
-      Primitive Creation
-      Basic Manipulations
-      Extrude, split, turn
+      UI Tour (main window documentation)
+      Basic Modeling
+         Primitive Creation
+         Manipulations
+         Extrude, split, turn
       Background Images
       Polytool / Free Vertices / Make Face
       Grouping
       Texturing / Materials
          Projections
          Direct coord edit
+         Texture paint
+         Texture reload
       Points / uses
       Skeletal structure
          Bone Joints
@@ -35,9 +36,6 @@ TODO:
       Links to other modeling tutorials
 
 Docs:
-   olh_animwin.htm
-   olh_index.htm
-   olh_mainwin.htm
    olh_mm3dformat.htm
  + olh_objprompt.htm
  + olh_painttexturewin.htm
