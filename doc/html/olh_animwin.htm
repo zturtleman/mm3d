@@ -1,9 +1,9 @@
-      <h1>Animation Mode Window</h1>
+      <h1>Animation Panel</h1>
 
       <h2> Overview </h2>
 
       <p>
-      The <b>Animation Mode Window</b> allows you to create animations and
+      The <b>Animation Panel</b> allows you to 
       animate models.  You can change frame counts and frame rates as well as
       set skeletal keyframes or frame vertex positions.  You can also
       play animations from this window. For performance reasons animation
@@ -11,11 +11,12 @@
       </p>
 
       <p>
-      While the <b>Animation Mode Window</b> is open you can use the view
+      While the <b>Animation Panel</b> is open you can use the view
       window's toolbar to manipulate the model in animation mode.  Most
       selection and manipulation tools work the same as they do in model
       edit mode, though some (such as the rotate tool in skeletal animation
-      mode) will behave differently.
+      mode) will behave differently. Geometry creation tools have no effect
+      in animation mode.
       </p>
 
       <p>
@@ -24,12 +25,12 @@
       </p>
 
       <p>
-      The <b>Animation Mode Window</b> has two tabs, one for <b>Skeletal</b>
-      animations and one for <b>Frame</b> animations.  The combo box in
-      the tab page will list all of the animations of the animation type
-      for the tab you have selected.  All operations (with the exception of
-      the <b>New</b> button) operate on the animation that is named in
-      the combo box.
+      The <b>Animation Panel</b> has a drop down box that lists
+      all the animations that are defined for the model.
+      It lists all Skeletal animations first, then all 
+      Frame (mesh deformation) animations.
+      All operations operate on the animation that is named in
+      the drop down box.
       </p>
 
       <p>
@@ -47,8 +48,8 @@
 
       <p>
       In <b>Skeletal</b> animation mode the rotate tool works differently than
-      it does in standard edit mode.  The rotation only applies to one bone
-      joint, and the rotation is always centered on the joint.  In other words,
+      it does in standard edit mode.  The rotation only applies to bone
+      joints, and the rotation is always centered on a joint.  In other words,
       you are rotating the bone joint itself, not the position of the bone joint.
       In <b>Skeletal</b> animation mode, the delete command also behaves differently.
       The delete command will delete any translation or rotation keyframes for
@@ -57,11 +58,10 @@
       </p>
 
       <p>
-      You can use <b>Undo</b> and <b>Redo</b> from the <b>Animation Mode Window</b>
+      You can use <b>Undo</b> and <b>Redo</b> from the <b>Animation Panel</b>
       just as you would in the standard model edit mode.  You can select
       <b>Undo</b> and <b>Redo</b> from the menu on the <b>Main Window</b>, or use
-      Ctrl-Z and Ctrl-Y from either the <b>Animation Mode Window</b> or the
-      <b>Main Window</b>.
+      Ctrl-Z and Ctrl-Y.
       </p>
 
       <p>
@@ -72,25 +72,20 @@
 
       <h2> Animation Operations </h2>
 
-      <h3> New </h3>
+      <h3> New Animation </h3>
 
       <p>
-      The <b>New</b> button creates a new animation.  It will prompt you for an
-      animation name.  The new animation will be a skeletal or frame animation
-      depending on the animation type tab you are working on.
-      </p>
-
-      <h3> Rename </h3>
-
-      <p>
-      The <b>Rename</b> button change the name of the selected animation.  
-      It will prompt you for a new animation name.
+      To create a new animation, select &lt;New Animation&gt; in the animation
+      name drop down box. It will prompt you for an
+      animation name. The prompt will also allow you specify if the
+      animation is a skeletal animation or a frame animation.
       </p>
 
       <h3> Delete </h3>
 
       <p>
-      The <b>Delete</b> button will delete the current animation.
+      The <b>X</b> button will delete the current animation (there is
+      a confirmation prompt).
       </p>
 
       <h3> Frames Spin Box </h3>
@@ -99,12 +94,6 @@
       The <b>Frames Spin Box</b> will change the frame count of the current
       animation.  You can use the up and down arrows, or type the number directly
       in the box.
-      </p>
-
-      <h3> FPS Text Box </h3>
-
-      <p>
-      The <b>FPS Text Box</b> will change the frame rate of the current animation.
       </p>
 
       <h3> Frame Slider </h3>
@@ -116,48 +105,16 @@
       also operate on the current frame.
       </p>
 
-      <h3> Copy Frame </h3>
+      <h3> FPS Text Box </h3>
 
       <p>
-      The <b>Copy Frame</b> button saves the position of the model primitives in
-      the current frame of the animation.  You can then select another frame 
-      or animation and use the <b>Paste Frame</b> button to copy the position
-      and orientation of the model primitives to a different animation frame.
+      The <b>FPS Text Box</b> will change the frame rate of the current animation.
       </p>
 
-      <p>
-      For skeletal animations only joints that have keyframes set are copied and
-      pasted.  Any joints that have keyframes set in the target frame will not
-      be affected if the source frame did not have a keyframe for that joint.
-      If this is not desired behavior, you can use <b>Clear Frame</b> on the
-      target frame before using <b>Paste Frame</b>.
-      </p>
-
-      <h3> Paste Frame </h3>
+      <h3> Copy/Paste/Clear Frame </h3>
 
       <p>
-      The <b>Paste Frame</b> button takes the animation data saved from one animation
-      frame by the <b>Copy Frame</b> button and copies it into the current 
-      animation frame.
-      </p>
-
-      <p>
-      For skeletal animations only joints that have keyframes set are copied and
-      pasted.  Any joints that have keyframes set in the target frame will not
-      be affected if the source frame did not have a keyframe for that joint.
-      If this is not desired behavior, you can use <b>Clear Frame</b> on the
-      target frame before using <b>Paste Frame</b>.
-      </p>
-
-      <h3> Clear Frame </h3>
-
-      <p>
-      The <b>Clear Frame</b> button clears all position information for the
-      current animation frame.  All model primitives will be restored to the
-      same position they occupy in model edit mode.  In the case of a skeletal
-      animation it deletes keyframes for this frame.  In this case joints
-      will be interpolated between the keyframes in previous frames and the
-      keyframes in following frames.
+      You can copy one keyframe to another using the Animation menu.
       </p>
 
       <h3> Play / Pause </h3>
@@ -212,5 +169,6 @@
       <h3> Close </h3>
 
       <p>
-      The <b>Close</b> button will close the <b>Animation Mode</b> window.
+      To close the <b>Animation Panel</b> and return to model edit mode,
+      select "Animation&nbsp;|&nbsp;Stop&nbsp;Animation&nbsp;Mode".
       </p>

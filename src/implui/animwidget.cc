@@ -38,6 +38,7 @@
 #include <qcheckbox.h>
 #include <qlabel.h>
 #include <qlineedit.h>
+#include <qmessagebox.h>
 #include <qpushbutton.h>
 #include <qslider.h>
 #include <qspinbox.h>
@@ -129,18 +130,7 @@ void AnimWidget::initialize( Model * model, bool isUndo )
    m_frameAnimCount = m_model->getAnimCount( Model::ANIMMODE_FRAME );
    m_animCount = m_skelAnimCount + m_frameAnimCount;
 
-   unsigned int t;
-   for ( t = 0; t < m_skelAnimCount; t++ )
-   {
-      m_animName->insertItem( QString::fromUtf8( m_model->getAnimName( Model::ANIMMODE_SKELETAL, t )), t );
-   }
-
-   for ( t = 0; t < m_frameAnimCount; t++ )
-   {
-      m_animName->insertItem( QString::fromUtf8( m_model->getAnimName( Model::ANIMMODE_FRAME, t )), t + m_skelAnimCount );
-   }
-
-   m_animName->insertItem( tr( "<New Animation>" ), m_animCount );
+   insertAnimationNames();
 
    if ( isUndo )
    {
@@ -207,7 +197,7 @@ void AnimWidget::nameSelected( int index )
 {
    log_debug( "anim name selected: %d\n", index );
 
-   if ( index >= (int) m_animCount )
+   if ( !m_ignoreChange && index >= (int) m_animCount )
    {
       NewAnim win( this );
       if ( win.exec() )
@@ -275,9 +265,40 @@ void AnimWidget::setCurrentFrame( int frame )
    DecalManager::getInstance()->modelUpdated( m_model );
 }
 
+void AnimWidget::deleteClicked()
+{
+   int index = m_animName->currentItem();
+   if ( (unsigned int) index < m_animCount )
+   {
+      if ( QMessageBox::Ok == QMessageBox::warning( this, tr("Delete Animation?", "window title"), 
+            tr("Are you sure you want to delete this animation?"),
+            QMessageBox::Ok, QMessageBox::Cancel ) )
+      {
+         m_ignoreChange = true;
+         Model::AnimationModeE mode = indexToMode( index );
+         int anim = indexToAnim( index );
+         m_model->deleteAnimation( mode, anim );
+
+         refreshPage();
+         m_ignoreChange = true;
+         insertAnimationNames();
+         index--;
+
+         if ( index < 0 )
+         {
+            index = 0;
+         }
+         m_animName->setCurrentItem( index );
+         nameSelected( index );
+         m_ignoreChange = false;
+         m_model->operationComplete( tr( "Delete Animation", "Delete animation, operation complete" ).utf8() );
+      }
+   }
+}
+
 void AnimWidget::changeFPS()
 {
-   if ( m_animCount > 0 )
+   if ( !m_ignoreChange && m_animCount > 0 )
    {
       log_debug( "changing FPS\n" );
       m_model->setAnimFPS( m_mode, indexToAnim( m_animName->currentItem() ), atof(m_fps->text().utf8()) );
@@ -584,6 +605,24 @@ void AnimWidget::undoGuts()
    unsigned anim   = m_model->getCurrentAnimation();
    unsigned frame  = m_model->getCurrentAnimationFrame();
 
+   insertAnimationNames();
+
+   m_animName->setCurrentItem( animToIndex( mode, anim ) );
+   m_model->setCurrentAnimation( mode, anim );
+   m_model->setCurrentAnimationFrame( frame );
+
+   m_currentAnim  = anim;
+   m_currentFrame = frame;
+   m_mode         = mode;
+
+   m_undoing = false;
+
+   refreshPage();
+   DecalManager::getInstance()->modelUpdated( m_model );
+}
+
+void AnimWidget::insertAnimationNames()
+{
    m_animName->clear();
 
    unsigned int t;
@@ -603,19 +642,6 @@ void AnimWidget::undoGuts()
    m_animCount = m_skelAnimCount + m_frameAnimCount;
 
    m_animName->insertItem( tr( "<New Animation>" ), m_animCount );
-
-   m_animName->setCurrentItem( animToIndex( mode, anim ) );
-   m_model->setCurrentAnimation( mode, anim );
-   m_model->setCurrentAnimationFrame( frame );
-
-   m_currentAnim  = anim;
-   m_currentFrame = frame;
-   m_mode         = mode;
-
-   m_undoing = false;
-
-   refreshPage();
-   DecalManager::getInstance()->modelUpdated( m_model );
 }
 
 void AnimWidget::accelActivated( int id )
@@ -650,6 +676,7 @@ void AnimWidget::refreshPage()
          Model::AnimationModeE mode = indexToMode( index );
          index = indexToAnim( index );
 
+         m_deleteButton->setEnabled( true );
          m_frameCount->setEnabled( true );
          m_fps->setEnabled( true );
          m_animName->setEnabled( true );
@@ -661,9 +688,9 @@ void AnimWidget::refreshPage()
 
          m_ignoreChange = true;  // Qt alerts us even if we're responsible
          m_frameCount->setValue( count );
+         m_fps->setText( QString::number(m_model->getAnimFPS( mode, index ) ) );
          m_ignoreChange = false;
 
-         m_fps->setText( QString::number(m_model->getAnimFPS( mode, index ) ) );
          m_countSlider->setMinValue( 1 );
          m_countSlider->setMaxValue( count );
          m_countSlider->setValue( m_currentFrame + 1 );
@@ -674,7 +701,7 @@ void AnimWidget::refreshPage()
       }
       else
       {
-         //m_animName->setEnabled( false );
+         m_deleteButton->setEnabled( false );
          m_frameCount->setEnabled( false );
          m_fps->setEnabled( false );
          m_countSlider->setEnabled( false );

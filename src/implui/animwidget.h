@@ -57,6 +57,7 @@ class AnimWidget : public AnimWidgetBase
       void close();
 
       void nameSelected(int);
+      void deleteClicked();
       void setCurrentFrame(int);
       void changeFPS();
       void changeFrameCount();
@@ -83,6 +84,7 @@ class AnimWidget : public AnimWidgetBase
       int indexToAnim( int index );
       int animToIndex( Model::AnimationModeE mode, int anim );
       void undoGuts();
+      void insertAnimationNames();
 
       Model  * m_model;
       bool     m_doLoop;

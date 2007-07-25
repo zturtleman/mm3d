@@ -6,8 +6,6 @@ For 1.4:
    MS3D multiple bone joints ??
    Finish CAL3D (notify user[s] who are waiting)
 
-   Add delete button to animwidget
-   Correct "Triangle Projection" typo in group panel
    Test merge on multiple bone joint assignments (and points)
    Documentation
       Feature list that tells you where the tool/command is in the
