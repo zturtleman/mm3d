@@ -92,9 +92,13 @@ class Cal3dFilter : public ModelFilter
       };
       typedef enum _FileType_e FileTypeE;
 
-      Model::ModelErrorE errnoToModelError( int err );
+      static Model::ModelErrorE errnoToModelError( int err );
+      static bool listHas( const std::list<std::string> & l,
+            const std::string & val );
+      static std::string addExtension( const std::string file,
+            const std::string ext );
+      static bool versionIsValid( FileTypeE type, int version );
 
-      bool versionIsValid( FileTypeE type, int version );
       // Sub file reads
       Model::ModelErrorE readSubFile( const char * filename );
       Model::ModelErrorE readXSubFile( uint8_t * buf, size_t len );
@@ -133,6 +137,7 @@ class Cal3dFilter : public ModelFilter
       bool readBSubMesh();
       bool readBAnimTrack();
 
+      std::string readLineKey( const char * str );
       std::string readLineFile( const char * str );
 
       // binary sub file writes
@@ -165,6 +170,7 @@ class Cal3dFilter : public ModelFilter
       void writeXColor( const char * tag, const float * fval );
 
       int  timeToFrame( double tsec, double fps );
+      int  findAnimation( const std::string& animName );
       
       Model         * m_model;
       Cal3dOptions  * m_options;
@@ -184,6 +190,7 @@ class Cal3dFilter : public ModelFilter
 
       std::string  m_currentPath;
       std::string  m_modelPartName;
+      std::string  m_modelPartExt;
 };
 
 #endif // __CAL3DFILTER_H

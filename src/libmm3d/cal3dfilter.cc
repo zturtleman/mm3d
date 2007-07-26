@@ -162,7 +162,7 @@ Model::ModelErrorE Cal3dFilter::readFile( Model * model, const char * const file
 
       if ( !success && err == Model::ERROR_NONE )
       {
-         // FIXME re-enable this (or report error by status line)
+         // FIXME re-enable this (or report error in status bar)
          //err = Model::ERROR_BAD_DATA;
       }
    }
@@ -306,9 +306,6 @@ list< string > Cal3dFilter::getWriteTypes()
 // Protected Methods
 //------------------------------------------------------------------
 
-//------------------------------------------------------------------
-// Common read functions
-
 Model::ModelErrorE Cal3dFilter::errnoToModelError( int err )
 {
    switch ( errno )
@@ -326,6 +323,36 @@ Model::ModelErrorE Cal3dFilter::errnoToModelError( int err )
    return Model::ERROR_FILE_OPEN;
 }
 
+bool Cal3dFilter::listHas( const std::list<std::string> & l,
+      const std::string & val )
+{
+   std::list<std::string>::const_iterator it = l.begin();
+   while ( it != l.end() )
+   {
+      if ( (*it) == val )
+      {
+         return true;
+      }
+      it++;
+   }
+   return false;
+}
+
+std::string Cal3dFilter::addExtension( const std::string file, const std::string ext )
+{
+   if ( file.size() > ext.size() )
+   {
+      std::string cmp = std::string(".") + ext;
+      size_t len = cmp.size() - file.size();
+      if ( strcasecmp( &(file.c_str()[file.size() - len]),
+               ext.c_str() ) == 0 )
+      {
+         return file;
+      }
+   }
+   return file + std::string(".") + ext;
+}
+
 bool Cal3dFilter::versionIsValid( FileTypeE type, int version )
 {
    if ( version == CAL3D_VERSION || version == CAL3D_VERSION2 )
@@ -334,6 +361,9 @@ bool Cal3dFilter::versionIsValid( FileTypeE type, int version )
    }
    return false;
 }
+
+//------------------------------------------------------------------
+// Common read functions
 
 Model::ModelErrorE Cal3dFilter::readSubFile( const char * filename )
 {
@@ -365,6 +395,7 @@ Model::ModelErrorE Cal3dFilter::readSubFile( const char * filename )
       if ( ext )
       {
          m_modelPartName.assign( part, ext - part );
+         m_modelPartExt = &ext[1];
       }
       else
       {
@@ -552,10 +583,16 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
             }
             else if ( strncasecmp( str, "animation", 9 ) == 0 )
             {
+               std::string animLabel = readLineKey( str );
                subfile = readLineFile( str );
-               if ( !subfile.empty()  )
+
+               if ( !subfile.empty() && !animLabel.empty() )
                {
-                  animFiles.push_back( subfile );
+                  m_model->addMetaData( animLabel.c_str(), subfile.c_str() );
+                  if ( !listHas( animFiles, subfile ) )
+                  {
+                     animFiles.push_back( subfile );
+                  }
                }
             }
             else if ( strncasecmp( str, "material", 8 ) == 0 )
@@ -565,6 +602,21 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
                {
                   matFiles.push_back( subfile );
                }
+            }
+            else if ( strncasecmp( str, "path", 4 ) == 0 )
+            {
+               string value = readLineFile( str );
+               m_model->addMetaData( "cal3d_path", value.c_str() );
+            }
+            else if ( strncasecmp( str, "scale", 5 ) == 0 )
+            {
+               string value = readLineFile( str );
+               m_model->addMetaData( "cal3d_scale", value.c_str() );
+            }
+            else if ( strncasecmp( str, "rotate", 6 ) == 0 )
+            {
+               string value = readLineFile( str );
+               m_model->addMetaData( "cal3d_rotate", value.c_str() );
             }
             else if ( str[0] == '[' )
             {
@@ -994,6 +1046,8 @@ bool Cal3dFilter::readAnimationFile( uint8_t * buf, size_t len )
       if ( versionIsValid( FT_Animation, fileVersion ) )
       {
          std::string name = m_modelPartName;
+         //name += ".";
+         //name += m_modelPartExt;
 
          //log_debug( "  tracks: %d\n", numTracks );
          //log_debug( "  seconds: %f\n", duration );
@@ -1166,7 +1220,7 @@ bool Cal3dFilter::readBSubMesh()
    int numSprings = readBInt32();
    int numMaps    = readBInt32();
 
-   string name = m_modelPartName; // FIXME add number if necessary
+   string name = m_modelPartName;
 
    log_debug( "  name: %s\n", name.c_str() );
    log_debug( "  material: %d\n", matId );
@@ -1514,6 +1568,24 @@ std::string Cal3dFilter::readLineFile( const char * str )
    return "";
 }
 
+std::string Cal3dFilter::readLineKey( const char * str )
+{
+   const char * eq = strchr( str, '=' );
+   if ( eq )
+   {
+      eq--;
+      while (eq > str && isspace(*eq))
+      {
+         eq--;
+      }
+      std::string rval;
+      rval.assign( str, eq - str + 1 );
+      return rval;
+   }
+
+   return "";
+}
+
 //------------------------------------------------------------------
 // XML read functions
 
@@ -1690,29 +1762,80 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
       fprintf( m_fp, "# File written by Misfit Model 3D\n" );
       fprintf( m_fp, "# http://www.misfitcode.com/misfitmodel3d/\n\n" );
 
-      fprintf( m_fp, "[model]\n\n" );
+      fprintf( m_fp, "[model]\n" );
 
-      // FIXME save path
-      // FIXME save scale
-      // FIXME save rotation
+      char value[64];
+      if ( m_model->getMetaData( "cal3d_path", value, sizeof(value) ) )
+      {
+         fprintf( m_fp, "path=\"%s\"\n", value );
+      }
+      if ( m_model->getMetaData( "cal3d_scale", value, sizeof(value) ) )
+      {
+         fprintf( m_fp, "scale=\"%s\"\n", value );
+      }
+      if ( m_model->getMetaData( "cal3d_rotate", value, sizeof(value) ) )
+      {
+         fprintf( m_fp, "rotate=\"%s\"\n", value );
+      }
 
-      fprintf( m_fp, "# --- Skeleton ---\n" );
+      fprintf( m_fp, "\n# --- Skeleton ---\n" );
       std::string skelFile = replaceExtension( m_modelBaseName.c_str(), "csf" );
       fprintf( m_fp, "skeleton = \"%s\"\n\n", skelFile.c_str() );
       writeSkeletonFile( (base + skelFile).c_str(), model );
 
-      // FIXME some models (squirrel) have multiple anims using the same source
-      // file, want to avoid saving twice, and probably avoid loading twice.
+      // To write animations:
+      //
+      // * Make a map of filenames written (case-sensitive)
+      // and map of animations written.
+      //
+      // * Run through meta data and write file if not already
+      // in map. 
+      //
+      // * Run through animations. If any not written, write them
+      // and create an animation line in the Cal3D file.
+
+      typedef std::map<std::string, bool> AnimFileMap;
+      AnimFileMap fileWritten;
+      std::vector<bool> animWritten;
+
+      animWritten.resize( model->getAnimCount( MODE ) );
+
       fprintf( m_fp, "# --- Animations ---\n" );
       std::string animFile;
+
+      char keyStr[PATH_MAX];
+      char valueStr[PATH_MAX];
+      unsigned int mtcount = model->getMetaDataCount();
+      for ( unsigned int mt = 0; mt < mtcount; mt++ )
+      {
+         model->getMetaData( mt, keyStr, PATH_MAX, valueStr, PATH_MAX );
+         if ( strncmp(keyStr, "animation_", 10 ) == 0 )
+         {
+            animFile = valueStr;
+            std::string animName = removeExtension( valueStr );
+            int a = findAnimation( animName );
+            if ( a >= 0 && fileWritten.find(animFile) == fileWritten.end() )
+            {
+               writeAnimationFile( (base + animFile).c_str(), model, a );
+               animWritten[a] = true;
+               fileWritten[animFile] = true;
+            }
+            fprintf( m_fp, "%s = \"%s\"\n", keyStr, animFile.c_str() );
+         }
+      }
+
       unsigned int acount = model->getAnimCount( MODE );
       for ( unsigned int a = 0; a < acount; a++ )
       {
-         const char * animName = model->getAnimName( MODE, a );
-         animFile = animName;
-         animFile += ".caf";
-         fprintf( m_fp, "animation_%s = \"%s\"\n", animName, animFile.c_str() );
-         writeAnimationFile( (base + animFile).c_str(), model, a );
+         if ( animWritten[a] == 0 )
+         {
+            const char * animName = model->getAnimName( MODE, a );
+            animFile = animName;
+            animFile = addExtension( animFile, "caf" );
+            fprintf( m_fp, "animation_%s = \"%s\"\n", animName, animFile.c_str() );
+            writeAnimationFile( (base + animFile).c_str(), model, a );
+            animWritten[a] = 1;
+         }
       }
       fprintf( m_fp, "\n" );
 
@@ -1742,8 +1865,7 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
          int gcount = model->getGroupCount();
          for ( int g = 0; g < gcount; g++ )
          {
-            // FIXME this doesn't account for two groups that have
-            // the same name
+            // FIXME make sure these names are unique
 
             // Get a count of how many meshes make up this group
             // (probably 1, but you never know)
@@ -2411,6 +2533,20 @@ int Cal3dFilter::timeToFrame( double tsec, double fps )
    }
    //log_debug( "  time %f is frame %d\n", tsec, frame );
    return frame;
+}
+
+int Cal3dFilter::findAnimation( const std::string& animName )
+{
+   int acount = m_model->getAnimCount( MODE );
+   for ( int a = 0; a < acount; a++ )
+   {
+      if ( strcasecmp( animName.c_str(),
+               m_model->getAnimName( MODE, a ) ) == 0 )
+      {
+         return a;
+      }
+   }
+   return -1;
 }
 
 #ifdef PLUGIN
