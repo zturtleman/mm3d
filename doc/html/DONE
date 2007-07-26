@@ -1,6 +1,8 @@
 DONE:
    Rename "View Window" to "Main Window"
    Rename "3D Views" to "Perspective Views"
+   Boolean operations window
+   Viewport pan/zoom buttons, Ctrl+pan/zoom, Ctrl+ScrollWheel
 
 Docs:
    olh_alignwin.htm

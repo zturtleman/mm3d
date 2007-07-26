@@ -3,10 +3,8 @@ TODO:
    grep FIXME
    Update table of contents
    Add "tell me more..." links to window-specific documentation
-   Boolean operations window
    Import animations window
    olh_mm3dformat text FIXME's (and bump version number in mm3d)
-   Viewport pan/zoom buttons, Ctrl+pan/zoom, Ctrl+ScrollWheel
    Screenshot for Persp/Ortho comparison
    Remove all scripting references
    Add any other missing window documentation
