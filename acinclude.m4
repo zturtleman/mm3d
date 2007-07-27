@@ -4,15 +4,15 @@ AC_DEFUN([KSW_IS_DEBUG],
 
   AC_MSG_CHECKING(for debug)
 
-  AC_ARG_WITH([enable-debug],
-    [  --with-enable-debug=yes/no       Specify "yes" to enable a debug build.])
+  AC_ARG_ENABLE([debug],
+    [  --enable-debug=yes/no       Specify "yes" to enable a debug build.])
 
   is_debug=no
 
   enable_debug_save_CFLAGS="${CFLAGS}"
   enable_debug_save_CXXFLAGS="${CXXFLAGS}"
   enable_debug_save_LDFLAGS="${LDFLAGS}"
-  if test x"$with_enable_debug" = xyes; then
+  if test x"$enable_debug" = xyes; then
     CFLAGS="-g"
     CXXFLAGS="${CFLAGS}"
     LDFLAGS=""
@@ -24,13 +24,13 @@ AC_DEFUN([KSW_IS_DEBUG],
 
    AC_TRY_LINK([#include <stdio.h>], , [
 dnl Yay! 
-    if test x"$with_enable_debug" = xyes; then
+    if test x"$enable_debug" = xyes; then
       AC_DEFINE( CODE_DEBUG )
       is_debug=yes
     fi
    ], [
 dnl Boo! 
-    if test x"$with_enable_debug" = xyes; then
+    if test x"$enable_debug" = xyes; then
       CFLAGS="${enable_debug_save_CFLAGS}"
       CXXFLAGS="${enable_debug_save_CXXFLAGS}"
       LDFLAGS="${enable_debug_save_LDFLAGS}"
@@ -662,7 +662,7 @@ EOF
 dnl Internal subroutine of BNV_HAVE_QT
 dnl Set bnv_qt_dir bnv_qt_include_dir bnv_qt_bin_dir bnv_qt_lib_dir bnv_qt_lib
 dnl Copyright 2001 Bastiaan N. Veelo <Bastiaan.N.Veelo@immtek.ntnu.no>
-AC_DEFUN(BNV_PATH_QT_DIRECT,
+AC_DEFUN([BNV_PATH_QT_DIRECT],
 [
   ## Binary utilities ##
   if test x"$with_Qt_bin_dir" != x; then

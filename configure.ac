@@ -11,6 +11,7 @@ AC_CONFIG_HEADER([config.h])
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_RANLIB
+KSW_IS_DEBUG
 
 # Checks for libraries.
 
@@ -50,7 +51,6 @@ AC_FUNC_STAT
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([ftime getcwd gettimeofday localtime_r memmove memset mkdir pow realpath sqrt strcasecmp strchr strcspn strdup strerror strncasecmp strrchr strspn strstr])
 
-KSW_IS_DEBUG
 KSW_HAVE_LUA
 KSW_HAVE_LUALIB
 KSW_IS_OSX
