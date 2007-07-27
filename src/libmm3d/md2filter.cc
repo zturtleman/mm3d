@@ -48,6 +48,9 @@ static float s_quakeNormals[ MAX_QUAKE_NORMALS ][3] = {
 
 #include <string>
 
+// FIXME warn if texture coordinates are out of range
+// FIXME warn if groups are not all assigned to the same texture
+
 using std::list;
 using std::string;
 
