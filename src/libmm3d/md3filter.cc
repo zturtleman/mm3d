@@ -338,6 +338,7 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
          int32_t version = readI4();
          char pk3Name[MAX_QPATH];
          readString( pk3Name, sizeof( pk3Name ) );
+         replaceBackslash( pk3Name );
 
          int32_t flags = readI4();
          int32_t numFrames = readI4();
@@ -382,32 +383,6 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
 
          m_pathList.push_back( mpath );
          m_lastMd3Path = mpath.path;
-
-         /*
-         //Set MD3_PATH Metadata
-         char value[32];
-         if ( !m_model->getMetaData( "MD3_PATH", value, sizeof(value) ) )
-         {
-            // Only set MD3_PATH if not already set
-            char * md3Path = (char *) malloc( sizeof(char) * ( strlen( pk3Name ) +2 ) );
-            strcpy( md3Path, pk3Name );
-            log_debug( "pk3Name: %s\n", md3Path );
-            char *temp = strrchr( md3Path , '/' );
-            if ( temp )
-            {
-               temp += 1;
-               temp[0] = '\0';
-               model->addMetaData( "MD3_PATH", string(md3Path).c_str() );
-               log_debug( "set MD3_PATH to %s\n", md3Path );
-            }
-
-            free( md3Path );
-         }
-         else
-         {
-            log_debug( "already have MD3_PATH\n" );
-         }
-         */
 
          // frames
          // mm3d doesn't need this, but nice to have if you ever need to debug
@@ -501,23 +476,11 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
       size_t i = 0;
       for ( i = 0; mainStr.empty() && i < len; i++ )
       {
-         if( !m_pathList[i].path.empty() )
+         if ( m_pathList[i].material < 0 )
          {
-            if ( mainStr.empty() )
-            {
-               mainStr = m_pathList[i].path;
-            }
-            if ( m_pathList[i].material < 0 )
-            {
-               mainStr = m_pathList[i].path;
-               break;
-            }
+            mainStr = m_pathList[i].path;
+            break;
          }
-      }
-
-      if ( mainStr.empty() )
-      {
-         mainStr = defaultPath();
       }
 
       model->addMetaData( "MD3_PATH", mainStr.c_str() );
@@ -530,7 +493,9 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
             std::string key = "MD3_PATH_";
             if ( m_pathList[i].material >= 0 )
             {
-               key += model->getTextureName( m_pathList[i].material );
+               const char * name = model->getTextureName(
+                     m_pathList[i].material );
+               key += name ? name : "";
             }
             else
             {
@@ -1864,21 +1829,18 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    magic[3]='3';
    int32_t version = MD3_VERSION;
    char pk3Name[MAX_QPATH];
-   char pk3Path[MAX_QPATH] = "";
+   std::string pk3Path = "";
    memset( pk3Name, 0, MAX_QPATH );
-   memset( pk3Path, 0, MAX_QPATH );
-   bool hasMeta = m_model->getMetaData( "MD3_PATH", pk3Path, sizeof(pk3Path) );
-   if ( ! hasMeta )
+
+   pk3Path = sectionToPath( section );
+   if ( !pk3Path.empty() 
+         && pk3Path[pk3Path.size() - 1] != '/' 
+         && pk3Path.size() < ( MAX_QPATH+1 ) )
    {
-      // NOTE: I removed the "model/" stuff because it's causing problems with
-      // working models
-      strcpy( pk3Path, "" );
+      pk3Path += "/";
    }
-   else if ( pk3Path[strlen( pk3Path )-1] != '/' && strlen( pk3Path ) < ( MAX_QPATH+1 ) )
-   {
-      strcat( pk3Path, "/" );
-   }
-   if ( PORT_snprintf( pk3Name, sizeof( pk3Name ), "%s%s", pk3Path, modelBaseName.c_str() ) >= MAX_QPATH )
+   if ( PORT_snprintf( pk3Name, sizeof( pk3Name ), "%s%s",
+            pk3Path.c_str(), modelBaseName.c_str() ) >= MAX_QPATH )
    {
       log_error( "MD3_PATH+filename is too large\n" );
       m_model->setFilterSpecificError( "MD3_PATH+filename is to long." );
@@ -2256,20 +2218,6 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
          // SHADERS
          for ( int32_t t = 0; t < mNumShaders; t++ )
          {
-            char sName[MAX_QPATH];
-            char sPK3Path[MAX_QPATH];
-            memset( sName, 0, MAX_QPATH );
-            memset( sPK3Path, 0, MAX_QPATH );
-
-            hasMeta = m_model->getMetaData( "MD3_PATH", sPK3Path, sizeof(sPK3Path) );
-            if ( ! hasMeta )
-            {
-               strcpy( sPK3Path, "" );
-            }
-            else if ( sPK3Path[strlen( sPK3Path )-1] != '/' && strlen( sPK3Path ) < ( MAX_QPATH + 1 ) )
-            {
-               strcat( sPK3Path, "/" );
-            }
             int matId = m_model->getGroupTextureId( (*mlit).group );
             string matFileName;
             string matFullName;
@@ -2287,6 +2235,21 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                matFileName += ".tga";
             }
 
+            char sName[MAX_QPATH];
+            std::string spk3Path;
+            memset( sName, 0, MAX_QPATH );
+
+            if ( matId >= 0 )
+            {
+               spk3Path = materialToPath( matId );
+               if ( !spk3Path.empty() 
+                     && spk3Path[spk3Path.size() - 1] != '/' 
+                     && spk3Path.size() < ( MAX_QPATH+1 ) )
+               {
+                  spk3Path += "/";
+               }
+            }
+
             normalizePath( matFileName.c_str(), matFullName, matPath, matBaseName );
 
             log_debug( "comparing %s and %s\n", matFullName.c_str(), m_modelPath.c_str() );
@@ -2295,7 +2258,8 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                log_debug( "path is common, using MD3_PATH\n" );
                // model path is the same as texture file path, remove model
                // path and prepend MD3_PATH
-               if ( PORT_snprintf( sName, sizeof( sName ), "%s%s", sPK3Path, matBaseName.c_str() ) >= MAX_QPATH )
+               if ( PORT_snprintf( sName, sizeof( sName ), "%s%s",
+                        spk3Path.c_str(), matBaseName.c_str() ) >= MAX_QPATH )
                {
                   fclose( m_fpOut );
                   log_error( "MD3_PATH+texture_filename is to long.\n" );
@@ -2312,32 +2276,8 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                common = m_modelPath;
 
                // default to PK3 Path
-               PORT_snprintf( sName, sizeof( sName ), "%s%s", sPK3Path, matBaseName.c_str() );
-
-               if ( sPK3Path[0] )
-               {
-                  common.resize( common.size() - (strlen(sPK3Path) - 1) );
-
-                  if ( strncmp( matFileName.c_str(), common.c_str(), common.size() ) == 0 )
-                  {
-                     log_debug( "pre-pk3path is common\n" );
-                     // pre-pk3path is common, remove that
-                     std::string shaderFile;
-                     //shaderFile.assign( matFileName, common.size(), matFileName.size() - common.size() );
-                     shaderFile.assign( matFileName, common.size(), matFileName.size() - common.size() );
-                     PORT_snprintf( sName, sizeof(sName), "%s", shaderFile.c_str() );
-                  }
-                  else
-                  {
-                     // nothing in common, give up and use pk3 path
-                     log_debug( "pre-pk3path is not common\n" );
-                  }
-               }
-               else
-               {
-                  // no pk3path, just use matBaseName
-                  log_debug( "pre-pk3path is not common\n" );
-               }
+               PORT_snprintf( sName, sizeof( sName ), "%s%s",
+                     spk3Path.c_str(), matBaseName.c_str() );
             }
             else
             {
@@ -2687,13 +2627,36 @@ std::string Md3Filter::extractPath( const char * md3DataPath )
 
 std::string Md3Filter::sectionToPath( int materialIndex )
 {
-   // FIXME implement
+   char pk3Path[MAX_QPATH] = "";
+   if ( m_model->getMetaData( "MD3_PATH", pk3Path, sizeof(pk3Path) ) )
+   {
+      return pk3Path;
+   }
+   // NOTE: I removed the "model/" stuff because it's causing problems with
+   // working models
    return "";
 }
 
 std::string Md3Filter::materialToPath( int materialIndex )
 {
-   // FIXME implement
+   char pk3Path[MAX_QPATH] = "";
+
+   const char * name = m_model->getTextureName( materialIndex );
+   if ( !name )
+   {
+      name = "";
+   }
+   std::string keyStr = std::string("MD3_PATH_") + name;
+   if ( m_model->getMetaData( keyStr.c_str(), pk3Path, sizeof(pk3Path) ) )
+   {
+      return pk3Path;
+   }
+
+   keyStr = "MD3_PATH";
+   if ( m_model->getMetaData( keyStr.c_str(), pk3Path, sizeof(pk3Path) ) )
+   {
+      return pk3Path;
+   }
    return "";
 }
 

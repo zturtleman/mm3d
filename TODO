@@ -1,15 +1,12 @@
 For 1.4:
    Update ad3dsfilter with canExport
    MD3
-      Finish MD3_PATH changes (save with separate MD3_PATH variables)
-      Make sure we include replaceBackslash (around md3filter.cc:340)
+      Test changes with player models
    MS3D multiple bone joints ??
    Finish CAL3D (notify user[s] who are waiting)
 
    Test merge on multiple bone joint assignments (and points)
    Documentation
-      Feature list that tells you where the tool/command is in the
-         menu system
       GL zoom/grid units
 
    Texture Projections
