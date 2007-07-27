@@ -1,4 +1,5 @@
 DONE:
+   olh_mm3dformat text FIXME's (and bump version number in mm3d)
    Rename "View Window" to "Main Window"
    Rename "3D Views" to "Perspective Views"
    Boolean operations window

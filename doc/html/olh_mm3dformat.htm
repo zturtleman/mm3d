@@ -15,17 +15,19 @@
 <h2> Overview </h2>
 
 <p>
-This document describes version 1.4 of the MM3D file format.  Data
+This document describes version 1.6 of the MM3D file format.  Data
 that is available only in specific versions will be noted below.  All other data
 is common to every version of the file format.  Previous releases of 
 Misfit Model 3D that do not read all data segments should still be able to
 load model files, though some information may be lost.
 </p>
 
+<!--
 <p>
 Version 1.6 is in progress. Some details of version 1.6 will be
 included in this document.
 </p>
+-->
 
 <p>
 The MM3D file format was designed to be easy to extend and easy to
@@ -57,7 +59,7 @@ strings are truncated to 1024 bytes (including the terminating null) if necessar
 </p>
 
 <p>
-As of version 1.4 (and later 1.3 versions) all text strings are encoded as UTF-8.
+As of MM3D version 1.4 (and later 1.3 versions) all text strings are encoded as UTF-8.
 Versions 1.2 and earlier (as well as early 1.3 versions) used extended ASCII encoding.
 If you want your MM3D models to be usable in new and older versions of MM3D you should 
 use only standard ASCII characters (0-127) for model object names and texture
@@ -77,11 +79,12 @@ are subject to change without notice.
 The file header is 12 bytes.
 </p>
 
+<!-- FIXME update version number -->
 <table border="1" cellpadding="4" cellspacing="0">
    <tr><th>Data</th>          <th>Type</th>     <th>Notes</th>           <th>Description</th></tr>
    <tr><td>MAGIC_NUMBER</td>  <td>int8 * 8</td> <td>'MISFIT3D'</td>      <td>If the first 8 bytes do not match this string it is not an MM3D file</td></tr>
    <tr><td>MAJOR_VERSION</td> <td>uint8</td>    <td>0x01</td>            <td>Major version number, the file format may be incompatible with newer or older filters if the major version number does not match</td></tr>
-   <tr><td>MINOR_VERSION</td> <td>uint8</td>    <td>0x04</td>            <td>Minor version number, older filters should be able to get useful data from the file but may not understand the value of all flags or data segments</td></tr>
+   <tr><td>MINOR_VERSION</td> <td>uint8</td>    <td>0x06</td>            <td>Minor version number, older filters should be able to get useful data from the file but may not understand the value of all flags or data segments</td></tr>
    <tr><td>MODEL_FLAGS</td>   <td>uint8</td>    <td>0x00 (reserved)</td> <td>Currently there are no model-wide flags, this byte is reserved in case such flags are ever needed</td></tr>
    <tr><td>OFFSET_COUNT</td>  <td>uint8</td>    <td>&nbsp;</td>          <td>This is the number of data segments.  It tells you how many offsets are in the next section of the file</td></tr>
 </table>
@@ -141,11 +144,11 @@ the file is complete.  There is no data at the end of file offset.
    <tr><td>0x0141</td> <td>&nbsp;</td> <td>Embedded textures (not implemented)</td></tr>
    <tr><td>0x0142</td> <td>&nbsp;</td> <td><a href="#data_type_external_textures">External textures</a></td></tr>
    <tr><td>0x0161</td> <td>&nbsp;</td> <td><a href="#data_type_materials">Materials</a></td></tr>
-   <tr><td>0x016c</td> <td bgcolor="red">1.6+  </td> <td><a href="#data_type_texture_projection_triangles">Texture Projections Triangles</a></td></tr>
+   <tr><td>0x016c</td> <td>1.6+  </td> <td><a href="#data_type_texture_projection_triangles">Texture Projections Triangles</a></td></tr>
    <tr><td>0x0191</td> <td>1.4+  </td> <td><a href="#data_type_canvas_background_images">Canvas Background Images</a></td></tr>
    <tr><td>0x0301</td> <td>&nbsp;</td> <td><a href="#data_type_skeletal_animations">Skeletal Animations</a></td></tr>
    <tr><td>0x0321</td> <td>&nbsp;</td> <td><a href="#data_type_frame_animations">Frame Animations</a></td></tr>
-   <tr><td>0x0321</td> <td bgcolor="red">1.6+  </td> <td><a href="#data_type_frame_points">Frame Animation Points</a></td></tr>
+   <tr><td>0x0321</td> <td>1.6+  </td> <td><a href="#data_type_frame_points">Frame Animation Points</a></td></tr>
    <tr><td>0x0341</td> <td>&nbsp;</td> <td>Frame Relative Animations (not implemented)</td></tr>
    <tr><td>0x3fff</td> <td>&nbsp;</td> <td>End of file (offset is file size)</td></tr>
 </table>
@@ -159,10 +162,10 @@ the file is complete.  There is no data at the end of file offset.
    <tr><td>0x8026</td> <td>&nbsp;</td> <td><a href="#data_type_triangle_normals">Triangle Normals</a></td></tr>
    <tr><td>0x8041</td> <td>&nbsp;</td> <td><a href="#data_type_joints">Joints</a></td></tr>
    <tr><td>0x8046</td> <td>&nbsp;</td> <td><a href="#data_type_joint_vertices">Joint Vertices</a></td></tr>
-   <tr><td>0x8061</td> <td bgcolor="red">1.6+  </td> <td><a href="#data_type_points">Points</a></td></tr>
+   <tr><td>0x8061</td> <td>1.6+  </td> <td><a href="#data_type_points">Points</a></td></tr>
    <tr><td>0x8106</td> <td>1.4+  </td> <td><a href="#data_type_smoothness_angles">Smoothness Angles</a></td></tr>
-   <tr><td>0x8168</td> <td bgcolor="red">1.6+  </td> <td><a href="#data_type_weighted_influences">Weighted Influences</a></td></tr>
-   <tr><td>0x8168</td> <td bgcolor="red">1.6+  </td> <td><a href="#data_type_texture_projections">Texture Projections (sphere/cylinder map)</a></td></tr>
+   <tr><td>0x8168</td> <td>1.6+  </td> <td><a href="#data_type_weighted_influences">Weighted Influences</a></td></tr>
+   <tr><td>0x8168</td> <td>1.6+  </td> <td><a href="#data_type_texture_projections">Texture Projections (sphere/cylinder map)</a></td></tr>
    <tr><td>0x8121</td> <td>&nbsp;</td> <td><a href="#data_type_texture_coordinates">Texture Coordinates</a></td></tr>
 </table>
 
@@ -288,7 +291,7 @@ Vertex flags:
    <tr><th>Bits</th> <th>Version</th>   <th>Data</th>        <th>Description</th></tr>
    <tr><td>0</td>    <td>&nbsp; </td>   <td>Hidden</td>      <td>Set if hidden, clear if visible</td></tr>
    <tr><td>1</td>    <td>&nbsp; </td>   <td>Selected</td>    <td>Set if selected, clear if unselected</td></tr>
-   <tr><td>2</td>    <td bgcolor="red">1.6+   </td>   <td>Free Vertex</td> <td>Set if vertex does not have to be connected to a face (don't auto-delete when face is deleted)</td></tr>
+   <tr><td>2</td>    <td>1.6+   </td>   <td>Free Vertex</td> <td>Set if vertex does not have to be connected to a face (don't auto-delete when face is deleted)</td></tr>
 </table>
 
 <a name="data_type_triangles"></a>
@@ -382,14 +385,14 @@ The joint vertices section associates vertices with joints.
 </p>
 
 <p>
-<font color="red"><b>NOTE: In version 1.6 and later this data will be deprecated.</b> 
+<b>NOTE: As of version 1.6 this data is deprecated.</b>
 Use the <a href="#data_type_weighted_influences">Weighted Influences</a> data
 instead. This data section is maintained for backwards compatibility.
 Newer files should have this data and the Weighted Influences data. If the
 Weighted Influences section is present it takes precedence over this data.
 When writing this data, only one joint per vertex is allowed. The joint
 with the most influence (highest weight) on the vertex is the joint index
-that should be used.  </font>
+that should be used.
 </p>
 
 <table border="1" cellpadding="4" cellspacing="0">
@@ -403,7 +406,7 @@ that should be used.  </font>
 <h3> Points </h3>
 
 <p>
-<font color="red"><b>Version 1.6 and later.</b></font>
+<b>Version 1.6 and later.</b>
 </p>
 
 <p>
@@ -501,7 +504,7 @@ Group flags:
 <h3> Weighted Influences </h3>
 
 <p>
-<font color="red"><b>Version 1.6 and later.</b></font>
+<b>Version 1.6 and later.</b>
 </p>
 
 <p>
@@ -564,7 +567,7 @@ Influence Types:
 <h3> Texture Projections </h3>
 
 <p>
-<font color="red"><b>Version 1.6 and later.</b></font>
+<b>Version 1.6 and later.</b>
 </p>
 
 <p>
@@ -702,7 +705,7 @@ stretched.
 <h3> Texture Projection Triangles </h3>
 
 <p>
-<font color="red"><b>Version 1.6 and later.</b></font>
+<b>Version 1.6 and later.</b>
 </p>
 
 <p>
@@ -848,7 +851,7 @@ Frame animation vertex data type:
 <h3> Frame Animation Points </h3>
 
 <p>
-<font color="red"><b>Version 1.6 and later.</b></font>
+<b>Version 1.6 and later.</b>
 </p>
 
 <p>

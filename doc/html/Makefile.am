@@ -43,9 +43,11 @@ SPAGES =  \
 	olh_texturewin.htm \
 	olh_tips.htm \
 	olh_tools.htm \
+	olh_tutorial_index.htm \
 	olh_use.htm \
 	olh_valuewin.htm \
 	olh_viewportsettings.htm \
+	olh_whatsnew.htm \
 	olh_mainwin.htm
 
 PAGES =  \
@@ -91,9 +93,11 @@ PAGES =  \
 	olh_texturewin.html \
 	olh_tips.html \
 	olh_tools.html \
+	olh_tutorial_index.html \
 	olh_use.html \
 	olh_valuewin.html \
 	olh_viewportsettings.html \
+	olh_whatsnew.html \
 	olh_mainwin.html
 
 EXTRA_DIST = ${SPAGES} ${PAGES}
