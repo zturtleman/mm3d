@@ -239,7 +239,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
 
    m_statusBar = new StatusBar( m_model, mainWidget, "" );
    mainWidget->addWidgetToLayout( m_statusBar );
-   m_statusBar->setText( tr( "Press F1 for help using any window" ) );
+   m_statusBar->setText( tr( "Press F1 for help using any window" ).utf8() );
    m_statusBar->setMaximumHeight( 30 );
 
    m_animWin = new QDockWindow( QDockWindow::InDock, this );
