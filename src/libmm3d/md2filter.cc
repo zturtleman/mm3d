@@ -48,9 +48,6 @@ static float s_quakeNormals[ MAX_QUAKE_NORMALS ][3] = {
 
 #include <string>
 
-// FIXME warn if texture coordinates are out of range
-// FIXME warn if groups are not all assigned to the same texture
-
 using std::list;
 using std::string;
 
@@ -630,13 +627,21 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
 {
    if ( model && filename && filename[0] )
    {
-      /*
-      if ( model->getAnimCount( Model::ANIMMODE_FRAME ) == 0 )
+      int groupTexture = -1;
+      int gcount = model->getGroupCount();
+      for ( int g = 0; g < gcount; g++ )
       {
-         model->setFilterSpecificError( "MD2 export requires frame animations." );
-         return Model::ERROR_FILTER_SPECIFIC;
+         int tex = model->getGroupTextureId( g );
+         if ( tex >= 0 )
+         {
+            if ( groupTexture >= 0 && groupTexture != tex ) {
+               model->setFilterSpecificError( "MD2 requires all groups "
+                     "to have the same material." );
+               return Model::ERROR_FILTER_SPECIFIC;
+            }
+            groupTexture = tex;
+         }
       }
-      */
 
       FILE * fp = fopen( filename, "wb" );
       if ( fp == NULL )
