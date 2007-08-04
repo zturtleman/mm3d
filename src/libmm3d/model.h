@@ -729,9 +729,17 @@ class Model
       bool getFrameAnimVertexNormal( const unsigned & anim, const unsigned & frame, const unsigned & vertex, 
             double & x, double & y, double & z );
 
-      bool hasSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, const unsigned & joint, const bool & isRotation );
-      bool getSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, const unsigned & joint, const bool & isRotation,
+      bool hasSkelAnimKeyframe( unsigned anim, unsigned frame,
+            unsigned joint, bool isRotation );
+      bool getSkelAnimKeyframe( unsigned anim, unsigned frame,
+            unsigned joint, bool isRotation,
             double & x, double & y, double & z );
+      bool interpSkelAnimKeyframe( unsigned anim, unsigned frame,
+            bool loop, unsigned joint, bool isRotation,
+            double & x, double & y, double & z );
+      bool interpSkelAnimKeyframeTime( unsigned anim, double frameTime,
+            bool loop, unsigned joint,
+            Matrix & relativeFinal );
 
       bool getNormal( unsigned triangleNum, unsigned vertexIndex, float *normal );
       bool getFlatNormal( unsigned triangleNum, float *normal );

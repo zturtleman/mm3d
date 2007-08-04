@@ -122,6 +122,42 @@ void Matrix::setRotation( const Vector & radians )
    setRotation( radians.getVector() );
 }
 
+void Matrix::getRotation( double & x, double & y, double & z ) const
+{
+   double sinYaw;
+   double cosYaw;
+   double sinPitch = -m_val[2];
+   double cosPitch = sqrt( 1 - sinPitch*sinPitch );
+   double sinRoll;
+   double cosRoll;
+
+   // if cosPitch is NaN, it's because sinPitch^2 was slightly greater than 1.0
+   // in that case, cosPitch should be 0.0, so detect and correct it here
+   if ( cosPitch != cosPitch )
+   {
+      cosPitch = 0.0;
+   }
+
+   if ( fabs( cosPitch ) > 0.0001 )
+   {
+      sinRoll = m_val[6]  / cosPitch;
+      cosRoll = m_val[10] / cosPitch;
+      sinYaw  = m_val[1]  / cosPitch;
+      cosYaw  = m_val[0]  / cosPitch;
+   }
+   else
+   {
+      sinRoll = -m_val[9];
+      cosRoll = m_val[5];
+      sinYaw  = 0;
+      cosYaw  = 1;
+   }
+
+   z = atan2( sinYaw, cosYaw );
+   y = atan2( sinPitch, cosPitch );
+   x = atan2( sinRoll, cosRoll );
+}
+
 void Matrix::getRotation( double * radians ) const
 {
    if ( radians )
@@ -164,6 +200,13 @@ void Matrix::getRotation( double * radians ) const
 void Matrix::getRotation( Vector & radians ) const
 {
    getRotation( radians.getVector() );
+}
+
+void Matrix::getTranslation( double & x, double & y, double & z ) const
+{
+   x = m_val[ 12 ];
+   y = m_val[ 13 ];
+   z = m_val[ 14 ];
 }
 
 void Matrix::getTranslation( double * vector ) const

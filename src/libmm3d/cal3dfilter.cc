@@ -28,7 +28,6 @@
 #include "log.h"
 #include "binutil.h"
 #include "misc.h"
-//#include "version.h"
 #include "filtermgr.h"
 #include "endianconfig.h"
 #include "texmgr.h"
@@ -76,6 +75,32 @@ static char * _skipSpace( char * str )
       str++;
    }
    return str;
+}
+
+static void _escapeCal3dName( std::string & name )
+{
+   size_t i = 0;
+   for ( i = 0; i < name.size(); i++ )
+   {
+      if ( isspace( name[i] ) )
+         name[i] = '_';
+      else if ( !isalnum( name[i] ) )
+         name[i] = '_'; // FIXME remove this character
+   }
+}
+
+static void _escapeFileName( std::string & file )
+{
+   _escapeCal3dName( file ); // for now this is the same code
+}
+
+static void _strtolower( std::string & str )
+{
+   size_t i = 0;
+   for ( i = 0; i < str.size(); i++ )
+   {
+      str[i] = tolower( str[i] );
+   }
 }
 
 Cal3dFilter::Cal3dOptions::Cal3dOptions()
@@ -1749,13 +1774,37 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
    FILE * fp = fopen( filename, "w" );
    if ( fp )
    {
+      // FIXME collect errors from sub-write routines
       std::string base = m_modelPath += "/";
       m_fp = fp;
 
       // We need to create one to make sure that the default options we
       // use in the filter match the default options presented to the
       // user in the dialog box.
+      // FIXME implement options dialog
       m_options = dynamic_cast< Cal3dOptions *>( o );
+
+      if ( m_options && !m_options->m_singleMeshFile )
+      {
+         // If the model has separate mesh files for each mesh, we can't
+         // allow more than one group with the same name (filename clash).
+         int gcount = model->getGroupCount();
+         std::map<std::string, int> groupMap;
+         for ( int g = 0; g < gcount; g++ )
+         {
+            std::string name = model->getGroupName(g);
+            _escapeFileName(name);
+            _strtolower(name);
+            groupMap[name]++;
+            if ( groupMap[name] > 1 )
+            {
+               // FIXME test this error
+               model->setFilterSpecificError(
+                     "Cal3d Group names must be unique." );
+               return Model::ERROR_FILTER_SPECIFIC;
+            }
+         }
+      }
 
       fprintf( m_fp, "#\n# cal3d model configuration file\n#\n" );
 
@@ -1865,8 +1914,6 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
          int gcount = model->getGroupCount();
          for ( int g = 0; g < gcount; g++ )
          {
-            // FIXME make sure these names are unique
-
             // Get a count of how many meshes make up this group
             // (probably 1, but you never know)
             int groupMeshes = 0;
@@ -1882,8 +1929,10 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
             int currentMesh = 0;
             for ( meshNum = 0; meshNum < meshCount; meshNum++ )
             {
+               currentMesh = 0;
                if ( ml[meshNum].group == g )
                {
+                  // FIXME Test mesh names
                   // Append a digit if there's more than one mesh
                   // for this group
                   digitstr[0] = '\0';
@@ -1893,9 +1942,12 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
                   }
 
                   // Create mesh name and filename strings
-                  meshName  = "mesh";
+                  meshName  = m_model->getGroupName(g);
                   meshName += digitstr;
                   meshFile  = meshName + ".cmf";
+
+                  _escapeCal3dName(meshName);
+                  _escapeFileName(meshFile);
 
                   // Write mesh file
                   fprintf( m_fp, "mesh_%s = \"%s\"\n\n", meshName.c_str(), meshFile.c_str() );
@@ -2302,9 +2354,6 @@ void Cal3dFilter::writeBAnimTrack( unsigned int anim, unsigned int bone )
 
    for ( unsigned int f = 0; f < frameCount; f++ )
    {
-      // FIXME MM3D allows one type of keyframe without the other, Cal3D requires
-      // both rotation and translation for each keyframe. If we have one and the
-      // other is missing, we must do interpolation here.
       if ( m_model->getSkelAnimKeyframe( anim, f, bone, false, kf[0], kf[1], kf[2] )
             || m_model->getSkelAnimKeyframe( anim, f, bone, true, kf[0], kf[1], kf[2] ) )
       {
@@ -2322,14 +2371,16 @@ void Cal3dFilter::writeBAnimTrack( unsigned int anim, unsigned int bone )
    {
       writeBFloat( ((double) (*it)) / fps );
 
-      // FIXME get translation and rotation keyframe for each frame
-      // (create missing keyframe for trans or rot as needed)
+      // FIXME test interpolation
+      // MM3D allows one type of keyframe without the other, Cal3D requires
+      // both rotation and translation for each keyframe. If we have one
+      // and the other is missing, we must do interpolation here.
       double krot[3] = { 0, 0, 0};
       double ktran[3] = { 0, 0, 0};
 
-      m_model->getSkelAnimKeyframe( anim, (*it), bone,
+      m_model->interpSkelAnimKeyframe( anim, (*it), true, bone,
             true, krot[0], krot[1], krot[2] );
-      m_model->getSkelAnimKeyframe( anim, (*it), bone,
+      m_model->interpSkelAnimKeyframe( anim, (*it), true, bone,
             false, ktran[0], ktran[1], ktran[2] );
 
       Matrix m;

@@ -53,8 +53,10 @@ class Matrix
       void setRotationInDegrees( const double * degrees );
       void setRotationInDegrees( const Vector & degrees );
       void setRotationInDegrees( double x, double y, double z );
+      void getRotation( double & x, double & y, double & z ) const;
       void getRotation( Vector & radians ) const;
       void getRotation( double * radians ) const;
+      void getTranslation( double & x, double & y, double & z ) const;
       void getTranslation( Vector & vector ) const;
       void getTranslation( double * vector ) const;
 

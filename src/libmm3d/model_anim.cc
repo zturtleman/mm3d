@@ -2514,7 +2514,8 @@ bool Model::getFrameAnimVertexNormal( const unsigned & anim, const unsigned & fr
    }
 }
 
-bool Model::hasSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, const unsigned & joint, const bool & isRotation )
+bool Model::hasSkelAnimKeyframe( unsigned anim, unsigned frame,
+      unsigned joint, bool isRotation )
 {
    if ( anim < m_skelAnims.size() 
          && frame < m_skelAnims[anim]->m_frameCount
@@ -2548,7 +2549,8 @@ bool Model::hasSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, 
    }
 }
 
-bool Model::getSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, const unsigned & joint, const bool & isRotation,
+bool Model::getSkelAnimKeyframe( unsigned anim, unsigned frame,
+      unsigned joint, bool isRotation,
       double & x, double & y, double & z )
 {
    if ( anim < m_skelAnims.size() 
@@ -2589,6 +2591,218 @@ bool Model::getSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, 
    else
    {
       log_error( "anim keyframe out of range: anim %d, frame %d, joint %d\n", anim, frame, joint );
+      return false;
+   }
+}
+
+bool Model::interpSkelAnimKeyframe( unsigned anim, unsigned frame,
+      bool loop, unsigned j, bool isRotation,
+      double & x, double & y, double & z )
+{
+   if ( anim < m_skelAnims.size() 
+         && frame < m_skelAnims[anim]->m_frameCount
+         && j < m_joints.size() )
+   {
+      SkelAnim * sa = m_skelAnims[anim];
+      double totalTime = sa->m_spf * sa->m_frameCount;
+      double frameTime = (double) frame / (double) sa->m_frameCount
+                         * totalTime;
+
+      Matrix relativeFinal;
+      bool rval = interpSkelAnimKeyframeTime(anim, frameTime, loop, j,
+            relativeFinal );
+
+      if ( isRotation )
+         relativeFinal.getRotation( x, y, z );
+      else
+         relativeFinal.getTranslation( x, y, z );
+
+      return rval;
+   }
+   else
+   {
+      log_error( "anim keyframe out of range: anim %d, frame %d, joint %d\n", anim, frame, j );
+      return false;
+   }
+}
+
+bool Model::interpSkelAnimKeyframeTime( unsigned anim, double frameTime,
+      bool loop, unsigned j, Matrix & relativeFinal )
+{
+   if ( anim < m_skelAnims.size() && j < m_joints.size() )
+   {
+      SkelAnim * sa = m_skelAnims[anim];
+      double totalTime = sa->m_spf * sa->m_frameCount;
+      while ( frameTime > totalTime )
+      {
+         if ( !loop )
+         {
+            return false;
+         }
+         frameTime -= totalTime;
+      }
+
+      Matrix transform;
+
+      if ( !sa->m_jointKeyframes[j].empty() )
+      {
+         int firstRot  = -1;
+         int firstTran = -1;
+         int lastRot  = -1;
+         int lastTran = -1;
+         int stopRot  = -1;
+         int stopTran = -1;
+         int rot  = -1;
+         int tran = -1;
+         for ( unsigned k = 0; k < sa->m_jointKeyframes[j].size(); k++ )
+         {
+            if ( sa->m_jointKeyframes[j][k]->m_isRotation )
+            {
+               if ( firstRot == -1 )
+                  firstRot = k;
+               lastRot = k;
+            }
+            else
+            {
+               if ( firstTran == -1 )
+                  firstTran = k;
+               lastTran = k;
+            }
+
+            if ( sa->m_jointKeyframes[j][k]->m_time <= frameTime )
+            {
+               // Less than current time
+               // get latest keyframe for rotation and translation
+               if ( sa->m_jointKeyframes[j][k]->m_isRotation )
+                  rot = k;
+               else
+                  tran = k;
+            }
+            else
+            {
+               // Greater than current time
+               // get earliest keyframe for rotation and translation
+               if ( sa->m_jointKeyframes[j][k]->m_isRotation )
+               {
+                  if ( stopRot == -1 )
+                     stopRot = k;
+               }
+               else
+               {
+                  if ( stopTran == -1 )
+                     stopTran = k;
+               }
+            }
+         }
+
+         if ( loop )
+         {
+            if ( rot == -1 )
+               rot = lastRot;
+            if ( tran == -1 )
+               tran = lastTran;
+
+            if ( stopRot == -1 )
+               stopRot = firstRot;
+            if ( stopTran == -1 )
+               stopTran = firstTran;
+         }
+
+         stopRot  = (stopRot  == -1) ? rot  : stopRot;
+         stopTran = (stopTran == -1) ? tran : stopTran;
+
+         if ( rot >= 0 )
+         {
+            double temp[3];
+            double diff = sa->m_jointKeyframes[j][stopRot]->m_time - sa->m_jointKeyframes[j][rot]->m_time;
+
+            double tempTime = frameTime;
+
+            if ( tempTime < sa->m_jointKeyframes[j][rot]->m_time )
+            {
+               tempTime += (sa->m_spf * sa->m_frameCount);
+            }
+
+            if ( diff < 0.0 )
+            {
+               diff += (sa->m_spf * sa->m_frameCount);
+            }
+
+            Quaternion va;
+            va.setEulerAngles( sa->m_jointKeyframes[j][rot]->m_parameter );
+
+            if ( diff > 0 )
+            {
+               Quaternion vb;
+               vb.setEulerAngles( sa->m_jointKeyframes[j][stopRot]->m_parameter );
+
+               double tm = (tempTime - sa->m_jointKeyframes[j][rot]->m_time) / diff;
+
+               va = va * (1.0 - tm) + (vb * tm);
+               va = va * (1.0 / va.mag());
+            }
+            else
+            {
+               temp[0] = sa->m_jointKeyframes[j][rot]->m_parameter[0];
+               temp[1] = sa->m_jointKeyframes[j][rot]->m_parameter[1];
+               temp[2] = sa->m_jointKeyframes[j][rot]->m_parameter[2];
+            }
+
+            transform.setRotationQuaternion( va );
+         }
+
+         if ( tran >= 0 )
+         {
+            double temp[3];
+            double diff = sa->m_jointKeyframes[j][stopTran]->m_time - sa->m_jointKeyframes[j][tran]->m_time;
+
+            double tempTime = frameTime;
+
+            if ( tempTime < sa->m_jointKeyframes[j][tran]->m_time )
+            {
+               tempTime += (sa->m_spf * sa->m_frameCount);
+            }
+
+            if ( diff < 0.0 )
+            {
+               diff += (sa->m_spf * sa->m_frameCount);
+            }
+
+            Vector va( sa->m_jointKeyframes[j][tran]->m_parameter );
+            if ( diff > 0 )
+            {
+               Vector vb( sa->m_jointKeyframes[j][stopTran]->m_parameter );
+               double tm = (tempTime - sa->m_jointKeyframes[j][tran]->m_time) / diff;
+               va = va + (vb - va) * tm;
+            }
+            else
+            {
+               temp[0] = sa->m_jointKeyframes[j][tran]->m_parameter[0];
+               temp[1] = sa->m_jointKeyframes[j][tran]->m_parameter[1];
+               temp[2] = sa->m_jointKeyframes[j][tran]->m_parameter[2];
+            }
+
+            transform.setTranslation( va.getVector() );
+         }
+      }
+
+      relativeFinal = m_joints[j]->m_relative;
+      relativeFinal = transform * relativeFinal;
+
+      if ( m_joints[j]->m_parent == -1 )
+      {
+         relativeFinal = relativeFinal * m_localMatrix;
+      }
+      else
+      {
+         m_joints[j]->m_final = m_joints[ m_joints[j]->m_parent ]->m_final;
+         relativeFinal = relativeFinal * m_joints[j]->m_final;
+      }
+      return true;
+   }
+   else
+   {
+      log_error( "anim keyframe out of range: anim %d, joint %d\n", anim, j );
       return false;
    }
 }
