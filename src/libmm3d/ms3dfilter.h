@@ -32,6 +32,24 @@ class Ms3dFilter : public ModelFilter
       Ms3dFilter() : ModelFilter() {};
       virtual ~Ms3dFilter() {};
 
+      struct _VertexWeight_t
+      {
+         int boneId;
+         int weight;
+      }; 
+      typedef struct _VertexWeight_t VertexWeightT;
+      typedef std::list<VertexWeightT> VertexWeightList;
+
+      enum _CommentType_e
+      {
+         CT_GROUP,
+         CT_MATERIAL,
+         CT_JOINT,
+         CT_MODEL,
+         CT_MAX,
+      };
+      typedef enum _CommentType_e CommentTypeE;
+
       Model::ModelErrorE readFile( Model * model, const char * const filename );
       Model::ModelErrorE writeFile( Model * model, const char * const filename, ModelFilter::Options * o = NULL );
 
@@ -55,6 +73,13 @@ class Ms3dFilter : public ModelFilter
       void read( float32_t & val );
       void readBytes( void * buf, size_t len );
       void readString( char * buf, size_t len );
+
+      bool readCommentSection();
+      bool readVertexWeightSection();
+
+      bool readVertexWeight( int subVersion, int vertex,
+            VertexWeightList & weightList );
+
       void skipBytes( size_t len );
 
       void write( uint8_t val );
@@ -67,8 +92,17 @@ class Ms3dFilter : public ModelFilter
       void writeBytes( const void * buf, size_t len );
       void writeString( const char * buf, size_t len );
 
+      void writeCommentSection();
+      void writeVertexWeightSection();
+
+      void writeVertexWeight( Model::InfluenceList & ilist );
+
+      uint8_t * m_buffer;
       uint8_t * m_bufPos;
+      uint8_t * m_bufEnd;
       FILE    * m_fp;
+
+      Model   * m_model;
 
       static char const MAGIC_NUMBER[];
 };

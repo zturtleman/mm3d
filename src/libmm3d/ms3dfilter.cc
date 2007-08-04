@@ -178,7 +178,10 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
 
       fclose( fp );
 
+      m_model  = model;
+      m_buffer = buffer;
       m_bufPos = buffer;
+      m_bufEnd = buffer + fileLength;
 
       if ( fileLength < (sizeof( MS3DHeader ) + sizeof(uint16_t) ) )
       {
@@ -211,7 +214,7 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
       uint16_t numVertices = 0;
       read( numVertices );
 
-      // FIXME verify file size vs. numVertices
+      // TODO verify file size vs. numVertices
 
       std::vector< int > vertexJoints;
       for ( t = 0; t < numVertices; t++ )
@@ -632,6 +635,8 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
       string modelFullName = "";
 
       normalizePath( filename, modelFullName, modelPath, modelBaseName );
+
+      m_model = model;
 
       // Groups don't share vertices with Milk Shape 3D
       {
@@ -1105,6 +1110,71 @@ void Ms3dFilter::writeString( const char * buf, size_t len )
    fwrite( &ch, sizeof(ch), 1, m_fp );
 }
 
+void Ms3dFilter::writeCommentSection()
+{
+   // TODO: get from meta data?
+   int32_t subVersion = 1;
+   write( subVersion );
+
+   int32_t numComments = 0;
+   write( numComments ); // groups
+   write( numComments ); // materials
+   write( numComments ); // joints
+   write( numComments ); // model
+}
+
+void Ms3dFilter::writeVertexWeightSection()
+{
+   // We don't support vertex colors or joint colors, so we might as
+   // well just use sub version 1
+   int32_t subVersion = 1;
+   write( subVersion );
+
+   int vcount = m_model->getVertexCount();
+   for ( int v = 0; v < vcount; v++ )
+   {
+      Model::InfluenceList ilist;
+      ilist.clear();
+      m_model->getVertexInfluences( v, ilist );
+      writeVertexWeight( ilist );
+   }
+}
+
+void Ms3dFilter::writeVertexWeight( Model::InfluenceList & ilist )
+{
+   // FIXME implement
+   // FIXME need to sort list from least to greatest
+   // FIXME support sub version 2?
+   int8_t boneId[4]  = { -1, -1, -1, -1 };
+   uint8_t weight[4] = { 0, 0, 0, 0 };
+   int rawWeight[4]  = { 0, 0, 0, 0 };
+
+   int totalWeight = 0;
+
+   Model::InfluenceList::iterator it;
+   int index = 0;
+
+   for ( it = ilist.begin(); index < 4 && it != ilist.end(); it++ )
+   {
+      totalWeight += static_cast<int>(it->m_weight * 100.0);
+      boneId[ index ] = it->m_boneId;
+      rawWeight[ index ] = static_cast<int>(it->m_weight * 100.0);
+
+      index++;
+   }
+
+   index = 0;
+   for ( it = ilist.begin(); index < 4 && it != ilist.end(); it++ )
+   {
+      if ( totalWeight > 0 )
+         weight[ index ] = (uint8_t) (rawWeight[ index ] * 255.0
+               / (double) totalWeight);
+      else
+         weight[ index ] = 255 / ilist.size();
+      index++;
+   }
+}
+
 void Ms3dFilter::read( uint32_t & val )
 {
    val = ltoh_u32( * (uint32_t*) m_bufPos );
@@ -1166,6 +1236,123 @@ void Ms3dFilter::readString( char * buf, size_t len )
       buf[ len - 1 ] = '\0';
       log_debug( "read string: %s\n", buf );
    }
+}
+
+bool Ms3dFilter::readCommentSection() 
+{
+   // TODO: We don't actually do anything with these... meta data maybe?
+   int32_t subVersion = 0;
+   read( subVersion );
+
+   int32_t numComments = 0;
+
+   for ( int c = CT_GROUP; c < CT_MAX; c++ )
+   {
+      read( numComments );
+      for ( int n = 0; n < numComments; n++ )
+      {
+         int32_t index = 0;
+         int32_t length = 0;
+
+         read( index );
+         read( length );
+
+         if (length > (m_bufEnd - m_bufPos))
+         {
+            return false;
+         }
+
+         std::string comment;
+         comment.assign( reinterpret_cast<char*>(m_bufPos), length );
+         m_bufPos += length;
+      }
+   }
+
+   return true;
+}
+
+bool Ms3dFilter::readVertexWeightSection() 
+{
+   int32_t subVersion = 0;
+   read( subVersion );
+
+   bool rval = true;
+   VertexWeightList weightList;
+   VertexWeightList::iterator it;
+
+   int vcount = m_model->getVertexCount();
+   for ( int v = 0; rval && v < vcount; v++ )
+   {
+      rval = readVertexWeight( subVersion, v, weightList );
+
+      if ( rval )
+      {
+         m_model->removeAllVertexInfluences( v );
+         for ( it = weightList.begin(); it != weightList.end(); it++ )
+         {
+            m_model->addVertexInfluence( v, it->boneId,
+                  Model::IT_Custom, ((double) it->weight) / 100.0 );
+         }
+      }
+   }
+   return rval;
+}
+
+bool Ms3dFilter::readVertexWeight( int subVersion,
+      int vertex, VertexWeightList & weightList )
+{
+   weightList.clear();
+
+   int8_t boneIds[4]  = { -1, -1, -1, -1 };
+   uint8_t weights[4] = {  0,  0,  0,  0 };
+
+   int size = (subVersion == 2) ? 10 : 6;
+   if ( size > (m_bufEnd - m_bufPos) )
+   {
+      return false;
+   }
+
+   boneIds[0] = m_model->getVertexBoneJoint( vertex );
+
+   int i = 0;
+   for ( i = 0; i < 3; i++ )
+   {
+      read( boneIds[i+1] );
+   }
+   for ( i = 0; i < 3; i++ )
+   {
+      read( weights[i] );
+      if ( subVersion == 1 )
+      {
+         weights[i] = (uint8_t) ((int) weights[i] * 100 / 255);
+      }
+   }
+   if ( subVersion == 2 )
+   {
+      int32_t extra = 0;
+      read( extra ); // don't do anything with this
+   }
+
+   VertexWeightT vw;
+
+   int total = 0;
+   for ( i = 0; boneIds[i] >= 0 && i < 4; i++ )
+   {
+      vw.boneId = boneIds[i];
+      if ( i < 3 )
+      {
+         vw.weight = weights[i];
+         total += weights[i];
+      }
+      else
+      {
+         int diff = 100 - total;
+         vw.weight = (diff > 0) ? diff : 0;
+      }
+      weightList.push_back( vw );
+   }
+
+   return true;
 }
 
 bool Ms3dFilter::isSupported( const char * filename )

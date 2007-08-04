@@ -1,6 +1,6 @@
 For 1.4:
    Update ad3dsfilter with canExport
-   MS3D multiple bone joints ??
+   MS3D test multiple bone joints (support sv2?)
    Finish CAL3D (notify user[s] who are waiting)
 
    Test merge on multiple bone joint assignments (and points)
