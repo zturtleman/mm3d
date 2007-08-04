@@ -333,7 +333,7 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
          int8_t magic[4];
          for ( int t = 0; t < 4; t++ )
          {
-            magic[t]=readI1();
+            magic[t] = readI1();
          }
          int32_t version = readI4();
          char pk3Name[MAX_QPATH];
@@ -379,7 +379,8 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
          Md3PathT mpath;
          mpath.section  = (*it).section;
          mpath.material = -1;
-         mpath.path = extractPath(pk3Name);;
+         mpath.path = extractPath(pk3Name);
+         log_debug( "extracted model path: %s\n", mpath.path.c_str() );
 
          m_pathList.push_back( mpath );
          m_lastMd3Path = mpath.path;
@@ -827,7 +828,7 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
       int8_t meshMagic[4];
       for ( int t = 0; t < 4; t++ )
       {
-         meshMagic[t]=readI1();
+         meshMagic[t] = readI1();
       }
 
       char meshName[MAX_QPATH];
@@ -1005,13 +1006,6 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
          string shaderFullPath;
          string shaderBaseName;
 
-         Md3PathT mpath;
-         mpath.section = section;
-         mpath.material = modelMaterials.size();
-         mpath.path = extractPath(shaderName);
-         m_pathList.push_back( mpath );
-         m_lastMd3Path = mpath.path;
-
          normalizePath( skin.c_str(), shaderFullName, shaderFullPath, shaderBaseName );
          log_debug( "Shader Name: %s\n", shaderName );
          log_debug( "Shader Index: %d\n", shaderIndex );
@@ -1042,7 +1036,7 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
                int checkId = materialsCheck( textureFile );
                if (checkId >= 0)
                {
-                  matId=checkId;
+                  matId = checkId;
                   textureFound = true;
                }
                else
@@ -1066,7 +1060,7 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
                   mat->m_name = getFileNameFromPath( textureFile.c_str() );
                   mat->m_filename = textureFile;
                   modelMaterials.push_back( mat );
-                  matId=modelMaterials.size()-1;
+                  matId = modelMaterials.size()-1;
                }
             }
          }
@@ -1074,6 +1068,15 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
          {
             log_debug( "skin : '%s'\n", textureFile.c_str() );
             m_model->setGroupTextureId( groupId, matId );
+
+            Md3PathT mpath;
+            mpath.section = section;
+            mpath.material = matId;
+            mpath.path = extractPath(shaderName);
+            m_pathList.push_back( mpath );
+            m_lastMd3Path = mpath.path;
+
+            log_debug( "extracted shader path: %s\n", mpath.path.c_str() );
          }
 
          //Texture Mapping
@@ -1198,8 +1201,8 @@ int32_t Md3Filter::setSkins( char *meshName )
    for ( it = files.begin(); it != files.end(); it++ )
    {
       bool isDefault = false;
-      string fileName=(*it);
-      string fullName=m_modelPath + fileName;
+      string fileName = (*it);
+      string fullName = m_modelPath + fileName;
       fullName = getAbsolutePath( m_modelPath.c_str(), fullName.c_str() );
 
       //Only take the ones with .skin extension
@@ -1291,7 +1294,7 @@ int32_t Md3Filter::setSkins( char *meshName )
                   matId = checkId;
                   if ( isDefault )
                   {
-                     defaultSet=true;
+                     defaultSet = true;
                   }
                }
             }
@@ -1320,7 +1323,7 @@ int32_t Md3Filter::setSkins( char *meshName )
                   matId = modelMaterials.size()-1;
                   if ( isDefault )
                   {
-                     defaultSet=true;
+                     defaultSet = true;
                   }
                }
             }
@@ -1353,7 +1356,7 @@ void Md3Filter::setPoints( MeshSectionE section, int32_t offsetTags, int32_t num
       loadMatrix.setTranslation( pos[0], pos[1], pos[2] );
    }
 
-   const int TAG_SIZE = (64 + 3*4 + 9*4 );
+   const int TAG_SIZE = (64 + 3*4 + 9*4);
    int frameSize = numTags * TAG_SIZE;
 
    // Tags
@@ -1387,7 +1390,7 @@ void Md3Filter::setPoints( MeshSectionE section, int32_t offsetTags, int32_t num
          log_debug( "section %d anim %d frame %d is file frame %d\n",
                section, animIndex, f, fileFrame );
          */
-         m_bufPos = &m_fileBuf [ offsetTags + (fileFrame * frameSize )];
+         m_bufPos = &m_fileBuf [ offsetTags + (fileFrame * frameSize) ];
          if ( animIndex >= 0 && parentTag >= 0 )
          {
             m_model->getFrameAnimPointCoords( animIndex, f, parentTag, pos[0], pos[1], pos[2] );
@@ -1698,10 +1701,10 @@ Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filen
       unsigned gcount = m_model->getGroupCount();
       for ( unsigned g = 0; g < gcount; g++ )
       {
-         std::string name = m_model->getGroupName(g);
+         std::string name = m_model->getGroupName( g );
          if ( name[1] == '_' )
          {
-            switch ( toupper(name[0]) )
+            switch ( toupper( name[0] ) )
             {
                case 'U':
                   haveUpper = true;
@@ -1739,9 +1742,9 @@ Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filen
          {
             log_debug( "filename %s looks like a player model\n", modelBaseName.c_str() );
             char value[20];
-            if ( model->getMetaData( "MD3_composite", value, sizeof(value)) )
+            if ( model->getMetaData( "MD3_composite", value, sizeof( value ) ) )
             {
-               if ( atoi(value) == 0 )
+               if ( atoi( value ) == 0 )
                {
                   log_debug( "model is explicitly not a composite\n" );
                   saveAsPlayer = false;
@@ -1749,7 +1752,7 @@ Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filen
             }
             else
             {
-               // TODO: may want to prompt instead of assuming "yes"
+               // TODO: Eventually create a prompt instead of assuming "yes"
                log_debug( "model is implicitly a composite (no composite meta tag)\n" );
             }
          }
@@ -1823,10 +1826,10 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
 
    //MD3 HEADER
    int8_t magic[4];
-   magic[0]='I';
-   magic[1]='D';
-   magic[2]='P';
-   magic[3]='3';
+   magic[0] = 'I';
+   magic[1] = 'D';
+   magic[2] = 'P';
+   magic[3] = '3';
    int32_t version = MD3_VERSION;
    char pk3Name[MAX_QPATH];
    std::string pk3Path = "";
@@ -1847,7 +1850,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
       return Model::ERROR_FILTER_SPECIFIC;
    }
 
-   int32_t flags=0;
+   int32_t flags = 0;
    int32_t numFrames = 0;
    //We are making all the anims be one anim.
    unsigned animCount = m_model->getAnimCount( Model::ANIMMODE_FRAME );
@@ -1992,15 +1995,15 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    log_debug( "finding root tag for section %s\n", modelBaseName.c_str() );
    for ( unsigned p = 0; p < pcount; p++ )
    {
-      if ( tagIsSectionRoot( m_model->getPointName(p), section ) )
+      if ( tagIsSectionRoot( m_model->getPointName( p ), section ) )
       {
-         log_debug( "  root tag is %s\n", m_model->getPointName(p) );
+         log_debug( "  root tag is %s\n", m_model->getPointName( p ) );
          rootTag = p;
       }
    }
 
    // FRAMES
-   log_debug( "writing frames at %d/%d\n", offsetFrames, ftell(m_fpOut) );
+   log_debug( "writing frames at %d/%d\n", offsetFrames, ftell( m_fpOut ) );
    unsigned a;
 
    for ( a = 0; a < animCount; a++ )
@@ -2009,7 +2012,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
             || (section == MS_Head && a == 0) )
       {
          unsigned aFrameCount = m_model->getAnimFrameCount( Model::ANIMMODE_FRAME, a );
-         if ( (aFrameCount == 0 && animCount == 1)
+         if ( (aFrameCount == 0 && animCount == 1 )
                || (section == MS_Head) )
          {
             aFrameCount = 1;
@@ -2068,7 +2071,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
             double radius = sqrt( max[0] * max[0] + max[1] * max[1] + max[2] * max[2] );
             if ( radiusm > radius )
             {
-               radius=radiusm;
+               radius = radiusm;
             }
             //log_debug( "Frame radius: %f\n", ( (float) radius ) );
             write( (float) radius );
@@ -2079,7 +2082,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    }
 
    //TAGS
-   log_debug( "writing tags at %d/%d\n", offsetTags, ftell(m_fpOut) );
+   log_debug( "writing tags at %d/%d\n", offsetTags, ftell( m_fpOut ) );
 
    for ( a = 0; a < animCount; a++ )
    {
@@ -2097,7 +2100,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
             Matrix saveMatrix = getMatrixFromPoint( a, t, rootTag ).getInverse();
             for ( unsigned j = 0; j < pcount; j++ )
             {
-               if ( tagInSection( m_model->getPointName(j), section ) )
+               if ( tagInSection( m_model->getPointName( j ), section ) )
                {
                   char tName[MAX_QPATH];
                   memset( tName, 0, MAX_QPATH );
@@ -2124,14 +2127,14 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                   double rotVector[3];
                   m_model->getFrameAnimPointRotation( a, t, j, rotVector[0], rotVector[1], rotVector[2] );
 
-                  //TODO: Seems whenver we have a nan its from a identity matrix
+                  // Seems whenver we have a nan its from a identity matrix
                   if ( rotVector[0] != rotVector[0] || rotVector[1] != rotVector[1] || rotVector[2] != rotVector[2] )
                   {
                      writeIdentity();
                      continue;
                   }
                   rotMatrix.setRotation( rotVector );
-                  rotMatrix=rotMatrix*saveMatrix;
+                  rotMatrix = rotMatrix*saveMatrix;
 
                   // orientation
                   for ( int m = 0; m < 3; m++ )
@@ -2150,7 +2153,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    vector<Model::Material *> & modelMaterials = getMaterialList( m_model );
 
    // MESHES
-   log_debug( "writing meshes at %d/%d\n", offsetMeshes, ftell(m_fpOut) );
+   log_debug( "writing meshes at %d/%d\n", offsetMeshes, ftell( m_fpOut ) );
 
    for ( mlit = meshes.begin(); mlit != meshes.end(); mlit++ )
    {
@@ -2158,10 +2161,10 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
       {
          // MESH HEADER
          int8_t mMagic[4];
-         mMagic[0]='I';
-         mMagic[1]='D';
-         mMagic[2]='P';
-         mMagic[3]='3';
+         mMagic[0] = 'I';
+         mMagic[1] = 'D';
+         mMagic[2] = 'P';
+         mMagic[3] = '3';
          char mName[MAX_QPATH];
          memset( mName, 0, MAX_QPATH );
          if ( PORT_snprintf( mName, sizeof( mName ), "%s", m_model->getGroupName( (*mlit).group ) ) > MAX_QPATH )
@@ -2173,7 +2176,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
          }
 
          const int TRI_SIZE = 3 * 4;
-         const int SHADER_SIZE = (MAX_QPATH + 4);
+         const int SHADER_SIZE = MAX_QPATH + 4;
          const int TEXCOORD_SIZE = 2 * 4;
          const int VERT_SIZE = 4 * 2;
 
@@ -2560,25 +2563,25 @@ void Md3Filter::getExportAnimData( int fileAnim, int & modelAnim,
 
 size_t Md3Filter::write( int8_t val )
 {
-   int8_t temp8=val;
+   int8_t temp8 = val;
    return fwrite( &temp8, sizeof( int8_t ), 1, m_fpOut );
 }
 
 size_t Md3Filter::write( int16_t val )
 {
-   int16_t temp16=htol_16( val );
+   int16_t temp16 = htol_16( val );
    return fwrite( &temp16, sizeof( int16_t ), 1, m_fpOut );
 }
 
 size_t Md3Filter::write( int32_t val )
 {
-   int32_t temp32=htol_32( val );
+   int32_t temp32 = htol_32( val );
    return fwrite( &temp32, sizeof( int32_t ), 1, m_fpOut );
 }
 
 size_t Md3Filter::write( float val )
 {
-   float temp32=htol_float( val );
+   float temp32 = htol_float( val );
    return fwrite( &temp32, sizeof( float ), 1, m_fpOut );
 }
 
@@ -2616,7 +2619,7 @@ std::string Md3Filter::extractPath( const char * md3DataPath )
    size_t i = path.rfind( '/' );
    if ( i > 0 && i < path.size() )
    {
-      path.resize(i+1);
+      path.resize( i + 1 );
       return path;
    }
    else
@@ -2646,15 +2649,20 @@ std::string Md3Filter::materialToPath( int materialIndex )
    {
       name = "";
    }
+
+   log_debug( "getting path for material %d: %s\n", materialIndex, name );
+
    std::string keyStr = std::string("MD3_PATH_") + name;
    if ( m_model->getMetaData( keyStr.c_str(), pk3Path, sizeof(pk3Path) ) )
    {
+      log_debug( "  material-specific: %s\n", pk3Path );
       return pk3Path;
    }
 
    keyStr = "MD3_PATH";
    if ( m_model->getMetaData( keyStr.c_str(), pk3Path, sizeof(pk3Path) ) )
    {
+      log_debug( "  default: %s\n", pk3Path );
       return pk3Path;
    }
    return "";
