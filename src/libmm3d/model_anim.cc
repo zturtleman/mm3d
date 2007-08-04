@@ -1932,6 +1932,13 @@ bool Model::setCurrentAnimationTime( double frameTime )
                double temp[3];
                double diff = sa->m_jointKeyframes[j][stopTran]->m_time - sa->m_jointKeyframes[j][tran]->m_time;
 
+               double tempTime = frameTime;
+
+               if ( tempTime < sa->m_jointKeyframes[j][tran]->m_time )
+               {
+                  tempTime += (sa->m_spf * sa->m_frameCount);
+               }
+
                if ( diff < 0.0 )
                {
                   diff += (sa->m_spf * sa->m_frameCount);
@@ -1941,8 +1948,12 @@ bool Model::setCurrentAnimationTime( double frameTime )
                if ( diff > 0 )
                {
                   Vector vb( sa->m_jointKeyframes[j][stopTran]->m_parameter );
-                  double tm = (frameTime - sa->m_jointKeyframes[j][tran]->m_time) / diff;
-                  va = va + (vb - va) * tm;
+                  double tm = (tempTime - sa->m_jointKeyframes[j][tran]->m_time) / diff;
+                  //va = va + (vb - va) * tm;
+                  printf( "tm = %f\n", (float) tm );
+                  va.show();
+                  vb.show();
+                  va = va * (1.0 - tm) + vb * tm;
                }
                else
                {

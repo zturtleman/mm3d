@@ -512,6 +512,8 @@ void AnimWidget::loopToggled( bool o )
 {
    m_doLoop = o;
    m_model->setAnimationLooping( o );
+   m_model->setCurrentAnimationFrame( m_countSlider->value() - 1 );
+   DecalManager::getInstance()->modelUpdated( m_model );
 }
 
 void AnimWidget::doPlay()
