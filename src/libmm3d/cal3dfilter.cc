@@ -2369,12 +2369,14 @@ void Cal3dFilter::writeBAnimTrack( unsigned int anim, unsigned int bone )
    std::list<int>::iterator it;
    for ( it = frames.begin(); it != frames.end(); it++ )
    {
-      writeBFloat( ((double) (*it)) / fps );
+      double frameTime = ((double) (*it)) / fps;
+      writeBFloat( frameTime );
 
       // FIXME test interpolation
       // MM3D allows one type of keyframe without the other, Cal3D requires
       // both rotation and translation for each keyframe. If we have one
       // and the other is missing, we must do interpolation here.
+      /*
       double krot[3] = { 0, 0, 0};
       double ktran[3] = { 0, 0, 0};
 
@@ -2382,10 +2384,12 @@ void Cal3dFilter::writeBAnimTrack( unsigned int anim, unsigned int bone )
             true, krot[0], krot[1], krot[2] );
       m_model->interpSkelAnimKeyframe( anim, (*it), true, bone,
             false, ktran[0], ktran[1], ktran[2] );
-
+      */
       Matrix m;
-      m.setRotation( krot );
-      m.setTranslation( ktran );
+      //m.setRotation( krot );
+      //m.setTranslation( ktran );
+      m_model->interpSkelAnimKeyframeTime( anim, frameTime, true, bone, m );
+
 
       Matrix rm;
       m_model->getBoneJointRelativeMatrix( bone, rm );

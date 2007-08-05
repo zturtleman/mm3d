@@ -67,8 +67,8 @@ int init_std_filters()
    filter = new Md3Filter();
    mgr->registerFilter( filter );
    
-   //filter = new Cal3dFilter();
-   //mgr->registerFilter( filter );
+   filter = new Cal3dFilter();
+   mgr->registerFilter( filter );
    
    filter = new CobFilter();
    mgr->registerFilter( filter );

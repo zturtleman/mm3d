@@ -1694,277 +1694,8 @@ bool Model::setCurrentAnimationTime( double frameTime )
       for ( unsigned j = 0; j < sa->m_jointKeyframes.size(); j++ )
       {
          Matrix transform;
-
-         if ( !sa->m_jointKeyframes[j].empty() )
-         {
-            int firstRot  = -1;
-            int firstTran = -1;
-            int lastRot  = -1;
-            int lastTran = -1;
-            int stopRot  = -1;
-            int stopTran = -1;
-            int rot  = -1;
-            int tran = -1;
-            for ( unsigned k = 0; k < sa->m_jointKeyframes[j].size(); k++ )
-            {
-               if ( sa->m_jointKeyframes[j][k]->m_isRotation )
-               {
-                  if ( firstRot == -1 )
-                  {
-                     firstRot = k;
-                  }
-                  lastRot = k;
-               }
-               else
-               {
-                  if ( firstTran == -1 )
-                  {
-                     firstTran = k;
-                  }
-                  lastTran = k;
-               }
-
-               if ( sa->m_jointKeyframes[j][k]->m_time <= frameTime )
-               {
-                  // Less than current time
-                  // get latest keyframe for rotation and translation
-                  if ( sa->m_jointKeyframes[j][k]->m_isRotation )
-                  {
-                     rot = k;
-                  }
-                  else
-                  {
-                     tran = k;
-                  }
-               }
-               else
-               {
-                  // Greater than current time
-                  // get earliest keyframe for rotation and translation
-                  if ( sa->m_jointKeyframes[j][k]->m_isRotation )
-                  {
-                     if ( stopRot == -1 )
-                     {
-                        stopRot = k;
-                     }
-                  }
-                  else
-                  {
-                     if ( stopTran == -1 )
-                     {
-                        stopTran = k;
-                     }
-                  }
-               }
-            }
-
-            if ( m_animationLoop )
-            {
-               if ( rot == -1 )
-               {
-                  rot = lastRot;
-               }
-               if ( tran == -1 )
-               {
-                  tran = lastTran;
-               }
-
-               if ( stopRot == -1 )
-               {
-                  stopRot = firstRot;
-               }
-               if ( stopTran == -1 )
-               {
-                  stopTran = firstTran;
-               }
-            }
-
-            stopRot  = (stopRot  == -1) ? rot  : stopRot;
-            stopTran = (stopTran == -1) ? tran : stopTran;
-
-#if 0 // Matrix
-            if ( rot >= 0 )
-            {
-               double temp[3];
-               double diff = sa->m_jointKeyframes[j][stopRot]->m_time - sa->m_jointKeyframes[j][rot]->m_time;
-
-               double tempTime = frameTime;
-
-               if ( tempTime < sa->m_jointKeyframes[j][rot]->m_time )
-               {
-                  tempTime += (sa->m_spf * sa->m_frameCount);
-               }
-
-               if ( diff < 0.0 )
-               {
-                  diff += (sa->m_spf * sa->m_frameCount);
-               }
-
-               Vector va( sa->m_jointKeyframes[j][rot]->m_parameter );
-
-               // TODO right now I'm only normalizing 
-               // if X and Z are greater than 90 because those
-               // are the only angles I'm having trouble with.
-               // This may need to be modified to normalize
-               // the other angles as well
-               if ( fabs( va.get(0) ) > 90.0 * PIOVER180 
-                     && fabs( va.get(2) ) > 90.0 * PIOVER180 )
-               {
-                  if ( va.get(0) > 0.0 )
-                     va.set( 0, va.get(0) - 180.0 * PIOVER180 );
-                  else
-                     va.set( 0, va.get(0) + 180.0 * PIOVER180 );
-                  if ( va.get(1) > 0.0 )
-                     va.set( 1, 180 * PIOVER180 - va.get(1) );
-                  else
-                     va.set( 1, -180 * PIOVER180 - va.get(1) );
-                  if ( va.get(2) > 0.0 )
-                     va.set( 2, va.get(2) - 180.0 * PIOVER180 );
-                  else
-                     va.set( 2, va.get(2) + 180.0 * PIOVER180 );
-               }
-
-               if ( diff > 0 )
-               {
-                  Vector vb( sa->m_jointKeyframes[j][stopRot]->m_parameter );
-
-                  // TODO see above
-                  if ( fabs( vb.get(0) ) > 90.0 * PIOVER180 
-                        && fabs( vb.get(2) ) > 90.0 * PIOVER180 )
-                  {
-                     if ( vb.get(0) > 0.0 )
-                        vb.set( 0, vb.get(0) - 180.0 * PIOVER180 );
-                     else
-                        vb.set( 0, vb.get(0) + 180.0 * PIOVER180 );
-                     if ( vb.get(1) > 0.0 )
-                        vb.set( 1, 180 * PIOVER180 - vb.get(1) );
-                     else
-                        vb.set( 1, -180 * PIOVER180 - vb.get(1) );
-                     if ( vb.get(2) > 0.0 )
-                        vb.set( 2, vb.get(2) - 180.0 * PIOVER180 );
-                     else
-                        vb.set( 2, vb.get(2) + 180.0 * PIOVER180 );
-                  }
-
-                  // Wrap rotation so that we can rotate 360 degrees
-                  for ( unsigned i = 0; i < 3; i++ )
-                  {
-                     if ( fabs(vb.get(i) - va.get(i)) >= 180.0 * PIOVER180 ) 
-                     {
-                        if ( va.get(i) > 0.0 )
-                           vb.set( i, vb.get(i) + 360.0 * PIOVER180 );
-                        else
-                           vb.set( i, vb.get(i) - 360.0 * PIOVER180 );
-                     }
-                  }
-
-                  double tm = (tempTime - sa->m_jointKeyframes[j][rot]->m_time) / diff;
-                  va = va + (vb - va) * tm;
-               }
-               else
-               {
-                  temp[0] = sa->m_jointKeyframes[j][rot]->m_parameter[0];
-                  temp[1] = sa->m_jointKeyframes[j][rot]->m_parameter[1];
-                  temp[2] = sa->m_jointKeyframes[j][rot]->m_parameter[2];
-               }
-
-               transform.setRotation( va.getVector() );
-            }
-#else // Quaternion
-            if ( rot >= 0 )
-            {
-               double temp[3];
-               double diff = sa->m_jointKeyframes[j][stopRot]->m_time - sa->m_jointKeyframes[j][rot]->m_time;
-
-               double tempTime = frameTime;
-
-               if ( tempTime < sa->m_jointKeyframes[j][rot]->m_time )
-               {
-                  tempTime += (sa->m_spf * sa->m_frameCount);
-               }
-
-               if ( diff < 0.0 )
-               {
-                  diff += (sa->m_spf * sa->m_frameCount);
-               }
-
-               //Vector va( sa->m_jointKeyframes[j][rot]->m_parameter );
-               Quaternion va;
-               va.setEulerAngles( sa->m_jointKeyframes[j][rot]->m_parameter );
-
-               if ( diff > 0 )
-               {
-                  Quaternion vb;
-                  vb.setEulerAngles( sa->m_jointKeyframes[j][stopRot]->m_parameter );
-
-                  /*
-                  // Wrap rotation so that we can rotate 360 degrees
-                  for ( unsigned i = 0; i < 3; i++ )
-                  {
-                     if ( fabs(vb.get(i) - va.get(i)) >= 180.0 * PIOVER180 ) 
-                     {
-                        if ( va.get(i) > 0.0 )
-                           vb.set( i, vb.get(i) + 360.0 * PIOVER180 );
-                        else
-                           vb.set( i, vb.get(i) - 360.0 * PIOVER180 );
-                     }
-                  }
-                  */
-
-                  double tm = (tempTime - sa->m_jointKeyframes[j][rot]->m_time) / diff;
-                  //va = va + (vb - va) * tm;
-                  va = va * (1.0 - tm) + (vb * tm);
-                  va = va * (1.0 / va.mag());
-               }
-               else
-               {
-                  temp[0] = sa->m_jointKeyframes[j][rot]->m_parameter[0];
-                  temp[1] = sa->m_jointKeyframes[j][rot]->m_parameter[1];
-                  temp[2] = sa->m_jointKeyframes[j][rot]->m_parameter[2];
-               }
-
-               transform.setRotationQuaternion( va );
-            }
-#endif // 0
-
-            if ( tran >= 0 )
-            {
-               double temp[3];
-               double diff = sa->m_jointKeyframes[j][stopTran]->m_time - sa->m_jointKeyframes[j][tran]->m_time;
-
-               double tempTime = frameTime;
-
-               if ( tempTime < sa->m_jointKeyframes[j][tran]->m_time )
-               {
-                  tempTime += (sa->m_spf * sa->m_frameCount);
-               }
-
-               if ( diff < 0.0 )
-               {
-                  diff += (sa->m_spf * sa->m_frameCount);
-               }
-
-               Vector va( sa->m_jointKeyframes[j][tran]->m_parameter );
-               if ( diff > 0 )
-               {
-                  Vector vb( sa->m_jointKeyframes[j][stopTran]->m_parameter );
-                  double tm = (tempTime - sa->m_jointKeyframes[j][tran]->m_time) / diff;
-                  //va = va + (vb - va) * tm;
-                  printf( "tm = %f\n", (float) tm );
-                  va.show();
-                  vb.show();
-                  va = va * (1.0 - tm) + vb * tm;
-               }
-               else
-               {
-                  temp[0] = sa->m_jointKeyframes[j][tran]->m_parameter[0];
-                  temp[1] = sa->m_jointKeyframes[j][tran]->m_parameter[1];
-                  temp[2] = sa->m_jointKeyframes[j][tran]->m_parameter[2];
-               }
-
-               transform.setTranslation( va.getVector() );
-            }
-         }
+         interpSkelAnimKeyframeTime( m_currentAnim, frameTime,
+               m_animationLoop, j, transform );
 
          Matrix relativeFinal( m_joints[j]->m_relative );
          relativeFinal = transform * relativeFinal;
@@ -2627,7 +2358,7 @@ bool Model::interpSkelAnimKeyframe( unsigned anim, unsigned frame,
 }
 
 bool Model::interpSkelAnimKeyframeTime( unsigned anim, double frameTime,
-      bool loop, unsigned j, Matrix & relativeFinal )
+      bool loop, unsigned j, Matrix & transform )
 {
    if ( anim < m_skelAnims.size() && j < m_joints.size() )
    {
@@ -2642,7 +2373,7 @@ bool Model::interpSkelAnimKeyframeTime( unsigned anim, double frameTime,
          frameTime -= totalTime;
       }
 
-      Matrix transform;
+      transform.loadIdentity();
 
       if ( !sa->m_jointKeyframes[j].empty() )
       {
@@ -2786,18 +2517,6 @@ bool Model::interpSkelAnimKeyframeTime( unsigned anim, double frameTime,
          }
       }
 
-      relativeFinal = m_joints[j]->m_relative;
-      relativeFinal = transform * relativeFinal;
-
-      if ( m_joints[j]->m_parent == -1 )
-      {
-         relativeFinal = relativeFinal * m_localMatrix;
-      }
-      else
-      {
-         m_joints[j]->m_final = m_joints[ m_joints[j]->m_parent ]->m_final;
-         relativeFinal = relativeFinal * m_joints[j]->m_final;
-      }
       return true;
    }
    else
