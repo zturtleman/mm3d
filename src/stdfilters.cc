@@ -27,11 +27,13 @@
 #include "md3filter.h"
 #include "lwofilter.h"
 #include "cal3dfilter.h"
+#include "cal3dprompt.h"
 #include "cobfilter.h"
 #include "dxffilter.h"
 #include "objfilter.h"
 #include "objprompt.h"
 #include "mm3dfilter.h"
+#include "ms3dprompt.h"
 #include "ms3dfilter.h"
 #include "txtfilter.h"
 #include "log.h"
@@ -48,6 +50,7 @@ int init_std_filters()
    mgr->registerFilter( filter );
    
    filter = new Ms3dFilter();
+   filter->setOptionsPrompt( ms3dprompt_show );
    mgr->registerFilter( filter );
    
    filter = new TextFilter();
@@ -67,8 +70,9 @@ int init_std_filters()
    filter = new Md3Filter();
    mgr->registerFilter( filter );
    
-   //filter = new Cal3dFilter();
-   //mgr->registerFilter( filter );
+   filter = new Cal3dFilter();
+   filter->setOptionsPrompt( cal3dprompt_show );
+   mgr->registerFilter( filter );
    
    filter = new CobFilter();
    mgr->registerFilter( filter );

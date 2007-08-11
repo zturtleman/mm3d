@@ -90,5 +90,15 @@ class Mesh
 typedef std::vector< Mesh > MeshList;
 
 void mesh_create_list( MeshList & meshes, Model * model, int options = Mesh::MO_All );
+int mesh_list_vertex_count( const MeshList & meshes );
+int mesh_list_face_count( const MeshList & meshes );
+
+// Convert a mesh vertex or triangle index to a model index
+int mesh_list_model_vertex( const MeshList & meshes, int meshVertex );
+int mesh_list_model_triangle( const MeshList & meshes, int meshTriangle );
+
+// Convert a model vertex or triangle index to a mesh index
+int mesh_list_mesh_vertex( const MeshList & meshes, int modelVertex );
+int mesh_list_mesh_triangle( const MeshList & meshes, int modelTriangle );
 
 #endif // __MESH_H

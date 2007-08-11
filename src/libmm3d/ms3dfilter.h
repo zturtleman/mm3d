@@ -25,11 +25,27 @@
 #define __MS3DFILTER_H
 
 #include "modelfilter.h"
+#include "mesh.h"
 
 class Ms3dFilter : public ModelFilter
 {
    public:
-      Ms3dFilter() : ModelFilter() {};
+      class Ms3dOptions : public ModelFilter::Options
+      {
+         public:
+            Ms3dOptions();
+
+            virtual void release() { delete this; };
+
+            int m_subVersion;
+            uint32_t m_vertexExtra;
+            uint32_t m_jointColor;
+
+         protected:
+            virtual ~Ms3dOptions(); // Use release() instead
+      };
+
+      Ms3dFilter() : ModelFilter(), m_options(NULL) {};
       virtual ~Ms3dFilter() {};
 
       struct _VertexWeight_t
@@ -52,6 +68,8 @@ class Ms3dFilter : public ModelFilter
 
       Model::ModelErrorE readFile( Model * model, const char * const filename );
       Model::ModelErrorE writeFile( Model * model, const char * const filename, ModelFilter::Options * o = NULL );
+
+      Options * getDefaultOptions() { return new Ms3dOptions; };
 
       bool canRead( const char * filename = NULL ) { return true; };
       bool canWrite( const char * filename = NULL ) { return true; };
@@ -93,9 +111,12 @@ class Ms3dFilter : public ModelFilter
       void writeString( const char * buf, size_t len );
 
       void writeCommentSection();
-      void writeVertexWeightSection();
+      void writeVertexWeightSection( const MeshList & ml );
+      void writeJointColorSection();
 
-      void writeVertexWeight( Model::InfluenceList & ilist );
+      // The InfluenceList must be sorted before calling this function
+      void writeVertexWeight( int subVersion,
+            const Model::InfluenceList & ilist );
 
       uint8_t * m_buffer;
       uint8_t * m_bufPos;
@@ -103,6 +124,8 @@ class Ms3dFilter : public ModelFilter
       FILE    * m_fp;
 
       Model   * m_model;
+      
+      Ms3dOptions * m_options;
 
       static char const MAGIC_NUMBER[];
 };

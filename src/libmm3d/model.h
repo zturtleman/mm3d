@@ -94,6 +94,9 @@ class Model
          int m_boneId;
          InfluenceTypeE m_type;
          double m_weight;
+
+         bool operator<( const struct _Influence_t & rhs )
+            { return m_weight < rhs.m_weight; }
       };
       typedef struct _Influence_t InfluenceT;
       typedef std::list< InfluenceT > InfluenceList;

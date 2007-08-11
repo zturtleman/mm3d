@@ -77,15 +77,39 @@ static char * _skipSpace( char * str )
    return str;
 }
 
+static bool isallowed( char ch )
+{
+   switch ( ch ) 
+   {
+      case '_':
+      case '-':
+      case '.':
+      case '+':
+         return true;
+      default:
+         break;
+   }
+   return false;
+}
+
 static void _escapeCal3dName( std::string & name )
 {
    size_t i = 0;
-   for ( i = 0; i < name.size(); i++ )
+   while ( i < name.size() )
    {
       if ( isspace( name[i] ) )
+      {
          name[i] = '_';
-      else if ( !isalnum( name[i] ) )
-         name[i] = '_'; // FIXME remove this character
+         i++;
+      }
+      else if ( !isalnum( name[i] ) && !isallowed( name[i] ) )
+      {
+         name.erase(i,1);
+      }
+      else
+      {
+         i++;
+      }
    }
 }
 
@@ -114,6 +138,8 @@ Cal3dFilter::Cal3dOptions::~Cal3dOptions()
 }
 
 Cal3dFilter::Cal3dFilter()
+   : m_model( NULL ),
+     m_options( NULL )
 {
 }
 
@@ -1778,12 +1804,15 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
       std::string base = m_modelPath += "/";
       m_fp = fp;
 
+      // Use dynamic cast to determine if the object is of the proper type
+      // If not, create new one that we will delete later.
+      //
       // We need to create one to make sure that the default options we
       // use in the filter match the default options presented to the
       // user in the dialog box.
-      // FIXME implement options dialog
-      m_options = dynamic_cast< Cal3dOptions *>( o );
-
+      Cal3dOptions * opts = dynamic_cast< Cal3dOptions *>( o );
+      m_options = (opts != NULL) ? opts : static_cast<Cal3dOptions *>( getDefaultOptions() );
+   
       if ( m_options && !m_options->m_singleMeshFile )
       {
          // If the model has separate mesh files for each mesh, we can't
@@ -1892,7 +1921,7 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
       if ( (m_options == NULL) || m_options->m_singleMeshFile )
       {
          std::string meshFile = replaceExtension( m_modelBaseName.c_str(), "cmf" );
-         fprintf( m_fp, "mesh_file = \"%s\"\n\n", meshFile.c_str() );
+         fprintf( m_fp, "mesh_file = \"%s\"\n", meshFile.c_str() );
          writeMeshFile( (base + meshFile).c_str(), model );
       }
       else
@@ -1932,9 +1961,9 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
                currentMesh = 0;
                if ( ml[meshNum].group == g )
                {
-                  // FIXME Test mesh names
-                  // Append a digit if there's more than one mesh
-                  // for this group
+                  // FIXME Append a digit if there's more than one mesh
+                  // for this group (or if more than one group has the
+                  // same name [see paladin])
                   digitstr[0] = '\0';
                   if ( groupMeshes > 1 )
                   {
@@ -1959,7 +1988,7 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
          }
       }
 
-      fprintf( m_fp, "# --- Materials ---\n" );
+      fprintf( m_fp, "\n# --- Materials ---\n" );
       std::string matFile;
       unsigned int mcount = model->getTextureCount();
       for ( unsigned int m = 0; m < mcount; m++ )
@@ -1982,6 +2011,15 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
 
       fclose( fp );
       rval = Model::ERROR_NONE;
+
+      // FIXME this can leak if an error occurs above. Fix it.
+      if ( opts == NULL )
+      {
+         // The object passed in was not a valid ObjOptions object.
+         // We created a temporary one above so now we have to free it.
+         m_options->release();
+      }
+      m_options = NULL;
    }
    else
    {

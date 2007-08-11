@@ -2,6 +2,8 @@ Changes for 1.3.6
    Save/restore window size
    Include projection in frame all/selected command
    Open projection window from group and projection properties panels
+   Allow multiple multiple bone joints for MS3D (subversions 1 and 2)
+   Initial Cal3D support
    Better MD3_PATH handling
       Get MD3_PATH from shaders as well as model header
       Allow separate MD3_PATH for each shader

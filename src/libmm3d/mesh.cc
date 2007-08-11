@@ -202,3 +202,93 @@ next_vertex:
    return vertices.size() - 1;
 }
 
+int mesh_list_vertex_count( const MeshList & meshes )
+{
+   int vcount = 0;
+   MeshList::const_iterator it;
+   for ( it = meshes.begin(); it != meshes.end(); it++ )
+   {
+      vcount += it->vertices.size();
+   }
+   return vcount;
+}
+
+int mesh_list_face_count( const MeshList & meshes )
+{
+   int fcount = 0;
+   MeshList::const_iterator it;
+   for ( it = meshes.begin(); it != meshes.end(); it++ )
+   {
+      fcount += it->faces.size();
+   }
+   return fcount;
+}
+
+int mesh_list_model_vertex( const MeshList & meshes, int meshVertex )
+{
+   MeshList::const_iterator it;
+   for ( it = meshes.begin(); it != meshes.end(); it++ )
+   {
+      if ( meshVertex < (int) it->vertices.size() )
+      {
+         return it->vertices[meshVertex].v;
+      }
+      meshVertex -= it->vertices.size();
+   }
+   // FIXME need an assert here
+   return 0;
+}
+
+int mesh_list_model_triangle( const MeshList & meshes, int meshTriangle )
+{
+   MeshList::const_iterator it;
+   for ( it = meshes.begin(); it != meshes.end(); it++ )
+   {
+      if ( meshTriangle < (int) it->faces.size() )
+      {
+         return it->faces[meshTriangle].modelTri;
+      }
+      meshTriangle -= it->faces.size();
+   }
+   // FIXME need an assert here
+   return 0;
+}
+
+int mesh_list_mesh_vertex( const MeshList & meshes, int modelVertex )
+{
+   int vertBase = 0;
+   MeshList::const_iterator it;
+   for ( it = meshes.begin(); it != meshes.end(); it++ )
+   {
+      for ( size_t t = 0; t < it->vertices.size(); t++ )
+      {
+         if ( modelVertex == (int) it->vertices[t].v )
+         {
+            return vertBase + t;
+         }
+      }
+      vertBase += it->vertices.size();
+   }
+   // FIXME need an assert here
+   return 0;
+}
+
+int mesh_list_mesh_triangle( const MeshList & meshes, int modelTriangle )
+{
+   int triBase = 0;
+   MeshList::const_iterator it;
+   for ( it = meshes.begin(); it != meshes.end(); it++ )
+   {
+      for ( size_t t = 0; t < it->faces.size(); t++ )
+      {
+         if ( modelTriangle == (int) it->faces[t].modelTri )
+         {
+            return triBase + t;
+         }
+      }
+      triBase += it->faces.size();
+   }
+   // FIXME need an assert here
+   return 0;
+}
+

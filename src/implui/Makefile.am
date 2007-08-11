@@ -13,6 +13,7 @@ libimplui_HFILES = \
 	backgroundwin.h \
 	boolpanel.h \
 	boolwin.h \
+	cal3dprompt.h \
 	contextgroup.h \
 	contextinfluences.h \
 	contextname.h \
@@ -30,6 +31,7 @@ libimplui_HFILES = \
 	mapdirection.h \
 	mergewin.h \
 	metawin.h \
+	ms3dprompt.h \
 	msgqt.h \
 	mview.h \
 	newanim.h \
@@ -65,6 +67,7 @@ libimplui_MOC = \
 	backgroundwin.moc.cc \
 	boolpanel.moc.cc \
 	boolwin.moc.cc \
+	cal3dprompt.moc.cc \
 	contextgroup.moc.cc \
 	contextinfluences.moc.cc \
 	contextname.moc.cc \
@@ -83,6 +86,7 @@ libimplui_MOC = \
 	licensewin.moc.cc \
 	mergewin.moc.cc \
 	metawin.moc.cc \
+	ms3dprompt.moc.cc \
 	mview.moc.cc \
 	newanim.moc.cc \
 	objprompt.moc.cc \
@@ -113,6 +117,7 @@ libimplui_a_SOURCES = \
 	backgroundwin.cc \
 	boolpanel.cc \
 	boolwin.cc \
+	cal3dprompt.cc \
 	contextgroup.cc \
 	contextinfluences.cc \
 	contextname.cc \
@@ -130,6 +135,7 @@ libimplui_a_SOURCES = \
 	mapdirection.cc \
 	mergewin.cc \
 	metawin.cc \
+	ms3dprompt.cc \
 	msgqt.cc \
 	mview.cc \
 	newanim.cc \

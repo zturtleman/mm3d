@@ -25,6 +25,7 @@
 #include "weld.h"
 #include "misc.h"
 #include "log.h"
+#include "mm3dport.h"
 #include "endianconfig.h"
 
 #include <stdio.h>
@@ -121,6 +122,18 @@ const size_t FILE_KEYFRAME_SIZE = 16;
 //    1 = selected
 //    2 = hidden
 //
+
+Ms3dFilter::Ms3dOptions::Ms3dOptions()
+   : m_subVersion( 0 ),
+     m_vertexExtra( 0xffffffff ),
+     m_jointColor( 0xffffffff )
+{
+}
+
+Ms3dFilter::Ms3dOptions::~Ms3dOptions()
+{
+}
+
 
 Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filename )
 {
@@ -277,6 +290,13 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
 
          for ( int i = 0; i < 3; i++ )
          {
+            // FIXME range check is needed
+            //log_debug( "vertex: %d/%d\n", curTriangle->m_vertexIndices[i],
+            //      modelVertices.size() );
+         }
+
+         for ( int i = 0; i < 3; i++ )
+         {
             // Need to invert the T coord, since milkshape seems to store it
             // upside-down.
             curTriangle->m_s[i] = triangle.m_s[i];
@@ -320,12 +340,19 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
          for ( uint16_t n = 0; n < numTriangles; n++ )
          {
             read( triIndex );
+            // FIXME real range check is needed
+            if ( triIndex >= modelTriangles.size() )
+            {
+               log_error( "TRIANGLE OUT OF RANGE %d/%d\n",
+                     triIndex, modelTriangles.size() );
+            }
             group->m_triangleIndices.push_back( triIndex );
          }
 
          int8_t material = 0;
          read( material );
          group->m_materialIndex = material;
+         // FIXME need to range check materials
 
          // Already added group to m_groups
       }
@@ -578,6 +605,24 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
       {
          model->setVertexBoneJoint( i, vertexJoints[i] );
       }
+
+      // FIXME set some defaults in meta data
+      bool keepReading = true;
+      if ( m_bufPos < m_bufEnd )
+      {
+         keepReading = readCommentSection();
+      }
+      if ( keepReading && m_bufPos < m_bufEnd )
+      {
+         keepReading = readVertexWeightSection();
+      }
+
+      // TODO: May want to read joint extra data eventually
+
+      delete[] nameList;
+
+      model->setupJoints();
+
       log_debug( "model loaded\n" );
       log_debug( "  vertices:  %d\n", numVertices );
       log_debug( "  triangles: %d\n", numTriangles );
@@ -585,10 +630,6 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
       log_debug( "  materials: %d\n", numMaterials );
       log_debug( "  joints:    %d\n", numJoints );
       log_debug( "\n" );
-
-      delete[] nameList;
-
-      model->setupJoints();
 
       m_bufPos = NULL;
       delete[] buffer;
@@ -626,6 +667,17 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
       }
    }
 
+   Model::ModelErrorE rval = Model::ERROR_NONE;
+
+   // Use dynamic cast to determine if the object is of the proper type
+   // If not, create new one that we will delete later.
+   //
+   // We need to create one to make sure that the default options we
+   // use in the filter match the default options presented to the
+   // user in the dialog box.
+   Ms3dOptions * opts = dynamic_cast< Ms3dOptions *>( o );
+   m_options = (opts != NULL) ? opts : static_cast<Ms3dOptions *>( getDefaultOptions() );
+   
    m_fp = fopen( filename, "wb" );
 
    if ( m_fp )
@@ -638,53 +690,14 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
 
       m_model = model;
 
-      // Groups don't share vertices with Milk Shape 3D
-      {
-         unsigned t = 0;
-         unsigned vcount = model->getVertexCount();
+      // Groups don't share vertices with Milk Shape 3D. Create mesh list
+      // that has unique vertices for each group. UVs/normals are per-face
+      // vertex rather than per-vertex, so vertices do not have to have
+      // unique UVs or normals.
 
-         for ( t = 0; t < vcount; t++ )
-         {
-            model->selectVertex( t );
-         }
+      MeshList ml;
+      mesh_create_list( ml, model, Mesh::MO_Group | Mesh::MO_Material );
 
-         unweldSelectedVertices( model );
-
-         unsigned tcount = model->getTriangleCount();
-         for ( t = 0; t < tcount; t++ )
-         {
-            model->selectTriangle( t );
-         }
-
-         unsigned gcount = model->getGroupCount();
-         for ( t = 0; t < gcount; t++ )
-         {
-            model->unselectGroup( t );
-         }
-
-         list<int> tris;
-         model->getSelectedTriangles( tris );
-         if ( !tris.empty() )
-         {
-            weldSelectedVertices( model );
-            int ungrouped = model->addGroup( "Ungrouped" );
-            model->addSelectedToGroup( ungrouped );
-         }
-
-         // gcount doesn't include the group we just created,
-         // so this operation does not re-weld vertices we just 
-         // operated on.
-         for ( t = 0; t < gcount; t++ )
-         {
-            model->unselectAll();
-            model->selectGroup( t );
-            weldSelectedVertices( model );
-         }
-
-         model->unselectAll();
-         model->operationComplete( "Changes for save" );
-      }
-      
       vector<Model::Vertex *>   & modelVertices  = getVertexList( model );
       vector<Model::Triangle *> & modelTriangles = getTriangleList( model );
       vector<Model::Group *>    & modelGroups    = getGroupList( model );
@@ -698,147 +711,172 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
       uint16_t t;
 
       // write vertices
-      uint16_t numVertices = (int) modelVertices.size();
+      uint16_t numVertices = mesh_list_vertex_count( ml );
       write( numVertices );
+      log_debug( "writing %d vertices\n", numVertices );
 
-      for ( t = 0; t < numVertices; t++ )
+      MeshList::const_iterator it;
+
+      for ( it = ml.begin(); it != ml.end(); it++ )
       {
-         Model::Vertex * mvert = modelVertices[t];
-         MS3DVertex vert;
-         uint8_t refcount = 0;
-
-         vert.m_flags = 1;
-         for ( int n = 0; n < 3; n++ )
+         for ( t = 0; t < it->vertices.size(); t++ )
          {
-            vert.m_vertex[n] = mvert->m_coord[n];
-         }
-         vert.m_boneId = model->getPrimaryVertexInfluence( t );
+            int modelVert = it->vertices[t].v;
+            Model::Vertex * mvert = modelVertices[modelVert];
+            MS3DVertex vert;
+            uint8_t refcount = 0;
 
-         for ( unsigned tri = 0; tri < modelTriangles.size(); tri++ )
-         {
-            for ( unsigned v = 0; v < 3; v++ )
+            vert.m_flags = 1;
+            for ( int n = 0; n < 3; n++ )
             {
-               if ( modelTriangles[tri]->m_vertexIndices[v] == (unsigned) t )
+               vert.m_vertex[n] = mvert->m_coord[n];
+            }
+            vert.m_boneId = model->getPrimaryVertexInfluence( modelVert );
+
+            unsigned modelTriangleCount = it->faces.size();
+            for ( unsigned tri = 0; tri < modelTriangleCount; tri++ )
+            {
+               for ( unsigned v = 0; v < 3; v++ )
                {
-                  refcount++;
+                  if ( it->faces[tri].v[v] == t )
+                  {
+                     refcount++;
+                  }
                }
             }
+
+            vert.m_refCount = refcount;
+
+            write( vert.m_flags );
+            write( vert.m_vertex[0] );
+            write( vert.m_vertex[1] );
+            write( vert.m_vertex[2] );
+            write( vert.m_boneId );
+            write( vert.m_refCount );
          }
-
-         vert.m_refCount = refcount;
-
-         write( vert.m_flags );
-         write( vert.m_vertex[0] );
-         write( vert.m_vertex[1] );
-         write( vert.m_vertex[2] );
-         write( vert.m_boneId );
-         write( vert.m_refCount );
       }
 
       // write triangles
-      uint16_t numTriangles = (int) modelTriangles.size();
+      uint16_t numTriangles = (uint16_t) mesh_list_face_count( ml );
       write( numTriangles );
+      log_debug( "writing %d triangles\n", numTriangles );
 
-      for ( t = 0; t < numTriangles; t++ )
+      int vertBase = 0;
+      int meshNum = 0;
+      for ( it = ml.begin(); it != ml.end(); it++ )
       {
-         Model::Triangle * mtri = modelTriangles[t];
-         MS3DTriangle tri;
-
-         tri.m_flags = 1;
-         for ( int v = 0; v < 3; v++ )
+         for ( t = 0; t < it->faces.size(); t++ )
          {
-            tri.m_vertexIndices[v] = mtri->m_vertexIndices[v];
-            tri.m_s[v] = mtri->m_s[v];
-            tri.m_t[v] = 1.0 - mtri->m_t[v];
+            int modelTri = it->faces[t].modelTri;
+            Model::Triangle * mtri = modelTriangles[modelTri];
+            MS3DTriangle tri;
 
-            for ( int n = 0; n < 3; n++ )
+            tri.m_flags = 1;
+            for ( int v = 0; v < 3; v++ )
             {
-               tri.m_vertexNormals[v][n] = mtri->m_vertexNormals[v][n];
-            }
-         }
+               tri.m_vertexIndices[v] = it->faces[t].v[v] + vertBase;
+               tri.m_s[v] = mtri->m_s[v];
+               tri.m_t[v] = 1.0 - mtri->m_t[v];
 
-         for ( unsigned g = 0; g < modelGroups.size(); g++ )
-         {
-            for ( unsigned n = 0; n < modelGroups[g]->m_triangleIndices.size(); n++ )
-            {
-               if ( modelGroups[g]->m_triangleIndices[n] == t )
+               for ( int n = 0; n < 3; n++ )
                {
-                  tri.m_groupIndex = g;
-                  break;
+                  tri.m_vertexNormals[v][n] = mtri->m_vertexNormals[v][n];
                }
             }
-         }
-         tri.m_smoothingGroup = 0;
 
-         write( tri.m_flags );
-         write( tri.m_vertexIndices[0] );
-         write( tri.m_vertexIndices[1] );
-         write( tri.m_vertexIndices[2] );
-         write( tri.m_vertexNormals[0][0] );
-         write( tri.m_vertexNormals[0][1] );
-         write( tri.m_vertexNormals[0][2] );
-         write( tri.m_vertexNormals[1][0] );
-         write( tri.m_vertexNormals[1][1] );
-         write( tri.m_vertexNormals[1][2] );
-         write( tri.m_vertexNormals[2][0] );
-         write( tri.m_vertexNormals[2][1] );
-         write( tri.m_vertexNormals[2][2] );
-         write( tri.m_s[0] );
-         write( tri.m_s[1] );
-         write( tri.m_s[2] );
-         write( tri.m_t[0] );
-         write( tri.m_t[1] );
-         write( tri.m_t[2] );
-         write( tri.m_smoothingGroup );
-         write( tri.m_groupIndex );
+            tri.m_groupIndex = meshNum;
+            tri.m_smoothingGroup = 0;
+
+            write( tri.m_flags );
+            write( tri.m_vertexIndices[0] );
+            write( tri.m_vertexIndices[1] );
+            write( tri.m_vertexIndices[2] );
+            write( tri.m_vertexNormals[0][0] );
+            write( tri.m_vertexNormals[0][1] );
+            write( tri.m_vertexNormals[0][2] );
+            write( tri.m_vertexNormals[1][0] );
+            write( tri.m_vertexNormals[1][1] );
+            write( tri.m_vertexNormals[1][2] );
+            write( tri.m_vertexNormals[2][0] );
+            write( tri.m_vertexNormals[2][1] );
+            write( tri.m_vertexNormals[2][2] );
+            write( tri.m_s[0] );
+            write( tri.m_s[1] );
+            write( tri.m_s[2] );
+            write( tri.m_t[0] );
+            write( tri.m_t[1] );
+            write( tri.m_t[2] );
+            write( tri.m_smoothingGroup );
+            write( tri.m_groupIndex );
+         }
+         vertBase += it->vertices.size();
+         meshNum++;
       }
 
-      uint16_t numGroups = modelGroups.size();
+      // write groups
+      uint16_t numGroups = ml.size();
       write( numGroups );
+      log_debug( "writing %d groups\n", numGroups );
 
-      for ( t = 0; t < numGroups; t++ )
+      int triBase = 0;
+      for ( it = ml.begin(); it != ml.end(); it++ )
       {
-         Model::Group * grp = modelGroups[t];
+         Model::Group * grp = NULL;
+         if ( it->group >= 0 )
+         {
+            grp = modelGroups[it->group];
+         }
          uint8_t flags = 0;
          write( flags );
 
          char groupname[32];
-         strncpy( groupname, grp->m_name.c_str(), sizeof(groupname) );
+         if ( grp )
+            PORT_snprintf( groupname, sizeof(groupname),
+                  "%s", grp->m_name.c_str() );
+         else
+            strcpy( groupname, "Ungrouped" );
+
          writeString( groupname, sizeof(groupname) );
 
-         uint16_t numTriangles = grp->m_triangleIndices.size();
-         write( numTriangles );
+         uint16_t groupTriangles = it->faces.size();
+         write( groupTriangles );
 
-         for ( uint16_t n = 0; n < numTriangles; n++ )
+         for ( uint16_t n = 0; n < groupTriangles; n++ )
          {
-            uint16_t index = grp->m_triangleIndices[n];
+            uint16_t index = n + triBase;
             write( index );
          }
 
-         uint8_t material = grp->m_materialIndex;
+         uint8_t material = static_cast<uint8_t>(~0);
+         if ( grp )
+            material = grp->m_materialIndex;
          write( material );
+
+         triBase += it->faces.size();
       }
 
       uint16_t numMaterials = modelMaterials.size();
       write( numMaterials );
+      log_debug( "writing %d materials\n", numMaterials );
 
       for ( t = 0; t < numMaterials; t++ )
       {
          Model::Material * mmat = modelMaterials[t];
          MS3DMaterial mat;
 
-         strncpy( mat.m_name, mmat->m_name.c_str(), sizeof( mat.m_name ) );
+         PORT_snprintf( mat.m_name, sizeof( mat.m_name ),
+               "%s", mmat->m_name.c_str() );
 
          string texturePath;
          texturePath = getRelativePath( modelPath.c_str(), mmat->m_filename.c_str() );
 
-         strncpy( mat.m_texture, texturePath.c_str(), sizeof( mat.m_texture ) );
-         mat.m_texture[ sizeof(mat.m_texture) - 1 ]  = '\0';
+         PORT_snprintf( mat.m_texture, sizeof( mat.m_texture ),
+               "%s", texturePath.c_str() );
 
          texturePath = getRelativePath( modelPath.c_str(), mmat->m_alphaFilename.c_str() );
 
-         strncpy( mat.m_alphamap, texturePath.c_str(), sizeof( mat.m_alphamap ) );
-         mat.m_alphamap[ sizeof(mat.m_alphamap) - 1 ]  = '\0';
+         PORT_snprintf( mat.m_alphamap, sizeof( mat.m_alphamap ),
+               "%s", texturePath.c_str() );
 
          replaceSlash( mat.m_texture );
          replaceSlash( mat.m_alphamap );
@@ -906,11 +944,13 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
          Model::Joint * mjoint = modelJoints[t];
          MS3DJoint joint;
 
-         strncpy( joint.m_name, mjoint->m_name.c_str(), sizeof(joint.m_name) );
+         PORT_snprintf( joint.m_name, sizeof(joint.m_name),
+               "%s", mjoint->m_name.c_str() );
 
          if ( mjoint->m_parent >= 0 )
          {
-            strncpy( joint.m_parentName, modelJoints[ mjoint->m_parent ]->m_name.c_str(), sizeof(joint.m_parentName) );
+            PORT_snprintf( joint.m_parentName, sizeof(joint.m_parentName),
+                  "%s", modelJoints[ mjoint->m_parent ]->m_name.c_str() );
          }
          else
          {
@@ -1033,27 +1073,48 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
          prevcount += framecount;
       }
 
+      int32_t subVersion = m_options->m_subVersion;
+      if ( subVersion == 1 || subVersion == 2 )
+      {
+         // FIXME set some defaults in meta data
+         writeCommentSection();
+         writeVertexWeightSection( ml );
+         writeJointColorSection();
+      }
+
       fclose( m_fp );
       m_fp = NULL;
+
+      rval = Model::Model::ERROR_NONE;
    }
    else
    {
       if ( errno == ENOENT )
       {
          log_error( "%s: file does not exist\n", filename );
-         return Model::ERROR_NO_FILE;
+         rval = Model::ERROR_NO_FILE;
       }
-      if ( errno == EPERM )
+      else if ( errno == EPERM )
       {
          log_error( "%s: access denied\n", filename );
-         return Model::ERROR_NO_ACCESS;
+         rval = Model::ERROR_NO_ACCESS;
       }
-
-      log_error( "%s: could not open file\n", filename );
-      return Model::ERROR_FILE_OPEN;
+      else
+      {
+         log_error( "%s: could not open file\n", filename );
+         rval = Model::ERROR_FILE_OPEN;
+      }
    }
 
-   return Model::Model::ERROR_NONE;
+   if ( opts == NULL )
+   {
+      // The object passed in was not a valid ObjOptions object.
+      // We created a temporary one above so now we have to free it.
+      m_options->release();
+   }
+   m_options = NULL;
+
+   return rval;
 }
 
 void Ms3dFilter::write( uint32_t val )
@@ -1116,6 +1177,8 @@ void Ms3dFilter::writeCommentSection()
    int32_t subVersion = 1;
    write( subVersion );
 
+   log_debug( "writing comments subversion %d\n", subVersion );
+
    int32_t numComments = 0;
    write( numComments ); // groups
    write( numComments ); // materials
@@ -1123,38 +1186,66 @@ void Ms3dFilter::writeCommentSection()
    write( numComments ); // model
 }
 
-void Ms3dFilter::writeVertexWeightSection()
+void Ms3dFilter::writeVertexWeightSection( const MeshList & ml )
 {
-   // We don't support vertex colors or joint colors, so we might as
-   // well just use sub version 1
-   int32_t subVersion = 1;
+   int32_t subVersion = m_options->m_subVersion;
+   if ( subVersion < 1 || subVersion > 2 )
+   {
+      subVersion = 1;
+   }
    write( subVersion );
 
-   int vcount = m_model->getVertexCount();
-   for ( int v = 0; v < vcount; v++ )
+   log_debug( "writing vertex weights subversion %d\n", subVersion );
+
+   Model::InfluenceList ilist;
+
+   MeshList::const_iterator it;
+   for ( it = ml.begin(); it != ml.end(); it++ )
    {
-      Model::InfluenceList ilist;
-      ilist.clear();
-      m_model->getVertexInfluences( v, ilist );
-      writeVertexWeight( ilist );
+      int vcount = it->vertices.size();
+      for ( int v = 0; v < vcount; v++ )
+      {
+         ilist.clear();
+         m_model->getVertexInfluences( it->vertices[v].v, ilist );
+
+         ilist.sort();
+         writeVertexWeight( subVersion, ilist );
+      }
    }
 }
 
-void Ms3dFilter::writeVertexWeight( Model::InfluenceList & ilist )
+void Ms3dFilter::writeJointColorSection()
 {
-   // FIXME implement
-   // FIXME need to sort list from least to greatest
-   // FIXME support sub version 2?
+   int32_t subVersion = m_options->m_subVersion;
+   write( subVersion );
+
+   log_debug( "writing joint color subversion %d\n", subVersion );
+
+   int bcount = m_model->getBoneJointCount();
+   for ( int b = 0; b < bcount; b++ )
+   {
+      for ( int t = 0; t < 3; t++ )
+      {
+         int ic = 0xff & (m_options->m_jointColor >> (t*8));
+         float fc = static_cast<float>(ic) / 255.0;
+         write( fc );
+      }
+   }
+}
+
+void Ms3dFilter::writeVertexWeight( int subVersion,
+      const Model::InfluenceList & ilist )
+{
    int8_t boneId[4]  = { -1, -1, -1, -1 };
    uint8_t weight[4] = { 0, 0, 0, 0 };
    int rawWeight[4]  = { 0, 0, 0, 0 };
 
    int totalWeight = 0;
 
-   Model::InfluenceList::iterator it;
+   Model::InfluenceList::const_reverse_iterator it;
    int index = 0;
 
-   for ( it = ilist.begin(); index < 4 && it != ilist.end(); it++ )
+   for ( it = ilist.rbegin(); index < 4 && it != ilist.rend(); it++ )
    {
       totalWeight += static_cast<int>(it->m_weight * 100.0);
       boneId[ index ] = it->m_boneId;
@@ -1163,15 +1254,35 @@ void Ms3dFilter::writeVertexWeight( Model::InfluenceList & ilist )
       index++;
    }
 
+   int maxWeight = (subVersion == 1) ? 255 : 100;
+
    index = 0;
-   for ( it = ilist.begin(); index < 4 && it != ilist.end(); it++ )
+   for ( it = ilist.rbegin(); index < 4 && it != ilist.rend(); it++ )
    {
       if ( totalWeight > 0 )
-         weight[ index ] = (uint8_t) (rawWeight[ index ] * 255.0
+         weight[ index ] = (uint8_t) (rawWeight[ index ] * (double) maxWeight
                / (double) totalWeight);
       else
-         weight[ index ] = 255 / ilist.size();
+         weight[ index ] = maxWeight / ilist.size();
       index++;
+   }
+
+   // Yes, this needs to start at 1 (one), boneId[0] is stored
+   // earlier in the file
+   write( boneId[1] );
+   write( boneId[2] );
+   write( boneId[3] );
+
+   // Yes, this needs to start at 0 (zero), weight[3] is implicit
+   log_debug( "write weights: %d, %d, %d\n", weight[0], weight[1], weight[2] );
+   write( weight[0] );
+   write( weight[1] );
+   write( weight[2] );
+
+   if ( subVersion == 2 )
+   {
+      uint32_t extra = m_options->m_vertexExtra;
+      write( extra );
    }
 }
 
@@ -1241,14 +1352,20 @@ void Ms3dFilter::readString( char * buf, size_t len )
 bool Ms3dFilter::readCommentSection() 
 {
    // TODO: We don't actually do anything with these... meta data maybe?
+   log_debug( "reading comments section\n");
+
    int32_t subVersion = 0;
    read( subVersion );
+
+   log_debug( "  sub version: %d\n", subVersion );
 
    int32_t numComments = 0;
 
    for ( int c = CT_GROUP; c < CT_MAX; c++ )
    {
       read( numComments );
+      log_debug( "  comment type %d: %d comments\n", c, numComments );
+
       for ( int n = 0; n < numComments; n++ )
       {
          int32_t index = 0;
@@ -1257,6 +1374,8 @@ bool Ms3dFilter::readCommentSection()
          read( index );
          read( length );
 
+         log_debug( "    index %d, %d bytes\n", index, length );
+
          if (length > (m_bufEnd - m_bufPos))
          {
             return false;
@@ -1264,6 +1383,7 @@ bool Ms3dFilter::readCommentSection()
 
          std::string comment;
          comment.assign( reinterpret_cast<char*>(m_bufPos), length );
+         log_debug( "      comment = %s\n", comment.c_str() );
          m_bufPos += length;
       }
    }
@@ -1273,8 +1393,12 @@ bool Ms3dFilter::readCommentSection()
 
 bool Ms3dFilter::readVertexWeightSection() 
 {
+   log_debug( "reading vertex weight section\n");
+
    int32_t subVersion = 0;
    read( subVersion );
+
+   log_debug( "  sub version: %d\n", subVersion );
 
    bool rval = true;
    VertexWeightList weightList;
@@ -1283,6 +1407,7 @@ bool Ms3dFilter::readVertexWeightSection()
    int vcount = m_model->getVertexCount();
    for ( int v = 0; rval && v < vcount; v++ )
    {
+      //log_debug( "     vertex: %d\n", v );
       rval = readVertexWeight( subVersion, v, weightList );
 
       if ( rval )
@@ -1290,6 +1415,7 @@ bool Ms3dFilter::readVertexWeightSection()
          m_model->removeAllVertexInfluences( v );
          for ( it = weightList.begin(); it != weightList.end(); it++ )
          {
+            //log_debug( "       bone %d, weight %d\n", it->boneId, it->weight );
             m_model->addVertexInfluence( v, it->boneId,
                   Model::IT_Custom, ((double) it->weight) / 100.0 );
          }
@@ -1318,6 +1444,7 @@ bool Ms3dFilter::readVertexWeight( int subVersion,
    for ( i = 0; i < 3; i++ )
    {
       read( boneIds[i+1] );
+      //log_debug( "      read boneId %d\n", boneIds[i+1] );
    }
    for ( i = 0; i < 3; i++ )
    {
@@ -1326,6 +1453,7 @@ bool Ms3dFilter::readVertexWeight( int subVersion,
       {
          weights[i] = (uint8_t) ((int) weights[i] * 100 / 255);
       }
+      //log_debug( "      read weights %d\n", boneIds[i+1] );
    }
    if ( subVersion == 2 )
    {

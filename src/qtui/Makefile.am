@@ -10,6 +10,7 @@ libqtui_UIFILES = alignwin.ui \
 	backgroundselect.ui \
 	backgroundwin.ui \
 	boolwin.ui \
+	cal3dprompt.ui \
 	contextgroup.ui \
 	contextinfluences.ui \
 	contextname.ui \
@@ -28,6 +29,7 @@ libqtui_UIFILES = alignwin.ui \
 	mergewin.ui \
 	metawin.ui \
 	modelview.ui \
+	ms3dprompt.ui \
 	newanim.ui \
 	objprompt.ui \
 	pluginwin.ui \
@@ -50,6 +52,7 @@ libqtui_UIHEADERS = \
 	backgroundselect.base.h \
 	backgroundwin.base.h \
 	boolwin.base.h      \
+	cal3dprompt.base.h \
 	contextgroup.base.h \
 	contextinfluences.base.h \
 	contextname.base.h \
@@ -68,6 +71,7 @@ libqtui_UIHEADERS = \
 	mergewin.base.h     \
 	metawin.base.h     \
 	modelview.base.h    \
+	ms3dprompt.base.h \
 	newanim.base.h    \
 	objprompt.base.h \
 	pluginwin.base.h    \
@@ -89,6 +93,7 @@ libqtui_UI = alignwin.base.cc \
 	backgroundselect.base.cc \
 	backgroundwin.base.cc \
 	boolwin.base.cc \
+	cal3dprompt.base.cc \
 	contextgroup.base.cc \
 	contextinfluences.base.cc \
 	contextname.base.cc \
@@ -107,6 +112,7 @@ libqtui_UI = alignwin.base.cc \
 	mergewin.base.cc \
 	metawin.base.cc \
 	modelview.base.cc \
+	ms3dprompt.base.cc \
 	newanim.base.cc \
 	objprompt.base.cc \
 	pluginwin.base.cc \
@@ -128,6 +134,7 @@ libqtui_MOC = alignwin.base.moc.cc \
 	backgroundselect.base.moc.cc \
 	backgroundwin.base.moc.cc \
 	boolwin.base.moc.cc \
+	cal3dprompt.base.moc.cc \
 	contextgroup.base.moc.cc \
 	contextinfluences.base.moc.cc \
 	contextname.base.moc.cc \
@@ -146,6 +153,7 @@ libqtui_MOC = alignwin.base.moc.cc \
 	mergewin.base.moc.cc \
 	metawin.base.moc.cc \
 	modelview.base.moc.cc \
+	ms3dprompt.base.moc.cc \
 	newanim.base.moc.cc \
 	objprompt.base.moc.cc \
 	pluginwin.base.moc.cc \

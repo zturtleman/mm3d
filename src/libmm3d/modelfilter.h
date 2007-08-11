@@ -97,7 +97,7 @@ class ModelFilter
       // If the load succeeds, return Model::ERROR_NONE.
       virtual Model::ModelErrorE readFile( Model * model, const char * const filename ) = 0;
 
-      // readFile writes the contents of 'model' to the file 'filename'.
+      // writeFile writes the contents of 'model' to the file 'filename'.
       //
       // If the model cannot be written to disk, return the appropriate 
       // ModelErrorE error code.  If the write succeeds, return 

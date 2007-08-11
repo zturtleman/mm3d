@@ -1,7 +1,7 @@
 For 1.4:
    Update ad3dsfilter with canExport
-   MS3D test multiple bone joints (support sv2?)
-   Finish CAL3D (notify user[s] who are waiting)
+   MS3D and Cal3d cleanup
+   Treat unhandled \ escape codes in preferences as regular backslashes
 
    Test merge on multiple bone joint assignments (and points)
    Documentation
@@ -13,6 +13,15 @@ For 1.4:
       Have toolbar option on proj tool to create specific projection type
 
 Post 1.4:
+   Format options:
+      Model format-specific dialog box (like Save dialog)
+         Must save in that format to get dialog
+      Dialog always available (tabbed for each format?)
+      Save format-specific options in MM3D format
+      Options dialog can encode/decode
+      Prompt at save time
+   Meta data context panel
+      For meta data of any primitive
    Coloring on texture paint (??)
    Bone Joints
       Interactive influence weight adjustment
