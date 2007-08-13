@@ -39,8 +39,6 @@
 #include <map>
 #include <vector>
 
-// FIXME change bits
-
 bool Model::setPositionBoneJoint( const Position & pos, int joint )
 {
    removeAllPositionInfluences( pos );

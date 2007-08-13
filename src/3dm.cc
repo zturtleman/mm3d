@@ -42,7 +42,6 @@
 #include "keycfg.h"
 #include "transimp.h"
 
-#include "misc.h" // FIXME
 
 #include <signal.h>
 
@@ -61,36 +60,6 @@ int main( int argc, char * argv[] )
 {
    int rval = 0;
    
-   /*
-   // FIXME begin test
-   char cstr[]      = "hiragana: 平仮名foo";
-   std::string sstr = "hiragana: 平仮名foo";
-
-   printf( "cstr length = %d/%d\n", strlen( cstr ), utf8len( cstr ) );
-   printf( "sstr length = %d/%d\n", strlen( sstr.c_str() ), utf8len( sstr ) );
-
-   printf( "cstr is '%s'\n", cstr );
-   printf( "sstr is '%s'\n", sstr.c_str() );
-
-   utf8chrtrunc( cstr, 22 );
-   utf8chrtrunc( sstr, 22 );
-
-   printf( "cstr is '%s'\n", cstr );
-   printf( "sstr is '%s'\n", sstr.c_str() );
-
-   utf8chrtrunc( cstr, 15 );
-   utf8chrtrunc( sstr, 15 );
-
-   printf( "cstr length = %d/%d\n", strlen( cstr ), utf8len( cstr ) );
-   printf( "sstr length = %d/%d\n", strlen( sstr.c_str() ), utf8len( sstr ) );
-
-   printf( "cstr is '%s'\n", cstr );
-   printf( "sstr is '%s'\n", sstr.c_str() );
-
-   return 0;
-   // FIXME end test
-   */
-
    log_profile_init( "profile_data.txt" );
 
    signal( SIGSEGV, segfault_handler );

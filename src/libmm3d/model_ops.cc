@@ -1492,7 +1492,7 @@ void Model::simplifySelectedMesh()
 
                            // v is now an orphan, next vertex
                            v++;
-                           v = 0; // FIXME let's start completely over for now
+                           v = 0; // TODO let's start completely over for now
                            deleteFlattenedTriangles();
                            deleteOrphanedVertices();
                            vcount = m_vertices.size();

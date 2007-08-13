@@ -327,7 +327,6 @@ void Matrix::setRotationQuaternion( const Quaternion & quat )
 
 void Matrix::getRotationQuaternion( Quaternion & quat )
 {
-   // FIXME implement and test
    double s;
 
    double t = 1 + m_val[0] + m_val[5] + m_val[10];

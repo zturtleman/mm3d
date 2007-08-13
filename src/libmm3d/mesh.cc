@@ -235,7 +235,7 @@ int mesh_list_model_vertex( const MeshList & meshes, int meshVertex )
       }
       meshVertex -= it->vertices.size();
    }
-   // FIXME need an assert here
+   // TODO need an assert here
    return 0;
 }
 
@@ -250,7 +250,7 @@ int mesh_list_model_triangle( const MeshList & meshes, int meshTriangle )
       }
       meshTriangle -= it->faces.size();
    }
-   // FIXME need an assert here
+   // TODO need an assert here
    return 0;
 }
 
@@ -269,7 +269,7 @@ int mesh_list_mesh_vertex( const MeshList & meshes, int modelVertex )
       }
       vertBase += it->vertices.size();
    }
-   // FIXME need an assert here
+   // TODO need an assert here
    return 0;
 }
 
@@ -288,7 +288,7 @@ int mesh_list_mesh_triangle( const MeshList & meshes, int modelTriangle )
       }
       triBase += it->faces.size();
    }
-   // FIXME need an assert here
+   // TODO need an assert here
    return 0;
 }
 

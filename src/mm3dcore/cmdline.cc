@@ -37,7 +37,7 @@
 
 #include "texturetest.h"
 
-#include "modeltest.h"  // FIXME call this model filter test
+#include "modeltest.h"  // TODO call this model filter test
 #include "model_test.h"
 
 #include <string.h>

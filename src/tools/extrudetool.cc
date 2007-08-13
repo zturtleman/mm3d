@@ -222,7 +222,7 @@ void ExtrudeTool::extrudeEvent()
          int v3 = m_model->getTriangleVertex( tri, 2 );
 
          /*
-         // FIXME widget for back-facing
+         // TODO widget for back-facing
          if ( m_backFaceCheckbox->isChecked() )
          {
             int newTri = m_model->addTriangle( v1, v2, v3 );
