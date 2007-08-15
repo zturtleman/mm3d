@@ -13,6 +13,7 @@ libmm3d_HFILES = \
 	filtermgr.h \
 	glheaders.h \
 	glmath.h \
+	local_ptr.h \
 	log.h \
 	lwofilter.h \
 	md2filter-anorms.h \
@@ -35,6 +36,7 @@ libmm3d_HFILES = \
 	objfilter.h \
 	pcxtex.h \
 	rawtex.h \
+	release_ptr.h \
 	sorted_list.h \
 	texmgr.h \
 	texscale.h \
