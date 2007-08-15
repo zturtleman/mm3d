@@ -29,8 +29,8 @@
 #include "binutil.h"
 #include "misc.h"
 #include "filtermgr.h"
-//#include "version.h"
 #include "mm3dport.h"
+#include "release_ptr.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -176,8 +176,13 @@ Model::ModelErrorE ObjFilter::writeFile( Model * model, const char * const filen
    // We need to create one to make sure that the default options we
    // use in the filter match the default options presented to the
    // user in the dialog box.
-   ObjOptions * opts = dynamic_cast< ObjOptions *>( o );
-   m_options = (opts != NULL) ? opts : static_cast<ObjOptions *>( getDefaultOptions() );
+   release_ptr<ObjOptions> freeOptions = NULL;
+   m_options = dynamic_cast<ObjOptions *>( o );
+   if ( !m_options )
+   {
+      freeOptions = static_cast< ObjOptions * >( getDefaultOptions() );
+      m_options = freeOptions.get();
+   }
    
    writeHeader();
    writeMaterials();
@@ -186,14 +191,6 @@ Model::ModelErrorE ObjFilter::writeFile( Model * model, const char * const filen
    fclose( m_fp );
 
    m_fp = NULL;
-
-   if ( opts == NULL )
-   {
-      // The object passed in was not a valid ObjOptions object.
-      // We created a temporary one above so now we have to free it.
-      m_options->release();
-   }
-   m_options = NULL;
 
    return Model::ERROR_NONE;
 }
