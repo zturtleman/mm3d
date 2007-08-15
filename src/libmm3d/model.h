@@ -852,6 +852,7 @@ class Model
       void removeObserver( Observer * o );
 
       void addMetaData( const char * key, const char * value );
+      void updateMetaData( const char * key, const char * value );
       bool getMetaData( const char * key, char * value, size_t valueLen );
       bool getMetaData( unsigned int index, char * key, size_t keyLen, char * value, size_t valueLen );
       unsigned int getMetaDataCount();

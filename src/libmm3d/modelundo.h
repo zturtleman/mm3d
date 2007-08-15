@@ -1961,6 +1961,27 @@ class MU_AddMetaData : public ModelUndo
       std::string m_value;
 };
 
+class MU_UpdateMetaData : public ModelUndo
+{
+   public:
+      MU_UpdateMetaData();
+      virtual ~MU_UpdateMetaData();
+
+      void undo( Model * );
+      void redo( Model * );
+      bool combine( Undo * );
+
+      unsigned size();
+
+      void updateMetaData( const std::string & key,
+            const std::string & newValue, const std::string & oldValue );
+
+   private:
+      std::string m_key;
+      std::string m_newValue;
+      std::string m_oldValue;
+};
+
 class MU_ClearMetaData : public ModelUndo
 {
    public:

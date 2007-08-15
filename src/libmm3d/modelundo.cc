@@ -4896,6 +4896,42 @@ void MU_AddMetaData::addMetaData( const std::string & key,
    m_value = value;
 }
 
+MU_UpdateMetaData::MU_UpdateMetaData()
+{
+}
+
+MU_UpdateMetaData::~MU_UpdateMetaData()
+{
+}
+
+void MU_UpdateMetaData::undo( Model * model )
+{
+   model->updateMetaData( m_key.c_str(), m_oldValue.c_str() );
+}
+
+void MU_UpdateMetaData::redo( Model * model )
+{
+   model->updateMetaData( m_key.c_str(), m_newValue.c_str() );
+}
+
+bool MU_UpdateMetaData::combine( Undo * u )
+{
+   return false;
+}
+
+unsigned MU_UpdateMetaData::size()
+{
+   return sizeof(MU_UpdateMetaData) + m_key.size() + m_newValue.size() + m_oldValue.size();
+}
+
+void MU_UpdateMetaData::updateMetaData( const std::string & key,
+      const std::string & newValue, const std::string & oldValue )
+{
+   m_key   = key;
+   m_newValue = newValue;
+   m_oldValue = oldValue;
+}
+
 MU_ClearMetaData::MU_ClearMetaData()
 {
 }

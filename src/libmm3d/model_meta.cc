@@ -6,6 +6,7 @@
 
 #ifdef MM3D_EDIT
 
+// TODO centralize this
 static void _safe_strcpy( char * dest, const char * src, size_t len )
 {
    if ( len > 0 )
@@ -17,6 +18,19 @@ static void _safe_strcpy( char * dest, const char * src, size_t len )
    {
       dest[0] = '\0';
    }
+}
+
+static Model::MetaDataList::iterator _findMetaDataByKey( 
+      Model::MetaDataList & mdl, const char * key )
+{
+   Model::MetaDataList::iterator it;
+
+   for ( it = mdl.begin(); it != mdl.end(); it++ )
+   {
+      if ( strcmp( key, (*it).key.c_str() ) == 0 )
+         return it;
+   }
+   return it;
 }
 
 void Model::addMetaData( const char * key, const char * value )
@@ -32,19 +46,38 @@ void Model::addMetaData( const char * key, const char * value )
    m_metaData.push_back( md );
 }
 
+void Model::updateMetaData( const char * key, const char * value )
+{
+   MetaDataList::iterator it = _findMetaDataByKey( m_metaData, key );
+   if ( it == m_metaData.end() )
+   {
+      MetaData md;
+      md.key = key;
+      md.value = value;
+
+      MU_AddMetaData * undo = new MU_AddMetaData();
+      undo->addMetaData( md.key, md.value );
+      sendUndo( undo );
+
+      m_metaData.push_back( md );
+   }
+
+   MU_UpdateMetaData * undo = new MU_UpdateMetaData();
+   undo->updateMetaData( key, value, it->value );
+   sendUndo( undo );
+
+   it->value = value;
+
+}
+
 bool Model::getMetaData( const char * key, char * value, size_t valueLen )
 {
-   MetaDataList::iterator it;
+   MetaDataList::iterator it = _findMetaDataByKey( m_metaData, key );
+   if ( it == m_metaData.end() )
+      return false;
 
-   for ( it = m_metaData.begin(); it != m_metaData.end(); it++ )
-   {
-      if ( strcmp( key, (*it).key.c_str() ) == 0 )
-      {
-         _safe_strcpy( value, (*it).value.c_str(), valueLen );
-         return true;
-      }
-   }
-   return false;
+   _safe_strcpy( value, (*it).value.c_str(), valueLen );
+   return true;
 }
 
 bool Model::getMetaData( unsigned int index, char * key, size_t keyLen, char * value, size_t valueLen )
