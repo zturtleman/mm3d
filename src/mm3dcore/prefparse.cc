@@ -427,7 +427,10 @@ void PrefParser::replaceEscape( std::string & str )
    size_t pos = 0;
    while ( (pos = str.find('\\', pos+1)) < str.size() )
    {
-      str.erase(pos,1);
+      if ( str[pos+1] == '"' || str[pos+1] == '\\' )
+         str.erase(pos,1);
+      else
+         pos++;
    }
 }
 

@@ -1,16 +1,13 @@
 For 1.4:
    Update ad3dsfilter with canExport
    MS3D and Cal3d cleanup
-   Treat unhandled \ escape codes in preferences as regular backslashes
+   Only prompt for options on first save or on "Save As"
+   Report useful error if user doesn't provide an extension
+   Warn user if some model properties will not be saved in
+      specified format (??)
 
    Test merge on multiple bone joint assignments (and points)
-   Documentation
-      GL zoom/grid units
-
-   Texture Projections
-      Types
-         Icosahedron
-      Have toolbar option on proj tool to create specific projection type
+   Have toolbar option on proj tool to create specific projection type
 
 Post 1.4:
    Format options:
@@ -33,6 +30,9 @@ Post 1.4:
       Materials
       Skeleton
       Animations
+   Texture Projections
+      Types
+         Icosahedron
    On user path input, always replace backslashes with slashes
    Integrate libmisfit
    Qt 4.x (probably need to continue with Qt 3.x compatibility classes for 1.4)
