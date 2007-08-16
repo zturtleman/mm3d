@@ -901,8 +901,14 @@ void ViewWindow::saveModelInternal( bool exportModel )
 
          if ( save )
          {
+            std::string filename = (const char *) d.selectedFile().utf8();
+            if ( !strchr(filename.c_str(), '.' ) )
+            {
+               filename += ".mm3d";
+            }
+
             Model::ModelErrorE err 
-               = FilterManager::getInstance()->writeFile( m_model, d.selectedFile().utf8(), exportModel );
+               = FilterManager::getInstance()->writeFile( m_model, filename.c_str(), exportModel );
             if ( err == Model::ERROR_NONE )
             {
                m_abortQuit = false;
@@ -913,19 +919,19 @@ void ViewWindow::saveModelInternal( bool exportModel )
 #else
                   g_prefs( "ui_export_dir" ) = (const char *) d.dir()->absPath().utf8();
 #endif 
-                  m_model->setExportFile( d.selectedFile().utf8() );
+                  m_model->setExportFile( filename.c_str() );
                }
                else
                {
                   m_model->setSaved( true );
-                  m_model->setFilename( d.selectedFile().utf8() );
+                  m_model->setFilename( filename.c_str() );
 #ifdef HAVE_QT4
                   g_prefs( "ui_model_dir" ) = (const char *) d.directory().absolutePath().utf8();
 #else
                   g_prefs( "ui_model_dir" ) = (const char *) d.dir()->absPath().utf8();
 #endif 
                }
-               prefs_recent_model( (const char *) d.selectedFile().utf8() );
+               prefs_recent_model( (const char *) filename.c_str() );
 
                updateCaption();
             }
