@@ -382,7 +382,7 @@ const char * Model::errorToString( Model::ModelErrorE e, Model * model )
       case ERROR_CANCEL:
          return QT_TRANSLATE_NOOP( "LowLevel", "Canceled" );
       case ERROR_UNKNOWN_TYPE:
-         return QT_TRANSLATE_NOOP( "LowLevel", "File is an unknown type" );
+         return QT_TRANSLATE_NOOP( "LowLevel", "Unrecognized file extension (unknown type)" );
       case ERROR_UNSUPPORTED_OPERATION:
          return QT_TRANSLATE_NOOP( "LowLevel", "Operation not supported for this file type" );
       case ERROR_BAD_ARGUMENT:

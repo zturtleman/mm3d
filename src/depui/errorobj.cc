@@ -43,7 +43,7 @@ QString ErrorObject::getModelErrorString( Model::ModelErrorE err, Model * model 
       case Model::ERROR_CANCEL:
          return tr("Canceled");
       case Model::ERROR_UNKNOWN_TYPE:
-         return tr("File is an unknown type");
+         return tr("Unrecognized file extension (unknown type)");
       case Model::ERROR_UNSUPPORTED_OPERATION:
          return tr("Operation not supported for this file type");
       case Model::ERROR_BAD_ARGUMENT:
