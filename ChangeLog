@@ -19,6 +19,9 @@ Changes for 1.3.6
    Updated configuration for newer autoconf (2.61) and automake (1.9)
    Fixed interpolation problem with translation keyframes on looped animations
    Treat unhandled backslashes in preferences as regular backslashes
+	Changed error message on uknown file type to indicate it is probably
+		a file extension problem
+	Add ".mm3d" at save time if filename does not have an extension
    Removed several unused modules
    Added script for making source code tags
 
@@ -32,6 +35,7 @@ Changes for 1.3.5
    Restrict Save and Save As to types with more complete support (everything
       else must use "Export...")
    Added Copy/Paste selected keyframe (for skeletal and frame)
+   Added toolbar option on proj tool to create specific projection type
    Write texture coordinates for MM3D even if there are no materials
    MM3D no longer uses packed structs for mm3d, ms3d, tga, and pcx formats
    Improved material support for COB export

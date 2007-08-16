@@ -1,15 +1,12 @@
 For 1.4:
    Update ad3dsfilter with canExport
    MS3D and Cal3d cleanup
-   Only prompt for options on first save or on "Save As"
-   Report useful error if user doesn't provide an extension
-   Warn user if some model properties will not be saved in
-      specified format (??)
 
    Test merge on multiple bone joint assignments (and points)
-   Have toolbar option on proj tool to create specific projection type
 
 Post 1.4:
+   Warn user if some model properties will not be saved in
+      specified format (??)
    Format options:
       Model format-specific dialog box (like Save dialog)
          Must save in that format to get dialog
@@ -17,6 +14,7 @@ Post 1.4:
       Save format-specific options in MM3D format
       Options dialog can encode/decode
       Prompt at save time
+   Only prompt for options on first save or on "Save As"
    Meta data context panel
       For meta data of any primitive
    Coloring on texture paint (??)
