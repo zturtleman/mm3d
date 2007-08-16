@@ -26,7 +26,9 @@
 
 #include "tool.h"
 
-class ProjectionTool : public Tool
+#include "projtoolwidget.h"
+
+class ProjectionTool : public Tool, public ProjToolWidget::Observer
 {
    public:
       ProjectionTool();
@@ -38,11 +40,17 @@ class ProjectionTool : public Tool
 
       bool isCreation() { return true; };
 
+      void activated( int arg, Model * model, QMainWindow * mainwin );
+      void deactivated();
+
       void mouseButtonDown( Parent * parent, int buttonState, int x, int y );
       void mouseButtonUp(   Parent * parent, int buttonState, int x, int y );
       void mouseButtonMove( Parent * parent, int buttonState, int x, int y );
 
       const char ** getPixmap();
+
+      // Observer methods
+      void setTypeValue( int newValue );
 
    protected:
 
@@ -52,7 +60,8 @@ class ProjectionTool : public Tool
       int    m_y;
       bool   m_allowX;
       bool   m_allowY;
-
+      int    m_type;
+      ProjToolWidget * m_widget;
 };
 
 #endif // __PROJTOOL_H

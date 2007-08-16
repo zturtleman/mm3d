@@ -24,6 +24,8 @@
 #include "menuconf.h"
 #include "projtool.h"
 
+#include "projtoolwidget.h"
+
 #include "model.h"
 #include "msg.h"
 #include "log.h"
@@ -35,6 +37,7 @@
 #include <qapplication.h>
 
 ProjectionTool::ProjectionTool()
+   : m_type( Model::TPT_Sphere )
 {
    m_proj.pos.type = Model::PT_Vertex;
 }
@@ -94,7 +97,8 @@ void ProjectionTool::mouseButtonDown( Parent * parent, int buttonState, int x, i
 
    // Create projection
    m_proj.pos.type = Model::PT_Projection;
-   m_proj.pos.index = model->addProjection( name, Model::TPT_Sphere,
+   m_proj.pos.index = model->addProjection( name,
+         static_cast<Model::TextureProjectionTypeE>( m_type ),
          coord[0], coord[1], coord[2] );
 
    double upVec[3]   = { 0, 1, 0 };
@@ -200,5 +204,24 @@ const char * ProjectionTool::getPath()
 const char * ProjectionTool::getName( int arg )
 {
    return QT_TRANSLATE_NOOP( "Tool", "Create Projection" );
+}
+
+void ProjectionTool::setTypeValue( int newValue )
+{
+   m_type = newValue;
+}
+
+void ProjectionTool::activated( int arg, Model * model, QMainWindow * mainwin )
+{
+   m_widget = new ProjToolWidget( this, mainwin );
+#ifdef HAVE_QT4
+   //mainwin->addDockWindow( m_widget, DockBottom );
+#endif
+   m_widget->show();
+}
+
+void ProjectionTool::deactivated()
+{
+   m_widget->close();
 }
 

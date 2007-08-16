@@ -19,6 +19,7 @@ libtools_HFILES = \
 	movetool.h \
 	polytool.h \
 	polytoolwidget.h \
+	projtoolwidget.h \
 	rectangletool.h \
 	rotatetool.h \
 	scaletool.h \
@@ -41,6 +42,7 @@ libtools_MOC = \
 	cylindertoolwidget.moc.cc \
 	ellipsetoolwidget.moc.cc \
 	polytoolwidget.moc.cc \
+	projtoolwidget.moc.cc \
 	scaletoolwidget.moc.cc \
 	torustoolwidget.moc.cc \
 	selectfacetoolwidget.moc.cc 
@@ -66,6 +68,7 @@ libtools_a_SOURCES = \
 	jointtool.cc \
 	pointtool.cc \
 	projtool.cc \
+	projtoolwidget.cc \
 	movetool.cc \
 	rotatetool.cc \
 	scaletool.cc \
