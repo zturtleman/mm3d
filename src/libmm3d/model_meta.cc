@@ -4,6 +4,8 @@
 #include "modelstatus.h"
 #include "log.h"
 
+#include <algorithm>
+
 #ifdef MM3D_EDIT
 
 // TODO centralize this
@@ -20,18 +22,14 @@ static void _safe_strcpy( char * dest, const char * src, size_t len )
    }
 }
 
-static Model::MetaDataList::iterator _findMetaDataByKey( 
-      Model::MetaDataList & mdl, const char * key )
+struct MetaDataKeyMatch
+   : public std::binary_function<Model::MetaData, const char *, bool>
 {
-   Model::MetaDataList::iterator it;
-
-   for ( it = mdl.begin(); it != mdl.end(); it++ )
+   bool operator()(Model::MetaData & md, const char * key) const
    {
-      if ( strcmp( key, (*it).key.c_str() ) == 0 )
-         return it;
+      return( strcmp( md.key.c_str(), key ) == 0);
    }
-   return it;
-}
+};
 
 void Model::addMetaData( const char * key, const char * value )
 {
@@ -48,7 +46,9 @@ void Model::addMetaData( const char * key, const char * value )
 
 void Model::updateMetaData( const char * key, const char * value )
 {
-   MetaDataList::iterator it = _findMetaDataByKey( m_metaData, key );
+   MetaDataList::iterator it
+      = std::find_if( m_metaData.begin(), m_metaData.end(),
+            std::bind2nd(MetaDataKeyMatch(), key) );
    if ( it == m_metaData.end() )
    {
       MetaData md;
@@ -60,6 +60,7 @@ void Model::updateMetaData( const char * key, const char * value )
       sendUndo( undo );
 
       m_metaData.push_back( md );
+      return;
    }
 
    MU_UpdateMetaData * undo = new MU_UpdateMetaData();
@@ -72,7 +73,9 @@ void Model::updateMetaData( const char * key, const char * value )
 
 bool Model::getMetaData( const char * key, char * value, size_t valueLen )
 {
-   MetaDataList::iterator it = _findMetaDataByKey( m_metaData, key );
+   MetaDataList::iterator it
+      = std::find_if( m_metaData.begin(), m_metaData.end(),
+            std::bind2nd(MetaDataKeyMatch(), key) );
    if ( it == m_metaData.end() )
       return false;
 
