@@ -1181,8 +1181,12 @@ int Md2Filter::addNeededAnimFrame( Model * model, const char * name )
 {
    char * temp = strdup( name );
 
-   for ( int t = strlen(temp) - 1; t > 0 && isdigit(temp[t]); t-- )
+   int t = strlen(temp) - 1;
+   for ( ; t > 0 && isdigit(temp[t]); t-- )
    {
+      temp[t] = '\0';
+   }
+   if ( t > 0 && temp[t] == '_' ) {
       temp[t] = '\0';
    }
 
