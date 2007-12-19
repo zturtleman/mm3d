@@ -1,10 +1,14 @@
 For 1.4:
    Update ad3dsfilter with canExport
    MS3D and Cal3d cleanup
+      Use defaults in format options prompts
+
+   Texture paint segfault
 
    Test merge on multiple bone joint assignments (and points)
 
 Post 1.4:
+   Resample animation
    Warn user if some model properties will not be saved in
       specified format (??)
    Format options:
