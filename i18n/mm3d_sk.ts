@@ -390,7 +390,7 @@
         <translation>Nové meno: </translation>
     </message>
     <message>
-        <source> copy</source>
+        <source>copy</source>
         <translation>kopírovať</translation>
     </message>
     <message>
