@@ -355,9 +355,9 @@ void AnimSetWindow::copyClicked()
       if ( m_animList->isSelected( t ) )
       {
          QString name = m_animList->text( t );
-         name += tr( " copy" );
+         name += QString( " " ) + tr( "copy" );
 
-         int num = m_model->copyAnimation( mode, t, name.latin1() );
+         int num = m_model->copyAnimation( mode, t, name.utf8() );
 
          if ( num >= 0 )
          {
@@ -550,7 +550,7 @@ void AnimSetWindow::convertClicked()
                   QString name = acw.getNewName();
                   unsigned frameCount = acw.getNewFrameCount();
 
-                  m_model->convertAnimToFrame( mode, t, name.latin1(), frameCount );
+                  m_model->convertAnimToFrame( mode, t, name.utf8(), frameCount );
                }
                break;
             case AnimConvertWindow::OP_CANCEL:
