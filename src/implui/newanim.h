@@ -42,6 +42,7 @@ class NewAnim : public NewAnimBase
 
       QString getAnimName();
       bool    isSkeletal();
+      void    setSkeletal( bool o );
 
       void nameChangedEvent();
 };

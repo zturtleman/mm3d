@@ -47,6 +47,14 @@ bool NewAnim::isSkeletal()
    return m_skeletal->isChecked();
 }
 
+void NewAnim::setSkeletal( bool o )
+{
+   if ( o )
+      m_skeletal->setChecked( true );
+   else
+      m_frame->setChecked( true );
+}
+
 void NewAnim::nameChangedEvent()
 {
    if ( m_name->text().length() == 0 )

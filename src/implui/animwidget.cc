@@ -29,6 +29,7 @@
 #include "log.h"
 #include "msg.h"
 #include "newanim.h"
+#include "3dmprefs.h"
 
 #include "helpwin.h"
 
@@ -200,8 +201,11 @@ void AnimWidget::nameSelected( int index )
    if ( !m_ignoreChange && index >= (int) m_animCount )
    {
       NewAnim win( this );
+      g_prefs.setDefault( "ui_new_anim_type", 0 );
+      win.setSkeletal( g_prefs( "ui_new_anim_type" ).intValue() == 0 );
       if ( win.exec() )
       {
+         g_prefs( "ui_new_anim_type" ) = win.isSkeletal() ? 0 : 1;
          QString name = win.getAnimName();
          Model::AnimationModeE mode = win.isSkeletal() 
             ? Model::ANIMMODE_SKELETAL
@@ -446,6 +450,12 @@ void AnimWidget::pasteFrame()
 
    if ( mode == Model::ANIMMODE_FRAME )
    {
+      if ( m_frameCopyList.empty() && m_framePointCopyList.empty() )
+      {
+         msg_error( tr("No frame animation data to copy").utf8() );
+         return;
+      }
+
       FrameCopyList::iterator it;
       FramePointCopyList::iterator pit;
 
@@ -471,6 +481,11 @@ void AnimWidget::pasteFrame()
    else if ( mode == Model::ANIMMODE_SKELETAL )
    {
       KeyframeCopyList::iterator it;
+      if ( m_keyframeCopyList.empty() )
+      {
+         msg_error( tr("No skeletal animation data to copy").utf8() );
+         return;
+      }
 
       for ( it = m_keyframeCopyList.begin(); it != m_keyframeCopyList.end(); it++ )
       {
@@ -638,7 +653,7 @@ void AnimWidget::insertAnimationNames()
    m_frameAnimCount = m_model->getAnimCount( Model::ANIMMODE_FRAME );
    for ( t = 0; t < m_frameAnimCount; t++ )
    {
-      m_animName->insertItem( QString( m_model->getAnimName( Model::ANIMMODE_FRAME, t )), t );
+      m_animName->insertItem( QString( m_model->getAnimName( Model::ANIMMODE_FRAME, t )), t + m_skelAnimCount );
    }
 
    m_animCount = m_skelAnimCount + m_frameAnimCount;
