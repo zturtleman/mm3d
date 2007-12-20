@@ -6,7 +6,6 @@ For 1.4:
    Texture paint segfault
       Segfault (dvh bb post on 8/18)
    Exact position of rotate point for rotate tool
-   Hang in dvh's mm3d file (weighted vertices?)
 
    Test merge on multiple bone joint assignments (and points)
 
