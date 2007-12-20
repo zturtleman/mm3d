@@ -26,6 +26,9 @@ Changes for 1.3.6
    Changed error message on uknown file type to indicate it is probably
       a file extension problem
    Add ".mm3d" at save time if filename does not have an extension
+   Use model vertex and point list sizes for writing frame animation data
+      instead of using the size of the lists in the animation frames
+   Added some sanity checking to MM3D loading code
    Removed several unused modules
    Added shell script for making source code tags
 

@@ -754,6 +754,7 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
       if ( mo.offsetValue < lastOffset )
       {
          log_error( "Offset are out of order\n" );
+         delete[] fileBuf;
          return Model::ERROR_BAD_DATA;
       }
 
@@ -1651,12 +1652,12 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
 
             double weight = ((double) fileWi.infWeight) / 100.0;
 
+            log_debug( "adding position influence %d,%d,%f\n",
+                  pos.index, (int) type, (float) weight );
             model->addPositionInfluence( pos, 
                   fileWi.infIndex, type, weight );
          }
       }
-
-      log_debug( "read %d weighted influences\n", count );
    }
 
    // Texture Projections
@@ -1889,9 +1890,18 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
 
       for ( unsigned a = 0; a < count; a++ )
       {
+         log_debug( "reading frame animation %d/%d\n", a, count );
+
          if ( variable )
          {
             read( size );
+         }
+
+         if ( size > m_readLength )
+         {
+            log_error( "Size of frame animation is too large for file data\n" );
+            delete[] fileBuf;
+            return Model::ERROR_BAD_DATA;
          }
 
          uint16_t  flags;
@@ -1903,13 +1913,25 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
 
          strncpy( name, (char *) m_bufPos, sizeof(name));
          utf8chrtrunc( name, sizeof(name)-1 );
+         log_debug( "anim name '%s' size %d\n", name, size );
 
          unsigned nameSize = strlen(name) + 1;
          m_bufPos     += nameSize;
          m_readLength -= nameSize;
 
          read( fps );
+         log_debug( "fps %f\n", fps );
          read( frameCount );
+         log_debug( "frame count %u\n", frameCount );
+
+         if ( (frameCount > size) ||
+                ((frameCount * modelVertices.size() * sizeof(float32_t)) * 3 >
+                    (size - 10)))
+         {
+            log_error( "Frame count for animation is too large for file data\n" );
+            delete[] fileBuf;
+            return Model::ERROR_BAD_DATA;
+         }
 
          unsigned anim = model->addAnimation( Model::ANIMMODE_FRAME, name );
          model->setAnimFPS( Model::ANIMMODE_FRAME, anim, fps );
@@ -2008,6 +2030,8 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
       Model::FormatData * fd = new Model::FormatData;
       fd->offsetType = (*it).offsetType;
       m_bufPos = &fileBuf[ (*it).offsetValue ];
+
+      log_debug( "unknown data is type %x...\n", fd->offsetType );
 
       fd->data = new uint8_t[ (*it).dataLen ];
       fd->len  = (*it).dataLen;
@@ -3092,8 +3116,10 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
 
          uint32_t frameCount = fa->m_frameData.size();
 
+         unsigned vcount = modelVertices.size();
+
          animSize += frameCount * sizeof(uint32_t);
-         animSize += frameCount * modelVertices.size() * sizeof(float32_t) * 3;
+         animSize += frameCount * vcount * sizeof(float32_t) * 3;
 
          uint16_t  flags = 0x0000;
          float32_t fps = fa->m_fps;
@@ -3108,12 +3134,22 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
          for ( unsigned f = 0; f < frameCount; f++ )
          {
             Model::FrameAnimVertexList * list = fa->m_frameData[f]->m_frameVertices;
-            for ( unsigned v = 0; v < list->size(); v++ )
+            unsigned avcount = list->size();
+            for ( unsigned v = 0; v < vcount; v++ )
             {
-               for ( unsigned i = 0; i < 3; i++ )
+               if ( v < avcount )
                {
-                  float32_t coord = (*list)[v]->m_coord[i];
-                  write( coord );
+                  for ( unsigned i = 0; i < 3; i++ )
+                  {
+                     float32_t coord = (*list)[v]->m_coord[i];
+                     write( coord );
+                  }
+               }
+               else
+               {
+                  write( 0.0f );
+                  write( 0.0f );
+                  write( 0.0f );
                }
             }
          }
@@ -3133,17 +3169,14 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
 
       unsigned baseSize = sizeof(uint16_t) + sizeof(uint32_t) + sizeof(uint32_t);
 
-      size_t pointCount = model->getPointCount();
+      unsigned pcount = model->getPointCount();
 
       for ( unsigned a = 0; a < count; a++ )
       {
          Model::FrameAnim * fa = modelFrames[a];
 
          uint32_t frameCount = fa->m_frameData.size();
-         uint32_t animSize = baseSize + frameCount * (pointCount * 6 * sizeof(float32_t));
-
-         animSize += frameCount * sizeof(uint32_t);
-         animSize += frameCount * modelVertices.size() * sizeof(float32_t) * 3;
+         uint32_t animSize = baseSize + frameCount * (pcount * 6 * sizeof(float32_t));
 
          uint16_t  flags = 0x0000;
 
@@ -3157,18 +3190,34 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
          for ( unsigned f = 0; f < frameCount; f++ )
          {
             Model::FrameAnimPointList * list = fa->m_frameData[f]->m_framePoints;
-            for ( unsigned p = 0; p < list->size(); p++ )
+            unsigned apcount = list->size();
+            for ( unsigned p = 0; p < pcount; p++ )
             {
                unsigned i;
-               for ( i = 0; i < 3; i++ )
+               if ( p < apcount )
                {
-                  float32_t rot = (*list)[p]->m_rot[i];
-                  write( rot );
+                  for ( i = 0; i < 3; i++ )
+                  {
+                     float32_t rot = (*list)[p]->m_rot[i];
+                     write( rot );
+                  }
+                  for ( i = 0; i < 3; i++ )
+                  {
+                     float32_t trans = (*list)[p]->m_trans[i];
+                     write( trans );
+                  }
                }
-               for ( i = 0; i < 3; i++ )
+               else
                {
-                  float32_t trans = (*list)[p]->m_trans[i];
-                  write( trans );
+                  // rot
+                  write( 0.0f );
+                  write( 0.0f );
+                  write( 0.0f );
+
+                  // trans
+                  write( 0.0f );
+                  write( 0.0f );
+                  write( 0.0f );
                }
             }
          }
