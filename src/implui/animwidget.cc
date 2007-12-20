@@ -452,7 +452,7 @@ void AnimWidget::pasteFrame()
    {
       if ( m_frameCopyList.empty() && m_framePointCopyList.empty() )
       {
-         msg_error( tr("No frame animation data to copy").utf8() );
+         msg_error( tr("No frame animation data to paste").utf8() );
          return;
       }
 
@@ -483,7 +483,7 @@ void AnimWidget::pasteFrame()
       KeyframeCopyList::iterator it;
       if ( m_keyframeCopyList.empty() )
       {
-         msg_error( tr("No skeletal animation data to copy").utf8() );
+         msg_error( tr("No skeletal animation data to paste").utf8() );
          return;
       }
 
