@@ -294,9 +294,12 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
 
          for ( int i = 0; i < 3; i++ )
          {
-            // FIXME range check is needed
-            //log_debug( "vertex: %d/%d\n", curTriangle->m_vertexIndices[i],
-            //      modelVertices.size() );
+            if ( curTriangle->m_vertexIndices[i] >= numVertices )
+            {
+               //log_debug( "vertex: %d/%d\n", curTriangle->m_vertexIndices[i],
+               //      modelVertices.size() );
+               return Model::ERROR_BAD_DATA;
+            }
          }
 
          for ( int i = 0; i < 3; i++ )
@@ -344,11 +347,11 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
          for ( uint16_t n = 0; n < numTriangles; n++ )
          {
             read( triIndex );
-            // FIXME real range check is needed
             if ( triIndex >= modelTriangles.size() )
             {
                log_error( "TRIANGLE OUT OF RANGE %d/%d\n",
                      triIndex, modelTriangles.size() );
+               return Model::ERROR_BAD_DATA;
             }
             group->m_triangleIndices.push_back( triIndex );
          }
@@ -356,7 +359,6 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
          int8_t material = 0;
          read( material );
          group->m_materialIndex = material;
-         // FIXME need to range check materials
 
          // Already added group to m_groups
       }
@@ -364,6 +366,12 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
       uint16_t numMaterials = 0;
       read( numMaterials );
       log_debug( "model says %d materials\n", numMaterials );
+
+      for ( t = 0; t < numGroups; t++ )
+      {
+         if ( modelGroups[t]->m_materialIndex >= numMaterials )
+            return Model::ERROR_BAD_DATA;
+      }
 
       for ( t = 0; t < numMaterials; t++ )
       {
@@ -1167,7 +1175,7 @@ void Ms3dFilter::writeString( const char * buf, size_t len )
 
 void Ms3dFilter::writeCommentSection()
 {
-   // FIXME: get from meta data?
+   // FIXME: this doesn't have to match subVersion of other sections, correct?
    int32_t subVersion = 1;
    write( subVersion );
 
