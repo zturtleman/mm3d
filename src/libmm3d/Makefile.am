@@ -10,9 +10,11 @@ libmm3d_HFILES = \
 	drawcontext.h \
 	dxffilter.h \
 	endianconfig.h \
+	file_closer.h \
 	filtermgr.h \
 	glheaders.h \
 	glmath.h \
+	local_array.h \
 	local_ptr.h \
 	log.h \
 	lwofilter.h \

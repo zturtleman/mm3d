@@ -25,6 +25,9 @@
 #include "weld.h"
 #include "misc.h"
 #include "log.h"
+#include "release_ptr.h"
+#include "local_array.h"
+#include "file_closer.h"
 #include "mm3dport.h"
 #include "endianconfig.h"
 
@@ -123,6 +126,13 @@ const size_t FILE_KEYFRAME_SIZE = 16;
 //    2 = hidden
 //
 
+struct _JointNameListRec_t
+{
+   int m_jointIndex;
+   std::string m_name;
+};
+typedef struct _JointNameListRec_t JointNameListRecT;
+
 Ms3dFilter::Ms3dOptions::Ms3dOptions()
    : m_subVersion( 0 ),
      m_vertexExtra( 0xffffffff ),
@@ -133,7 +143,6 @@ Ms3dFilter::Ms3dOptions::Ms3dOptions()
 Ms3dFilter::Ms3dOptions::~Ms3dOptions()
 {
 }
-
 
 Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filename )
 {
@@ -160,6 +169,8 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
          return Model::ERROR_FILE_OPEN;
       }
 
+      file_closer fc(fp);
+
       string modelPath = "";
       string modelBaseName = "";
       string modelFullName = "";
@@ -180,16 +191,13 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
 
       // read whole file into memory
       uint8_t *buffer = new uint8_t[fileLength];
+      local_array<uint8_t> freeBuffer( buffer );
 
       if ( fread( buffer, fileLength, 1, fp ) != 1 )
       {
-         delete[] buffer;
          log_error( "%s: could not read file\n", filename );
-         fclose( fp );
          return Model::ERROR_FILE_READ;
       }
-
-      fclose( fp );
 
       m_model  = model;
       m_buffer = buffer;
@@ -198,7 +206,6 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
 
       if ( fileLength < (sizeof( MS3DHeader ) + sizeof(uint16_t) ) )
       {
-         delete[] buffer;
          return Model::ERROR_UNEXPECTED_EOF;
       }
 
@@ -209,7 +216,6 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
 
       if ( strncmp( header.m_ID, MAGIC_NUMBER, 10 ) != 0 )
       {
-         delete[] buffer;
          log_error( "bad magic number\n" );
          return Model::ERROR_BAD_MAGIC;
       }
@@ -217,7 +223,6 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
       int version = header.m_version;
       if ( version < 3 || version > 4 )
       {
-         delete[] buffer;
          log_error( "unsupported version\n" );
          return Model::ERROR_UNSUPPORTED_VERSION;
       }
@@ -254,7 +259,6 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
 
       if ( (fileLength - ( m_bufPos - buffer )) < (FILE_TRIANGLE_SIZE * numTriangles + sizeof( uint16_t )) )
       {
-         delete[] buffer;
          return Model::ERROR_UNEXPECTED_EOF;
       }
 
@@ -465,16 +469,10 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
       uint16_t numJoints = 0;
       read( numJoints );
 
-      struct _JointNameListRec_t
-      {
-         int m_jointIndex;
-         std::string m_name;
-      };
-
-      typedef struct _JointNameListRec_t JointNameListRecT;
-
       uint8_t * tempPtr = m_bufPos;
       JointNameListRecT * nameList = new JointNameListRecT[ numJoints ];
+      local_array<JointNameListRecT> freeList( nameList );
+
       for ( t = 0; t < numJoints; t++ )
       {
          MS3DJoint joint;
@@ -529,7 +527,6 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
 
             if ( parentIndex == -1 )
             {
-               delete[] buffer;
                log_error( "No parent\n" );
                return Model::ERROR_BAD_DATA; // no parent!
             }
@@ -619,8 +616,6 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
 
       // TODO: May want to read joint extra data eventually
 
-      delete[] nameList;
-
       model->setupJoints();
 
       log_debug( "model loaded\n" );
@@ -632,7 +627,6 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
       log_debug( "\n" );
 
       m_bufPos = NULL;
-      delete[] buffer;
 
       return Model::ERROR_NONE;
    }
@@ -670,18 +664,25 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
    Model::ModelErrorE rval = Model::ERROR_NONE;
 
    // Use dynamic cast to determine if the object is of the proper type
-   // If not, create new one that we will delete later.
+   // If not, create new one that we will be deleted later.
    //
    // We need to create one to make sure that the default options we
    // use in the filter match the default options presented to the
    // user in the dialog box.
-   Ms3dOptions * opts = dynamic_cast< Ms3dOptions *>( o );
-   m_options = (opts != NULL) ? opts : static_cast<Ms3dOptions *>( getDefaultOptions() );
+   release_ptr<Ms3dOptions> freeOptions = NULL;
+   m_options = dynamic_cast< Ms3dOptions *>( o );
+   if ( !m_options )
+   {
+      freeOptions = static_cast<Ms3dOptions *>( getDefaultOptions() );
+      m_options = freeOptions.get();
+   }
    
    m_fp = fopen( filename, "wb" );
 
    if ( m_fp )
    {
+      file_closer fc(m_fp);
+
       string modelPath = "";
       string modelBaseName = "";
       string modelFullName = "";
@@ -1082,7 +1083,6 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
          writeJointColorSection();
       }
 
-      fclose( m_fp );
       m_fp = NULL;
 
       rval = Model::Model::ERROR_NONE;
@@ -1106,12 +1106,6 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
       }
    }
 
-   if ( opts == NULL )
-   {
-      // The object passed in was not a valid ObjOptions object.
-      // We created a temporary one above so now we have to free it.
-      m_options->release();
-   }
    m_options = NULL;
 
    return rval;
@@ -1173,7 +1167,7 @@ void Ms3dFilter::writeString( const char * buf, size_t len )
 
 void Ms3dFilter::writeCommentSection()
 {
-   // TODO: get from meta data?
+   // FIXME: get from meta data?
    int32_t subVersion = 1;
    write( subVersion );
 
