@@ -1,6 +1,6 @@
 /*  Misfit Model 3D
  * 
- *  Copyright (c) 2004-2007 Kevin Worcester
+ *  Copyright (c) 2007 Kevin Worcester
  * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
