@@ -95,22 +95,6 @@
                         <string>FFFFFFFF</string>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="1" column="1">
-                    <property name="name">
-                        <cstring>m_jointColor</cstring>
-                    </property>
-                    <property name="text">
-                        <string>FFFFFFFF</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="0">
-                    <property name="name">
-                        <cstring>textLabel1_2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Bone Color</string>
-                    </property>
-                </widget>
             </grid>
         </widget>
         <spacer>

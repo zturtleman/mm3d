@@ -1,7 +1,7 @@
 For 1.4:
    Update ad3dsfilter with canExport
-   MS3D and Cal3d cleanup
-      Use defaults in format options prompts
+   Cal3d cleanup
+      Use defaults in format options prompt
 
    Texture paint segfault
       Segfault (dvh bb post on 8/18)

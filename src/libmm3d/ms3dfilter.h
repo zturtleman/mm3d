@@ -41,6 +41,8 @@ class Ms3dFilter : public ModelFilter
             uint32_t m_vertexExtra;
             uint32_t m_jointColor;
 
+            void setOptionsFromModel( Model * m );
+
          protected:
             virtual ~Ms3dOptions(); // Use release() instead
       };

@@ -29,6 +29,7 @@
 #include "local_array.h"
 #include "file_closer.h"
 #include "mm3dport.h"
+#include "util.h"
 #include "endianconfig.h"
 
 #include <stdio.h>
@@ -142,6 +143,43 @@ Ms3dFilter::Ms3dOptions::Ms3dOptions()
 
 Ms3dFilter::Ms3dOptions::~Ms3dOptions()
 {
+}
+
+void Ms3dFilter::Ms3dOptions::setOptionsFromModel( Model * m )
+{
+   char value[128];
+   if ( m->getMetaData( "ms3d_sub_version", value, sizeof(value) ) )
+   {
+      m_subVersion = atoi( value );
+      util_clamp( m_subVersion, 0, 2 );
+   }
+   else
+   {
+      // No sub-version defined. Use zero unless we have multiple bone joint
+      // influences for any vertex.
+      m_subVersion = 0;
+      unsigned vcount = m->getVertexCount();
+      Model::InfluenceList il;
+      for ( unsigned v = 0; m_subVersion == 0 && v < vcount; v++ )
+      {
+         m->getVertexInfluences( v, il );
+         if ( il.size() > 1 )
+         {
+            m_subVersion = 1;
+         }
+      }
+   }
+
+   if ( m->getMetaData( "ms3d_vertex_extra", value, sizeof(value) ) )
+   {
+      sscanf( value, "%x", &m_vertexExtra );
+   }
+
+   // TODO joint color
+   //if ( m->getMetaData( "ms3d_joint_color", value, sizeof(value) ) )
+   //{
+   //   sscanf( value, "%x", &m_jointColor );
+   //}
 }
 
 Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filename )
@@ -611,7 +649,6 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
          model->setVertexBoneJoint( i, vertexJoints[i] );
       }
 
-      // FIXME set some defaults in meta data
       bool keepReading = true;
       if ( m_bufPos < m_bufEnd )
       {
@@ -1085,10 +1122,22 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
       int32_t subVersion = m_options->m_subVersion;
       if ( subVersion == 1 || subVersion == 2 )
       {
-         // FIXME set some defaults in meta data
+         // Remember some values in meta data
+         char value[128];
+         sprintf( value, "%d", subVersion );
+         m_model->updateMetaData( "ms3d_sub_version", value );
+
+         if ( subVersion == 2 )
+         {
+            sprintf( value, "%x", m_options->m_vertexExtra );
+            m_model->updateMetaData( "ms3d_vertex_extra", value );
+         }
+
          writeCommentSection();
          writeVertexWeightSection( ml );
-         writeJointColorSection();
+
+         // TODO joint color
+         //writeJointColorSection();
       }
 
       m_fp = NULL;
@@ -1175,7 +1224,7 @@ void Ms3dFilter::writeString( const char * buf, size_t len )
 
 void Ms3dFilter::writeCommentSection()
 {
-   // FIXME: this doesn't have to match subVersion of other sections, correct?
+   // This is always 1
    int32_t subVersion = 1;
    write( subVersion );
 
@@ -1399,6 +1448,12 @@ bool Ms3dFilter::readVertexWeightSection()
 
    int32_t subVersion = 0;
    read( subVersion );
+
+   util_clamp( subVersion, 1, 2 );
+
+   char value[128];
+   sprintf( value, "%d", subVersion );
+   m_model->updateMetaData( "ms3d_sub_version", value );
 
    log_debug( "  sub version: %d\n", subVersion );
 

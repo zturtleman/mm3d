@@ -60,10 +60,11 @@ void Ms3dPrompt::setOptions( Ms3dFilter::Ms3dOptions * opts )
    char str[20];
    PORT_snprintf( str, sizeof(str), "%X", opts->m_vertexExtra );
    m_vertexExtra->setText( str );
-   PORT_snprintf( str, sizeof(str), "%X", opts->m_jointColor );
-   m_jointColor->setText( str );
 
-   m_subVersion1->setChecked( true );
+   // TODO joint color
+   //PORT_snprintf( str, sizeof(str), "%X", opts->m_jointColor );
+   //m_jointColor->setText( str );
+
    updateExtraEnabled();
 }
 
@@ -79,9 +80,10 @@ void Ms3dPrompt::getOptions( Ms3dFilter::Ms3dOptions * opts )
    sscanf( m_vertexExtra->text().utf8(), "%X", &val);
    opts->m_vertexExtra   = val;
 
-   val = 0xffffffff;
-   sscanf( m_jointColor->text().utf8(), "%X", &val);
-   opts->m_vertexExtra   = val;
+   // TODO joint color
+   //val = 0xffffffff;
+   //sscanf( m_jointColor->text().utf8(), "%X", &val);
+   //opts->m_vertexExtra   = val;
 }
 
 void Ms3dPrompt::helpNowEvent( int id )
@@ -98,7 +100,8 @@ void Ms3dPrompt::subVersionChangedEvent( int id )
 void Ms3dPrompt::updateExtraEnabled()
 {
    m_vertexExtra->setEnabled( m_subVersion2->isChecked() );
-   m_jointColor->setEnabled( !m_subVersion0->isChecked() );
+   // TODO joint color
+   //m_jointColor->setEnabled( !m_subVersion0->isChecked() );
 }
 
 // This function takes a ModelFilter::Options argument, downcasts it
@@ -109,7 +112,6 @@ void Ms3dPrompt::updateExtraEnabled()
 // filter is created in stdfilters.cc.
 bool ms3dprompt_show( Model * model, ModelFilter::Options * o )
 {
-   // FIXME set some defaults in meta data
    bool rval = false;
    Ms3dPrompt p;
 
@@ -117,6 +119,7 @@ bool ms3dprompt_show( Model * model, ModelFilter::Options * o )
       = dynamic_cast< Ms3dFilter::Ms3dOptions * >( o );
    if ( opts )
    {
+      opts->setOptionsFromModel( model );
       p.setOptions( opts );
 
       if ( p.exec() )
