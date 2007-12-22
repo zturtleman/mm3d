@@ -49,6 +49,7 @@ libmm3d_HFILES = \
 	txtfilter.h \
 	undo.h \
 	undomgr.h \
+	util.h \
 	weld.h 
 
 libmm3d_a_SOURCES = \
