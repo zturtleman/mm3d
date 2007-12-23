@@ -1932,8 +1932,8 @@ class MU_SetBackgroundCenter : public ModelUndo
       unsigned size();
 
       void setBackgroundCenter( const unsigned & index, 
-            float newX, float newY, float newY,
-            float oldX, float oldY, float oldY );
+            float newX, float newY, float newZ,
+            float oldX, float oldY, float oldZ );
 
    private:
       unsigned m_index;
