@@ -32,6 +32,11 @@
 #include "endianconfig.h"
 #include "texmgr.h"
 #include "mesh.h"
+#include "modelstatus.h"
+#include "translate.h"
+#include "file_closer.h"
+#include "local_array.h"
+#include "release_ptr.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -153,6 +158,8 @@ Model::ModelErrorE Cal3dFilter::readFile( Model * model, const char * const file
 
    if ( readFileToBuffer( filename, m_fileBuf, m_fileLength ) )
    {
+      local_array<uint8_t> releaseBuf( m_fileBuf );
+
       m_bufPos = m_fileBuf;
 
       m_modelPath = "";
@@ -207,14 +214,17 @@ Model::ModelErrorE Cal3dFilter::readFile( Model * model, const char * const file
       log_debug( "  bones:     %d\n", m_model->getBoneJointCount() );
       log_debug( "  materials: %d\n", m_model->getTextureCount() );
 
-      freeFileBuffer( m_fileBuf );
       m_fileBuf = NULL;
       m_bufPos  = NULL;
 
       if ( !success && err == Model::ERROR_NONE )
       {
-         // FIXME re-enable this (or report error in status bar)
-         //err = Model::ERROR_BAD_DATA;
+         // Report this in the status bar instead of causing a read error for
+         // the entire model.
+         std::string msg = transll( QT_TRANSLATE_NOOP( "Cal3D", "Could not read model data file" ));
+         msg += ": ";
+         msg += filename;
+         model_status( model, StatusError, STATUSTIME_LONG, msg.c_str() );
       }
    }
    else
@@ -429,6 +439,8 @@ Model::ModelErrorE Cal3dFilter::readSubFile( const char * filename )
 
    if ( readFileToBuffer( fullPath.c_str(), buf, len ) )
    {
+      local_array<uint8_t> releaseBuf(buf);
+
       std::string baseName;
       std::string fullName;
       normalizePath( fullPath.c_str(), fullName, m_currentPath, baseName );
@@ -482,8 +494,6 @@ Model::ModelErrorE Cal3dFilter::readSubFile( const char * filename )
       {
          err = readCal3dFile( buf, len );
       }
-
-      freeFileBuffer( buf );
 
       if ( !success && err == Model::ERROR_NONE )
       {
@@ -1141,6 +1151,7 @@ bool Cal3dFilter::readFileToBuffer( const char * filename, uint8_t * & buf, size
    FILE * fp = fopen( filename, "rb" );
    if ( fp )
    {
+      file_closer fc(fp);
       //log_debug( "file %s opened\n", filename );
       fseek( fp, 0, SEEK_END );
       len = ftell( fp );
@@ -1151,21 +1162,11 @@ bool Cal3dFilter::readFileToBuffer( const char * filename, uint8_t * & buf, size
 
       //log_debug( "reading buffer into memory\n" );
       fread( buf, len, 1, fp );
-
-      fclose( fp );
       return true;
    }
    else
    {
       return false;
-   }
-}
-
-void Cal3dFilter::freeFileBuffer( uint8_t * buf )
-{
-   if ( buf )
-   {
-      delete[] buf;
    }
 }
 
@@ -1800,6 +1801,8 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
    FILE * fp = fopen( filename, "w" );
    if ( fp )
    {
+      file_closer fc(fp);
+
       // FIXME collect errors from sub-write routines
       std::string base = m_modelPath += "/";
       m_fp = fp;
@@ -1810,8 +1813,12 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
       // We need to create one to make sure that the default options we
       // use in the filter match the default options presented to the
       // user in the dialog box.
-      Cal3dOptions * opts = dynamic_cast< Cal3dOptions *>( o );
-      m_options = (opts != NULL) ? opts : static_cast<Cal3dOptions *>( getDefaultOptions() );
+      m_options = dynamic_cast< Cal3dOptions *>( o );
+      release_ptr<Cal3dOptions> freeOptions = NULL;
+      if ( !m_options ) {
+         freeOptions = static_cast<Cal3dOptions *>( getDefaultOptions() );
+         m_options = freeOptions.get();
+      }
    
       if ( m_options && !m_options->m_singleMeshFile )
       {
@@ -2009,16 +2016,8 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
       }
       fprintf( m_fp, "\n" );
 
-      fclose( fp );
       rval = Model::ERROR_NONE;
 
-      // FIXME this can leak if an error occurs above. Fix it.
-      if ( opts == NULL )
-      {
-         // The object passed in was not a valid ObjOptions object.
-         // We created a temporary one above so now we have to free it.
-         m_options->release();
-      }
       m_options = NULL;
    }
    else
@@ -2037,6 +2036,7 @@ Model::ModelErrorE Cal3dFilter::writeXMaterialFile( const char * filename, Model
    FILE * fp = fopen( filename, "w" );
    if ( fp )
    {
+      file_closer fc(fp);
       m_fp = fp;
 
       // Header
@@ -2080,7 +2080,6 @@ Model::ModelErrorE Cal3dFilter::writeXMaterialFile( const char * filename, Model
       // close material element
       fprintf( m_fp, "</MATERIAL>\n" );
 
-      fclose( fp );
       rval = Model::ERROR_NONE;
    }
    else
@@ -2100,6 +2099,7 @@ Model::ModelErrorE Cal3dFilter::writeSkeletonFile( const char * filename, Model 
    FILE * fp = fopen( filename, "wb" );
    if ( fp )
    {
+      file_closer fc(fp);
       m_fp = fp;
 
       unsigned int bcount = model->getBoneJointCount();
@@ -2114,7 +2114,6 @@ Model::ModelErrorE Cal3dFilter::writeSkeletonFile( const char * filename, Model 
          writeBBone( b );
       }
 
-      fclose( fp );
       rval = Model::ERROR_NONE;
    }
    else
@@ -2134,6 +2133,7 @@ Model::ModelErrorE Cal3dFilter::writeMeshFile( const char * filename, Model * mo
    FILE * fp = fopen( filename, "wb" );
    if ( fp )
    {
+      file_closer fc(fp);
       m_fp = fp;
 
       // Create a list of all meshes
@@ -2152,7 +2152,6 @@ Model::ModelErrorE Cal3dFilter::writeMeshFile( const char * filename, Model * mo
          writeBMesh( *mit );
       }
 
-      fclose( fp );
       rval = Model::ERROR_NONE;
    }
    else
@@ -2172,6 +2171,7 @@ Model::ModelErrorE Cal3dFilter::writeGroupMeshFile( const char * filename, Model
    FILE * fp = fopen( filename, "wb" );
    if ( fp )
    {
+      file_closer fc(fp);
       m_fp = fp;
 
       // Header
@@ -2181,7 +2181,6 @@ Model::ModelErrorE Cal3dFilter::writeGroupMeshFile( const char * filename, Model
 
       writeBMesh( mesh );
 
-      fclose( fp );
       rval = Model::ERROR_NONE;
    }
    else
@@ -2201,6 +2200,7 @@ Model::ModelErrorE Cal3dFilter::writeMaterialFile( const char * filename, Model 
    FILE * fp = fopen( filename, "wb" );
    if ( fp )
    {
+      file_closer fc(fp);
       m_fp = fp;
 
       // Header
@@ -2241,7 +2241,6 @@ Model::ModelErrorE Cal3dFilter::writeMaterialFile( const char * filename, Model 
          writeBInt32( 0 );
       }
 
-      fclose( fp );
       rval = Model::ERROR_NONE;
    }
    else
@@ -2261,6 +2260,7 @@ Model::ModelErrorE Cal3dFilter::writeAnimationFile( const char * filename, Model
    FILE * fp = fopen( filename, "wb" );
    if ( fp )
    {
+      file_closer fc(fp);
       m_fp = fp;
 
       // get anim header info
@@ -2306,7 +2306,6 @@ Model::ModelErrorE Cal3dFilter::writeAnimationFile( const char * filename, Model
          writeBAnimTrack( animationId, *it );
       }
 
-      fclose( fp );
       rval = Model::ERROR_NONE;
    }
    else
@@ -2410,24 +2409,11 @@ void Cal3dFilter::writeBAnimTrack( unsigned int anim, unsigned int bone )
       double frameTime = ((double) (*it)) / fps;
       writeBFloat( frameTime );
 
-      // FIXME test interpolation
       // MM3D allows one type of keyframe without the other, Cal3D requires
       // both rotation and translation for each keyframe. If we have one
       // and the other is missing, we must do interpolation here.
-      /*
-      double krot[3] = { 0, 0, 0};
-      double ktran[3] = { 0, 0, 0};
-
-      m_model->interpSkelAnimKeyframe( anim, (*it), true, bone,
-            true, krot[0], krot[1], krot[2] );
-      m_model->interpSkelAnimKeyframe( anim, (*it), true, bone,
-            false, ktran[0], ktran[1], ktran[2] );
-      */
       Matrix m;
-      //m.setRotation( krot );
-      //m.setTranslation( ktran );
       m_model->interpSkelAnimKeyframeTime( anim, frameTime, true, bone, m );
-
 
       Matrix rm;
       m_model->getBoneJointRelativeMatrix( bone, rm );
