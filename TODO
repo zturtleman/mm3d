@@ -2,6 +2,10 @@ For 1.4:
    Update ad3dsfilter with canExport
    Cal3d cleanup (error reporting from sub-files)
 
+   Diff 1.3.4 to 1.3.5 to figure out where the slow down is
+   Export selected (??)
+      Use copycmd.cc's code to make a createModelFromSelected function
+   Copy/paste does not account for multiple bone joints, free vertices, etc...
    Texture paint segfault
       Segfault (dvh bb post on 8/18)
    Exact position of rotate point for rotate tool
