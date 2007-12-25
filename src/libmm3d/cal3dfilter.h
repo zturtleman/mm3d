@@ -28,6 +28,7 @@
 
 #include "mesh.h"
 
+#include <list>
 #include <vector>
 #include <string>
 #include <map>
@@ -49,6 +50,8 @@ class Cal3dFilter : public ModelFilter
 
             bool m_singleMeshFile;
             bool m_xmlMatFile;
+
+            void setOptionsFromModel( Model * m );
 
          protected:
             virtual ~Cal3dOptions(); // Use release() instead
@@ -144,7 +147,7 @@ class Cal3dFilter : public ModelFilter
       Model::ModelErrorE writeCal3dFile( const char * filename, Model * model, ModelFilter::Options * o );
       Model::ModelErrorE writeSkeletonFile( const char * filename, Model * model );
       Model::ModelErrorE writeMeshFile( const char * filename, Model * model );
-      Model::ModelErrorE writeGroupMeshFile( const char * filename, Model * model, unsigned int groupId, Mesh & mesh );
+      Model::ModelErrorE writeMeshListFile( const char * filename, Model * model, const MeshList & meshList );
       Model::ModelErrorE writeMaterialFile( const char * filename, Model * model, unsigned int materialId );
       Model::ModelErrorE writeAnimationFile( const char * filename, Model * model, unsigned int animationId );
 
@@ -164,7 +167,7 @@ class Cal3dFilter : public ModelFilter
 
       void writeBBone( unsigned int b );
       void writeBAnimTrack( unsigned int anim, unsigned int bone );
-      void writeBMesh( Mesh & mesh );
+      void writeBMesh( const Mesh & mesh );
 
       // Common XML write functions
       void writeXColor( const char * tag, const float * fval );

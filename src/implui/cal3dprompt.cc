@@ -42,7 +42,6 @@ Cal3dPrompt::~Cal3dPrompt()
 
 void Cal3dPrompt::setOptions( Cal3dFilter::Cal3dOptions * opts )
 {
-   // FIXME implement
    if ( opts->m_singleMeshFile )
       m_singleMeshFile->setChecked( true );
    else
@@ -56,7 +55,6 @@ void Cal3dPrompt::setOptions( Cal3dFilter::Cal3dOptions * opts )
 
 void Cal3dPrompt::getOptions( Cal3dFilter::Cal3dOptions * opts )
 {
-   // FIXME implement
    opts->m_singleMeshFile = m_singleMeshFile->isChecked();
    opts->m_xmlMatFile     = m_xmlMatFile->isChecked();
 }
@@ -81,6 +79,7 @@ bool cal3dprompt_show( Model * model, ModelFilter::Options * o )
    Cal3dFilter::Cal3dOptions * opts = dynamic_cast< Cal3dFilter::Cal3dOptions * >( o );
    if ( opts )
    {
+      opts->setOptionsFromModel( model );
       p.setOptions( opts );
 
       if ( p.exec() )

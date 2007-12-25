@@ -49,6 +49,7 @@
 #include <netinet/in.h>
 #endif // WIN32
 
+#include <map>
 #include <vector>
 
 using std::list;
@@ -142,6 +143,19 @@ Cal3dFilter::Cal3dOptions::~Cal3dOptions()
 {
 }
 
+void Cal3dFilter::Cal3dOptions::setOptionsFromModel( Model * m )
+{
+   char value[32];
+   if ( m->getMetaData( "cal3d_single_mesh_file", value, sizeof(value) ) ) {
+      // Non-zero, single mesh
+      m_singleMeshFile = atoi(value) != 0;
+   }
+   if ( m->getMetaData( "cal3d_xml_material", value, sizeof(value) ) ) {
+      // Non-zero, use XML format for material
+      m_xmlMatFile = atoi(value) != 0;
+   }
+}
+
 Cal3dFilter::Cal3dFilter()
    : m_model( NULL ),
      m_options( NULL )
@@ -186,6 +200,7 @@ Model::ModelErrorE Cal3dFilter::readFile( Model * model, const char * const file
       }
       else if ( memcmp( m_fileBuf, CAL3D_MAGIC_MESH, CAL3D_MAGIC_SIZE ) == 0 )
       {
+         m_model->updateMetaData( "cal3d_single_mesh_file", "1" );
          success = readMeshFile( m_fileBuf, m_fileLength );
       }
       else if ( memcmp( m_fileBuf, CAL3D_MAGIC_MATERIAL, CAL3D_MAGIC_SIZE ) == 0 )
@@ -757,6 +772,9 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
       readSubFile( (*it).c_str() );
    }
 
+   m_model->updateMetaData( "cal3d_single_mesh_file",
+         ( meshFiles.size() == 1 ) ? "1" : "0" );
+
    // Now load animations
    for ( it = animFiles.begin(); it != animFiles.end(); it++ )
    {
@@ -873,6 +891,8 @@ bool Cal3dFilter::readMaterialFile( uint8_t * buf, size_t len )
    m_bufPos  = buf;
    m_fileLength = len;
 
+   m_model->updateMetaData( "cal3d_xml_material", "0" );
+
    bool rval = false;
 
    if ( memcmp( CAL3D_MAGIC_MATERIAL, m_bufPos, CAL3D_MAGIC_SIZE ) == 0 )
@@ -981,6 +1001,8 @@ bool Cal3dFilter::readXMaterialFile( uint8_t * buf, size_t len )
    m_fileBuf = buf;
    m_bufPos  = buf;
    m_fileLength = len;
+
+   m_model->updateMetaData( "cal3d_xml_material", "1" );
 
    bool rval = false;
 
@@ -1819,28 +1841,11 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
          freeOptions = static_cast<Cal3dOptions *>( getDefaultOptions() );
          m_options = freeOptions.get();
       }
-   
-      if ( m_options && !m_options->m_singleMeshFile )
-      {
-         // If the model has separate mesh files for each mesh, we can't
-         // allow more than one group with the same name (filename clash).
-         int gcount = model->getGroupCount();
-         std::map<std::string, int> groupMap;
-         for ( int g = 0; g < gcount; g++ )
-         {
-            std::string name = model->getGroupName(g);
-            _escapeFileName(name);
-            _strtolower(name);
-            groupMap[name]++;
-            if ( groupMap[name] > 1 )
-            {
-               // FIXME test this error
-               model->setFilterSpecificError(
-                     "Cal3d Group names must be unique." );
-               return Model::ERROR_FILTER_SPECIFIC;
-            }
-         }
-      }
+
+      m_model->updateMetaData( "cal3d_single_mesh_file",
+            m_options->m_singleMeshFile ? "1" : "0" );
+      m_model->updateMetaData( "cal3d_xml_material",
+            m_options->m_xmlMatFile ? "1" : "0" );
 
       fprintf( m_fp, "#\n# cal3d model configuration file\n#\n" );
 
@@ -1924,74 +1929,55 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
       }
       fprintf( m_fp, "\n" );
 
+      // Create meshes split on groups, with UVs and 
+      // normals unique to each vertex
+      MeshList ml;
+      mesh_create_list( ml, model );
+
       fprintf( m_fp, "# --- Meshes ---\n" );
       if ( (m_options == NULL) || m_options->m_singleMeshFile )
       {
          std::string meshFile = replaceExtension( m_modelBaseName.c_str(), "cmf" );
          fprintf( m_fp, "mesh_file = \"%s\"\n", meshFile.c_str() );
-         writeMeshFile( (base + meshFile).c_str(), model );
+         writeMeshListFile( (base + meshFile).c_str(), model, ml );
       }
       else
       {
          std::string meshName;
          std::string meshFile;
 
-         // Create meshes split on groups, with UVs and 
-         // normals unique to each vertex
-         MeshList ml;
-         mesh_create_list( ml, model );
-
          unsigned int meshCount = ml.size();
          unsigned int meshNum;
 
-         char digitstr[10];
+         typedef std::map<string, MeshList> FileMeshMap;
+         FileMeshMap fmm;
+
+         string groupName;
+         for ( meshNum = 0; meshNum < meshCount; meshNum++ )
+         {
+            groupName = m_model->getGroupName(ml[meshNum].group);
+            fmm[ groupName ].push_back( ml[meshNum] );
+         }
 
          // Write the meshes for each group
-         int gcount = model->getGroupCount();
-         for ( int g = 0; g < gcount; g++ )
+         for ( FileMeshMap::const_iterator fmm_it = fmm.begin();
+               fmm_it != fmm.end(); fmm_it++ )
          {
             // Get a count of how many meshes make up this group
             // (probably 1, but you never know)
-            int groupMeshes = 0;
-            for ( meshNum = 0; meshNum < meshCount; meshNum++ )
-            {
-               if ( ml[meshNum].group == g )
-               {
-                  groupMeshes++;
-               }
-            }
+            string groupName = fmm_it->first;
+            const MeshList & groupMeshList = fmm_it->second;
 
-            // Write any mesh that matches the current group
-            int currentMesh = 0;
-            for ( meshNum = 0; meshNum < meshCount; meshNum++ )
-            {
-               currentMesh = 0;
-               if ( ml[meshNum].group == g )
-               {
-                  // FIXME Append a digit if there's more than one mesh
-                  // for this group (or if more than one group has the
-                  // same name [see paladin])
-                  digitstr[0] = '\0';
-                  if ( groupMeshes > 1 )
-                  {
-                     sprintf( digitstr, "%02d", currentMesh + 1 );
-                  }
+            // Create mesh name and filename strings
+            string meshName  = groupName;
+            string meshFile  = groupName + ".cmf";
 
-                  // Create mesh name and filename strings
-                  meshName  = m_model->getGroupName(g);
-                  meshName += digitstr;
-                  meshFile  = meshName + ".cmf";
+            _escapeCal3dName(meshName);
+            _escapeFileName(meshFile);
 
-                  _escapeCal3dName(meshName);
-                  _escapeFileName(meshFile);
-
-                  // Write mesh file
-                  fprintf( m_fp, "mesh_%s = \"%s\"\n\n", meshName.c_str(), meshFile.c_str() );
-                  writeGroupMeshFile( (base + meshFile).c_str(), model, g, ml[meshNum] );
-
-                  currentMesh++;
-               }
-            }
+            // Write mesh file
+            fprintf( m_fp, "mesh_%s = \"%s\"\n", meshName.c_str(), meshFile.c_str() );
+            writeMeshListFile( (base + meshFile).c_str(), model, groupMeshList );
          }
       }
 
@@ -2012,7 +1998,7 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
             matFile += ".xrf";
             writeXMaterialFile( (base + matFile).c_str(), model, m );
          }
-         fprintf( m_fp, "material_%s = \"%s\"\n\n", matName, matFile.c_str() );
+         fprintf( m_fp, "material_%s = \"%s\"\n", matName, matFile.c_str() );
       }
       fprintf( m_fp, "\n" );
 
@@ -2140,19 +2126,7 @@ Model::ModelErrorE Cal3dFilter::writeMeshFile( const char * filename, Model * mo
       MeshList ml;
       mesh_create_list( ml, model );
 
-      // Header
-      fwrite( CAL3D_MAGIC_MESH, CAL3D_MAGIC_SIZE, 1, fp );
-      writeBInt32( CAL3D_VERSION );
-      writeBInt32( ml.size() );
-
-      // Save all meshes in one file
-      MeshList::iterator mit;
-      for ( mit = ml.begin(); mit != ml.end(); mit++ )
-      {
-         writeBMesh( *mit );
-      }
-
-      rval = Model::ERROR_NONE;
+      rval = writeMeshListFile( filename, model, ml );
    }
    else
    {
@@ -2163,7 +2137,7 @@ Model::ModelErrorE Cal3dFilter::writeMeshFile( const char * filename, Model * mo
    return rval;
 }
 
-Model::ModelErrorE Cal3dFilter::writeGroupMeshFile( const char * filename, Model * model, unsigned int groupId, Mesh & mesh )
+Model::ModelErrorE Cal3dFilter::writeMeshListFile( const char * filename, Model * model, const MeshList & meshList )
 {
    Model::ModelErrorE rval = Model::ERROR_NONE;
    FILE * oldFp = m_fp;
@@ -2177,9 +2151,16 @@ Model::ModelErrorE Cal3dFilter::writeGroupMeshFile( const char * filename, Model
       // Header
       fwrite( CAL3D_MAGIC_MESH, CAL3D_MAGIC_SIZE, 1, fp );
       writeBInt32( CAL3D_VERSION );
-      writeBInt32( 1 );
+      writeBInt32( meshList.size() );
 
-      writeBMesh( mesh );
+      // Save all meshes in one file
+      log_debug( "writing mesh file %s\n", filename );
+      MeshList::const_iterator mit;
+      for ( mit = meshList.begin(); mit != meshList.end(); mit++ )
+      {
+         log_debug( " writing a mesh\n" );
+         writeBMesh( *mit );
+      }
 
       rval = Model::ERROR_NONE;
    }
@@ -2433,7 +2414,7 @@ void Cal3dFilter::writeBAnimTrack( unsigned int anim, unsigned int bone )
    }
 }
 
-void Cal3dFilter::writeBMesh( Mesh & mesh )
+void Cal3dFilter::writeBMesh( const Mesh & mesh )
 {
    int materialId = -1;
    if ( mesh.group >= 0 )
@@ -2456,10 +2437,10 @@ void Cal3dFilter::writeBMesh( Mesh & mesh )
    }
 
    double coord[3];
-   Mesh::VertexList::iterator vit;
+   Mesh::VertexList::const_iterator vit;
    for ( vit = mesh.vertices.begin(); vit != mesh.vertices.end(); vit++ )
    {
-      Mesh::Vertex & mv = *vit;
+      const Mesh::Vertex & mv = *vit;
 
       m_model->getVertexCoordsUnanimated( mv.v, coord );
       writeBFloat( coord[0] );
@@ -2511,10 +2492,10 @@ void Cal3dFilter::writeBMesh( Mesh & mesh )
    // Write springs... we don't have any... don't write anything
 
    // Write faces
-   Mesh::FaceList::iterator fit;
+   Mesh::FaceList::const_iterator fit;
    for ( fit = mesh.faces.begin(); fit != mesh.faces.end(); fit++ )
    {
-      Mesh::Face & mf = *fit;
+      const Mesh::Face & mf = *fit;
 
       writeBInt32( mf.v[0] );
       writeBInt32( mf.v[1] );
