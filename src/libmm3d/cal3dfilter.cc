@@ -189,7 +189,7 @@ Model::ModelErrorE Cal3dFilter::readFile( Model * model, const char * const file
       m_model = model;
 
       // Read specified file based on magic
-      bool success = false;
+      bool success = true;
       if ( memcmp( m_fileBuf, CAL3D_MAGIC_SKELETON, CAL3D_MAGIC_SIZE ) == 0 )
       {
          success = readSkeletonFile( m_fileBuf, m_fileLength );
@@ -209,11 +209,8 @@ Model::ModelErrorE Cal3dFilter::readFile( Model * model, const char * const file
       }
       else if ( m_fileBuf[0] == '<' )
       {
-         // probably an XML file, we don't support this
-         log_error( "%s: XML file formats are not supported\n", 
-               m_modelBaseName.c_str() );
-
-         err = Model::ERROR_UNSUPPORTED_VERSION;
+         // probably an XML file, we only support material files
+         err = readXSubFile( m_fileBuf, m_fileLength );
       }
       else
       {
@@ -234,12 +231,7 @@ Model::ModelErrorE Cal3dFilter::readFile( Model * model, const char * const file
 
       if ( !success && err == Model::ERROR_NONE )
       {
-         // Report this in the status bar instead of causing a read error for
-         // the entire model.
-         std::string msg = transll( QT_TRANSLATE_NOOP( "Cal3D", "Could not read model data file" ));
-         msg += ": ";
-         msg += filename;
-         model_status( model, StatusError, STATUSTIME_LONG, msg.c_str() );
+         err = Model::ERROR_BAD_DATA;
       }
    }
    else
@@ -604,6 +596,7 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
 {
    log_debug( "reading cal3d config file\n" );
 
+   // FIXME collect errors from read routines
    Model::ModelErrorE rval = Model::ERROR_NONE;
 
    uint8_t * oldFileBuf = m_fileBuf;
@@ -664,7 +657,7 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
 
                if ( !subfile.empty() && !animLabel.empty() )
                {
-                  m_model->addMetaData( animLabel.c_str(), subfile.c_str() );
+                  m_model->updateMetaData( animLabel.c_str(), subfile.c_str() );
                   if ( !listHas( animFiles, subfile ) )
                   {
                      animFiles.push_back( subfile );
@@ -682,17 +675,17 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
             else if ( strncasecmp( str, "path", 4 ) == 0 )
             {
                string value = readLineFile( str );
-               m_model->addMetaData( "cal3d_path", value.c_str() );
+               m_model->updateMetaData( "cal3d_path", value.c_str() );
             }
             else if ( strncasecmp( str, "scale", 5 ) == 0 )
             {
                string value = readLineFile( str );
-               m_model->addMetaData( "cal3d_scale", value.c_str() );
+               m_model->updateMetaData( "cal3d_scale", value.c_str() );
             }
             else if ( strncasecmp( str, "rotate", 6 ) == 0 )
             {
                string value = readLineFile( str );
-               m_model->addMetaData( "cal3d_rotate", value.c_str() );
+               m_model->updateMetaData( "cal3d_rotate", value.c_str() );
             }
             else if ( str[0] == '[' )
             {
@@ -2266,7 +2259,7 @@ Model::ModelErrorE Cal3dFilter::writeAnimationFile( const char * filename, Model
          for ( unsigned int f = 0; !found && f < frameCount; f++ )
          {
             if ( model->getSkelAnimKeyframe( animationId, f, b, false, kf[0], kf[1], kf[2] )
-                  || model->getSkelAnimKeyframe( animationId, f, b, false, kf[0], kf[1], kf[2] ) )
+                  || model->getSkelAnimKeyframe( animationId, f, b, true, kf[0], kf[1], kf[2] ) )
             {
                found = true;
                tracks.push_back( b );
