@@ -23,6 +23,7 @@
 
 #include "statusbar.h"
 #include "mm3dport.h"
+#include "model.h"
 #include "misc.h"
 
 #include <qlabel.h>
@@ -263,6 +264,13 @@ extern "C" void model_status( Model * model, StatusTypeE type, unsigned ms, cons
    if ( bar )
    {
       bar->addText( type, ms, temp );
+   }
+   else
+   {
+      if ( type == StatusError )
+      {
+         model->pushError( temp );
+      }
    }
 }
 

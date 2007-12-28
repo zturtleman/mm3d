@@ -426,6 +426,22 @@ bool Model::operationFailed( Model::ModelErrorE err )
    return (err != ERROR_NONE && err != ERROR_CANCEL );
 }
 
+void Model::pushError( const std::string & err )
+{
+   m_loadErrors.push_back( err );
+}
+
+std::string Model::popError()
+{
+   std::string rval = "";
+   if ( !m_loadErrors.empty() )
+   {
+      rval = m_loadErrors.front();
+      m_loadErrors.pop_front();
+   }
+   return rval;
+}
+
 #ifdef MM3D_EDIT
 
 void Model::updateObservers()

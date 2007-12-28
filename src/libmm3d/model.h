@@ -674,6 +674,10 @@ class Model
       static const char * errorToString( Model::ModelErrorE, Model * model = NULL );
       static bool operationFailed( Model::ModelErrorE );
 
+      bool hasErrors() { return !m_loadErrors.empty(); }
+      void pushError( const std::string & err );
+      std::string popError();
+
       // Returns mask of successful compares (see enum CompareBits)
       int equivalent( const Model * model, int compareMask = CompareGeometry, double tolerance = 0.00001 );
 
@@ -1304,6 +1308,8 @@ class Model
       std::string   m_exportFile;
       std::string   m_filterSpecificError;
       static std::string   s_lastFilterError;
+
+      std::list<std::string> m_loadErrors;
 
       MetaDataList          m_metaData;
       vector<Vertex *>      m_vertices;

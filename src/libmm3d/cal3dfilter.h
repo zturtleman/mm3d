@@ -57,29 +57,6 @@ class Cal3dFilter : public ModelFilter
             virtual ~Cal3dOptions(); // Use release() instead
       };
 
-      typedef std::list<std::string> FileList;
-      typedef struct _SubFileStatus_t {
-         FileList skelFiles;
-         FileList skelErrors;
-         FileList animFiles;
-         FileList animErrors;
-         FileList meshFiles;
-         FileList meshErrors;
-         FileList matFiles;
-         FileList matErrors;
-
-         void clear() {
-            skelFiles.clear();
-            skelErrors.clear();
-            animFiles.clear();
-            animErrors.clear();
-            meshFiles.clear();
-            meshErrors.clear();
-            matFiles.clear();
-            matErrors.clear();
-         }
-      } SubFileStatusT;
-
       Cal3dFilter();
       virtual ~Cal3dFilter();
 
@@ -130,14 +107,14 @@ class Cal3dFilter : public ModelFilter
       Model::ModelErrorE readXSubFile( uint8_t * buf, size_t len );
 
       Model::ModelErrorE readCal3dFile( uint8_t * buf, size_t len );
-      bool readSkeletonFile( uint8_t * buf, size_t len );
-      bool readMeshFile( uint8_t * buf, size_t len );
-      bool readMaterialFile( uint8_t * buf, size_t len );
-      bool readXMaterialFile( uint8_t * buf, size_t len );
-      bool readAnimationFile( uint8_t * buf, size_t len );
+      Model::ModelErrorE readSkeletonFile( uint8_t * buf, size_t len );
+      Model::ModelErrorE readMeshFile( uint8_t * buf, size_t len );
+      Model::ModelErrorE readMaterialFile( uint8_t * buf, size_t len );
+      Model::ModelErrorE readXMaterialFile( uint8_t * buf, size_t len );
+      Model::ModelErrorE readAnimationFile( uint8_t * buf, size_t len );
 
       // Common read functions
-      bool readFileToBuffer( const char * filename, uint8_t * & buf, size_t & len );
+      Model::ModelErrorE readFileToBuffer( const char * filename, uint8_t * & buf, size_t & len );
       void freeFileBuffer( uint8_t * buf );
 
       uint8_t readBUInt8();
@@ -217,8 +194,6 @@ class Cal3dFilter : public ModelFilter
       std::string  m_currentPath;
       std::string  m_modelPartName;
       std::string  m_modelPartExt;
-
-      SubFileStatusT m_sfStatus;
 };
 
 #endif // __CAL3DFILTER_H

@@ -72,7 +72,7 @@ static Cal3dFilter * s_filter = NULL;
 
 const Model::AnimationModeE MODE = Model::ANIMMODE_SKELETAL;
 
-typedef float float32_t; // FIXME standardize this
+typedef float float32_t; // TODO standardize this
 
 static char * _skipSpace( char * str )
 {
@@ -170,7 +170,7 @@ Model::ModelErrorE Cal3dFilter::readFile( Model * model, const char * const file
 {
    Model::ModelErrorE err = Model::ERROR_NONE;
 
-   if ( readFileToBuffer( filename, m_fileBuf, m_fileLength ) )
+   if ( (err = readFileToBuffer( filename, m_fileBuf, m_fileLength )) == Model::ERROR_NONE )
    {
       local_array<uint8_t> releaseBuf( m_fileBuf );
 
@@ -189,23 +189,22 @@ Model::ModelErrorE Cal3dFilter::readFile( Model * model, const char * const file
       m_model = model;
 
       // Read specified file based on magic
-      bool success = true;
       if ( memcmp( m_fileBuf, CAL3D_MAGIC_SKELETON, CAL3D_MAGIC_SIZE ) == 0 )
       {
-         success = readSkeletonFile( m_fileBuf, m_fileLength );
+         err = readSkeletonFile( m_fileBuf, m_fileLength );
       }
       else if ( memcmp( m_fileBuf, CAL3D_MAGIC_ANIMATION, CAL3D_MAGIC_SIZE ) == 0 )
       {
-         success = readAnimationFile( m_fileBuf, m_fileLength );
+         err = readAnimationFile( m_fileBuf, m_fileLength );
       }
       else if ( memcmp( m_fileBuf, CAL3D_MAGIC_MESH, CAL3D_MAGIC_SIZE ) == 0 )
       {
          m_model->updateMetaData( "cal3d_single_mesh_file", "1" );
-         success = readMeshFile( m_fileBuf, m_fileLength );
+         err = readMeshFile( m_fileBuf, m_fileLength );
       }
       else if ( memcmp( m_fileBuf, CAL3D_MAGIC_MATERIAL, CAL3D_MAGIC_SIZE ) == 0 )
       {
-         success = readMaterialFile( m_fileBuf, m_fileLength );
+         err = readMaterialFile( m_fileBuf, m_fileLength );
       }
       else if ( m_fileBuf[0] == '<' )
       {
@@ -228,15 +227,6 @@ Model::ModelErrorE Cal3dFilter::readFile( Model * model, const char * const file
 
       m_fileBuf = NULL;
       m_bufPos  = NULL;
-
-      if ( !success && err == Model::ERROR_NONE )
-      {
-         err = Model::ERROR_BAD_DATA;
-      }
-   }
-   else
-   {
-      return errnoToModelError( errno );
    }
 
    return err;
@@ -376,7 +366,7 @@ list< string > Cal3dFilter::getWriteTypes()
 
 Model::ModelErrorE Cal3dFilter::errnoToModelError( int err )
 {
-   switch ( errno )
+   switch ( err )
    {
       case EACCES:
       case EPERM:
@@ -444,7 +434,7 @@ Model::ModelErrorE Cal3dFilter::readSubFile( const char * filename )
    uint8_t * buf;
    size_t    len;
 
-   if ( readFileToBuffer( fullPath.c_str(), buf, len ) )
+   if ( (err = readFileToBuffer( fullPath.c_str(), buf, len )) == Model::ERROR_NONE )
    {
       local_array<uint8_t> releaseBuf(buf);
 
@@ -473,56 +463,42 @@ Model::ModelErrorE Cal3dFilter::readSubFile( const char * filename )
       }
 
       // Read specified file based on magic
-      bool success = false;
       if ( memcmp( buf, CAL3D_MAGIC_SKELETON, CAL3D_MAGIC_SIZE ) == 0 )
       {
-         success = readSkeletonFile( buf, len );
+         err = readSkeletonFile( buf, len );
       }
       else if ( memcmp( buf, CAL3D_MAGIC_ANIMATION, CAL3D_MAGIC_SIZE ) == 0 )
       {
-         success = readAnimationFile( buf, len );
+         err = readAnimationFile( buf, len );
       }
       else if ( memcmp( buf, CAL3D_MAGIC_MESH, CAL3D_MAGIC_SIZE ) == 0 )
       {
-         success = readMeshFile( buf, len );
+         err = readMeshFile( buf, len );
       }
       else if ( memcmp( buf, CAL3D_MAGIC_MATERIAL, CAL3D_MAGIC_SIZE ) == 0 )
       {
-         success = readMaterialFile( buf, len );
+         err = readMaterialFile( buf, len );
       }
       else if ( buf[0] == '<' )
       {
          // probably an XML file, try to parse it
          err = readXSubFile( buf, len );
-
-         success = true; // just log it and go on with life
       }
       else
       {
          err = readCal3dFile( buf, len );
       }
 
-      if ( !success && err == Model::ERROR_NONE )
-      {
-         err = Model::ERROR_BAD_DATA;
-      }
-
       m_currentPath = oldPath;
    }
-   else
+
+   if ( err != Model::ERROR_NONE )
    {
-      switch ( errno )
-      {
-         case EACCES:
-         case EPERM:
-            return Model::ERROR_NO_ACCESS;
-         case ENOENT:
-            return Model::ERROR_NO_FILE;
-         case EISDIR:
-            return Model::ERROR_BAD_DATA;
-         default:
-            return Model::ERROR_FILE_OPEN;
-      }
+      std::string errStr = filename;
+      errStr += ": ";
+      errStr += Model::errorToString( err );
+
+      model_status( m_model, StatusError, STATUSTIME_LONG, errStr.c_str() );
    }
 
    return err;
@@ -552,14 +528,7 @@ Model::ModelErrorE Cal3dFilter::readXSubFile( uint8_t * buf, size_t len )
       if ( strcmp( magic.c_str(), "XRF" ) == 0 )
       {
          log_debug( "XML file is a material file\n" );
-         if ( readXMaterialFile( buf, len ) )
-         {
-            err = Model::ERROR_NONE;
-         }
-         else
-         {
-            err = Model::ERROR_BAD_DATA;
-         }
+         err = readXMaterialFile( buf, len );
       }
       else
       {
@@ -570,14 +539,7 @@ Model::ModelErrorE Cal3dFilter::readXSubFile( uint8_t * buf, size_t len )
    {
       log_debug( "XML file does not have a header\n" );
       log_debug( "XML file is a material file\n" );
-      if ( readXMaterialFile( buf, len ) )
-      {
-         err = Model::ERROR_NONE;
-      }
-      else
-      {
-         err = Model::ERROR_BAD_DATA;
-      }
+      err = readXMaterialFile( buf, len );
    }
    else
    {
@@ -596,7 +558,6 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
 {
    log_debug( "reading cal3d config file\n" );
 
-   // FIXME collect errors from read routines
    Model::ModelErrorE rval = Model::ERROR_NONE;
 
    uint8_t * oldFileBuf = m_fileBuf;
@@ -782,7 +743,7 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
    return rval;
 }
 
-bool Cal3dFilter::readSkeletonFile( uint8_t * buf, size_t len )
+Model::ModelErrorE Cal3dFilter::readSkeletonFile( uint8_t * buf, size_t len )
 {
    uint8_t * oldFileBuf = m_fileBuf;
    uint8_t * oldBufPos  = m_bufPos;
@@ -792,7 +753,7 @@ bool Cal3dFilter::readSkeletonFile( uint8_t * buf, size_t len )
    m_bufPos  = buf;
    m_fileLength = len;
 
-   bool rval = false;
+   Model::ModelErrorE rval = Model::ERROR_NONE;
 
    if ( memcmp( CAL3D_MAGIC_SKELETON, m_bufPos, CAL3D_MAGIC_SIZE ) == 0 )
    {
@@ -803,21 +764,23 @@ bool Cal3dFilter::readSkeletonFile( uint8_t * buf, size_t len )
 
       log_debug( "skel version: %d (%x)\n", fileVersion, fileVersion );
 
+      bool success = true;
       if ( versionIsValid( FT_Skeleton, fileVersion ) )
       {
-         rval = true;
-         for ( int b = 0; rval && b < numBones; b++ )
+         for ( int b = 0; success && b < numBones; b++ )
          {
-            rval = readBBone();
+            success = readBBone();
          }
       }
       else
       {
+         rval = Model::ERROR_UNSUPPORTED_VERSION;
          log_error( "Unsupported CAL3D skeleton version %d\n", fileVersion );
       }
    }
    else
    {
+      rval = Model::ERROR_BAD_MAGIC;
       log_error( "Bad magic in skeleton file\n" );
    }
 
@@ -828,7 +791,7 @@ bool Cal3dFilter::readSkeletonFile( uint8_t * buf, size_t len )
    return rval;
 }
 
-bool Cal3dFilter::readMeshFile( uint8_t * buf, size_t len )
+Model::ModelErrorE Cal3dFilter::readMeshFile( uint8_t * buf, size_t len )
 {
    uint8_t * oldFileBuf = m_fileBuf;
    uint8_t * oldBufPos  = m_bufPos;
@@ -838,7 +801,7 @@ bool Cal3dFilter::readMeshFile( uint8_t * buf, size_t len )
    m_bufPos  = buf;
    m_fileLength = len;
 
-   bool rval = false;
+   Model::ModelErrorE rval = Model::ERROR_NONE;
 
    if ( memcmp( CAL3D_MAGIC_MESH, m_bufPos, CAL3D_MAGIC_SIZE ) == 0 )
    {
@@ -849,21 +812,23 @@ bool Cal3dFilter::readMeshFile( uint8_t * buf, size_t len )
 
       log_debug( "mesh version: %d (%x)\n", fileVersion, fileVersion );
 
+      bool success = true;
       if ( versionIsValid( FT_Mesh, fileVersion ) )
       {
-         rval = true;
-         for ( int m = 0; rval && m < numSubMeshes; m++ )
+         for ( int m = 0; success && m < numSubMeshes; m++ )
          {
-            rval = readBSubMesh();
+            success = readBSubMesh();
          }
       }
       else
       {
+         rval = Model::ERROR_UNSUPPORTED_VERSION;
          log_error( "Unsupported CAL3D mesh version %d\n", fileVersion );
       }
    }
    else
    {
+      rval = Model::ERROR_BAD_MAGIC;
       log_error( "Bad magic in mesh file\n" );
    }
 
@@ -874,7 +839,7 @@ bool Cal3dFilter::readMeshFile( uint8_t * buf, size_t len )
    return rval;
 }
 
-bool Cal3dFilter::readMaterialFile( uint8_t * buf, size_t len )
+Model::ModelErrorE Cal3dFilter::readMaterialFile( uint8_t * buf, size_t len )
 {
    uint8_t * oldFileBuf = m_fileBuf;
    uint8_t * oldBufPos  = m_bufPos;
@@ -886,7 +851,14 @@ bool Cal3dFilter::readMaterialFile( uint8_t * buf, size_t len )
 
    m_model->updateMetaData( "cal3d_xml_material", "0" );
 
-   bool rval = false;
+   Model::ModelErrorE rval = Model::ERROR_NONE;
+
+   // We're going to add a material whether successful or not. Materials are
+   // referenced by index so the material needs to exist even if it's not valid.
+   Model::Material * mat = Model::Material::get();
+   mat->m_type     = Model::Material::MATTYPE_BLANK; // assume
+   mat->m_name     = m_modelPartName; // this should be a sensible name
+   mat->m_filename = ""; // none by default
 
    if ( memcmp( CAL3D_MAGIC_MATERIAL, m_bufPos, CAL3D_MAGIC_SIZE ) == 0 )
    {
@@ -898,7 +870,6 @@ bool Cal3dFilter::readMaterialFile( uint8_t * buf, size_t len )
 
       if ( versionIsValid( FT_Material, fileVersion ) )
       {
-         rval = true;
          Vector ambient;
          ambient[0] = ((float) readBUInt8()) / 255.0f;
          ambient[1] = ((float) readBUInt8()) / 255.0f;
@@ -920,12 +891,6 @@ bool Cal3dFilter::readMaterialFile( uint8_t * buf, size_t len )
          float  shiny    = readBFloat();
 
          int numMaps = readBInt32();
-
-         Model::Material * mat = Model::Material::get();
-
-         mat->m_type     = Model::Material::MATTYPE_BLANK; // assume
-         mat->m_name     = m_modelPartName; // this should be a sensible name
-         mat->m_filename = ""; // none by default
 
          if ( numMaps > 0 )
          {
@@ -965,18 +930,20 @@ bool Cal3dFilter::readMaterialFile( uint8_t * buf, size_t len )
             mat->m_emissive[t] = 0.0f;
          }
          mat->m_shininess = shiny;
-
-         getMaterialList( m_model ).push_back( mat );
       }
       else
       {
+         rval = Model::ERROR_UNSUPPORTED_VERSION;
          log_error( "Unsupported CAL3D material version %d\n", fileVersion );
       }
    }
    else
    {
+      rval = Model::ERROR_BAD_MAGIC;
       log_error( "Bad magic in material file\n" );
    }
+
+   getMaterialList( m_model ).push_back( mat );
 
    m_fileBuf    = oldFileBuf;
    m_bufPos     = oldBufPos;
@@ -985,7 +952,7 @@ bool Cal3dFilter::readMaterialFile( uint8_t * buf, size_t len )
    return rval;
 }
 
-bool Cal3dFilter::readXMaterialFile( uint8_t * buf, size_t len )
+Model::ModelErrorE Cal3dFilter::readXMaterialFile( uint8_t * buf, size_t len )
 {
    uint8_t * oldFileBuf = m_fileBuf;
    uint8_t * oldBufPos  = m_bufPos;
@@ -997,15 +964,20 @@ bool Cal3dFilter::readXMaterialFile( uint8_t * buf, size_t len )
 
    m_model->updateMetaData( "cal3d_xml_material", "1" );
 
-   bool rval = false;
+   Model::ModelErrorE rval = Model::ERROR_NONE;
+
+   // We're going to add a material whether successful or not. Materials are
+   // referenced by index so the material needs to exist even if it's not valid.
+   Model::Material * mat = Model::Material::get();
+   mat->m_type     = Model::Material::MATTYPE_BLANK; // assume
+   mat->m_name     = m_modelPartName; // this should be a sensible name
+   mat->m_filename = ""; // none by default
 
    if ( len > 0 )
    {
       // don't worry about magic and version, just get to the material tag
       if ( findXElement( "MATERIAL" ) )
       {
-         rval = true;
-
          Vector ambient( 0, 0, 0, 1 );
          Vector diffuse( 1, 1, 1, 1 );
          Vector specular( 0, 0, 0, 1 );
@@ -1046,12 +1018,6 @@ bool Cal3dFilter::readXMaterialFile( uint8_t * buf, size_t len )
             matFile = readAString( readXElement( "MAP" ).c_str() );
          }
 
-         Model::Material * mat = Model::Material::get();
-
-         mat->m_type     = Model::Material::MATTYPE_BLANK; // assume
-         mat->m_name     = m_modelPartName; // this should be a sensible name
-         mat->m_filename = ""; // none by default
-
          if ( !matFile.empty() )
          {
             mat->m_type = Model::Material::MATTYPE_TEXTURE;
@@ -1077,18 +1043,20 @@ bool Cal3dFilter::readXMaterialFile( uint8_t * buf, size_t len )
             mat->m_emissive[t] = 0.0f;
          }
          mat->m_shininess = shiny;
-
-         getMaterialList( m_model ).push_back( mat );
       }
       else
       {
+         rval = Model::ERROR_BAD_MAGIC;
          log_error( "Could not find MATERIAL element in material file\n" );
       }
    }
    else
    {
+      rval = Model::ERROR_FILE_READ;
       log_error( "File is empty\n" );
    }
+
+   getMaterialList( m_model ).push_back( mat );
 
    m_fileBuf    = oldFileBuf;
    m_bufPos     = oldBufPos;
@@ -1097,7 +1065,7 @@ bool Cal3dFilter::readXMaterialFile( uint8_t * buf, size_t len )
    return rval;
 }
 
-bool Cal3dFilter::readAnimationFile( uint8_t * buf, size_t len )
+Model::ModelErrorE Cal3dFilter::readAnimationFile( uint8_t * buf, size_t len )
 {
    uint8_t * oldFileBuf = m_fileBuf;
    uint8_t * oldBufPos  = m_bufPos;
@@ -1107,7 +1075,7 @@ bool Cal3dFilter::readAnimationFile( uint8_t * buf, size_t len )
    m_bufPos  = buf;
    m_fileLength = len;
 
-   bool rval = false;
+   Model::ModelErrorE rval = Model::ERROR_NONE;
 
    if ( memcmp( CAL3D_MAGIC_ANIMATION, m_bufPos, CAL3D_MAGIC_SIZE ) == 0 )
    {
@@ -1135,19 +1103,21 @@ bool Cal3dFilter::readAnimationFile( uint8_t * buf, size_t len )
 
          m_model->setAnimFrameCount( MODE, m_anim, timeToFrame(duration, 30.0) + 1);
 
-         rval = true;
-         for ( int t = 0; rval && t < numTracks; t++ )
+         bool success = true;
+         for ( int t = 0; success && t < numTracks; t++ )
          {
-            rval = readBAnimTrack();
+            success = readBAnimTrack();
          }
       }
       else
       {
+         rval = Model::ERROR_UNSUPPORTED_VERSION;
          log_error( "Unsupported CAL3D animation version %d\n", fileVersion );
       }
    }
    else
    {
+      rval = Model::ERROR_BAD_MAGIC;
       log_error( "Bad magic in mesh file\n" );
    }
 
@@ -1158,7 +1128,7 @@ bool Cal3dFilter::readAnimationFile( uint8_t * buf, size_t len )
    return rval;
 }
 
-bool Cal3dFilter::readFileToBuffer( const char * filename, uint8_t * & buf, size_t & len )
+Model::ModelErrorE Cal3dFilter::readFileToBuffer( const char * filename, uint8_t * & buf, size_t & len )
 {
    buf = NULL;
    len = 0;
@@ -1177,11 +1147,11 @@ bool Cal3dFilter::readFileToBuffer( const char * filename, uint8_t * & buf, size
 
       //log_debug( "reading buffer into memory\n" );
       fread( buf, len, 1, fp );
-      return true;
+      return Model::ERROR_NONE;
    }
    else
    {
-      return false;
+      return errnoToModelError( errno );
    }
 }
 
@@ -1818,7 +1788,6 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
    {
       file_closer fc(fp);
 
-      // FIXME collect errors from sub-write routines
       std::string base = m_modelPath += "/";
       m_fp = fp;
 
@@ -1949,6 +1918,7 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
          for ( meshNum = 0; meshNum < meshCount; meshNum++ )
          {
             groupName = m_model->getGroupName(ml[meshNum].group);
+            _strtolower( groupName );
             fmm[ groupName ].push_back( ml[meshNum] );
          }
 
