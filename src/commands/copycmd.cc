@@ -75,6 +75,8 @@ bool CopyCommand::activated( int arg, Model * model )
          list<int> vert;
          model->getSelectedVertices( vert );
 
+         // FIXME missing any other new properties?
+
          // Copy vertices
          log_debug( "Copying %d vertices\n", vert.size() );
          for ( lit = vert.begin(); lit != vert.end(); lit++ )
@@ -83,6 +85,8 @@ bool CopyCommand::activated( int arg, Model * model )
             model->getVertexCoords( *lit, coords );
             int nv = m->addVertex( coords[0], coords[1], coords[2] );
             m->selectVertex( nv );
+
+            // FIXME free vertices not supported here yet
 
             vertMap[ *lit ] = nv;
          }
@@ -211,6 +215,7 @@ bool CopyCommand::activated( int arg, Model * model )
             m->selectBoneJoint( nj );
 
             // Assign copied vertices to copied bone joints
+            // FIXME multiple bone joints
             list<int> vertlist = model->getBoneJointVertices( *lit );
             list<int>::iterator vit;
             for ( vit = vertlist.begin(); vit != vertlist.end(); vit++ )
