@@ -24,6 +24,8 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <cstring>
 #if 0 // Disabled for Win98
 #include <psapi.h>
 #endif // 0

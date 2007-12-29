@@ -1,4 +1,6 @@
 For 1.4:
+   Bump mm3dfilter version
+
    Update ad3dsfilter with canExport
 
    Fix normal calculation performance

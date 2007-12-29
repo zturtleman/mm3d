@@ -25,6 +25,8 @@
 #define __UNDOMGR_H
 
 #include <list>
+#include <string.h>
+#include <stdlib.h>
 
 using std::list;
 

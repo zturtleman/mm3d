@@ -32,6 +32,7 @@
 #include <time.h>
 
 #include <ctype.h>
+#include <stdlib.h>
 
 #include <string>
 using std::string;
@@ -379,9 +380,6 @@ Texture * TextureManager::getBlankTexture( const char * name )
 
    for ( unsigned t = 0; t < 4 * 4; t++ )
    {
-      tex->m_data[ t ] = 0xFF;
-      tex->m_data[ t ] = 0xFF;
-      tex->m_data[ t ] = 0xFF;
       tex->m_data[ t ] = 0xFF;
    }
 
