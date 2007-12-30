@@ -90,6 +90,8 @@ MM3D_UI= \
 	src/qtui/metawin.base.h \
 	src/qtui/modelview.base.h \
 	src/qtui/newanim.base.h \
+	src/qtui/cal3dprompt.base.h \
+	src/qtui/ms3dprompt.base.h \
 	src/qtui/objprompt.base.h \
 	src/qtui/pluginwin.base.h \
 	src/qtui/rgbawin.base.h \
@@ -130,6 +132,8 @@ MM3D_UI_OBJ= \
 	src/qtui/metawin.base.h.o \
 	src/qtui/modelview.base.h.o \
 	src/qtui/newanim.base.h.o \
+	src/qtui/cal3dprompt.base.h.o \
+	src/qtui/ms3dprompt.base.h.o \
 	src/qtui/objprompt.base.h.o \
 	src/qtui/pluginwin.base.h.o \
 	src/qtui/rgbawin.base.h.o \
@@ -177,9 +181,12 @@ MM3D_MOC= \
 	src/implui/mview.moc.cc \
 	src/depui/modelviewport.moc.cc \
 	src/implui/newanim.moc.cc \
+	src/implui/cal3dprompt.moc.cc \
+	src/implui/ms3dprompt.moc.cc \
 	src/implui/objprompt.moc.cc \
 	src/implui/pluginwin.moc.cc \
 	src/tools/polytoolwidget.moc.cc \
+	src/tools/projtoolwidget.moc.cc \
 	src/implui/rgbawin.moc.cc \
 	src/tools/scaletoolwidget.moc.cc \
 	src/tools/selectfacetoolwidget.moc.cc \
@@ -222,6 +229,8 @@ MM3D_MOC= \
 	src/qtui/metawin.base.moc.cc \
 	src/qtui/modelview.base.moc.cc \
 	src/qtui/newanim.base.moc.cc \
+	src/qtui/cal3dprompt.base.moc.cc \
+	src/qtui/ms3dprompt.base.moc.cc \
 	src/qtui/objprompt.base.moc.cc \
 	src/qtui/pluginwin.base.moc.cc \
 	src/qtui/rgbawin.base.moc.cc \
@@ -272,9 +281,12 @@ MM3D_MOC_OBJ= \
 	src/implui/mview.moc.o \
 	src/depui/modelviewport.moc.o \
 	src/implui/newanim.moc.o \
+	src/implui/cal3dprompt.moc.o \
+	src/implui/ms3dprompt.moc.o \
 	src/implui/objprompt.moc.o \
 	src/implui/pluginwin.moc.o \
 	src/tools/polytoolwidget.moc.o \
+	src/tools/projtoolwidget.moc.o \
 	src/implui/rgbawin.moc.o \
 	src/tools/scaletoolwidget.moc.o \
 	src/tools/selectfacetoolwidget.moc.o \
@@ -317,6 +329,8 @@ MM3D_MOC_OBJ= \
 	src/qtui/metawin.base.moc.o \
 	src/qtui/modelview.base.moc.o \
 	src/qtui/newanim.base.moc.o \
+	src/qtui/cal3dprompt.base.moc.o \
+	src/qtui/ms3dprompt.base.moc.o \
 	src/qtui/objprompt.base.moc.o \
 	src/qtui/pluginwin.base.moc.o \
 	src/qtui/rgbawin.base.moc.o \
@@ -417,10 +431,13 @@ MM3D_OBJ= \
 	src/commands/pastecmd.o \
 	src/mm3dcore/pluginmgr.o \
 	src/implui/newanim.o \
+	src/implui/cal3dprompt.o \
+	src/implui/ms3dprompt.o \
 	src/implui/objprompt.o \
 	src/implui/pluginwin.o \
 	src/tools/polytool.o \
 	src/tools/polytoolwidget.o \
+	src/tools/projtoolwidget.o \
 	src/mm3dcore/prefparse.o \
 	src/mm3dcore/prefs.o \
 	src/implui/qtmain.o \
