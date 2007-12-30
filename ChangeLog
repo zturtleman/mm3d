@@ -21,7 +21,9 @@ Changes for 1.3.6
    Remember last skeletal/frame selection for new animation window
    Error message when attempting to paste animation frame of wrong type
    Fixed interpolation problem with translation keyframes on looped animations
-   Fixed translation of animation name copy in animation sets window
+   Fixed translation of animation name copy/split in animation sets window
+   Other misc. translation fixes
+   Added ../i18n to search path for translation files
    Treat unhandled backslashes in preferences as regular backslashes
    Changed error message on uknown file type to indicate it is probably
       a file extension problem
