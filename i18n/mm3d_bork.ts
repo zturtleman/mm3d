@@ -394,8 +394,8 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <source> copy</source>
-        <translation type="obsolete">Bork!</translation>
+        <source>copy</source>
+        <translation>Bork!</translation>
     </message>
     <message>
         <source>Split at frame</source>
@@ -403,17 +403,17 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <source>Split </source>
+        <source>Split</source>
         <comment>&apos;Split&apos; refers to splitting an animation into two separate animations</comment>
         <translation>Bork!</translation>
     </message>
     <message>
-        <source> at frame number</source>
+        <source>at frame number</source>
         <comment>the frame number where the second (split) animation begins</comment>
         <translation>Bork!</translation>
     </message>
     <message>
-        <source> split</source>
+        <source>split</source>
         <translation>Bork!</translation>
     </message>
     <message>
@@ -439,10 +439,6 @@
         <source>Animation changes</source>
         <comment>operation complete</comment>
         <translation>Bork!</translation>
-    </message>
-    <message>
-        <source>copy</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1247,19 +1243,19 @@ Do you wish to continue?</source>
     </message>
     <message>
         <source>Vertices</source>
-        <translation type="obsolete">Bork!</translation>
+        <translation type="unfinished">Bork!</translation>
     </message>
     <message>
         <source>Faces</source>
-        <translation type="obsolete">Bork!</translation>
+        <translation type="unfinished">Bork!</translation>
     </message>
     <message>
         <source>Meshes</source>
-        <translation type="obsolete">Bork!</translation>
+        <translation type="unfinished">Bork!</translation>
     </message>
     <message>
         <source>Normals</source>
-        <translation type="obsolete">Bork!</translation>
+        <translation type="unfinished">Bork!</translation>
     </message>
     <message>
         <source>Normals Face Out</source>
@@ -1402,7 +1398,7 @@ Do you wish to continue?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <source> &lt;Mixed&gt; </source>
+        <source>&lt;Mixed&gt;</source>
         <translation>Bork!</translation>
     </message>
     <message>
@@ -3696,19 +3692,19 @@ Do you want to load all sections?</source>
     </message>
     <message>
         <source>Select</source>
-        <translation type="obsolete">Bork!</translation>
+        <translation type="unfinished">Bork!</translation>
     </message>
     <message>
         <source>Attract</source>
-        <translation type="obsolete">Bork!</translation>
+        <translation type="unfinished">Bork!</translation>
     </message>
     <message>
         <source>Background Image</source>
-        <translation type="obsolete">Bork!</translation>
+        <translation type="unfinished">Bork!</translation>
     </message>
     <message>
         <source>Create Other</source>
-        <translation type="obsolete">Bork!</translation>
+        <translation type="unfinished">Bork!</translation>
     </message>
 </context>
 <context>

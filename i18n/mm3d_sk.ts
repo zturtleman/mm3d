@@ -390,26 +390,22 @@
         <translation>Nové meno: </translation>
     </message>
     <message>
-        <source>copy</source>
-        <translation>kopírovať</translation>
-    </message>
-    <message>
         <source>Split at frame</source>
         <comment>Split animation frame window title</comment>
         <translation>Rozdeľ na rámeci</translation>
     </message>
     <message>
-        <source>Split </source>
+        <source>Split</source>
         <comment>&apos;Split&apos; refers to splitting an animation into two separate animations</comment>
         <translation>Rozdeľ</translation>
     </message>
     <message>
-        <source> at frame number</source>
+        <source>at frame number</source>
         <comment>the frame number where the second (split) animation begins</comment>
         <translation>za rámcom číslo</translation>
     </message>
     <message>
-        <source> split</source>
+        <source>split</source>
         <translation>rozdeľ</translation>
     </message>
     <message>
@@ -437,6 +433,10 @@ počet rámcov sa líši.</translation>
         <comment>operation complete</comment>
         <translation>Zmeny animácie</translation>
     </message>
+    <message>
+        <source>copy</source>
+        <translation>kopírovať</translation>
+    </message>
 </context>
 <context>
     <name>AnimWidget</name>
@@ -461,7 +461,7 @@ počet rámcov sa líši.</translation>
     </message>
     <message>
         <source>Frame: </source>
-        <translation>Rámec:</translation>
+        <translation>Rámec: </translation>
     </message>
     <message>
         <source>Set FPS</source>
@@ -1233,23 +1233,23 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>Vertices</source>
-        <translation type="obsolete">Vrcholy</translation>
+        <translation type="unfinished">Vrcholy</translation>
     </message>
     <message>
         <source>Faces</source>
-        <translation type="obsolete">Plochy</translation>
+        <translation type="unfinished">Plochy</translation>
     </message>
     <message>
         <source>Meshes</source>
-        <translation type="obsolete">Mriežky</translation>
+        <translation type="unfinished">Mriežky</translation>
     </message>
     <message>
         <source>Normals</source>
-        <translation type="obsolete">Normály</translation>
+        <translation type="unfinished">Normály</translation>
     </message>
     <message>
         <source>Normals Face Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Normálami von</translation>
     </message>
 </context>
 <context>
@@ -1388,7 +1388,7 @@ Chcete pokračovať?</translation>
         <translation>Hmotnosť</translation>
     </message>
     <message>
-        <source> &lt;Mixed&gt; </source>
+        <source>&lt;Mixed&gt;</source>
         <translation>&lt;Zmiešané&gt;</translation>
     </message>
     <message>
@@ -1832,7 +1832,7 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>Max Angle: </source>
-        <translation>Max. uhol:</translation>
+        <translation>Max. uhol: </translation>
     </message>
     <message>
         <source>Group changes</source>
@@ -3677,19 +3677,19 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>Select</source>
-        <translation type="obsolete">Zvoliť</translation>
+        <translation>Zvoliť</translation>
     </message>
     <message>
         <source>Attract</source>
-        <translation type="obsolete">Priťiahnuť</translation>
+        <translation>Priťiahnuť</translation>
     </message>
     <message>
         <source>Background Image</source>
-        <translation type="obsolete">Obrázok pozadia</translation>
+        <translation type="unfinished">Obrázok pozadia</translation>
     </message>
     <message>
         <source>Create Other</source>
-        <translation type="obsolete">Vytvoriť ostatné</translation>
+        <translation>Vytvoriť ostatné</translation>
     </message>
 </context>
 <context>
@@ -4519,8 +4519,7 @@ Use the &apos;Select Faces&apos; tool.</source>
     </message>
     <message>
         <source>Select Influences Vertices</source>
-        <translation>Zvoliť vrcholy pôsobenia
-</translation>
+        <translation>Zvoliť vrcholy pôsobenia</translation>
     </message>
     <message>
         <source>Select Influenced Points</source>

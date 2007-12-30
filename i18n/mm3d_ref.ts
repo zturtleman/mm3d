@@ -391,17 +391,13 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Split </source>
+        <source>Split</source>
         <comment>&apos;Split&apos; refers to splitting an animation into two separate animations</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> at frame number</source>
+        <source>at frame number</source>
         <comment>the frame number where the second (split) animation begins</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> split</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -430,6 +426,10 @@
     </message>
     <message>
         <source>copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>split</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1142,6 +1142,22 @@ Do you wish to continue?</source>
         <source>Normals Face Out</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Meshes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Normals</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vertices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Faces</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ContextGroup</name>
@@ -1275,10 +1291,6 @@ Do you wish to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> &lt;Mixed&gt; </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Custom</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1296,6 +1308,10 @@ Do you wish to continue?</source>
     </message>
     <message>
         <source>Joint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;Mixed&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3530,6 +3546,22 @@ Do you want to load all sections?</source>
     </message>
     <message>
         <source>Extruding selected faces</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Background Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Other</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attract</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

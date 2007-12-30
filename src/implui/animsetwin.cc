@@ -396,13 +396,13 @@ void AnimSetWindow::splitClicked()
          {
             bool ok = false;
             QString name = QString::fromUtf8( m_model->getAnimName( mode, t ) );
-            unsigned frame = QInputDialog::getInteger( tr("Split at frame", "Split animation frame window title" ), tr("Split ", "'Split' refers to splitting an animation into two separate animations" ) 
-                  + name + tr(" at frame number", "the frame number where the second (split) animation begins" ),
+            unsigned frame = QInputDialog::getInteger( tr("Split at frame", "Split animation frame window title" ), tr("Split", "'Split' refers to splitting an animation into two separate animations" ) 
+                  + QString(" ") + name + QString(" ") + tr("at frame number", "the frame number where the second (split) animation begins" ),
                   2, 2, m_model->getAnimFrameCount( mode, t ), 1, &ok );
 
             if ( ok )
             {
-               name = name + tr(" split");
+               name = name + " " + tr("split");
                if ( m_model->splitAnimation( mode, t, name.utf8(), frame ) )
                {
                   refillList = true;

@@ -32,6 +32,8 @@
 #include <qtranslator.h>
 #include <qtextcodec.h>
 #include <qlocale.h>
+#include <list>
+#include <string>
 
 #include "log.h"
 #include "mm3dport.h"
@@ -73,6 +75,29 @@ static void _cleanup()
    // TODO add any necessary cleanup
 }
 
+static bool loadTranslationFile( QTranslator * xlat, const QString & localeFile )
+{
+   std::list<std::string> path_list;
+
+   path_list.push_back( "." );
+   path_list.push_back( "../i18n" );
+   path_list.push_back( getI18nDirectory() );
+
+   // try current directory first (for override), then mm3d system directory
+   for ( std::list<std::string>::iterator it = path_list.begin(); it != path_list.end(); ++it )
+   {
+      log_debug( "attempting to load translation %s from %s\n", (const char *) localeFile.utf8(), (const char *) it->c_str() );
+      if ( s_qtXlat->load( localeFile, it->c_str() ) )
+      {
+         log_debug( "  loaded.\n" );
+         return true;
+      }
+   }
+
+   log_warning( "unable to load translation for %s\n", (const char *) localeFile.utf8() );
+   return false;
+}
+
 QApplication * ui_getapp()
 {
    return s_app;
@@ -81,8 +106,6 @@ QApplication * ui_getapp()
 int ui_prep( int argc, char * argv[] )
 {
    s_app = new QApplication( argc, argv );
-
-   std::string i18nPath = getI18nDirectory();
 
 #ifdef HAVE_QT4
    QString loc = QLocale::system().name();
@@ -93,34 +116,13 @@ int ui_prep( int argc, char * argv[] )
    // General Qt translations
    s_qtXlat = new QTranslator( 0 );
    QString qtLocale = QString( "qt_" ) + loc;
-   log_debug( "attempting to load translation %s from '.'\n", (const char *) qtLocale.utf8() );
-
-   // try current directory first (for override), then mm3d system directory
-   if ( !s_qtXlat->load( qtLocale, "." ) )
-   {
-      log_debug( "attempting to load translation %s from %s\n", (const char *) qtLocale.utf8(), (const char *) i18nPath.c_str() );
-      if ( !s_qtXlat->load( qtLocale, i18nPath.c_str() ) )
-      {
-         log_warning( "unable to load translation for %s\n", (const char *) qtLocale.utf8() );
-      }
-   }
+   loadTranslationFile( s_qtXlat, qtLocale );
    s_app->installTranslator( s_qtXlat );
 
    // MM3D translations
    s_mm3dXlat = new QTranslator( 0 );
    QString mm3dLocale = QString( "mm3d_" ) + loc;
-
-   log_debug( "attempting to load translation %s from '.'\n", (const char *) mm3dLocale.utf8() );
-
-   // try current directory first (for override), then mm3d system directory
-   if ( !s_mm3dXlat->load( mm3dLocale, "." ) )
-   {
-      log_debug( "attempting to load translation %s from %s\n", (const char *) mm3dLocale.utf8(), (const char *) i18nPath.c_str() );
-      if ( !s_mm3dXlat->load( mm3dLocale, i18nPath.c_str() ) )
-      {
-         log_warning( "unable to load translation for %s\n", (const char *) mm3dLocale.utf8() );
-      }
-   }
+   loadTranslationFile( s_mm3dXlat, mm3dLocale );
    s_app->installTranslator( s_mm3dXlat );
 
    return 0;
