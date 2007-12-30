@@ -497,6 +497,28 @@ počet rámcov sa líši.</translation>
         <source>Frame: n/a</source>
         <translation>Rámec: nie je</translation>
     </message>
+    <message>
+        <source>Delete Animation?</source>
+        <comment>window title</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete this animation?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Animation</source>
+        <comment>Delete animation, operation complete</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No frame animation data to paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No skeletal animation data to paste</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AnimWidgetBase</name>
@@ -527,6 +549,14 @@ počet rámcov sa líši.</translation>
     <message>
         <source>Frame: 03</source>
         <translation>Rámec: 03</translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Animation</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -836,6 +866,53 @@ počet rámcov sa líši.</translation>
     <message>
         <source>Subtract Selected</source>
         <translation>Odčítať zvolené</translation>
+    </message>
+</context>
+<context>
+    <name>Cal3dPrompt</name>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Cal3dPromptBase</name>
+    <message>
+        <source>Cal3D Filter Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Meshes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All meshes in one file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group meshes by name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Materials</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRF (Binary)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XRF (XML Text)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Zrušiť</translation>
     </message>
 </context>
 <context>
@@ -1156,19 +1233,19 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>Vertices</source>
-        <translation>Vrcholy</translation>
+        <translation type="obsolete">Vrcholy</translation>
     </message>
     <message>
         <source>Faces</source>
-        <translation>Plochy</translation>
+        <translation type="obsolete">Plochy</translation>
     </message>
     <message>
         <source>Meshes</source>
-        <translation>Mriežky</translation>
+        <translation type="obsolete">Mriežky</translation>
     </message>
     <message>
         <source>Normals</source>
-        <translation>Normály</translation>
+        <translation type="obsolete">Normály</translation>
     </message>
     <message>
         <source>Normals Face Out</source>
@@ -1243,7 +1320,11 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>Triangle Projection</source>
-        <translation>Trojúholníkové premietanie</translation>
+        <translation type="obsolete">Trojúholníkové premietanie</translation>
+    </message>
+    <message>
+        <source>Texture Projection</source>
+        <translation type="unfinished">Projekcia textúry</translation>
     </message>
 </context>
 <context>
@@ -1517,7 +1598,7 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>File is an unknown type</source>
-        <translation>Súbor je neznámeho typu</translation>
+        <translation type="obsolete">Súbor je neznámeho typu</translation>
     </message>
     <message>
         <source>Operation not supported for this file type</source>
@@ -1574,6 +1655,10 @@ Chcete pokračovať?</translation>
     <message>
         <source>Write not supported, try &quot;Export...&quot;</source>
         <translation>Zápis nie je podporovaný, skúste &quot;Export...&quot;</translation>
+    </message>
+    <message>
+        <source>Unrecognized file extension (unknown type)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2027,7 +2112,7 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>File is an unknown type</source>
-        <translation>Súbor je neznámeho typu</translation>
+        <translation type="obsolete">Súbor je neznámeho typu</translation>
     </message>
     <message>
         <source>Operation not supported for this file type</source>
@@ -2128,6 +2213,10 @@ Chcete načítať všetky sekcie?</translation>
     <message>
         <source>Write not supported, try &quot;Export...&quot;</source>
         <translation>Zápis nie je podporovaný, skúste &quot;Export...&quot;</translation>
+    </message>
+    <message>
+        <source>Unrecognized file extension (unknown type)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2379,6 +2468,57 @@ Chcete načítať všetky sekcie?</translation>
     <message>
         <source>OpenGL error = Unknown</source>
         <translation>Chyba OpenGL = Neznáma</translation>
+    </message>
+</context>
+<context>
+    <name>Ms3dPrompt</name>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Ms3dPromptBase</name>
+    <message>
+        <source>MS3D Filter Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Format Subversion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subversion 0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subversion 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subversion 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subversion Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vertex Extra</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FFFFFFFF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Zrušiť</translation>
     </message>
 </context>
 <context>
@@ -2678,6 +2818,28 @@ Chcete načítať všetky sekcie?</translation>
     </message>
 </context>
 <context>
+    <name>ProjToolWidget</name>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cylinder</source>
+        <comment>Cylinder projection type</comment>
+        <translation type="unfinished">Valec</translation>
+    </message>
+    <message>
+        <source>Sphere</source>
+        <comment>Sphere projection type</comment>
+        <translation type="unfinished">Guľa</translation>
+    </message>
+    <message>
+        <source>Plane</source>
+        <comment>Plane projection type</comment>
+        <translation type="unfinished">Rovina</translation>
+    </message>
+</context>
+<context>
     <name>ProjectionWin</name>
     <message>
         <source>F1</source>
@@ -2893,9 +3055,6 @@ Chcete načítať všetky sekcie?</translation>
         <comment>operation complete</comment>
         <translation>Zaguľatiť</translation>
     </message>
-</context>
-<context>
-    <name>StartPrompt</name>
 </context>
 <context>
     <name>StatusBar</name>
@@ -3518,19 +3677,19 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>Select</source>
-        <translation>Zvoliť</translation>
+        <translation type="obsolete">Zvoliť</translation>
     </message>
     <message>
         <source>Attract</source>
-        <translation>Priťiahnuť</translation>
+        <translation type="obsolete">Priťiahnuť</translation>
     </message>
     <message>
         <source>Background Image</source>
-        <translation>Obrázok pozadia</translation>
+        <translation type="obsolete">Obrázok pozadia</translation>
     </message>
     <message>
         <source>Create Other</source>
-        <translation>Vytvoriť ostatné</translation>
+        <translation type="obsolete">Vytvoriť ostatné</translation>
     </message>
 </context>
 <context>

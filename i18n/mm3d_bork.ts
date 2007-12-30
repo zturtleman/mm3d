@@ -395,7 +395,7 @@
     </message>
     <message>
         <source> copy</source>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
     <message>
         <source>Split at frame</source>
@@ -439,6 +439,10 @@
         <source>Animation changes</source>
         <comment>operation complete</comment>
         <translation>Bork!</translation>
+    </message>
+    <message>
+        <source>copy</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -500,6 +504,28 @@
         <source>Frame: n/a</source>
         <translation>Bork!</translation>
     </message>
+    <message>
+        <source>Delete Animation?</source>
+        <comment>window title</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete this animation?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Animation</source>
+        <comment>Delete animation, operation complete</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No frame animation data to paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No skeletal animation data to paste</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AnimWidgetBase</name>
@@ -530,6 +556,14 @@
     <message>
         <source>Frame: 03</source>
         <translation>Bork!</translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+    <message>
+        <source>Delete Animation</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -850,6 +884,53 @@
     </message>
 </context>
 <context>
+    <name>Cal3dPrompt</name>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+</context>
+<context>
+    <name>Cal3dPromptBase</name>
+    <message>
+        <source>Cal3D Filter Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Meshes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All meshes in one file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group meshes by name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Materials</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRF (Binary)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XRF (XML Text)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+</context>
+<context>
     <name>Command</name>
     <message>
         <source>Align Selected...</source>
@@ -1166,19 +1247,19 @@ Do you wish to continue?</source>
     </message>
     <message>
         <source>Vertices</source>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
     <message>
         <source>Faces</source>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
     <message>
         <source>Meshes</source>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
     <message>
         <source>Normals</source>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
     <message>
         <source>Normals Face Out</source>
@@ -1253,7 +1334,11 @@ Do you wish to continue?</source>
     </message>
     <message>
         <source>Triangle Projection</source>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
+    </message>
+    <message>
+        <source>Texture Projection</source>
+        <translation type="unfinished">Bork!</translation>
     </message>
 </context>
 <context>
@@ -1526,7 +1611,7 @@ Do you wish to continue?</source>
     </message>
     <message>
         <source>File is an unknown type</source>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
     <message>
         <source>Operation not supported for this file type</source>
@@ -1583,6 +1668,10 @@ Do you wish to continue?</source>
     <message>
         <source>Write not supported, try &quot;Export...&quot;</source>
         <translation>Bork!</translation>
+    </message>
+    <message>
+        <source>Unrecognized file extension (unknown type)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2044,7 +2133,7 @@ Do you wish to continue?</source>
     </message>
     <message>
         <source>File is an unknown type</source>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
     <message>
         <source>Operation not supported for this file type</source>
@@ -2135,6 +2224,10 @@ Do you want to load all sections?</source>
     <message>
         <source>Write not supported, try &quot;Export...&quot;</source>
         <translation>Bork!</translation>
+    </message>
+    <message>
+        <source>Unrecognized file extension (unknown type)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2386,6 +2479,57 @@ Do you want to load all sections?</source>
     <message>
         <source>OpenGL error = Unknown</source>
         <translation>Bork!</translation>
+    </message>
+</context>
+<context>
+    <name>Ms3dPrompt</name>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+</context>
+<context>
+    <name>Ms3dPromptBase</name>
+    <message>
+        <source>MS3D Filter Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Format Subversion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subversion 0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subversion 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subversion 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subversion Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vertex Extra</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FFFFFFFF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Bork!</translation>
     </message>
 </context>
 <context>
@@ -2682,6 +2826,28 @@ Do you want to load all sections?</source>
     <message>
         <source>Fan</source>
         <translation>Bork!</translation>
+    </message>
+</context>
+<context>
+    <name>ProjToolWidget</name>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cylinder</source>
+        <comment>Cylinder projection type</comment>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+    <message>
+        <source>Sphere</source>
+        <comment>Sphere projection type</comment>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+    <message>
+        <source>Plane</source>
+        <comment>Plane projection type</comment>
+        <translation type="unfinished">Bork!</translation>
     </message>
 </context>
 <context>
@@ -3530,19 +3696,19 @@ Do you want to load all sections?</source>
     </message>
     <message>
         <source>Select</source>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
     <message>
         <source>Attract</source>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
     <message>
         <source>Background Image</source>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
     <message>
         <source>Create Other</source>
-        <translation>Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
 </context>
 <context>

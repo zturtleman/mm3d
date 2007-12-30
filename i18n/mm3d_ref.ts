@@ -386,10 +386,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> copy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Split at frame</source>
         <comment>Split animation frame window title</comment>
         <translation type="unfinished"></translation>
@@ -430,6 +426,10 @@
     <message>
         <source>Animation changes</source>
         <comment>operation complete</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>copy</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -492,6 +492,28 @@
         <source>Frame: n/a</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Delete Animation?</source>
+        <comment>window title</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete this animation?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Animation</source>
+        <comment>Delete animation, operation complete</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No frame animation data to paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No skeletal animation data to paste</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AnimWidgetBase</name>
@@ -523,9 +545,14 @@
         <source>Frame: 03</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>AnimWindow</name>
+    <message>
+        <source>X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Animation</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AutoAssignJointWin</name>
@@ -750,6 +777,53 @@
     </message>
     <message>
         <source>Subtract Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Cal3dPrompt</name>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Cal3dPromptBase</name>
+    <message>
+        <source>Cal3D Filter Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Meshes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All meshes in one file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group meshes by name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Materials</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRF (Binary)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XRF (XML Text)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1065,22 +1139,6 @@ Do you wish to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Vertices</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Faces</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Meshes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Normals</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Normals Face Out</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1152,7 +1210,7 @@ Do you wish to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Triangle Projection</source>
+        <source>Texture Projection</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1376,12 +1434,6 @@ Do you wish to continue?</source>
     </message>
 </context>
 <context>
-    <name>DeleteCommand</name>
-</context>
-<context>
-    <name>EditKeyframeWin</name>
-</context>
-<context>
     <name>EllipsoidToolWidget</name>
     <message>
         <source>Smoothness:</source>
@@ -1409,10 +1461,6 @@ Do you wish to continue?</source>
     </message>
     <message>
         <source>Canceled</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File is an unknown type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1469,6 +1517,10 @@ Do you wish to continue?</source>
     </message>
     <message>
         <source>Write not supported, try &quot;Export...&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unrecognized file extension (unknown type)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1930,10 +1982,6 @@ Do you wish to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>File is an unknown type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Operation not supported for this file type</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2021,6 +2069,10 @@ Do you want to load all sections?</source>
     </message>
     <message>
         <source>Write not supported, try &quot;Export...&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unrecognized file extension (unknown type)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2272,6 +2324,57 @@ Do you want to load all sections?</source>
     </message>
     <message>
         <source>OpenGL error = Unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Ms3dPrompt</name>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Ms3dPromptBase</name>
+    <message>
+        <source>MS3D Filter Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Format Subversion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subversion 0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subversion 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subversion 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subversion Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vertex Extra</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FFFFFFFF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2572,6 +2675,28 @@ Do you want to load all sections?</source>
     </message>
 </context>
 <context>
+    <name>ProjToolWidget</name>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cylinder</source>
+        <comment>Cylinder projection type</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sphere</source>
+        <comment>Sphere projection type</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plane</source>
+        <comment>Plane projection type</comment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ProjectionWin</name>
     <message>
         <source>F1</source>
@@ -2787,9 +2912,6 @@ Do you want to load all sections?</source>
         <comment>operation complete</comment>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>StartPrompt</name>
 </context>
 <context>
     <name>StatusBar</name>
@@ -3408,22 +3530,6 @@ Do you want to load all sections?</source>
     </message>
     <message>
         <source>Extruding selected faces</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attract</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Background Image</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create Other</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
