@@ -225,7 +225,7 @@
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>/some/path/name</source>
@@ -292,11 +292,11 @@
     </message>
     <message>
         <source>Must have more than 0 frames per second</source>
-        <translation type="unfinished">Musí mať viac ako 0 rámcov za sekundu.</translation>
+        <translation>Musí mať viac ako 0 rámcov za sekundu</translation>
     </message>
     <message>
         <source>Must have more than 0 seconds of animation</source>
-        <translation type="unfinished">Animácia musí mať viac ako 0 sekúnd.</translation>
+        <translation>Animácia musí mať viac ako 0 sekúnd</translation>
     </message>
     <message>
         <source>Could not write file: </source>
@@ -500,24 +500,24 @@ počet rámcov sa líši.</translation>
     <message>
         <source>Delete Animation?</source>
         <comment>window title</comment>
-        <translation type="unfinished"></translation>
+        <translation>Vymazať animáciu?</translation>
     </message>
     <message>
         <source>Are you sure you want to delete this animation?</source>
-        <translation type="unfinished"></translation>
+        <translation>Naozaj vymazať túto animáciu?</translation>
     </message>
     <message>
         <source>Delete Animation</source>
         <comment>Delete animation, operation complete</comment>
-        <translation type="unfinished"></translation>
+        <translation>Vymazať animáciu</translation>
     </message>
     <message>
         <source>No frame animation data to paste</source>
-        <translation type="unfinished"></translation>
+        <translation>V schránke nie sú dáta rámcovej animácie</translation>
     </message>
     <message>
         <source>No skeletal animation data to paste</source>
-        <translation type="unfinished"></translation>
+        <translation>V schránke nie sú dáta kostrovej animácie</translation>
     </message>
 </context>
 <context>
@@ -552,11 +552,11 @@ počet rámcov sa líši.</translation>
     </message>
     <message>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Delete Animation</source>
-        <translation type="unfinished"></translation>
+        <translation>Vymazať animáciu</translation>
     </message>
 </context>
 <context>
@@ -873,46 +873,46 @@ počet rámcov sa líši.</translation>
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>Cal3dPromptBase</name>
     <message>
         <source>Cal3D Filter Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavenia Cal3D filtra</translation>
     </message>
     <message>
         <source>Save Meshes</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložiť mriežky</translation>
     </message>
     <message>
         <source>All meshes in one file</source>
-        <translation type="unfinished"></translation>
+        <translation>Všetky mriežky v jednom súbore</translation>
     </message>
     <message>
         <source>Group meshes by name</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoskupiť mriežky podľa mena</translation>
     </message>
     <message>
         <source>Save Materials</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložiť materiály</translation>
     </message>
     <message>
         <source>CRF (Binary)</source>
-        <translation type="unfinished"></translation>
+        <translation>CRF (Binárny)</translation>
     </message>
     <message>
         <source>XRF (XML Text)</source>
-        <translation type="unfinished"></translation>
+        <translation>XRF (XML Text)</translation>
     </message>
     <message>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>Ok</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Zrušiť</translation>
+        <translation>Zrušiť</translation>
     </message>
 </context>
 <context>
@@ -1041,7 +1041,7 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>Need at least 1 vertex, joint, point, or face selected</source>
-        <translation type="unfinished">Musíte zvoliť aspoň 1 vrchol, kĺb, alebo plochu.</translation>
+        <translation>Musíte zvoliť aspoň 1 vrchol, kĺb, alebo plochu</translation>
     </message>
     <message>
         <source>Selected primitives flattened</source>
@@ -1233,19 +1233,19 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>Vertices</source>
-        <translation type="unfinished">Vrcholy</translation>
+        <translation>Vrcholy</translation>
     </message>
     <message>
         <source>Faces</source>
-        <translation type="unfinished">Plochy</translation>
+        <translation>Plochy</translation>
     </message>
     <message>
         <source>Meshes</source>
-        <translation type="unfinished">Mriežky</translation>
+        <translation>Mriežky</translation>
     </message>
     <message>
         <source>Normals</source>
-        <translation type="unfinished">Normály</translation>
+        <translation>Normály</translation>
     </message>
     <message>
         <source>Normals Face Out</source>
@@ -1304,7 +1304,7 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Material Name</source>
@@ -1324,7 +1324,7 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>Texture Projection</source>
-        <translation type="unfinished">Projekcia textúry</translation>
+        <translation>Premietanie textúry</translation>
     </message>
 </context>
 <context>
@@ -1486,7 +1486,7 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -1524,7 +1524,7 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>Segment</source>
-        <translation>Článok</translation>
+        <translation>Články</translation>
     </message>
 </context>
 <context>
@@ -1570,7 +1570,7 @@ Chcete pokračovať?</translation>
     <name>EllipsoidToolWidget</name>
     <message>
         <source>Smoothness:</source>
-        <translation type="unfinished">Hladkosť:</translation>
+        <translation>Hladkosť:</translation>
     </message>
     <message>
         <source>Faces: </source>
@@ -1658,7 +1658,7 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>Unrecognized file extension (unknown type)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nerozpoznaná prípona súboru (neznámy typ)</translation>
     </message>
 </context>
 <context>
@@ -1690,7 +1690,7 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>X:</source>
-        <translation type="unfinished"></translation>
+        <translation>X:</translation>
     </message>
     <message>
         <source>0</source>
@@ -1698,11 +1698,11 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>Z:</source>
-        <translation type="unfinished"></translation>
+        <translation>Z:</translation>
     </message>
     <message>
         <source>Y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <source>Make Back Faces</source>
@@ -1877,7 +1877,7 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>Enter new joint name:</source>
-        <translation type="unfinished">Zadaj meno nového kĺbu:</translation>
+        <translation>Zadaj meno nového kĺbu:</translation>
     </message>
     <message>
         <source>Joint changes</source>
@@ -1937,137 +1937,137 @@ Chcete pokračovať?</translation>
     <message>
         <source>V</source>
         <comment>Select Vertices Tool Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>F</source>
         <comment>Select Faces Tool Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>C</source>
         <comment>Select Connected Mesh Tool Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>G</source>
         <comment>Select Groups Tool Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>B</source>
         <comment>Select Bone Joints Tool Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>T</source>
         <comment>Select Points Tool Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>M</source>
         <comment>Move Tool Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>R</source>
         <comment>Rotate Tool Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>H</source>
         <comment>Hide Unselected Command Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Shift+H</source>
         <comment>Hide Selected Command Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>?</source>
         <comment>Unhide All Command Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation>?</translation>
     </message>
     <message>
         <source>Delete</source>
         <comment>Delete Command Shortcut</comment>
-        <translation type="unfinished">Vymazať</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+D</source>
         <comment>Duplicate Command Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+C</source>
         <comment>Copy to Clipboard Command Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+V</source>
         <comment>Paste from Clipboard Command Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Insert</source>
         <comment>Extrude Command Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+W</source>
         <comment>Weld Command Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+N</source>
         <comment>File | New Window Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+O</source>
         <comment>File | Open Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+S</source>
         <comment>File | Save Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
         <comment>File | Quit Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Home</source>
         <comment>View | Frame All Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Shift+Home</source>
         <comment>View | Frame Selected Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+G</source>
         <comment>Groups | Edit Groups Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+M</source>
         <comment>Groups | Edit Materials Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+E</source>
         <comment>Groups | Edit Texture Coordinates Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+B</source>
         <comment>Joints | Assign Selected Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2168,7 +2168,7 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <source>Cannot add or delete because you have frame animations.  Try &quot;Merge...&quot; instead.</source>
-        <translation type="unfinished">Nemožno pridať alebo zmazať lebo máte rámcovú animáciu. Skúste namiesto toho &quot;Zlúčiť...&quot;</translation>
+        <translation>Nemožno pridať alebo zmazať lebo máte rámcovú animáciu. Skúste namiesto toho &quot;Zlúčiť...&quot;.</translation>
     </message>
     <message>
         <source>Could not write file</source>
@@ -2216,7 +2216,7 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>Unrecognized file extension (unknown type)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nerozpoznaná prípona súboru (neznámy typ) </translation>
     </message>
 </context>
 <context>
@@ -2475,50 +2475,50 @@ Chcete načítať všetky sekcie?</translation>
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>Ms3dPromptBase</name>
     <message>
         <source>MS3D Filter Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavenie MS3D filtra</translation>
     </message>
     <message>
         <source>Format Subversion</source>
-        <translation type="unfinished"></translation>
+        <translation>Podverzia filtra</translation>
     </message>
     <message>
         <source>Subversion 0</source>
-        <translation type="unfinished"></translation>
+        <translation>Podverzia 0</translation>
     </message>
     <message>
         <source>Subversion 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Podverzia 1</translation>
     </message>
     <message>
         <source>Subversion 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Podverzia 2</translation>
     </message>
     <message>
         <source>Subversion Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavenie podverzie</translation>
     </message>
     <message>
         <source>Vertex Extra</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrchol zvlášť</translation>
     </message>
     <message>
         <source>FFFFFFFF</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Zrušiť</translation>
+        <translation>Zrušiť</translation>
     </message>
 </context>
 <context>
@@ -2553,7 +2553,7 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>&amp;Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ok</translation>
     </message>
     <message>
         <source>Alt+O</source>
@@ -2592,15 +2592,15 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>&amp;Normal Decimal Places</source>
-        <translation type="unfinished"></translation>
+        <translation>Desatinné miesta &amp;normál</translation>
     </message>
     <message>
         <source>&amp;Texture Decimal Places</source>
-        <translation type="unfinished"></translation>
+        <translation>Desatinné miesta &amp;textúr</translation>
     </message>
     <message>
         <source>&amp;Vertex Decimal Places</source>
-        <translation type="unfinished"></translation>
+        <translation>Desatinné miesta &amp;vrcholov</translation>
     </message>
     <message>
         <source>Ok</source>
@@ -2767,7 +2767,7 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>Enter new point name:</source>
-        <translation type="unfinished">Zadaj nové meno bodu</translation>
+        <translation>Zadaj nové meno bodu:</translation>
     </message>
     <message>
         <source>Point changes</source>
@@ -2821,22 +2821,22 @@ Chcete načítať všetky sekcie?</translation>
     <name>ProjToolWidget</name>
     <message>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <source>Cylinder</source>
         <comment>Cylinder projection type</comment>
-        <translation type="unfinished">Valec</translation>
+        <translation>Valec</translation>
     </message>
     <message>
         <source>Sphere</source>
         <comment>Sphere projection type</comment>
-        <translation type="unfinished">Guľa</translation>
+        <translation>Guľa</translation>
     </message>
     <message>
         <source>Plane</source>
         <comment>Plane projection type</comment>
-        <translation type="unfinished">Rovina</translation>
+        <translation>Rovina</translation>
     </message>
 </context>
 <context>
@@ -2883,7 +2883,7 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>Enter new point name:</source>
-        <translation type="unfinished">Zadajte nové meno bodu</translation>
+        <translation>Zadajte nové meno bodu:</translation>
     </message>
     <message>
         <source>Rename Projection</source>
@@ -3105,23 +3105,23 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>F:0</source>
-        <translation type="unfinished">P:0</translation>
+        <translation>P:0</translation>
     </message>
     <message>
         <source>G:0</source>
-        <translation type="unfinished">S:0</translation>
+        <translation>S:0</translation>
     </message>
     <message>
         <source>B:0</source>
-        <translation type="unfinished">K:0</translation>
+        <translation>K:0</translation>
     </message>
     <message>
         <source>P:0</source>
-        <translation type="unfinished">B:0</translation>
+        <translation>B:0</translation>
     </message>
     <message>
         <source>T:0</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -3159,7 +3159,7 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>Zoom:</source>
-        <translation type="unfinished">Zväčšenie</translation>
+        <translation>Zväčšenie:</translation>
     </message>
     <message>
         <source>1.0</source>
@@ -3252,7 +3252,7 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>Enter new material name:</source>
-        <translation type="unfinished">Zadajte meno nového materiálu:</translation>
+        <translation>Zadajte meno nového materiálu:</translation>
     </message>
     <message>
         <source>Rename texture</source>
@@ -3261,7 +3261,7 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>Enter new texture name:</source>
-        <translation type="unfinished">Zadajte meno novej textúry:</translation>
+        <translation>Zadajte meno novej textúry:</translation>
     </message>
     <message>
         <source>Texture changes</source>
@@ -3685,7 +3685,7 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>Background Image</source>
-        <translation type="unfinished">Obrázok pozadia</translation>
+        <translation>Obrázok pozadia</translation>
     </message>
     <message>
         <source>Create Other</source>
@@ -3745,7 +3745,7 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>This transformation cannot be undone.</source>
-        <translation type="unfinished">Túto transformáciu nebude možné vziať späť</translation>
+        <translation>Túto transformáciu nebude možné vziať späť.</translation>
     </message>
     <message>
         <source>Are you sure you wish to continue?</source>
@@ -4387,7 +4387,8 @@ Chcete načítať všetky sekcie?</translation>
     <message>
         <source>:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>:
+</translation>
     </message>
     <message>
         <source>Script %1 complete</source>
@@ -4436,13 +4437,15 @@ Chcete ho uložiť pred zatvorením?</translation>
         <source>You must select faces first.
 Use the &apos;Select Faces&apos; tool.</source>
         <comment>Notice that user must have faces selected to open &apos;edit texture coordinates&apos; window</comment>
-        <translation type="unfinished">Najprv musíte zvoliť plochu. Použite náztroj &apos;Označiť plochu&apos;</translation>
+        <translation>Najprv musíte zvoliť plochu.
+Použite náztroj &apos;Označiť plochu&apos;.</translation>
     </message>
     <message>
         <source>You must select faces first.
 Use the &apos;Select Faces&apos; tool.</source>
         <comment>Notice that user must have faces selected to open &apos;paint texture&apos; window</comment>
-        <translation type="unfinished">Najprv musíte zvoliť plochu. Použite náztroj &apos;Označiť plochu&apos;</translation>
+        <translation>Najprv musíte zvoliť plochu.
+Použite náztroj &apos;Označiť plochu&apos;.</translation>
     </message>
     <message>
         <source>Undo %1</source>
@@ -4491,7 +4494,7 @@ Use the &apos;Select Faces&apos; tool.</source>
     </message>
     <message>
         <source>You must have at least one bone joint selected.</source>
-        <translation type="unfinished">Musíte mať zvolený aspoň jeden kĺb</translation>
+        <translation>Musíte mať zvolený aspoň jeden kĺb.</translation>
     </message>
     <message>
         <source>Remove All Influences from Selected</source>
@@ -4551,12 +4554,12 @@ Use the &apos;Select Faces&apos; tool.</source>
     <message>
         <source>Export...</source>
         <comment>File|Export</comment>
-        <translation type="unfinished"></translation>
+        <translation>Export...</translation>
     </message>
     <message>
         <source>Edit Model Meta Data...</source>
         <comment>Model|Edit Model Meta Data</comment>
-        <translation type="unfinished">Upraviť metadáta modelu</translation>
+        <translation>Upraviť metadáta modelu...</translation>
     </message>
     <message>
         <source>Transform Model...</source>
@@ -4601,7 +4604,7 @@ Use the &apos;Select Faces&apos; tool.</source>
     <message>
         <source>&amp;Model</source>
         <comment>menu bar</comment>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Model</translation>
     </message>
     <message>
         <source>Mate&amp;rials</source>
@@ -4670,7 +4673,7 @@ Use the &apos;Select Faces&apos; tool.</source>
     </message>
     <message>
         <source>&amp;Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ok</translation>
     </message>
     <message>
         <source>Alt+O</source>
