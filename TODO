@@ -1,9 +1,11 @@
 For 1.4:
    Bump mm3dfilter version
    Add new filters to Windows Installer
+   Language command line argument
 
    Update ad3dsfilter with canExport
 
+   Fix relative paths when saving in a different directory
    Fix normal calculation performance
    Profile 1.3.4 vs. 1.3.5 on unaccelerated config
    Export selected (??)
@@ -15,10 +17,36 @@ For 1.4:
 
    Test merge on multiple bone joint assignments (and points)
 
-Post 1.4:
+For 1.6:
    Resample animation
+   Change animation playback speed
+   Bone Joints
+      Interactive influence weight adjustment
+      IK Considerations
+   Export/Import MM3D
+      Geometry
+      Materials
+      Skeleton
+      Animations
+   Texture Projections
+      Types
+         Icosahedron
+   Gradient textures
+   Integrate libmisfit
+   Qt 4.x (probably need to continue with Qt 3.x compatibility classes for 1.4)
+      Only list supported image formats in animation capture export
+      Qt4 - On startup every window says "Perspective" (make permanent fix)
+   Make middle mouse button scroll zoom in on point under the mouse
+   Delay normal calculation when manipulating a large number of vertices
+   Fix MM3D data size problem (assume size instead of using read size)
+   Embedded textures
+      Implement embedded textures
+      Extract embedded textures to external files
+   Allow double-sided polygons
+
+Later:
    Warn user if some model properties will not be saved in
-      specified format (??)
+      specified format
    Format options:
       Model format-specific dialog box (like Save dialog)
          Must save in that format to get dialog
@@ -29,112 +57,86 @@ Post 1.4:
    Only prompt for options on first save or on "Save As"
    Meta data context panel
       For meta data of any primitive
-   Coloring on texture paint (??)
-   Bone Joints
-      Interactive influence weight adjustment
-      IK Considerations
+   Coloring on texture paint
    Adjust texture coordinates on turn edge?
    Adjust texture coordinates on split edge?
-   Export/Import MM3D
-      Geometry
-      Materials
-      Skeleton
-      Animations
-   Texture Projections
-      Types
-         Icosahedron
    On user path input, always replace backslashes with slashes
-   Integrate libmisfit
-   Qt 4.x (probably need to continue with Qt 3.x compatibility classes for 1.4)
-      Only list supported image formats in animation capture export
-      Qt4 - On startup every window says "Perspective" (make permanent fix)
    MD3
       Custom export dialog to select groups, tags, and animations
       Handle missing/out-of-order animations more sanely
    Center viewport on mouse position
-   Make middle mouse button scroll zoom in on point under the mouse
    Point meta data?
-   Save selected (or just require copy/paste into new model)?
-   Change animation playback speed
    Check flipping on 3DS texture coordinates
-   Save viewport as JPEG
    Import heightmap as "terrain"
-   Transformation - scale translation keyframes (??)
+   Transformation - scale translation keyframes
    MM3D Unsupported data
       Load/save unknown type info
       UI for unknown type info
    Cylinder/Sphere Mapping
       Projection Window
-       - Show test pattern
-       - Move pole on sphere?
-       - Move pole on icosahedron?
+         Show test pattern
+         Move pole on sphere?
+         Move pole on icosahedron?
    Bone Joints
       Multiple root joints
       Allowing reparenting and re-rooting of bone structure
          will invalidate keyframe animations
          have to deal with parents defined after children
    Allow setting of other OpenGL options?
-   Delay normal calculation when manipulating a large number of vertices
    Commands
       Increase poly count to smooth (see blender?)
       Text
-   Fix MM3D data size problem (assume size instead of using read size)
    Force save of a specific type
    Report OpenGL status (supported options)
-   Embedded textures
-      Implement embedded textures
-      Extract embedded textures to external files
    Unified drawing code
    Consider using glVertexPointer, glInterleavedArrays, or other draw optimization
-   Allow double-sided polygons
-   Custom lighting
-   Tool
-      Align to line
-      Align to plane
-      Select
-         Select Edge
-         Click repeatedly to cycle through faces under the mouse (Ctrl-click?)
    Import/Export
       .X (DirectX)
       Lightwave Export
       3DS
       AC3D
       Wings
-      FBX
       MD5
-      AC3D
-      SMD
       ASE
-      Gamestudio MDL
-      Renderman
-      Blender
-      Maya ASCII
    Direct primitive property edit
       Scale
       UV
       Normal
    Tools
-      Make built-in truly built-in with separators and better organization
+      Align to line
+      Align to plane
+      Select
+         Select Edge
+         Click repeatedly to cycle through faces under the mouse (Ctrl-click?)
       Sculpt tool (surface that pushes selected vertices)
-      Ruler
-      Chamfered primitives
    More complete plugin window
       Allow enabling/disabling of plugins
       Allow plugin initialization order changes?
-   Animation
-      Add frame relative
+   Apply heightmap to selected faces
+   Attempt to correct bad data in mm3d load, and allow user to attempt to continue
+
+Probably never:
+   Finish MenuManager
+   Hooks for add/remove model elements (for plugins)
    Scripting
       Make copy of model
-   Finish MenuManager
-   Striping in low-priority background thread
-   Hooks for add/remove model elements (for plugins)
-   Script UI
       Script directories grafted into menu
-   Scripting
       Script debugger
       Selection
          Select All Created (or all of type)
-   Attempt to correct bad data in mm3d load, and allow user to attempt to continue
-   Apply heightmap to selected faces
    Bilinear autoscale on non-power-of-two textures
+   Animation
+      Add frame relative
+   Tools
+      Ruler
+      Chamfered primitives
+   Custom lighting
+   Save viewport as JPEG
+   Import/Export
+      FBX
+      SMD
+      Gamestudio MDL
+      Renderman
+      Blender
+      Maya ASCII
 
