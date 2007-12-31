@@ -86,7 +86,7 @@ SubSection /e "Associate file types"
         WriteRegStr HKCR ".mm3d" "" "MisfitCode.Mm3dModelFile"
     SectionEnd
 
-    Section /o "CAL (Cal3d)"
+    Section /o "Cal3d"
         WriteRegStr HKCR ".cal" "" "MisfitCode.Mm3dModelFile"
     SectionEnd
 
