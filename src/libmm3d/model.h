@@ -34,6 +34,7 @@
 #include "undomgr.h"
 #endif // MM3D_EDIT
 
+#include <math.h>
 #include <stdint.h>
 
 #include <list>
@@ -48,6 +49,39 @@ class Texture;
 class Model
 {
    public:
+      enum ChangeBits
+      {
+         SelectionChange    =  0x00000001,  // General selection change
+         SelectionVertices  =  0x00000002,  // Vertices selection changed
+         SelectionFaces     =  0x00000004,  // Faces selection changed
+         SelectionGroups    =  0x00000008,  // Groups selection changed
+         SelectionJoints    =  0x00000010,  // Joints selection changed
+         SelectionPoints    =  0x00000020,  // Points selection changed
+         AddGeometry        =  0x00000100,  // Added or removed objects
+         AddAnimation       =  0x00000200,  // Added or removed animations
+         AddOther           =  0x00008000,  // Added or removed something else
+         MoveGeometry       =  0x00010000,  // Model shape changed
+         MoveOther          =  0x00080000,  // Something non-geometric was moved
+         AnimationMode      =  0x00010000,  // Changed animation mode
+         AnimationSet       =  0x00020000,  // Changes to animation sets
+         AnimationFrame     =  0x00080000,  // Changed current animation frame
+         ChangeAll          =  0xFFFFFFFF   // All of the above
+      };
+
+      enum CompareBits
+      {
+         CompareGeometry  =  0x01,  // Vertices and Faces match
+         CompareFaces     =  0x02,  // Faces match, vertices may not
+         CompareGroups    =  0x04,  // Groups match
+         CompareSkeleton  =  0x08,  // Bone joints hierarchy matches
+         CompareTextures  =  0x10,  // Textures and texture coordinates match
+         CompareAnimSets  =  0x20,  // Number of animations, frame counts, and fps match
+         CompareAnimData  =  0x40,  // Animation movements match
+         CompareMeta      =  0x80,  // Names and other non-visible data match
+         ComparePoints    = 0x100,  // Points match
+         CompareAll       = 0x1FF   // All of the above
+      };
+
       enum 
       {
          MAX_INFLUENCES = 4
@@ -95,7 +129,19 @@ class Model
          InfluenceTypeE m_type;
          double m_weight;
 
-         bool operator<( const struct _Influence_t & rhs )
+         bool operator==( const struct _Influence_t & rhs ) const
+         {
+            return m_boneId == rhs.m_boneId
+               && m_type == rhs.m_type
+               && fabs( m_weight - rhs.m_weight ) < 0.00001;
+         }
+
+         bool operator!=( const struct _Influence_t & rhs ) const
+         {
+            return ! (*this == rhs );
+         }
+
+         bool operator<( const struct _Influence_t & rhs ) const
             { return m_weight < rhs.m_weight; }
       };
       typedef struct _Influence_t InfluenceT;
@@ -127,6 +173,10 @@ class Model
             double * m_drawSource;
 
             InfluenceList m_influences;
+
+            bool equal( const Vertex & rhs, int compareBits = CompareAll ) const;
+            bool operator==( const Vertex & rhs ) const
+               { return equal( rhs ); }
 
          protected:
             Vertex();
@@ -162,6 +212,10 @@ class Model
             bool  m_userMarked;
             int   m_projection;
 
+            bool equal( const Triangle & rhs, int compareBits = CompareAll ) const;
+            bool operator==( const Triangle & rhs ) const
+               { return equal( rhs ); }
+
          protected:
             Triangle();
             virtual ~Triangle();
@@ -187,6 +241,11 @@ class Model
             bool        m_selected;
             bool        m_visible;
             bool        m_marked;
+
+            bool equal( const Group & rhs, int compareBits = CompareAll ) const;
+            bool operator==(const Group & rhs ) const
+               { return equal( rhs ); }
+
          protected:
             Group();
             virtual ~Group();
@@ -228,6 +287,11 @@ class Model
             std::string   m_filename;
             std::string   m_alphaFilename;
             Texture     * m_textureData;
+
+            bool equal( const Material & rhs, int compareBits = CompareAll ) const;
+            bool operator==(const Material & rhs ) const
+               { return equal( rhs ); }
+
          protected:
             Material();
             virtual ~Material();
@@ -252,14 +316,15 @@ class Model
             double m_parameter[3];
             bool   m_isRotation;
 
-            bool operator<( const Keyframe & rhs )
+            bool operator<( const Keyframe & rhs ) const
             {
                return ( this->m_frame < rhs.m_frame || (this->m_frame == rhs.m_frame && !this->m_isRotation && rhs.m_isRotation) );
             };
-            bool operator==( const Keyframe & rhs )
+            bool operator==( const Keyframe & rhs ) const
             {
                return ( this->m_frame == rhs.m_frame && this->m_isRotation == rhs.m_isRotation );
             };
+            bool equal( const Keyframe & rhs, int compareBits = CompareAll ) const;
 
          protected:
             Keyframe();
@@ -295,6 +360,10 @@ class Model
             bool m_visible;
             bool m_marked;
 
+            bool equal( const Joint & rhs, int compareBits = CompareAll ) const;
+            bool operator==(const Joint & rhs ) const
+               { return equal( rhs ); }
+
          protected:
             Joint();
             virtual ~Joint();
@@ -327,6 +396,10 @@ class Model
 
             InfluenceList m_influences;
 
+            bool equal( const Point & rhs, int compareBits = CompareAll ) const;
+            bool operator==(const Point & rhs ) const
+               { return equal( rhs ); }
+
          protected:
             Point();
             virtual ~Point();
@@ -354,6 +427,10 @@ class Model
             bool   m_selected;
             bool   m_marked;
 
+            bool equal( const TextureProjection & rhs, int compareBits = CompareAll ) const;
+            bool operator==(const TextureProjection & rhs ) const
+               { return equal( rhs ); }
+
          protected:
             TextureProjection();
             virtual ~TextureProjection();
@@ -380,6 +457,10 @@ class Model
             unsigned m_frameCount;
             bool     m_validNormals;
 
+            bool equal( const SkelAnim & rhs, int compareBits = CompareAll ) const;
+            bool operator==(const SkelAnim & rhs ) const
+               { return equal( rhs ); }
+
          protected:
             SkelAnim();
             virtual ~SkelAnim();
@@ -399,6 +480,10 @@ class Model
 
             double m_coord[3];
             double m_normal[3];
+
+            bool equal( const FrameAnimVertex & rhs, int compareBits = CompareAll ) const;
+            bool operator==(const FrameAnimVertex & rhs ) const
+               { return equal( rhs ); }
 
          protected:
             FrameAnimVertex();
@@ -422,6 +507,10 @@ class Model
             double m_trans[3];
             double m_rot[3];
 
+            bool equal( const FrameAnimPoint & rhs, int compareBits = CompareAll ) const;
+            bool operator==(const FrameAnimPoint & rhs ) const
+               { return equal( rhs ); }
+
          protected:
             FrameAnimPoint();
             virtual ~FrameAnimPoint();
@@ -439,6 +528,10 @@ class Model
           public:
               FrameAnimVertexList * m_frameVertices;
               FrameAnimPointList  * m_framePoints;
+
+              bool equal( const FrameAnimData & rhs, int compareBits = CompareAll ) const;
+              bool operator==(const FrameAnimData & rhs ) const
+               { return equal( rhs ); }
       };
 
       typedef vector< FrameAnimData *> FrameAnimDataList;
@@ -455,6 +548,10 @@ class Model
             FrameAnimDataList m_frameData;
             double m_fps;
             bool   m_validNormals;
+
+            bool equal( const FrameAnim & rhs, int compareBits = CompareAll ) const;
+            bool operator==(const FrameAnim & rhs ) const
+               { return equal( rhs ); }
 
          protected:
             FrameAnim();
@@ -488,6 +585,10 @@ class Model
             std::string m_filename;
             float m_scale;
             float m_center[3];
+
+            bool equal( const BackgroundImage & rhs, int compareBits = CompareAll ) const;
+            bool operator==(const BackgroundImage & rhs ) const
+               { return equal( rhs ); }
       };
 
       typedef Model::Vertex * VertexPtr;
@@ -523,39 +624,6 @@ class Model
             std::string value;
       };
       typedef std::vector< MetaData > MetaDataList;
-
-      enum ChangeBits
-      {
-         SelectionChange    =  0x00000001,  // General selection change
-         SelectionVertices  =  0x00000002,  // Vertices selection changed
-         SelectionFaces     =  0x00000004,  // Faces selection changed
-         SelectionGroups    =  0x00000008,  // Groups selection changed
-         SelectionJoints    =  0x00000010,  // Joints selection changed
-         SelectionPoints    =  0x00000020,  // Points selection changed
-         AddGeometry        =  0x00000100,  // Added or removed objects
-         AddAnimation       =  0x00000200,  // Added or removed animations
-         AddOther           =  0x00008000,  // Added or removed something else
-         MoveGeometry       =  0x00010000,  // Model shape changed
-         MoveOther          =  0x00080000,  // Something non-geometric was moved
-         AnimationMode      =  0x00010000,  // Changed animation mode
-         AnimationSet       =  0x00020000,  // Changes to animation sets
-         AnimationFrame     =  0x00080000,  // Changed current animation frame
-         ChangeAll          =  0xFFFFFFFF   // All of the above
-      };
-
-      enum CompareBits
-      {
-         CompareGeometry  =  0x01,  // Vertices and Faces match
-         CompareFaces     =  0x02,  // Faces match, vertices may not
-         CompareGroups    =  0x04,  // Groups match
-         CompareSkeleton  =  0x08,  // Bone joints hierarchy matches
-         CompareTextures  =  0x10,  // Textures and texture coordinates match
-         CompareAnimSets  =  0x20,  // Number of animations, frame counts, and fps match
-         CompareAnimData  =  0x40,  // Animation movements match
-         CompareMeta      =  0x80,  // Names and other non-visible data match
-         ComparePoints    = 0x100,  // Points match
-         CompareAll       = 0x1FF   // All of the above
-      };
 
       enum _ModelError_e
       {

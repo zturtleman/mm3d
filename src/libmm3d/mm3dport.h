@@ -28,6 +28,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <stdarg.h>
+#include "config.h"
 
 #ifdef WIN32
 #include <winsock2.h>

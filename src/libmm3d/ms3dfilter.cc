@@ -151,7 +151,7 @@ void Ms3dFilter::Ms3dOptions::setOptionsFromModel( Model * m )
    if ( m->getMetaData( "ms3d_sub_version", value, sizeof(value) ) )
    {
       m_subVersion = atoi( value );
-      util_clamp( m_subVersion, 0, 2 );
+      m_subVersion = util_clamp( m_subVersion, 0, 2 );
    }
    else
    {
@@ -1449,7 +1449,7 @@ bool Ms3dFilter::readVertexWeightSection()
    int32_t subVersion = 0;
    read( subVersion );
 
-   util_clamp( subVersion, 1, 2 );
+   subVersion = util_clamp( subVersion, 1, 2 );
 
    char value[128];
    sprintf( value, "%d", subVersion );

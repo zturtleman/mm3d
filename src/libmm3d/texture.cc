@@ -103,28 +103,17 @@ bool Texture::compare( Texture * tex, CompareResultT * res, unsigned fuzzyValue 
          fuzzy += abs(t1->m_data[ off + 3 ] - t2->m_data[ off + 3 ]);
       }
 
+      if ( hasAlpha 
+            && t1->m_data[ off + 3 ] == 0
+            && t2->m_data[ off + 3 ] == 0 )
+      {
+         fuzzy = 0;
+      }
+
       if ( fuzzy == 0 )
-      {
          res->matchCount++;
+      if ( fuzzy <= fuzzyValue )
          res->fuzzyCount++;
-      }
-      else
-      {
-         if ( hasAlpha 
-               && t1->m_data[ off + 3 ] == 0
-               && t2->m_data[ off + 3 ] == 0 )
-         {
-            res->matchCount++;
-            res->fuzzyCount++;
-         }
-         else
-         {
-            if ( fuzzy <= fuzzyValue )
-            {
-               res->fuzzyCount++;
-            }
-         }
-      }
    }
 
    return( res->pixelCount == res->matchCount );

@@ -22,7 +22,12 @@
 
 
 #include "model.h"
+#include "texture.h"
 #include "log.h"
+
+#include <ext/hash_set>
+
+using __gnu_cxx::hash_set;
 
 static bool _model_recycle = true;
 
@@ -51,11 +56,15 @@ list<Model::FrameAnim *> Model::FrameAnim::s_recycle;
 list<Model::FrameAnimVertex *> Model::FrameAnimVertex::s_recycle;
 list<Model::FrameAnimPoint *> Model::FrameAnimPoint::s_recycle;
 
+const double EQ_TOLERANCE = 0.00001;
+
 Model::Vertex::Vertex()
    : m_selected( false ),
      m_visible( true ),
-     m_free( false )
+     m_free( false ),
+     m_drawSource( m_coord )
 {
+   // FIXME these settings are probably unnecessary
    m_coord[0] = 0.0;
    m_coord[1] = 0.0;
    m_coord[2] = 0.0;
@@ -63,8 +72,6 @@ Model::Vertex::Vertex()
    m_kfCoord[0] = 0.0;
    m_kfCoord[1] = 0.0;
    m_kfCoord[2] = 0.0;
-
-   m_drawSource = m_coord;
 
    s_allocated++;
 }
@@ -131,28 +138,55 @@ void Model::Vertex::release()
    }
 }
 
+bool Model::Vertex::equal(const Vertex & rhs, int compareBits ) const
+{
+   if ( (compareBits & CompareGeometry) != 0 )
+   {
+      for ( unsigned i = 0; i < 3; i++ )
+      {
+         if ( fabs( m_coord[i] - rhs.m_coord[i]) > EQ_TOLERANCE )
+            return false;
+      }
+   }
+
+   if ( (compareBits & CompareMeta) != 0 )
+   {
+      if ( m_selected != rhs.m_selected )
+         return false;
+
+      if ( m_visible != rhs.m_visible )
+         return false;
+
+      if ( m_free != rhs.m_free )
+         return false;
+   }
+
+   if ( (compareBits & CompareSkeleton) != 0 )
+   {
+      InfluenceList::const_iterator lhs_it = m_influences.begin();
+      InfluenceList::const_iterator rhs_it = rhs.m_influences.begin();
+
+      for ( ; lhs_it != m_influences.end() && rhs_it != rhs.m_influences.end();
+            ++lhs_it, ++rhs_it )
+      {
+         if ( *lhs_it != *rhs_it )
+            return false;
+      }
+
+      if ( lhs_it != m_influences.end() || rhs_it != rhs.m_influences.end() )
+         return false;
+   }
+
+   return true;
+}
+
 Model::Triangle::Triangle()
    : m_selected( false ),
      m_visible( true ),
      m_marked( false ),
      m_projection( -1 )
 {
-   m_s[0] = 0.0;
-   m_t[0] = 1.0;
-   m_s[1] = 0.0;
-   m_t[1] = 0.0;
-   m_s[2] = 1.0;
-   m_t[2] = 0.0;
-
-   for ( int t = 0; t < 3; t++ )
-   {
-      m_vertexIndices[t] = 0;
-      for ( int n = 0; n < 3; n++ )
-      {
-         m_vertexNormals[t][n] = 0;
-      }
-      m_normalSource[t] = m_finalNormals[t];
-   }
+   init();
 
    s_allocated++;
 }
@@ -176,6 +210,7 @@ void Model::Triangle::init()
    m_visible  = true;
    m_projection = -1;
 
+   m_flatSource = m_flatNormals;
    m_normalSource[0] = m_finalNormals[0];
    m_normalSource[1] = m_finalNormals[1];
    m_normalSource[2] = m_finalNormals[2];
@@ -227,6 +262,43 @@ void Model::Triangle::release()
    }
 }
 
+bool Model::Triangle::equal(const Triangle & rhs, int compareBits ) const
+{
+   if ( (compareBits & CompareGeometry) != 0 )
+   {
+      if ( m_vertexIndices[0] != rhs.m_vertexIndices[0]
+            || m_vertexIndices[1] != rhs.m_vertexIndices[1]
+            || m_vertexIndices[2] != rhs.m_vertexIndices[2] )
+      {
+         return false;
+      }
+   }
+
+   if ( (compareBits & CompareTextures) != 0 )
+   {
+      if ( m_projection != rhs.m_projection )
+         return false;
+
+      for ( int i = 0; i < 3; ++i )
+      {
+         if ( fabs( m_s[i] - rhs.m_s[i] ) > EQ_TOLERANCE )
+            return false;
+         if ( fabs( m_t[i] - rhs.m_t[i] ) > EQ_TOLERANCE )
+            return false;
+      }
+   }
+
+   if ( (compareBits & CompareMeta) != 0 )
+   {
+      if ( m_selected != rhs.m_selected )
+         return false;
+      if ( m_visible != rhs.m_visible )
+         return false;
+   }
+
+   return true;
+}
+
 Model::Group::Group()
    : m_materialIndex( -1 ),
      m_smooth( 255 ),
@@ -234,7 +306,6 @@ Model::Group::Group()
      m_selected( false ),
      m_visible( true )
 {
-   m_name = "No Name";
    s_allocated++;
 }
 
@@ -250,7 +321,7 @@ void Model::Group::init()
    m_angle = 180;
    m_selected = false;
    m_visible = true;
-   m_name = "No Name";
+   m_name.clear();
    m_triangleIndices.clear();
 }
 
@@ -300,12 +371,79 @@ void Model::Group::release()
    }
 }
 
+bool Model::Group::equal(const Group & rhs, int compareBits ) const
+{
+   if ( (compareBits & CompareGroups) != 0
+         || (compareBits & CompareGeometry) != 0 )
+   {
+      // Group triangles don't have to be in the same order, it just
+      // needs to be an identical set. In fact, I should have implemented
+      // it as a set.
+      // FIXME I'm an idiot (see comments re:set above)
+      if ( m_triangleIndices.size() != rhs.m_triangleIndices.size() )
+         return false;
+
+      hash_set<int> lhs_tris;
+
+      std::vector<int>::const_iterator lhs_it;
+      std::vector<int>::const_iterator rhs_it;
+
+      const std::vector<int> & lh = m_triangleIndices;
+      const std::vector<int> & rh = rhs.m_triangleIndices;
+
+      hash_set<int>::iterator it;
+      for ( lhs_it = lh.begin(); lhs_it != lh.end(); ++lhs_it )
+      {
+         // If dups are inserted it will be caught below (because the items
+         // are removed after matching, dups mean that either lhs_tris will
+         // be empty before rh is exhausted or the dup in rh will not find
+         // a match in lhs_tris since it was already removed).
+         lhs_tris.insert( *lhs_it );
+      }
+      for ( rhs_it = rh.begin(); rhs_it != rh.end(); ++rhs_it )
+      {
+         it = lhs_tris.find( *rhs_it );
+         if ( it == lhs_tris.end() )
+            return false;
+         lhs_tris.erase( it );
+      }
+
+      // FIXME this should probably be an assert, it shouldn't be possible
+      if ( !lhs_tris.empty() )
+         return false;
+   }
+   if ( (compareBits & CompareGeometry) != 0 )
+   {
+      if ( m_smooth != rhs.m_smooth )
+         return false;
+      if ( m_angle != rhs.m_angle )
+         return false;
+   }
+
+   if ( (compareBits & CompareTextures) != 0 )
+   {
+      if ( m_materialIndex != rhs.m_materialIndex )
+         return false;
+   }
+
+   if ( (compareBits & CompareMeta) != 0 )
+   {
+      if ( m_name != rhs.m_name )
+         return false;
+      if ( m_selected != rhs.m_selected )
+         return false;
+      if ( m_visible != rhs.m_visible )
+         return false;
+   }
+
+   return true;
+}
+
 Model::Material::Material()
    : m_type( MATTYPE_TEXTURE ),
      m_sClamp( false ),
      m_tClamp( false ),
-     m_filename( "" ),
-     m_alphaFilename( "" ),
+     m_texture( 0 ),
      m_textureData( NULL )
 {
    s_allocated++;
@@ -319,10 +457,14 @@ Model::Material::~Material()
 
 void Model::Material::init()
 {
-   m_filename      = "";
-   m_alphaFilename = "";
+   m_name.clear();
+   m_filename.clear();
+   m_alphaFilename.clear();
    m_textureData   = NULL;
+   m_texture       = 0;
    m_type          = MATTYPE_TEXTURE;
+   m_sClamp        = false;
+   m_tClamp        = false;
 }
 
 int Model::Material::flush()
@@ -369,6 +511,74 @@ void Model::Material::release()
    {
       delete this;
    }
+}
+
+template<typename T>
+bool floatCompareVector( T * lhs, T * rhs, size_t len )
+{
+   for ( size_t index = 0; index < len; ++index )
+      if ( fabs( lhs[index] - rhs[index] ) > EQ_TOLERANCE )
+         return false;
+   return true;
+}
+
+bool Model::Material::equal(const Material & rhs, int compareBits ) const
+{
+   if ( (compareBits & CompareTextures) != 0 )
+   {
+      if ( m_type != rhs.m_type )
+         return false;
+      if ( m_sClamp != rhs.m_sClamp )
+         return false;
+      if ( m_tClamp != rhs.m_tClamp )
+         return false;
+
+      // Color is unused
+
+      // Compare lighting
+      if ( !floatCompareVector( m_ambient, rhs.m_ambient, 4 ) )
+         return false;
+      if ( !floatCompareVector( m_diffuse, rhs.m_diffuse, 4 ) )
+         return false;
+      if ( !floatCompareVector( m_specular, rhs.m_specular, 4 ) )
+         return false;
+      if ( !floatCompareVector( m_emissive, rhs.m_emissive, 4 ) )
+         return false;
+      if ( fabs(m_shininess - rhs.m_shininess) > EQ_TOLERANCE )
+         return false;
+
+      // If one is NULL, the other must be also
+      if ( (m_textureData == NULL) != (rhs.m_textureData == NULL) )
+         return false;
+
+      // Compare texture itself
+      if ( m_textureData )
+      {
+         Texture::CompareResultT res;
+         if ( !m_textureData->compare( rhs.m_textureData, &res, 0 ) )
+            return false;
+
+         // Name and filename should not be an issue (should match material)
+      }
+      else
+      {
+         // If no texture data, must not be a texture-mapped material
+         if ( m_type == Model::Material::MATTYPE_TEXTURE )
+            return false;
+      }
+   }
+
+   if ( (compareBits & CompareMeta) != 0 )
+   {
+      if ( m_name != rhs.m_name )
+         return false;
+      if ( m_filename != rhs.m_filename )
+         return false;
+      if ( m_alphaFilename != rhs.m_alphaFilename )
+         return false;
+   }
+
+   return true;
 }
 
 Model::Keyframe::Keyframe()
@@ -495,6 +705,36 @@ void Model::Joint::stats()
    log_debug( "Joint: %d/%d\n", s_recycle.size(), s_allocated );
 }
 
+bool Model::Joint::equal(const Joint & rhs, int compareBits ) const
+{
+   if ( (compareBits & CompareSkeleton) != 0 )
+   {
+      for ( unsigned i = 0; i < 3; i++ )
+      {
+         if ( fabs( m_localRotation[i] - rhs.m_localRotation[i]) > EQ_TOLERANCE )
+            return false;
+         if ( fabs( m_localTranslation[i] - rhs.m_localTranslation[i]) > EQ_TOLERANCE )
+            return false;
+         if ( m_parent != rhs.m_parent )
+            return false;
+      }
+   }
+
+   if ( (compareBits & CompareMeta) != 0 )
+   {
+      if ( m_name != rhs.m_name )
+         return false;
+
+      if ( m_selected != rhs.m_selected )
+         return false;
+
+      if ( m_visible != rhs.m_visible )
+         return false;
+   }
+
+   return true;
+}
+
 Model::Point::Point()
 {
    s_allocated++;
@@ -573,6 +813,53 @@ void Model::Point::stats()
    log_debug( "Point: %d/%d\n", s_recycle.size(), s_allocated );
 }
 
+bool Model::Point::equal(const Point & rhs, int compareBits ) const
+{
+   if ( (compareBits & ComparePoints) != 0 )
+   {
+      for ( unsigned i = 0; i < 3; i++ )
+      {
+         if ( fabs( m_trans[i] - rhs.m_trans[i]) > EQ_TOLERANCE )
+            return false;
+         if ( fabs( m_rot[i] - rhs.m_rot[i]) > EQ_TOLERANCE )
+            return false;
+      }
+   }
+
+   if ( (compareBits & CompareMeta) != 0 )
+   {
+      if ( m_name != rhs.m_name )
+         return false;
+
+      if ( m_type != rhs.m_type )
+         return false;
+
+      if ( m_selected != rhs.m_selected )
+         return false;
+
+      if ( m_visible != rhs.m_visible )
+         return false;
+   }
+
+   if ( (compareBits & CompareSkeleton) != 0 )
+   {
+      InfluenceList::const_iterator lhs_it = m_influences.begin();
+      InfluenceList::const_iterator rhs_it = rhs.m_influences.begin();
+
+      for ( ; lhs_it != m_influences.end() && rhs_it != rhs.m_influences.end();
+            ++lhs_it, ++rhs_it )
+      {
+         if ( *lhs_it != *rhs_it )
+            return false;
+      }
+
+      if ( lhs_it != m_influences.end() || rhs_it != rhs.m_influences.end() )
+         return false;
+   }
+
+   return true;
+}
+
 Model::TextureProjection::TextureProjection()
 {
    s_allocated++;
@@ -646,6 +933,37 @@ int Model::TextureProjection::flush()
 void Model::TextureProjection::stats()
 {
    log_debug( "TextureProjection: %d/%d\n", 0, s_allocated );
+}
+
+bool Model::TextureProjection::equal(const TextureProjection & rhs, int compareBits ) const
+{
+   if ( (compareBits & CompareTextures) != 0 )
+   {
+      if ( !floatCompareVector( m_pos, rhs.m_pos, 3 ) )
+         return false;
+      if ( !floatCompareVector( m_upVec, rhs.m_upVec, 3 ) )
+         return false;
+      if ( !floatCompareVector( m_seamVec, rhs.m_seamVec, 3 ) )
+         return false;
+      if ( !floatCompareVector( m_range[0], rhs.m_range[0], 2 ) )
+         return false;
+      if ( !floatCompareVector( m_range[1], rhs.m_range[1], 2 ) )
+         return false;
+   }
+
+   if ( (compareBits & CompareMeta) != 0 )
+   {
+      if ( m_name != rhs.m_name )
+         return false;
+
+      if ( m_type != rhs.m_type )
+         return false;
+
+      if ( m_selected != rhs.m_selected )
+         return false;
+   }
+
+   return true;
 }
 
 Model::SkelAnim::SkelAnim()
@@ -957,11 +1275,8 @@ void Model::FormatData::serialize()
 #ifdef MM3D_EDIT
 
 Model::BackgroundImage::BackgroundImage()
+   : m_scale( 30.0f )
 {
-   m_filename  = "";
-
-   m_scale     = 30.0f;
-
    m_center[0] =  0.0f;
    m_center[1] =  0.0f;
    m_center[2] =  0.0f;
