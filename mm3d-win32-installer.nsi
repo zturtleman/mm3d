@@ -86,6 +86,22 @@ SubSection /e "Associate file types"
         WriteRegStr HKCR ".mm3d" "" "MisfitCode.Mm3dModelFile"
     SectionEnd
 
+    Section /o "CAL (Cal3d)"
+        WriteRegStr HKCR ".cal" "" "MisfitCode.Mm3dModelFile"
+    SectionEnd
+
+    Section /o "COB (Truespace)"
+        WriteRegStr HKCR ".cob" "" "MisfitCode.Mm3dModelFile"
+    SectionEnd
+
+    Section /o "DXF (Autocad DXF)"
+        WriteRegStr HKCR ".dxf" "" "MisfitCode.Mm3dModelFile"
+    SectionEnd
+
+    Section /o "LWO (Lightwave)"
+        WriteRegStr HKCR ".lwo" "" "MisfitCode.Mm3dModelFile"
+    SectionEnd
+
     Section /o "MS3D (Milkshape)"
         WriteRegStr HKCR ".ms3d" "" "MisfitCode.Mm3dModelFile"
     SectionEnd
@@ -94,12 +110,12 @@ SubSection /e "Associate file types"
         WriteRegStr HKCR ".md2" "" "MisfitCode.Mm3dModelFile"
     SectionEnd
 
-    Section /o "OBJ (Alias Wavefront)"
-        WriteRegStr HKCR ".obj" "" "MisfitCode.Mm3dModelFile"
+    Section /o "MD3 (Quake)"
+        WriteRegStr HKCR ".md3" "" "MisfitCode.Mm3dModelFile"
     SectionEnd
 
-    Section /o "LWO (Lightwave)"
-        WriteRegStr HKCR ".lwo" "" "MisfitCode.Mm3dModelFile"
+    Section /o "OBJ (Alias Wavefront)"
+        WriteRegStr HKCR ".obj" "" "MisfitCode.Mm3dModelFile"
     SectionEnd
 
 SubSectionEnd
