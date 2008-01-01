@@ -46,9 +46,53 @@ using std::vector;
 
 class Texture;
 
+// Warning: Here be dragons.
+//
+// The Model class is the core of MM3D. It contains both the oldest code and
+// the newest code. Some very early design decisions were bad decisions. Some of
+// those bad decisions are still here causing headaches. I've tried to add some
+// documentation to this header file. Despite that, the best way to understand
+// how to use the model class is to find reference code elsewhere in MM3D that
+// does something similar to what you want to do.
+//
+// The model represents everything about how the model is rendered as well as some
+// properties that are not visible to the user. A model primitive is any sub-object
+// within the model (vertices, triangles, bone joints, points, texture projections,
+// etc).
+//
+// All faces in the Model are triangles.
+//
+// A group can be thought of as a mesh made up of triangles. Materials can be
+// assigned to groups (so all triangles in the group share the same material).
+// Unlike meshes in some implementations, vertices in MM3D models may be shared
+// by triangles in different groups.
+//
+// A material defines how lighting is reflected off of a group of faces. A material
+// may have an associated texture for texture mapping. Occasionally you will see
+// the term "texture" used where "material" is meant.
+//
+// The Model implementation is split among several C++ files, listed below:
+//
+//    model.cc: A catch-all for core Model functionality.
+//    model_anim.cc: Animation
+//    model_bool.cc: Boolean operations (union, subtract, intersect)
+//    model_draw.cc: Visual rendering of the model
+//    model_group.cc: Group/Mesh-related functionality
+//    model_influence.cc: Bone joint influences on vertices and points
+//    model_inner.cc: Core functionality for Model's inner classes
+//    model_insert.cc: Undo/redo book-keeping for adjusting indices in primitive lists
+//    model_meta.cc: MetaData methods
+//    model_ops.cc: Model comparison, merging, simplification
+//    model_proj.cc: Texture projections
+//    model_select.cc: Selection logic
+//    model_test.cc: Old tests for file format loading/saving, being replaced
+//    model_texture.cc: Material and texture code
+
 class Model
 {
    public:
+      // ChangeBits is used to tell Model::Observer objects what has changed
+      // about the model.
       enum ChangeBits
       {
          SelectionChange    =  0x00000001,  // General selection change
@@ -105,11 +149,11 @@ class Model
 
       enum _TextureProjectionType_e
       {
-        TPT_Custom      = -1,
+        TPT_Custom      = -1,  // No projection
         TPT_Cylinder    = 0,
         TPT_Sphere      = 1,
         TPT_Plane       = 2,
-        TPT_Icosahedron = 3,
+        TPT_Icosahedron = 3,   // Not yet implemented
         TPT_MAX
       };
       typedef enum _TextureProjectionType_e TextureProjectionTypeE;
@@ -147,6 +191,10 @@ class Model
       typedef struct _Influence_t InfluenceT;
       typedef std::list< InfluenceT > InfluenceList;
 
+      // A position is a common way to manipulate any object that has a
+      // single position value. See the PositionTypeE values.
+      // The index property is the index in the the list that corresponds
+      // to the type.
       class Position
       {
          public:
@@ -154,24 +202,33 @@ class Model
             unsigned      index;
       };
 
+      // A vertex defines a polygon corner. The position is in m_coord.
+      // All triangles in all groups (meshes) references triangles from this
+      // one list.
       class Vertex
       {
          public:
             static int flush();
+            static int allocated() { return s_allocated; }
+            static int recycled() { return s_recycle.size(); }
             static void stats();
             static Vertex * get();
             void release();
 
-            double m_coord[3];
-            double m_kfCoord[3];
+            double m_coord[3];     // Absolute vertex location
+            double m_kfCoord[3];   // Animated position
             bool   m_selected;
             bool   m_visible;
             bool   m_marked;
             bool   m_marked2;
+
+            // If m_free is false, the vertex will be implicitly deleted when
+            // all faces using it are deleted
             bool   m_free;
 
-            double * m_drawSource;
+            double * m_drawSource;  // Points to m_coord or m_kfCoord for drawing
 
+            // List of bone joints that move the vertex in skeletal animations.
             InfluenceList m_influences;
 
             bool equal( const Vertex & rhs, int compareBits = CompareAll ) const;
@@ -187,30 +244,38 @@ class Model
             static int s_allocated;
       };
 
+      // A triangle represents faces in the model. All faces are triangles.
+      // The vertices the triangle is attached to are in m_vertexIndices.
       class Triangle
       {
          public:
             static int flush();
+            static int allocated() { return s_allocated; }
+            static int recycled() { return s_recycle.size(); }
             static void stats();
             static Triangle * get();
             void release();
 
             unsigned m_vertexIndices[3];
-            float m_s[3];
-            float m_t[3];
-            double m_finalNormals[3][3];
-            double m_vertexNormals[3][3];
-            double m_flatNormals[3];
-            double m_kfFlatNormals[3];
-            double m_kfNormals[3][3];
-            double * m_flatSource;
-            double * m_normalSource[3];
+
+            // Texture coordinate 0,0 is in the lower left corner of
+            // the texture.
+            float m_s[3];  // Horizontal, one for each vertex.
+            float m_t[3];  // Vertical, one for each vertex.
+
+            double m_finalNormals[3][3];    // Final normals to draw
+            double m_vertexNormals[3][3];   // Normals blended for each face attached to the vertex
+            double m_flatNormals[3];        // Normal for this triangle
+            double m_kfFlatNormals[3];      // Flat normal, rotated relative to the animating bone joints
+            double m_kfNormals[3][3];       // Final normals, rotated relative to the animating bone joints
+            double * m_flatSource;          // Either m_flatNormals or m_kfFlatNormals
+            double * m_normalSource[3];     // Either m_finalNormals or m_kfNormals
             bool  m_selected;
             bool  m_visible;
             bool  m_marked;
             bool  m_marked2;
             bool  m_userMarked;
-            int   m_projection;
+            int   m_projection;  // Index of texture projection (-1 for none)
 
             bool equal( const Triangle & rhs, int compareBits = CompareAll ) const;
             bool operator==( const Triangle & rhs ) const
@@ -225,19 +290,33 @@ class Model
             static int s_allocated;
       };
 
+      // Group of triangles. All triangles in a group share a material (if one
+      // is assigned to the Group). Vertices assigned to the triangles may
+      // be shared between triangles in different groups. You can change how
+      // normals are blended by modifying m_angle and m_smooth.
       class Group
       {
          public:
             static int flush();
+            static int allocated() { return s_allocated; }
+            static int recycled() { return s_recycle.size(); }
             static void stats();
             static Group * get();
             void release();
 
             std::string m_name;
-            int         m_materialIndex;
-            vector<int> m_triangleIndices;
+            int         m_materialIndex;    // Material index (-1 for none)
+            vector<int> m_triangleIndices;  // List of triangles in this group
+
+            // Percentage of blending between flat normals and smooth normals
+            // 0 = 0%, 255 = 100%
             uint8_t     m_smooth;
+
+            // Maximum angle around which triangle normals will be blended
+            // (ie, if m_angle = 90, triangles with an edge that forms an
+            // angle greater than 90 will not be blended).
             uint8_t     m_angle;
+
             bool        m_selected;
             bool        m_visible;
             bool        m_marked;
@@ -255,38 +334,56 @@ class Model
             static int s_allocated;
       };
 
+      // The Material defines how lighting is reflected off of triangles and
+      // may include a texture map.
       class Material
       {
          public:
             enum _MaterialType_e
             {
-               MATTYPE_TEXTURE  =  0,
-               MATTYPE_BLANK    =  1,
-               MATTYPE_COLOR    =  2,
-               MATTYPE_GRADIENT =  3,
-               MATTYPE_MAX      =  4
+               MATTYPE_TEXTURE  =  0,   // Texture mapped material
+               MATTYPE_BLANK    =  1,   // Blank texture, lighting only
+               MATTYPE_COLOR    =  2,   // Unused
+               MATTYPE_GRADIENT =  3,   // Unused
+               MATTYPE_MAX      =  4    // For convenience
             };
             typedef enum _MaterialType_e MaterialTypeE;
 
             static int flush();
+            static int allocated() { return s_allocated; }
+            static int recycled() { return s_recycle.size(); }
             static void stats();
             static Material * get();
             void release();
 
             std::string   m_name;
-            MaterialTypeE  m_type;
+            MaterialTypeE m_type;         // See MaterialTypeE above
+
+            // Lighting values (RGBA, 0.0 to 1.0)
             float         m_ambient[4];
             float         m_diffuse[4];
             float         m_specular[4];
             float         m_emissive[4];
+
+            // Lighting value 0 to 100.0
             float         m_shininess;
-            uint8_t       m_color[4][4];
-            bool          m_sClamp;
-            bool          m_tClamp;
+
+            uint8_t       m_color[4][4];  // Unused
+
+
+            // The clamp properties determine if the texture map wraps when crossing
+            // the 0.0 or 1.0 boundary (false) or if the pixels along the edge are
+            // used for coordinates outside the 0.0 - 1.0 limits (true).
+            bool          m_sClamp;  // horizontal wrap/clamp
+            bool          m_tClamp;  // vertical wrap/clamp
+
+            // Open GL texture index (not actually used in model editing
+            // viewports since each viewport needs its own texture index)
             GLuint        m_texture;
-            std::string   m_filename;
-            std::string   m_alphaFilename;
-            Texture     * m_textureData;
+
+            std::string   m_filename;       // Absolute path to texture file (for MATTYPE_TEXTURE)
+            std::string   m_alphaFilename;  // Unused
+            Texture     * m_textureData;    // Texture data (for MATTYPE_TEXTURE)
 
             bool equal( const Material & rhs, int compareBits = CompareAll ) const;
             bool operator==(const Material & rhs ) const
@@ -301,20 +398,24 @@ class Model
             static int s_allocated;
       };
 
+      // A keyframe for a single joint in a single frame. Keyframes may be rotation or 
+      // translation (you can set one without setting the other).
       class Keyframe
       {
          public:
             static int flush();
+            static int allocated() { return s_allocated; }
+            static int recycled() { return s_recycle.size(); }
             static void stats();
             static Keyframe * get();
 
             void release();
 
-            int m_jointIndex;
-            unsigned m_frame;
-            double m_time;
-            double m_parameter[3];
-            bool   m_isRotation;
+            int m_jointIndex;       // Joint that this keyframe affects
+            unsigned m_frame;       // Frame number for this keyframe
+            double m_time;          // Time for this keyframe in seconds
+            double m_parameter[3];  // Translation or rotation (radians), see m_isRotation
+            bool   m_isRotation;    // Indicates if m_parameter describes rotation (true) or translation (false)
 
             bool operator<( const Keyframe & rhs ) const
             {
@@ -336,25 +437,31 @@ class Model
       };
 
 
+      // A bone joint in the skeletal structure, used for skeletal animations.
+      // When a vertex or point is assigned to one or more bone joints with a specified
+      // weight, the joint is referred to as an Influence.
       class Joint
       {
          public:
             static int flush();
+            static int allocated() { return s_allocated; }
+            static int recycled() { return s_recycle.size(); }
             static void stats();
             static Joint * get();
             void release();
 
             std::string m_name;
-            double m_localRotation[3];
-            double m_localTranslation[3];
-            Matrix m_absolute;
-            Matrix m_relative;
+            double m_localRotation[3];     // Rotation relative to parent joint (or origin if no parent)
+            double m_localTranslation[3];  // Translation relative to parent joint (or origin if no parent)
 
-            int m_currentRotationKeyframe;
-            int m_currentTranslationKeyframe;
-            Matrix m_final;
+            Matrix m_absolute;  // Absolute matrix for the joint's original position and orientation
+            Matrix m_relative;  // Matrix relative to parent joint
+            Matrix m_final;     // Final animated absolute position for bone joint
 
-            int m_parent;
+            int m_currentRotationKeyframe;     // Unused
+            int m_currentTranslationKeyframe;  // Unused
+
+            int m_parent;  // Parent joint index (-1 for no parent)
 
             bool m_selected;
             bool m_visible;
@@ -377,23 +484,29 @@ class Model
       {
          public:
             static int flush();
+            static int allocated() { return s_allocated; }
+            static int recycled() { return s_recycle.size(); }
             static void stats();
             static Point * get();
             void release();
 
             std::string m_name;
             int m_type;
-            double m_trans[3];
-            double m_rot[3];
-            double m_kfTrans[3];
-            double m_kfRot[3];
-            double * m_drawSource;
-            double * m_rotSource;
+            double m_trans[3];    // Position
+            double m_rot[3];      // Rotation
+            double m_kfTrans[3];  // Animated position
+            double m_kfRot[3];    // Animated rotation
+
+            // These pointers point to the unanimated or animated properties
+            // depending on whether or not the model is animated when it is drawn.
+            double * m_drawSource;  // m_trans or m_kfTrans
+            double * m_rotSource;   // m_rot or m_kfRot
 
             bool   m_selected;
             bool   m_visible;
             bool   m_marked;
 
+            // List of bone joints that move the point in skeletal animations.
             InfluenceList m_influences;
 
             bool equal( const Point & rhs, int compareBits = CompareAll ) const;
@@ -409,19 +522,22 @@ class Model
             static int s_allocated;
       };
 
+      // A TextureProjection is used automatically map texture coordinates to a group
+      // of vertices. Common projection types are Sphere, Cylinder, and Plane.
       class TextureProjection
       {
          public:
             static int flush();
+            static int allocated() { return s_allocated; }
             static void stats();
             static TextureProjection * get();
             void release();
 
             std::string m_name;
-            int m_type;
+            int m_type;            // See TextureProjectionTypeE
             double m_pos[3];
-            double m_upVec[3];
-            double m_seamVec[3];
+            double m_upVec[3];     // Vector that defines "up" for this projection
+            double m_seamVec[3];   // Vector that indicates where the texture wraps from 1.0 back to 0.0
             double m_range[2][2];  // min/max, x/y
 
             bool   m_selected;
@@ -439,23 +555,28 @@ class Model
             static int s_allocated;
       };
 
-      typedef sorted_ptr_list<Keyframe *>        KeyframeList;
-      typedef vector<KeyframeList>      JointKeyframeList;
+      // TODO: Probably should use a map for the KeyframeList
+      typedef sorted_ptr_list<Keyframe *>  KeyframeList;
+      typedef vector<KeyframeList>         JointKeyframeList;
 
+      // Describes a skeletal animation.
       class SkelAnim
       {
          public:
             static int flush();
+            static int allocated() { return s_allocated; }
+            static int recycled() { return s_recycle.size(); }
             static void stats();
             static SkelAnim * get();
             void release();
+            void releaseData();
 
             std::string m_name;
             JointKeyframeList m_jointKeyframes;
-            double   m_fps;
-            double   m_spf;
-            unsigned m_frameCount;
-            bool     m_validNormals;
+            double   m_fps;  // Frames per second
+            double   m_spf;  // Seconds per frame (for convenience, 1.0 / m_fps)
+            unsigned m_frameCount;    // Number of frames in the animation
+            bool     m_validNormals;  // Whether or not the normals have been calculated for the current animation frame
 
             bool equal( const SkelAnim & rhs, int compareBits = CompareAll ) const;
             bool operator==(const SkelAnim & rhs ) const
@@ -470,10 +591,13 @@ class Model
             static int s_allocated;
       };
 
+      // Describes the position and normal for a vertex in a frame animation.
       class FrameAnimVertex
       {
          public:
             static int flush();
+            static int allocated() { return s_allocated; }
+            static int recycled() { return s_recycle.size(); }
             static void stats();
             static FrameAnimVertex * get();
             void release();
@@ -496,10 +620,13 @@ class Model
 
       typedef vector<FrameAnimVertex *> FrameAnimVertexList;
 
+      // Describes the position and orientation for a point in a frame animation.
       class FrameAnimPoint
       {
          public:
             static int flush();
+            static int allocated() { return s_allocated; }
+            static int recycled() { return s_recycle.size(); }
             static void stats();
             static FrameAnimPoint * get();
             void release();
@@ -522,12 +649,16 @@ class Model
 
       typedef vector<FrameAnimPoint *> FrameAnimPointList;
 
-      // TODO recycle?
+      // Contains the list of vertex positions and point positions for each vertex
+      // and point for one animation frame.
       class FrameAnimData
       {
           public:
+              FrameAnimData() : m_frameVertices(NULL), m_framePoints(NULL) {}
               FrameAnimVertexList * m_frameVertices;
               FrameAnimPointList  * m_framePoints;
+
+              void releaseData();
 
               bool equal( const FrameAnimData & rhs, int compareBits = CompareAll ) const;
               bool operator==(const FrameAnimData & rhs ) const
@@ -536,18 +667,27 @@ class Model
 
       typedef vector< FrameAnimData *> FrameAnimDataList;
 
+      // Describes a frame animation (also known as "Mesh Deformation Animation").
+      // This object contains a list of vertex positions for each vertex for every
+      // frame (and also every point for every frame).
       class FrameAnim
       {
          public:
             static int flush();
+            static int allocated() { return s_allocated; }
+            static int recycled() { return s_recycle.size(); }
             static void stats();
             static FrameAnim * get();
             void release();
+            void releaseData();
 
             std::string m_name;
+            // Each element in m_frameData is one frame. The frames hold lists of
+            // all vertex positions and point positions.
             FrameAnimDataList m_frameData;
-            double m_fps;
-            bool   m_validNormals;
+
+            double m_fps;  // Frames per second
+            bool   m_validNormals;  // Whether or not the normals have been calculated
 
             bool equal( const FrameAnim & rhs, int compareBits = CompareAll ) const;
             bool operator==(const FrameAnim & rhs ) const
@@ -562,6 +702,7 @@ class Model
             static int s_allocated;
       };
 
+      // Working storage for an animated vertex.
       class KeyframeVertex
       {
          public:
@@ -570,12 +711,14 @@ class Model
             double m_rotatedNormal[3];
       };
 
+      // Working storage for an animated triangle.
       class KeyframeTriangle
       {
          public:
             double m_normals[3][3];
       };
 
+      // Reference background images for canvas viewports.
       class BackgroundImage
       {
          public:
@@ -583,8 +726,8 @@ class Model
             virtual ~BackgroundImage();
 
             std::string m_filename;
-            float m_scale;
-            float m_center[3];
+            float m_scale;      // 1.0 means 1 GL unit from the center to the edges of the image
+            float m_center[3];  // Point in the viewport where the image is centered
 
             bool equal( const BackgroundImage & rhs, int compareBits = CompareAll ) const;
             bool operator==(const BackgroundImage & rhs ) const
@@ -597,6 +740,8 @@ class Model
       typedef Model::Material * MaterialPtr;
       //typedef Model::Joint * JointPtr;
 
+      // FormatData is used to store data that is used by specific file formats
+      // that is not understood by MM3D.
       class FormatData
       {
          public:
@@ -617,6 +762,10 @@ class Model
             virtual void serialize();
       };
 
+      // Arbitrary key/value string pairs. This is used to provide a simple interface
+      // for model attributes that are not manipulated by commands/tools. Often
+      // user-editable format-specific data is stored as MetaData key/value pairs
+      // (for example texture paths in MD2 and MD3 models).
       class MetaData
       {
          public:
@@ -625,6 +774,7 @@ class Model
       };
       typedef std::vector< MetaData > MetaDataList;
 
+      // See errorToString()
       enum _ModelError_e
       {
          ERROR_NONE = 0,
@@ -659,6 +809,7 @@ class Model
       };
       typedef enum _SelectionMode_e SelectionModeE;
 
+      // Canvas drawing projections (not related to TextureProjections)
       enum _ProjectionDirection_e
       {
          View3d = 0,
@@ -677,15 +828,17 @@ class Model
          MAX_BACKGROUND_IMAGES = 6
       };
 
+      // Drawing options. These are defined as powers of 2 so that they
+      // can be combined with a bitwise OR.
       enum
       {
          DO_NONE           = 0x00,
-         DO_TEXTURE        = 0x01,  // powers of 2
-         DO_SMOOTHING      = 0x02,
+         DO_TEXTURE        = 0x01,
+         DO_SMOOTHING      = 0x02,  // Normal smoothing/blending between faces
          DO_WIREFRAME      = 0x04,
-         DO_BADTEX         = 0x08,
-         DO_ALPHA          = 0x10,
-         DO_BACKFACECULL   = 0x20,
+         DO_BADTEX         = 0x08,  // Render bad textures, or render as no texture
+         DO_ALPHA          = 0x10,  // Do alpha blending
+         DO_BACKFACECULL   = 0x20,  // Do not render triangles that face away from the camera
       };
 
       enum _AnimationMode_e
@@ -693,7 +846,7 @@ class Model
          ANIMMODE_NONE = 0,
          ANIMMODE_SKELETAL,
          ANIMMODE_FRAME,
-         ANIMMODE_FRAMERELATIVE,
+         ANIMMODE_FRAMERELATIVE,  // Not implemented
          ANIMMODE_MAX
       };
       typedef enum _AnimationMode_e AnimationModeE;
@@ -726,6 +879,9 @@ class Model
       typedef enum _BooleanOp_e BooleanOpE;
 
 #ifdef MM3D_EDIT
+      // Register an observer if you have an object that must be notified when the
+      // model changes. The modelChanged function will be called with changeBits
+      // set to describe (in general terms) what changed. See ChangeBits.
       class Observer
       {
          public:
@@ -735,19 +891,26 @@ class Model
       typedef std::list< Observer * > ObserverList;
 #endif // MM3D_EDIT
 
+      // ==================================================================
       // Public methods
+      // ==================================================================
+
       Model();
       virtual ~Model();
 
       static const char * errorToString( Model::ModelErrorE, Model * model = NULL );
       static bool operationFailed( Model::ModelErrorE );
 
-      bool hasErrors() { return !m_loadErrors.empty(); }
-      void pushError( const std::string & err );
-      std::string popError();
-
       // Returns mask of successful compares (see enum CompareBits)
       int equivalent( const Model * model, int compareMask = CompareGeometry, double tolerance = 0.00001 );
+
+      // ------------------------------------------------------------------
+      // "Meta" data, model information that is not rendered in a viewport.
+      // ------------------------------------------------------------------
+
+      // Indicates if the model has changed since the last time it was saved.
+      void setSaved( bool o ) { if ( o ) { m_undoMgr->setSaved(); }; };
+      bool getSaved()         { return m_undoMgr->isSaved(); };
 
       const char * getFilename() { return m_filename.c_str(); };
       void setFilename( const char * filename ) { 
@@ -761,13 +924,39 @@ class Model
       const char * getFilterSpecificError() { return m_filterSpecificError.c_str(); };
       static const char * getLastFilterSpecificError() { return s_lastFilterError.c_str(); };
 
-      void draw( unsigned drawOptions = DO_TEXTURE, ContextT context = NULL, float *viewPoint = NULL );
-      void drawLines();
-      void drawVertices();
-      void drawPoints();
-      void drawProjections();
-      bool loadTextures( ContextT context = NULL );
-      void removeContext( ContextT context );
+      // Observers are notified when the model changes. See the Observer class
+      // for details.
+      void addObserver( Observer * o );
+      void removeObserver( Observer * o );
+
+      // See the MetaData class.
+      void addMetaData( const char * key, const char * value );
+      void updateMetaData( const char * key, const char * value );
+
+      // Look-up by key
+      bool getMetaData( const char * key, char * value, size_t valueLen );
+      // Look-up by index
+      bool getMetaData( unsigned int index, char * key, size_t keyLen, char * value, size_t valueLen );
+
+      unsigned int getMetaDataCount();
+      void clearMetaData();
+      void removeLastMetaData();  // For undo only!
+
+      // Background image accessors. See the BackgroundImage class.
+      void setBackgroundImage( unsigned index, const char * str );
+      void setBackgroundScale( unsigned index, float scale );
+      void setBackgroundCenter( unsigned index, float x, float y, float z );
+
+      const char * getBackgroundImage( unsigned index );
+      float getBackgroundScale( unsigned index );
+      void getBackgroundCenter( unsigned index, float & x, float & y, float & z );
+
+      // These are used to store status messages when the model does not have a status
+      // bar. When a model is assigned to a viewport window, the messages will be
+      // displayed in the status bar.
+      bool hasErrors() { return !m_loadErrors.empty(); }
+      void pushError( const std::string & err );
+      std::string popError();
 
       // Use these functions to preserve data that Misfit doesn't support natively
       int  addFormatData( FormatData * fd );
@@ -775,6 +964,49 @@ class Model
       unsigned getFormatDataCount();
       FormatData * getFormatData( unsigned index );
       FormatData * getFormatDataByFormat( const char * format, unsigned index = 0 ); // not case sensitive
+
+      // ------------------------------------------------------------------
+      // Rendering functions
+      // ------------------------------------------------------------------
+
+      // Functions for rendering the model in a viewport
+      void draw( unsigned drawOptions = DO_TEXTURE, ContextT context = NULL, float *viewPoint = NULL );
+      void drawLines();
+      void drawVertices();
+      void drawPoints();
+      void drawProjections();
+      void drawJoints();
+
+      void setCanvasDrawMode( int m ) { m_canvasDrawMode = m; };
+      int  getCanvasDrawMode() { return m_canvasDrawMode; };
+
+      void setDrawJoints( DrawJointModeE m ) { m_drawJoints = m; };
+      DrawJointModeE getDrawJoints() { return m_drawJoints; };
+
+      void setDrawProjections( bool o ) { m_drawProjections = o; };
+      bool getDrawProjections() { return m_drawProjections; };
+
+      // Open GL needs textures allocated for each viewport that renders the textures.
+      // A ContextT associates a set of OpenGL textures with a viewport.
+      bool loadTextures( ContextT context = NULL );
+      void removeContext( ContextT context );
+
+      // Forces a reload and re-initialization of all textures in all
+      // viewports (contexts)
+      void invalidateTextures();
+
+      // Counter that indicates how many OpenGL textures are currently allocated.
+      static int    s_glTextures;
+
+      // The local matrix is used by non-mm3d applications that use this
+      // library to render MM3D models. In MM3D it should always be set to the
+      // identity matrix.  Other apps use it to move an animated model to a new
+      // location in space, it only affects rendering of skeletal animations.
+      void setLocalMatrix( const Matrix & m ) { m_localMatrix = m; };
+
+      // ------------------------------------------------------------------
+      // Animation functions
+      // ------------------------------------------------------------------
 
       bool setCurrentAnimation( const AnimationModeE & m, const char * name );
       bool setCurrentAnimation( const AnimationModeE & m, unsigned index );
@@ -788,211 +1020,40 @@ class Model
       void setAnimationLooping( bool o );
       bool isAnimationLooping();
 
+      // Stop animation mode, go back to standard pose editing.
       void setNoAnimation();
-
-      double   getAnimFPS( const AnimationModeE & mode, const unsigned & anim );
-
-      const char * getAnimName( const AnimationModeE & mode, const unsigned & anim );
-
-      unsigned getAnimFrameCount( const AnimationModeE & mode, const unsigned & anim );
 
       AnimationModeE getAnimationMode() { return m_animationMode; };
       bool inSkeletalMode()  { return (m_animationMode == ANIMMODE_SKELETAL); };
 
+      // Common animation properties
+      int addAnimation( const AnimationModeE & mode, const char * name );
+      void deleteAnimation( const AnimationModeE & mode, const unsigned & index );
+
+      unsigned getAnimCount( const AnimationModeE & m ) const;
+
+      const char * getAnimName( const AnimationModeE & mode, const unsigned & anim );
+      bool setAnimName( const AnimationModeE & mode, const unsigned & anim, const char * name );
+
+      double getAnimFPS( const AnimationModeE & mode, const unsigned & anim );
+      bool setAnimFPS( const AnimationModeE & mode, const unsigned & anim, const double & fps );
+
+      unsigned getAnimFrameCount( const AnimationModeE & mode, const unsigned & anim );
+      bool setAnimFrameCount( const AnimationModeE & mode, const unsigned & anim, const unsigned & count );
+
+      bool clearAnimFrame( const AnimationModeE & mode, const unsigned & anim, const unsigned & frame );
+
+      // Frame animation geometry
+      void setFrameAnimVertexCount( const unsigned & vertexCount );
+      void setFrameAnimPointCount( const unsigned & pointCount );
+
+      bool setFrameAnimVertexCoords( const unsigned & anim, const unsigned & frame, const unsigned & vertex, 
+            const double & x, const double & y, const double & z );
       bool getFrameAnimVertexCoords( const unsigned & anim, const unsigned & frame, const unsigned & vertex, 
             double & x, double & y, double & z );
       bool getFrameAnimVertexNormal( const unsigned & anim, const unsigned & frame, const unsigned & vertex, 
             double & x, double & y, double & z );
 
-      bool hasSkelAnimKeyframe( unsigned anim, unsigned frame,
-            unsigned joint, bool isRotation );
-      bool getSkelAnimKeyframe( unsigned anim, unsigned frame,
-            unsigned joint, bool isRotation,
-            double & x, double & y, double & z );
-      bool interpSkelAnimKeyframe( unsigned anim, unsigned frame,
-            bool loop, unsigned joint, bool isRotation,
-            double & x, double & y, double & z );
-      bool interpSkelAnimKeyframeTime( unsigned anim, double frameTime,
-            bool loop, unsigned joint,
-            Matrix & relativeFinal );
-
-      bool getNormal( unsigned triangleNum, unsigned vertexIndex, float *normal );
-      bool getFlatNormal( unsigned triangleNum, float *normal );
-      float cosToPoint( unsigned triangleNum, double * point );
-
-      void calculateNormals();
-      void calculateSkelNormals();
-      void calculateFrameNormals( const unsigned & anim );
-      void invalidateNormals();
-
-      void calculateBspTree();
-      void invalidateBspTree();
-
-      const char * getGroupName( unsigned groupNum );
-      inline int getGroupCount() const { return m_groups.size(); };
-      int getGroupByName( const char * groupName, bool ignoreCase = false );
-      int getMaterialByName( const char * materialName, bool ignoreCase = false );
-      Material::MaterialTypeE getMaterialType( unsigned materialIndex );
-      int getMaterialColor( unsigned materialIndex, unsigned c, unsigned v = 0 );
-
-      uint8_t getGroupSmooth( const unsigned & groupNum );
-      uint8_t getGroupAngle( const unsigned & groupNum );
-
-      const char * getTextureName( unsigned textureId );
-      const char * getTextureFilename( unsigned textureId );
-      Texture * getTextureData( unsigned textureId );
-      inline int getTextureCount() { return m_materials.size(); };
-
-      bool getTextureAmbient(   unsigned textureId,       float * ambient   );
-      bool getTextureDiffuse(   unsigned textureId,       float * diffuse   );
-      bool getTextureEmissive(  unsigned textureId,       float * emissive  );
-      bool getTextureSpecular(  unsigned textureId,       float * specular  );
-      bool getTextureShininess( unsigned textureId,       float & shininess );
-
-      bool getTextureSClamp( unsigned textureId );
-      bool getTextureTClamp( unsigned textureId );
-
-      list<int> getUngroupedTriangles();
-      list<int> getGroupTriangles( unsigned groupNumber ) const;
-      int       getGroupTextureId( unsigned groupNumber );
-
-      list<int> getBoneJointVertices( const int & joint );
-      const char * getBoneJointName( const unsigned & joint );
-
-      const char * getPointName( const unsigned & point );
-      int getPointByName( const char * name );
-      int getPointType( const unsigned & point );
-      int getPointBoneJoint( const unsigned & point );
-
-      int getBoneJointParent( const unsigned & joint );
-
-      const char * getProjectionName( const unsigned & proj );
-
-      inline int getVertexCount()     const { return m_vertices.size(); }
-      inline int getTriangleCount()   const { return m_triangles.size(); }
-      inline int getBoneJointCount()  const { return m_joints.size(); }
-      inline int getPointCount()      const { return m_points.size(); }
-      inline int getProjectionCount() const { return m_projections.size(); }
-      unsigned getAnimCount( const AnimationModeE & m ) const;
-
-      bool getPositionCoords( const Position & pos, double * coord );
-      bool getPositionCoords( PositionTypeE ptype, unsigned pindex, double * coord );
-
-      bool getVertexCoordsUnanimated( const unsigned & vertexNumber, double *coord );
-      bool getVertexCoords( const unsigned & vertexNumber, double *coord );
-      bool getVertexCoords2d( const unsigned & vertexNumber, const ProjectionDirectionE & dir, double *coord );
-      int getVertexBoneJoint( const unsigned & vertexNumber );
-      bool getTextureCoords( const unsigned & triangleNumber, const unsigned & vertexIndex, float & s, float & t );
-      bool setTextureCoords( const unsigned & triangleNumber, const unsigned & vertexIndex, const float & s, const float & t );
-      bool getBoneJointCoords( const unsigned & jointNumber, double * coord );
-      bool getPointCoords( const unsigned & pointNumber, double * coord );
-      bool getPointOrientation( const unsigned & pointNumber, double * rot );
-      bool getProjectionCoords( unsigned projNumber, double *coord );
-      bool getProjectionUp( unsigned projNumber, double *coord );
-      bool getProjectionSeam( unsigned projNumber, double *coord );
-      bool getProjectionRange( unsigned projNumber, 
-            double & xmin, double & ymin, double & xmax, double & ymax );
-
-      void applyProjection( unsigned int proj );
-
-      bool getBoneJointFinalMatrix( const unsigned & jointNumber, Matrix & m );
-      bool getBoneJointAbsoluteMatrix( const unsigned & jointNumber, Matrix & m );
-      bool getBoneJointRelativeMatrix( const unsigned & jointNumber, Matrix & m );
-      bool getPointFinalMatrix( const unsigned & jointNumber, Matrix & m );
-
-      /*
-      bool getRelativeBoneJointPosition( const unsigned & jointNumber,
-            const double & newX, const double & newY, const double & newZ,
-            double & diffX, double & diffY, double & diffZ
-            );
-      */
-
-      int getTriangleVertex( unsigned triangleNumber, unsigned vertexIndex );
-      int getTriangleGroup( unsigned triangleNumber );
-
-      void setupJoints();
-
-      void forceAddOrDelete( bool o ) { m_forceAddOrDelete = o; };
-      int getNumFrames();
-
-      void invalidateTextures();
-
-      static int    s_glTextures;
-
-#ifdef MM3D_EDIT
-      void addObserver( Observer * o );
-      void removeObserver( Observer * o );
-
-      void addMetaData( const char * key, const char * value );
-      void updateMetaData( const char * key, const char * value );
-      bool getMetaData( const char * key, char * value, size_t valueLen );
-      bool getMetaData( unsigned int index, char * key, size_t keyLen, char * value, size_t valueLen );
-      unsigned int getMetaDataCount();
-      void clearMetaData();
-      void removeLastMetaData(); // For undo only!
-
-      void displayFrameAnimPrimitiveError();
-
-      bool mergeAnimations( Model * model ); // For skeletal, skeletons must match
-      bool mergeModels( Model * model, bool textures, AnimationMergeE mergeMode, bool emptyGroups,
-            double * trans = NULL, double * rot = NULL );
-
-      void booleanOperation( BooleanOpE op, 
-            std::list<int> & listA, std::list<int> & listB );
-
-      void drawJoints();
-
-      void setSaved( bool o ) { if ( o ) { m_undoMgr->setSaved(); }; };
-      bool getSaved()         { return m_undoMgr->isSaved(); };
-
-      void setCanvasDrawMode( int m ) { m_canvasDrawMode = m; };
-      int  getCanvasDrawMode() { return m_canvasDrawMode; };
-
-      void setDrawJoints( DrawJointModeE m ) { m_drawJoints = m; };
-      DrawJointModeE getDrawJoints() { return m_drawJoints; };
-
-      void setDrawProjections( bool o ) { m_drawProjections = o; };
-      bool getDrawProjections() { return m_drawProjections; };
-
-      void setUndoSizeLimit( unsigned sizeLimit );
-      void setUndoCountLimit( unsigned countLimit );
-
-      int addVertex( double x, double y, double z );
-      int addTriangle( unsigned vert1, unsigned vert2, unsigned vert3 );
-      int addGroup( const char * name );
-      int addBoneJoint( const char * name, const double & x, const double & y, const double & z, 
-            const double & xrot, const double & yrot, const double & zrot,
-            const int & parent = -1 );
-      int addPoint( const char * name, const double & x, const double & y, const double & z, 
-            const double & xrot, const double & yrot, const double & zrot,
-            const int & boneId = -1 );
-      int addProjection( const char * name, int type, double x, double y, double z );
-
-      int addTexture( Texture * tex );
-      int addColorMaterial( const char * name );
-
-      int addAnimation( const AnimationModeE & mode, const char * name );
-
-      void deleteAnimation( const AnimationModeE & mode, const unsigned & index );
-
-      int  copyAnimation( const AnimationModeE & mode, const unsigned & anim, const char * newName );
-      int  splitAnimation( const AnimationModeE & mode, const unsigned & anim, const char * newName, const unsigned & frame );
-      bool joinAnimations( const AnimationModeE & mode, const unsigned & anim1, const unsigned & anim2 );
-      bool mergeAnimations( const AnimationModeE & mode, const unsigned & anim1, const unsigned & anim2 );
-      int  convertAnimToFrame( const AnimationModeE & mode, const unsigned & anim1, const char * newName, const unsigned & frameCount );
-
-      bool moveAnimation( const AnimationModeE & mode, const unsigned & oldIndex, const unsigned & newIndex );
-
-      bool clearAnimFrame( const AnimationModeE & mode, const unsigned & anim, const unsigned & frame );
-
-      bool     setAnimFPS( const AnimationModeE & mode, const unsigned & anim, const double & fps );
-      bool setAnimName( const AnimationModeE & mode, const unsigned & anim, const char * name );
-      bool     setAnimFrameCount( const AnimationModeE & mode, const unsigned & anim, const unsigned & count );
-
-      void setFrameAnimPointCount( const unsigned & pointCount );
-
-      bool getFrameAnimPointCoords( const unsigned & anim, const unsigned & frame, const unsigned & point, 
-            const double & x, const double & y, const double & z );
       bool setFrameAnimPointCoords( const unsigned & anim, const unsigned & frame, const unsigned & point, 
             const double & x, const double & y, const double & z );
       bool getFrameAnimPointCoords( const unsigned & anim, const unsigned & frame, const unsigned & point, 
@@ -1003,164 +1064,203 @@ class Model
       bool getFrameAnimPointRotation( const unsigned & anim, const unsigned & frame, const unsigned & point, 
             double & x, double & y, double & z );
 
-      void setFrameAnimVertexCount( const unsigned & vertexCount );
-
-      bool setFrameAnimVertexCoords( const unsigned & anim, const unsigned & frame, const unsigned & vertex, 
-            const double & x, const double & y, const double & z );
-
+      // Skeletal animation keyframs
       int  setSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, const unsigned & joint, const bool & isRotation, 
             const double & x, const double & y, const double & z );
+      bool getSkelAnimKeyframe( unsigned anim, unsigned frame,
+            unsigned joint, bool isRotation,
+            double & x, double & y, double & z );
+
+      bool hasSkelAnimKeyframe( unsigned anim, unsigned frame,
+            unsigned joint, bool isRotation );
+
       bool deleteSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, const unsigned & joint, const bool & isRotation );
 
+      // Interpolate what a keyframe for this joint would be at the specified frame.
+      bool interpSkelAnimKeyframe( unsigned anim, unsigned frame,
+            bool loop, unsigned joint, bool isRotation,
+            double & x, double & y, double & z );
+      // Interpolate what a keyframe for this joint would be at the specified time.
+      bool interpSkelAnimKeyframeTime( unsigned anim, double frameTime,
+            bool loop, unsigned joint,
+            Matrix & relativeFinal );
+
+      // Animation set operations
+      int  copyAnimation( const AnimationModeE & mode, const unsigned & anim, const char * newName );
+      int  splitAnimation( const AnimationModeE & mode, const unsigned & anim, const char * newName, const unsigned & frame );
+      bool joinAnimations( const AnimationModeE & mode, const unsigned & anim1, const unsigned & anim2 );
+      bool mergeAnimations( const AnimationModeE & mode, const unsigned & anim1, const unsigned & anim2 );
+      int  convertAnimToFrame( const AnimationModeE & mode, const unsigned & anim1, const char * newName, const unsigned & frameCount );
+
+      bool moveAnimation( const AnimationModeE & mode, const unsigned & oldIndex, const unsigned & newIndex );
+
+      // For undo, don't call these directly
       bool insertSkelAnimKeyframe( const unsigned & anim, Keyframe * keyframe );
       bool removeSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, const unsigned & joint, const bool & isRotation, bool release = false );
+
+      // Merge all animations from model into this model.
+      // For skeletal, skeletons must match
+      bool mergeAnimations( Model * model );
+
+      // When a model has frame animations, adding or removing primitives is disabled
+      // (because of the large amount of undo information that would have to be stored).
+      // Use this function to force an add or remove (you must make sure that you adjust
+      // the frame animations appropriately as well as preventing an undo on the
+      // operation you are performing).
+      //
+      // In other words, setting this to true is probably a really bad idea unless
+      // you know what you're doing.
+      void forceAddOrDelete( bool o ) { m_forceAddOrDelete = o; };
+
+      bool canAddOrDelete() { return (m_frameAnims.size() == 0 || m_forceAddOrDelete); };
+
+      // Show an error because the user tried to add or remove primitives while
+      // the model has frame animations.
+      void displayFrameAnimPrimitiveError();
+
+      int getNumFrames();  // Deprecated
+
+      // ------------------------------------------------------------------
+      // Normal functions
+      // ------------------------------------------------------------------
+
+      bool getNormal( unsigned triangleNum, unsigned vertexIndex, float *normal );
+      bool getFlatNormal( unsigned triangleNum, float *normal );
+      float cosToPoint( unsigned triangleNum, double * point );
+
+      void calculateNormals();
+      void calculateSkelNormals();
+      void calculateFrameNormals( const unsigned & anim );
+      void invalidateNormals();
+
+      void invertNormals( unsigned triangleNum );
+      bool triangleFacesIn( unsigned triangleNum );
+
+      // ------------------------------------------------------------------
+      // Geometry functions
+      // ------------------------------------------------------------------
+
+      inline int getVertexCount()     const { return m_vertices.size(); }
+      inline int getTriangleCount()   const { return m_triangles.size(); }
+      inline int getBoneJointCount()  const { return m_joints.size(); }
+      inline int getPointCount()      const { return m_points.size(); }
+      inline int getProjectionCount() const { return m_projections.size(); }
+
+      bool getPositionCoords( const Position & pos, double * coord );
+      bool getPositionCoords( PositionTypeE ptype, unsigned pindex, double * coord );
+
+      int addVertex( double x, double y, double z );
+      int addTriangle( unsigned vert1, unsigned vert2, unsigned vert3 );
+
+      void deleteVertex( unsigned vertex );
+      void deleteTriangle( unsigned triangle );
+
+      // No undo on this one
+      void setVertexFree( unsigned v, bool o );
+      bool isVertexFree( unsigned v );
+
+      // When all faces attached to a vertex are deleted, the vertex is considered
+      // an "orphan" and deleted (unless it is a "free" vertex, see m_free in the
+      // vertex class).
+      void deleteOrphanedVertices();
+
+      // A flattened triangle is a triangle with two or more corners that are
+      // assigned to the same vertex (this usually happens when vertices are
+      // welded together).
+      void deleteFlattenedTriangles();
+
+      bool isTriangleMarked( unsigned t );
+
+      void subdivideSelectedTriangles();
+      void unsubdivideTriangles( unsigned t1, unsigned t2, unsigned t3, unsigned t4 );
+
+      // If co-planer triangles have edges with points that are co-linear they
+      // can be combined into a single triangle. The simplifySelectedMesh function
+      // performs this operation to combine all faces that do not add detail to
+      // the model.
+      void simplifySelectedMesh();
 
       bool setTriangleVertices( unsigned triangleNum, unsigned vert1, unsigned vert2, unsigned vert3 );
       bool getTriangleVertices( unsigned triangleNum, unsigned & vert1, unsigned & vert2, unsigned & vert3 );
       void setTriangleMarked( unsigned triangleNum, bool marked );
       void clearMarkedTriangles();
 
-      void setTriangleProjection( unsigned triangleNum, int proj );
-      int  getTriangleProjection( unsigned triangleNum );
+      bool getVertexCoordsUnanimated( const unsigned & vertexNumber, double *coord );
+      bool getVertexCoords( const unsigned & vertexNumber, double *coord );
+      bool getVertexCoords2d( const unsigned & vertexNumber, const ProjectionDirectionE & dir, double *coord );
 
-      void deleteVertex( unsigned vertex );
-      void deleteTriangle( unsigned triangle );
+      int getTriangleVertex( unsigned triangleNumber, unsigned vertexIndex );
+
+      void booleanOperation( BooleanOpE op, 
+            std::list<int> & listA, std::list<int> & listB );
+
+      // A BSP tree is calculated for triangles that have textures with an alpha
+      // channel (transparency). It is used to determine in what order triangles
+      // must be rendered to get the proper blending results (triangles that are
+      // farther away from the camera are rendered first so that closer triangles
+      // are drawn on top of them).
+      void calculateBspTree();
+      void invalidateBspTree();
+
+      bool mergeModels( Model * model, bool textures, AnimationMergeE mergeMode, bool emptyGroups,
+            double * trans = NULL, double * rot = NULL );
+
+      // These are helper functions for the boolean operations
+      void removeInternalTriangles( 
+            std::list<int> & listA, std::list<int> & listB );
+      void removeExternalTriangles( 
+            std::list<int> & listA, std::list<int> & listB );
+      void removeBTriangles( 
+            std::list<int> & listA, std::list<int> & listB );
+
+      // ------------------------------------------------------------------
+      // Group and material functions
+      // ------------------------------------------------------------------
+
+      // TODO: Misnamed, should be getMaterialCount()
+      inline int getTextureCount() { return m_materials.size(); };
+
+      int addGroup( const char * name );
+
+      // Textures and Color materials go into the same material list
+      int addTexture( Texture * tex );
+      int addColorMaterial( const char * name );
+
+      bool setGroupTextureId( unsigned groupNumber, int textureId );
+
       void deleteGroup( unsigned group );
-      void deleteBoneJoint( unsigned joint );
-      void deletePoint( unsigned point );
-      void deleteProjection( unsigned proj );
       void deleteTexture( unsigned texture );
 
-      void deleteOrphanedVertices();
-      void deleteFlattenedTriangles();
-      void deleteSelected();
-
-      void invertNormals( unsigned triangleNum );
-      bool triangleFacesIn( unsigned triangleNum );
-
-      bool movePosition( const Position & pos, double x, double y, double z );
-      bool moveVertex( unsigned v, double x, double y, double z );
-      bool moveBoneJoint( unsigned j, double x, double y, double z );
-      bool movePoint( unsigned p, double x, double y, double z );
-      bool moveProjection( unsigned p, double x, double y, double z );
-
-      bool setProjectionUp( unsigned projNumber, const double *coord );
-      bool setProjectionSeam( unsigned projNumber, const double *coord );
-
-      bool   setProjectionRange( unsigned projNumber, 
-            double xmin, double ymin, double xmax, double ymax );
-
-      void   setProjectionScale( unsigned p, double scale );
-      double getProjectionScale( unsigned p );
-
-      bool setProjectionName( const unsigned & proj, const char * name );
-      bool setProjectionType( const unsigned & proj, int type );
-      int  getProjectionType( const unsigned & proj );
-      bool setProjectionRotation( const unsigned & proj, int type );
-      int  getProjectionRotation( const unsigned & proj );
-
-      // No undo on this one
-      bool relocateBoneJoint( unsigned j, double x, double y, double z );
-
-      void beginSelectionDifference();
-      void endSelectionDifference();
-
-      bool selectVertex( unsigned v );
-      bool unselectVertex( unsigned v );
-      bool isVertexSelected( unsigned v );
-      bool isVertexVisible( unsigned v );
-
-      // No undo on this one
-      void setVertexFree( unsigned v, bool o );
-      bool isVertexFree( unsigned v );
-
-      bool selectTriangle( unsigned t );
-      bool unselectTriangle( unsigned t );
-      bool isTriangleSelected( unsigned t );
-      bool isTriangleVisible( unsigned t );
-      bool isTriangleMarked( unsigned t );
-
-      bool selectGroup( unsigned g );
-      bool unselectGroup( unsigned g );
-      bool isGroupSelected( unsigned g );
-      bool isGroupVisible( unsigned g );
-
-      bool selectBoneJoint( unsigned j );
-      bool unselectBoneJoint( unsigned j );
-      bool isBoneJointSelected( unsigned j );
-      bool isBoneJointVisible( unsigned j );
-
-      bool selectPoint( unsigned p );
-      bool unselectPoint( unsigned p );
-      bool isPointSelected( unsigned p );
-      bool isPointVisible( unsigned p );
-
-      bool selectProjection( unsigned p );
-      bool unselectProjection( unsigned p );
-      bool isProjectionSelected( unsigned p );
-
-      class SelectionTest
-      {
-         public:
-            virtual ~SelectionTest() {};
-            virtual bool shouldSelect( void * element ) = 0;
-      };
-
-      bool selectInVolumeMatrix( const Matrix & viewMat, double x1, double y1, double x2, double y2, SelectionTest * test = NULL );
-      bool unselectInVolumeMatrix( const Matrix & viewMat, double x1, double y1, double x2, double y2, SelectionTest * test = NULL );
-
-      void selectFreeVertices();
-
-      bool unselectAll();
-
-      bool invertSelection();
-
-      // Don't call these directly... use selection/hide selection
-      bool hideVertex( unsigned );
-      bool unhideVertex( unsigned );
-      bool hideTriangle( unsigned );
-      bool unhideTriangle( unsigned );
-      bool hideJoint( unsigned );
-      bool unhideJoint( unsigned );
-      bool hidePoint( unsigned );
-      bool unhidePoint( unsigned );
-
-      bool hideSelected();
-      bool hideUnselected();
-      bool unhideAll();
-
-      bool getBoundingRegion( double *x1, double *y1, double *z1, double *x2, double *y2, double *z2 );
-      bool getSelectedBoundingRegion( double *x1, double *y1, double *z1, double *x2, double *y2, double *z2 );
-
-      unsigned getSelectedVertexCount();
-      unsigned getSelectedTriangleCount();
-      unsigned getSelectedBoneJointCount();
-      unsigned getSelectedPointCount();
-      unsigned getSelectedProjectionCount();
-
-      void translateSelected( const Matrix & m );
-      void rotateSelected( const Matrix & m, double * point );
-      void applyMatrix( const Matrix & m, OperationScopeE scope, bool animations, bool undoable );
-
-      void subdivideSelectedTriangles();
-      void unsubdivideTriangles( unsigned t1, unsigned t2, unsigned t3, unsigned t4 );
-      void simplifySelectedMesh();
-
-      void setSelectionMode( SelectionModeE m );
-      inline SelectionModeE getSelectionMode() { return m_selectionMode; };
-
+      const char * getGroupName( unsigned groupNum );
       bool setGroupName( unsigned groupNum, const char * groupName );
 
-      bool setGroupSmooth( const unsigned & groupNum, const uint8_t & smooth );
-      bool setGroupAngle( const unsigned & groupNum, const uint8_t & angle );
+      inline int getGroupCount() const { return m_groups.size(); };
+      int getGroupByName( const char * groupName, bool ignoreCase = false );
+      int getMaterialByName( const char * materialName, bool ignoreCase = false );
+      Material::MaterialTypeE getMaterialType( unsigned materialIndex );
+      int getMaterialColor( unsigned materialIndex, unsigned c, unsigned v = 0 );
 
-      void setSelectedAsGroup( unsigned groupNum );
-      void addSelectedToGroup( unsigned groupNum );
-
-      void setTextureName( unsigned textureId, const char * name );
-
+      // These implicitly change the material type.
       void setMaterialTexture( unsigned textureId, Texture * tex );
       void removeMaterialTexture( unsigned textureId );
+
+      uint8_t getGroupSmooth( const unsigned & groupNum );
+      bool setGroupSmooth( const unsigned & groupNum, const uint8_t & smooth );
+      uint8_t getGroupAngle( const unsigned & groupNum );
+      bool setGroupAngle( const unsigned & groupNum, const uint8_t & angle );
+
+      void setTextureName( unsigned textureId, const char * name );
+      const char * getTextureName( unsigned textureId );
+
+      const char * getTextureFilename( unsigned textureId );
+      Texture * getTextureData( unsigned textureId );
+
+      // Lighting accessors
+      bool getTextureAmbient(   unsigned textureId,       float * ambient   );
+      bool getTextureDiffuse(   unsigned textureId,       float * diffuse   );
+      bool getTextureEmissive(  unsigned textureId,       float * emissive  );
+      bool getTextureSpecular(  unsigned textureId,       float * specular  );
+      bool getTextureShininess( unsigned textureId,       float & shininess );
 
       bool setTextureAmbient(   unsigned textureId, const float * ambient   );
       bool setTextureDiffuse(   unsigned textureId, const float * diffuse   );
@@ -1168,27 +1268,49 @@ class Model
       bool setTextureSpecular(  unsigned textureId, const float * specular  );
       bool setTextureShininess( unsigned textureId, const float & shininess );
 
+      // See the clamp property in the Material class.
+      bool getTextureSClamp( unsigned textureId );
+      bool getTextureTClamp( unsigned textureId );
       bool setTextureSClamp( unsigned textureId, bool clamp );
       bool setTextureTClamp( unsigned textureId, bool clamp );
 
-      void getSelectedPositions( list<Position> & l );
-      void getSelectedVertices( list<int> & l );
-      void getSelectedTriangles( list<int> & l );
-      void getSelectedGroups( list<int> & l );
-      void getSelectedBoneJoints( list<int> & l );
-      void getSelectedPoints( list<int> & l );
-      void getSelectedProjections( list<int> & l );
+      list<int> getUngroupedTriangles();
+      list<int> getGroupTriangles( unsigned groupNumber ) const;
+      int       getGroupTextureId( unsigned groupNumber );
 
-      bool setGroupTextureId( unsigned groupNumber, int textureId );
+      int getTriangleGroup( unsigned triangleNumber );
 
-      bool setPointName( const unsigned & point, const char * name );
-      bool setPointType( const unsigned & point, int type );
+      void addTriangleToGroup( unsigned groupNum, unsigned triangleNum );
+      void removeTriangleFromGroup( unsigned groupNum, unsigned triangleNum );
 
-      bool getPointRotation( const unsigned & point, double * rot );
-      bool getPointTranslation( const unsigned & point, double * trans );
+      void setSelectedAsGroup( unsigned groupNum );
+      void addSelectedToGroup( unsigned groupNum );
 
-      bool setPointRotation( unsigned point, const double * rot );
-      bool setPointTranslation( unsigned point, const double * trans );
+      bool getTextureCoords( const unsigned & triangleNumber, const unsigned & vertexIndex, float & s, float & t );
+      bool setTextureCoords( const unsigned & triangleNumber, const unsigned & vertexIndex, const float & s, const float & t );
+
+      // ------------------------------------------------------------------
+      // Skeletal structure and influence functions
+      // ------------------------------------------------------------------
+
+      int addBoneJoint( const char * name, const double & x, const double & y, const double & z, 
+            const double & xrot, const double & yrot, const double & zrot,
+            const int & parent = -1 );
+
+      void deleteBoneJoint( unsigned joint );
+
+      const char * getBoneJointName( const unsigned & joint );
+      int getBoneJointParent( const unsigned & joint );
+      bool getBoneJointCoords( const unsigned & jointNumber, double * coord );
+
+      bool getBoneJointFinalMatrix( const unsigned & jointNumber, Matrix & m );
+      bool getBoneJointAbsoluteMatrix( const unsigned & jointNumber, Matrix & m );
+      bool getBoneJointRelativeMatrix( const unsigned & jointNumber, Matrix & m );
+      bool getPointFinalMatrix( const unsigned & jointNumber, Matrix & m );
+
+      list<int> getBoneJointVertices( const int & joint );
+      int getVertexBoneJoint( const unsigned & vertexNumber );
+      int getPointBoneJoint( const unsigned & point );
 
       bool setPositionBoneJoint( const Position & pos, int joint );
       bool setVertexBoneJoint( unsigned vertex, int joint );
@@ -1241,27 +1363,103 @@ class Model
 
       bool getBoneVector( unsigned joint, double * vec, double * coord );
 
+      // No undo on this one
+      bool relocateBoneJoint( unsigned j, double x, double y, double z );
+
+      // Call this when a bone joint is moved, rotated, added, or deleted to
+      // recalculate the skeletal structure.
+      void setupJoints();
+
+      // ------------------------------------------------------------------
+      // Point functions
+      // ------------------------------------------------------------------
+
+      int addPoint( const char * name, const double & x, const double & y, const double & z, 
+            const double & xrot, const double & yrot, const double & zrot,
+            const int & boneId = -1 );
+
+      void deletePoint( unsigned point );
+
+      int getPointByName( const char * name );
+
+      const char * getPointName( const unsigned & point );
+      bool setPointName( const unsigned & point, const char * name );
+
+      int getPointType( const unsigned & point );
+      bool setPointType( const unsigned & point, int type );
+
+      // FIXME is there a difference between these?
+      // Looks like coords/orientation should be removed (to keep rotation/translation
+      // naming consistent).
+      bool getPointCoords( const unsigned & pointNumber, double * coord );
+      bool getPointOrientation( const unsigned & pointNumber, double * rot );
+      bool getPointRotation( const unsigned & point, double * rot );
+      bool getPointTranslation( const unsigned & point, double * trans );
+
+      bool setPointRotation( unsigned point, const double * rot );
+      bool setPointTranslation( unsigned point, const double * trans );
+
+      // ------------------------------------------------------------------
+      // Texture projection functions
+      // ------------------------------------------------------------------
+
+      int addProjection( const char * name, int type, double x, double y, double z );
+      void deleteProjection( unsigned proj );
+
+      const char * getProjectionName( const unsigned & proj );
+
+      void   setProjectionScale( unsigned p, double scale );
+      double getProjectionScale( unsigned p );
+
+      bool setProjectionName( const unsigned & proj, const char * name );
+      bool setProjectionType( const unsigned & proj, int type );
+      int  getProjectionType( const unsigned & proj );
+      bool setProjectionRotation( const unsigned & proj, int type );
+      int  getProjectionRotation( const unsigned & proj );
+      bool getProjectionCoords( unsigned projNumber, double *coord );
+
+      bool setProjectionUp( unsigned projNumber, const double *coord );
+      bool setProjectionSeam( unsigned projNumber, const double *coord );
+      bool setProjectionRange( unsigned projNumber, 
+            double xmin, double ymin, double xmax, double ymax );
+
+      bool getProjectionUp( unsigned projNumber, double *coord );
+      bool getProjectionSeam( unsigned projNumber, double *coord );
+      bool getProjectionRange( unsigned projNumber, 
+            double & xmin, double & ymin, double & xmax, double & ymax );
+
+      void setTriangleProjection( unsigned triangleNum, int proj );
+      int  getTriangleProjection( unsigned triangleNum );
+
+      void applyProjection( unsigned int proj );
+
+      // ------------------------------------------------------------------
+      // Undo/Redo functions
+      // ------------------------------------------------------------------
+
       bool setUndoEnabled( bool o ) { bool old = m_undoEnabled; m_undoEnabled = o; return old; };
 
+      // Indicates that a user-specified operation is complete. A single
+      // "operation" may span many function calls and different types of
+      // manipulations.
       void operationComplete( const char * opname = NULL );
 
       bool canUndo();
       bool canRedo();
-      const char * getUndoOpName();
-      const char * getRedoOpName();
       void undo();
       void redo();
+
+      // If a manipulations have been performed, but not commited as a single
+      // undo list, undo those operations (often used when the user clicks
+      // a "Cancel" button to discard "unapplied" changes).
       void undoCurrent();
 
-      bool canAddOrDelete() { return (m_frameAnims.size() == 0 || m_forceAddOrDelete); };
+      const char * getUndoOpName();
+      const char * getRedoOpName();
 
-      // These are helper functions for the boolean operations
-      void removeInternalTriangles( 
-            std::list<int> & listA, std::list<int> & listB );
-      void removeExternalTriangles( 
-            std::list<int> & listA, std::list<int> & listB );
-      void removeBTriangles( 
-            std::list<int> & listA, std::list<int> & listB );
+      // The limits at which undo operations are removed from memory.
+      void setUndoSizeLimit( unsigned sizeLimit );
+      void setUndoCountLimit( unsigned countLimit );
 
       // These functions are for undo and features such as this.
       // Don't use them unless you are me.
@@ -1299,8 +1497,28 @@ class Model
             FrameAnimData * data );
       void removeFrameAnimFrame( const unsigned & anim, const unsigned & frame );
 
-      void addTriangleToGroup( unsigned groupNum, unsigned triangleNum );
-      void removeTriangleFromGroup( unsigned groupNum, unsigned triangleNum );
+      // ------------------------------------------------------------------
+      // Selection functions
+      // ------------------------------------------------------------------
+
+      void setSelectionMode( SelectionModeE m );
+      inline SelectionModeE getSelectionMode() { return m_selectionMode; };
+
+      unsigned getSelectedVertexCount();
+      unsigned getSelectedTriangleCount();
+      unsigned getSelectedBoneJointCount();
+      unsigned getSelectedPointCount();
+      unsigned getSelectedProjectionCount();
+
+      void getSelectedPositions( list<Position> & l );
+      void getSelectedVertices( list<int> & l );
+      void getSelectedTriangles( list<int> & l );
+      void getSelectedGroups( list<int> & l );
+      void getSelectedBoneJoints( list<int> & l );
+      void getSelectedPoints( list<int> & l );
+      void getSelectedProjections( list<int> & l );
+
+      bool unselectAll();
 
       bool unselectAllVertices();
       bool unselectAllTriangles();
@@ -1309,42 +1527,160 @@ class Model
       bool unselectAllPoints();
       bool unselectAllProjections();
 
-      void setBackgroundImage( unsigned index, const char * str );
-      void setBackgroundScale( unsigned index, float scale );
-      void setBackgroundCenter( unsigned index, float x, float y, float z );
+      // A selection test is an additional condition you can attach to whether
+      // or not an object in the selection volume should be selected. For example,
+      // this is used to add a test for which way a triangle is facing so that
+      // triangles not facing the camera can be excluded from the selection.
+      // You can implement a selection test for any property that you can check
+      // on the primitive.
+      class SelectionTest
+      {
+         public:
+            virtual ~SelectionTest() {};
+            virtual bool shouldSelect( void * element ) = 0;
+      };
 
-      const char * getBackgroundImage( unsigned index );
-      float getBackgroundScale( unsigned index );
-      void getBackgroundCenter( unsigned index, float & x, float & y, float & z );
+      bool selectInVolumeMatrix( const Matrix & viewMat, double x1, double y1, double x2, double y2, SelectionTest * test = NULL );
+      bool unselectInVolumeMatrix( const Matrix & viewMat, double x1, double y1, double x2, double y2, SelectionTest * test = NULL );
 
-#endif // MM3D_EDIT
+      bool getBoundingRegion( double *x1, double *y1, double *z1, double *x2, double *y2, double *z2 );
+      bool getSelectedBoundingRegion( double *x1, double *y1, double *z1, double *x2, double *y2, double *z2 );
 
-      void setLocalMatrix( const Matrix & m ) { m_localMatrix = m; };
+      void deleteSelected();
+
+      // When changing the selection state of a lot of primitives, a difference
+      // list is used to track undo information. These calls indicate when the
+      // undo information should start being tracked and when it should be
+      // completed.
+      void beginSelectionDifference();
+      void endSelectionDifference();
+
+      bool selectVertex( unsigned v );
+      bool unselectVertex( unsigned v );
+      bool isVertexSelected( unsigned v );
+
+      bool selectTriangle( unsigned t );
+      bool unselectTriangle( unsigned t );
+      bool isTriangleSelected( unsigned t );
+
+      bool selectGroup( unsigned g );
+      bool unselectGroup( unsigned g );
+      bool isGroupSelected( unsigned g );
+
+      bool selectBoneJoint( unsigned j );
+      bool unselectBoneJoint( unsigned j );
+      bool isBoneJointSelected( unsigned j );
+
+      bool selectPoint( unsigned p );
+      bool unselectPoint( unsigned p );
+      bool isPointSelected( unsigned p );
+
+      bool selectProjection( unsigned p );
+      bool unselectProjection( unsigned p );
+      bool isProjectionSelected( unsigned p );
+
+      // The behavior of this function changes based on the selection mode.
+      bool invertSelection();
+
+      // Select all vertices that have the m_free property set and are not used
+      // by any triangles (this can be used to clean up unused free vertices,
+      // like a manual analog to the deleteOrphanedVertices() function).
+      void selectFreeVertices();
+
+      // ------------------------------------------------------------------
+      // Hide functions
+      // ------------------------------------------------------------------
+
+      bool hideSelected();
+      bool hideUnselected();
+      bool unhideAll();
+
+      bool isVertexVisible( unsigned v );
+      bool isTriangleVisible( unsigned t );
+      bool isGroupVisible( unsigned g );
+      bool isBoneJointVisible( unsigned j );
+      bool isPointVisible( unsigned p );
+
+      // Don't call these directly... use selection/hide selection
+      bool hideVertex( unsigned );
+      bool unhideVertex( unsigned );
+      bool hideTriangle( unsigned );
+      bool unhideTriangle( unsigned );
+      bool hideJoint( unsigned );
+      bool unhideJoint( unsigned );
+      bool hidePoint( unsigned );
+      bool unhidePoint( unsigned );
+
+      // ------------------------------------------------------------------
+      // Transform functions
+      // ------------------------------------------------------------------
+
+      bool movePosition( const Position & pos, double x, double y, double z );
+      bool moveVertex( unsigned v, double x, double y, double z );
+      bool moveBoneJoint( unsigned j, double x, double y, double z );
+      bool movePoint( unsigned p, double x, double y, double z );
+      bool moveProjection( unsigned p, double x, double y, double z );
+
+      void translateSelected( const Matrix & m );
+      void rotateSelected( const Matrix & m, double * point );
+
+      // Applies arbitrary matrix to primitives (selected or all based on scope).
+      // Some matrices cannot be undone (consider a matrix that scales a dimension to 0).
+      // If the matrix cannot be undone, set undoable to false (a matrix is undoable if
+      // the determinant is not equal to zero).
+      void applyMatrix( const Matrix & m, OperationScopeE scope, bool animations, bool undoable );
 
    protected:
 
-      DrawingContext * getDrawingContext( ContextT context );
+      // ==================================================================
+      // Protected methods
+      // ==================================================================
 
+      // ------------------------------------------------------------------
+      // Texture context methods
+      // ------------------------------------------------------------------
+
+      DrawingContext * getDrawingContext( ContextT context );
       void deleteGlTextures( ContextT context );
 
-#ifdef MM3D_EDIT
+      // If any group is using material "id", set the group to having
+      // no texture (used when materials are deleted).
+      void noTexture( unsigned id );
+
+      // ------------------------------------------------------------------
+      // Book-keeping for add/delete undo
+      // ------------------------------------------------------------------
 
       void adjustVertexIndices( unsigned index, int count );
       void adjustTriangleIndices( unsigned index, int count );
       void adjustProjectionIndices( unsigned index, int count );
 
+      // ------------------------------------------------------------------
+      // Texture projections
+      // ------------------------------------------------------------------
+
       void applyCylinderProjection( unsigned int proj );
       void applySphereProjection( unsigned int proj );
       void applyPlaneProjection( unsigned int proj );
 
+      // ------------------------------------------------------------------
+      // Hiding/visibility
+      // ------------------------------------------------------------------
+
       void beginHideDifference();
       void endHideDifference();
 
+      // When primitives of one type are hidden, other primitives may need to
+      // be hidden at the same time.
       void hideVerticesFromTriangles();
       void unhideVerticesFromTriangles();
 
       void hideTrianglesFromVertices();
       void unhideTrianglesFromVertices();
+
+      // ------------------------------------------------------------------
+      // Selection
+      // ------------------------------------------------------------------
 
       bool selectVerticesInVolumeMatrix( bool select, const Matrix & viewMat, double a1, double b1, double a2, double b2, SelectionTest * test = NULL );
       bool selectTrianglesInVolumeMatrix( bool select, const Matrix & viewMat, double a1, double b1, double a2, double b2, bool connected, SelectionTest * test = NULL );
@@ -1353,23 +1689,34 @@ class Model
       bool selectPointsInVolumeMatrix( bool select, const Matrix & viewMat, double a1, double b1, double a2, double b2, SelectionTest * test = NULL );
       bool selectProjectionsInVolumeMatrix( bool select, const Matrix & viewMat, double a1, double b1, double a2, double b2, SelectionTest * test = NULL );
 
+      // When primitives of one type are selected, other primitives may need to
+      // be selected at the same time.
       void selectTrianglesFromGroups();
       void selectVerticesFromTriangles();
-
       void selectTrianglesFromVertices( bool all = true );
       void selectGroupsFromTriangles( bool all = true );
 
       bool parentJointSelected( int joint );
       bool directParentJointSelected( int joint );
 
+      // ------------------------------------------------------------------
+      // Undo
+      // ------------------------------------------------------------------
+
       void sendUndo( Undo * undo, bool listCombine = false );
-      void noTexture( unsigned id );
+
+      // ------------------------------------------------------------------
+      // Meta
+      // ------------------------------------------------------------------
 
       void updateObservers();
 
-#endif // MM3D_EDIT
+      // ------------------------------------------------------------------
+      // Protected data
+      // ------------------------------------------------------------------
 
-      friend class ModelFilter;
+      // See the various accessors for this data for details on what these
+      // properties mean.
 
       bool          m_initialized;
       std::string   m_filename;
@@ -1406,7 +1753,7 @@ class Model
 
       bool m_forceAddOrDelete;
 
-      int    m_numFrames;
+      int    m_numFrames;  // Deprecated
 
       AnimationModeE m_animationMode;
       bool     m_animationLoop;
@@ -1423,6 +1770,9 @@ class Model
       bool           m_saved;
       SelectionModeE m_selectionMode;
       bool           m_selecting;
+
+      // What has changed since the last time the observers were notified?
+      // See ChangeBits
       int            m_changeBits;
 
       UndoManager * m_undoMgr;
@@ -1430,7 +1780,12 @@ class Model
       bool m_undoEnabled;
 #endif // MM3D_EDIT
 
+      // Base position for skeletal animations (safe to ignore in MM3D).
       Matrix   m_localMatrix;
+
+      // ModelFilter is defined as a friend so that classes derived from ModelFilter
+      // can get direct access to the model primitive lists (yes, it's a messy hack).
+      friend class ModelFilter;
 };
 
 extern void model_show_alloc_stats();

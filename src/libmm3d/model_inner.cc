@@ -641,6 +641,25 @@ void Model::Keyframe::release()
    }
 }
 
+bool Model::Keyframe::equal(const Keyframe & rhs, int compareBits ) const
+{
+   if ( (compareBits & CompareAnimData) != 0 )
+   {
+      if ( m_jointIndex != rhs.m_jointIndex )
+         return false;
+      if ( m_frame != rhs.m_frame )
+         return false;
+      if ( m_isRotation != rhs.m_isRotation )
+         return false;
+      if ( fabs( m_time - rhs.m_time ) > EQ_TOLERANCE )
+         return false;
+      if ( !floatCompareVector( m_parameter, rhs.m_parameter, 3 ) )
+         return false;
+   }
+
+   return true;
+}
+
 Model::Joint::Joint()
 {
    s_allocated++;
@@ -939,6 +958,8 @@ bool Model::TextureProjection::equal(const TextureProjection & rhs, int compareB
 {
    if ( (compareBits & CompareTextures) != 0 )
    {
+      if ( m_type != rhs.m_type )
+         return false;
       if ( !floatCompareVector( m_pos, rhs.m_pos, 3 ) )
          return false;
       if ( !floatCompareVector( m_upVec, rhs.m_upVec, 3 ) )
@@ -954,9 +975,6 @@ bool Model::TextureProjection::equal(const TextureProjection & rhs, int compareB
    if ( (compareBits & CompareMeta) != 0 )
    {
       if ( m_name != rhs.m_name )
-         return false;
-
-      if ( m_type != rhs.m_type )
          return false;
 
       if ( m_selected != rhs.m_selected )
@@ -983,13 +1001,16 @@ void Model::SkelAnim::init()
 {
    m_name = "Skel";
    m_validNormals = false;
-   unsigned count = 0;
+   releaseData();
+}
+
+void Model::SkelAnim::releaseData()
+{
    for ( unsigned j = 0; j < m_jointKeyframes.size(); j++ )
    {
       for ( unsigned k = 0; k < m_jointKeyframes[j].size(); k++ )
       {
          m_jointKeyframes[j][k]->release();
-         count++;
       }
       m_jointKeyframes[j].clear();
    }
@@ -1042,6 +1063,66 @@ void Model::SkelAnim::stats()
    log_debug( "SkelAnim: %d/%d\n", s_recycle.size(), s_allocated );
 }
 
+bool Model::SkelAnim::equal(const SkelAnim & rhs, int compareBits ) const
+{
+   if ( (compareBits & CompareAnimSets) != 0 )
+   {
+      if ( m_name != rhs.m_name )
+         return false;
+   }
+
+   if ( (compareBits & CompareAnimData) != 0 )
+   {
+      if ( fabs( m_fps - rhs.m_fps ) > EQ_TOLERANCE )
+         return false;
+
+      if ( m_frameCount != rhs.m_frameCount )
+         return false;
+
+      if ( m_jointKeyframes.size() != rhs.m_jointKeyframes.size() )
+         return false;
+
+      JointKeyframeList::const_iterator lhs_it = m_jointKeyframes.begin();
+      JointKeyframeList::const_iterator rhs_it = rhs.m_jointKeyframes.begin();
+      for ( ; lhs_it != m_jointKeyframes.end() && rhs_it != m_jointKeyframes.end();
+            ++lhs_it, ++rhs_it )
+      {
+         if ( lhs_it->size() != rhs_it->size() )
+            return false;
+
+         KeyframeList::const_iterator l = lhs_it->begin();
+         KeyframeList::const_iterator r = rhs_it->begin();
+         for ( ; l != lhs_it->end() && r != rhs_it->end(); ++l, ++r )
+         {
+            if ( !(*l)->equal( **r ) )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+
+void Model::FrameAnimData::releaseData()
+{
+   if ( m_frameVertices )
+   {
+      for ( unsigned v = 0; v < m_frameVertices->size(); v++ )
+      {
+         (*m_frameVertices)[v]->release();
+      }
+      m_frameVertices->clear();
+   }
+   if ( m_framePoints )
+   {
+      for ( unsigned p = 0; p < m_framePoints->size(); p++ )
+      {
+         (*m_framePoints)[p]->release();
+      }
+      m_framePoints->clear();
+   }
+}
+
 Model::FrameAnim::FrameAnim()
    : m_fps( 10.0 )
 {
@@ -1059,23 +1140,7 @@ void Model::FrameAnim::init()
 {
    m_name = "Frame";
    m_validNormals = false;
-   while ( ! m_frameData.empty() )
-   {
-      for ( unsigned v = 0; v < m_frameData.back()->m_frameVertices->size(); v++ )
-      {
-         (*m_frameData.back()->m_frameVertices)[v]->release();
-      }
-      for ( unsigned p = 0; p < m_frameData.back()->m_framePoints->size(); p++ )
-      {
-         (*m_frameData.back()->m_framePoints)[p]->release();
-      }
-      m_frameData.back()->m_frameVertices->clear();
-      m_frameData.back()->m_framePoints->clear();
-      delete m_frameData.back()->m_frameVertices;
-      delete m_frameData.back()->m_framePoints;
-      m_frameData.pop_back();
-   }
-   m_frameData.clear();
+   releaseData();
 }
 
 Model::FrameAnim * Model::FrameAnim::get()
@@ -1105,6 +1170,19 @@ void Model::FrameAnim::release()
    }
 }
 
+void Model::FrameAnim::releaseData()
+{
+   while ( ! m_frameData.empty() )
+   {
+      m_frameData.back()->releaseData();
+      delete m_frameData.back()->m_frameVertices;
+      delete m_frameData.back()->m_framePoints;
+      delete m_frameData.back();
+      m_frameData.pop_back();
+   }
+   m_frameData.clear();
+}
+
 int Model::FrameAnim::flush()
 {
    int c = 0;
@@ -1122,6 +1200,38 @@ int Model::FrameAnim::flush()
 void Model::FrameAnim::stats()
 {
    log_debug( "FrameAnim: %d/%d\n", s_recycle.size(), s_allocated );
+}
+
+bool Model::FrameAnim::equal(const FrameAnim & rhs, int compareBits ) const
+{
+   if ( (compareBits & CompareAnimSets) != 0 )
+   {
+      if ( m_name != rhs.m_name )
+         return false;
+   }
+
+   if ( (compareBits & CompareAnimData) != 0 )
+   {
+      if ( fabs( m_fps - rhs.m_fps ) > EQ_TOLERANCE )
+         return false;
+
+      if ( m_frameData.size() != rhs.m_frameData.size() )
+         return false;
+
+      if ( m_frameData.size() != rhs.m_frameData.size() )
+         return false;
+
+      FrameAnimDataList::const_iterator lhs_it = m_frameData.begin();
+      FrameAnimDataList::const_iterator rhs_it = rhs.m_frameData.begin();
+      for ( ; lhs_it != m_frameData.end() && rhs_it != m_frameData.end();
+            ++lhs_it, ++rhs_it )
+      {
+         if ( !(*lhs_it)->equal( **rhs_it ) )
+            return false;
+      }
+   }
+
+   return true;
 }
 
 Model::FrameAnimVertex::FrameAnimVertex()
@@ -1190,6 +1300,17 @@ void Model::FrameAnimVertex::stats()
    log_debug( "FrameAnimVertex: %d/%d\n", s_recycle.size(), s_allocated );
 }
 
+bool Model::FrameAnimVertex::equal(const FrameAnimVertex & rhs, int compareBits ) const
+{
+   if ( (compareBits & CompareAnimData) != 0 )
+   {
+      if ( !floatCompareVector( m_coord, rhs.m_coord, 3 ) )
+         return false;
+   }
+
+   return true;
+}
+
 Model::FrameAnimPoint::FrameAnimPoint()
 {
    s_allocated++;
@@ -1256,6 +1377,48 @@ void Model::FrameAnimPoint::stats()
    log_debug( "FrameAnimPoint: %d/%d\n", s_recycle.size(), s_allocated );
 }
 
+bool Model::FrameAnimPoint::equal(const FrameAnimPoint & rhs, int compareBits ) const
+{
+   if ( (compareBits & CompareAnimData) != 0 )
+   {
+      if ( !floatCompareVector( m_trans, rhs.m_trans, 3 ) )
+         return false;
+      if ( !floatCompareVector( m_rot, rhs.m_rot, 3 ) )
+         return false;
+   }
+
+   return true;
+}
+
+bool Model::FrameAnimData::equal(const FrameAnimData & rhs, int compareBits ) const
+{
+   if ( (compareBits & CompareAnimData) != 0 )
+   {
+      if ( m_frameVertices->size() != rhs.m_frameVertices->size() )
+         return false;
+
+      FrameAnimVertexList::iterator lv = m_frameVertices->begin();
+      FrameAnimVertexList::iterator rv = rhs.m_frameVertices->begin();
+
+      for ( ; lv != m_frameVertices->end(), rv != rhs.m_frameVertices->end(); ++lv, ++rv )
+      {
+         if ( !(*lv)->equal( **rv ) )
+            return false;
+      }
+
+      FrameAnimPointList::iterator lp = m_framePoints->begin();
+      FrameAnimPointList::iterator rp = rhs.m_framePoints->begin();
+
+      for ( ; lp != m_framePoints->end(), rp != rhs.m_framePoints->end(); ++lp, ++rp )
+      {
+         if ( !(*lp)->equal( **rp ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+
 Model::FormatData::~FormatData()
 {
    if ( data )
@@ -1284,6 +1447,23 @@ Model::BackgroundImage::BackgroundImage()
 
 Model::BackgroundImage::~BackgroundImage()
 {
+}
+
+bool Model::BackgroundImage::equal(const BackgroundImage & rhs, int compareBits ) const
+{
+   if ( (compareBits & CompareMeta) != 0 )
+   {
+      if ( m_filename != rhs.m_filename )
+         return false;
+
+      if ( fabs( m_scale - rhs.m_scale ) > EQ_TOLERANCE )
+         return false;
+
+      if ( !floatCompareVector( m_center, rhs.m_center, 3 ) )
+         return false;
+   }
+
+   return true;
 }
 
 #endif // MM3D_EDIT
