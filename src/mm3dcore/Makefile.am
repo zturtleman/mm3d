@@ -61,6 +61,6 @@ libmm3dcore_a_SOURCES = \
 	$(libmm3dcore_HFILES)
 
 #AM_CPPFLAGS = -DQT_COMPAT -Wall -I../libmm3d -I../ -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
-AM_CPPFLAGS = -Wall -I../libmm3d -I../ -DMM3D_EDIT $(all_includes) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
+AM_CPPFLAGS = $(CORE_PROFILE) -Wall -I../libmm3d -I../ -DMM3D_EDIT $(all_includes) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
 
 

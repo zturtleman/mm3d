@@ -1,5 +1,6 @@
 Changes for 1.3.7
    Performance fixes for normal calculation (about 40% speed improvement)
+   Added --enable-profile
 
 Changes for 1.3.6
    Save/restore window size

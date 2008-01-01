@@ -88,7 +88,7 @@ libtools_a_SOURCES = \
 	$(libtools_MOC) \
 	$(libtools_HFILES) 
 
-AM_CPPFLAGS = -DQT_COMPAT -Wall -I../libmm3d -I../mm3dcore -I../depui -I../qtui -I../implui -I../ -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
+AM_CPPFLAGS = $(CORE_PROFILE) -DQT_COMPAT -Wall -I../libmm3d -I../mm3dcore -I../depui -I../qtui -I../implui -I../ -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
 
 %.moc.cc: %.h
 		$(QT_MOC) -o $@ $<

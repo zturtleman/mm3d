@@ -1,3 +1,32 @@
+AC_DEFUN([KSW_IS_PROFILE],
+[
+  AC_REQUIRE([AC_PROG_CC])
+
+  AC_MSG_CHECKING(for profile)
+
+  AC_ARG_ENABLE([profile],
+    [  --enable-profile=yes/no/core       Specify "yes" or "core" to enable profiling.])
+
+  is_profile=no
+
+  PROFILE=
+  CORE_PROFILE=
+
+  if test x"$enable_profile" = xyes; then
+     PROFILE=-pg
+     CORE_PROFILE=-pg
+     is_profile=yes
+  elif test x"$enable_profile" = xcore; then
+     CORE_PROFILE=-pg
+     is_profile="yes (core)"
+  fi
+
+  AC_DEFINE( PROFILE )
+  AC_DEFINE( CORE_PROFILE )
+
+  AC_MSG_RESULT($is_profile)
+])
+
 AC_DEFUN([KSW_IS_DEBUG],
 [
   AC_REQUIRE([AC_PROG_CC])
@@ -17,9 +46,13 @@ AC_DEFUN([KSW_IS_DEBUG],
     CXXFLAGS="${CFLAGS}"
     LDFLAGS=""
   else
-    CFLAGS="-O2 -fomit-frame-pointer -fno-math-errno"
+    omit_frame=
+    if test x"${CORE_PROFILE}" = "x"; then
+       omit_frame="-fomit-frame-pointer"
+    fi
+    CFLAGS="-O2 ${omit_frame} -fno-math-errno"
     CXXFLAGS="${CFLAGS}"
-    LDFLAGS="-fomit-frame-pointer -fno-math-errno"
+    LDFLAGS="${omit_frame} -fno-math-errno"
   fi
 
    AC_TRY_LINK([#include <stdio.h>], , [
