@@ -7,7 +7,6 @@ For 1.4:
 
    Warn if saving MD2 or MD3 with faces that are not part of a group
    Fix relative paths when saving in a different directory
-   Fix normal calculation performance
    Profile 1.3.4 vs. 1.3.5 on unaccelerated config
    Export selected (??)
       Use copycmd.cc's code to make a createModelFromSelected function

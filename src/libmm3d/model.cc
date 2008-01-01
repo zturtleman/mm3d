@@ -4077,20 +4077,26 @@ void Model::calculateNormals()
 {
    LOG_PROFILE();
 
-   map< unsigned,vector<NormAngleAccumT> * > acl_normmap;
+   vector< vector<NormAngleAccumT> > acl_normmap;
+   acl_normmap.resize( m_vertices.size() );
 
    // accumulate normals
-   for ( unsigned t = 0; t < m_triangles.size(); t++ )
+   std::vector<Triangle *>::iterator tri_it;
+
+   for ( tri_it = m_triangles.begin(); tri_it != m_triangles.end(); ++tri_it )
    {
-      float x1 = m_vertices[m_triangles[t]->m_vertexIndices[0]]->m_coord[0];
-      float y1 = m_vertices[m_triangles[t]->m_vertexIndices[0]]->m_coord[1];
-      float z1 = m_vertices[m_triangles[t]->m_vertexIndices[0]]->m_coord[2];
-      float x2 = m_vertices[m_triangles[t]->m_vertexIndices[1]]->m_coord[0];
-      float y2 = m_vertices[m_triangles[t]->m_vertexIndices[1]]->m_coord[1];
-      float z2 = m_vertices[m_triangles[t]->m_vertexIndices[1]]->m_coord[2];
-      float x3 = m_vertices[m_triangles[t]->m_vertexIndices[2]]->m_coord[0];
-      float y3 = m_vertices[m_triangles[t]->m_vertexIndices[2]]->m_coord[1];
-      float z3 = m_vertices[m_triangles[t]->m_vertexIndices[2]]->m_coord[2];
+      Triangle * tri = *tri_it;
+      tri->m_marked = false;
+
+      float x1 = m_vertices[tri->m_vertexIndices[0]]->m_coord[0];
+      float y1 = m_vertices[tri->m_vertexIndices[0]]->m_coord[1];
+      float z1 = m_vertices[tri->m_vertexIndices[0]]->m_coord[2];
+      float x2 = m_vertices[tri->m_vertexIndices[1]]->m_coord[0];
+      float y2 = m_vertices[tri->m_vertexIndices[1]]->m_coord[1];
+      float z2 = m_vertices[tri->m_vertexIndices[1]]->m_coord[2];
+      float x3 = m_vertices[tri->m_vertexIndices[2]]->m_coord[0];
+      float y3 = m_vertices[tri->m_vertexIndices[2]]->m_coord[1];
+      float z3 = m_vertices[tri->m_vertexIndices[2]]->m_coord[2];
 
       float A = y1 * (z2 - z3) + y2 * (z3 - z1) + y3 * (z1 - z2);
       float B = z1 * (x2 - x3) + z2 * (x3 - x1) + z3 * (x1 - x2);
@@ -4103,23 +4109,15 @@ void Model::calculateNormals()
       B = B / len;
       C = C / len;
 
-      m_triangles[ t ]->m_flatNormals[0] = A;
-      m_triangles[ t ]->m_flatNormals[1] = B;
-      m_triangles[ t ]->m_flatNormals[2] = C;
+      tri->m_flatNormals[0] = A;
+      tri->m_flatNormals[1] = B;
+      tri->m_flatNormals[2] = C;
 
       // Accumulate for smooth normal, weighted by face angle
       for ( int vert = 0; vert < 3; vert++ )
       {
-         unsigned index = m_triangles[t]->m_vertexIndices[vert];
-         vector< NormAngleAccumT > * acl;
-         if ( acl_normmap.find( index ) == acl_normmap.end() )
-         {
-            acl = new vector< NormAngleAccumT >;
-         }
-         else
-         {
-            acl = acl_normmap[index];
-         }
+         unsigned index = tri->m_vertexIndices[vert];
+         vector< NormAngleAccumT > & acl = acl_normmap[index];
 
          float ax = 0.0f;
          float ay = 0.0f;
@@ -4169,21 +4167,12 @@ void Model::calculateNormals()
          aacc.norm[2] = C;
          aacc.angle   = fabs( acos( (ax*bx + ay*by + az*bz) / (ad * bd) ) );
 
-         acl->push_back( aacc );
-
-         acl_normmap[index] = acl;
+         acl.push_back( aacc );
       }
    }
 
-   map< unsigned,NormAccumT > normmap;
-
    // Apply accumulated normals to triangles
    unsigned t;
-
-   for ( t = 0; t < m_triangles.size(); t++ )
-   {
-      m_triangles[t]->m_marked = false;
-   }
 
    for ( unsigned g = 0; g < m_groups.size(); g++ )
    {
@@ -4197,27 +4186,28 @@ void Model::calculateNormals()
       {
          t = m_groups[g]->m_triangleIndices[t2];
 
-         m_triangles[t]->m_marked = true;
+         Triangle * tri = m_triangles[t];
+         tri->m_marked = true;
          for ( int vert = 0; vert < 3; vert++ )
          {
-            unsigned v = m_triangles[t]->m_vertexIndices[vert];
+            unsigned v = tri->m_vertexIndices[vert];
 
-            if ( acl_normmap.find( v ) != acl_normmap.end() )
             {
-               vector< NormAngleAccumT > * acl = acl_normmap[v];
+               vector< NormAngleAccumT > & acl = acl_normmap[v];
 
                float A = 0.0f;
                float B = 0.0f;
                float C = 0.0f;
 
-               unsigned count = acl->size();
+               unsigned count = acl.size();
                unsigned n;
 
+               // Use const_iterator instead?
                for ( n = 0; n < count; n++ )
                {
-                  float crossprod =   m_triangles[t]->m_flatNormals[0] * (*acl)[n].norm[0] 
-                     + m_triangles[t]->m_flatNormals[1] * (*acl)[n].norm[1] 
-                     + m_triangles[t]->m_flatNormals[2] * (*acl)[n].norm[2];
+                  float crossprod = tri->m_flatNormals[0] * acl[n].norm[0] 
+                     + tri->m_flatNormals[1] * acl[n].norm[1] 
+                     + tri->m_flatNormals[2] * acl[n].norm[2];
 
                   // slight adjustment in case we go over 1.0
                   if ( crossprod >= 0.99999f )
@@ -4229,9 +4219,9 @@ void Model::calculateNormals()
                   angle /= PIOVER180;
                   if ( angle <= maxAngle )
                   {
-                     A += (*acl)[n].norm[0];
-                     B += (*acl)[n].norm[1];
-                     C += (*acl)[n].norm[2];
+                     A += acl[n].norm[0];
+                     B += acl[n].norm[1];
+                     C += acl[n].norm[2];
                   }
                }
 
@@ -4239,47 +4229,45 @@ void Model::calculateNormals()
 
                if ( len >= 0.0001f )
                {
-                  m_triangles[ t ]->m_vertexNormals[vert][0] = A / len;
-                  m_triangles[ t ]->m_vertexNormals[vert][1] = B / len;
-                  m_triangles[ t ]->m_vertexNormals[vert][2] = C / len;
+                  tri->m_vertexNormals[vert][0] = A / len;
+                  tri->m_vertexNormals[vert][1] = B / len;
+                  tri->m_vertexNormals[vert][2] = C / len;
                }
                else
                {
-                  m_triangles[ t ]->m_vertexNormals[vert][0] = m_triangles[t]->m_flatNormals[0];
-                  m_triangles[ t ]->m_vertexNormals[vert][1] = m_triangles[t]->m_flatNormals[1];
-                  m_triangles[ t ]->m_vertexNormals[vert][2] = m_triangles[t]->m_flatNormals[2];
+                  tri->m_vertexNormals[vert][0] = tri->m_flatNormals[0];
+                  tri->m_vertexNormals[vert][1] = tri->m_flatNormals[1];
+                  tri->m_vertexNormals[vert][2] = tri->m_flatNormals[2];
                }
             }
          }
       }
    }
 
-   for ( t = 0; t < m_triangles.size(); t++ )
+   for ( tri_it = m_triangles.begin(); tri_it != m_triangles.end(); ++tri_it )
    {
-      if ( !m_triangles[t]->m_marked )
+      Triangle * tri = *tri_it;
+      if ( !tri->m_marked )
       {
-         m_triangles[t]->m_marked = true;
-
          for ( int vert = 0; vert < 3; vert++ )
          {
-            unsigned v = m_triangles[t]->m_vertexIndices[vert];
+            unsigned v = tri->m_vertexIndices[vert];
 
-            if ( acl_normmap.find( v ) != acl_normmap.end() )
             {
-               vector< NormAngleAccumT > * acl = acl_normmap[v];
+               vector< NormAngleAccumT > & acl = acl_normmap[v];
 
                float A = 0.0f;
                float B = 0.0f;
                float C = 0.0f;
 
-               unsigned count = acl->size();
+               unsigned count = acl.size();
                unsigned n;
 
                for ( n = 0; n < count; n++ )
                {
-                  float crossprod =   m_triangles[t]->m_flatNormals[0] * (*acl)[n].norm[0] 
-                     + m_triangles[t]->m_flatNormals[1] * (*acl)[n].norm[1] 
-                     + m_triangles[t]->m_flatNormals[2] * (*acl)[n].norm[2];
+                  float crossprod = tri->m_flatNormals[0] * acl[n].norm[0] 
+                     + tri->m_flatNormals[1] * acl[n].norm[1] 
+                     + tri->m_flatNormals[2] * acl[n].norm[2];
 
                   // slight adjustment in case we go over 1.0
                   if ( crossprod >= 0.99999f )
@@ -4291,9 +4279,9 @@ void Model::calculateNormals()
                   angle /= PIOVER180;
                   if ( angle <= 45.0f )
                   {
-                     A += (*acl)[n].norm[0];
-                     B += (*acl)[n].norm[1];
-                     C += (*acl)[n].norm[2];
+                     A += acl[n].norm[0];
+                     B += acl[n].norm[1];
+                     C += acl[n].norm[2];
                   }
                }
 
@@ -4305,19 +4293,13 @@ void Model::calculateNormals()
                acc.norm[1] = B / len;
                acc.norm[2] = C / len;
 
-               m_triangles[ t ]->m_vertexNormals[vert][0] = acc.norm[0];
-               m_triangles[ t ]->m_vertexNormals[vert][1] = acc.norm[1];
-               m_triangles[ t ]->m_vertexNormals[vert][2] = acc.norm[2];
+               tri->m_vertexNormals[vert][0] = acc.norm[0];
+               tri->m_vertexNormals[vert][1] = acc.norm[1];
+               tri->m_vertexNormals[vert][2] = acc.norm[2];
             }
          }
       }
-   }
-
-
-   map< unsigned,vector<NormAngleAccumT> * >::iterator acl_it;
-   for ( acl_it = acl_normmap.begin(); acl_it != acl_normmap.end(); acl_it++ )
-   {
-      delete (*acl_it).second;
+      tri->m_marked = false;
    }
 
    for ( unsigned m = 0; m < m_groups.size(); m++ )
@@ -4325,7 +4307,7 @@ void Model::calculateNormals()
       double percent = (double) m_groups[m]->m_smooth / 255.0;
       for ( unsigned t = 0; t < m_groups[m]->m_triangleIndices.size(); t++ )
       {
-         Triangle * triangle = m_triangles[ m_groups[m]->m_triangleIndices[t] ];
+         Triangle * tri = m_triangles[ m_groups[m]->m_triangleIndices[t] ];
 
          for ( int v = 0; v < 3; v++ )
          {
@@ -4333,24 +4315,19 @@ void Model::calculateNormals()
             {
                for ( unsigned i = 0; i < 3; i++ )
                {
-                  triangle->m_finalNormals[v][i] = triangle->m_flatNormals[i]
-                     + ( triangle->m_vertexNormals[v][i] - triangle->m_flatNormals[i] ) * percent;
+                  tri->m_finalNormals[v][i] = tri->m_flatNormals[i]
+                     + ( tri->m_vertexNormals[v][i] - tri->m_flatNormals[i] ) * percent;
                }
-               normalize3( triangle->m_vertexNormals[v] );
+               normalize3( tri->m_vertexNormals[v] );
             }
             else
             {
-               triangle->m_finalNormals[v][0] = triangle->m_flatNormals[0];
-               triangle->m_finalNormals[v][1] = triangle->m_flatNormals[1];
-               triangle->m_finalNormals[v][2] = triangle->m_flatNormals[2];
+               tri->m_finalNormals[v][0] = tri->m_flatNormals[0];
+               tri->m_finalNormals[v][1] = tri->m_flatNormals[1];
+               tri->m_finalNormals[v][2] = tri->m_flatNormals[2];
             }
          }
       }
-   }
-
-   for ( t = 0; t < m_triangles.size(); t++ )
-   {
-      m_triangles[t]->m_marked = false;
    }
 
    m_validNormals = true;
