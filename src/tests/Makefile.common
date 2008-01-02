@@ -1,0 +1,16 @@
+CXX = g++
+CXXFLAGS = -DMM3D_EDIT -I../../libmm3d -I.. -I../../../ -I/usr/include/qt4 -Wall -g
+LFLAGS = -lQtTest -lQtCore -Wall -g
+
+.cc.o:
+	g++ $(CXXFLAGS) -c $<
+
+.cc.unit:
+	g++ $(CXXFLAGS) $(LFLAGS) -o $*.unit $< $(LIB)
+
+.cc.moc:
+	moc-qt4 $< > $*.moc
+
+.SUFFIXES: .cc .o .moc
+.SUFFIXES: .cc .o .moc .unit .prof
+.PHONY: all test check clean

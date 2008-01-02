@@ -1,0 +1,31 @@
+Pre-reqs:
+   Diff must work
+   Load/Save must work
+
+Other tests:
+   glmath
+   memutil (local_ptr, local_array, release_ptr, file_closer)
+   other filters
+   model functions (side effect of diff?)
+   undo
+   undo manager
+   bsptree
+   animation
+   portability functions
+   misc
+   model utils
+   weld
+   mesh
+   filter manager
+   texture filters
+   texture manager
+   util
+   translation code
+   texture scaling
+
+Other functionality:
+   Viewport/tool interaction
+   tools
+   commands
+   pluginmgr
+   preferences
