@@ -917,6 +917,23 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
                   loadMatrix.setTranslation( pos[0], pos[1], pos[2] );
                }
 
+               Matrix invMatrix;
+               invMatrix.loadIdentity();
+               if ( parentTag >= 0 )
+               {
+                  m_model->getPointCoords( parentTag, pos );
+                  m_model->getPointOrientation( parentTag, rot );
+
+                  invMatrix.setRotation( rot );
+                  invMatrix.setTranslation( pos[0], pos[1], pos[2] );
+               }
+               else
+               {
+                  invMatrix.setRotationInDegrees( -90, -90, 0 );
+               }
+
+               invMatrix = invMatrix.getInverse();
+
                for ( int vert = 0; vert < meshVertexCount; vert++ )
                {
                   if ( inAnim )
@@ -938,28 +955,12 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
                      meshVec[2] = coord[2];
                      meshVec[3] = 1;
 
-                     Matrix invMatrix;
-                     invMatrix.loadIdentity();
-                     if ( parentTag >= 0 )
-                     {
-                        m_model->getPointCoords( parentTag, pos );
-                        m_model->getPointOrientation( parentTag, rot );
-
-                        invMatrix.setRotation( rot );
-                        invMatrix.setTranslation( pos[0], pos[1], pos[2] );
-                     }
-                     else
-                     {
-                        invMatrix.setRotationInDegrees( -90, -90, 0 );
-                     }
-
-                     invMatrix = invMatrix.getInverse();
                      invMatrix.apply( meshVec );
                   }
 
                   meshVec[3] = 1;
                   loadMatrix.apply( meshVec );
-                  m_model->setFrameAnimVertexCoords( animIndex, frame, m_meshVecInfos[mesh][vert].id, meshVec[0], meshVec[1], meshVec[2] );
+                  m_model->setQuickFrameAnimVertexCoords( animIndex, frame, m_meshVecInfos[mesh][vert].id, meshVec[0], meshVec[1], meshVec[2] );
                }
             }
          }

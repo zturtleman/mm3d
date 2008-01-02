@@ -540,6 +540,34 @@ bool Model::setFrameAnimVertexCoords( const unsigned & anim, const unsigned & fr
    }
 }
 
+bool Model::setQuickFrameAnimVertexCoords( const unsigned & anim, const unsigned & frame, const unsigned & vertex,
+      const double & x, const double & y, const double & z )
+{
+   if ( anim < m_frameAnims.size() 
+         && frame < m_frameAnims[anim]->m_frameData.size()
+         && vertex < m_vertices.size() )
+   {
+      if ( vertex >= m_frameAnims[anim]->m_frameData[frame]->m_frameVertices->size() )
+      {
+         log_warning( "resize the animation vertex list before calling setQuickFrameAnimVertexCoords\n" );
+         setFrameAnimVertexCount( vertex );
+      }
+
+      FrameAnimVertex * fav = (*m_frameAnims[anim]->m_frameData[frame]->m_frameVertices)[vertex];
+
+      fav->m_coord[0] = x;
+      fav->m_coord[1] = y;
+      fav->m_coord[2] = z;
+
+      m_frameAnims[anim]->m_validNormals = false;
+      return true;
+   }
+   else
+   {
+      return false;
+   }
+}
+
 int Model::copyAnimation( const AnimationModeE & mode, const unsigned & anim, const char * newName )
 {
    int num = -1;

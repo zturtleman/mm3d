@@ -31,10 +31,6 @@ Matrix::Matrix()
    loadIdentity();
 }
 
-Matrix::~Matrix()
-{
-}
-
 void Matrix::loadIdentity()
 {
    memset( m_val, 0, sizeof(m_val) );
@@ -54,16 +50,6 @@ void Matrix::show() const
       }
       printf( "\n" );
    }
-}
-
-void Matrix::set( int r, int c, double val )
-{
-   m_val[ (r<<2) + c ] = val;
-}
-
-double Matrix::get( int r, int c ) const
-{
-   return m_val[ (r<<2) + c ];
 }
 
 void Matrix::setTranslation( const double * vector )
@@ -564,9 +550,10 @@ float Matrix::getDeterminant() const
 {
    float result = 0;
 
+   Matrix msub3;
    for ( int n = 0, i = 1; n < 4; n++, i *= -1 )
    {
-      Matrix msub3 = getSubMatrix( 0, n );
+      getSubMatrix( msub3, 0, n );
 
       float det = msub3.getDeterminant3();
       result += m_val[n] * det * i;
@@ -575,9 +562,8 @@ float Matrix::getDeterminant() const
    return( result );
 }
 
-Matrix Matrix::getSubMatrix( int i, int j ) const
+void Matrix::getSubMatrix( Matrix & ret, int i, int j ) const
 {
-   Matrix ret;
    for( int di = 0; di < 3; di ++ ) 
    {
       for( int dj = 0; dj < 3; dj ++ ) 
@@ -588,8 +574,6 @@ Matrix Matrix::getSubMatrix( int i, int j ) const
          ret.set( di, dj, m_val[si * 4 + sj] );
       }
    }
-
-   return ret;
 }
 
 Matrix Matrix::getInverse() const
@@ -603,12 +587,13 @@ Matrix Matrix::getInverse() const
       return mr;
    }
 
+   Matrix mtemp;
    for ( int i = 0; i < 4; i++ )
    {
       for ( int j = 0; j < 4; j++ )
       {
          int sign = 1 - ( (i +j) % 2 ) * 2;
-         Matrix mtemp = getSubMatrix( i, j );
+         getSubMatrix( mtemp, i, j );
          mr.set( j, i, ( mtemp.getDeterminant3() * sign ) / mdet);
       }
    }

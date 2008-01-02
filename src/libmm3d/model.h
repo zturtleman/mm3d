@@ -1054,6 +1054,10 @@ class Model
       bool getFrameAnimVertexNormal( const unsigned & anim, const unsigned & frame, const unsigned & vertex, 
             double & x, double & y, double & z );
 
+      // Not undo-able
+      bool setQuickFrameAnimVertexCoords( const unsigned & anim, const unsigned & frame, const unsigned & vertex, 
+            const double & x, const double & y, const double & z );
+
       bool setFrameAnimPointCoords( const unsigned & anim, const unsigned & frame, const unsigned & point, 
             const double & x, const double & y, const double & z );
       bool getFrameAnimPointCoords( const unsigned & anim, const unsigned & frame, const unsigned & point, 

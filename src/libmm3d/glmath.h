@@ -37,12 +37,12 @@ class Matrix
 {
    public:
       Matrix();
-      ~Matrix();
+      ~Matrix() {};
 
       void loadIdentity();
       void show() const;
-      void set( int r, int c, double val );
-      double get( int r, int c ) const;
+      void set( int r, int c, double val ) { m_val[ (r<<2) + c ] = val; }
+      double get( int r, int c ) const { return m_val[ (r<<2) + c ]; }
 
       void setTranslation( const Vector & vector );
       void setTranslation( const double * vector );
@@ -87,7 +87,7 @@ class Matrix
       float getDeterminant() const;
       float getDeterminant3() const;
       Matrix getInverse() const;
-      Matrix getSubMatrix( int i, int j ) const;
+      void getSubMatrix( Matrix & ret, int i, int j ) const;
 
       friend Matrix operator*( const Matrix & lhs, const Matrix & rhs );
       friend Vector operator*( const Vector & lhs, const Matrix & rhs );
