@@ -37,13 +37,11 @@ Matrix::~Matrix()
 
 void Matrix::loadIdentity()
 {
-   for ( int r = 0; r < 4; r++ )
-   {
-      for ( int c = 0; c < 4; c++ )
-      {
-         m_val[ (r<<2) + c ] = (c==r) ? 1.0 : 0.0;
-      }
-   }
+   memset( m_val, 0, sizeof(m_val) );
+   m_val[0] = 1.0;
+   m_val[5] = 1.0;
+   m_val[10] = 1.0;
+   m_val[15] = 1.0;
 }
 
 void Matrix::show() const

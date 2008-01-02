@@ -69,17 +69,21 @@ typedef struct _SplitEdges_t
 #endif // MM3D_EDIT
 
 // used to calculate smoothed normals in calculateNormals
-typedef struct _NormAccum_t
+class NormAccum
 {
+public:
+   NormAccum() { memset( norm, 0, sizeof(norm) ); }
    float norm[3];
-} NormAccumT;
+};
 
 // used to calculate smoothed normals in calculateNormals
-typedef struct _NormAngleAccum_t
+class NormAngleAccum
 {
+public:
+   NormAngleAccum() { memset( norm, 0, sizeof(norm) ); angle = 0.0f; }
    float norm[3];
    float angle;
-} NormAngleAccumT;
+};
 
 std::string Model::s_lastFilterError = "No error";
 static int _allocated = 0;
@@ -4077,7 +4081,7 @@ void Model::calculateNormals()
 {
    LOG_PROFILE();
 
-   vector< vector<NormAngleAccumT> > acl_normmap;
+   vector< vector<NormAngleAccum> > acl_normmap;
    acl_normmap.resize( m_vertices.size() );
 
    // accumulate normals
@@ -4117,7 +4121,7 @@ void Model::calculateNormals()
       for ( int vert = 0; vert < 3; vert++ )
       {
          unsigned index = tri->m_vertexIndices[vert];
-         vector< NormAngleAccumT > & acl = acl_normmap[index];
+         vector< NormAngleAccum > & acl = acl_normmap[index];
 
          float ax = 0.0f;
          float ay = 0.0f;
@@ -4161,7 +4165,7 @@ void Model::calculateNormals()
          float ad = sqrt( ax*ax + ay*ay + az*az );
          float bd = sqrt( bx*bx + by*by + bz*bz );
 
-         NormAngleAccumT aacc;
+         NormAngleAccum aacc;
          aacc.norm[0] = A;
          aacc.norm[1] = B;
          aacc.norm[2] = C;
@@ -4193,7 +4197,7 @@ void Model::calculateNormals()
             unsigned v = tri->m_vertexIndices[vert];
 
             {
-               vector< NormAngleAccumT > & acl = acl_normmap[v];
+               vector< NormAngleAccum > & acl = acl_normmap[v];
 
                float A = 0.0f;
                float B = 0.0f;
@@ -4254,7 +4258,7 @@ void Model::calculateNormals()
             unsigned v = tri->m_vertexIndices[vert];
 
             {
-               vector< NormAngleAccumT > & acl = acl_normmap[v];
+               vector< NormAngleAccum > & acl = acl_normmap[v];
 
                float A = 0.0f;
                float B = 0.0f;
@@ -4287,7 +4291,7 @@ void Model::calculateNormals()
 
                float len = sqrt( A*A + B*B + C*C );
 
-               NormAccumT acc;
+               NormAccum acc;
 
                acc.norm[0] = A / len;
                acc.norm[1] = B / len;
@@ -4318,7 +4322,7 @@ void Model::calculateNormals()
                   tri->m_finalNormals[v][i] = tri->m_flatNormals[i]
                      + ( tri->m_vertexNormals[v][i] - tri->m_flatNormals[i] ) * percent;
                }
-               normalize3( tri->m_vertexNormals[v] );
+               normalize3( tri->m_finalNormals[v] );
             }
             else
             {
@@ -4360,23 +4364,27 @@ void Model::calculateFrameNormals( const unsigned & anim )
 
       for ( unsigned frame = 0; frame < fa->m_frameData.size(); frame++ )
       {
-         map<unsigned,NormAccumT> normmap;
-
-         // log_debug( "frame %d, triangles %d, vertices %d, frame vertices %d\n", 
-         //       frame, m_triangles.size(), m_vertices.size(), fa->m_frameData[frame]->m_frameVertices->size() );
+         FrameAnimVertexList & favl = *fa->m_frameData[frame]->m_frameVertices;
+         for ( unsigned v = 0; v < m_vertices.size(); v++ )
+         {
+            favl[v]->m_normal[0] = 0.0f;
+            favl[v]->m_normal[1] = 0.0f;
+            favl[v]->m_normal[2] = 0.0f;
+         }
 
          // accumulate normals
          for ( unsigned t = 0; t < m_triangles.size(); t++ )
          {
-            float x1 = (*fa->m_frameData[frame]->m_frameVertices)[m_triangles[t]->m_vertexIndices[0]]->m_coord[0];
-            float y1 = (*fa->m_frameData[frame]->m_frameVertices)[m_triangles[t]->m_vertexIndices[0]]->m_coord[1];
-            float z1 = (*fa->m_frameData[frame]->m_frameVertices)[m_triangles[t]->m_vertexIndices[0]]->m_coord[2];
-            float x2 = (*fa->m_frameData[frame]->m_frameVertices)[m_triangles[t]->m_vertexIndices[1]]->m_coord[0];
-            float y2 = (*fa->m_frameData[frame]->m_frameVertices)[m_triangles[t]->m_vertexIndices[1]]->m_coord[1];
-            float z2 = (*fa->m_frameData[frame]->m_frameVertices)[m_triangles[t]->m_vertexIndices[1]]->m_coord[2];
-            float x3 = (*fa->m_frameData[frame]->m_frameVertices)[m_triangles[t]->m_vertexIndices[2]]->m_coord[0];
-            float y3 = (*fa->m_frameData[frame]->m_frameVertices)[m_triangles[t]->m_vertexIndices[2]]->m_coord[1];
-            float z3 = (*fa->m_frameData[frame]->m_frameVertices)[m_triangles[t]->m_vertexIndices[2]]->m_coord[2];
+            Triangle * tri = m_triangles[t];
+            float x1 = favl[tri->m_vertexIndices[0]]->m_coord[0];
+            float y1 = favl[tri->m_vertexIndices[0]]->m_coord[1];
+            float z1 = favl[tri->m_vertexIndices[0]]->m_coord[2];
+            float x2 = favl[tri->m_vertexIndices[1]]->m_coord[0];
+            float y2 = favl[tri->m_vertexIndices[1]]->m_coord[1];
+            float z2 = favl[tri->m_vertexIndices[1]]->m_coord[2];
+            float x3 = favl[tri->m_vertexIndices[2]]->m_coord[0];
+            float y3 = favl[tri->m_vertexIndices[2]]->m_coord[1];
+            float z3 = favl[tri->m_vertexIndices[2]]->m_coord[2];
 
             float A = y1 * (z2 - z3) + y2 * (z3 - z1) + y3 * (z1 - z2);
             float B = z1 * (x2 - x3) + z2 * (x3 - x1) + z3 * (x1 - x2);
@@ -4392,50 +4400,17 @@ void Model::calculateFrameNormals( const unsigned & anim )
             // Accumulate for smooth normal
             for ( int vert = 0; vert < 3; vert++ )
             {
-               unsigned index = m_triangles[t]->m_vertexIndices[vert];
-               NormAccumT acc;
-               if ( normmap.find( index ) == normmap.end() )
-               {
-                  acc.norm[0] = 0;
-                  acc.norm[1] = 0;
-                  acc.norm[2] = 0;
-               }
-               else
-               {
-                  acc = normmap[index];
-               }
-
-               acc.norm[0] += A;
-               acc.norm[1] += B;
-               acc.norm[2] += C;
-
-               normmap[index] = acc;
+               unsigned v = tri->m_vertexIndices[vert];
+               favl[v]->m_normal[0] += A;
+               favl[v]->m_normal[1] += B;
+               favl[v]->m_normal[2] += C;
             }
          }
 
          // Normalize the accumulated normals
          for ( unsigned v = 0; v < m_vertices.size(); v++ )
          {
-            if ( normmap.find( v ) != normmap.end() )
-            {
-               float len = sqrt(
-                     normmap[v].norm[0] * normmap[v].norm[0] +
-                     normmap[v].norm[1] * normmap[v].norm[1] +
-                     normmap[v].norm[2] * normmap[v].norm[2]
-                     );
-
-               normmap[v].norm[0] /= len;
-               normmap[v].norm[1] /= len;
-               normmap[v].norm[2] /= len;
-            }
-         }
-
-         // Apply accumulated normals to vertices
-         for ( unsigned vert = 0; vert < m_vertices.size(); vert++ )
-         {
-            (*fa->m_frameData[frame]->m_frameVertices)[vert]->m_normal[0] = normmap[vert].norm[0];
-            (*fa->m_frameData[frame]->m_frameVertices)[vert]->m_normal[1] = normmap[vert].norm[1];
-            (*fa->m_frameData[frame]->m_frameVertices)[vert]->m_normal[2] = normmap[vert].norm[2];
+            normalize3(favl[v]->m_normal);
          }
 
          fa->m_validNormals = true;
