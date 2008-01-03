@@ -34,6 +34,7 @@
 #include "log.h"
 #include "modeltest.h"
 #include "translate.h"
+#include "mlocale.h"
 
 #include "texturetest.h"
 
@@ -97,6 +98,8 @@ static void _print_help( const char * progname )
    printf("      --script [file]    Run script [file] on models\n" );
 #endif // HAVE_LUALIB
    printf("      --convert [format] Save models to format [format]\n" );
+   printf("                         \n" );
+   printf("      --lang [code]      Use language [code] instead of system default\n" );
    printf("                         \n" );
    printf("      --no-plugins       Disable all plugins\n" );
    printf("      --no-plugin [foo]  Disable plugin [foo]\n" );
@@ -213,6 +216,26 @@ int init_cmdline( int & argc, char * argv[] )
 
             cmdline_runcommand = true;
             cmdline_runui      = false;
+         }
+         else if ( strncmp( argv[t], "--language", 10 ) == 0 )
+         {
+            if ( argv[t][10] == '=' )
+            {
+               mlocale_set( &argv[t][11] );
+            }
+            else
+            {
+               t++;
+               if ( t < argc )
+               {
+                  mlocale_set( argv[t] );
+               }
+               else
+               {
+                  fprintf( stderr, "Option %s requires argument of file format\n", argv[t-1] );
+                  exit( -1 );
+               }
+            }
          }
          else if ( strncmp( argv[t], "--script", 8 ) == 0 )
          {

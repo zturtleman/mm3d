@@ -67,6 +67,9 @@ int main( int argc, char * argv[] )
    init_sysconf();
    transimp_install_translator();
 
+   init_prefs();
+   init_cmdline( argc, argv );
+
    ui_prep( argc, argv );
 
    {
@@ -74,9 +77,6 @@ int main( int argc, char * argv[] )
 
       {
          LOG_PROFILE_STR( "Initialize" );
-
-         init_prefs();
-         init_cmdline( argc, argv );
 
          // set up keyboard shortcuts
          std::string keycfgFile = getMm3dHomeDirectory();

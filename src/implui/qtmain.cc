@@ -43,6 +43,8 @@
 #include "3dmprefs.h"
 #include "cmdline.h"
 
+#include "mlocale.h"
+
 static QApplication * s_app = NULL;
 static QTranslator  * s_qtXlat = NULL;
 static QTranslator  * s_mm3dXlat = NULL;
@@ -107,11 +109,16 @@ int ui_prep( int argc, char * argv[] )
 {
    s_app = new QApplication( argc, argv );
 
+   QString loc = mlocale_get();
+
+   if ( loc == "" )
+   {
 #ifdef HAVE_QT4
-   QString loc = QLocale::system().name();
+      loc = QLocale::system().name();
 #else
-   QString loc = QTextCodec::locale();
+      loc = QTextCodec::locale();
 #endif
+   }
 
    // General Qt translations
    s_qtXlat = new QTranslator( 0 );

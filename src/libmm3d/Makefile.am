@@ -23,6 +23,7 @@ libmm3d_HFILES = \
 	md3filter.h \
 	mesh.h \
 	misc.h \
+	mlocale.h \
 	mm3dconfig.h \
 	mm3dfilter.h \
 	mm3dport.h \
@@ -65,6 +66,7 @@ libmm3d_a_SOURCES = \
 	lwofilter.cc \
 	mesh.cc \
 	misc.cc \
+	mlocale.cc \
 	model.cc model_anim.cc model_bool.cc model_draw.cc model_group.cc model_influence.cc model_inner.cc model_insert.cc model_meta.cc model_ops.cc model_proj.cc model_select.cc model_texture.cc model_test.cc \
 	modelfilter.cc \
 	modelstatus.cc \

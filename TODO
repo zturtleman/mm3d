@@ -1,6 +1,5 @@
 For 1.4:
    Bump mm3dfilter version
-   Add new filters to Windows Installer
    Language command line argument
 
    Update ad3dsfilter with canExport
