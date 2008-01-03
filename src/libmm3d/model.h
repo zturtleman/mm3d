@@ -1198,6 +1198,8 @@ class Model
       void booleanOperation( BooleanOpE op, 
             std::list<int> & listA, std::list<int> & listB );
 
+      Model * copySelected();
+
       // A BSP tree is calculated for triangles that have textures with an alpha
       // channel (transparency). It is used to determine in what order triangles
       // must be rendered to get the proper blending results (triangles that are

@@ -3,11 +3,11 @@ For 1.4:
 
    Update ad3dsfilter with canExport
 
+   Make sure unknown texture types are handled (for adding gradients)
    Fix relative paths when saving in a different directory
    Profile 1.3.4 vs. 1.3.5 on unaccelerated config
    Export selected (??)
-      Use copycmd.cc's code to make a createModelFromSelected function
-   Copy/paste does not account for multiple bone joints, free vertices, etc...
+   Copy/paste does not account for multiple bone joints, texture projections, etc...
    Texture paint segfault
       Segfault (dvh bb post on 8/18)
    Exact position of rotate point for rotate tool
