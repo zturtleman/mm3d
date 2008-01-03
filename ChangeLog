@@ -1,4 +1,6 @@
 Changes for 1.3.7
+   Report error if saving MD2 or MD3 with faces that are not assigned
+      to a group
    Performance fixes for normal calculation (about 40% speed improvement)
    Added --enable-profile to ./configure
    Added --language to override the system locale

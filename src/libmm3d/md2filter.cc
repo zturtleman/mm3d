@@ -28,6 +28,7 @@
 #include "misc.h"
 #include "log.h"
 #include "triprim.h"
+#include "translate.h"
 #include "modelstatus.h"
 
 #include "mm3dport.h"
@@ -627,19 +628,32 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
 {
    if ( model && filename && filename[0] )
    {
-      int groupTexture = -1;
-      int gcount = model->getGroupCount();
-      for ( int g = 0; g < gcount; g++ )
       {
-         int tex = model->getGroupTextureId( g );
-         if ( tex >= 0 )
+         int groupTexture = -1;
+         int gcount = model->getGroupCount();
+         for ( int g = 0; g < gcount; g++ )
          {
-            if ( groupTexture >= 0 && groupTexture != tex ) {
-               model->setFilterSpecificError( "MD2 requires all groups "
-                     "to have the same material." );
+            int tex = model->getGroupTextureId( g );
+            if ( tex >= 0 )
+            {
+               if ( groupTexture >= 0 && groupTexture != tex ) {
+                  model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "MD2 requires all groups to have the same material." ) ).c_str() );
+                  return Model::ERROR_FILTER_SPECIFIC;
+               }
+               groupTexture = tex;
+            }
+         }
+      }
+
+      {
+         unsigned tcount = model->getTriangleCount();
+         for ( unsigned t = 0; t < tcount; ++t )
+         {
+            if ( model->getTriangleGroup( t ) < 0 )
+            {
+               model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "MD2 export requires all faces to be grouped." ) ).c_str() );
                return Model::ERROR_FILTER_SPECIFIC;
             }
-            groupTexture = tex;
          }
       }
 

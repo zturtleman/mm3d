@@ -1670,10 +1670,14 @@ Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filen
 {
    if ( model && filename && filename[0] )
    {
-      if ( model->getGroupCount() == 0 )
+      unsigned tcount = model->getTriangleCount();
+      for ( unsigned t = 0; t < tcount; ++t )
       {
-         model->setFilterSpecificError( "MD3 export requires faces to be grouped." );
-         return Model::ERROR_FILTER_SPECIFIC;
+         if ( model->getTriangleGroup( t ) < 0 )
+         {
+            model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "MD3 export requires all faces to be grouped." ) ).c_str() );
+            return Model::ERROR_FILTER_SPECIFIC;
+         }
       }
 
       m_model = model;
@@ -1847,7 +1851,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
             pk3Path.c_str(), modelBaseName.c_str() ) >= MAX_QPATH )
    {
       log_error( "MD3_PATH+filename is too large\n" );
-      m_model->setFilterSpecificError( "MD3_PATH+filename is to long." );
+      m_model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "MD3_PATH+filename is to long." ) ).c_str() );
       return Model::ERROR_FILTER_SPECIFIC;
    }
 
@@ -1868,7 +1872,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    if ( numFrames > MD3_MAX_FRAMES )
    {
       log_error( "Number of frames(%d) is larger than %d\n.\n", numFrames, MD3_MAX_FRAMES );
-      m_model->setFilterSpecificError( "Too many animation frames for MD3 export." );
+      m_model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many animation frames for MD3 export." ) ).c_str() );
       return Model::ERROR_FILTER_SPECIFIC;
    }
 
@@ -1924,13 +1928,13 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    if ( numTags > MD3_MAX_TAGS )
    {
       log_error( "Number of tags(%d) is larger than %d\n.\n", numTags, MD3_MAX_TAGS );
-      m_model->setFilterSpecificError( "Too many points for MD3 export." );
+      m_model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many points for MD3 export." ) ).c_str() );
       return Model::ERROR_FILTER_SPECIFIC;
    }
    if ( numMeshes > MD3_MAX_SURFACES )
    {
       log_error( "Number of groups(%d) is larger than %d\n.\n", numMeshes, MD3_MAX_SURFACES );
-      m_model->setFilterSpecificError( "Too many groups for MD3 export." );
+      m_model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many groups for MD3 export." ) ).c_str() );
       return Model::ERROR_FILTER_SPECIFIC;
    }
    // numSkins is usually zero for MD3 header, there can be skins for each mesh though later
@@ -1943,13 +1947,13 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    if ( numTris > MD3_MAX_TRIANGLES )
    {
       log_error( "Number of triangles(%d) is larger than %d\n.\n", numTris, MD3_MAX_TRIANGLES );
-      m_model->setFilterSpecificError( "MD3 export can't support that many faces per group." );
+      m_model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many faces in a single group for MD3 export" ) ).c_str() );
       return Model::ERROR_FILTER_SPECIFIC;
    }
    if ( numVerts > MD3_MAX_VERTS )
    {
       log_error( "Number of verticies(%d) is larger than %d\n.\n", numVerts, MD3_MAX_VERTS );
-      m_model->setFilterSpecificError( "MD3 export can't support that many verticies per group." );
+      m_model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many vertices in a single group for MD3 export" ) ).c_str() );
       return Model::ERROR_FILTER_SPECIFIC;
    }
 
@@ -2109,7 +2113,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                   {
                      fclose( m_fpOut );
                      log_error( "Point name is too large\n" );
-                     m_model->setFilterSpecificError( "Point name is too large for MD3 export." );
+                     m_model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Point name is too large for MD3 export." ) ).c_str() );
                      return Model::ERROR_FILTER_SPECIFIC;
                   }
                   writeS( tName, MAX_QPATH );
@@ -2172,7 +2176,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
          {
             fclose( m_fpOut );
             log_error( "group name is too large\n" );
-            m_model->setFilterSpecificError( "Group name is too large for MD3 export." );
+            m_model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Group name is too large for MD3 export." ) ).c_str() );
             return Model::ERROR_FILTER_SPECIFIC;
          }
 
@@ -2267,7 +2271,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                {
                   fclose( m_fpOut );
                   log_error( "MD3_PATH+texture_filename is to long.\n" );
-                  m_model->setFilterSpecificError( "Texture filename is too long." );
+                  m_model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Texture filename is too long." ) ).c_str() );
                   return Model::ERROR_FILTER_SPECIFIC;
                }
             }

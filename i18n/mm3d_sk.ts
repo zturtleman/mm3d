@@ -2218,6 +2218,54 @@ Chcete načítať všetky sekcie?</translation>
         <source>Unrecognized file extension (unknown type)</source>
         <translation>Nerozpoznaná prípona súboru (neznámy typ) </translation>
     </message>
+    <message>
+        <source>MD2 requires all groups to have the same material.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MD2 export requires all faces to be grouped.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MD3 export requires all faces to be grouped.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MD3_PATH+filename is to long.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Too many animation frames for MD3 export.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Too many points for MD3 export.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Too many groups for MD3 export.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Too many faces in a single group for MD3 export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Too many vertices in a single group for MD3 export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point name is too large for MD3 export.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group name is too large for MD3 export.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Texture filename is too long.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MapDirectionBase</name>
