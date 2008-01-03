@@ -29,7 +29,10 @@
 
 #include "model.h"
 #include "texture.h"
+
 #include "local_array.h"
+#include "local_ptr.h"
+#include "release_ptr.h"
 
 class ModelEqualTest : public QObject
 {
@@ -960,55 +963,55 @@ private slots:
       // FIXME these checks really belong in the texture testing code. I do want to keep
       // at least one check below to make sure that the equality test fails if the
       // texture compare fails.
-      Texture * tex_lhs = new Texture();
-      Texture * tex_rhs = new Texture();
+      local_ptr<Texture> tex_lhs = new Texture();
+      local_ptr<Texture> tex_rhs = new Texture();
 
-      initCompareMaterialAndTexture( lhs, tex_lhs, false );
+      initCompareMaterialAndTexture( lhs, tex_lhs.get(), false );
 
-      initCompareMaterialAndTexture( rhs, tex_rhs, false );
+      initCompareMaterialAndTexture( rhs, tex_rhs.get(), false );
       QVERIFY_TRUE( lhs->equal( *rhs ) );
       rhs->m_textureData->m_format = Texture::FORMAT_RGBA;
       QVERIFY_FALSE( lhs->equal( *rhs ) );
       QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
       QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
 
-      initCompareMaterialAndTexture( lhs, tex_lhs, true );
+      initCompareMaterialAndTexture( lhs, tex_lhs.get(), true );
 
-      initCompareMaterialAndTexture( rhs, tex_rhs, true );
+      initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
       QVERIFY_TRUE( lhs->equal( *rhs ) );
       rhs->m_textureData->m_format = Texture::FORMAT_RGB;
       QVERIFY_FALSE( lhs->equal( *rhs ) );
       QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
       QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
 
-      initCompareMaterialAndTexture( rhs, tex_rhs, true );
+      initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
       QVERIFY_TRUE( lhs->equal( *rhs ) );
       rhs->m_textureData->m_width = 2;
       QVERIFY_FALSE( lhs->equal( *rhs ) );
       QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
       QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
 
-      initCompareMaterialAndTexture( rhs, tex_rhs, true );
+      initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
       QVERIFY_TRUE( lhs->equal( *rhs ) );
       rhs->m_textureData->m_height = 2;
       QVERIFY_FALSE( lhs->equal( *rhs ) );
       QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
       QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
 
-      initCompareMaterialAndTexture( rhs, tex_rhs, true );
+      initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
       QVERIFY_TRUE( lhs->equal( *rhs ) );
       rhs->m_textureData->m_origWidth = 2;  // Compare doesn't care
       rhs->m_textureData->m_origHeight = 2;
       QVERIFY_TRUE( lhs->equal( *rhs ) );
 
-      initCompareMaterialAndTexture( rhs, tex_rhs, true );
+      initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
       QVERIFY_TRUE( lhs->equal( *rhs ) );
       rhs->m_textureData->m_isBad = true;
       QVERIFY_FALSE( lhs->equal( *rhs ) );
       QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
       QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
 
-      initCompareMaterialAndTexture( rhs, tex_rhs, true );
+      initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
       QVERIFY_TRUE( lhs->equal( *rhs ) );
       lhs->m_textureData->m_isBad = true;  // Even if both are bad, it's not a match
       rhs->m_textureData->m_isBad = true;
@@ -1016,11 +1019,11 @@ private slots:
       QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
       QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
 
-      initCompareMaterialAndTexture( lhs, tex_lhs, true );
+      initCompareMaterialAndTexture( lhs, tex_lhs.get(), true );
 
       for ( int i = 0; i < 4; ++i )
       {
-         initCompareMaterialAndTexture( rhs, tex_rhs, true );
+         initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
          local_array<uint8_t> buf = copyTextureData( rhs );
          QVERIFY_TRUE( lhs->equal( *rhs ) );
          rhs->m_textureData->m_data[i] = 0x48;
@@ -1034,7 +1037,7 @@ private slots:
       // should not result in a texture mismatch.
       for ( int i = 0; i < 3; ++i )
       {
-         initCompareMaterialAndTexture( rhs, tex_rhs, true );
+         initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
          local_array<uint8_t> buf = copyTextureData( rhs );
          QVERIFY_TRUE( lhs->equal( *rhs ) );
          rhs->m_textureData->m_data[15 * 4 + i] = 0x48;
@@ -1045,8 +1048,8 @@ private slots:
       // Same as above, except the alpha channel is no longer clear.
       for ( int i = 0; i < 3; ++i )
       {
-         initCompareMaterialAndTexture( lhs, tex_lhs, true );
-         initCompareMaterialAndTexture( rhs, tex_rhs, true );
+         initCompareMaterialAndTexture( lhs, tex_lhs.get(), true );
+         initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
          local_array<uint8_t> buf = copyTextureData( rhs );
          local_array<uint8_t> buf2 = copyTextureData( lhs );
          QVERIFY_TRUE( lhs->equal( *rhs ) );
@@ -1059,11 +1062,11 @@ private slots:
          tex_lhs->m_data = NULL;
       }
 
-      initCompareMaterialAndTexture( lhs, tex_lhs, false );
+      initCompareMaterialAndTexture( lhs, tex_lhs.get(), false );
 
       for ( int i = 0; i < 3; ++i )
       {
-         initCompareMaterialAndTexture( rhs, tex_rhs, false );
+         initCompareMaterialAndTexture( rhs, tex_rhs.get(), false );
          local_array<uint8_t> buf = copyTextureData( rhs );
          QVERIFY_TRUE( lhs->equal( *rhs ) );
          rhs->m_textureData->m_data[i] = 0x48;
@@ -1075,8 +1078,8 @@ private slots:
 
       for ( int i = 0; i < 3; ++i )
       {
-         initCompareMaterialAndTexture( lhs, tex_lhs, false );
-         initCompareMaterialAndTexture( rhs, tex_rhs, false );
+         initCompareMaterialAndTexture( lhs, tex_lhs.get(), false );
+         initCompareMaterialAndTexture( rhs, tex_rhs.get(), false );
          local_array<uint8_t> buf = copyTextureData( rhs );
          local_array<uint8_t> buf2 = copyTextureData( lhs );
          QVERIFY_TRUE( lhs->equal( *rhs ) );
@@ -1093,9 +1096,6 @@ private slots:
       // Test image data is statically allocated, don't free it
       tex_lhs->m_data = NULL;
       tex_rhs->m_data = NULL;
-
-      delete tex_lhs;
-      delete tex_rhs;
 
       lhs->release();
       rhs->release();

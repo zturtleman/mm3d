@@ -31,12 +31,11 @@ class file_closer
    public:
       file_closer( FILE * fp = NULL )
          : m_fp( fp ) {}
-      virtual ~file_closer() { free_ptr(); }
+      ~file_closer() { free_ptr(); }
 
       FILE * get() { return m_fp; }
       FILE * reset(FILE * fp) { free_ptr(); return m_fp = fp; }
       const FILE * get() const { return m_fp; }
-      const FILE * reset(FILE * fp) const { free_ptr(); return m_fp = fp; }
 
       FILE & operator*() { return *m_fp; }
       FILE * operator->() { return m_fp; }
@@ -44,15 +43,14 @@ class file_closer
       const FILE * operator->() const { return m_fp; }
 
       FILE * operator=(FILE* fp) { return reset(fp); }
-      const FILE * operator=(FILE* fp) const { return reset(fp); }
 
       bool operator!() const { return m_fp == NULL; }
       bool isnull() const { return m_fp == NULL; }
 
    protected:
-      void free_ptr() const { if (m_fp) fclose(m_fp); m_fp = NULL; }
+      void free_ptr() { if (m_fp) fclose(m_fp); m_fp = NULL; }
 
-      mutable FILE * m_fp;
+      FILE * m_fp;
 };
 
 
