@@ -41,7 +41,8 @@ int main( int argc, char * argv[] )
       Model * model = loadModel( argv[a] );
       if ( model )
       {
-         model->calculateNormals();
+         for ( int t = 0; t < 25; ++t )
+            model->calculateNormals();
          delete model;
       }
    }

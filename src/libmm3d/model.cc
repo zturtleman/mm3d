@@ -81,6 +81,11 @@ class NormAngleAccum
 {
 public:
    NormAngleAccum() { memset( norm, 0, sizeof(norm) ); angle = 0.0f; }
+   NormAngleAccum( const NormAngleAccum & rhs )
+      : angle( rhs.angle )
+   {
+      memcpy( norm, rhs.norm, sizeof(norm) );
+   }
    float norm[3];
    float angle;
 };
@@ -4185,6 +4190,7 @@ void Model::calculateNormals()
       {
          maxAngle = 0.50f;
       }
+      maxAngle *= PIOVER180;
 
       for ( unsigned t2 = 0; t2 < m_groups[g]->m_triangleIndices.size(); t2++ )
       {
@@ -4213,14 +4219,13 @@ void Model::calculateNormals()
                      + tri->m_flatNormals[1] * acl[n].norm[1] 
                      + tri->m_flatNormals[2] * acl[n].norm[2];
 
-                  // slight adjustment in case we go over 1.0
-                  if ( crossprod >= 0.99999f )
+                  // Don't allow it to go over 1.0f
+                  float angle = 0.0f;
+                  if ( crossprod < 0.99999f )
                   {
-                     crossprod -= 0.001f;
+                     angle = fabs( acos( crossprod ) );
                   }
-                  float angle = fabs( acos( crossprod ) );
 
-                  angle /= PIOVER180;
                   if ( angle <= maxAngle )
                   {
                      A += acl[n].norm[0];
@@ -4273,15 +4278,14 @@ void Model::calculateNormals()
                      + tri->m_flatNormals[1] * acl[n].norm[1] 
                      + tri->m_flatNormals[2] * acl[n].norm[2];
 
-                  // slight adjustment in case we go over 1.0
-                  if ( crossprod >= 0.99999f )
+                  // Don't allow it to go over 1.0f
+                  float angle = 0.0f;
+                  if ( crossprod < 0.99999f )
                   {
-                     crossprod -= 0.001f;
+                     angle = fabs( acos( crossprod ) );
                   }
-                  float angle = fabs( acos( crossprod ) );
 
-                  angle /= PIOVER180;
-                  if ( angle <= 45.0f )
+                  if ( angle <= 45.0f * PIOVER180 )
                   {
                      A += acl[n].norm[0];
                      B += acl[n].norm[1];
