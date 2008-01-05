@@ -87,6 +87,11 @@ class Texture;
 //    model_select.cc: Selection logic
 //    model_test.cc: Old tests for file format loading/saving, being replaced
 //    model_texture.cc: Material and texture code
+//
+// FIXME mark methods const
+// FIXME remove dumb const references in method arguments
+// FIXME rename Texture -> Material where appropriate
+// FIXME Make texture creation more consistent
 
 class Model
 {
@@ -114,16 +119,18 @@ class Model
 
       enum CompareBits
       {
-         CompareGeometry  =  0x01,  // Vertices and Faces match
-         CompareFaces     =  0x02,  // Faces match, vertices may not
-         CompareGroups    =  0x04,  // Groups match
-         CompareSkeleton  =  0x08,  // Bone joints hierarchy matches
-         CompareTextures  =  0x10,  // Textures and texture coordinates match
-         CompareAnimSets  =  0x20,  // Number of animations, frame counts, and fps match
-         CompareAnimData  =  0x40,  // Animation movements match
-         CompareMeta      =  0x80,  // Names and other non-visible data match
-         ComparePoints    = 0x100,  // Points match
-         CompareAll       = 0x1FF   // All of the above
+         CompareGeometry   =   0x01,  // Vertices and Faces match
+         CompareFaces      =   0x02,  // Faces match, vertices may not
+         CompareGroups     =   0x04,  // Groups match
+         CompareSkeleton   =   0x08,  // Bone joints hierarchy matches
+         CompareMaterials  =   0x10,  // Material properties and group material assignments match
+         CompareAnimSets   =   0x20,  // Number of animations, frame counts, and fps match
+         CompareAnimData   =   0x40,  // Animation movements match
+         CompareMeta       =   0x80,  // Names and other non-visible data match
+         ComparePoints     =  0x100,  // Points match
+         CompareInfluences =  0x200,  // Vertex and point influences match
+         CompareTextures   =  0x400,  // Texture coordinates and texture data match
+         CompareAll        = 0xFFFF   // All of the above
       };
 
       enum 
@@ -904,6 +911,10 @@ class Model
       // Returns mask of successful compares (see enum CompareBits)
       int equivalent( const Model * model, int compareMask = CompareGeometry, double tolerance = 0.00001 );
 
+      // Compares if two models are equal. Returns maks of successful
+      // compares (see CompareBits). FIXME tolerance is ignored.
+      int equal( const Model * model, int compareMask = CompareGeometry, double tolerance = 0.00001 );
+
       // ------------------------------------------------------------------
       // "Meta" data, model information that is not rendered in a viewport.
       // ------------------------------------------------------------------
@@ -934,11 +945,11 @@ class Model
       void updateMetaData( const char * key, const char * value );
 
       // Look-up by key
-      bool getMetaData( const char * key, char * value, size_t valueLen );
+      bool getMetaData( const char * key, char * value, size_t valueLen ) const;
       // Look-up by index
-      bool getMetaData( unsigned int index, char * key, size_t keyLen, char * value, size_t valueLen );
+      bool getMetaData( unsigned int index, char * key, size_t keyLen, char * value, size_t valueLen ) const;
 
-      unsigned int getMetaDataCount();
+      unsigned int getMetaDataCount() const;
       void clearMetaData();
       void removeLastMetaData();  // For undo only!
 

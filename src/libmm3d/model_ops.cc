@@ -375,7 +375,7 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance )
    }
 
    // TODO want to check texture contents?
-   if ( compareMask & CompareTextures )
+   if ( compareMask & CompareMaterials )
    {
       if (     numTextures  == model->m_materials.size() 
             && numTriangles == model->m_triangles.size() 
@@ -463,7 +463,7 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance )
 
          if ( match )
          {
-            matchVal |= CompareTextures;
+            matchVal |= CompareMaterials;
          }
       }
       else
@@ -691,6 +691,234 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance )
    }
 
    matchVal &= compareMask;
+   return matchVal;
+}
+
+int Model::equal( const Model * model, int compareMask, double tolerance )
+{
+   int matchVal = compareMask;
+
+   unsigned numVertices    = m_vertices.size();
+   unsigned numTriangles   = m_triangles.size();
+   unsigned numGroups      = m_groups.size();
+   unsigned numJoints      = m_joints.size();
+   unsigned numPoints      = m_points.size();
+   unsigned numTextures    = m_materials.size();
+   unsigned numProjections = m_projections.size();
+   unsigned numFrameAnims  = m_frameAnims.size();
+   unsigned numSkelAnims   = m_skelAnims.size();
+
+   unsigned t = 0;
+   unsigned v = 0;
+
+   bool match = false;
+
+   if ( (matchVal & (CompareGeometry | CompareMeta | CompareInfluences))
+      && numVertices == model->m_vertices.size() )
+   {
+      match = true;
+
+      for ( v = 0; match && v < numVertices; v++ )
+      {
+         if ( !m_vertices[v]->equal( *model->m_vertices[v], compareMask ) )
+         {
+            log_debug( "match failed at vertex %d\n", v );
+            match = false;
+         }
+      }
+   }
+
+   if ( !match )
+      matchVal &= ~(CompareGeometry | CompareMeta | CompareInfluences);
+
+   match = false;
+
+   if ( (matchVal & (CompareGeometry | CompareFaces | CompareTextures | CompareMeta))
+         && numTriangles == model->m_triangles.size() )
+   {
+      match = true;
+
+      for ( t = 0; t < numTriangles; t++ )
+      {
+         if ( !m_triangles[t]->equal( *model->m_triangles[t], compareMask ) )
+         {
+            log_debug( "match failed at triangle %d\n", t );
+            match = false;
+         }
+      }
+   }
+
+   if ( !match )
+      matchVal &= ~(CompareGeometry | CompareFaces | CompareMeta | CompareTextures );
+
+   match = false;
+
+   if ( (compareMask & (CompareGroups | CompareGeometry | CompareMaterials | CompareMeta))
+         && getGroupCount() == model->getGroupCount() )
+   {
+      match = true;
+
+      for ( unsigned int g = 0; match && g < numGroups; g++ )
+      {
+         if ( !m_groups[g]->equal( *model->m_groups[g], compareMask ) )
+         {
+            match = false;
+            log_debug( "match failed at group %d\n", g );
+         }
+      }
+   }
+
+   if ( !match )
+      matchVal &= ~(CompareGroups | CompareGeometry | CompareMaterials | CompareMeta);
+
+   match = false;
+
+   if ( (matchVal & (CompareSkeleton | CompareMeta))
+         && numJoints == model->m_joints.size() )
+   {
+      match = true;
+
+      for ( unsigned j = 0; match && j < numJoints; j++ )
+      {
+         if ( !m_joints[j]->equal( *model->m_joints[j], compareMask ) )
+         {
+            log_debug( "match failed at joint %d\n", j );
+            match = false;
+         }
+      }
+   }
+
+   if ( !match )
+      matchVal &= ~(CompareSkeleton | CompareMeta);
+
+   match = false;
+
+   if ( (matchVal & (ComparePoints | CompareInfluences | CompareMeta))
+         && numPoints == model->m_points.size() )
+   {
+      match = true;
+
+      for ( unsigned p = 0; match && p < numPoints; p++ )
+      {
+         if ( !m_points[p]->equal( *model->m_points[p], compareMask ) )
+         {
+            match = false;
+            log_debug( "match failed at point %d\n", p );
+         }
+      }
+   }
+
+   if ( !match )
+      matchVal &= ~(ComparePoints | CompareMeta | CompareInfluences);
+
+   match = false;
+
+   if ( (matchVal & (CompareMaterials | CompareTextures))
+         && numTextures  == model->m_materials.size() 
+         && numProjections == model->m_projections.size() )
+   {
+      match = true;
+
+      for ( t = 0; t < numTextures; t++ )
+      {
+         if ( !m_materials[t]->equal( *model->m_materials[t], compareMask ) )
+         {
+            log_debug( "match failed at material %d\n", t );
+            match = false;
+         }
+      }
+
+      if ( matchVal & CompareTextures )
+      {
+         for ( t = 0; t < numProjections; t++ )
+         {
+            if ( !m_projections[t]->equal( *model->m_projections[t], compareMask ) )
+            {
+               log_debug( "match failed at projection %d\n", t );
+               match = false;
+            }
+         }
+      }
+   }
+
+   if ( !match )
+      matchVal &= ~(CompareMaterials | CompareTextures);
+
+   match = false;
+
+   if ( (matchVal & (CompareAnimData | CompareAnimSets))
+         && numFrameAnims == model->m_frameAnims.size()
+         && numSkelAnims == model->m_skelAnims.size()    )
+   {
+      match = true;
+
+      for ( t = 0; match && t < numSkelAnims; t++ )
+      {
+         if ( !m_skelAnims[t]->equal( *model->m_skelAnims[t], compareMask ) )
+         {
+            log_debug( "match failed at skel animation %d\n", t );
+            match = false;
+         }
+      }
+
+      for ( t = 0; match && t < numFrameAnims; t++ )
+      {
+         if ( !m_frameAnims[t]->equal( *model->m_frameAnims[t], compareMask ) )
+         {
+            log_debug( "match failed at frame animation %d\n", t );
+            match = false;
+         }
+      }
+   }
+
+   if ( !match )
+      matchVal &= ~(CompareAnimData | CompareAnimSets);
+
+   match = false;
+
+   // FIXME compare meta data
+   if (matchVal & CompareMeta
+         && getMetaDataCount() == model->getMetaDataCount() )
+   {
+      match = true;
+
+      unsigned int mcount = getMetaDataCount();
+      for ( unsigned int m = 0; m < mcount; ++m )
+      {
+         char key[1024];
+         char value_lhs[1024];
+         char value_rhs[1024];
+
+         getMetaData( m, key, sizeof(key), value_lhs, sizeof(value_lhs) );
+
+         if ( !model->getMetaData( m, key, sizeof(key), value_rhs, sizeof(value_rhs) ) )
+         {
+            log_debug( "missing meta data key: '%s'\n", key );
+            match = false;
+         }
+         else
+         {
+            if ( strcmp( value_lhs, value_rhs ) != 0 )
+            {
+               log_debug( "meta data value mismatch for '%s'\n", key );
+               match = false;
+            }
+         }
+      }
+
+      for ( unsigned int b = 0; b < MAX_BACKGROUND_IMAGES; ++b )
+      {
+         if ( !m_background[b]->equal( *model->m_background[b], compareMask ) )
+         {
+            log_debug( "match failed at background image %d\n", t );
+            match = false;
+         }
+      }
+   }
+
+   if ( !match )
+      matchVal &= ~CompareMeta;
+
    return matchVal;
 }
 

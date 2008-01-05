@@ -58,6 +58,15 @@ list<Model::FrameAnimPoint *> Model::FrameAnimPoint::s_recycle;
 
 const double EQ_TOLERANCE = 0.00001;
 
+template<typename T>
+bool floatCompareVector( T * lhs, T * rhs, size_t len )
+{
+   for ( size_t index = 0; index < len; ++index )
+      if ( fabs( lhs[index] - rhs[index] ) > EQ_TOLERANCE )
+         return false;
+   return true;
+}
+
 Model::Vertex::Vertex()
    : m_selected( false ),
      m_visible( true ),
@@ -142,11 +151,8 @@ bool Model::Vertex::equal(const Vertex & rhs, int compareBits ) const
 {
    if ( (compareBits & CompareGeometry) != 0 )
    {
-      for ( unsigned i = 0; i < 3; i++ )
-      {
-         if ( fabs( m_coord[i] - rhs.m_coord[i]) > EQ_TOLERANCE )
-            return false;
-      }
+      if ( !floatCompareVector( m_coord, rhs.m_coord, 3 ) )
+         return false;
    }
 
    if ( (compareBits & CompareMeta) != 0 )
@@ -161,7 +167,7 @@ bool Model::Vertex::equal(const Vertex & rhs, int compareBits ) const
          return false;
    }
 
-   if ( (compareBits & CompareSkeleton) != 0 )
+   if ( (compareBits & CompareInfluences) != 0 )
    {
       InfluenceList::const_iterator lhs_it = m_influences.begin();
       InfluenceList::const_iterator rhs_it = rhs.m_influences.begin();
@@ -169,7 +175,11 @@ bool Model::Vertex::equal(const Vertex & rhs, int compareBits ) const
       for ( ; lhs_it != m_influences.end() && rhs_it != rhs.m_influences.end();
             ++lhs_it, ++rhs_it )
       {
-         if ( *lhs_it != *rhs_it )
+         if ( lhs_it->m_type != rhs_it->m_type )
+            return false;
+         if ( lhs_it->m_boneId != rhs_it->m_boneId )
+            return false;
+         if ( fabs( lhs_it->m_weight - rhs_it->m_weight ) > EQ_TOLERANCE )
             return false;
       }
 
@@ -264,7 +274,7 @@ void Model::Triangle::release()
 
 bool Model::Triangle::equal(const Triangle & rhs, int compareBits ) const
 {
-   if ( (compareBits & CompareGeometry) != 0 )
+   if ( (compareBits & (CompareGeometry | CompareFaces)) != 0 )
    {
       if ( m_vertexIndices[0] != rhs.m_vertexIndices[0]
             || m_vertexIndices[1] != rhs.m_vertexIndices[1]
@@ -420,7 +430,7 @@ bool Model::Group::equal(const Group & rhs, int compareBits ) const
          return false;
    }
 
-   if ( (compareBits & CompareTextures) != 0 )
+   if ( (compareBits & CompareMaterials) != 0 )
    {
       if ( m_materialIndex != rhs.m_materialIndex )
          return false;
@@ -513,27 +523,12 @@ void Model::Material::release()
    }
 }
 
-template<typename T>
-bool floatCompareVector( T * lhs, T * rhs, size_t len )
-{
-   for ( size_t index = 0; index < len; ++index )
-      if ( fabs( lhs[index] - rhs[index] ) > EQ_TOLERANCE )
-         return false;
-   return true;
-}
-
 bool Model::Material::equal(const Material & rhs, int compareBits ) const
 {
-   if ( (compareBits & CompareTextures) != 0 )
+   if ( (compareBits & CompareMaterials) != 0 )
    {
       if ( m_type != rhs.m_type )
          return false;
-      if ( m_sClamp != rhs.m_sClamp )
-         return false;
-      if ( m_tClamp != rhs.m_tClamp )
-         return false;
-
-      // Color is unused
 
       // Compare lighting
       if ( !floatCompareVector( m_ambient, rhs.m_ambient, 4 ) )
@@ -546,6 +541,16 @@ bool Model::Material::equal(const Material & rhs, int compareBits ) const
          return false;
       if ( fabs(m_shininess - rhs.m_shininess) > EQ_TOLERANCE )
          return false;
+   }
+
+   if ( (compareBits & CompareTextures) != 0 )
+   {
+      if ( m_sClamp != rhs.m_sClamp )
+         return false;
+      if ( m_tClamp != rhs.m_tClamp )
+         return false;
+
+      // Color is unused
 
       // If one is NULL, the other must be also
       if ( (m_textureData == NULL) != (rhs.m_textureData == NULL) )
@@ -860,7 +865,7 @@ bool Model::Point::equal(const Point & rhs, int compareBits ) const
          return false;
    }
 
-   if ( (compareBits & CompareSkeleton) != 0 )
+   if ( (compareBits & CompareInfluences) != 0 )
    {
       InfluenceList::const_iterator lhs_it = m_influences.begin();
       InfluenceList::const_iterator rhs_it = rhs.m_influences.begin();
@@ -1213,9 +1218,6 @@ bool Model::FrameAnim::equal(const FrameAnim & rhs, int compareBits ) const
    if ( (compareBits & CompareAnimData) != 0 )
    {
       if ( fabs( m_fps - rhs.m_fps ) > EQ_TOLERANCE )
-         return false;
-
-      if ( m_frameData.size() != rhs.m_frameData.size() )
          return false;
 
       if ( m_frameData.size() != rhs.m_frameData.size() )

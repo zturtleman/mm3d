@@ -291,7 +291,7 @@ Model::Model()
    m_localMatrix.loadIdentity();
 
 #ifdef MM3D_EDIT
-   for ( unsigned t = 0; t < 6; t++ )
+   for ( unsigned t = 0; t < MAX_BACKGROUND_IMAGES; t++ )
    {
       m_background[t] = new BackgroundImage();
    }

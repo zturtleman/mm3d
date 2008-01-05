@@ -29,10 +29,35 @@
 
 #include "model.h"
 #include "texture.h"
+#include "modelstatus.h"
+#include "mm3dfilter.h"
 
 #include "local_array.h"
 #include "local_ptr.h"
 #include "release_ptr.h"
+
+
+void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... )
+{
+   // FIXME hack
+}
+
+Model * loadModelOrDie( const char * filename )
+{
+   MisfitFilter f;
+
+   Model * model = new Model;
+   Model::ModelErrorE err = f.readFile( model, filename );
+
+   if ( err != Model::ERROR_NONE )
+   {
+      fprintf( stderr, "fatal: %s: %s\n", filename, Model::errorToString( err ) );
+      delete model;
+      exit( -1 );
+   }
+
+   return model;
+}
 
 class ModelEqualTest : public QObject
 {
@@ -628,7 +653,7 @@ private slots:
          QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
       }
 
-      bits = Model::CompareSkeleton;
+      bits = Model::CompareInfluences;
 
       initCompareVertex( rhs );
       QVERIFY_TRUE( lhs->equal( *rhs ) );
@@ -706,7 +731,7 @@ private slots:
          QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
       }
 
-      bits = Model::CompareGeometry;
+      bits = (Model::CompareFaces | Model::CompareGeometry);
 
       for ( int i = 0; i < 3; ++i )
       {
@@ -754,7 +779,7 @@ private slots:
       QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
       QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
 
-      bits = Model::CompareTextures;
+      bits = Model::CompareMaterials;
 
       initCompareGroup( rhs );
       QVERIFY_TRUE( lhs->equal( *rhs ) );
@@ -899,7 +924,7 @@ private slots:
       QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
       QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
 
-      bits = Model::CompareTextures;
+      bits = Model::CompareMaterials;
 
       initCompareMaterial( rhs );
       QVERIFY_TRUE( lhs->equal( *rhs ) );
@@ -945,6 +970,8 @@ private slots:
       QVERIFY_FALSE( lhs->equal( *rhs ) );
       QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
       QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+
+      bits = Model::CompareTextures;
 
       initCompareMaterial( rhs );
       QVERIFY_TRUE( lhs->equal( *rhs ) );
@@ -1222,7 +1249,7 @@ private slots:
          QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
       }
 
-      bits = Model::CompareSkeleton;
+      bits = Model::CompareInfluences;
 
       initComparePoint( rhs );
       QVERIFY_TRUE( lhs->equal( *rhs ) );
@@ -1626,6 +1653,119 @@ private slots:
          QVERIFY_FALSE( lhs.equal( rhs, bits ) );
          QVERIFY_TRUE( lhs.equal( rhs, ~bits ) );
       }
+   }
+
+   void testModelCompare()
+   {
+      // FIXME test for specific CompareBits matches
+      const char model_file[] = "data/model_equal_test.mm3d";
+      local_ptr<Model> lhs = loadModelOrDie( model_file );
+
+      local_ptr<Model> rhs;
+
+      int bits = Model::CompareAll;
+
+      // Vertices
+      {
+         rhs = loadModelOrDie( model_file );
+         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         rhs->moveVertex( 1, 3, 4, 5 );
+         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+
+         rhs = loadModelOrDie( model_file );
+         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         rhs->setVertexFree( 3, true );
+         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+
+         rhs = loadModelOrDie( model_file );
+         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         rhs->addVertex( 3, 4, 5 );
+         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+      }
+
+      // Triangles
+      {
+         rhs = loadModelOrDie( model_file );
+         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         rhs->setTriangleVertices( 0, 2, 4, 6 );
+         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+
+         rhs = loadModelOrDie( model_file );
+         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         rhs->selectTriangle( 3 );
+         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+
+         rhs = loadModelOrDie( model_file );
+         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         rhs->addTriangle( 3, 4, 5 );
+         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+      }
+
+      // Groups
+      {
+         rhs = loadModelOrDie( model_file );
+         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         rhs->setGroupSmooth( 1, 160 );
+         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+
+         rhs = loadModelOrDie( model_file );
+         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         rhs->addGroup("new group");
+         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+      }
+
+      // Materials
+      {
+         rhs = loadModelOrDie( model_file );
+         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         rhs->setTextureShininess( 1, 55.0f );
+         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+
+         rhs = loadModelOrDie( model_file );
+         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         rhs->addColorMaterial("new material");
+         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+      }
+
+      // Skeleton
+      {
+         rhs = loadModelOrDie( model_file );
+         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         rhs->setBoneJointName( 1, "renamed joint" );
+         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+
+         rhs = loadModelOrDie( model_file );
+         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         rhs->addBoneJoint("new joint",
+               0, 0, 0,  // position
+               0, 0, 0,  // rotation
+               0 );      // parent joint
+         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+      }
+
+      // Meta data
+      {
+         rhs = loadModelOrDie( model_file );
+         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         rhs->updateMetaData( "key_1", "new value" );
+         QVERIFY_EQ( lhs->getMetaDataCount(), rhs->getMetaDataCount() );
+         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+
+         rhs = loadModelOrDie( model_file );
+         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         rhs->addMetaData( "key_3", "new value" );
+         QVERIFY_EQ( lhs->getMetaDataCount() + 1, rhs->getMetaDataCount() );
+         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+      }
+
+      // FIXME finish
+      // FIXME add texture projections so that they can be tested
+      // FIXME test texture projections
+      // FIXME add background images so that they can be tested
+      // FIXME test background images
+      // FIXME add animations so that they can be tested
+      // FIXME test skel animations
+      // FIXME test frame animations
    }
 };
 

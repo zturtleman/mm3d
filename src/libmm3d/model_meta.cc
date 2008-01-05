@@ -25,7 +25,7 @@ static void _safe_strcpy( char * dest, const char * src, size_t len )
 struct MetaDataKeyMatch
    : public std::binary_function<Model::MetaData, const char *, bool>
 {
-   bool operator()(Model::MetaData & md, const char * key) const
+   bool operator()(const Model::MetaData & md, const char * key) const
    {
       return( strcmp( md.key.c_str(), key ) == 0);
    }
@@ -71,9 +71,9 @@ void Model::updateMetaData( const char * key, const char * value )
 
 }
 
-bool Model::getMetaData( const char * key, char * value, size_t valueLen )
+bool Model::getMetaData( const char * key, char * value, size_t valueLen ) const
 {
-   MetaDataList::iterator it
+   MetaDataList::const_iterator it
       = std::find_if( m_metaData.begin(), m_metaData.end(),
             std::bind2nd(MetaDataKeyMatch(), key) );
    if ( it == m_metaData.end() )
@@ -83,7 +83,7 @@ bool Model::getMetaData( const char * key, char * value, size_t valueLen )
    return true;
 }
 
-bool Model::getMetaData( unsigned int index, char * key, size_t keyLen, char * value, size_t valueLen )
+bool Model::getMetaData( unsigned int index, char * key, size_t keyLen, char * value, size_t valueLen ) const
 {
    if ( index < m_metaData.size() )
    {
@@ -94,7 +94,7 @@ bool Model::getMetaData( unsigned int index, char * key, size_t keyLen, char * v
    return false;
 }
 
-unsigned int Model::getMetaDataCount()
+unsigned int Model::getMetaDataCount() const
 {
    return m_metaData.size();
 }

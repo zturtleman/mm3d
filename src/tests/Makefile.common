@@ -1,6 +1,6 @@
 CXX = g++
 CXXFLAGS = -DMM3D_EDIT -I../../libmm3d -I.. -I../../../ -I/usr/include/qt4 -Wall -g
-LFLAGS = -lQtTest -lQtCore -Wall -g
+LFLAGS = -lQtTest -lQtCore -Wall -g -lGL -lGLU
 
 .cc.o:
 	g++ $(CXXFLAGS) -c $<

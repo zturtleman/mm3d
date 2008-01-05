@@ -1563,7 +1563,7 @@ extern "C" int luaif_modelCompareToCurrent( lua_State * L )
             }
             if ( strcasecmp( str, "textures" ) == 0 )
             {
-               bits |= Model::CompareTextures;
+               bits |= Model::CompareMaterials;
             }
             if ( strcasecmp( str, "animsets" ) == 0 )
             {
