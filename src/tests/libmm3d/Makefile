@@ -9,6 +9,7 @@ TESTS = \
 		  model_init_test.unit \
 		  model_equal_test.unit \
 		  model_test.unit \
+		  cmdlinemgr_test.unit \
 		  util_test.unit \
 
 # Add moc dependencies here
@@ -23,6 +24,8 @@ model_test.unit: model_test.moc $(LIB)
 
 memutil_test.unit: memutil_test.moc $(LIB)
 
+cmdlinemgr_test.unit: cmdlinemgr_test.moc $(LIB)
+
 util_test.unit: util_test.moc $(LIB)
 
 test: $(TESTS)
@@ -35,6 +38,7 @@ check: test
 	./model_equal_test.unit -silent
 	./model_test.unit -silent
 	./util_test.unit -silent
+	./cmdlinemgr_test.unit -silent
 
 clean:
 	rm -rf *.unit *.moc core core.*

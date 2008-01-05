@@ -230,9 +230,9 @@ void PaintTextureWin::saveEvent()
 
          if ( save )
          {
-            QPixmap pixmap = m_textureWidget->renderPixmap( 
-                  atoi( m_hSize->currentText().latin1() ),
-                  atoi( m_vSize->currentText().latin1() ) );
+            int h = atoi( m_hSize->currentText().latin1() );
+            int v = atoi( m_vSize->currentText().latin1() );
+            QPixmap pixmap = m_textureWidget->renderPixmap( h, v);
 
             QImage img = pixmap.convertToImage();
 

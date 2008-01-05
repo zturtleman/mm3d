@@ -6,6 +6,7 @@ libmm3d_HFILES = \
 	binutil.h \
 	bsptree.h \
 	cal3dfilter.h \
+	cmdlinemgr.h \
 	cobfilter.h \
 	drawcontext.h \
 	dxffilter.h \
@@ -58,6 +59,7 @@ libmm3d_a_SOURCES = \
 	binaryfilter.cc \
 	bsptree.cc \
 	cal3dfilter.cc \
+	cmdlinemgr.cc \
 	cobfilter.cc \
 	dxffilter.cc \
 	filtermgr.cc \
