@@ -10,9 +10,8 @@ The home page is here:
 The help and developer mailing lists (including archives) are here:
    http://www.misfitcode.com/misfitmodel3d/mailinglist.html
 
-Misfit Model 3D requires Qt (3.x) with OpenGL support.  You should also
-have Lua installed for scripting.  See the INSTALL file for details
-on where to get these packages.
+Misfit Model 3D requires Qt (3.x) with OpenGL support.  See the INSTALL file
+for details on where to get these packages.
 
 This program uses autoconf and automake for building from source.  What this
 means is that if you are lucky you can install this program with these

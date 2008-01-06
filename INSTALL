@@ -13,11 +13,6 @@ Linux system.
    OpenGL with GLU (probably Mesa if you are using Linux)
       http://www.mesa3d.org/
 
-These packages are recommended:
-
-   Lua - get this if you want scripting to be enabled
-      http://www.lua.org/
-
 For Qt 4.x support, see notes on --with-Qt-dir below.
 
 Even if you have these packages installed you may need to install
@@ -26,12 +21,6 @@ needed to compile Misfit Model 3D.  Often such packages are marked
 as -dev or -devel by your distribution.  For example, sometimes
 Qt is broken up into a qt rpm and qt-devel rpm.  In this case, you
 must have both installed.
-
-If you build lua from source, make sure you build and install the 
-shared libraries ("make so" and "make soinstall").  As of Lua 5.0.2
-building and installing shared libraries was not default behavior
-for the Lua build process.  See the "Shared Libraries" section
-in the INSTALL file included in the Lua distribution.
 
 This program uses autoconf and automake for building from source.  What
 this means is that if you are lucky you can install this program by
@@ -75,7 +64,14 @@ If you want to link against a specific library of Qt you can use
 you want to force the multi-threaded Qt library, you would use
 --with-Qt-lib=qt-mt
 
-The arguments for Lua and Lualib work similarly.
+Building with the lua scripting language is now deprecated. Scripting
+support is not maintained and may be removed in future versions.
+
+If you build lua from source, make sure you build and install the 
+shared libraries ("make so" and "make soinstall").  As of Lua 5.0.2
+building and installing shared libraries was not default behavior
+for the Lua build process.  See the "Shared Libraries" section
+in the INSTALL file included in the Lua distribution.
 
 Use ./configure --help for a complete list of options.
 
