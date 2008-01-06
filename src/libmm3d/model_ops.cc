@@ -876,7 +876,6 @@ int Model::equal( const Model * model, int compareMask, double tolerance )
 
    match = false;
 
-   // FIXME compare meta data
    if (matchVal & CompareMeta
          && getMetaDataCount() == model->getMetaDataCount() )
    {
