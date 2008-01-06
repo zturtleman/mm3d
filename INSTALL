@@ -31,6 +31,9 @@ running these commands at a shell prompt (terminal window):
    su [become root]
    make install
 
+On some system configurations you may need to run "sudo bash" instead of
+"su" to get a root shell.
+
 On Mac OS X, you must run "make mm3d.app" after "make".
 
 The default PREFIX (install location) is /usr/local.  Files are 

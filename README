@@ -1,8 +1,8 @@
 This is the README file for Misfit Model 3D
 
 Misfit Model 3D is a 3D model editor.  It was written and tested on Linux.
-It may work on other Unix-like operating systems.  See INSTALL.WIN32
-for Windows-specific instructions.
+It is reported to run on other Unix-like operating systems. It also runs
+on Windows. See INSTALL.WIN32 for Windows-specific instructions.
 
 The home page is here:
    http://www.misfitcode.com/misfitmodel3d/
@@ -22,8 +22,10 @@ easy steps:
    su [become root]
    make install
 
-This will build an 'mm3d' executable and install it in /usr/local/bin.
-Documentation will be in /usr/local/share/doc/mm3d.
+Depending on your system configuration, you may have to run "sudo bash"
+instead of "su" to get a root shell.  This will build an 'mm3d' executable
+and install it in /usr/local/bin.  Documentation will be in
+/usr/local/share/doc/mm3d.
 
 On Mac OS X you must run "make mm3d.app" after "make".
 

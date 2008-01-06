@@ -14,7 +14,9 @@ To build MM3D:
 Run the ./autosetup.sh script. This runs autoconf and automake. If those run
 successfully you will have a ./configure script you can run to start the
 normal build process. To start the normal build process, see the INSTALL
-file.
+file. If you have problems building the translation files and documentation
+html files, you can just run "make" from the src/ directory instead of 
+the top level trunk directory.
 
 To build i18n translation files:
 
