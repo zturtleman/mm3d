@@ -31,7 +31,7 @@ void shutdown_cmdline();
 
 extern bool cmdline_runcommand;
 extern bool cmdline_runui;
-extern int cmdline_command( int & argc, char * argv[] );
+extern int cmdline_command();
 
 extern int     cmdline_getOpenModelCount();
 extern Model * cmdline_getOpenModel( int n );

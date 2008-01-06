@@ -559,12 +559,27 @@ private slots:
       QVERIFY_EQ( 0, CustomOption::s_allocated );
    }
 
-   void testUnknownOption()
+   void testUnknownShortOption()
    {
       const int kArgs = 2;
       const char *argv[kArgs] = {
          "./program",
          "-h"
+      };
+
+      CommandLineManager clm;
+      QVERIFY_FALSE( clm.parse( kArgs, argv ) );
+
+      QVERIFY_TRUE( CommandLineManager::UnknownOption == clm.error() );
+      QVERIFY_EQ( 1, clm.errorArgument() );
+   }
+
+   void testUnknownLongOption()
+   {
+      const int kArgs = 2;
+      const char *argv[kArgs] = {
+         "./program",
+         "--long-option"
       };
 
       CommandLineManager clm;

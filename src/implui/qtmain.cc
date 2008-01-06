@@ -146,7 +146,7 @@ int ui_init( int argc, char * argv[] )
 
    if ( cmdline_runcommand )
    {
-      rval = cmdline_command( argc, argv );
+      rval = cmdline_command();
    }
    if ( cmdline_runui )
    {

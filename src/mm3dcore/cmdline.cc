@@ -23,6 +23,7 @@
 
 #include "pluginmgr.h"
 #include "cmdline.h"
+#include "cmdlinemgr.h"
 #include "version.h"
 #include "3dmprefs.h"
 #include "modelutil.h"
@@ -57,23 +58,18 @@ typedef std::list< std::string > StringList;
 bool cmdline_runcommand = false;
 bool cmdline_runui      = true;
 
-static bool   _doConvert = false;
-static char * _convertFormat = NULL;
+static bool        _doConvert = false;
+static std::string _convertFormat = "";
 
 static bool _doBatch = false;
-static bool _doSave = false;
 
-static bool       _doScripts = true;
+static bool _doScripts = true;
+static bool _doFilterTest = false;
+static bool _doTextureTest = false;
+static bool _doModelTest = false;
+
 static StringList _scripts;
-
-static bool   _doFilterTest = false;
-static char * _filterDir = NULL;
-
-static bool   _doTextureTest = false;
-static StringList _textureFiles;
-
-static bool   _doModelTest = false;
-static StringList _modelTests;
+static StringList _argList;
 
 typedef std::vector< Model * > ModelList;
 static ModelList _models;
@@ -92,14 +88,12 @@ static void _print_help( const char * progname )
    printf("Options:\n" );
    printf("  -h  --help             Print command line help and exit\n" );
    printf("  -v  --version          Print version information and exit\n" );
-   printf("  -b  --batch            Batch mode (exit after processing command line)\n" );
-   printf("  -s  --save             Save command line changes to model files\n" );
 #ifdef HAVE_LUALIB
    printf("      --script [file]    Run script [file] on models\n" );
 #endif // HAVE_LUALIB
    printf("      --convert [format] Save models to format [format]\n" );
    printf("                         \n" );
-   printf("      --lang [code]      Use language [code] instead of system default\n" );
+   printf("      --language [code]  Use language [code] instead of system default\n" );
    printf("                         \n" );
    printf("      --no-plugins       Disable all plugins\n" );
    printf("      --no-plugin [foo]  Disable plugin [foo]\n" );
@@ -158,300 +152,171 @@ static void _print_sysinfo()
    exit(0);
 }
 
+enum Mm3dOptionsE 
+{
+   OptHelp,
+   OptVersion,
+   OptBatch,
+   OptNoPlugins,
+   OptNoPlugin,
+   OptConvert,
+   OptLanguage,
+   OptScript,
+   OptSysinfo,
+   OptDebug,
+   OptWarnings,
+   OptErrors,
+   OptNoDebug,
+   OptNoWarnings,
+   OptNoErrors,
+   OptFilterTest,
+   OptTestTextureCompare,
+   OptTestModel,
+   OptMAX
+};
+
 int init_cmdline( int & argc, char * argv[] )
 {
-   int opts_done = 0;
-   bool readingOptions = true;
-   bool haveBadArgument = false;
+   CommandLineManager clm;
 
-   for ( int t = 1; t < argc; t++ )
+   clm.addOption( OptHelp, 'h', "help" );
+   clm.addOption( OptVersion, 'v', "version" );
+   clm.addOption( OptBatch, 'b', "batch" );
+
+   clm.addOption( OptNoPlugins, 0, "no-plugins" );
+   clm.addOption( OptNoPlugin, 0, "no-plugin", NULL, true );
+   clm.addOption( OptConvert, 0, "convert", NULL, true );
+   clm.addOption( OptLanguage, 0, "language", NULL, true );
+   clm.addOption( OptScript, 0, "script", NULL, true );
+
+   clm.addOption( OptSysinfo, 0, "sysinfo" );
+   clm.addOption( OptDebug, 0, "debug" );
+   clm.addOption( OptWarnings, 0, "warnings" );
+   clm.addOption( OptErrors, 0, "errors" );
+   clm.addOption( OptNoDebug, 0, "no-debug" );
+   clm.addOption( OptNoWarnings, 0, "no-warnings" );
+   clm.addOption( OptNoErrors, 0, "no-errors" );
+
+   clm.addOption( OptFilterTest, 0, "filtertest" );
+   clm.addOption( OptTestTextureCompare, 0, "testtexcompare" );
+   clm.addOption( OptTestModel, 0, "testmodel" );
+
+   if ( !clm.parse( argc, (const char **) argv ) )
    {
-      if ( readingOptions && argv[t][0] == '-' )
+      const char * opt = argv[ clm.errorArgument() ];
+
+      switch ( clm.error() )
       {
-         if ( strcmp( argv[t], "--no-plugins" ) == 0 )
-         {
-            PluginManager::getInstance()->setInitializeAll( false );
-         }
-         else if ( strncmp( argv[t], "--no-plugin", 11 ) == 0 )
-         {
-            if ( argv[t][11] == '=' )
-            {
-               PluginManager::getInstance()->disable( &argv[t][12] );
-            }
-            else
-            {
-               t++;
-               if ( t < argc )
-               {
-                  PluginManager::getInstance()->disable( argv[t] );
-               }
-               else
-               {
-                  fprintf( stderr, "Option %s requires plugin_name argument\n", argv[t] );
-                  exit( -1 );
-               }
-            }
-         }
-         else if ( strncmp( argv[t], "--convert", 9 ) == 0 )
-         {
-            if ( argv[t][9] == '=' )
-            {
-               _convertFormat = &argv[t][10];
-            }
-            else
-            {
-               t++;
-               if ( t < argc )
-               {
-                  _convertFormat = argv[t];
-               }
-               else
-               {
-                  fprintf( stderr, "Option %s requires argument of file format\n", argv[t-1] );
-                  exit( -1 );
-               }
-            }
-
-            _doConvert = true;
-
-            cmdline_runcommand = true;
-            cmdline_runui      = false;
-         }
-         else if ( strncmp( argv[t], "--language", 10 ) == 0 )
-         {
-            if ( argv[t][10] == '=' )
-            {
-               mlocale_set( &argv[t][11] );
-            }
-            else
-            {
-               t++;
-               if ( t < argc )
-               {
-                  mlocale_set( argv[t] );
-               }
-               else
-               {
-                  fprintf( stderr, "Option %s requires argument of file format\n", argv[t-1] );
-                  exit( -1 );
-               }
-            }
-         }
-         else if ( strncmp( argv[t], "--script", 8 ) == 0 )
-         {
-            if ( argv[t][8] == '=' )
-            {
-               _scripts.push_back( &argv[t][9] );
-            }
-            else
-            {
-               t++;
-               if ( t < argc )
-               {
-                  _scripts.push_back( argv[t] );
-               }
-               else
-               {
-                  fprintf( stderr, "Option %s requires argument of script name\n", argv[t-1] );
-                  exit( -1 );
-               }
-            }
-
-            _doScripts = true;
-
-            cmdline_runcommand = true;
-            cmdline_runui      = true;
-         }
-         else if ( strncmp( argv[t], "--filtertest", 11 ) == 0 )
-         {
-            if ( argv[t][11] == '=' )
-            {
-               _filterDir = strdup( &argv[t][12] );
-            }
-            else
-            {
-               t++;
-               if ( t < argc )
-               {
-                  _filterDir = strdup( argv[t] );
-               }
-               else
-               {
-                  fprintf( stderr, "Option %s requires argument of directory with test models\n", argv[t-1] );
-                  exit( -1 );
-               }
-            }
-
-            _doFilterTest = true;
-
-            cmdline_runcommand = true;
-            cmdline_runui      = false;
-         }
-         else if ( strncmp( argv[t], "--testtexcompare", 16 ) == 0 )
-         {
-            if ( argc < t + 2 )
-            {
-               fprintf( stderr, "not enough arguments to texture test\n" );
-               exit( -1 );
-            }
-
-            for ( int n = t+1; n < argc; n++ )
-            {
-               _textureFiles.push_back( argv[n] );
-            }
-
-            _doTextureTest = true;
-
-            cmdline_runcommand = true;
-            cmdline_runui      = false;
-
-            t = argc;
-         }
-         else if ( strncmp( argv[t], "--testmodel", 11 ) == 0 )
-         {
-            if ( argc < t + 2 )
-            {
-               fprintf( stderr, "not enough arguments to model test\n" );
-               exit( -1 );
-            }
-
-            for ( int n = t+1; n < argc; n++ )
-            {
-               _modelTests.push_back( argv[n] );
-            }
-
-            _doModelTest = true;
-
-            cmdline_runcommand = true;
-            cmdline_runui      = false;
-
-            t = argc;
-         }
-         else if ( strncmp( argv[t], "--config", 8 ) == 0 )
-         {
-            char * key     = NULL;
-            char * value   = NULL;
-            if ( argv[t][8] == '=' )
-            {
-               key = strdup(&argv[t][9]);
-            }
-            else
-            {
-               t++;
-               if ( t < argc )
-               {
-                  key = strdup( argv[t] );
-               }
-               else
-               {
-                  fprintf( stderr, "Option %s requires argument of format 'key=value'\n", argv[t] );
-                  exit( -1 );
-               }
-            }
-
-            if ( key[0] != '=' && (value = strchr( key, '=' )) != NULL )
-            {
-               value++; // skip '='
-            }
-            else
-            {
-               fprintf( stderr, "Option --config requires argument of format 'key=value'\n" );
-               free( key );
-               exit( -1 );
-            }
-
-            g_prefs(key) = value;
-
-            free( key );
-         }
-         else if ( strcmp( argv[t], "--" ) == 0 )
-         {
-            readingOptions = false;
-            opts_done = t+1;
+         case CommandLineManager::MissingArgument:
+            fprintf( stderr, "Option '%s' requires an argument. "
+                             "See --help for details.\n", opt );
             break;
-         }
-         else if ( strcmp( argv[t], "--help" ) == 0 || strcmp( argv[t], "-h" ) == 0 )
-         {
-            _print_help( argv[0] );
-         }
-         else if ( strcmp( argv[t], "--version" ) == 0 || strcmp( argv[t], "-v" ) == 0 )
-         {
-            _print_version( argv[0] );
-            exit( 0 );
-         }
-         else if ( strcmp( argv[t], "--sysinfo" ) == 0 )
-         {
-            _print_sysinfo();
-         }
-         else if ( strcmp( argv[t], "--batch" ) == 0 || strcmp( argv[t], "-b" ) == 0 )
-         {
-            _doBatch = true;
-            cmdline_runcommand = true;
-         }
-         else if ( strcmp( argv[t], "--save" ) == 0 || strcmp( argv[t], "-s" ) == 0 )
-         {
-            _doSave = true;
-            cmdline_runcommand = true;
-         }
-         else if ( strcmp( argv[t], "--debug" ) == 0 )
-         {
-            log_enable_debug( true );
-         }
-         else if ( strcmp( argv[t], "--warnings" ) == 0 )
-         {
-            log_enable_warning( true );
-         }
-         else if ( strcmp( argv[t], "--errors" ) == 0 )
-         {
-            log_enable_error( true );
-         }
-         else if ( strcmp( argv[t], "--no-debug" ) == 0 )
-         {
-            log_enable_debug( false );
-         }
-         else if ( strcmp( argv[t], "--no-warnings" ) == 0 )
-         {
-            log_enable_warning( false );
-         }
-         else if ( strcmp( argv[t], "--no-errors" ) == 0 )
-         {
-            log_enable_error( false );
-         }
-         else
-         {
-            fprintf( stderr, "Unknown argument: %s\n", argv[t] );
-            haveBadArgument = true;
-         }
+         case CommandLineManager::UnknownOption:
+            fprintf( stderr, "Unknown option '%s'. "
+                             "See --help for details.\n", opt );
+            break;
+         case CommandLineManager::NoError:
+            fprintf( stderr, "BUG: CommandLineManager::parse returned false but "
+                             "error code was not set.\n" );
+            break;
+         default:
+            fprintf( stderr, "BUG: CommandLineManager::error returned an "
+                             "unknown error code.\n" );
+            break;
       }
-      else
-      {
-         readingOptions = false;
-         opts_done = t;
-         break;
-      }
+      exit( -1 );
    }
 
-   if ( haveBadArgument )
+   if ( clm.isSpecified( OptHelp ) )
+      _print_help( argv[0] );
+
+   if ( clm.isSpecified( OptVersion ) )
    {
-      // TODO do something sensible here
-      //exit( -1 );
+      _print_version( argv[0] );
+      exit( 0 );
    }
 
-   if ( readingOptions == true )
+   if ( clm.isSpecified( OptBatch ) )
    {
-      argc = 1;
+      _doBatch = true;
+      cmdline_runcommand = true;
    }
-   else
+
+   if ( clm.isSpecified( OptNoPlugins ) )
+      PluginManager::getInstance()->setInitializeAll( false );
+   if ( clm.isSpecified( OptNoPlugin ) )
+      PluginManager::getInstance()->disable( clm.stringValue( OptNoPlugin ) );
+   if ( clm.isSpecified( OptConvert ) )
    {
-      if ( opts_done != 0 )
-      {
-         for ( int n = 0; opts_done + n < argc; n++ )
-         {
-            argv[n+1] = argv[ opts_done + n ];
-         }
-         argc = argc - opts_done + 1;
-      }
+      _convertFormat = clm.stringValue( OptConvert );
+
+      _doConvert = true;
+
+      cmdline_runcommand = true;
+      cmdline_runui = false;
    }
+   if ( clm.isSpecified( OptLanguage ) )
+      mlocale_set( clm.stringValue( OptLanguage ) );
+
+   if ( clm.isSpecified( OptScript ) )
+   {
+      _scripts.push_back( clm.stringValue( OptScript ) );
+
+      _doScripts = true;
+
+      cmdline_runcommand = true;
+      cmdline_runui = true;
+   }
+
+   if ( clm.isSpecified( OptSysinfo ) )
+      _print_sysinfo();
+
+   if ( clm.isSpecified( OptDebug ) )
+      log_enable_debug( true );
+   if ( clm.isSpecified( OptWarnings ) )
+      log_enable_warning( true );
+   if ( clm.isSpecified( OptErrors ) )
+      log_enable_error( true );
+   if ( clm.isSpecified( OptNoDebug ) )
+      log_enable_debug( false );
+   if ( clm.isSpecified( OptNoWarnings ) )
+      log_enable_warning( false );
+   if ( clm.isSpecified( OptNoErrors ) )
+      log_enable_error( false );
+
+   if ( clm.isSpecified( OptFilterTest ) )
+   {
+      _doFilterTest = true;
+
+      cmdline_runcommand = true;
+      cmdline_runui = false;
+   }
+   if ( clm.isSpecified( OptTestTextureCompare ) )
+   {
+      _doTextureTest = true;
+
+      cmdline_runcommand = true;
+      cmdline_runui = false;
+   }
+   if ( clm.isSpecified( OptTestModel ) )
+   {
+      _doModelTest = true;
+
+      cmdline_runcommand = true;
+      cmdline_runui = false;
+   }
+
+   int opts_done = clm.firstArgument();
+   int offset = 1;
+
+   for ( int n = opts_done; n < argc; n++ )
+   {
+      _argList.push_back( argv[n] );
+      argv[ offset ] = argv[n];
+      ++offset;
+   }
+
+   argc = offset;
 
    return 0;
 }
@@ -461,53 +326,60 @@ void shutdown_cmdline()
    cmdline_deleteOpenModels();
 }
 
-int cmdline_command( int & argc, char * argv[] )
+int cmdline_command()
 {
    unsigned errors = 0;
 
    if ( _doFilterTest )
    {
-      return modelTestRun( _filterDir );
+      int failed = 0;
+      StringList::iterator it = _argList.begin();
+      for ( ; it != _argList.end(); it++ )
+      {
+         failed += modelTestRun( it->c_str() );
+      }
+      return failed;
    }
 
    if ( _doModelTest )
    {
       int failed = 0;
-      StringList::iterator it = _modelTests.begin();
-      for ( ; it != _modelTests.end(); it++ )
+      StringList::iterator it = _argList.begin();
+      for ( ; it != _argList.end(); it++ )
       {
-         failed += model_test( (*it).c_str() );
+         failed += model_test( it->c_str() );
       }
       return failed;
    }
 
    if ( _doTextureTest )
    {
-      std::string master = _textureFiles.front();
+      std::string master = _argList.front();
 
-      StringList::iterator it = _textureFiles.begin();
+      StringList::iterator it = _argList.begin();
       it++;
-      for ( ; it != _textureFiles.end(); it++ )
+      for ( ; it != _argList.end(); it++ )
       {
-         texture_test_compare( master.c_str(), (*it).c_str(), 10 );
+         texture_test_compare( master.c_str(), it->c_str(), 10 );
       }
       return 0;
    }
 
    FilterManager * mgr = FilterManager::getInstance();
 
-   for ( int t = 1; t < argc; t++ )
+   StringList::iterator it = _argList.begin();
+   for ( ; it != _argList.end(); it++ )
    {
       Model::ModelErrorE err = Model::ERROR_NONE;
       Model * m = new Model;
-      if ( (err = mgr->readFile( m, argv[t] )) == Model::ERROR_NONE )
+      if ( (err = mgr->readFile( m, it->c_str() )) == Model::ERROR_NONE )
       {
          m->loadTextures( 0 );
          _models.push_back( m );
       }
       else
       {
-         std::string reason = argv[t];
+         std::string reason = *it;
          reason += ": ";
          reason += transll( Model::errorToString( err, m ) );
          msg_error( reason.c_str() );
@@ -515,13 +387,10 @@ int cmdline_command( int & argc, char * argv[] )
       }
    }
    
-   if ( argc <= 1 )
+   if ( _argList.empty() && _doScripts )
    {
-      if ( _doScripts )
-      {
-         Model * m = new Model();
-         _models.push_back( m );
-      }
+      Model * m = new Model();
+      _models.push_back( m );
    }
 
    for ( unsigned n = 0; n < _models.size(); n++ )
@@ -550,7 +419,7 @@ int cmdline_command( int & argc, char * argv[] )
       if ( _doConvert )
       {
          const char * infile = m->getFilename();
-         std::string outfile = replaceExtension( infile, _convertFormat );
+         std::string outfile = replaceExtension( infile, _convertFormat.c_str() );
          Model::ModelErrorE err = Model::ERROR_NONE;
          if ( (err = mgr->writeFile( m, outfile.c_str(), true, FilterManager::WO_ModelNoPrompt )) != Model::ERROR_NONE )
          {
@@ -562,8 +431,9 @@ int cmdline_command( int & argc, char * argv[] )
          }
       }
 
-      if ( _doSave )
+      if ( _doBatch )
       {
+         cmdline_runui = false;
          std::string filename = m->getFilename();
          if ( filename.length() == 0 )
          {
@@ -580,11 +450,6 @@ int cmdline_command( int & argc, char * argv[] )
             msg_error( reason.c_str() );
          }
       }
-   }
-
-   if ( _doBatch )
-   {
-      cmdline_runui = false;
    }
 
    return errors;
