@@ -9,6 +9,7 @@ libmm3d_HFILES = \
 	cmdlinemgr.h \
 	cobfilter.h \
 	datasource.h \
+	filedatasource.h \
 	drawcontext.h \
 	dxffilter.h \
 	endianconfig.h \
@@ -63,6 +64,7 @@ libmm3d_a_SOURCES = \
 	cmdlinemgr.cc \
 	cobfilter.cc \
 	datasource.cc \
+	filedatasource.cc \
 	dxffilter.cc \
 	filtermgr.cc \
 	glmath.cc \
