@@ -21,7 +21,7 @@
  */
 
 
-// This file tests the CommandLineManager class.
+// This file tests the DataSource class.
 
 #include <QtTest/QtTest>
 
