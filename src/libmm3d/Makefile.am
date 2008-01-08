@@ -8,6 +8,8 @@ libmm3d_HFILES = \
 	cal3dfilter.h \
 	cmdlinemgr.h \
 	cobfilter.h \
+	datadest.h \
+	filedatadest.h \
 	datasource.h \
 	filedatasource.h \
 	drawcontext.h \
@@ -63,6 +65,8 @@ libmm3d_a_SOURCES = \
 	cal3dfilter.cc \
 	cmdlinemgr.cc \
 	cobfilter.cc \
+	datadest.cc \
+	filedatadest.cc \
 	datasource.cc \
 	filedatasource.cc \
 	dxffilter.cc \

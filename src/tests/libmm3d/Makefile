@@ -7,6 +7,7 @@ LIB = ../../libmm3d/libmm3d.a
 TESTS = \
 		  memutil_test.unit \
 		  datasource_test.unit \
+		  datadest_test.unit \
 		  filedatasource_test.unit \
 		  texcompare_test.unit \
 		  model_init_test.unit \
@@ -22,6 +23,8 @@ all:
 cmdlinemgr_test.unit: cmdlinemgr_test.moc $(LIB)
 
 datasource_test.unit: datasource_test.moc $(LIB)
+
+datadest_test.unit: datadest_test.moc $(LIB)
 
 filedatasource_test.unit: filedatasource_test.moc $(LIB)
 
@@ -51,6 +54,7 @@ check: test
 	./model_test.unit -silent
 	./util_test.unit -silent
 	./cmdlinemgr_test.unit -silent
+	./datadest_test.unit -silent
 
 clean:
 	rm -rf *.unit *.moc core core.*
