@@ -192,8 +192,8 @@ class DataSource
       virtual bool internalReadAt( off_t offset, uint8_t ** buf, size_t * bufLen ) = 0;
 
       void setFileSize( size_t s ) { m_fileSize = s; }
-      void setUnexpectedEof( bool o ) { m_unexpectedEof = o; }
-      void setErrno( int err ) { m_errno = err ; }
+      void setErrno( int err );
+      void setUnexpectedEof( bool );
 
    private:
       bool requireBytes( size_t bytes );

@@ -61,6 +61,19 @@ void DataSource::setEndianness( EndiannessE e )
    }
 }
 
+void DataSource::setUnexpectedEof( bool o )
+{
+   if ( o )
+      m_errorOccurred = true;
+   m_unexpectedEof = o;
+}
+
+void DataSource::setErrno( int err )
+{
+   m_errorOccurred = true;
+   m_errno = err;
+}
+
 bool DataSource::requireBytes( size_t bytes )
 {
    if ( m_bufLen < bytes )
