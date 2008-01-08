@@ -34,7 +34,11 @@
 int Model::addGroup( const char * name )
 {
    LOG_PROFILE();
-   if ( m_animationMode || (m_frameAnims.size() > 0 && !m_forceAddOrDelete))
+   if ( m_animationMode )
+   {
+      return -1;
+   }
+   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
    {
       displayFrameAnimPrimitiveError();
       return -1;
@@ -65,7 +69,11 @@ int Model::addGroup( const char * name )
 void Model::deleteGroup( unsigned groupNum )
 {
    LOG_PROFILE();
-   if ( m_animationMode || (m_frameAnims.size() > 0 && !m_forceAddOrDelete))
+   if ( m_animationMode )
+   {
+      return;
+   }
+   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
    {
       displayFrameAnimPrimitiveError();
       return;

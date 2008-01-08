@@ -562,7 +562,11 @@ bool Model::isPointVisible( unsigned p )
 
 int Model::addVertex( double x, double y, double z )
 {
-   if ( m_animationMode || (m_frameAnims.size() > 0 && !m_forceAddOrDelete))
+   if ( m_animationMode )
+   {
+      return -1;
+   }
+   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
    {
       displayFrameAnimPrimitiveError();
       return -1;
@@ -606,7 +610,11 @@ bool Model::isVertexFree( unsigned v )
 
 int Model::addTriangle( unsigned v1, unsigned v2, unsigned v3 )
 {
-   if ( m_animationMode || (m_frameAnims.size() > 0 && !m_forceAddOrDelete))
+   if ( m_animationMode )
+   {
+      return -1;
+   }
+   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
    {
       displayFrameAnimPrimitiveError();
       return -1;
@@ -704,6 +712,11 @@ int Model::addPoint( const char * name, const double & x, const double & y, cons
 {
    if ( m_animationMode )
    {
+      return -1;
+   }
+   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
+   {
+      displayFrameAnimPrimitiveError();
       return -1;
    }
 
@@ -833,12 +846,15 @@ bool Model::getTriangleVertices( unsigned triangleNum, unsigned & vert1, unsigne
 void Model::deleteVertex( unsigned vertexNum )
 {
    LOG_PROFILE();
-   if ( m_animationMode || (m_frameAnims.size() > 0 && !m_forceAddOrDelete))
+   if ( m_animationMode )
+   {
+      return;
+   }
+   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
    {
       displayFrameAnimPrimitiveError();
       return;
    }
-
 
    if ( vertexNum >= m_vertices.size() )
    {
@@ -855,12 +871,15 @@ void Model::deleteVertex( unsigned vertexNum )
 void Model::deleteTriangle( unsigned triangleNum )
 {
    LOG_PROFILE();
-   if ( m_animationMode || (m_frameAnims.size() > 0 && !m_forceAddOrDelete))
+   if ( m_animationMode )
+   {
+      return;
+   }
+   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
    {
       displayFrameAnimPrimitiveError();
       return;
    }
-
 
    if ( triangleNum >= m_triangles.size() )
    {
@@ -959,12 +978,15 @@ void Model::deleteBoneJoint( unsigned joint )
 
 void Model::deletePoint( unsigned point )
 {
-   if ( m_animationMode || (m_frameAnims.size() > 0 && !m_forceAddOrDelete))
+   if ( m_animationMode )
+   {
+      return;
+   }
+   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
    {
       displayFrameAnimPrimitiveError();
       return;
    }
-
 
    if ( point < m_points.size() )
    {
@@ -981,12 +1003,15 @@ void Model::deletePoint( unsigned point )
 
 void Model::deleteProjection( unsigned proj )
 {
-   if ( m_animationMode || (m_frameAnims.size() > 0 && !m_forceAddOrDelete))
+   if ( m_animationMode )
+   {
+      return;
+   }
+   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
    {
       displayFrameAnimPrimitiveError();
       return;
    }
-
 
    if ( proj < m_projections.size() )
    {
@@ -1076,43 +1101,6 @@ void Model::deleteSelected()
    }
 
    m_changeBits |= AddGeometry;
-
-   /*
-   if ( m_selectionMode == SelectTriangles || m_selectionMode == SelectGroups )
-   {
-      for ( int t = m_triangles.size() - 1; t >= 0; t-- )
-      {
-         if ( m_triangles[t]->m_selected )
-         {
-            deleteTriangle( t );
-         }
-      }
-      deleteOrphanedVertices();
-   }
-   if ( m_selectionMode == SelectVertices )
-   {
-      if ( m_animationMode || (m_frameAnims.size() > 0 && !m_forceAddOrDelete))
-      {
-         displayFrameAnimPrimitiveError();
-         return;
-      }
-      selectTrianglesFromVertices( false );
-      for ( int t = m_triangles.size() - 1; t >= 0; t-- )
-      {
-         if ( m_triangles[t]->m_selected )
-         {
-            deleteTriangle( t );
-         }
-      }
-      for ( int v = m_vertices.size() - 1; v >= 0; v-- )
-      {
-         if ( m_vertices[v]->m_selected )
-         {
-            deleteVertex( v );
-         }
-      }
-   }
-   */
 
    for ( int v = m_vertices.size() - 1; v >= 0; v-- )
    {
@@ -2033,7 +2021,11 @@ void Model::subdivideSelectedTriangles()
    {
       return;
    }
-
+   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
+   {
+      displayFrameAnimPrimitiveError();
+      return;
+   }
 
    sorted_list<SplitEdgesT> seList;
    vector<unsigned> verts;
@@ -2054,16 +2046,6 @@ void Model::subdivideSelectedTriangles()
             unsigned b = m_triangles[t]->m_vertexIndices[ (v+1) % 3 ];
 
             unsigned index;
-            /*
-            float na[3];
-            float nb[3];
-
-            for ( index = 0; index < 3; index++ )
-            {
-               na[index] = m_triangles[t]->m_vertexNormals[v][index];
-               nb[index] = m_triangles[t]->m_vertexNormals[(v+1)%3][index];
-            }
-            */
 
             if ( b < a )
             {
@@ -2089,6 +2071,7 @@ void Model::subdivideSelectedTriangles()
                getVertexCoords( a, pa );
                getVertexCoords( b, pb );
 
+               // FIXME this should really use addVertex()
                Vertex * vertex = Vertex::get();
 
                vertex->m_coord[0] = (pa[0] + pb[0]) / 2;
