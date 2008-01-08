@@ -40,6 +40,24 @@ class TgaTextureFilter : public TextureFilter
       Texture::ErrorE readFile( Texture * texture, const char * filename );
       virtual bool canRead( const char * filename );
 
+   protected:
+
+      std::list< std::string > m_read;
+      std::list< std::string > m_write;
+};
+
+class OldTgaTextureFilter : public TextureFilter
+{
+   public:
+      OldTgaTextureFilter();
+      virtual ~OldTgaTextureFilter();
+
+      std::list< std::string > getReadTypes();
+      std::list< std::string > getWriteTypes();
+
+      Texture::ErrorE readFile( Texture * texture, const char * filename );
+      virtual bool canRead( const char * filename );
+
       static void read( uint8_t & val, FILE * fp );
       static void read( uint16_t & val, FILE * fp );
       static void readBytes( void * buf, size_t len, FILE * fp );
