@@ -45,14 +45,8 @@
 //   * render options (joint mode, projections, canvas draw mode)
 //
 // TODO Geometry:
-//   * Add/remove primitives
-//     - Vertices
-//     - Faces
-//     - Groups
-//     - Materials
-//     - Bone Joints
-//     - Points
-//     - Texture Projections
+//   * Deletions
+//     - Delete selected
 //     - Force add/delete
 //     - Remove oprhaned vertices (and not free vertices)
 //     - Remove flattened triangles
@@ -119,9 +113,6 @@
 //     - Mesh deformation
 //     - Clear
 //   * Interpolation
-//   * Any function that adds/removes geometry is disabled if frame animations exist
-//     - canAddOrDelete
-//     - Force add/delete
 //
 #include <QtTest/QtTest>
 
