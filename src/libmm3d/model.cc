@@ -1007,11 +1007,6 @@ void Model::deleteProjection( unsigned proj )
    {
       return;
    }
-   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
-   {
-      displayFrameAnimPrimitiveError();
-      return;
-   }
 
    if ( proj < m_projections.size() )
    {

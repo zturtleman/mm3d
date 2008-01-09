@@ -171,7 +171,7 @@ int Model::addTexture( Texture * tex )
 int Model::addColorMaterial( const char * name )
 {
    LOG_PROFILE();
-   if ( m_animationMode )
+   if ( m_animationMode || name == NULL )
    {
       return -1;
    }
