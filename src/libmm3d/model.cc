@@ -651,7 +651,7 @@ int Model::addTriangle( unsigned v1, unsigned v2, unsigned v3 )
 int Model::addBoneJoint( const char * name, const double & x, const double & y, const double & z, 
       const double & xrot, const double & yrot, const double & zrot, const int & parent )
 {
-   if ( m_animationMode )
+   if ( m_animationMode || name == NULL || parent >= (int) m_joints.size() )
    {
       return -1;
    }
@@ -710,7 +710,7 @@ int Model::addBoneJoint( const char * name, const double & x, const double & y, 
 int Model::addPoint( const char * name, const double & x, const double & y, const double & z, 
       const double & xrot, const double & yrot, const double & zrot, const int & boneId )
 {
-   if ( m_animationMode )
+   if ( m_animationMode || name == NULL || boneId >= (int) m_joints.size())
    {
       return -1;
    }
@@ -751,7 +751,7 @@ int Model::addPoint( const char * name, const double & x, const double & y, cons
 
 int Model::addProjection( const char * name, int type, double x, double y, double z )
 {
-   if ( m_animationMode )
+   if ( m_animationMode || name == NULL )
    {
       return -1;
    }
