@@ -129,12 +129,13 @@ class DataDest
 
       // Write an integer value of the specified size and store it in val.
       // Returns false if a read error occurred.
-      bool write( const int8_t & val );
-      bool write( const uint8_t & val );
-      bool write( const int16_t & val );
-      bool write( const uint16_t & val );
-      bool write( const int32_t & val );
-      bool write( const uint32_t & val );
+      bool write( int8_t val );
+      bool write( uint8_t val );
+      bool write( int16_t val );
+      bool write( uint16_t val );
+      bool write( int32_t val );
+      bool write( uint32_t val );
+      bool write( float val );     // FIXME float32_t
 
       // An error occured, either atFileLimit() is true, or getErrno()
       // is not 0.
@@ -172,9 +173,11 @@ class DataDest
 
       typedef uint16_t (*EndianFunction16T)( uint16_t );
       typedef uint32_t (*EndianFunction32T) ( uint32_t );
+      typedef float (*EndianFunctionFlT) ( float );
 
       EndianFunction16T m_endfunc16;
       EndianFunction32T m_endfunc32;
+      EndianFunctionFlT m_endfuncfl;
 };
 
 #endif // DATADEST_INC_H__

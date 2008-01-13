@@ -41,10 +41,11 @@ class FileDataSource : public DataSource
    public:
       // fp must be open for read and must be seekable
       FileDataSource( FILE * fp );
+      FileDataSource( const char * filename );
       virtual ~FileDataSource();
 
    protected:
-      virtual bool internalReadAt( off_t offset, uint8_t ** buf, size_t * bufLen );
+      virtual bool internalReadAt( off_t offset, const uint8_t ** buf, size_t * bufLen );
 
    private:
       void sendErrno( int err );
@@ -55,8 +56,7 @@ class FileDataSource : public DataSource
       };
 
       FILE * m_fp;
-      bool m_unexpectedEof;
-      int m_errno;
+      bool m_mustClose;
       uint8_t m_buf[ BUF_SIZE ];
 };
 

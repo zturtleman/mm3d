@@ -68,7 +68,7 @@ private:
          {
          }
 
-         bool internalReadAt( off_t offset, uint8_t ** buf, size_t * bufLen )
+         bool internalReadAt( off_t offset, const uint8_t ** buf, size_t * bufLen )
          {
             // TODO should assert on buf and bufLen
 
@@ -134,7 +134,7 @@ private:
          {
          }
 
-         bool internalReadAt( off_t offset, uint8_t ** buf, size_t * bufLen )
+         bool internalReadAt( off_t offset, const uint8_t ** buf, size_t * bufLen )
          {
             // TODO should assert on buf and bufLen
 

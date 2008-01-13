@@ -27,29 +27,65 @@
 
 FileDataSource::FileDataSource( FILE * fp )
    : m_fp( fp ),
-     m_unexpectedEof( false ),
-     m_errno( 0 )
+     m_mustClose( false )
 {
-   if ( fp == NULL )
+   if ( m_fp == NULL )
    {
-      sendErrno( EBADF );
+      setErrno( EBADF );
       return;
    }
 
-   int rval = 0;
-   long size = -1;
-
-   rval = fseek( fp, 0, SEEK_END );
-
-   size = ftell( fp );
-
-   if ( rval != 0 || size < 0 )
+   if ( 0 != fseek( m_fp, 0, SEEK_END ) )
    {
-      sendErrno( EBADF );
+      setErrno( errno );
       return;
    }
 
-   fseek( fp, 0, SEEK_SET );
+
+   long size = ftell( m_fp );
+   if ( size < 0 )
+   {
+      setErrno( EBADF );
+      return;
+   }
+
+   if ( 0 != fseek( m_fp, 0, SEEK_SET ) )
+   {
+      setErrno( errno );
+      return;
+   }
+
+   setFileSize( size );
+}
+
+FileDataSource::FileDataSource( const char * filename )
+   : m_mustClose( true )
+{
+   m_fp = fopen( filename, "r" );
+   if ( m_fp == NULL )
+   {
+      setErrno( errno );
+      return;
+   }
+
+   if ( 0 != fseek( m_fp, 0, SEEK_END ) )
+   {
+      setErrno( errno );
+      return;
+   }
+
+   long size = ftell( m_fp );
+   if ( size < 0 )
+   {
+      setErrno( errno );
+      return;
+   }
+
+   if ( 0 != fseek( m_fp, 0, SEEK_SET ) )
+   {
+      setErrno( errno );
+      return;
+   }
 
    setFileSize( size );
 }
@@ -58,24 +94,23 @@ FileDataSource::~FileDataSource()
 {
 }
 
-bool FileDataSource::internalReadAt( off_t offset, uint8_t ** buf, size_t * bufLen )
+bool FileDataSource::internalReadAt( off_t offset, const uint8_t ** buf, size_t * bufLen )
 {
    // TODO should assert on buf and bufLen
 
    // If we had an error, just keep returning an error
-   if ( m_unexpectedEof || m_errno != 0 )
+   if ( errorOccurred() )
       return false;
 
    if ( offset > (off_t) getFileSize() )
    {
-      m_unexpectedEof = true;
       setUnexpectedEof( true );
       return false;
    }
 
    if ( fseek( m_fp, offset, SEEK_SET ) != 0 )
    {
-      sendErrno( errno );
+      setErrno( errno );
       return false;
    }
 
@@ -83,18 +118,12 @@ bool FileDataSource::internalReadAt( off_t offset, uint8_t ** buf, size_t * bufL
 
    if ( ferror( m_fp ) != 0 )
    {
-      sendErrno( errno );
+      setErrno( errno );
       return false;
    }
 
    *buf = m_buf;
    *bufLen = bytes;
    return true;
-}
-
-void FileDataSource::sendErrno( int err )
-{
-   m_errno = err;
-   setErrno( m_errno );
 }
 

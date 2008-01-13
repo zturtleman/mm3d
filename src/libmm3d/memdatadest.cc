@@ -21,7 +21,7 @@
  */
 
 
-#include "filedatadest.h"
+#include "memdatadest.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,89 +31,51 @@
 #include <errno.h>
 #include <sys/types.h>
 
-FileDataDest::FileDataDest( FILE * fp, size_t startOffset )
-   : m_fp( fp ),
-     m_startOffset( startOffset ),
-     m_mustClose( false )
+MemDataDest::MemDataDest( uint8_t * buf, size_t bufSize )
+   : m_buf( buf ),
+     m_bufSize( bufSize ),
+     m_bufOffset( 0 )
 {
-   if ( m_fp == NULL )
+   if ( m_buf == NULL )
    {
-      sendErrno( EBADF );
-      return;
-   }
-
-   // Don't count on the caller to put as the starting offset
-   if ( fseek( m_fp, m_startOffset, SEEK_SET ) != 0 )
-   {
-      sendErrno( errno );
+      setErrno( EBADF );
       return;
    }
 }
 
-FileDataDest::FileDataDest( const char * filename )
-   : m_mustClose( true )
+MemDataDest::~MemDataDest()
 {
-   m_fp = fopen( filename, "w" );
-   if ( m_fp == NULL )
-   {
-      sendErrno( errno );
-      return;
-   }
 }
 
-FileDataDest::~FileDataDest()
-{
-   if ( m_mustClose )
-      close();
-}
-
-void FileDataDest::close()
-{
-   if ( m_fp != NULL )
-   {
-      fclose( m_fp );
-      m_fp = NULL;
-   }
-}
-
-void FileDataDest::sendErrno( int err )
-{
-   setErrno( err );
-}
-
-bool FileDataDest::internalSeek( off_t off )
+bool MemDataDest::internalSeek( off_t off )
 {
    if ( errorOccurred() )
       return false;
 
-   if ( m_fp == NULL )
+   if ( (size_t) off > m_bufSize )
    {
-      sendErrno( EBADF );
+      setAtFileLimit( true );
       return false;
    }
 
-   if ( fseek( m_fp, off + m_startOffset, SEEK_SET ) != 0 )
-      return false;
+   m_bufOffset = off;
 
    return true;
 }
 
-bool FileDataDest::internalWrite( const uint8_t * buf, size_t bufLen )
+bool MemDataDest::internalWrite( const uint8_t * buf, size_t bufLen )
 {
    if ( errorOccurred() )
       return false;
 
-   if ( m_fp == NULL )
+   if ( m_bufOffset + bufLen > m_bufSize )
    {
-      sendErrno( EBADF );
+      setAtFileLimit( true );
       return false;
    }
 
-   if ( fwrite( buf, 1, bufLen, m_fp ) == 0 && bufLen != 0 )
-   {
-      sendErrno( errno );
-      return false;
-   }
+   memcpy( &m_buf[m_bufOffset], buf, bufLen );
+   m_bufOffset += bufLen;
 
    return true;
 }

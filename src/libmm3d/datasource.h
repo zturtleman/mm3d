@@ -135,6 +135,9 @@ class DataSource
       // Returns the size of the input.
       size_t getFileSize() { return m_fileSize; }
 
+      // Returns the size of data remaining in the input
+      size_t getRemaining() { return m_fileSize - m_bufOffset; }
+
       // Move the current read position to 'offset' in the input.
       bool seek( off_t offset );
 
@@ -160,7 +163,7 @@ class DataSource
       // readTo() above with '\0' as the stopChar, except that buf is
       // gauranteed to be null-terminated.
       // Returns false if a read error occurred.
-      bool readAsciiz( char * buf, size_t bufLen, bool * foundNull );
+      bool readAsciiz( char * buf, size_t bufLen, bool * foundNull = NULL );
 
       // Read an integer value of the specified size and store it in val.
       // Returns false if a read error occurred.
@@ -170,6 +173,7 @@ class DataSource
       bool read( uint16_t & val );
       bool read( int32_t & val );
       bool read( uint32_t & val );
+      bool read( float & val );     // FIXME float32_t
 
       // For convinience, if you don't care about errors.
       // These are safe to use if you want to read a lot of unvalidated
@@ -189,7 +193,7 @@ class DataSource
       int getErrno() { return m_errno; }
 
    protected:
-      virtual bool internalReadAt( off_t offset, uint8_t ** buf, size_t * bufLen ) = 0;
+      virtual bool internalReadAt( off_t offset, const uint8_t ** buf, size_t * bufLen ) = 0;
 
       void setFileSize( size_t s ) { m_fileSize = s; }
       void setErrno( int err );
@@ -201,7 +205,7 @@ class DataSource
       bool fillBuffer();
 
       EndiannessE m_endian;
-      uint8_t * m_buf;
+      const uint8_t * m_buf;
       size_t m_fileSize;
       size_t m_bufLen;
       size_t m_bufOffset;
@@ -212,9 +216,11 @@ class DataSource
 
       typedef uint16_t (*EndianFunction16T)( uint16_t );
       typedef uint32_t (*EndianFunction32T) ( uint32_t );
+      typedef float (*EndianFunctionFlT) ( float );
 
       EndianFunction16T m_endfunc16;
       EndianFunction32T m_endfunc32;
+      EndianFunctionFlT m_endfuncfl;
 };
 
 #endif // DATASOURCE_INC_H__

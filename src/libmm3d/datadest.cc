@@ -38,7 +38,8 @@ DataDest::DataDest()
      m_atFileLimit( false ),
      m_errno( 0 ),
      m_endfunc16( htol_u16 ),
-     m_endfunc32( htol_u32 )
+     m_endfunc32( htol_u32 ),
+     m_endfuncfl( htol_float )
 {
 }
 
@@ -118,7 +119,7 @@ bool DataDest::canWrite( size_t bytes )
    return true;
 }
 
-bool DataDest::write( const int8_t & val )
+bool DataDest::write( int8_t val )
 {
    if ( !canWrite(sizeof(val) ) )
       return false;
@@ -126,7 +127,7 @@ bool DataDest::write( const int8_t & val )
    return internalWrite( (const uint8_t *) &val, sizeof(val) );
 }
 
-bool DataDest::write( const uint8_t & val )
+bool DataDest::write( uint8_t val )
 {
    if ( !canWrite(sizeof(val) ) )
       return false;
@@ -134,7 +135,7 @@ bool DataDest::write( const uint8_t & val )
    return internalWrite( &val, sizeof(val) );
 }
 
-bool DataDest::write( const int16_t & val )
+bool DataDest::write( int16_t val )
 {
    if ( !canWrite(sizeof(val) ) )
       return false;
@@ -143,7 +144,7 @@ bool DataDest::write( const int16_t & val )
    return internalWrite( (const uint8_t *) &wval, sizeof(wval) );
 }
 
-bool DataDest::write( const uint16_t & val )
+bool DataDest::write( uint16_t val )
 {
    if ( !canWrite(sizeof(val) ) )
       return false;
@@ -152,7 +153,7 @@ bool DataDest::write( const uint16_t & val )
    return internalWrite( (const uint8_t *) &wval, sizeof(wval) );
 }
 
-bool DataDest::write( const int32_t & val )
+bool DataDest::write( int32_t val )
 {
    if ( !canWrite(sizeof(val) ) )
       return false;
@@ -161,12 +162,21 @@ bool DataDest::write( const int32_t & val )
    return internalWrite( (const uint8_t *) &wval, sizeof(wval) );
 }
 
-bool DataDest::write( const uint32_t & val )
+bool DataDest::write( uint32_t val )
 {
    if ( !canWrite(sizeof(val) ) )
       return false;
 
    uint32_t wval = m_endfunc32( val );
+   return internalWrite( (const uint8_t *) &wval, sizeof(wval) );
+}
+
+bool DataDest::write( float val )
+{
+   if ( !canWrite(sizeof(val) ) )
+      return false;
+
+   uint32_t wval = m_endfuncfl( val );
    return internalWrite( (const uint8_t *) &wval, sizeof(wval) );
 }
 

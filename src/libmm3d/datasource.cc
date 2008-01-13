@@ -37,7 +37,8 @@ DataSource::DataSource()
      m_unexpectedEof( false ),
      m_errno( 0 ),
      m_endfunc16( ltoh_u16 ),
-     m_endfunc32( ltoh_u32 )
+     m_endfunc32( ltoh_u32 ),
+     m_endfuncfl( ltoh_float )
 {
 }
 
@@ -195,6 +196,17 @@ bool DataSource::read( uint32_t & val )
       return false;
 
    val = m_endfunc32( * (uint32_t*) m_buf );
+   advanceBytes( sizeof(val) );
+
+   return true;
+}
+
+bool DataSource::read( float & val )
+{
+   if ( !requireBytes( sizeof(val) ) )
+      return false;
+
+   val = m_endfuncfl( * (float*) m_buf );
    advanceBytes( sizeof(val) );
 
    return true;

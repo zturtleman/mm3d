@@ -21,8 +21,8 @@
  */
 
 
-#ifndef FILEDATADEST_INC_H__
-#define FILEDATADEST_INC_H__
+#ifndef MEMDATADEST_INC_H__
+#define MEMDATADEST_INC_H__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,22 +31,17 @@
 
 #include "datadest.h"
 
-// This class is a DataDest that uses a FILE* as the underlying output
+// This class is a DataDest that uses memory as the underlying output
 // source. See the documentation in datadest.h for the DataDest API.
-// The details below are specific to the FileDataDest and probably not
+// The details below are specific to the MemDataDest and probably not
 // of direct interest to anyone writing model or texture export filters.
 
-class FileDataDest : public DataDest
+class MemDataDest : public DataDest
 {
    public:
-      // The FileDataDest does *NOT* take ownership of the FILE pointer.
-      // However, the close() function has the same effect as calling
-      // fclose().
-      FileDataDest( FILE * fp, size_t startOffset = 0 );
-      FileDataDest( const char * filename );
-      virtual ~FileDataDest();
-
-      void close();
+      // The MemDataDest does *NOT* take ownership of the memory pointer.
+      MemDataDest( uint8_t * buf, size_t bufSize );
+      virtual ~MemDataDest();
 
       virtual bool internalSeek( off_t offset );
       virtual bool internalWrite( const uint8_t * buf, size_t bufLen );
@@ -54,11 +49,9 @@ class FileDataDest : public DataDest
    protected:
 
    private:
-      void sendErrno( int err );
-
-      FILE * m_fp;
-      size_t m_startOffset;
-      bool m_mustClose;
+      uint8_t * m_buf;
+      size_t m_bufSize;
+      size_t m_bufOffset;
 };
 
-#endif // FILEDATADEST_INC_H__
+#endif // MEMDATADEST_INC_H__

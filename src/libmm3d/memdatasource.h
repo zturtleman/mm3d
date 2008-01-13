@@ -21,44 +21,35 @@
  */
 
 
-#ifndef FILEDATADEST_INC_H__
-#define FILEDATADEST_INC_H__
+#ifndef MEMDATASOURCE_INC_H__
+#define MEMDATASOURCE_INC_H__
+
+#include "datasource.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <sys/types.h>
 
-#include "datadest.h"
+// This class is a DataSource that uses memory as the underlying input
+// source. See the documentation in datasource.h for the DataSource API.
+// The details below are specific to the MemDataSource and probably not
+// of direct interest to anyone writing model or texture import filters.
 
-// This class is a DataDest that uses a FILE* as the underlying output
-// source. See the documentation in datadest.h for the DataDest API.
-// The details below are specific to the FileDataDest and probably not
-// of direct interest to anyone writing model or texture export filters.
-
-class FileDataDest : public DataDest
+class MemDataSource : public DataSource
 {
    public:
-      // The FileDataDest does *NOT* take ownership of the FILE pointer.
-      // However, the close() function has the same effect as calling
-      // fclose().
-      FileDataDest( FILE * fp, size_t startOffset = 0 );
-      FileDataDest( const char * filename );
-      virtual ~FileDataDest();
-
-      void close();
-
-      virtual bool internalSeek( off_t offset );
-      virtual bool internalWrite( const uint8_t * buf, size_t bufLen );
+      // The MemDataSource does *NOT* take ownership of the memory pointer.
+      MemDataSource( const uint8_t * buf, size_t bufSize );
+      virtual ~MemDataSource();
 
    protected:
+      virtual bool internalReadAt( off_t offset, const uint8_t ** buf, size_t * bufLen );
 
    private:
-      void sendErrno( int err );
-
-      FILE * m_fp;
-      size_t m_startOffset;
-      bool m_mustClose;
+      const uint8_t * m_buf;
+      size_t m_bufSize;
+      size_t m_bufOffset;
 };
 
-#endif // FILEDATADEST_INC_H__
+#endif // MEMDATASOURCE_INC_H__
