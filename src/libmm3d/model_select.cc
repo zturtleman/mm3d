@@ -437,6 +437,13 @@ bool Model::selectVerticesInVolumeMatrix( bool select, const Matrix & viewMat, d
 {
    LOG_PROFILE();
 
+   if ( m_animationMode == Model::ANIMMODE_FRAME
+         && (m_currentAnim >= m_frameAnims.size() || 
+             m_currentFrame >= m_frameAnims[m_currentAnim]->m_frameData.size()) )
+   {
+      return false;
+   }
+
    beginSelectionDifference();
 
    if ( x1 > x2 )
@@ -490,6 +497,13 @@ bool Model::selectVerticesInVolumeMatrix( bool select, const Matrix & viewMat, d
 bool Model::selectTrianglesInVolumeMatrix( bool select, const Matrix & viewMat, double x1, double y1, double x2, double y2, bool connected, SelectionTest * test )
 {
    LOG_PROFILE();
+
+   if ( m_animationMode == Model::ANIMMODE_FRAME
+         && (m_currentAnim >= m_frameAnims.size() || 
+             m_currentFrame >= m_frameAnims[m_currentAnim]->m_frameData.size()) )
+   {
+      return false;
+   }
 
    beginSelectionDifference();
 
@@ -748,25 +762,28 @@ next_triangle:
          found = false;
          for ( t = 0; t < m_triangles.size(); t++ )
          {
-            int count = 0;
-            for ( unsigned v = 0; v < 3; v++ )
+            if ( m_triangles[t]->m_visible )
             {
-               if ( m_vertices[ m_triangles[t]->m_vertexIndices[v] ]->m_marked2 )
-               {
-                  count++;
-               }
-            }
-
-            if ( count > 0 && 
-                  (count < 3 || m_triangles[t]->m_selected != select) ) 
-            {
-               found = true;
-
-               m_triangles[t]->m_selected = select;
-
+               int count = 0;
                for ( unsigned v = 0; v < 3; v++ )
                {
-                  m_vertices[ m_triangles[t]->m_vertexIndices[v] ]->m_marked2 = true;
+                  if ( m_vertices[ m_triangles[t]->m_vertexIndices[v] ]->m_marked2 )
+                  {
+                     count++;
+                  }
+               }
+
+               if ( count > 0 && 
+                     (count < 3 || m_triangles[t]->m_selected != select) ) 
+               {
+                  found = true;
+
+                  m_triangles[t]->m_selected = select;
+
+                  for ( unsigned v = 0; v < 3; v++ )
+                  {
+                     m_vertices[ m_triangles[t]->m_vertexIndices[v] ]->m_marked2 = true;
+                  }
                }
             }
          }
@@ -854,6 +871,13 @@ bool Model::selectBoneJointsInVolumeMatrix( bool select, const Matrix & viewMat,
 bool Model::selectPointsInVolumeMatrix( bool select, const Matrix & viewMat, double x1, double y1, double x2, double y2, SelectionTest * test )
 {
    LOG_PROFILE();
+
+   if ( m_animationMode == Model::ANIMMODE_FRAME
+         && (m_currentAnim >= m_frameAnims.size() || 
+             m_currentFrame >= m_frameAnims[m_currentAnim]->m_frameData.size()) )
+   {
+      return false;
+   }
 
    beginSelectionDifference();
 
