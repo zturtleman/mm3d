@@ -1,5 +1,6 @@
 Pre-reqs:
-   Diff must work
+ X Diff must work
+   FileDataDest must work
    Load/Save must work
 
 Other tests:
