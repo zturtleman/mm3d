@@ -39,6 +39,8 @@ class FileFactory
       FileFactory();
       virtual ~FileFactory();
 
+      void closeAll();
+
       DataDest * getDest( const char * filename );
       DataSource * getSource( const char * filename );
 

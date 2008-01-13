@@ -44,6 +44,8 @@ class FileDataSource : public DataSource
       FileDataSource( const char * filename );
       virtual ~FileDataSource();
 
+      void internalClose();
+
    protected:
       virtual bool internalReadAt( off_t offset, const uint8_t ** buf, size_t * bufLen );
 

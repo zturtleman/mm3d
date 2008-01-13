@@ -40,13 +40,13 @@ class FileDataDest : public DataDest
 {
    public:
       // The FileDataDest does *NOT* take ownership of the FILE pointer.
-      // However, the close() function has the same effect as calling
+      // However, the internalClose() function has the same effect as calling
       // fclose().
       FileDataDest( FILE * fp, size_t startOffset = 0 );
       FileDataDest( const char * filename );
       virtual ~FileDataDest();
 
-      void close();
+      void internalClose();
 
       virtual bool internalSeek( off_t offset );
       virtual bool internalWrite( const uint8_t * buf, size_t bufLen );

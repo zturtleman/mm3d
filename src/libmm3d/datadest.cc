@@ -176,7 +176,7 @@ bool DataDest::write( float val )
    if ( !canWrite(sizeof(val) ) )
       return false;
 
-   uint32_t wval = m_endfuncfl( val );
+   float wval = m_endfuncfl( val );
    return internalWrite( (const uint8_t *) &wval, sizeof(wval) );
 }
 

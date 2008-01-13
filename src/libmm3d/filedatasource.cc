@@ -59,7 +59,7 @@ FileDataSource::FileDataSource( FILE * fp )
 }
 
 FileDataSource::FileDataSource( const char * filename )
-   : m_mustClose( true )
+   : m_mustClose( false )
 {
    m_fp = fopen( filename, "r" );
    if ( m_fp == NULL )
@@ -67,6 +67,8 @@ FileDataSource::FileDataSource( const char * filename )
       setErrno( errno );
       return;
    }
+   
+   m_mustClose = true;
 
    if ( 0 != fseek( m_fp, 0, SEEK_END ) )
    {
@@ -92,6 +94,17 @@ FileDataSource::FileDataSource( const char * filename )
 
 FileDataSource::~FileDataSource()
 {
+   if ( m_mustClose )
+      close();
+}
+
+void FileDataSource::internalClose()
+{
+   if ( m_fp != NULL )
+   {
+      fclose( m_fp );
+      m_fp = NULL;
+   }
 }
 
 bool FileDataSource::internalReadAt( off_t offset, const uint8_t ** buf, size_t * bufLen )

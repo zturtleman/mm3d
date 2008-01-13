@@ -92,6 +92,9 @@ class DataDest
       void setEndianness( EndiannessE e );
       EndiannessE getEndianness() { return m_endian; }
 
+      // Perform any cleanup when done writing.
+      void close() { internalClose(); }
+
       // Returns the size of the output written so far.
       size_t getFileSize() { return m_fileSize; }
 
@@ -146,6 +149,7 @@ class DataDest
    protected:
       virtual bool internalWrite( const uint8_t * buf, size_t bufLen ) = 0;
       virtual bool internalSeek( off_t offset ) = 0;
+      virtual void internalClose() {};
 
       void setAtFileLimit( bool o );
       void setErrno( int err );

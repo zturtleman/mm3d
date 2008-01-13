@@ -33,6 +33,11 @@ FileFactory::FileFactory()
 
 FileFactory::~FileFactory()
 {
+   closeAll();
+}
+
+void FileFactory::closeAll()
+{
    for ( SourceMap::iterator it = m_sources.begin();
          it != m_sources.end(); ++it )
    {

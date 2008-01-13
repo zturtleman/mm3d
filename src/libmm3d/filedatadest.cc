@@ -51,7 +51,7 @@ FileDataDest::FileDataDest( FILE * fp, size_t startOffset )
 }
 
 FileDataDest::FileDataDest( const char * filename )
-   : m_mustClose( true )
+   : m_mustClose( false )
 {
    m_fp = fopen( filename, "w" );
    if ( m_fp == NULL )
@@ -59,6 +59,8 @@ FileDataDest::FileDataDest( const char * filename )
       sendErrno( errno );
       return;
    }
+
+   m_mustClose = true;
 }
 
 FileDataDest::~FileDataDest()
@@ -67,7 +69,7 @@ FileDataDest::~FileDataDest()
       close();
 }
 
-void FileDataDest::close()
+void FileDataDest::internalClose()
 {
    if ( m_fp != NULL )
    {

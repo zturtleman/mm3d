@@ -132,6 +132,9 @@ class DataSource
       void setEndianness( EndiannessE e );
       EndiannessE getEndianness() { return m_endian; }
 
+      // Perform any clenaup when done reading.
+      void close() { internalClose(); }
+
       // Returns the size of the input.
       size_t getFileSize() { return m_fileSize; }
 
@@ -194,6 +197,7 @@ class DataSource
 
    protected:
       virtual bool internalReadAt( off_t offset, const uint8_t ** buf, size_t * bufLen ) = 0;
+      virtual void internalClose() {}
 
       void setFileSize( size_t s ) { m_fileSize = s; }
       void setErrno( int err );
