@@ -37,7 +37,7 @@ class QHBoxLayout;
 #endif
 class QGroupBox;
 class QSpinBox;
-class QCheckBox;
+class QComboBox;
 class QLabel;
 
 class PolyToolWidget : public QDockWindow
@@ -49,14 +49,14 @@ class PolyToolWidget : public QDockWindow
       {
          public:
             virtual ~Observer() {};
-            virtual void setFanValue( bool newValue )  = 0;
+            virtual void setTypeValue( int type )  = 0;
       };
 
       PolyToolWidget( Observer * observer, QWidget * parent );
       virtual ~PolyToolWidget();
 
    public slots:
-      void fanValueChanged( bool cube );
+      void typeValueChanged( int type );
 
    protected:
       Observer    * m_observer;
@@ -64,8 +64,8 @@ class PolyToolWidget : public QDockWindow
       QBoxLayout * m_layout;
 
       QGroupBox   * m_groupBox;
-      QLabel      * m_fanLabel;
-      QCheckBox   * m_fanValue;
+      QLabel      * m_typeLabel;
+      QComboBox   * m_typeValue;
       QLabel      * m_segmentLabel;
       QSpinBox    * m_segmentValue;
 };

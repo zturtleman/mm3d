@@ -31,44 +31,43 @@
 #include <qlayout.h>
 #include <qspinbox.h>
 #include <qlabel.h>
-#include <qcheckbox.h>
+#include <qcombobox.h>
 
 PolyToolWidget::PolyToolWidget( Observer * observer, QWidget * parent )
    : QDockWindow ( QDockWindow::InDock, parent, "", WDestructiveClose ),
      m_observer( observer )
 {
-   const bool DEFAULT_FAN  = false;
+   const int DEFAULT_FAN  = 0;
 
    m_layout = boxLayout();
 
-   m_fanLabel = new QLabel( tr("Fan"), this, "" );
-   m_layout->addWidget( m_fanLabel );
+   m_typeLabel = new QLabel( tr("Poly Type"), this, "" );
+   m_layout->addWidget( m_typeLabel );
 
-   m_fanValue = new QCheckBox( this, "" );
-   m_layout->addWidget( m_fanValue );
+   m_typeValue = new QComboBox( this, "" );
+   m_typeValue->insertItem( tr("Strip", "Triangle strip option"), 0 );
+   m_typeValue->insertItem( tr("Fan", "Triangle fan option"), 1 );
+   m_layout->addWidget( m_typeValue );
 
-   bool isPoly = DEFAULT_FAN;
-   if ( g_prefs.exists( "ui_polytool_isfan" ) )
-   {
-      isPoly = (g_prefs( "ui_polytool_isfan" ).intValue() != 0) ? true : false;
-   }
-   m_fanValue->setChecked( isPoly );
+   g_prefs.setDefault( "ui_polytool_is_fan", DEFAULT_FAN );
+   int index = g_prefs( "ui_polytool_isfan" ).intValue();
+   m_typeValue->setCurrentItem( (index == 0) ? 0 : 1 );
 
-   connect( m_fanValue,  SIGNAL(toggled(bool)), this, SLOT(fanValueChanged(bool))  );
+   connect( m_typeValue,  SIGNAL(activated(int)), this, SLOT(typeValueChanged(int))  );
 
-   m_fanLabel->show();
-   m_fanValue->show();
+   m_typeLabel->show();
+   m_typeValue->show();
 
-   fanValueChanged( isPoly );
+   typeValueChanged( index );
 }
 
 PolyToolWidget::~PolyToolWidget()
 {
 }
 
-void PolyToolWidget::fanValueChanged( bool newValue )
+void PolyToolWidget::typeValueChanged( int newValue )
 {
-   g_prefs( "ui_polytool_isfan" ) = newValue ? 1 : 0;
-   m_observer->setFanValue( newValue );
+   g_prefs( "ui_polytool_isfan" ) = newValue;
+   m_observer->setTypeValue( newValue );
 }
 

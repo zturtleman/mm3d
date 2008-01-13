@@ -52,14 +52,14 @@ class PolyTool : public Tool, public PolyToolWidget::Observer
       const char ** getPixmap();
 
       // Observer methods
-      void setFanValue( bool newValue );
+      void setTypeValue( int newValue );
 
    protected:
 
       Model * m_model;
       ToolCoordT  m_lastVertex;
       IntList m_verts;
-      bool    m_isFan;
+      int     m_type;
 
       PolyToolWidget * m_widget;
 

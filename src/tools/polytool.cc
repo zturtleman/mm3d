@@ -35,7 +35,7 @@
 
 PolyTool::PolyTool()
    : m_model( NULL ),
-     m_isFan( false ),
+     m_type( 0 ),
      m_widget( NULL )
 {
    m_lastVertex.pos.type = Model::PT_Point;
@@ -92,22 +92,24 @@ void PolyTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y )
 
       if ( m_verts.size() == 3 )
       {
-         if ( m_isFan )
+         if ( m_type == 0 )
          {
+            // Fan
+            int v = m_verts.front();
+            model->unselectVertex( v );
+
+            m_verts.pop_front();
+            m_verts.push_back( m_lastVertex.pos.index );
+         }
+         else
+         {
+            // Strip
             it = m_verts.begin();
             it++;
             int v = *it;
             m_verts.erase( it );
             model->unselectVertex( v );
 
-            m_verts.push_back( m_lastVertex.pos.index );
-         }
-         else
-         {
-            int v = m_verts.front();
-            model->unselectVertex( v );
-
-            m_verts.pop_front();
             m_verts.push_back( m_lastVertex.pos.index );
          }
       }
@@ -198,10 +200,9 @@ const char ** PolyTool::getPixmap()
    return (const char **) polytool_xpm;
 }
 
-void PolyTool::setFanValue( bool newValue )
+void PolyTool::setTypeValue( int newValue )
 {
-   m_isFan = newValue;
-   log_debug( "isFan = %s\n", newValue ? "true" : "false" );
+   m_type = newValue;
 }
 
 const char * PolyTool::getName( int arg )

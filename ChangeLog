@@ -8,6 +8,7 @@ Changes for 1.3.7
    Prevent select connected from selecting hidden faces
    Do not perform selection in frame animation mode if there are no
       animations
+   Changed poly tool's "Fan" checkbox into a Strip/Fan combo box
 
 Changes for 1.3.6
    Save/restore window size
