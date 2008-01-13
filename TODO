@@ -4,7 +4,7 @@ For 1.4:
    Update ad3dsfilter with canExport
 
    Make sure unknown texture types are handled (for adding gradients)
-   Fix relative paths when saving in a different directory
+ ? Fix relative paths when saving in a different directory
    Profile 1.3.4 vs. 1.3.5 on unaccelerated config
    Export selected (??)
    Copy/paste does not account for multiple bone joints, texture projections, etc...
@@ -14,6 +14,7 @@ For 1.4:
    Attract near/far
       Position decal
       Curve: linear/sin/log/quad
+   Change polytool fan checkbox to fan/strip combo box
 
    Test merge on multiple bone joint assignments (and points)
 
