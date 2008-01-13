@@ -95,7 +95,6 @@ class Cal3dFilter : public ModelFilter
       };
       typedef enum _FileType_e FileTypeE;
 
-      static Model::ModelErrorE errnoToModelError( int err );
       static bool listHas( const std::list<std::string> & l,
             const std::string & val );
       static std::string addExtension( const std::string file,

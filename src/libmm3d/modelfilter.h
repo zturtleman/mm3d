@@ -178,6 +178,8 @@ class ModelFilter
       // to the Options class.
       virtual OptionsFuncF getOptionsPrompt() { return m_optionsFunc; };
 
+      static Model::ModelErrorE errnoToModelError( int err );
+
    protected:
 
       // Call these protected methods in your base class if you want direct

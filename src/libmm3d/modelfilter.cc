@@ -25,6 +25,8 @@
 
 #include "log.h"
 
+#include <errno.h>
+
 int ModelFilter::Options::s_allocated = 0;
 
 ModelFilter::ModelFilter()
@@ -46,3 +48,23 @@ void ModelFilter::Options::stats()
 {
    log_debug( "Filter Options: %d\n", s_allocated );
 }
+
+/* static */
+Model::ModelErrorE ModelFilter::errnoToModelError( int err )
+{
+   switch ( err )
+   {
+      case EACCES:
+      case EPERM:
+         return Model::ERROR_NO_ACCESS;
+      case ENOENT:
+      case EBADF:
+         return Model::ERROR_NO_FILE;
+      case EISDIR:
+         return Model::ERROR_BAD_DATA;
+      default:
+         break;
+   }
+   return Model::ERROR_FILE_OPEN;
+}
+

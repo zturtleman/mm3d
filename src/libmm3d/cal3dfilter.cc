@@ -364,23 +364,6 @@ list< string > Cal3dFilter::getWriteTypes()
 // Protected Methods
 //------------------------------------------------------------------
 
-Model::ModelErrorE Cal3dFilter::errnoToModelError( int err )
-{
-   switch ( err )
-   {
-      case EACCES:
-      case EPERM:
-         return Model::ERROR_NO_ACCESS;
-      case ENOENT:
-         return Model::ERROR_NO_FILE;
-      case EISDIR:
-         return Model::ERROR_BAD_DATA;
-      default:
-         break;
-   }
-   return Model::ERROR_FILE_OPEN;
-}
-
 bool Cal3dFilter::listHas( const std::list<std::string> & l,
       const std::string & val )
 {
