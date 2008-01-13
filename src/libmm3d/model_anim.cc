@@ -247,6 +247,7 @@ bool Model::setAnimFrameCount( const AnimationModeE & m, const unsigned & anim, 
                      for ( unsigned v = 0; v < 3; v++ )
                      {
                         fap->m_trans[v] = m_points[t]->m_trans[v];
+                        fap->m_rot[v] = m_points[t]->m_rot[v];
                      }
                      d->m_framePoints->push_back( fap );
                   }
