@@ -1658,19 +1658,29 @@ bool Model::setCurrentAnimationTime( double frameTime )
          calculateFrameNormals( m_currentAnim );
       }
 
-      double spf = 1.0 / m_frameAnims[m_currentAnim]->m_fps;
-      double totalTime = spf * m_frameAnims[m_currentAnim]->m_frameData.size();
-      while ( frameTime >= totalTime )
+      size_t totalFrames = m_frameAnims[m_currentAnim]->m_frameData.size();
+
+      if ( totalFrames > 0 )
       {
-         if ( !m_animationLoop )
+         double spf = 1.0 / m_frameAnims[m_currentAnim]->m_fps;
+         double totalTime = spf * m_frameAnims[m_currentAnim]->m_frameData.size();
+         while ( frameTime >= totalTime )
          {
-            return false;
+            if ( !m_animationLoop )
+            {
+               return false;
+            }
+            frameTime -= totalTime;
          }
-         frameTime -= totalTime;
+         m_currentFrame = (unsigned) (frameTime / spf);
+      }
+      else
+      {
+         frameTime = 0.0;
+         m_currentFrame = 0;
       }
 
       m_currentTime = frameTime;
-      m_currentFrame = (unsigned) (frameTime / spf);
 
       updateObservers();
       return true;
@@ -1680,14 +1690,21 @@ bool Model::setCurrentAnimationTime( double frameTime )
       LOG_PROFILE();
 
       SkelAnim * sa = m_skelAnims[m_currentAnim];
-      double totalTime = sa->m_spf * sa->m_frameCount;
-      while ( frameTime > totalTime )
+      if ( sa->m_frameCount > 0 )
       {
-         if ( !m_animationLoop )
+         double totalTime = sa->m_spf * sa->m_frameCount;
+         while ( frameTime > totalTime )
          {
-            return false;
+            if ( !m_animationLoop )
+            {
+               return false;
+            }
+            frameTime -= totalTime;
          }
-         frameTime -= totalTime;
+      }
+      else
+      {
+         m_currentTime = 0.0;
       }
 
       m_currentTime = frameTime;

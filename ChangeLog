@@ -19,6 +19,7 @@ Changes for 1.3.6
    Remove trailing underscore on MD2 animation names
    Updated configuration for newer autoconf (2.61) and automake (1.9)
    Remember last skeletal/frame selection for new animation window
+   Stop playing animation when a new animation is added.
    Error message when attempting to paste animation frame of wrong type
    Fixed interpolation problem with translation keyframes on looped animations
    Fixed translation of animation name copy/split in animation sets window
