@@ -205,6 +205,8 @@ void AnimWidget::nameSelected( int index )
       win.setSkeletal( g_prefs( "ui_new_anim_type" ).intValue() == 0 );
       if ( win.exec() )
       {
+         stopClicked();
+
          g_prefs( "ui_new_anim_type" ) = win.isSkeletal() ? 0 : 1;
          QString name = win.getAnimName();
          Model::AnimationModeE mode = win.isSkeletal() 
