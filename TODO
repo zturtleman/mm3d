@@ -13,8 +13,8 @@ For 1.4:
    Exact position of rotate point for rotate tool
    Attract near/far
       Position decal
+      2D/3D
       Curve: linear/sin/log/quad
-   Change polytool fan checkbox to fan/strip combo box
 
    Test merge on multiple bone joint assignments (and points)
 
