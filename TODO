@@ -7,10 +7,6 @@ For 1.4:
    Profile 1.3.4 vs. 1.3.5 on unaccelerated config
    Texture paint segfault
       Segfault (dvh bb post on 8/18)
-   Attract near/far
-      Position decal
-      2D/3D
-      Curve: linear/sin/log/quad
 
    Test merge on multiple bone joint assignments, points, and projections
 
@@ -41,6 +37,10 @@ For 1.6:
       Implement embedded textures
       Extract embedded textures to external files
    Allow double-sided polygons
+   Attract near/far
+      Position decal
+      2D/3D
+      Curve: linear/sin/log/quad
 
 Later:
    Warn user if some model properties will not be saved in
