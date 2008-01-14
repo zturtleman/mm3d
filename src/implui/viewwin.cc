@@ -825,6 +825,8 @@ void ViewWindow::exportSelectedEvent()
       return;
 
    saveModelInternal( m, true );
+
+   delete m;
 }
 
 void ViewWindow::saveModelInternal( Model * model, bool exportModel )
