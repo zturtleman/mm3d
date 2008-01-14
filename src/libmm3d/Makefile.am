@@ -10,12 +10,15 @@ libmm3d_HFILES = \
 	cobfilter.h \
 	datadest.h \
 	filedatadest.h \
+	memdatadest.h \
 	datasource.h \
 	filedatasource.h \
+	memdatasource.h \
 	drawcontext.h \
 	dxffilter.h \
 	endianconfig.h \
 	file_closer.h \
+	filefactory.h \
 	filtermgr.h \
 	glheaders.h \
 	glmath.h \
@@ -31,6 +34,7 @@ libmm3d_HFILES = \
 	mlocale.h \
 	mm3dconfig.h \
 	mm3dfilter.h \
+	mm3dfilter_ref.h \
 	mm3dport.h \
 	mm3dreg.h \
 	model.h \
@@ -67,9 +71,12 @@ libmm3d_a_SOURCES = \
 	cobfilter.cc \
 	datadest.cc \
 	filedatadest.cc \
+	memdatadest.cc \
 	datasource.cc \
 	filedatasource.cc \
+	memdatasource.cc \
 	dxffilter.cc \
+	filefactory.cc \
 	filtermgr.cc \
 	glmath.cc \
 	log.cc \
@@ -85,6 +92,7 @@ libmm3d_a_SOURCES = \
 	md2filter.cc \
 	md3filter.cc \
 	mm3dfilter.cc \
+	mm3dfilter_ref.cc \
 	mm3dreg.cc \
 	mm3dport.cc \
 	ms3dfilter.cc \

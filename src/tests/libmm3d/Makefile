@@ -15,6 +15,7 @@ TESTS = \
 		  model_add_test.unit \
 		  model_select_test.unit \
 		  model_test.unit \
+		  new_mm3d_test.unit \
 		  cmdlinemgr_test.unit \
 		  util_test.unit \
 
@@ -44,6 +45,8 @@ model_select_test.unit: model_select_test.moc $(LIB)
 
 model_test.unit: model_test.moc $(LIB)
 
+new_mm3d_test.unit: new_mm3d_test.moc $(LIB)
+
 util_test.unit: util_test.moc $(LIB)
 
 test: $(TESTS)
@@ -63,6 +66,9 @@ check: test
 	./model_test.unit -silent
 	./util_test.unit -silent
 	./cmdlinemgr_test.unit -silent
+
+fullcheck: check
+	./new_mm3d_test.unit -silent
 
 clean:
 	rm -rf *.unit *.moc core core.*

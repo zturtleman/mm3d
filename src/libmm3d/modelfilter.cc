@@ -23,14 +23,19 @@
 
 #include "modelfilter.h"
 
+#include "datasource.h"
+#include "datadest.h"
 #include "log.h"
 
 #include <errno.h>
+#include <unistd.h>
 
 int ModelFilter::Options::s_allocated = 0;
 
 ModelFilter::ModelFilter()
-   : m_optionsFunc( NULL )
+   : m_optionsFunc( NULL ),
+     m_defaultFactory(),
+     m_factory( &m_defaultFactory )
 {
 }
 
@@ -47,6 +52,32 @@ ModelFilter::Options::~Options()
 void ModelFilter::Options::stats()
 {
    log_debug( "Filter Options: %d\n", s_allocated );
+}
+
+DataSource * ModelFilter::openInput( const char * filename, Model::ModelErrorE & err )
+{
+   DataSource * src = m_factory->getSource( filename );
+   if ( src->errorOccurred() )
+   {
+      if ( src->unexpectedEof() )
+         err = Model::ERROR_UNEXPECTED_EOF;
+      else
+         err = errnoToModelError( src->getErrno() );
+   }
+   return src;
+}
+
+DataDest * ModelFilter::openOutput( const char * filename, Model::ModelErrorE & err )
+{
+   DataDest * dst = m_factory->getDest( filename );
+   if ( dst->errorOccurred() )
+   {
+      if ( dst->atFileLimit() )
+         err = Model::ERROR_UNEXPECTED_EOF;
+      else
+         err = errnoToModelError( dst->getErrno() );
+   }
+   return dst;
 }
 
 /* static */

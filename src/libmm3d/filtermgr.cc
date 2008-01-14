@@ -74,6 +74,7 @@ bool FilterManager::registerFilter( ModelFilter * filter )
 {
    if ( filter )
    {
+      filter->setFactory( &m_factory );
       m_filters.push_back( filter );
       return true;
    }
@@ -98,6 +99,7 @@ Model::ModelErrorE FilterManager::readFile( Model * model, const char * filename
 #ifdef MM3D_EDIT
          model->setUndoEnabled( true );
 #endif // MM3D_EDIT
+         m_factory.closeAll();
          return rval;
       }
 

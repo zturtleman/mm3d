@@ -47,10 +47,13 @@
 //
 #include "model.h"
 
+#include "filefactory.h"
+
 #include <list>
 #include <string>
 
 class ModelFilter;
+class FileFactory;
 
 typedef std::list< ModelFilter * > FilterList;
 
@@ -81,6 +84,7 @@ class FilterManager
       ~FilterManager();
 
       static FilterManager * s_instance;
+      FileFactory m_factory;
       FilterList m_filters;
 };
 

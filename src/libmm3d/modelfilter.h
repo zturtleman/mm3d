@@ -32,10 +32,12 @@
 // import and export models to various formats.  If you implement a
 // ModelFilter, you need to register the filter with the FilterManager.
 // You only need one instance of your filter.
-//
+
 #include "model.h"
+#include "filefactory.h"
 
 typedef float float32_t;
+
 
 class ModelFilter
 {
@@ -178,9 +180,15 @@ class ModelFilter
       // to the Options class.
       virtual OptionsFuncF getOptionsPrompt() { return m_optionsFunc; };
 
+      // FIXME document
+      void setFactory( FileFactory * factory ) { m_factory = factory; }
+
       static Model::ModelErrorE errnoToModelError( int err );
 
    protected:
+
+      DataSource * openInput( const char * filename, Model::ModelErrorE & err );
+      DataDest * openOutput( const char * filename, Model::ModelErrorE & err );
 
       // Call these protected methods in your base class if you want direct
       // access to the model's primitive lists.  Treat them with care.
@@ -201,6 +209,9 @@ class ModelFilter
       void setModelNumFrames( Model * m, int numFrames ) { m->m_numFrames = numFrames; };
 
       OptionsFuncF m_optionsFunc;
+
+      FileFactory   m_defaultFactory;
+      FileFactory * m_factory;
 };
 
 #endif // __MODELFILTER_H
