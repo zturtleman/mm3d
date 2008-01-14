@@ -26,11 +26,12 @@
 
 #include "tool.h"
 #include "qnamespace.h"
+#include "rotatetoolwidget.h"
 
 class Model;
 class RotatePoint;
 
-class RotateTool : public Tool
+class RotateTool : public Tool, public RotateToolWidget::Observer
 {
    public:
       RotateTool();
@@ -40,6 +41,7 @@ class RotateTool : public Tool
       const char * getName( int arg );
       void activated( int arg, Model * model, QMainWindow * mainwin );
       void deactivated();
+      void setModel( Model * model );
 
       bool getKeyBinding( int arg, int & keyBinding ) { keyBinding = Qt::Key_R; return true; };
  
@@ -50,7 +52,14 @@ class RotateTool : public Tool
       void mouseButtonMove( Parent * parent, int buttonState, int x, int y );
       const char ** getPixmap();
 
+      // RotateToolWidget::Observer
+      void setXValue( double newValue );
+      void setYValue( double newValue );
+      void setZValue( double newValue );
+
    protected:
+      Model * m_model;
+
       Matrix m_viewMatrix;
       Matrix m_viewInverse;
 
@@ -68,6 +77,7 @@ class RotateTool : public Tool
       bool m_tracking;
 
       RotatePoint * m_rotatePoint;
+      RotateToolWidget * m_widget;
 };
 
 #endif // __ROTATETOOL_H

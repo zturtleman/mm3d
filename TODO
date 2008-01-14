@@ -4,13 +4,11 @@ For 1.4:
    Update ad3dsfilter with canExport
 
    Make sure unknown texture types are handled (for adding gradients)
- ? Fix relative paths when saving in a different directory
    Profile 1.3.4 vs. 1.3.5 on unaccelerated config
    Export selected (??)
    Copy/paste does not account for multiple bone joints, texture projections, etc...
    Texture paint segfault
       Segfault (dvh bb post on 8/18)
-   Exact position of rotate point for rotate tool
    Attract near/far
       Position decal
       2D/3D
@@ -24,6 +22,7 @@ For 1.6:
    Bone Joints
       Interactive influence weight adjustment
       IK Considerations
+   Fix relative paths when saving in a different directory
    Export/Import MM3D
       Geometry
       Materials

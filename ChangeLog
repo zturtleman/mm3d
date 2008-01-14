@@ -1,4 +1,5 @@
 Changes for 1.3.7
+   Set exact position of rotate point for rotate tool
    Report error if saving MD2 or MD3 with faces that are not assigned
       to a group
    Performance fixes for normal calculation (about 40% speed improvement)

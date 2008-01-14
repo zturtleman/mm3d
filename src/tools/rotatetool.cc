@@ -44,7 +44,9 @@ static void _add_coords( double * dest, double * rhs, double * lhs )
 
 
 RotateTool::RotateTool()
-   : m_tracking( false )
+   : m_model( NULL ),
+     m_tracking( false ),
+     m_widget( NULL )
 {
 }
 
@@ -52,8 +54,15 @@ RotateTool::~RotateTool()
 {
 }
 
+void RotateTool::setModel( Model * model )
+{
+   m_model = model;
+}
+
 void RotateTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
+   m_model = model;
+
    model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Tip: Hold shift to rotate in 15 degree increments" ).utf8() );
 
    m_coords[0] = 0;
@@ -129,6 +138,13 @@ void RotateTool::activated( int arg, Model * model, QMainWindow * mainwin )
    m_rotatePoint = new RotatePoint();
    m_rotatePoint->setPoint( m_coords[0], m_coords[1], m_coords[2] );
    DecalManager::getInstance()->addDecalToModel( m_rotatePoint, model );
+
+   m_widget = new RotateToolWidget( this, mainwin,
+         m_coords[0], m_coords[1], m_coords[2] );
+#ifdef HAVE_QT4
+   //mainwin->addDockWindow( m_widget, DockBottom );
+#endif
+   m_widget->show();
 }
 
 void RotateTool::deactivated()
@@ -136,11 +152,14 @@ void RotateTool::deactivated()
    DecalManager::getInstance()->removeDecal( m_rotatePoint );
    delete m_rotatePoint;
    m_rotatePoint = NULL;
+   m_widget->close();
+   m_widget = NULL;
 }
 
 void RotateTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y )
 {
    Model * model = parent->getModel();
+   m_model = model;
 
    if ( model->getAnimationMode() == Model::ANIMMODE_SKELETAL )
    {
@@ -149,6 +168,7 @@ void RotateTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y
       if ( joints.size() > 0 )
       {
          model->getBoneJointCoords( joints.front(), m_coords );
+         m_widget->setCoords( m_coords[0], m_coords[1], m_coords[2] );
          m_rotatePoint->setPoint( m_coords[0], m_coords[1], m_coords[2] );
       }
    }
@@ -189,6 +209,7 @@ void RotateTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y
 
       m_viewInverse.apply( m_coords );
 
+      m_widget->setCoords( m_coords[0], m_coords[1], m_coords[2] );
       m_rotatePoint->setPoint( m_coords[0], m_coords[1], m_coords[2] );
       model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Setting rotation point" ).utf8() );
    }
@@ -198,6 +219,7 @@ void RotateTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y
 void RotateTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )
 {
    Model * model = parent->getModel();
+   m_model = model;
 
    double newCoords[3] = {0,0,0};
 
@@ -244,6 +266,7 @@ void RotateTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y
 
       m_viewInverse.apply( m_coords );
 
+      m_widget->setCoords( m_coords[0], m_coords[1], m_coords[2] );
       m_rotatePoint->setPoint( m_coords[0], m_coords[1], m_coords[2] );
    }
    parent->updateAllViews();
@@ -251,17 +274,6 @@ void RotateTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y
 
 void RotateTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
 {
-   /*
-   Model * model = parent->getModel();
-   unsigned pcount = model->getProjectionCount();
-   for ( unsigned p = 0; p < pcount; p++ )
-   {
-      if ( model->isProjectionSelected( p ) )
-      {
-         model->applyProjection(p);
-      }
-   }
-   */
    parent->updateAllViews();
 
    m_tracking = false;
@@ -330,5 +342,35 @@ double RotateTool::adjustToNearest( double angle )
 const char * RotateTool::getName( int arg )
 {
    return QT_TRANSLATE_NOOP( "Tool", "Rotate" );
+}
+
+void RotateTool::setXValue( double newValue )
+{
+   double x = 0; double y = 0; double z = 0;
+   m_rotatePoint->getPoint( x, y, z );
+   x = newValue;
+   m_rotatePoint->setPoint( x, y, z );
+
+   DecalManager::getInstance()->modelUpdated( m_model );
+}
+
+void RotateTool::setYValue( double newValue )
+{
+   double x = 0; double y = 0; double z = 0;
+   m_rotatePoint->getPoint( x, y, z );
+   y = newValue;
+   m_rotatePoint->setPoint( x, y, z );
+
+   DecalManager::getInstance()->modelUpdated( m_model );
+}
+
+void RotateTool::setZValue( double newValue )
+{
+   double x = 0; double y = 0; double z = 0;
+   m_rotatePoint->getPoint( x, y, z );
+   z = newValue;
+   m_rotatePoint->setPoint( x, y, z );
+
+   DecalManager::getInstance()->modelUpdated( m_model );
 }
 
