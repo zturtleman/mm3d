@@ -191,8 +191,8 @@ void DecalManager::modelUpdated( Model * model )
    ModelParentMap::iterator mit = m_parents.find( model );
    if ( mit != m_parents.end() )
    {
-      ParentList::iterator it;
-      for ( it = m_parents[model]->begin(); it != m_parents[model]->end(); it++ )
+      for ( ParentList::iterator it = mit->second->begin();
+            it != mit->second->end(); it++ )
       {
          (*it)->updateView();
       }
@@ -204,8 +204,7 @@ void DecalManager::modelAnimate( Model * model )
    ModelParentMap::iterator mit = m_parents.find( model );
    if ( mit != m_parents.end() )
    {
-      ParentList::iterator it;
-      for ( it = m_parents[model]->begin(); it != m_parents[model]->end(); it++ )
+      for ( ParentList::iterator it = mit->second->begin(); it != mit->second->end(); it++ )
       {
          (*it)->update3dView();
       }
