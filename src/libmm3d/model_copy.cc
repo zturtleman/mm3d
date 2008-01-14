@@ -43,7 +43,10 @@ Model * Model::copySelected()
    this->getSelectedBoneJoints( joints );
    list<int> points;
    this->getSelectedPoints( points );
+   list<int> proj;
+   this->getSelectedProjections( proj );
 
+   hash_map<int,int> projMap;
    hash_map<int,int> vertMap;
    hash_map<int,int> triMap;
    hash_map<int,int> jointMap;
@@ -51,12 +54,40 @@ Model * Model::copySelected()
 
    list<int>::iterator lit;
 
+   if ( !proj.empty() )
+   {
+      for ( lit = proj.begin(); lit != proj.end(); ++lit )
+      {
+         const char * name = getProjectionName( *lit );
+         int type = getProjectionType( *lit );
+
+         double pos[3] = { 0, 0, 0 };
+         double up[3] = { 0, 0, 0 };
+         double seam[3] = { 0, 0, 0 };
+         double range[2][2] = { { 0, 0 }, { 0, 0 } };
+
+         getProjectionCoords( *lit, pos );
+         getProjectionUp( *lit, up );
+         getProjectionSeam( *lit, seam );
+         getProjectionRange( *lit,
+               range[0][0], range[0][1], range[1][0], range[1][1] );
+
+         int np = m->addProjection( name, type, pos[0], pos[1], pos[2] );
+         m->setProjectionUp( np, up );
+         m->setProjectionSeam( np, seam );
+         m->setProjectionRange( np,
+               range[0][0], range[0][1], range[1][0], range[1][1] );
+
+         m->selectProjection( np );
+
+         projMap[ *lit ] = np;
+      }
+   }
+
    if ( !tri.empty() )
    {
       list<int> vert;
       this->getSelectedVertices( vert );
-
-      // FIXME missing any other new properties?
 
       // Copy vertices
       log_debug( "Copying %d vertices\n", vert.size() );
@@ -68,12 +99,8 @@ Model * Model::copySelected()
          m->selectVertex( nv );
          m->setVertexFree( nv, this->isVertexFree(*lit) );
 
-         // FIXME free vertices not supported here yet
-
          vertMap[ *lit ] = nv;
       }
-
-      // FIXME Copy texture projections
 
       // Copy faces
       log_debug( "Copying %d faces\n", tri.size() );
@@ -87,7 +114,6 @@ Model * Model::copySelected()
          }
          int nt = m->addTriangle( vertMap[v[0]] , vertMap[v[1]], vertMap[v[2]] );
          m->selectTriangle( nt );
-         // FIXME assign triangles to texture projections (if selected)
 
          triMap[ *lit ] = nt;
       }
@@ -106,7 +132,7 @@ Model * Model::copySelected()
          }
       }
 
-      // FIXME only copy textures used by groups?
+      // TODO only copy textures used by groups?
       // Copy textures
       // It's easier here to just copy the groups and textures 
       // even if not needed, the user can delete the unecessary parts
@@ -141,13 +167,13 @@ Model * Model::copySelected()
          this->getTextureShininess( t, c[0] );
          m->setTextureShininess( t, c[0] );
 
-         // FIXME Material m_color (if ever used)
+         // TODO Material m_color (if ever used)
 
          m->setTextureSClamp( t, this->getTextureSClamp( t ) );
          m->setTextureTClamp( t, this->getTextureTClamp( t ) );
       }
 
-      // FIXME Only copy selected groups?
+      // TODO Only copy selected groups?
       // Copy groups
       // It's easier here to just copy the groups and textures 
       // even if not needed, the user can delete the unecessary parts
@@ -178,6 +204,26 @@ Model * Model::copySelected()
 
    }
 
+   if ( !points.empty() )
+   {
+      // Copy points
+      log_debug( "Copying %d points\n", points.size() );
+      for ( lit = points.begin(); lit != points.end(); lit++ )
+      {
+         double coord[3];
+         double rot[3] = { 0, 0, 0 };
+         this->getPointCoords( *lit, coord );
+         this->getPointRotation( *lit, rot );
+
+         // TODO point type (if it is ever used)
+         int np = m->addPoint( this->getPointName( *lit ),
+               coord[0], coord[1], coord[2], rot[0], rot[1], rot[2], -1 );
+         pointMap[ *lit ] = np;
+
+         m->selectPoint( np );
+      }
+   }
+
    if ( !joints.empty() )
    {
       // Copy joints
@@ -186,13 +232,18 @@ Model * Model::copySelected()
       {
          int parent = this->getBoneJointParent( *lit );
 
-         // FIXME what if parent joint is not selected?
-
          // TODO this will not work if parent joint comes after child
          // joint.  That shouldn't happen... but...
          if ( this->isBoneJointSelected( parent ) )
          {
             parent = jointMap[ parent ];
+         }
+         else
+         {
+            if ( m->getBoneJointCount() > 0 )
+               parent = 0;
+            else
+               parent = -1;
          }
 
          double coord[3];
@@ -204,54 +255,48 @@ Model * Model::copySelected()
          jointMap[ *lit ] = nj;
 
          m->selectBoneJoint( nj );
+      }
 
-         // Assign copied vertices to copied bone joints
-         // FIXME multiple bone joints
-         list<int> vertlist = this->getBoneJointVertices( *lit );
-         list<int>::iterator vit;
-         for ( vit = vertlist.begin(); vit != vertlist.end(); vit++ )
+      for ( hash_map<int,int>::iterator it = vertMap.begin();
+            it != vertMap.end(); ++it )
+      {
+         InfluenceList il;
+
+         getVertexInfluences( it->first, il );
+
+         for ( InfluenceList::iterator iit = il.begin(); iit != il.end(); ++iit )
          {
-            if ( this->isVertexSelected( *vit ) )
+            if ( isBoneJointSelected( iit->m_boneId ) )
             {
-               m->setVertexBoneJoint( vertMap[ *vit ], nj );
+               m->addVertexInfluence( it->second, jointMap[iit->m_boneId],
+                     iit->m_type, iit->m_weight );
+            }
+         }
+      }
+
+      for ( hash_map<int,int>::iterator it = pointMap.begin();
+            it != pointMap.end(); ++it )
+      {
+         InfluenceList il;
+
+         getPointInfluences( it->first, il );
+
+         for ( InfluenceList::iterator iit = il.begin(); iit != il.end(); ++iit )
+         {
+            if ( isBoneJointSelected( iit->m_boneId ) )
+            {
+               m->addPointInfluence( it->second, jointMap[iit->m_boneId],
+                     iit->m_type, iit->m_weight );
             }
          }
       }
    }
 
-   if ( !points.empty() )
-   {
-      // Copy points
-      log_debug( "Copying %d points\n", points.size() );
-      for ( lit = points.begin(); lit != points.end(); lit++ )
-      {
-         int parent = this->getPointBoneJoint( *lit );
-
-         if ( this->isBoneJointSelected( parent ) )
-         {
-            parent = jointMap[ parent ];
-         }
-
-         double coord[3];
-         double rot[3] = { 0, 0, 0 };
-         this->getPointCoords( *lit, coord );
-         this->getPointRotation( *lit, rot );
-
-         // FIXME multiple bone joints
-         // FIXME point type (if it is ever used)
-         int np = m->addPoint( this->getPointName( *lit ),
-               coord[0], coord[1], coord[2], rot[0], rot[1], rot[2], parent );
-         pointMap[ *lit ] = np;
-
-         m->selectPoint( np );
-      }
-   }
-
-   // FIXME what about animations?
+   // TODO what about animations?
 
    m->invalidateNormals();
-
-   // FIXME setupJoints?
+   m->calculateNormals();
+   m->setupJoints();
 
    return m;
 }

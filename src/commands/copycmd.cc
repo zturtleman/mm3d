@@ -53,12 +53,10 @@ bool CopyCommand::activated( int arg, Model * model )
    if ( !model )
       return false;
 
-   // FIXME projections
-   if ( model->getSelectedVertexCount() == 0
-         && model->getSelectedTriangleCount() == 0
-         && model->getSelectedPointCount() == 0 )
+   if ( model->getSelectedTriangleCount() == 0
+         && model->getSelectedPointCount() == 0
+         && model->getSelectedProjectionCount() == 0 )
    {
-      // FIXME projection
       model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have at least 1 face, joint, or point selected to Copy" ).utf8() );
       return false;
    }
@@ -77,8 +75,6 @@ bool CopyCommand::activated( int arg, Model * model )
 
    FilterManager::getInstance()->writeFile( m, clipfile.c_str(), FilterManager::WO_ModelNoPrompt );
 
-   // FIXME this wasn't done before, assuming it was just a leak and won't cause
-   // problems.
    delete m;
 
    return true;

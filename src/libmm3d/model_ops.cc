@@ -959,6 +959,7 @@ bool Model::mergeAnimations( Model * model )
       }
    }
 
+   bool canAdd = canAddOrDelete();
    forceAddOrDelete( true );
 
    // Do skeletal add
@@ -988,7 +989,7 @@ bool Model::mergeAnimations( Model * model )
 
    invalidateNormals();
 
-   forceAddOrDelete( true );
+   forceAddOrDelete( canAdd );
 
    return true;
 }
@@ -1000,6 +1001,7 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
       return false;
    }
 
+   bool canAdd = canAddOrDelete();
    forceAddOrDelete( true );
 
    Matrix mat;
@@ -1021,6 +1023,7 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
    unsigned grpbase    = 0;
    unsigned jointbase  = 0;
    unsigned pointbase  = 0;
+   unsigned projbase   = 0;
    unsigned matbase    = 0;
 
    unsigned n = 0;
@@ -1033,6 +1036,7 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
    grpbase    = m_groups.size();
    jointbase  = m_joints.size();
    pointbase  = m_points.size();
+   projbase   = m_projections.size();
    matbase    = m_materials.size();
 
    unselectAll();
@@ -1122,11 +1126,8 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
          pabs.getRotation( rot );
          pabs.getTranslation( tran );
 
-         //int parent = point->m_boneId;
-         int parent = -1;
-
          int pnum = addPoint( point->m_name.c_str(), tran[0], tran[1], tran[2],
-               rot[0], rot[1], rot[2], parent );
+               rot[0], rot[1], rot[2], -1 );
 
          InfluenceList * ilist = &model->m_points[n]->m_influences;
          InfluenceList::iterator it;
@@ -1159,10 +1160,18 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
       count = model->getTextureCount();
       for ( n = 0; n < count; n++ )
       {
-         const char * name = model->getTextureFilename( n );
-         Texture * newtex = texmgr->getTexture( name );
+         if ( model->getMaterialType( n ) == Model::Material::MATTYPE_TEXTURE )
+         {
+            const char * name = model->getTextureFilename( n );
+            Texture * newtex = texmgr->getTexture( name );
 
-         addTexture( newtex );
+            addTexture( newtex );
+         }
+         else
+         {
+            const char * name = model->getTextureName( n );
+            addColorMaterial( name );
+         }
       }
 
       for ( n = 0; n < count; n++ )
@@ -1190,6 +1199,32 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
          setGroupTextureId( m_groupMap[n], val + matbase );
       }
 
+      count = model->getProjectionCount();
+      for ( n = 0; n < count; ++n )
+      {
+         const char * name = model->getProjectionName( n );
+         int type = model->getProjectionType( n );
+
+         double pos[3] = { 0, 0, 0 };
+         double up[3] = { 0, 0, 0 };
+         double seam[3] = { 0, 0, 0 };
+         double range[2][2] = { { 0, 0 }, { 0, 0 } };
+
+         model->getProjectionCoords( n, pos );
+         model->getProjectionUp( n, up );
+         model->getProjectionSeam( n, seam );
+         model->getProjectionRange( n,
+               range[0][0], range[0][1], range[1][0], range[1][1] );
+
+         addProjection( name, type, pos[0], pos[1], pos[2] );
+         setProjectionUp( n + projbase, up );
+         setProjectionSeam( n + projbase, seam );
+         setProjectionRange( n + projbase,
+               range[0][0], range[0][1], range[1][0], range[1][1] );
+      }
+
+      int tpcount = getProjectionCount();
+
       count = model->getTriangleCount();
       float s = 0.0;
       float t = 0.0;
@@ -1200,14 +1235,17 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
             model->getTextureCoords( n,    i, s, t );
             setTextureCoords( n + tribase, i, s, t );
          }
-      }
 
-      for ( n = 0; n < count; n++ )
-      {
-         int val = model->getTriangleGroup( n );
-         if ( val >= 0 )
+         int grp = model->getTriangleGroup( n );
+         if ( grp >= 0 )
          {
-            addTriangleToGroup( m_groupMap[val], n + tribase );
+            addTriangleToGroup( m_groupMap[grp], n + tribase );
+         }
+
+         int prj = model->getTriangleProjection( n );
+         if ( prj >= 0 && (prj + (int) projbase) < tpcount )
+         {
+            setTriangleProjection( n + tribase, prj + projbase );
          }
       }
    }
@@ -1440,9 +1478,26 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
       }
    }
 
-   invalidateNormals();
+   count = getTriangleCount();
+   for ( n = tribase; n < count; ++n )
+      selectTriangle( n );
 
-   forceAddOrDelete( true );
+   count = getBoneJointCount();
+   for ( n = jointbase; n < count; ++n )
+      selectBoneJoint( n );
+
+   count = getPointCount();
+   for ( n = pointbase; n < count; ++n )
+      selectPoint( n );
+
+   count = getProjectionCount();
+   for ( n = projbase; n < count; ++n )
+      selectProjection( n );
+
+   invalidateNormals();
+   setupJoints();
+
+   forceAddOrDelete( canAdd );
 
    return true;
 }

@@ -295,6 +295,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    m_fileMenu->insertItem( tr("Save", "File|Save"), this, SLOT(saveModelEvent()), g_keyConfig.getKey( "viewwin_file_save" ) );
    m_fileMenu->insertItem( tr("Save As...", "File|Save As"), this, SLOT(saveModelAsEvent()), g_keyConfig.getKey( "viewwin_file_save_as" ) );
    m_fileMenu->insertItem( tr("Export...", "File|Export"), this, SLOT(exportModelEvent()), g_keyConfig.getKey( "viewwin_file_export" ) );
+   m_fileMenu->insertItem( tr("Export Selected...", "File|Export Selected"), this, SLOT(exportSelectedEvent()), g_keyConfig.getKey( "viewwin_file_export_selected" ) );
 #ifdef HAVE_LUALIB
    m_fileMenu->insertItem( tr("Run Script...", "File|Run Script"), this, SLOT(scriptEvent()), g_keyConfig.getKey( "viewwin_file_run_script" ) );
    m_fileMenu->insertItem( tr("Recent Scripts", "File|Recent Script"), m_scriptMruMenu );
@@ -800,18 +801,35 @@ void ViewWindow::saveModelEvent()
 
 void ViewWindow::saveModelAsEvent()
 {
-   saveModelInternal( false );
+   saveModelInternal( m_model, false );
 }
 
 void ViewWindow::exportModelEvent()
 {
-   saveModelInternal( true );
+   saveModelInternal( m_model, true );
 }
 
-void ViewWindow::saveModelInternal( bool exportModel )
+void ViewWindow::exportSelectedEvent()
+{
+   if ( m_model->getSelectedTriangleCount() == 0
+         && m_model->getSelectedPointCount() == 0
+         && m_model->getSelectedProjectionCount() == 0 )
+   {
+      model_status( m_model, StatusError, STATUSTIME_LONG, tr( "You must have at least 1 face, joint, or point selected to Export Selected" ).utf8() );
+      return;
+   }
+
+   Model * m = m_model->copySelected();
+   
+   if ( !m )
+      return;
+
+   saveModelInternal( m, true );
+}
+
+void ViewWindow::saveModelInternal( Model * model, bool exportModel )
 {
    list<string> formats = FilterManager::getInstance()->getAllWriteTypes( exportModel );
-
 
    QString formatsStr = 
       ((exportModel) ? tr( "All Exportable Formats" ) : tr( "All Writable Formats" ))
@@ -832,7 +850,7 @@ void ViewWindow::saveModelInternal( bool exportModel )
 
    formatsStr += QString( ")" );
 
-   const char * modelFile = m_model->getFilename();
+   const char * modelFile = model->getFilename();
    QString dir = QString::fromUtf8( g_prefs( "ui_model_dir" ).stringValue().c_str() );
    if ( exportModel )
    {
@@ -861,14 +879,14 @@ void ViewWindow::saveModelInternal( bool exportModel )
    d.setAcceptMode( QFileDialog::AcceptSave );
    if ( exportModel )
    {
-      d.selectFile( QString( m_model->getExportFile() ) );
+      d.selectFile( QString( model->getExportFile() ) );
    }
 #else
    QFileDialog d(dir, formatsStr, NULL, QString(""), true );
    d.addFilter( tr("All Files (*)") );
    if ( exportModel )
    {
-      d.setSelection( QString( m_model->getExportFile() ) );
+      d.setSelection( QString( model->getExportFile() ) );
    }
 #endif
 
@@ -919,7 +937,7 @@ void ViewWindow::saveModelInternal( bool exportModel )
             }
 
             Model::ModelErrorE err 
-               = FilterManager::getInstance()->writeFile( m_model, filename.c_str(), exportModel );
+               = FilterManager::getInstance()->writeFile( model, filename.c_str(), exportModel );
             if ( err == Model::ERROR_NONE )
             {
                m_abortQuit = false;
@@ -930,12 +948,12 @@ void ViewWindow::saveModelInternal( bool exportModel )
 #else
                   g_prefs( "ui_export_dir" ) = (const char *) d.dir()->absPath().utf8();
 #endif 
-                  m_model->setExportFile( filename.c_str() );
+                  model->setExportFile( filename.c_str() );
                }
                else
                {
-                  m_model->setSaved( true );
-                  m_model->setFilename( filename.c_str() );
+                  model->setSaved( true );
+                  model->setFilename( filename.c_str() );
 #ifdef HAVE_QT4
                   g_prefs( "ui_model_dir" ) = (const char *) d.directory().absolutePath().utf8();
 #else
@@ -950,7 +968,7 @@ void ViewWindow::saveModelInternal( bool exportModel )
             {
                if ( Model::operationFailed( err ) )
                {
-                  msg_error( modelErrStr( err, m_model ).utf8() );
+                  msg_error( modelErrStr( err, model ).utf8() );
                }
             }
          }

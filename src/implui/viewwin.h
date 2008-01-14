@@ -104,6 +104,7 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       void saveModelEvent();
       void saveModelAsEvent();
       void exportModelEvent();
+      void exportSelectedEvent();
 
       void mergeModelsEvent();
       void mergeAnimationsEvent();
@@ -200,7 +201,7 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       void jointSelectUnassignedPoints();
 
    protected:
-      void saveModelInternal( bool exportModel = false );
+      void saveModelInternal( Model * model, bool exportModel = false );
 
       void contextMenuEvent( QContextMenuEvent * e );
 
