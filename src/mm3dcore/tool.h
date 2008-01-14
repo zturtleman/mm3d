@@ -176,9 +176,10 @@ class Tool
       // See command.h for details.
       virtual int getToolCount() = 0;
       virtual const char * getName( int arg ) = 0;
-      virtual const char * getPath() { return ""; };
-      virtual void activated( int arg, Model * model, QMainWindow * mainwin ) {};
-      virtual void deactivated() {};
+      virtual const char * getPath() { return ""; }
+      virtual void activated( int arg, Model * model, QMainWindow * mainwin ) {}
+      virtual void deactivated() {}
+      virtual void setModel( Model * m ) {}
 
       // Is this a place-holder for a menu separator?
       virtual bool isSeparator()     { return false; };
