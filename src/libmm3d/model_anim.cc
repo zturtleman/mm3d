@@ -1763,10 +1763,9 @@ bool Model::setCurrentAnimationTime( double frameTime )
          Vertex * vptr = m_vertices[v];
          if ( !vptr->m_influences.empty() )
          {
-            vptr->m_kfCoord[0] = 0;
-            vptr->m_kfCoord[1] = 0;
-            vptr->m_kfCoord[2] = 0;
-            //double fnorm[3] = { 0, 0, 0 };
+            vptr->m_kfCoord[0] = 0.0;
+            vptr->m_kfCoord[1] = 0.0;
+            vptr->m_kfCoord[2] = 0.0;
 
             double total = 0.0;
 
@@ -1775,30 +1774,39 @@ bool Model::setCurrentAnimationTime( double frameTime )
             InfluenceList::iterator it;
             for ( it = vptr->m_influences.begin(); it != vptr->m_influences.end(); it++ )
             {
-               const Matrix & final = m_joints[ (*it).m_boneId ]->m_final;
-               const Matrix & abs = m_joints[ (*it).m_boneId ]->m_absolute;
+               if ( it->m_weight > 0.00001 )
+               {
+                  const Matrix & final = m_joints[ (*it).m_boneId ]->m_final;
+                  const Matrix & abs = m_joints[ (*it).m_boneId ]->m_absolute;
 
-               vert.setAll( vptr->m_coord );
-               vert[3] = 1.0;
+                  vert.setAll( vptr->m_coord );
+                  vert[3] = 1.0;
 
-               abs.inverseTranslateVector( (double *) vert.getVector() );
-               abs.inverseRotateVector( (double *) vert.getVector() );
+                  abs.inverseTranslateVector( (double *) vert.getVector() );
+                  abs.inverseRotateVector( (double *) vert.getVector() );
 
-               vert.transform( final );
+                  vert.transform( final );
 
-               vert.scale3( (*it).m_weight );
-               vptr->m_kfCoord[0] += vert[0];
-               vptr->m_kfCoord[1] += vert[1];
-               vptr->m_kfCoord[2] += vert[2];
+                  vert.scale3( (*it).m_weight );
+                  vptr->m_kfCoord[0] += vert[0];
+                  vptr->m_kfCoord[1] += vert[1];
+                  vptr->m_kfCoord[2] += vert[2];
 
-               total += (*it).m_weight;
+                  total += (*it).m_weight;
+               }
             }
 
-            if ( total > 0.0 )
+            if ( total > 0.00001 )
             {
                vptr->m_kfCoord[0] /= total;
                vptr->m_kfCoord[1] /= total;
                vptr->m_kfCoord[2] /= total;
+            }
+            else
+            {
+               vptr->m_kfCoord[0] = vptr->m_coord[0];
+               vptr->m_kfCoord[1] = vptr->m_coord[1];
+               vptr->m_kfCoord[2] = vptr->m_coord[2];
             }
          }
          else
@@ -1883,6 +1891,15 @@ bool Model::setCurrentAnimationTime( double frameTime )
                pptr->m_kfTrans[0] /= total;
                pptr->m_kfTrans[1] /= total;
                pptr->m_kfTrans[2] /= total;
+            }
+            else
+            {
+               pptr->m_kfTrans[0] = 0.0;
+               pptr->m_kfTrans[1] = 0.0;
+               pptr->m_kfTrans[2] = 0.0;
+               pptr->m_kfRot[0] = 0.0;
+               pptr->m_kfRot[1] = 0.0;
+               pptr->m_kfRot[2] = 0.0;
             }
 
             normalize3( axisX );
