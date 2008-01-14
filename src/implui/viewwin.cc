@@ -692,12 +692,17 @@ void ViewWindow::setModel( Model * model )
    }
    m_viewPanel->modelUpdatedEvent();
 
-   emit modelChanged( model );
+   emit modelChanged( m_model );
 
-   while ( model->hasErrors() )
+   while ( m_model->hasErrors() )
    {
       std::string str = m_model->popError();
       model_status( m_model, StatusError, STATUSTIME_LONG, "%s", str.c_str() );
+   }
+
+   if ( m_currentTool )
+   {
+      m_currentTool->setModel( m_model );
    }
 }
 
