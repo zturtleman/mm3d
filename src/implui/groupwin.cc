@@ -28,24 +28,27 @@
 #include "decalmgr.h"
 #include "helpwin.h"
 
-#include "mq3compat.h"
+#include <QComboBox>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QCheckBox>
+#include <QSlider>
+#include <QLabel>
+#include <QString>
 
-#include <qcombobox.h>
-#include <qinputdialog.h>
-#include <qmessagebox.h>
-#include <qpushbutton.h>
-#include <qcheckbox.h>
-#include <qslider.h>
-#include <qlabel.h>
-#include <qstring.h>
+#include <q3accel.h>
 
 #include <list>
 
-GroupWindow::GroupWindow( Model * model, QWidget * parent, const char * name )
-   : GroupWinBase( parent, name, true, Qt::WDestructiveClose ),
-     m_accel( new QAccel(this) ),
+GroupWindow::GroupWindow( Model * model, QWidget * parent )
+   : QDialog( parent, Qt::WDestructiveClose ),
+     m_accel( new Q3Accel(this) ),
      m_model( model )
 {
+   setupUi( this );
+   setModal( true );
+
    m_textureFrame->setModel( model );
 
    m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
@@ -274,7 +277,7 @@ void GroupWindow::updateTexture()
 void GroupWindow::accept()
 {
    m_model->operationComplete( tr( "Group changes", "operation complete" ).utf8() );
-   GroupWinBase::accept();
+   QDialog::accept();
    DecalManager::getInstance()->modelUpdated( m_model );
 }
 
@@ -282,5 +285,5 @@ void GroupWindow::reject()
 {
    m_model->undoCurrent();
    DecalManager::getInstance()->modelUpdated( m_model );
-   GroupWinBase::reject();
+   QDialog::reject();
 }

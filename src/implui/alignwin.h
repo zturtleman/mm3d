@@ -28,20 +28,17 @@
 
 #include "align.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-
-//#include <list>
-//#include <map>
+#include <QDialog>
 
 class Model;
+class Q3Accel;
 
-class AlignWin : public AlignWinBase
+class AlignWin : public QDialog, public Ui::AlignWinBase
 {
    Q_OBJECT
 
    public:
-      AlignWin( Model *, QWidget * parent = NULL, const char * name = "" );
+      AlignWin( Model *, QWidget * parent = NULL );
       virtual ~AlignWin();
 
       void alignX();
@@ -67,7 +64,7 @@ class AlignWin : public AlignWinBase
       void helpNowEvent( int );
 
    protected:
-      QAccel * m_accel;
+      Q3Accel * m_accel;
       Model * m_model;
 
       double m_xMin;

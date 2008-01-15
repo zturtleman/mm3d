@@ -33,19 +33,18 @@
 
 #include "helpwin.h"
 
-#include "mq3compat.h"
-
-#include <qcombobox.h>
-#include <qcheckbox.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qmessagebox.h>
-#include <qpushbutton.h>
-#include <qslider.h>
-#include <qspinbox.h>
-#include <qtabwidget.h>
-#include <qtimer.h>
-#include <qinputdialog.h>
+#include <q3accel.h>
+#include <QComboBox>
+#include <QCheckBox>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QSlider>
+#include <QSpinBox>
+#include <QTabWidget>
+#include <QTimer>
+#include <QInputDialog>
 
 enum
 {
@@ -87,18 +86,20 @@ static int getSliderTickInterval( int val )
    return 1;
 }
 
-AnimWidget::AnimWidget( Model * model, bool isUndo, QWidget * parent, const char * name )
-   : AnimWidgetBase( parent ),
+AnimWidget::AnimWidget( Model * model, bool isUndo, QWidget * parent )
+   : QWidget( parent ),
      m_model( model ),
      m_doLoop( true ),
      m_playing( false ),
      m_undoing( isUndo ),
      m_ignoreChange( false )
 {
+   setupUi( this );
+
    log_debug( "AnimWidget constructor\n" );
 
    m_animTimer = new QTimer( this );
-   m_accel     = new QAccel( this );
+   m_accel     = new Q3Accel( this );
 
    m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), ANIMWIN_HELP_ID );
 

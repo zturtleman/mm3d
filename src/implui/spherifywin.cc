@@ -28,17 +28,16 @@
 #include "decalmgr.h"
 #include "log.h"
 
-#include "mq3compat.h"
-
-#include <qslider.h>
-#include <qlineedit.h>
-#include <qlabel.h>
+#include <QSlider>
+#include <QLineEdit>
+#include <QLabel>
+#include <q3accel.h>
 #include <math.h>
 #include <stdlib.h>
 
 
-SpherifyWin::SpherifyWin( Model * model, QWidget * parent, const char * name )
-   : ValueWin( parent, name, true, WDestructiveClose ),
+SpherifyWin::SpherifyWin( Model * model, QWidget * parent )
+   : ValueWin( parent, Qt::WDestructiveClose ),
      m_model( model )
 {
    setLabel( "Spherify" );

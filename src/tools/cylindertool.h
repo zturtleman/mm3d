@@ -39,7 +39,7 @@ class CylinderTool : public Tool, public CylinderToolWidget::Observer
       int getToolCount() { return 1; };
       const char * getName( int arg );
 
-      void activated( int arg, Model * model, QMainWindow * mainwin );
+      void activated( int arg, Model * model, Q3MainWindow * mainwin );
       void deactivated();
 
       bool isCreation() { return true; };

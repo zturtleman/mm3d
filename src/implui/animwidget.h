@@ -26,21 +26,21 @@
 
 #include "animwidget.base.h"
 
-#include "mq3macro.h"
-
 #include "mm3dport.h"
 
 #include "model.h"
 
-class QTimer;
-class QAccel;
+#include <QWidget>
 
-class AnimWidget : public AnimWidgetBase
+class QTimer;
+class Q3Accel;
+
+class AnimWidget : public QWidget, public Ui::AnimWidgetBase
 {
    Q_OBJECT
 
    public:
-      AnimWidget( Model * model, bool isUndo, QWidget * parent = NULL, const char * name = "" );
+      AnimWidget( Model * model, bool isUndo, QWidget * parent = NULL );
       virtual ~AnimWidget();
 
       void initialize( Model * model, bool isUndo );
@@ -140,7 +140,7 @@ class AnimWidget : public AnimWidgetBase
       FramePointCopyList    m_framePointCopyList;
 
       QTimer * m_animTimer;
-      QAccel * m_accel;
+      Q3Accel * m_accel;
 };
 
 #endif // __ANIMWIDGET_H

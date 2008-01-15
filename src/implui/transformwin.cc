@@ -35,26 +35,27 @@
 #include "3dmprefs.h"
 #include "helpwin.h"
 
-#include "mq3compat.h"
+#include <QComboBox>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QInputDialog>
+#include <QLineEdit>
+#include <QSlider>
+#include <QLabel>
+#include <q3accel.h>
 
-#include <qcombobox.h>
-#include <qmessagebox.h>
-#include <qpushbutton.h>
 #include <list>
 #include <string>
-#include <qinputdialog.h>
-#include <qlineedit.h>
-#include <qslider.h>
-#include <qlabel.h>
 
 using std::list;
 using std::string;
 
-TransformWindow::TransformWindow( Model * model, QWidget * parent, const char * name )
-   : TransformWindowBase( parent, name ),
-     m_accel( new QAccel(this) ),
+TransformWindow::TransformWindow( Model * model, QWidget * parent )
+   : QDialog( parent ),
+     m_accel( new Q3Accel(this) ),
      m_model( model )
 {
+   setupUi( this );
 }
 
 TransformWindow::~TransformWindow()
@@ -69,7 +70,7 @@ void TransformWindow::helpNowEvent( int id )
 
 void TransformWindow::close()
 {
-   TransformWindowBase::hide();
+   QDialog::hide();
 }
 
 void TransformWindow::setModel( Model * m )

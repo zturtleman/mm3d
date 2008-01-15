@@ -28,13 +28,12 @@
 #include "texwidget.h"
 #include "decalmgr.h"
 
-#include "mq3compat.h"
-
-#include <qinputdialog.h>
-#include <qpushbutton.h>
-#include <qcombobox.h>
-#include <qlabel.h>
-#include <qlineedit.h>
+#include <QInputDialog>
+#include <QPushButton>
+#include <QComboBox>
+#include <QLabel>
+#include <QLineEdit>
+#include <q3accel.h>
 #include <list>
 
 using std::list;
@@ -45,19 +44,17 @@ using std::list;
 #include "msg.h"
 #include "modelstatus.h"
 
-#ifdef HAVE_QT4
-#include <QCloseEvent>
-#endif // HAVE_QT4
-
 ProjectionWin::ProjectionWin( Model * model, QWidget * parent, ViewPanel * viewPanel )
-   : ProjectionWinBase( parent, "" ),
-     m_accel( new QAccel(this) ),
+   : QDialog( parent ),
+     m_accel( new Q3Accel(this) ),
      m_viewPanel( viewPanel ),
      m_undoCount( 0 ),
      m_redoCount( 0 ),
      m_inUndo( false ),
      m_ignoreChange( false )
 {
+   setupUi( this );
+
    m_textureWidget = m_textureFrame->getTextureWidget();
    m_textureWidget->setInteractive( true );
    m_textureWidget->setMouseOperation( TextureWidget::MouseRange );
@@ -252,7 +249,7 @@ void ProjectionWin::show()
       // If we are visible, setModel already did this
       initWindow();
    }
-   ProjectionWinBase::show();
+   QDialog::show();
 }
 
 void ProjectionWin::initWindow()

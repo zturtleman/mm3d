@@ -25,12 +25,14 @@
 
 #include "sysconf.h"
 
-#include <qtextbrowser.h>
-#include <qpushbutton.h>
+#include <QTextBrowser>
+#include <QPushButton>
 
-HelpWin::HelpWin( const char * document, bool modal, QWidget * parent, const char * name )
-   : HelpWinBase( parent, name, modal, Qt::WDestructiveClose )
+HelpWin::HelpWin( const char * document, bool modal, QWidget * parent )
+   : QDialog( parent, Qt::WDestructiveClose )
 {
+   setModal( modal );
+   setupUi( this );
 #ifdef WIN32
    QString source = 
         QString( getDocDirectory().c_str() )

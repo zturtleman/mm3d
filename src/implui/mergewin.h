@@ -25,19 +25,16 @@
 
 #include "mergewin.base.h"
 
-#include <qcheckbox.h>
-#include <qradiobutton.h>
-
-#include "mq3macro.h"
+#include <QDialog>
 
 class Model;
-class QAccel;
+class Q3Accel;
 
-class MergeWindow : public MergeWinBase
+class MergeWindow : public QDialog, public Ui::MergeWinBase
 {
       Q_OBJECT
    public:
-      MergeWindow( Model *, QWidget * parent = NULL, const char * name = "" );
+      MergeWindow( Model *, QWidget * parent = NULL );
       virtual ~MergeWindow();
 
       void getRotation( double * vec );
@@ -55,7 +52,7 @@ class MergeWindow : public MergeWinBase
       void reject();
 
    protected:
-      QAccel * m_accel;
+      Q3Accel * m_accel;
       Model  * m_model;
 };
 

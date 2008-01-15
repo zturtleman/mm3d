@@ -59,7 +59,7 @@ void RotateTool::setModel( Model * model )
    m_model = model;
 }
 
-void RotateTool::activated( int arg, Model * model, QMainWindow * mainwin )
+void RotateTool::activated( int arg, Model * model, Q3MainWindow * mainwin )
 {
    m_model = model;
 

@@ -29,21 +29,26 @@
 #include "decalmgr.h"
 #include "helpwin.h"
 
-#include <qlineedit.h>
-#include <qradiobutton.h>
+#include <QLineEdit>
+#include <QRadioButton>
 #include <stdlib.h>
+
+#include <q3accel.h>
 
 using std::list;
 using std::map;
 
-AlignWin::AlignWin( Model * model, QWidget * parent, const char * name )
-   : AlignWinBase( parent, name, true, Qt::WDestructiveClose ),
-     m_accel( new QAccel(this) ),
+AlignWin::AlignWin( Model * model, QWidget * parent )
+   : QDialog( parent, Qt::WDestructiveClose ),
+     m_accel( new Q3Accel(this) ),
      m_model( model ),
      m_atX( AT_Center ),
      m_atY( AT_Center ),
      m_atZ( AT_Center )
 {
+   setModal( true );
+   setupUi( this );
+
    m_xCenter->setChecked( true );
    m_yCenter->setChecked( true );
    m_zCenter->setChecked( true );
@@ -138,7 +143,7 @@ void AlignWin::accept()
 {
    log_debug( "Alignment complete" );
    m_model->operationComplete( tr( "Align Selected", "operation complete" ).utf8() );
-   AlignWinBase::accept();
+   QDialog::accept();
 }
 
 void AlignWin::reject()
@@ -146,6 +151,6 @@ void AlignWin::reject()
    log_debug( "Alignment canceled" );
    m_model->undoCurrent();
    DecalManager::getInstance()->modelUpdated( m_model );
-   AlignWinBase::reject();
+   QDialog::reject();
 }
 

@@ -31,21 +31,24 @@
 #include "viewpanel.h"
 #include "modelstatus.h"
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qradiobutton.h>
+#include <QPushButton>
+#include <QLabel>
+#include <QRadioButton>
+
 #include <stdlib.h>
 
 #include <list>
 
 using std::list;
 
-BoolWin::BoolWin( Model * model, ViewPanel * panel, QWidget * parent, const char * name )
-   : BoolWinBase( parent, name ),
+BoolWin::BoolWin( Model * model, ViewPanel * panel, QWidget * parent )
+   : QWidget( parent ),
      m_model( model ),
      m_panel( panel ),
      m_operation( Model::BO_Union )
 {
+   setupUi( this );
+
    m_unionButton->setChecked( true );
    updateOperationButton();
    clearObject();

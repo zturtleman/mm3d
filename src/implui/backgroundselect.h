@@ -24,19 +24,18 @@
 #ifndef __BACKGROUNDSELECT_H
 #define __BACKGROUNDSELECT_H
 
-#include <qpixmap.h>
 #include "backgroundselect.base.h"
 
-#include "mq3macro.h"
+#include <QWidget>
 
 class Model;
 
-class BackgroundSelect : public BackgroundSelectBase
+class BackgroundSelect : public QWidget, public Ui::BackgroundSelectBase
 {
    Q_OBJECT
 
    public:
-      BackgroundSelect( Model * mode, unsigned index, QWidget * parent = NULL, const char * name = "" );
+      BackgroundSelect( Model * mode, unsigned index, QWidget * parent = NULL );
       virtual ~BackgroundSelect();
 
       void setFilename( const char * filename );

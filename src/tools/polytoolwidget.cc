@@ -34,7 +34,7 @@
 #include <qcombobox.h>
 
 PolyToolWidget::PolyToolWidget( Observer * observer, QWidget * parent )
-   : QDockWindow ( QDockWindow::InDock, parent, "", WDestructiveClose ),
+   : Q3DockWindow ( Q3DockWindow::InDock, parent, "", Qt::WDestructiveClose ),
      m_observer( observer )
 {
    const int DEFAULT_FAN  = 0;

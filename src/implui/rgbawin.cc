@@ -25,18 +25,21 @@
 #include "helpwin.h"
 #include "log.h"
 
-#include "mq3compat.h"
+#include <QLineEdit>
+#include <QSlider>
+#include <QLabel>
+#include <q3accel.h>
 
-#include <qlineedit.h>
-#include <qslider.h>
-#include <qlabel.h>
 #include <stdlib.h>
 
-RgbaWin::RgbaWin( QWidget * parent, const char * name )
-   : RgbaWinBase( parent, name, true ),
-     m_accel( new QAccel(this) ),
+RgbaWin::RgbaWin( QWidget * parent )
+   : QDialog( parent ),
+     m_accel( new Q3Accel(this) ),
      m_editing( false )
 {
+   setupUi( this );
+   setModal( true );
+
    m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
    connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
 }

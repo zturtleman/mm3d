@@ -31,10 +31,11 @@
 #include "modelviewport.h"
 #include "3dmprefs.h"
 
-#include <qlayout.h>
+#include <QLayout>
+#include <QGridLayout>
 
-ViewPanel::ViewPanel( Toolbox * toolbox, QWidget * parent, const char * name )
-   : QWidget( parent, name ),
+ViewPanel::ViewPanel( Toolbox * toolbox, QWidget * parent )
+   : QWidget( parent ),
      m_model( NULL ),
      m_viewCount( 4 ),
      m_tall( false ),
@@ -239,7 +240,7 @@ void ViewPanel::makeViews()
 
    for ( unsigned t = 0; t < m_viewCount; t++ )
    {
-      m_modelView[t] = new ModelView( m_toolbox, this, "" );
+      m_modelView[t] = new ModelView( m_toolbox, this );
       connect( m_modelView[t]->getModelViewport(), SIGNAL(viewportSaveState(int, const ModelViewport::ViewStateT & )), 
             this, SLOT(viewportSaveStateEvent(int, const ModelViewport::ViewStateT &)) );
       connect( m_modelView[t]->getModelViewport(), SIGNAL(viewportRecallState(int)), 

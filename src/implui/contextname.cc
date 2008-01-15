@@ -24,14 +24,16 @@
 
 #include "model.h"
 
-#include <qlineedit.h>
+#include <QLineEdit>
+
 #include <stdlib.h>
 
 ContextName::ContextName( QWidget * parent )
-   : ContextNameBase( parent ),
+   : QWidget( parent ),
      m_change( false ),
      m_update( false )
 {
+   setupUi( this );
 }
 
 ContextName::~ContextName()

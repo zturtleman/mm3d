@@ -1,57 +1,52 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>ContextNameBase</class>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>ContextNameBase</cstring>
+<ui version="4.0" stdsetdef="1" >
+  <author></author>
+  <comment></comment>
+  <exportmacro></exportmacro>
+  <class>ContextNameBase</class>
+  <widget class="QWidget" name="ContextNameBase" >
+    <property name="geometry" >
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>261</width>
+        <height>75</height>
+      </rect>
     </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>261</width>
-            <height>75</height>
-        </rect>
+    <property name="sizePolicy" >
+      <sizepolicy>
+        <hsizetype>5</hsizetype>
+        <vsizetype>1</vsizetype>
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+      </sizepolicy>
     </property>
-    <property name="sizePolicy">
-        <sizepolicy>
-            <hsizetype>5</hsizetype>
-            <vsizetype>1</vsizetype>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
+    <property name="windowTitle" >
+      <string>Name</string>
     </property>
-    <property name="caption">
-        <string>Name</string>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel1</cstring>
-            </property>
-            <property name="text">
-                <string>Name</string>
-            </property>
+    <layout class="QVBoxLayout" >
+      <item>
+        <widget class="QLabel" name="textLabel1" >
+          <property name="text" >
+            <string>Name</string>
+          </property>
+          <property name="wordWrap" >
+            <bool>false</bool>
+          </property>
         </widget>
-        <widget class="QLineEdit">
-            <property name="name">
-                <cstring>m_name</cstring>
-            </property>
-        </widget>
-    </vbox>
-</widget>
-<connections>
+      </item>
+      <item>
+        <widget class="QLineEdit" name="m_name" />
+      </item>
+    </layout>
+  </widget>
+  <layoutdefault spacing="6" margin="11" />
+  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+  <connections>
     <connection>
-        <sender>m_name</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>ContextNameBase</receiver>
-        <slot>textChangedEvent(const QString&amp;)</slot>
+      <sender>m_name</sender>
+      <signal>textChanged(QString)</signal>
+      <receiver>ContextNameBase</receiver>
+      <slot>textChangedEvent(QString)</slot>
     </connection>
-</connections>
-<slots>
-    <slot>textChangedEvent( const QString &amp; )</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+  </connections>
+</ui>

@@ -26,17 +26,17 @@
 
 #include "groupwin.base.h"
 
-#include "mq3macro.h"
+#include <QDialog>
 
 class Model;
-class QAccel;
+class Q3Accel;
 
-class GroupWindow : public GroupWinBase
+class GroupWindow : public QDialog, public Ui::GroupWinBase
 {
    Q_OBJECT
 
    public:
-      GroupWindow( Model * model, QWidget * parent = NULL, const char * name = "" );
+      GroupWindow( Model * model, QWidget * parent = NULL );
       virtual ~GroupWindow();
 
    public slots:
@@ -61,7 +61,7 @@ class GroupWindow : public GroupWinBase
    protected:
       void updateTexture();
 
-      QAccel * m_accel;
+      Q3Accel * m_accel;
       Model  * m_model;
 };
 

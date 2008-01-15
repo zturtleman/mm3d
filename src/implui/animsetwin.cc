@@ -29,22 +29,24 @@
 #include "msg.h"
 #include "helpwin.h"
 
-#include "mq3compat.h"
-
-#include <qpushbutton.h>
-#include <qcombobox.h>
-#include <qinputdialog.h>
-#include <qmessagebox.h>
+#include <QPushButton>
+#include <QComboBox>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <q3accel.h>
 
 #include <list>
 
 using std::list;
 
-AnimSetWindow::AnimSetWindow( Model * model, QWidget * parent, const char * name )
-   : AnimSetWinBase( parent, name, true ),
-     m_accel( new QAccel(this) ),
+AnimSetWindow::AnimSetWindow( Model * model, QWidget * parent )
+   : QDialog( parent ),
+     m_accel( new Q3Accel(this) ),
      m_model( model )
 {
+   setupUi( this );
+   setModal( true );
+
    m_animType->insertItem( tr( "Skeletal Animation" ) );
    m_animType->insertItem( tr( "Frame Animation" ) );
 
@@ -57,19 +59,19 @@ AnimSetWindow::AnimSetWindow( Model * model, QWidget * parent, const char * name
 
    if ( skelCount > 0 )
    {
-      m_animType->setCurrentItem( 0 );
+      m_animType->setCurrentItem(0);
    }
    else if ( frameCount > 0 )
    {
-      m_animType->setCurrentItem( 1 );
+      m_animType->setCurrentItem(2);
    }
    else if ( relativeCount > 0 )
    {
-      m_animType->setCurrentItem( 2 );
+      m_animType->setCurrentItem(2);
    }
    else
    {
-      m_animType->setCurrentItem( 0 );
+      m_animType->setCurrentItem(0);
    }
 
    fillAnimationList();
@@ -119,7 +121,7 @@ void AnimSetWindow::upClicked()
 
    unsigned t = 0;
 
-   for ( t = 0; t < count && m_animList->isSelected( t ); t++ )
+   for ( t = 0; t < count && m_animList->item(t)->isSelected(); t++ )
    {
       // do nothing (loop finds first unselected item)
    }
@@ -132,7 +134,7 @@ void AnimSetWindow::upClicked()
    {
       if ( moving )
       {
-         if ( ! m_animList->isSelected( t ) )
+         if ( ! m_animList->item(t)->isSelected() )
          {
             unsigned oldIndex = lastUnselected;
             unsigned newIndex = t - 1; 
@@ -140,9 +142,8 @@ void AnimSetWindow::upClicked()
             m_model->moveAnimation( mode, oldIndex, newIndex );
             moving = false;
 
-            QString text = m_animList->text( oldIndex );
-            m_animList->removeItem( oldIndex );
-            m_animList->insertItem( text, newIndex );
+            QListWidgetItem * item = m_animList->takeItem( oldIndex );
+            m_animList->insertItem( newIndex, item );
 
             log_debug( "moved item from %d to %d\n", oldIndex, newIndex );
 
@@ -152,7 +153,7 @@ void AnimSetWindow::upClicked()
       }
       else
       {
-         if ( m_animList->isSelected( t ) )
+         if ( m_animList->item(t)->isSelected() )
          {
             moving = true;
          }
@@ -169,9 +170,8 @@ void AnimSetWindow::upClicked()
 
       m_model->moveAnimation( mode, lastUnselected, newIndex );
 
-      QString text = m_animList->text( lastUnselected );
-      m_animList->removeItem( lastUnselected );
-      m_animList->insertItem( text, newIndex );
+      QListWidgetItem * item = m_animList->takeItem( lastUnselected );
+      m_animList->insertItem( newIndex, item );
 
       log_debug( "moved item from %d to %d\n", lastUnselected, newIndex );
    }
@@ -184,7 +184,7 @@ void AnimSetWindow::downClicked()
 
    int t = 0;
 
-   for ( t = count - 1; t >= 0 && m_animList->isSelected( t ); t-- )
+   for ( t = count - 1; t >= 0 && m_animList->item(t)->isSelected(); t-- )
    {
       // do nothing (loop finds first unselected item)
    }
@@ -197,7 +197,7 @@ void AnimSetWindow::downClicked()
    {
       if ( moving )
       {
-         if ( ! m_animList->isSelected( t ) )
+         if ( ! m_animList->item(t)->isSelected() )
          {
             unsigned oldIndex = lastUnselected;
             unsigned newIndex = t + 1; 
@@ -205,9 +205,8 @@ void AnimSetWindow::downClicked()
             m_model->moveAnimation( mode, oldIndex, newIndex );
             moving = false;
 
-            QString text = m_animList->text( oldIndex );
-            m_animList->removeItem( oldIndex );
-            m_animList->insertItem( text, newIndex );
+            QListWidgetItem * item = m_animList->takeItem( oldIndex );
+            m_animList->insertItem( newIndex, item );
 
             log_debug( "moved item from %d to %d\n", oldIndex, newIndex );
 
@@ -217,7 +216,7 @@ void AnimSetWindow::downClicked()
       }
       else
       {
-         if ( m_animList->isSelected( t ) )
+         if ( m_animList->item(t)->isSelected() )
          {
             moving = true;
          }
@@ -234,9 +233,8 @@ void AnimSetWindow::downClicked()
 
       m_model->moveAnimation( mode, lastUnselected, newIndex );
 
-      QString text = m_animList->text( lastUnselected );
-      m_animList->removeItem( lastUnselected );
-      m_animList->insertItem( text, newIndex );
+      QListWidgetItem * item = m_animList->takeItem( lastUnselected );
+      m_animList->insertItem( newIndex, item );
 
       log_debug( "moved item from %d to %d\n", lastUnselected, newIndex );
    }
@@ -256,11 +254,11 @@ void AnimSetWindow::newClicked()
       int num = m_model->addAnimation( indexToMode( m_animType->currentItem() ), name.utf8() );
       if ( num >= 0 )
       {
-         m_animList->insertItem( name, num );
-         m_animList->setCurrentItem( num );
+         m_animList->insertItem( num, name );
+         m_animList->setCurrentItem(m_animList->item(num));
 
          m_animList->clearSelection();
-         m_animList->setSelected( num, true );
+         m_animList->item(num)->setSelected( true );
       }
    }
 }
@@ -273,7 +271,7 @@ void AnimSetWindow::renameClicked()
    unsigned count = m_animList->count();
    for ( firstSelection = 0; firstSelection < count; firstSelection++ )
    {
-      if ( m_animList->isSelected( firstSelection ) )
+      if ( m_animList->item(firstSelection)->isSelected() )
       {
          isSelection = true;
          break;
@@ -287,7 +285,7 @@ void AnimSetWindow::renameClicked()
       QString name = QInputDialog::getText(
             tr( "Misfit 3D" ),
             tr( "New name:" ),
-            QLineEdit::Normal, m_animList->text( firstSelection ), &ok, this );
+            QLineEdit::Normal, m_animList->item( firstSelection )->text(), &ok, this );
 
       if ( ok && !name.isEmpty() )
       {
@@ -295,10 +293,10 @@ void AnimSetWindow::renameClicked()
 
          for ( unsigned t = 0; t < count; t++ )
          {
-            if ( m_animList->isSelected( t ) )
+            if ( m_animList->item(t)->isSelected() )
             {
                m_model->setAnimName( mode, t, name.utf8() );
-               m_animList->changeItem( name, t );
+               m_animList->item(t)->setText( name );
             }
          }
       }
@@ -315,7 +313,7 @@ void AnimSetWindow::deleteClicked()
 
    for ( int t = count - 1; t >= 0; t-- )
    {
-      if ( m_animList->isSelected( t ) )
+      if ( m_animList->item(t)->isSelected() )
       {
          m_model->deleteAnimation( mode, t );
          refillList = true;
@@ -332,13 +330,13 @@ void AnimSetWindow::deleteClicked()
       {
          if ( lastDeleted < count )
          {
-            m_animList->setSelected( lastDeleted, true );
-            m_animList->setCurrentItem( lastDeleted );
+            m_animList->item(lastDeleted)->setSelected( true );
+            m_animList->setCurrentItem(m_animList->item(lastDeleted));
          }
          else
          {
-            m_animList->setSelected( count - 1, true );
-            m_animList->setCurrentItem( count - 1 );
+            m_animList->item(count - 1)->setSelected( true );
+            m_animList->setCurrentItem(m_animList->item(count - 1));
          }
       }
    }
@@ -352,9 +350,9 @@ void AnimSetWindow::copyClicked()
    unsigned count = m_animList->count();
    for ( unsigned t = 0; t < count; t++ )
    {
-      if ( m_animList->isSelected( t ) )
+      if ( m_animList->item(t)->isSelected() )
       {
-         QString name = m_animList->text( t );
+         QString name = m_animList->item( t )->text();
          name += QString( " " ) + tr( "copy" );
 
          int num = m_model->copyAnimation( mode, t, name.utf8() );
@@ -374,10 +372,10 @@ void AnimSetWindow::copyClicked()
       
       for ( it = newAnims.begin(); it != newAnims.end(); it++ )
       {
-         m_animList->setSelected( (*it), true );
+         m_animList->item( *it )->setSelected( true );
       }
 
-      m_animList->setCurrentItem( newAnims.back() );
+      m_animList->setCurrentItem(m_animList->item(newAnims.back()));
    }
 }
 
@@ -390,7 +388,7 @@ void AnimSetWindow::splitClicked()
 
    for ( int t = count - 1; t >= 0; t-- )
    {
-      if ( m_animList->isSelected( t ) )
+      if ( m_animList->item(t)->isSelected() )
       {
          if ( m_model->getAnimFrameCount( mode, t ) >= 2 )
          {
@@ -433,7 +431,7 @@ void AnimSetWindow::joinClicked()
 
    for ( unsigned t = 0; t < count; t++ )
    {
-      if ( m_animList->isSelected( t ) )
+      if ( m_animList->item(t)->isSelected() )
       {
          if ( joinNum >= 0 )
          {
@@ -459,8 +457,8 @@ void AnimSetWindow::joinClicked()
    {
       fillAnimationList();
 
-      m_animList->setSelected( joinNum, true );
-      m_animList->setCurrentItem( joinNum );
+      m_animList->item( joinNum )->setSelected( true );
+      m_animList->setCurrentItem(m_animList->item(joinNum));
    }
 }
 
@@ -477,7 +475,7 @@ void AnimSetWindow::mergeClicked()
 
       for ( unsigned t = 0; t < count; t++ )
       {
-         if ( m_animList->isSelected( t ) )
+         if ( m_animList->item(t)->isSelected() )
          {
             if ( mergeNum >= 0 )
             {
@@ -517,8 +515,8 @@ void AnimSetWindow::mergeClicked()
       {
          fillAnimationList();
 
-         m_animList->setSelected( mergeNum, true );
-         m_animList->setCurrentItem( mergeNum );
+         m_animList->item( mergeNum )->setSelected( true );
+         m_animList->setCurrentItem(m_animList->item(mergeNum));
       }
    }
    else
@@ -536,7 +534,7 @@ void AnimSetWindow::convertClicked()
 
    for ( unsigned t = 0; !cancelled && t < count; t++ )
    {
-      if ( m_animList->isSelected( t ) )
+      if ( m_animList->item(t)->isSelected() )
       {
          AnimConvertWindow acw( this );
 
@@ -566,14 +564,14 @@ void AnimSetWindow::convertClicked()
 void AnimSetWindow::accept()
 {
    m_model->operationComplete( tr( "Animation changes", "operation complete" ).utf8() );
-   AnimSetWinBase::accept();
+   QDialog::accept();
 }
 
 void AnimSetWindow::reject()
 {
    m_model->undoCurrent();
    DecalManager::getInstance()->modelUpdated( m_model );
-   AnimSetWinBase::reject();
+   QDialog::reject();
 }
 
 void AnimSetWindow::fillAnimationList()
@@ -585,12 +583,12 @@ void AnimSetWindow::fillAnimationList()
    unsigned count = m_model->getAnimCount( mode );
    for ( unsigned t = 0; t < count; t++ )
    {
-      m_animList->insertItem( QString::fromUtf8( m_model->getAnimName( mode, t ) ), t );
+      m_animList->insertItem( t, QString::fromUtf8( m_model->getAnimName( mode, t ) ) );
    }
 
    if ( count > 0 )
    {
-      m_animList->setCurrentItem( 0 );
+      m_animList->setCurrentItem(m_animList->item(0));
    }
 }
 

@@ -24,14 +24,16 @@
 
 #include "model.h"
 
-#include <qlineedit.h>
+#include <QLineEdit>
+
 #include <stdlib.h>
 
 ContextRotation::ContextRotation( QWidget * parent )
-   : ContextRotationBase( parent ),
+   : QWidget( parent ),
      m_change( false ),
      m_update( false )
 {
+   setupUi( this );
 }
 
 ContextRotation::~ContextRotation()

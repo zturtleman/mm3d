@@ -25,14 +25,19 @@
 #include "helpwin.h"
 #include "3dmprefs.h"
 
-#include <qlineedit.h>
-#include <qcheckbox.h>
+#include <QLineEdit>
+#include <QCheckBox>
+
+#include <q3accel.h>
 
 
-ViewportSettings::ViewportSettings( QWidget * parent, const char * name )
-   : ViewportSettingsBase( parent, name, true, Qt::WDestructiveClose ),
-     m_accel( new QAccel(this) )
+ViewportSettings::ViewportSettings( QWidget * parent )
+   : QDialog( parent, Qt::WDestructiveClose ),
+     m_accel( new Q3Accel(this) )
 {
+   setupUi( this );
+   setModal( true );
+
    m_accel->insertItem( Qt::Key_F1, 0 );
    connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
 
@@ -61,7 +66,7 @@ void ViewportSettings::accept()
    g_prefs( "ui_3dgrid_xz" ) = m_3dXZ->isChecked() ? 1 : 0;
    g_prefs( "ui_3dgrid_yz" ) = m_3dYZ->isChecked() ? 1 : 0;
 
-   ViewportSettingsBase::accept();
+   QDialog::accept();
 }
 
 void ViewportSettings::helpNowEvent( int id )

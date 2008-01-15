@@ -17,8 +17,6 @@ libmm3dcore_HFILES = \
 	luascript.h \
 	menuconf.h \
 	modeltest.h \
-	mq3compat.h \
-	mq3macro.h \
 	pluginapi.h \
 	pluginmgr.h \
 	prefparse.h \

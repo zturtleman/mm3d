@@ -26,22 +26,26 @@
 
 #include "mq3macro.h"
 #include "mq3compat.h"
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3HBoxLayout>
+#include <QLabel>
 
-class QMainWindow;
+class Q3MainWindow;
 
-class QVBoxLayout;
-class QHBoxLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
 
 #ifdef HAVE_QT4
-#define QGroupBox Q3GroupBox
+#define Q3GroupBox Q3GroupBox
 #endif
-class QGroupBox;
+class Q3GroupBox;
 class QSpinBox;
 class QCheckBox;
 class QSlider;
 class QLabel;
 
-class TorusToolWidget : public QDockWindow
+class TorusToolWidget : public Q3DockWindow
 {
    Q_OBJECT
 
@@ -71,9 +75,9 @@ class TorusToolWidget : public QDockWindow
    protected:
       Observer    * m_observer;
 
-      QBoxLayout * m_layout;
+      Q3BoxLayout * m_layout;
 
-      QGroupBox   * m_groupBox;
+      Q3GroupBox   * m_groupBox;
       QLabel      * m_segmentsLabel;
       QSpinBox    * m_segmentsValue;
       QLabel      * m_sidesLabel;

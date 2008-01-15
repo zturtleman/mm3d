@@ -26,17 +26,17 @@
 
 #include "jointwin.base.h"
 
-#include "mq3macro.h"
+#include <QDialog>
 
 class Model;
-class QAccel;
+class Q3Accel;
 
-class JointWin : public JointWinBase
+class JointWin : public QDialog, public Ui::JointWinBase
 {
    Q_OBJECT
 
    public:
-      JointWin( Model * model, QWidget * parent = NULL, const char * name = "" );
+      JointWin( Model * model, QWidget * parent = NULL );
       virtual ~JointWin();
 
    public slots:
@@ -55,7 +55,7 @@ class JointWin : public JointWinBase
       void reject();
 
    protected:
-      QAccel * m_accel;
+      Q3Accel * m_accel;
       Model  * m_model;
 };
 

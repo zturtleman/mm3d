@@ -24,15 +24,18 @@
 #include "objprompt.h"
 #include "objfilter.h"
 #include "model.h"
-#include "mq3compat.h"
 
-#include <qspinbox.h>
-#include <qcheckbox.h>
+#include <QSpinBox>
+#include <QCheckBox>
+#include <q3accel.h>
 
 ObjPrompt::ObjPrompt()
-   : ObjPromptBase( NULL, "", true ),
-     m_accel( new QAccel(this) )
+   : QDialog( NULL ),
+     m_accel( new Q3Accel(this) )
 {
+   setupUi( this );
+   setModal( true );
+
    m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
    connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
 }

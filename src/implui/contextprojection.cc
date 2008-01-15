@@ -27,18 +27,20 @@
 #include "groupwin.h"
 #include "texwin.h"
 
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
+#include <QLabel>
+#include <QLineEdit>
+#include <QComboBox>
+
 #include <stdlib.h>
 
 ContextProjection::ContextProjection( QWidget * parent, ContextPanelObserver * ob )
-   : ContextProjectionBase( parent ),
+   : QWidget( parent ),
      m_model( NULL ),
      m_observer( ob ),
      m_change( false ),
      m_update( false )
 {
+   setupUi( this );
 }
 
 ContextProjection::~ContextProjection()

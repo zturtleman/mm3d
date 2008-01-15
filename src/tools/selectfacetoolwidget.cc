@@ -33,7 +33,7 @@
 #include <qcheckbox.h>
 
 SelectFaceToolWidget::SelectFaceToolWidget( Observer * observer, QWidget * parent )
-   : QDockWindow ( QDockWindow::InDock, parent, "", WDestructiveClose ),
+   : Q3DockWindow ( Q3DockWindow::InDock, parent, "", Qt::WDestructiveClose ),
      m_observer( observer )
 {
    const bool DEFAULT_BACKFACING  = true;

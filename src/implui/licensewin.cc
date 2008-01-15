@@ -25,11 +25,14 @@
 
 #include "sysconf.h"
 
-#include <qtextbrowser.h>
+#include <QTextBrowser>
 
-LicenseWin::LicenseWin( QWidget * parent, const char * name )
-   : TextWinBase( parent, name, false, Qt::WDestructiveClose )
+LicenseWin::LicenseWin( QWidget * parent )
+   : QDialog( parent, Qt::WDestructiveClose )
 {
+   setModal( false );
+   setupUi( this );
+
    resize( 600, 400 );
    setCaption( tr("GNU General Public License") );
 #ifdef WIN32

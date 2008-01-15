@@ -130,7 +130,7 @@ const char ** MoveTool::getPixmap()
    return (const char **) movetool_xpm;
 }
 
-void MoveTool::activated( int argc, Model * model, QMainWindow * mainwin )
+void MoveTool::activated( int argc, Model * model, Q3MainWindow * mainwin )
 {
    model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Tip: Hold shift to restrict movement to one dimension" ).utf8() );
 }

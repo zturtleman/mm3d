@@ -24,8 +24,11 @@
 #ifndef __TEXTURECOORD_H
 #define __TEXTURECOORD_H
 
-#include "qpixmap.h"
 #include "texturecoord.base.h"
+
+#include "model.h"
+
+#include <QDialog>
 
 #include <list>
 #include <map>
@@ -33,18 +36,15 @@
 using std::list;
 using std::map;
 
-#include "mq3macro.h"
-#include "model.h"
-
-class QAccel;
+class Q3Accel;
 class TextureWidget;
 
-class TextureCoord : public TextureCoordBase, public Model::Observer
+class TextureCoord : public QDialog, public Ui::TextureCoordBase, public Model::Observer
 {
    Q_OBJECT
    public:
-      TextureCoord( Model * model, QWidget * parent = NULL, const char * name = "" );
-      ~TextureCoord();
+      TextureCoord( Model * model, QWidget * parent = NULL );
+      virtual ~TextureCoord();
 
       enum MapSchemeTypes
       {
@@ -118,7 +118,7 @@ class TextureCoord : public TextureCoordBase, public Model::Observer
 
       void cancelMapChange();
 
-      QAccel  * m_accel;
+      Q3Accel  * m_accel;
       TextureWidget * m_textureWidget;
       Model * m_model;
       int     m_undoCount;

@@ -28,12 +28,14 @@
 
 #include "modelstatus.h"
 
+#include <QWidget>
+
 #include <map>
 #include <list>
 
 class Model;
 
-class StatusBar : public StatusBarBase, public StatusObject
+class StatusBar : public QWidget, public Ui::StatusBarBase, public StatusObject
 {
    Q_OBJECT
 
@@ -41,7 +43,7 @@ class StatusBar : public StatusBarBase, public StatusObject
 
       static StatusObject * getStatusBarFromModel( Model * model );
 
-      StatusBar( Model * model, QWidget * parent, const char * name = "" );
+      StatusBar( Model * model, QWidget * parent );
       virtual ~StatusBar();
 
       Model * getModel() { return m_model; };

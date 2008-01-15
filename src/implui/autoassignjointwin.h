@@ -26,17 +26,17 @@
 
 #include "autoassignjointwin.base.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
+#include <QDialog>
 
 class Model;
+class Q3Accel;
 
-class AutoAssignJointWin : public AutoAssignJointWinBase
+class AutoAssignJointWin : public QDialog, public Ui::AutoAssignJointWinBase
 {
    Q_OBJECT
 
    public:
-      AutoAssignJointWin( Model *, QWidget * parent = NULL, const char * name = "" );
+      AutoAssignJointWin( Model *, QWidget * parent = NULL );
       virtual ~AutoAssignJointWin();
 
       int  getSensitivity();
@@ -46,7 +46,7 @@ class AutoAssignJointWin : public AutoAssignJointWinBase
       void helpNowEvent( int );
 
    protected:
-      QAccel * m_accel;
+      Q3Accel * m_accel;
       Model * m_model;
 };
 

@@ -1,342 +1,269 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>RgbaWinBase</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>RgbaWinBase</cstring>
+<ui version="4.0" stdsetdef="1" >
+  <author></author>
+  <comment></comment>
+  <exportmacro></exportmacro>
+  <class>RgbaWinBase</class>
+  <widget class="QDialog" name="RgbaWinBase" >
+    <property name="geometry" >
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>406</width>
+        <height>222</height>
+      </rect>
     </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>406</width>
-            <height>222</height>
-        </rect>
+    <property name="windowTitle" >
+      <string>RGBA Window</string>
     </property>
-    <property name="caption">
-        <string>RGBA Window</string>
-    </property>
-    <hbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <property name="margin">
-            <number>11</number>
-        </property>
-        <property name="spacing">
-            <number>6</number>
-        </property>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout3</cstring>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>m_propertyLabel</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                            <bold>1</bold>
-                        </font>
-                    </property>
-                    <property name="text">
-                        <string>Light Property</string>
-                    </property>
+    <layout class="QHBoxLayout" >
+      <property name="margin" >
+        <number>11</number>
+      </property>
+      <property name="spacing" >
+        <number>6</number>
+      </property>
+      <item>
+        <layout class="QVBoxLayout" >
+          <property name="margin" >
+            <number>0</number>
+          </property>
+          <item>
+            <widget class="QLabel" name="m_propertyLabel" >
+              <property name="font" >
+                <font>
+                  <bold>true</bold>
+                </font>
+              </property>
+              <property name="text" >
+                <string>Light Property</string>
+              </property>
+              <property name="wordWrap" >
+                <bool>false</bool>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <layout class="QGridLayout" >
+              <property name="margin" >
+                <number>0</number>
+              </property>
+              <property name="spacing" >
+                <number>6</number>
+              </property>
+              <item row="2" column="1" >
+                <widget class="QSlider" name="m_blueSlider" >
+                  <property name="minimum" >
+                    <number>-100</number>
+                  </property>
+                  <property name="maximum" >
+                    <number>100</number>
+                  </property>
+                  <property name="orientation" >
+                    <enum>Qt::Horizontal</enum>
+                  </property>
                 </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>Layout6</cstring>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QSlider" row="2" column="1">
-                            <property name="name">
-                                <cstring>m_blueSlider</cstring>
-                            </property>
-                            <property name="minValue">
-                                <number>-100</number>
-                            </property>
-                            <property name="maxValue">
-                                <number>100</number>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit" row="1" column="2">
-                            <property name="name">
-                                <cstring>m_greenEdit</cstring>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>65</width>
-                                    <height>32767</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>0.00</string>
-                            </property>
-                            <property name="maxLength">
-                                <number>4</number>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>m_redLabel</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Red</string>
-                            </property>
-                        </widget>
-                        <widget class="QSlider" row="1" column="1">
-                            <property name="name">
-                                <cstring>m_greenSlider</cstring>
-                            </property>
-                            <property name="minValue">
-                                <number>-100</number>
-                            </property>
-                            <property name="maxValue">
-                                <number>100</number>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                        </widget>
-                        <widget class="QSlider" row="3" column="1">
-                            <property name="name">
-                                <cstring>m_alphaSlider</cstring>
-                            </property>
-                            <property name="minValue">
-                                <number>-100</number>
-                            </property>
-                            <property name="maxValue">
-                                <number>100</number>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit" row="0" column="2">
-                            <property name="name">
-                                <cstring>m_redEdit</cstring>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>65</width>
-                                    <height>32767</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>0.00</string>
-                            </property>
-                            <property name="maxLength">
-                                <number>4</number>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit" row="3" column="2">
-                            <property name="name">
-                                <cstring>m_alphaEdit</cstring>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>65</width>
-                                    <height>32767</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>0.00</string>
-                            </property>
-                            <property name="maxLength">
-                                <number>4</number>
-                            </property>
-                        </widget>
-                        <widget class="QSlider" row="0" column="1">
-                            <property name="name">
-                                <cstring>m_redSlider</cstring>
-                            </property>
-                            <property name="minValue">
-                                <number>-100</number>
-                            </property>
-                            <property name="maxValue">
-                                <number>100</number>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>m_greenLabel</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Green</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="2" column="0">
-                            <property name="name">
-                                <cstring>m_blueLabel</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Blue</string>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit" row="2" column="2">
-                            <property name="name">
-                                <cstring>m_blueEdit</cstring>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>65</width>
-                                    <height>32767</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>0.00</string>
-                            </property>
-                            <property name="maxLength">
-                                <number>4</number>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="3" column="0">
-                            <property name="name">
-                                <cstring>m_alphaLabel</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Alpha</string>
-                            </property>
-                        </widget>
-                    </grid>
+              </item>
+              <item row="1" column="2" >
+                <widget class="QLineEdit" name="m_greenEdit" >
+                  <property name="maximumSize" >
+                    <size>
+                      <width>65</width>
+                      <height>32767</height>
+                    </size>
+                  </property>
+                  <property name="text" >
+                    <string>0.00</string>
+                  </property>
+                  <property name="maxLength" >
+                    <number>4</number>
+                  </property>
                 </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>Spacer3</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Vertical</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>16</width>
-                            <height>16</height>
-                        </size>
-                    </property>
+              </item>
+              <item row="0" column="0" >
+                <widget class="QLabel" name="m_redLabel" >
+                  <property name="text" >
+                    <string>Red</string>
+                  </property>
+                  <property name="wordWrap" >
+                    <bool>false</bool>
+                  </property>
+                </widget>
+              </item>
+              <item row="1" column="1" >
+                <widget class="QSlider" name="m_greenSlider" >
+                  <property name="minimum" >
+                    <number>-100</number>
+                  </property>
+                  <property name="maximum" >
+                    <number>100</number>
+                  </property>
+                  <property name="orientation" >
+                    <enum>Qt::Horizontal</enum>
+                  </property>
+                </widget>
+              </item>
+              <item row="3" column="1" >
+                <widget class="QSlider" name="m_alphaSlider" >
+                  <property name="minimum" >
+                    <number>-100</number>
+                  </property>
+                  <property name="maximum" >
+                    <number>100</number>
+                  </property>
+                  <property name="orientation" >
+                    <enum>Qt::Horizontal</enum>
+                  </property>
+                </widget>
+              </item>
+              <item row="0" column="2" >
+                <widget class="QLineEdit" name="m_redEdit" >
+                  <property name="maximumSize" >
+                    <size>
+                      <width>65</width>
+                      <height>32767</height>
+                    </size>
+                  </property>
+                  <property name="text" >
+                    <string>0.00</string>
+                  </property>
+                  <property name="maxLength" >
+                    <number>4</number>
+                  </property>
+                </widget>
+              </item>
+              <item row="3" column="2" >
+                <widget class="QLineEdit" name="m_alphaEdit" >
+                  <property name="maximumSize" >
+                    <size>
+                      <width>65</width>
+                      <height>32767</height>
+                    </size>
+                  </property>
+                  <property name="text" >
+                    <string>0.00</string>
+                  </property>
+                  <property name="maxLength" >
+                    <number>4</number>
+                  </property>
+                </widget>
+              </item>
+              <item row="0" column="1" >
+                <widget class="QSlider" name="m_redSlider" >
+                  <property name="minimum" >
+                    <number>-100</number>
+                  </property>
+                  <property name="maximum" >
+                    <number>100</number>
+                  </property>
+                  <property name="orientation" >
+                    <enum>Qt::Horizontal</enum>
+                  </property>
+                </widget>
+              </item>
+              <item row="1" column="0" >
+                <widget class="QLabel" name="m_greenLabel" >
+                  <property name="text" >
+                    <string>Green</string>
+                  </property>
+                  <property name="wordWrap" >
+                    <bool>false</bool>
+                  </property>
+                </widget>
+              </item>
+              <item row="2" column="0" >
+                <widget class="QLabel" name="m_blueLabel" >
+                  <property name="text" >
+                    <string>Blue</string>
+                  </property>
+                  <property name="wordWrap" >
+                    <bool>false</bool>
+                  </property>
+                </widget>
+              </item>
+              <item row="2" column="2" >
+                <widget class="QLineEdit" name="m_blueEdit" >
+                  <property name="maximumSize" >
+                    <size>
+                      <width>65</width>
+                      <height>32767</height>
+                    </size>
+                  </property>
+                  <property name="text" >
+                    <string>0.00</string>
+                  </property>
+                  <property name="maxLength" >
+                    <number>4</number>
+                  </property>
+                </widget>
+              </item>
+              <item row="3" column="0" >
+                <widget class="QLabel" name="m_alphaLabel" >
+                  <property name="text" >
+                    <string>Alpha</string>
+                  </property>
+                  <property name="wordWrap" >
+                    <bool>false</bool>
+                  </property>
+                </widget>
+              </item>
+            </layout>
+          </item>
+          <item>
+            <spacer name="Spacer3" >
+              <property name="sizeHint" >
+                <size>
+                  <width>16</width>
+                  <height>16</height>
+                </size>
+              </property>
+              <property name="sizeType" >
+                <enum>Expanding</enum>
+              </property>
+              <property name="orientation" >
+                <enum>Vertical</enum>
+              </property>
+            </spacer>
+          </item>
+          <item>
+            <layout class="QHBoxLayout" >
+              <property name="margin" >
+                <number>0</number>
+              </property>
+              <property name="spacing" >
+                <number>6</number>
+              </property>
+              <item>
+                <spacer name="Spacer1" >
+                  <property name="sizeHint" >
+                    <size>
+                      <width>151</width>
+                      <height>0</height>
+                    </size>
+                  </property>
+                  <property name="sizeType" >
+                    <enum>Expanding</enum>
+                  </property>
+                  <property name="orientation" >
+                    <enum>Horizontal</enum>
+                  </property>
                 </spacer>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>Layout4</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <spacer>
-                            <property name="name">
-                                <cstring>Spacer1</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>151</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                        </spacer>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>m_okButton</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Close</string>
-                            </property>
-                        </widget>
-                    </hbox>
+              </item>
+              <item>
+                <widget class="QPushButton" name="m_okButton" >
+                  <property name="text" >
+                    <string>Close</string>
+                  </property>
                 </widget>
-            </vbox>
-        </widget>
-    </hbox>
-</widget>
-<connections>
-    <connection>
-        <sender>m_okButton</sender>
-        <signal>clicked()</signal>
-        <receiver>RgbaWinBase</receiver>
-        <slot>accept()</slot>
-    </connection>
-    <connection>
-        <sender>m_redSlider</sender>
-        <signal>valueChanged(int)</signal>
-        <receiver>RgbaWinBase</receiver>
-        <slot>redSliderChanged(int)</slot>
-    </connection>
-    <connection>
-        <sender>m_greenSlider</sender>
-        <signal>valueChanged(int)</signal>
-        <receiver>RgbaWinBase</receiver>
-        <slot>greenSliderChanged(int)</slot>
-    </connection>
-    <connection>
-        <sender>m_blueSlider</sender>
-        <signal>valueChanged(int)</signal>
-        <receiver>RgbaWinBase</receiver>
-        <slot>blueSliderChanged(int)</slot>
-    </connection>
-    <connection>
-        <sender>m_alphaSlider</sender>
-        <signal>valueChanged(int)</signal>
-        <receiver>RgbaWinBase</receiver>
-        <slot>alphaSliderChanged(int)</slot>
-    </connection>
-    <connection>
-        <sender>m_redEdit</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>RgbaWinBase</receiver>
-        <slot>redEditChanged(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>m_greenEdit</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>RgbaWinBase</receiver>
-        <slot>greenEditChanged(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>m_blueEdit</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>RgbaWinBase</receiver>
-        <slot>blueEditChanged(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>m_alphaEdit</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>RgbaWinBase</receiver>
-        <slot>alphaEditChanged(const QString&amp;)</slot>
-    </connection>
-</connections>
-<tabstops>
+              </item>
+            </layout>
+          </item>
+        </layout>
+      </item>
+    </layout>
+  </widget>
+  <layoutdefault spacing="6" margin="11" />
+  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+  <tabstops>
     <tabstop>m_redSlider</tabstop>
     <tabstop>m_redEdit</tabstop>
     <tabstop>m_greenSlider</tabstop>
@@ -346,16 +273,61 @@
     <tabstop>m_alphaSlider</tabstop>
     <tabstop>m_alphaEdit</tabstop>
     <tabstop>m_okButton</tabstop>
-</tabstops>
-<slots>
-    <slot>alphaEditChanged(const QString &amp;)</slot>
-    <slot>alphaSliderChanged(int)</slot>
-    <slot>blueEditChanged(const QString &amp;)</slot>
-    <slot>blueSliderChanged(int)</slot>
-    <slot>greenEditChanged(const QString &amp;)</slot>
-    <slot>greenSliderChanged(int)</slot>
-    <slot>redEditChanged(const QString &amp;)</slot>
-    <slot>redSliderChanged(int)</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+  </tabstops>
+  <connections>
+    <connection>
+      <sender>m_okButton</sender>
+      <signal>clicked()</signal>
+      <receiver>RgbaWinBase</receiver>
+      <slot>accept()</slot>
+    </connection>
+    <connection>
+      <sender>m_redSlider</sender>
+      <signal>valueChanged(int)</signal>
+      <receiver>RgbaWinBase</receiver>
+      <slot>redSliderChanged(int)</slot>
+    </connection>
+    <connection>
+      <sender>m_greenSlider</sender>
+      <signal>valueChanged(int)</signal>
+      <receiver>RgbaWinBase</receiver>
+      <slot>greenSliderChanged(int)</slot>
+    </connection>
+    <connection>
+      <sender>m_blueSlider</sender>
+      <signal>valueChanged(int)</signal>
+      <receiver>RgbaWinBase</receiver>
+      <slot>blueSliderChanged(int)</slot>
+    </connection>
+    <connection>
+      <sender>m_alphaSlider</sender>
+      <signal>valueChanged(int)</signal>
+      <receiver>RgbaWinBase</receiver>
+      <slot>alphaSliderChanged(int)</slot>
+    </connection>
+    <connection>
+      <sender>m_redEdit</sender>
+      <signal>textChanged(QString)</signal>
+      <receiver>RgbaWinBase</receiver>
+      <slot>redEditChanged(QString)</slot>
+    </connection>
+    <connection>
+      <sender>m_greenEdit</sender>
+      <signal>textChanged(QString)</signal>
+      <receiver>RgbaWinBase</receiver>
+      <slot>greenEditChanged(QString)</slot>
+    </connection>
+    <connection>
+      <sender>m_blueEdit</sender>
+      <signal>textChanged(QString)</signal>
+      <receiver>RgbaWinBase</receiver>
+      <slot>blueEditChanged(QString)</slot>
+    </connection>
+    <connection>
+      <sender>m_alphaEdit</sender>
+      <signal>textChanged(QString)</signal>
+      <receiver>RgbaWinBase</receiver>
+      <slot>alphaEditChanged(QString)</slot>
+    </connection>
+  </connections>
+</ui>

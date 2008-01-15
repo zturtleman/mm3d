@@ -33,7 +33,7 @@
 #include <qlabel.h>
 
 ProjToolWidget::ProjToolWidget( Observer * observer, QWidget * parent )
-   : QDockWindow ( QDockWindow::InDock, parent, "", WDestructiveClose ),
+   : Q3DockWindow ( Q3DockWindow::InDock, parent, "", Qt::WDestructiveClose ),
      m_observer( observer )
 {
    const int DEFAULT_TYPE = Model::TPT_Sphere;

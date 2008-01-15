@@ -27,13 +27,13 @@
 
 #include "model.h"
 
-#include "mq3macro.h"
+#include <QDialog>
 
-class QAccel;
+class Q3Accel;
 class ViewPanel;
 class Model;
 
-class AnimExportWindow : public AnimExportWinBase
+class AnimExportWindow : public QDialog, public Ui::AnimExportWinBase
 {
    Q_OBJECT
 
@@ -49,7 +49,7 @@ class AnimExportWindow : public AnimExportWinBase
       void directoryButtonClicked();
 
    protected:
-      QAccel * m_accel;
+      Q3Accel * m_accel;
       Model * m_model;
       ViewPanel * m_viewPanel;
 

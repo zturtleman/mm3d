@@ -26,13 +26,13 @@
 
 #include "contextrotation.base.h"
 
-#include "mq3macro.h"
+#include <QWidget>
 
 #include "contextwidget.h"
 
 class Model;
 
-class ContextRotation : public ContextRotationBase, public ContextWidget
+class ContextRotation : public QWidget, public Ui::ContextRotationBase, public ContextWidget
 {
    Q_OBJECT
    public:

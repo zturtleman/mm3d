@@ -24,17 +24,19 @@
 #ifndef __CONTEXTPANEL_H
 #define __CONTEXTPANEL_H
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-
 #include "contextpanelobserver.h"
 #include "contextwidget.h"
 #include "model.h"
 
+#include <QDockWidget>
+
+class QContextMenuEvent;
+class QBoxLayout;
+
 class ViewPanel;
 class ContextPanelObserver;
 
-class ContextPanel : public QDockWindow, public Model::Observer
+class ContextPanel : public QDockWidget, public Model::Observer
 {
    Q_OBJECT
 
@@ -42,7 +44,7 @@ class ContextPanel : public QDockWindow, public Model::Observer
       ContextPanel( QWidget * parent, ViewPanel * panel, ContextPanelObserver * ob );
       virtual ~ContextPanel();
 
-      // QDockWindow methods
+      // QDockWidget methods
    public slots:
       void show();
       void close();

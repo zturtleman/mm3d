@@ -30,19 +30,21 @@
 #include "3dmprefs.h"
 #include "helpwin.h"
 
-#include "mq3compat.h"
-
-#include <qlineedit.h>
-#include <qcheckbox.h>
+#include <QLineEdit>
+#include <QCheckBox>
+#include <q3accel.h>
 
 using std::list;
 using std::map;
 
-ExtrudeWin::ExtrudeWin( Model * model, QWidget * parent, const char * name )
-   : ExtrudeWinBase( parent, name, true ),
-     m_accel( new QAccel(this) ),
+ExtrudeWin::ExtrudeWin( Model * model, QWidget * parent )
+   : QDialog( parent ),
+     m_accel( new Q3Accel(this) ),
      m_model( model )
 {
+   setupUi( this );
+   setModal( true );
+
    if ( g_prefs.exists( "ui_extrude_makebackfaces" ) )
    {
       int val = g_prefs( "ui_extrude_makebackfaces" ).intValue();

@@ -84,102 +84,14 @@ libqtui_UIHEADERS = \
 	valuewin.base.h \
 	viewportsettings.base.h 
 
-libqtui_UI = alignwin.base.cc \
-   animconvertwin.base.cc \
-   animexportwin.base.cc \
-	animsetwin.base.cc \
-	animwidget.base.cc \
-	autoassignjointwin.base.cc \
-	backgroundselect.base.cc \
-	backgroundwin.base.cc \
-	boolwin.base.cc \
-	cal3dprompt.base.cc \
-	contextgroup.base.cc \
-	contextinfluences.base.cc \
-	contextname.base.cc \
-	contextposition.base.cc \
-	contextprojection.base.cc \
-	contextrotation.base.cc \
-	extrudewin.base.cc \
-	groupwin.base.cc \
-	helpwin.base.cc \
-	jointwin.base.cc \
-	pointwin.base.cc \
-	painttexturewin.base.cc \
-	projectionwin.base.cc \
-	keyvaluewin.base.cc \
-	mapdirection.base.cc \
-	mergewin.base.cc \
-	metawin.base.cc \
-	modelview.base.cc \
-	ms3dprompt.base.cc \
-	newanim.base.cc \
-	objprompt.base.cc \
-	pluginwin.base.cc \
-	rgbawin.base.cc \
-	statusbar.base.cc \
-	texturecoord.base.cc \
-	textwin.base.cc \
-	texwin.base.cc \
-	transformwin.base.cc \
-	valuewin.base.cc \
-	viewportsettings.base.cc 
+BUILT_SOURCES = $(libqtui_UIHEADERS)
 
-libqtui_MOC = alignwin.base.moc.cc \
-   animconvertwin.base.moc.cc \
-   animexportwin.base.moc.cc \
-	animsetwin.base.moc.cc \
-	animwidget.base.moc.cc \
-	autoassignjointwin.base.moc.cc \
-	backgroundselect.base.moc.cc \
-	backgroundwin.base.moc.cc \
-	boolwin.base.moc.cc \
-	cal3dprompt.base.moc.cc \
-	contextgroup.base.moc.cc \
-	contextinfluences.base.moc.cc \
-	contextname.base.moc.cc \
-	contextposition.base.moc.cc \
-	contextprojection.base.moc.cc \
-	contextrotation.base.moc.cc \
-	extrudewin.base.moc.cc \
-	groupwin.base.moc.cc \
-	helpwin.base.moc.cc \
-	jointwin.base.moc.cc \
-	pointwin.base.moc.cc \
-	painttexturewin.base.moc.cc \
-	projectionwin.base.moc.cc \
-	keyvaluewin.base.moc.cc \
-	mapdirection.base.moc.cc \
-	mergewin.base.moc.cc \
-	metawin.base.moc.cc \
-	modelview.base.moc.cc \
-	ms3dprompt.base.moc.cc \
-	newanim.base.moc.cc \
-	objprompt.base.moc.cc \
-	pluginwin.base.moc.cc \
-	rgbawin.base.moc.cc \
-	statusbar.base.moc.cc \
-	texturecoord.base.moc.cc \
-	textwin.base.moc.cc \
-	texwin.base.moc.cc \
-	transformwin.base.moc.cc \
-	valuewin.base.moc.cc \
-	viewportsettings.base.moc.cc 
-
-BUILT_SOURCES = $(libqtui_UIHEADERS) $(libqtui_UI) $(libqtui_MOC)
-
-libqtui_a_SOURCES = $(libqtui_UIFILES) $(libqtui_UI) $(libqtui_MOC)
-
-%.moc.cc: %.h
-		$(QT_MOC) -o $@ $<
+libqtui_a_SOURCES = $(libqtui_UIFILES)
 
 %.base.h: %.ui
 		$(QT_UIC) -o $@ $*.ui
 
-%.base.cc: $(mm3d_UIHEADERS) %.ui
-		$(QT_UIC) -o $@ -impl $*.base.h $*.ui
-
 AM_CPPFLAGS = $(PROFILE) -DQT_COMPAT -Wall -I../libmm3d -I../mm3dcore -I../ -I../depui -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
 
-CLEANFILES = $(libqtui_UI) $(libqtui_MOC) $(libqtui_UIHEADERS)
+CLEANFILES = $(libqtui_UIHEADERS)
 

@@ -26,17 +26,17 @@
 
 #include "animsetwin.base.h"
 
-#include "mq3macro.h"
-
 #include "model.h"
 
-class QAccel;
+#include <QDialog>
 
-class AnimSetWindow : public AnimSetWinBase
+class Q3Accel;
+
+class AnimSetWindow : public QDialog, public Ui::AnimSetWinBase
 {
       Q_OBJECT
    public:
-      AnimSetWindow( Model * model, QWidget * parent = NULL, const char * name = "" );
+      AnimSetWindow( Model * model, QWidget * parent = NULL );
       virtual ~AnimSetWindow();
 
    public slots:
@@ -64,7 +64,7 @@ class AnimSetWindow : public AnimSetWinBase
       void fillAnimationList();
       Model::AnimationModeE indexToMode( int index );
 
-      QAccel * m_accel;
+      Q3Accel * m_accel;
       Model  * m_model;
 };
 

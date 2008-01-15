@@ -26,7 +26,7 @@
 
 #include "contextprojection.base.h"
 
-#include "mq3macro.h"
+#include <QWidget>
 
 #include "contextwidget.h"
 
@@ -34,7 +34,7 @@ class ContextPanelObserver;
 
 class Model;
 
-class ContextProjection : public ContextProjectionBase, public ContextWidget
+class ContextProjection : public QWidget, public Ui::ContextProjectionBase, public ContextWidget
 {
    Q_OBJECT
    public:

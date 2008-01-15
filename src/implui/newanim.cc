@@ -27,8 +27,11 @@
 #include <qpushbutton.h>
 
 NewAnim::NewAnim( QWidget * parent )
-   : NewAnimBase( parent, "", true )
+   : QDialog( parent )
 {
+   setModal( true );
+   setupUi( this );
+
    m_name->setText( QString("") );
    m_okButton->setEnabled( false );
 }

@@ -26,10 +26,10 @@
 #include "model.h"
 #include "misc.h"
 
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <qtooltip.h>
-#include <qtimer.h>
+#include <QLabel>
+#include <QPixmap>
+#include <QToolTip>
+#include <QTimer>
 
 #include <stdarg.h>
 
@@ -37,8 +37,8 @@ using std::map;
 
 map<Model *, StatusBar *> StatusBar::s_modelMap;
 
-StatusBar::StatusBar( Model * model, QWidget * parent, const char * name )
-   : StatusBarBase( parent, name ),
+StatusBar::StatusBar( Model * model, QWidget * parent )
+   : QWidget( parent ),
      m_model( model ),
      m_queueDisplay( false )
 {

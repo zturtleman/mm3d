@@ -27,11 +27,11 @@
 
 #include "model.h"
 
-#include "mq3macro.h"
+#include <QDialog>
 
-class QAccel;
+class Q3Accel;
 
-class AnimConvertWindow : public AnimConvertWinBase
+class AnimConvertWindow : public QDialog, public Ui::AnimConvertWinBase
 {
    Q_OBJECT
 
@@ -44,7 +44,7 @@ class AnimConvertWindow : public AnimConvertWinBase
       };
       typedef enum _Operation_e OperationE;
 
-      AnimConvertWindow( QWidget * parent = NULL, const char * name = "" );
+      AnimConvertWindow( QWidget * parent = NULL );
       virtual ~AnimConvertWindow();
 
       void setAnimationData( Model * model, Model::AnimationModeE mode, unsigned animIndex );
@@ -62,7 +62,7 @@ class AnimConvertWindow : public AnimConvertWinBase
       void cancelAllClicked();
 
    protected:
-      QAccel * m_accel;
+      Q3Accel * m_accel;
 
       OperationE m_operation;
 };

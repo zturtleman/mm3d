@@ -35,9 +35,9 @@
 #include "model.h"
 #include "errorobj.h"
 
-#include "mq3compat.h"
-
-#include <qpushbutton.h>
+#include <QPushButton>
+#include <QPixmap>
+#include <QFileDialog>
 #include <stdlib.h>
 
 #include <string>
@@ -45,11 +45,13 @@
 using std::list;
 using std::map;
 
-BackgroundSelect::BackgroundSelect( Model * model, unsigned index, QWidget * parent, const char * name )
-   : BackgroundSelectBase( parent, name ),
+BackgroundSelect::BackgroundSelect( Model * model, unsigned index, QWidget * parent )
+   : QWidget( parent ),
      m_model( model ),
      m_index( index )
 {
+   setupUi( this );
+
    std::string filename = m_model->getBackgroundImage( index );
    setFilename( filename.c_str() );
    m_textureFrame->updateSize();
@@ -93,7 +95,6 @@ void BackgroundSelect::selectFileEvent()
       dir = ".";
    }
 
-#ifdef HAVE_QT4
    QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; All Files (*)" ) );
 
    d.setCaption( tr("Open background image") );
@@ -102,17 +103,6 @@ void BackgroundSelect::selectFileEvent()
    int execval = d.exec();
    std::string file = d.selectedFile().latin1();
    QString path = d.directory().absolutePath().latin1();
-#else
-   QFileDialog d(dir, formatsStr, NULL, "", true );
-
-   d.setCaption( tr("Open background image") );
-   d.addFilter( tr( "All Files (*)" ) );
-   d.setSelectedFilter( formatsStr );
-
-   int execval = d.exec();
-   std::string file = d.selectedFile().latin1();
-   QString path = d.dir()->absPath();
-#endif
 
    if ( QDialog::Accepted == execval )
    {

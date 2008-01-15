@@ -28,20 +28,22 @@
 #include "texwin.h"
 #include "projectionwin.h"
 
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qpushbutton.h>
-#include <qinputdialog.h>
+#include <QLabel>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QPushButton>
+#include <QInputDialog>
+
 #include <stdlib.h>
 
 ContextGroup::ContextGroup( QWidget * parent, ContextPanelObserver * ob )
-   : ContextGroupBase( parent ),
+   : QWidget( parent ),
      m_model( NULL ),
      m_observer( ob ),
      m_change( false ),
      m_update( false )
 {
+   setupUi( this );
 }
 
 ContextGroup::~ContextGroup()

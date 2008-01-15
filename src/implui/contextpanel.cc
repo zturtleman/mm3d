@@ -32,26 +32,26 @@
 
 #include "log.h"
 
-#include <qlayout.h>
-
-#ifdef HAVE_QT4
+#include <QLayout>
+#include <QLayout>
 #include <QContextMenuEvent>
-#endif // HAVE_QT4
 
 ContextPanel::ContextPanel( QWidget * parent,
       ViewPanel * panel, ContextPanelObserver * ob )
-   : QDockWindow( QDockWindow::InDock, parent ),
+   : QDockWidget( tr( "Properties", "Window title" ), parent ),
      m_model( NULL ),
      m_observer( ob ),
      m_panel( panel )
 {
-   m_layout = boxLayout();
+   m_layout = new QBoxLayout( QBoxLayout::TopToBottom, this );
 
-   setHorizontallyStretchable( true );
-   setVerticallyStretchable( true );
-   setResizeEnabled( true );
+   //setHorizontallyStretchable( true );
+   //setVerticallyStretchable( true );
+   //setResizeEnabled( true );
 
-   setCloseMode( QDockWindow::Always );
+   // FIXME QT4
+   // setCloseMode( Q3DockWindow::Always );
+   // setFeatures(QDockWidget::AllDockWidgetFeatures);
 }
 
 ContextPanel::~ContextPanel()
@@ -244,7 +244,7 @@ void ContextPanel::modelChanged( int changeBits )
 
 void ContextPanel::show()
 {
-   QDockWindow::show();
+   QDockWidget::show();
 
    // this is causing a segfault on dock/undock because the widgets
    // are being destroyed and re-created. The solution is to call setModel
@@ -261,7 +261,7 @@ void ContextPanel::hide()
 {
    log_debug( "ContextPanel::hide()\n" );
    emit panelHidden();
-   QDockWindow::hide();
+   QDockWidget::hide();
 }
 
 void ContextPanel::contextMenuEvent( QContextMenuEvent * e )

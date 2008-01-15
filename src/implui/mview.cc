@@ -27,15 +27,17 @@
 #include "log.h"
 #include "decalmgr.h"
 
-#include <qcombobox.h>
-#include <qlineedit.h>
-#include <qlabel.h>
-#include <qimage.h>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QLabel>
+#include <QImage>
 
-ModelView::ModelView( Toolbox * toolbox, QWidget * parent, const char * name )
-   : ModelViewBase( parent, name ),
+ModelView::ModelView( Toolbox * toolbox, QWidget * parent )
+   : QWidget( parent ),
      m_toolbox( toolbox )
 {
+   setupUi( this );
+
    QString zoomStr;
    zoomStr.sprintf( "%f", m_modelView->getZoomLevel() );
    m_zoomInput->setText( zoomStr );

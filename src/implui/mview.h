@@ -27,17 +27,19 @@
 #include "modelview.base.h"
 #include "modelviewport.h"
 
+#include <QWidget>
+
 class Model;
 class Toolbox;
 class Texture;
 
-class ModelView : public ModelViewBase
+class ModelView : public QWidget, public Ui::ModelViewBase
 {
       Q_OBJECT
 
    public:
 
-      ModelView( Toolbox * toolbox, QWidget * parent = NULL, const char * name = "" );
+      ModelView( Toolbox * toolbox, QWidget * parent = NULL );
       virtual ~ModelView();
 
       void freeTextures();

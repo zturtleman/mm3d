@@ -453,6 +453,7 @@ AC_DEFUN([BNV_HAVE_QT],
     [  --with-Qt-lib-dir=DIR   The Qt library is in DIR])
   AC_ARG_WITH([Qt-lib],
     [  --with-Qt-lib=LIB       Use -lLIB to link with the Qt library])
+  dnl FIXME moc-qt4 and uic-qt4
   bnv_is_qt4=no
   if test x"$with_Qt_dir" = x"no" ||
      test x"$with_Qt_include_dir" = x"no" ||
@@ -555,33 +556,30 @@ AC_DEFUN([BNV_HAVE_QT],
     # If bnv_qt_dir is defined, utilities are expected to be in the
     # bin subdirectory
     if test x"$bnv_qt_dir" != x; then
-        if test -x "$bnv_qt_dir/bin/uic"; then
-          QT_UIC="$bnv_qt_dir/bin/uic"
+        if test -x "$bnv_qt_dir/bin/uic-qt4"; then
+          QT_UIC="$bnv_qt_dir/bin/uic-qt4"
         else
           # Old versions of Qt don't have uic
           QT_UIC=
         fi
-      QT_MOC="$bnv_qt_dir/bin/moc"
+      QT_MOC="$bnv_qt_dir/bin/moc-qt4"
     else
       # Or maybe we are told where to look for the utilities
       if test x"$bnv_qt_bin_dir" != x; then
-        if test -x "$bnv_qt_bin_dir/uic"; then
-          QT_UIC="$bnv_qt_bin_dir/uic"
+        if test -x "$bnv_qt_bin_dir/uic-qt4"; then
+          QT_UIC="$bnv_qt_bin_dir/uic-qt4"
         else
           # Old versions of Qt don't have uic
           QT_UIC=
         fi
-        QT_MOC="$bnv_qt_bin_dir/moc"
+        QT_MOC="$bnv_qt_bin_dir/moc-qt4"
       else
       # Last possibility is that they are in $PATH
-        QT_UIC="`which uic`"
-        QT_MOC="`which moc`"
+        QT_UIC="`which uic-qt4`"
+        QT_MOC="`which moc-qt4`"
       fi
     fi
     # All variables are defined, report the result
-    if test x"$bnv_is_qt4" = xyes; then
-      QT_UIC="$QT_UIC"3
-    fi
     AC_MSG_RESULT([$have_qt:
     QT_CXXFLAGS=$QT_CXXFLAGS
     QT_DIR=$QT_DIR
@@ -723,13 +721,13 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
       `ls -dr /usr/qt/*/include 2>/dev/null`
     "
     for bnv_dir in $bnv_include_path_list; do
-      if test -r "$bnv_dir/$qt_direct_test_header"; then
+dnl       if test -r "$bnv_dir/$qt_direct_test_header"; then
+dnl         bnv_dirs="$bnv_dirs $bnv_dir"
+dnl       fi
+dnl FIXME here's the Qt4 detection
+      if test -r "$bnv_dir/Qt/$qt_direct_test_header"; then
         bnv_dirs="$bnv_dirs $bnv_dir"
       fi
-dnl FIXME here's the Qt4 detection
-dnl      if test -r "$bnv_dir/Qt/$qt_direct_test_header"; then
-dnl        bnv_dirs="$bnv_dirs $bnv_dir"
-dnl      fi
     done
     # Now look for the newest in this list
     bnv_prev_ver=0
@@ -755,7 +753,7 @@ dnl      fi
   # That would be $bnv_qt_include_dir stripped from its last element:
   bnv_found_traditional=no
   bnv_possible_qt_dir=`dirname $bnv_qt_include_dir`
-  if test -x $bnv_possible_qt_dir/bin/moc &&
+  if test -x $bnv_possible_qt_dir/bin/moc-qt4 &&
      ls $bnv_possible_qt_dir/lib/libqt* 1> /dev/null 2> /dev/null; then
     # Then the rest is a piece of cake
     bnv_qt_dir=$bnv_possible_qt_dir
@@ -773,7 +771,7 @@ dnl      fi
     bnv_qt_LIBS="-L$bnv_qt_lib_dir -l$bnv_qt_lib $QT_XLIBS"
     bnv_found_traditional=yes
   fi
-  if test -x $bnv_possible_qt_dir/bin/moc &&
+  if test -x $bnv_possible_qt_dir/bin/moc-qt4 &&
      ls $bnv_possible_qt_dir/lib/libQtCore.* 1> /dev/null 2> /dev/null; then
     # Then the rest is a piece of cake
     bnv_qt_dir=$bnv_possible_qt_dir

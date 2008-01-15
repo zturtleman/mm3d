@@ -28,10 +28,11 @@
 
 #include "log.h"
 
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qinputdialog.h>
+#include <QLabel>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QInputDialog>
+
 #include <stdlib.h>
 
 ContextInfluences::JointCount::JointCount()
@@ -47,10 +48,11 @@ ContextInfluences::JointCount::JointCount()
 }
 
 ContextInfluences::ContextInfluences( QWidget * parent )
-   : ContextInfluencesBase( parent ),
+   : QWidget( parent ),
      m_change( false ),
      m_update( false )
 {
+   setupUi( this );
 }
 
 ContextInfluences::~ContextInfluences()

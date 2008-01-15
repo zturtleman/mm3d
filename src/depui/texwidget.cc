@@ -29,18 +29,17 @@
 #include "mm3dport.h"
 #include <math.h>
 
-#include "mq3compat.h"
-#include <qtimer.h>
-#include <qcursor.h>
+#include <QTimer>
+#include <QCursor>
+//Added by qt3to4:
+#include <QPixmap>
+#include <QMouseEvent>
+#include <QWheelEvent>
+#include <QKeyEvent>
 
 #include "pixmap/arrow.xpm"
 #include "pixmap/crosshairrow.xpm"
 
-#ifdef HAVE_QT4
-#include <QMouseEvent>
-#include <QWheelEvent>
-#include <QKeyEvent>
-#endif // HAVE_QT4
 
 #define VP_ZOOMSCALE 0.75
 
@@ -107,7 +106,7 @@ TextureWidget::TextureWidget( QWidget * parent, const char * name )
      m_yRotPoint( 0.5 )
 {
    connect( m_animTimer, SIGNAL(timeout()), this, SLOT(animationTimeout()));
-   setFocusPolicy( WheelFocus );
+   setFocusPolicy( Qt::WheelFocus );
 
    connect( m_scrollTimer, SIGNAL(timeout()), this, SLOT(scrollTimeout()));
 }
@@ -863,7 +862,7 @@ void TextureWidget::mousePressEvent( QMouseEvent * e )
 
       if ( m_overlayButton == ScrollButtonMAX )
       {
-         if ( e->button() & MidButton )
+         if ( e->button() & Qt::MidButton )
          {
             // We're panning
          }
@@ -872,13 +871,13 @@ void TextureWidget::mousePressEvent( QMouseEvent * e )
             switch ( m_operation )
             {
                case MouseSelect:
-                  if ( !( (e->state() & ShiftButton) || (e->button() &  RightButton) ) )
+                  if ( !( (e->state() & Qt::ShiftButton) || (e->button() &  Qt::RightButton) ) )
                   {
                      clearSelected();
                   }
                   m_xSel1 =  (m_lastXPos / (double) this->width()) * (m_xMax - m_xMin) + m_xMin;
                   m_ySel1 =  (1.0 - (m_lastYPos / (double) this->height())) * (m_yMax - m_yMin) + m_yMin;
-                  m_selecting = ( e->button() & RightButton ) ? false : true;
+                  m_selecting = ( e->button() & Qt::RightButton ) ? false : true;
                   m_drawBounding = true;
                   break;
                case MouseMove:
@@ -892,7 +891,7 @@ void TextureWidget::mousePressEvent( QMouseEvent * e )
                   {
                      double aspect = this->width() / this->height();
 
-                     if ( (e->button() & RightButton) )
+                     if ( (e->button() & Qt::RightButton) )
                      {
                         m_xRotPoint =  (m_lastXPos / (double) this->width()) * (m_xMax - m_xMin) + m_xMin;
                         m_yRotPoint =  (1.0 - (m_lastYPos / (double) this->height())) * (m_yMax - m_yMin) + m_yMin;
@@ -983,7 +982,7 @@ void TextureWidget::mouseReleaseEvent( QMouseEvent * e )
          int x = e->pos().x();
          int y = e->pos().y();
 
-         if ( e->button() & MidButton )
+         if ( e->button() & Qt::MidButton )
          {
             // We're panning
          }
@@ -1014,7 +1013,7 @@ void TextureWidget::mouseReleaseEvent( QMouseEvent * e )
                   emit updateCoordinatesDoneSignal();
                   break;
                case MouseRange:
-                  if ( m_button & LeftButton )
+                  if ( m_button & Qt::LeftButton )
                   {
                      if ( m_dragAll || m_dragTop || m_dragBottom || m_dragLeft || m_dragRight )
                      {
@@ -1056,7 +1055,7 @@ void TextureWidget::mouseMoveEvent( QMouseEvent * e )
       {
          if ( m_button != 0 )
          {
-            if ( m_button & MidButton )
+            if ( m_button & Qt::MidButton )
             {
                double xDiff = (double) -(x - m_lastXPos);
                double yDiff = (double)  (y - m_lastYPos);
@@ -1143,7 +1142,7 @@ void TextureWidget::mouseMoveEvent( QMouseEvent * e )
                      emit updateCoordinatesSignal();
                      break;
                   case MouseRange:
-                     if ( m_button & LeftButton )
+                     if ( m_button & Qt::LeftButton )
                      {
                         double xThen = getWindowXCoord( m_lastXPos );
                         double xNow  = getWindowXCoord( x );
@@ -1278,7 +1277,7 @@ void TextureWidget::keyPressEvent( QKeyEvent * e )
    {
       switch ( e->key() )
       {
-         case Key_Home:
+         case Qt::Key_Home:
             {
                if ( (e->state() & Qt::ShiftButton) == Qt::ShiftButton )
                {
@@ -1357,33 +1356,33 @@ void TextureWidget::keyPressEvent( QKeyEvent * e )
                }
             }
             break;
-         case Key_Equal:
-         case Key_Plus:
+         case Qt::Key_Equal:
+         case Qt::Key_Plus:
             {
                zoomIn();
             }
             break;
-         case Key_Minus:
-         case Key_Underscore:
+         case Qt::Key_Minus:
+         case Qt::Key_Underscore:
             {
                zoomOut();
             }
             break;
-         case Key_0:
+         case Qt::Key_0:
             m_xCenter = 0.5;
             m_yCenter = 0.5;
             updateViewport();
             break;
-         case Key_Up:
+         case Qt::Key_Up:
             scrollUp();
             break;
-         case Key_Down:
+         case Qt::Key_Down:
             scrollDown();
             break;
-         case Key_Left:
+         case Qt::Key_Left:
             scrollLeft();
             break;
-         case Key_Right:
+         case Qt::Key_Right:
             scrollRight();
             break;
          default:
@@ -1916,31 +1915,31 @@ void TextureWidget::setDragCursor( bool dragAll,
 {
    if ( !m_interactive )
    {
-      setCursor( QCursor( ArrowCursor ) );
+      setCursor( QCursor( Qt::ArrowCursor ) );
    }
    else if ( (dragLeft && dragTop) || (dragRight && dragBottom) )
    {
-      setCursor( QCursor( SizeFDiagCursor ) );
+      setCursor( QCursor( Qt::SizeFDiagCursor ) );
    }
    else if ( (dragLeft && dragBottom) || (dragRight && dragTop) )
    {
-      setCursor( QCursor( SizeBDiagCursor ) );
+      setCursor( QCursor( Qt::SizeBDiagCursor ) );
    }
    else if ( dragLeft || dragRight )
    {
-      setCursor( QCursor( SizeHorCursor ) );
+      setCursor( QCursor( Qt::SizeHorCursor ) );
    }
    else if ( dragTop || dragBottom )
    {
-      setCursor( QCursor( SizeVerCursor ) );
+      setCursor( QCursor( Qt::SizeVerCursor ) );
    }
    else if ( dragAll )
    {
-      setCursor( QCursor( SizeAllCursor ) );
+      setCursor( QCursor( Qt::SizeAllCursor ) );
    }
    else
    {
-      setCursor( QCursor( ArrowCursor ) );
+      setCursor( QCursor( Qt::ArrowCursor ) );
    }
 }
 

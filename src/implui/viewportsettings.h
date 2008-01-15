@@ -23,19 +23,18 @@
 #ifndef __VIEWPORTSETTINGS_H
 #define __VIEWPORTSETTINGS_H
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-
 #include "viewportsettings.base.h"
 
-class QAccel;
+#include <QDialog>
 
-class ViewportSettings : public ViewportSettingsBase
+class Q3Accel;
+
+class ViewportSettings : public QDialog, public Ui::ViewportSettingsBase
 {
    Q_OBJECT
 
    public:
-      ViewportSettings( QWidget * parent = NULL, const char * name = "" );
+      ViewportSettings( QWidget * parent = NULL );
       virtual ~ViewportSettings();
 
    public slots:
@@ -43,7 +42,7 @@ class ViewportSettings : public ViewportSettingsBase
       void accept();
 
    private:
-      QAccel * m_accel;
+      Q3Accel * m_accel;
 };
 
 #endif // __VIEWPORTSETTINGS_H

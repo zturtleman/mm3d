@@ -26,10 +26,12 @@
 
 #include "mapdirection.base.h"
 
-class MapDirection : public MapDirectionBase
+#include <QDialog>
+
+class MapDirection : public QDialog, public Ui::MapDirectionBase
 {
    public:
-      MapDirection( QWidget * parent = NULL, const char * name = "" );
+      MapDirection( QWidget * parent = NULL );
       virtual ~MapDirection();
 
       void setMapDirection( int );

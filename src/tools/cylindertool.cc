@@ -51,7 +51,7 @@ CylinderTool::~CylinderTool()
 {
 }
 
-void CylinderTool::activated( int arg, Model * model, QMainWindow * mainwin )
+void CylinderTool::activated( int arg, Model * model, Q3MainWindow * mainwin )
 {
    log_debug( "cylinder activated\n" );
    m_widget = new CylinderToolWidget( this, mainwin );

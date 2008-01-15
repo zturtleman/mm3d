@@ -26,18 +26,22 @@
 
 #include "mq3macro.h"
 #include "mq3compat.h"
+//Added by qt3to4:
+#include <QLabel>
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
 
-class QMainWindow;
+class Q3MainWindow;
 
-class QVBoxLayout;
-class QHBoxLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
 
-class QGroupBox;
+class Q3GroupBox;
 class QSpinBox;
 class QCheckBox;
 class QLabel;
 
-class SelectFaceToolWidget : public QDockWindow
+class SelectFaceToolWidget : public Q3DockWindow
 {
    Q_OBJECT
 
@@ -58,9 +62,9 @@ class SelectFaceToolWidget : public QDockWindow
    protected:
       Observer    * m_observer;
 
-      QBoxLayout * m_layout;
+      Q3BoxLayout * m_layout;
 
-      QGroupBox   * m_groupBox;
+      Q3GroupBox   * m_groupBox;
       QLabel      * m_backfacingLabel;
       QCheckBox   * m_backfacingValue;
 };

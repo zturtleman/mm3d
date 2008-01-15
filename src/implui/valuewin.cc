@@ -23,21 +23,24 @@
 
 #include "valuewin.h"
 #include "helpwin.h"
-#include "mq3compat.h"
 #include "log.h"
 
-#include <qslider.h>
-#include <qlineedit.h>
-#include <qlabel.h>
+#include <QSlider>
+#include <QLineEdit>
+#include <QLabel>
+#include <q3accel.h>
 
 #include <math.h>
 #include <stdlib.h>
 
-ValueWin::ValueWin( QWidget * parent, const char * name, bool modal, Qt::WFlags flags )
-   : ValueWinBase( parent, name, modal, flags ),
-     m_accel( new QAccel(this) ),
+ValueWin::ValueWin( QWidget * parent, bool modal, Qt::WFlags flags )
+   : QDialog( parent, flags ),
+     m_accel( new Q3Accel(this) ),
      m_editing( false )
 {
+   setupUi( this );
+   setModal( modal );
+
    m_valueEdit->setText( QString( "0" ) );
    m_accel->insertItem( Qt::Key_F1, 0 );
    connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );

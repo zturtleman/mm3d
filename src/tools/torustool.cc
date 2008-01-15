@@ -58,7 +58,7 @@ TorusTool::~TorusTool()
 {
 }
 
-void TorusTool::activated( int arg, Model * model, QMainWindow * mainwin )
+void TorusTool::activated( int arg, Model * model, Q3MainWindow * mainwin )
 {
    log_debug( "torus activated\n" );
    m_widget = new TorusToolWidget( this, mainwin );

@@ -28,17 +28,20 @@
 #include "modelstatus.h"
 #include "helpwin.h"
 
-#include <qslider.h>
-#include <qcheckbox.h>
+#include <QSlider>
+#include <QCheckBox>
+#include <Q3Accel>
 
 using std::list;
 using std::map;
 
-AutoAssignJointWin::AutoAssignJointWin( Model * model, QWidget * parent, const char * name )
-   : AutoAssignJointWinBase( parent, name, true ),
-     m_accel( new QAccel(this) ),
+AutoAssignJointWin::AutoAssignJointWin( Model * model, QWidget * parent )
+   : QDialog( parent ),
+     m_accel( new Q3Accel(this) ),
      m_model( model )
 {
+   setModal( true );
+   setupUi( this );
    if ( m_model->getSelectedBoneJointCount() == 0 )
    {
       m_selected->setChecked( false );

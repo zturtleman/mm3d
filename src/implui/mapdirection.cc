@@ -23,11 +23,13 @@
 
 #include "mapdirection.h"
 
-#include <qcombobox.h>
+#include <QComboBox>
 
-MapDirection::MapDirection( QWidget * parent, const char * name )
-   : MapDirectionBase( parent, name, true )
+MapDirection::MapDirection( QWidget * parent )
+   : QDialog( parent )
 {
+   setupUi( this );
+   setModal( true );
    m_directionComboBox->setCurrentItem( 0 );
 }
 

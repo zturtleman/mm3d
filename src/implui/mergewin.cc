@@ -28,18 +28,22 @@
 #include "decalmgr.h"
 #include "helpwin.h"
 
-#include "mq3compat.h"
-
-#include <qpushbutton.h>
-#include <qlineedit.h>
+#include <QCheckBox>
+#include <QRadioButton>
+#include <QPushButton>
+#include <QLineEdit>
+#include <q3accel.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-MergeWindow::MergeWindow( Model * model, QWidget * parent, const char * name )
-   : MergeWinBase( parent, name, true ),
-     m_accel( new QAccel(this) ),
+MergeWindow::MergeWindow( Model * model, QWidget * parent )
+   : QDialog( parent ),
+     m_accel( new Q3Accel(this) ),
      m_model( model )
 {
+   setupUi( this );
+   setModal( true );
+
    m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
    connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
 }
@@ -83,13 +87,13 @@ void MergeWindow::includeAnimEvent( bool o )
 void MergeWindow::accept()
 {
    m_model->operationComplete( tr( "Merge models", "operation complete" ).utf8() );
-   MergeWinBase::accept();
+   QDialog::accept();
 }
 
 void MergeWindow::reject()
 {
    m_model->undoCurrent();
    DecalManager::getInstance()->modelUpdated( m_model );
-   MergeWinBase::reject();
+   QDialog::reject();
 }
 

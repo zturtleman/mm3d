@@ -33,24 +33,28 @@
 #include "msg.h"
 
 #include "mm3dport.h"
-#include "mq3compat.h"
 
 #include <unistd.h>
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qspinbox.h>
-#include <qlineedit.h>
-#include <qradiobutton.h>
-#include <qcombobox.h>
-#include <qimage.h>
+#include <QFileDialog>
+#include <QPushButton>
+#include <QLabel>
+#include <QSpinBox>
+#include <QLineEdit>
+#include <QRadioButton>
+#include <QComboBox>
+#include <QImage>
+#include <q3accel.h>
 
 AnimExportWindow::AnimExportWindow( Model * model, ViewPanel * viewPanel, QWidget * parent )
-   : AnimExportWinBase( parent, "", true ),
-     m_accel( new QAccel(this) ),
+   : QDialog( parent, "" ),
+     m_accel( new Q3Accel(this) ),
      m_model( model ),
      m_viewPanel( viewPanel )
 {
+   setModal( true );
+   setupUi( this );
+
    QString path = QString::fromUtf8( g_prefs( "ui_animexport_dir" ).stringValue().c_str() );
 
    if ( g_prefs.exists( "ui_animexport_format" ) )
@@ -324,7 +328,7 @@ void AnimExportWindow::accept()
       m_model->setUndoEnabled( enable );
       v->updateView();
 
-      AnimExportWinBase::accept();
+      QDialog::accept();
    }
    else
    {
@@ -334,12 +338,12 @@ void AnimExportWindow::accept()
 
 void AnimExportWindow::reject()
 {
-   AnimExportWinBase::reject();
+   QDialog::reject();
 }
 
 void AnimExportWindow::directoryButtonClicked()
 {
-   QString dir = QFileDialog::getExistingDirectory( m_directoryLabel->text() );
+   QString dir = QFileDialog::getExistingDirectory( this, "Select an output directory", m_directoryLabel->text() );
    if ( ! dir.isNull() && ! dir.isEmpty() )
    {
       m_directoryLabel->setText( QString::fromUtf8( dir ) );

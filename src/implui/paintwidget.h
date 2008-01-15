@@ -24,7 +24,7 @@
 #ifndef __PAINTWIDGET_H
 #define __PAINTWIDGET_H
 
-#include <qgl.h>
+#include <QGLWidget>
 
 #include <vector>
 #include <list>
@@ -34,7 +34,7 @@ class TextureWidget;
 class PaintWidget : public QGLWidget
 {
    public:
-      PaintWidget( TextureWidget * drawBuddy, QWidget * parent = NULL, const char * name = "" );
+      PaintWidget( TextureWidget * drawBuddy, QWidget * parent = NULL );
       virtual ~PaintWidget();
 
    protected:

@@ -25,13 +25,14 @@
 #define __HELPWIN_H
 
 #include "helpwin.base.h"
+#include <QDialog>
 
-class HelpWin : public HelpWinBase
+class HelpWin : public QDialog, public Ui::HelpWinBase
 {
    Q_OBJECT
 
    public:
-      HelpWin( const char * document = "olh_index.html", bool modal = false, QWidget * parent = NULL, const char * name = "" );
+      HelpWin( const char * document = "olh_index.html", bool modal = false, QWidget * parent = NULL );
       virtual ~HelpWin();
 
    protected:

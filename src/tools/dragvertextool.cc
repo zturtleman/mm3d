@@ -209,7 +209,7 @@ const char ** DragVertexTool::getPixmap()
    return (const char **) dragvertextool_xpm;
 }
 
-void DragVertexTool::activated( int argc, Model * model, QMainWindow * mainwin )
+void DragVertexTool::activated( int argc, Model * model, Q3MainWindow * mainwin )
 {
    //model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Tip: Hold shift to restrict movement to one dimension" ).utf8() );
 }

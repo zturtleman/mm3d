@@ -22,20 +22,19 @@
 
 
 #include "qttex.h"
+//Added by qt3to4:
 
 #include "mm3dconfig.h"
 #include "log.h"
 
-#include <qimage.h>
 #include <ctype.h>
-#include <qbuffer.h>
 
-#ifdef HAVE_QT4
-#include <qimagereader.h>
-#include <qimagewriter.h>
-#endif // HAVE_QT4
+#include <QBuffer>
+#include <QImage>
+#include <QImageReader>
+#include <QImageWriter>
 
-#include <qstring.h>
+#include <QString>
 
 using std::list;
 using std::string;
@@ -265,13 +264,8 @@ Texture::ErrorE QtTextureFilter::writeMemory( const char * format, Texture * tex
       QImage image ( data, texture->m_width, texture->m_height, 32, NULL, 0, QImage::IgnoreEndian );
 
       QByteArray ba;
-#ifdef HAVE_QT4
       QBuffer buffer( &ba );
       buffer.open( QIODevice::WriteOnly );
-#else
-      QBuffer buffer( ba );
-      buffer.open( IO_WriteOnly );
-#endif // HAVE_QT4
       if ( ! image.save( &buffer, fmt, 100 ) )
       {
          return Texture::ERROR_FILE_WRITE;
@@ -430,7 +424,6 @@ void QtTextureFilter::initializeSupported()
    if ( !m_initialized )
    {
       m_initialized = true;
-#if HAVE_QT4
       {
          QList< QByteArray > list = QImageReader::supportedImageFormats();
          for ( QList< QByteArray >::iterator it = list.begin(); it != list.end(); it++ )
@@ -464,38 +457,5 @@ void QtTextureFilter::initializeSupported()
             }
          }
       }
-
-#else
-      QStrList list;
-      char * str;
-
-      list = QImage::inputFormats();
-      for ( str = list.first(); str; str = list.next() )
-      {
-         m_read.push_back( QString(str) );
-         if ( strcasecmp( str, "JPEG" ) == 0 )
-         {
-            m_read.push_back( QString("JPG") );
-         }
-         if ( strcasecmp( str, "TIFF" ) == 0 )
-         {
-            m_read.push_back( QString("TIF") );
-         }
-      }
-
-      list = QImage::outputFormats();
-      for ( str = list.first(); str; str = list.next() )
-      {
-         m_write.push_back( QString(str) );
-         if ( strcasecmp( str, "JPEG" ) == 0 )
-         {
-            m_write.push_back( QString( "JPG" ) );
-         }
-         if ( strcasecmp( str, "TIFF" ) == 0 )
-         {
-            m_write.push_back( QString( "TIF" ) );
-         }
-      }
-#endif // HAVE_QT4
    }
 }

@@ -26,20 +26,24 @@
 
 #include "mq3macro.h"
 #include "mq3compat.h"
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3HBoxLayout>
+#include <QLabel>
 
-class QMainWindow;
+class Q3MainWindow;
 
-class QVBoxLayout;
-class QHBoxLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
 
 #ifdef HAVE_QT4
-#define QGroupBox Q3GroupBox
+#define Q3GroupBox Q3GroupBox
 #endif
-class QGroupBox;
+class Q3GroupBox;
 class QLineEdit;
 class QLabel;
 
-class RotateToolWidget : public QDockWindow
+class RotateToolWidget : public Q3DockWindow
 {
    Q_OBJECT
 
@@ -69,9 +73,9 @@ class RotateToolWidget : public QDockWindow
       Observer    * m_observer;
       bool m_ignore;
 
-      QBoxLayout * m_layout;
+      Q3BoxLayout * m_layout;
 
-      QGroupBox   * m_groupBox;
+      Q3GroupBox   * m_groupBox;
       QLabel      * m_xLabel;
       QLineEdit   * m_xValue;
       QLabel      * m_yLabel;

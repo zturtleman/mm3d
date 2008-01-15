@@ -33,17 +33,17 @@
 using std::list;
 using std::map;
 
-#include "mq3macro.h"
+#include <QDialog>
 
-class QAccel;
+class Q3Accel;
 class Model;
 class TextureWidget;
 
-class PaintTextureWin : public PaintTextureWinBase
+class PaintTextureWin : public QDialog, public Ui::PaintTextureWinBase
 {
    Q_OBJECT
    public:
-      PaintTextureWin( Model * model, QWidget * parent = NULL, const char * name = "" );
+      PaintTextureWin( Model * model, QWidget * parent = NULL );
       ~PaintTextureWin();
 
    public slots:
@@ -59,7 +59,7 @@ class PaintTextureWin : public PaintTextureWinBase
       void updateDisplay();
       void addTriangles();
 
-      QAccel  * m_accel;
+      Q3Accel  * m_accel;
       TextureWidget * m_textureWidget;
       Model * m_model;
       bool    m_saved;

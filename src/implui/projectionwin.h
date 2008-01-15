@@ -27,13 +27,14 @@
 #include "projectionwin.base.h"
 #include "model.h"
 
-#include "mq3macro.h"
+#include <QDialog>
+#include <QCloseEvent>
 
 class ViewPanel;
 class TextureWidget;
-class QAccel;
+class Q3Accel;
 
-class ProjectionWin : public ProjectionWinBase, public Model::Observer
+class ProjectionWin : public QDialog, public Ui::ProjectionWinBase, public Model::Observer
 {
    Q_OBJECT
 
@@ -76,7 +77,7 @@ class ProjectionWin : public ProjectionWinBase, public Model::Observer
       int  getSelectedProjection();
       void operationComplete( const char * opname );
 
-      QAccel * m_accel;
+      Q3Accel * m_accel;
       Model  * m_model;
       ViewPanel * m_viewPanel;
       TextureWidget * m_textureWidget;

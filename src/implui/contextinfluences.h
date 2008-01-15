@@ -26,13 +26,13 @@
 
 #include "contextinfluences.base.h"
 
-#include "mq3macro.h"
+#include <QWidget>
 
 #include "contextwidget.h"
 
 #include "model.h"
 
-class ContextInfluences : public ContextInfluencesBase, public ContextWidget
+class ContextInfluences : public QWidget, public Ui::ContextInfluencesBase, public ContextWidget
 {
    Q_OBJECT
    public:

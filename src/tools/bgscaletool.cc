@@ -152,7 +152,7 @@ const char ** BgScaleTool::getPixmap()
    return (const char **) bgscaletool_xpm;
 }
 
-void BgScaleTool::activated( int arg, Model * model, QMainWindow * mainwin )
+void BgScaleTool::activated( int arg, Model * model, Q3MainWindow * mainwin )
 {
    model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Scale background image" ).utf8() );
    //m_widget = new BgScaleToolWidget( this, mainwin );

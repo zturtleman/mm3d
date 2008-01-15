@@ -25,6 +25,11 @@
 #define __MVIEWPORT_H
 
 #include <qgl.h>
+//Added by qt3to4:
+#include <QWheelEvent>
+#include <QFocusEvent>
+#include <QMouseEvent>
+#include <QKeyEvent>
 #include "tool.h"
 #include "decal.h"
 #include "texture.h"

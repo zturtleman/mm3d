@@ -24,14 +24,17 @@
 #include "cal3dprompt.h"
 #include "cal3dfilter.h"
 #include "model.h"
-#include "mq3compat.h"
 
-#include <qradiobutton.h>
+#include <QRadioButton>
+#include <q3accel.h>
 
 Cal3dPrompt::Cal3dPrompt()
-   : Cal3dPromptBase( NULL, "", true ),
-     m_accel( new QAccel(this) )
+   : QDialog( NULL ),
+     m_accel( new Q3Accel(this) )
 {
+   setupUi( this );
+   setModal( true );
+
    m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
    connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
 }

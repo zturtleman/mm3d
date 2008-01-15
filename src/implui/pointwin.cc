@@ -25,11 +25,10 @@
 #include "decalmgr.h"
 #include "helpwin.h"
 
-#include "mq3compat.h"
-
-#include <qinputdialog.h>
-#include <qpushbutton.h>
-#include <qcombobox.h>
+#include <QInputDialog>
+#include <QPushButton>
+#include <QComboBox>
+#include <q3accel.h>
 #include <list>
 
 using std::list;
@@ -41,11 +40,14 @@ using std::list;
 #include "modelstatus.h"
 
 
-PointWin::PointWin( Model * model, QWidget * parent, const char * name )
-   : PointWinBase( parent, name, true, Qt::WDestructiveClose ),
-     m_accel( new QAccel(this) ),
+PointWin::PointWin( Model * model, QWidget * parent )
+   : QDialog( parent, Qt::WDestructiveClose ),
+     m_accel( new Q3Accel(this) ),
      m_model( model )
 {
+   setupUi( this );
+   setModal( true );
+
    m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
    connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
 
@@ -144,7 +146,7 @@ void PointWin::accept()
 {
    log_debug( "Point changes complete\n" );
    m_model->operationComplete( tr( "Point changes", "operation complete" ).utf8() );
-   PointWinBase::accept();
+   QDialog::accept();
 }
 
 void PointWin::reject()
@@ -152,6 +154,6 @@ void PointWin::reject()
    log_debug( "Point changes canceled\n" );
    m_model->undoCurrent();
    DecalManager::getInstance()->modelUpdated( m_model );
-   PointWinBase::reject();
+   QDialog::reject();
 }
 

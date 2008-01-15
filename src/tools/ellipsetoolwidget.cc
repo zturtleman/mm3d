@@ -35,7 +35,7 @@
 #include "3dmprefs.h"
 
 EllipsoidToolWidget::EllipsoidToolWidget( Observer * observer, QWidget * parent )
-   : QDockWindow ( QDockWindow::InDock, parent, "", WDestructiveClose ),
+   : Q3DockWindow ( Q3DockWindow::InDock, parent, "", Qt::WDestructiveClose ),
      m_observer( observer )
 {
    const int  DEFAULT_SMOOTHNESS = 2;

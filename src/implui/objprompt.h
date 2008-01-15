@@ -28,12 +28,12 @@
 #include "modelfilter.h"
 #include "objfilter.h"
 
-#include "mq3macro.h"
+#include <QDialog>
 
-class QAccel;
+class Q3Accel;
 class Model;
 
-class ObjPrompt : public ObjPromptBase
+class ObjPrompt : public QDialog, public Ui::ObjPromptBase
 {
    Q_OBJECT
 
@@ -49,7 +49,7 @@ class ObjPrompt : public ObjPromptBase
 
    protected:
 
-      QAccel * m_accel;
+      Q3Accel * m_accel;
 };
 
 bool objprompt_show( Model * model, ModelFilter::Options * o );

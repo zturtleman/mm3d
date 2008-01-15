@@ -24,8 +24,6 @@
 #ifndef __QTMAIN_H
 #define __QTMAIN_H
 
-#include "mq3compat.h"
-
 class QApplication;
 
 extern QApplication * ui_getapp();

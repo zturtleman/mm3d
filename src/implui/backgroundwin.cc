@@ -30,19 +30,25 @@
 #include "textureframe.h"
 #include "helpwin.h"
 
-#include <qpushbutton.h>
-#include <qlayout.h>
-#include <qtabwidget.h>
+#include <QPushButton>
+#include <QLayout>
+#include <QTabWidget>
+#include <QHBoxLayout>
+#include <q3accel.h>
+
 #include <stdlib.h>
 
 using std::list;
 using std::map;
 
-BackgroundWin::BackgroundWin( Model * model, QWidget * parent, const char * name )
-   : BackgroundWinBase( parent, name, true, Qt::WDestructiveClose ),
-     m_accel( new QAccel(this) ),
+BackgroundWin::BackgroundWin( Model * model, QWidget * parent )
+   : QDialog( parent, Qt::WDestructiveClose ),
+     m_accel( new Q3Accel(this) ),
      m_model( model )
 {
+   setupUi( this );
+   setModal( true );
+
    for ( unsigned t = 0; t < 6; t++ )
    {
       QWidget * p = m_tabs->page( t );
@@ -74,13 +80,13 @@ void BackgroundWin::selectedPageEvent( const QString & str )
 void BackgroundWin::accept()
 {
    m_model->operationComplete( tr( "Background Image", "operation complete" ).utf8() );
-   BackgroundWinBase::accept();
+   QDialog::accept();
 }
 
 void BackgroundWin::reject()
 {
    m_model->undoCurrent();
    DecalManager::getInstance()->modelUpdated( m_model );
-   BackgroundWinBase::reject();
+   QDialog::reject();
 }
 

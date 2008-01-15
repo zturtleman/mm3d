@@ -46,7 +46,7 @@ PolyTool::~PolyTool()
 {
 }
 
-void PolyTool::activated( int arg, Model * model, QMainWindow * mainwin )
+void PolyTool::activated( int arg, Model * model, Q3MainWindow * mainwin )
 {
    m_model = model;
    m_widget = new PolyToolWidget( (PolyToolWidget::Observer *) this, (QWidget *) mainwin );

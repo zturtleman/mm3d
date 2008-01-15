@@ -24,16 +24,16 @@
 #ifndef __ABOUTWIN_H
 #define __ABOUTWIN_H
 
-#include "mq3macro.h"
-
 #include "textwin.base.h"
 
-class AboutWin : public TextWinBase
+#include <QDialog>
+
+class AboutWin : public QDialog, public Ui::TextWinBase
 {
    Q_OBJECT
 
    public:
-      AboutWin( QWidget * parent = NULL, const char * name = "" );
+      AboutWin( QWidget * parent = NULL );
       virtual ~AboutWin();
 
    protected:

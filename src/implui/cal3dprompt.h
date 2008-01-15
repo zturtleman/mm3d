@@ -28,12 +28,12 @@
 #include "modelfilter.h"
 #include "cal3dfilter.h"
 
-#include "mq3macro.h"
+#include <QDialog>
 
-class QAccel;
+class Q3Accel;
 class Model;
 
-class Cal3dPrompt : public Cal3dPromptBase
+class Cal3dPrompt : public QDialog, public Ui::Cal3dPromptBase
 {
    Q_OBJECT
 
@@ -49,7 +49,7 @@ class Cal3dPrompt : public Cal3dPromptBase
 
    protected:
 
-      QAccel * m_accel;
+      Q3Accel * m_accel;
 };
 
 bool cal3dprompt_show( Model * model, ModelFilter::Options * o );

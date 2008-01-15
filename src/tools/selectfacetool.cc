@@ -115,7 +115,7 @@ SelectFaceTool::~SelectFaceTool()
 {
 }
 
-void SelectFaceTool::activated( int arg, Model * model, QMainWindow * mainwin )
+void SelectFaceTool::activated( int arg, Model * model, Q3MainWindow * mainwin )
 {
    m_widget = new SelectFaceToolWidget( (SelectFaceToolWidget::Observer *) this, (QWidget *) mainwin );
    m_widget->show();

@@ -25,20 +25,17 @@
 
 #include "metawin.base.h"
 
-#include <qcheckbox.h>
-#include <qradiobutton.h>
-
-#include "mq3macro.h"
-#include "mq3compat.h"
+#include <QDialog>
 
 class Model;
-class QListViewItem;
+class QTreeWidgetItem;
+class Q3Accel;
 
-class MetaWindow : public MetaWindowBase
+class MetaWindow : public QDialog, public Ui::MetaWindowBase
 {
       Q_OBJECT
    public:
-      MetaWindow( Model *, QWidget * parent = NULL, const char * name = "" );
+      MetaWindow( Model *, QWidget * parent = NULL );
       virtual ~MetaWindow();
 
    public slots:
@@ -46,13 +43,13 @@ class MetaWindow : public MetaWindowBase
 
       void newClicked();
       void deleteClicked();
-      void editItemEvent( QListViewItem * item );
+      void editItemEvent( QTreeWidgetItem * item );
 
       void accept();
       void reject();
 
    protected:
-      QAccel * m_accel;
+      Q3Accel * m_accel;
       Model  * m_model;
 };
 

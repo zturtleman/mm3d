@@ -35,23 +35,27 @@
 #include "helpwin.h"
 #include "config.h"
 
-#include "mq3compat.h"
-
-#include <qpushbutton.h>
-#include <qbuttongroup.h>
-#include <qradiobutton.h>
-#include <qmessagebox.h>
-#include <qcombobox.h>
-#include <qslider.h>
-#include <qlineedit.h>
+#include <QPushButton>
+#include <QButtonGroup>
+#include <QRadioButton>
+#include <QMessageBox>
+#include <QComboBox>
+#include <QSlider>
+#include <QLineEdit>
+#include <QFileDialog>
+#include <QPixmap>
+#include <q3accel.h>
 #include <math.h>
 
-PaintTextureWin::PaintTextureWin( Model * model, QWidget * parent, const char * name )
-   : PaintTextureWinBase( parent, name, true, WDestructiveClose ),
-     m_accel( new QAccel(this) ),
+PaintTextureWin::PaintTextureWin( Model * model, QWidget * parent )
+   : QDialog( parent, Qt::WDestructiveClose ),
+     m_accel( new Q3Accel(this) ),
      m_model( model ),
      m_saved( false )
 {
+   setupUi( this );
+   setModal( true );
+
    m_textureFrame->setModel( model );
 
    m_textureWidget = m_textureFrame->getTextureWidget();
@@ -159,7 +163,7 @@ void PaintTextureWin::helpNowEvent( int )
 
 void PaintTextureWin::accept()
 {
-   PaintTextureWinBase::accept();
+   QDialog::accept();
 }
 
 void PaintTextureWin::textureSizeChangeEvent()
@@ -197,13 +201,8 @@ void PaintTextureWin::saveEvent()
    {
       again = false;
 
-#ifdef HAVE_QT4
       QString filename = QFileDialog::getSaveFileName( 
             this, tr("File name for saved texture?"), dir, QString("PNG Images (*.png *.PNG)") );
-#else
-      QString filename = QFileDialog::getSaveFileName( 
-            dir, QString("PNG Images (*.png *.PNG)"), this, QString(""), tr("File name for saved texture?") );
-#endif
 
       if ( filename.length() > 0 )
       {

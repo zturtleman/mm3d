@@ -24,16 +24,19 @@
 #include "ms3dprompt.h"
 #include "ms3dfilter.h"
 #include "model.h"
-#include "mq3compat.h"
 #include "mm3dport.h"
 
-#include <qradiobutton.h>
-#include <qlineedit.h>
+#include <QRadioButton>
+#include <QLineEdit>
+#include <q3accel.h>
 
 Ms3dPrompt::Ms3dPrompt()
-   : Ms3dPromptBase( NULL, "", true ),
-     m_accel( new QAccel(this) )
+   : QDialog( NULL ),
+     m_accel( new Q3Accel(this) )
 {
+   setupUi( this );
+   setModal( true );
+
    m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
    connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
 }

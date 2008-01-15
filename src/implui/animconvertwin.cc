@@ -24,18 +24,21 @@
 #include "animconvertwin.h"
 #include "helpwin.h"
 
-#include "mq3compat.h"
+#include <QPushButton>
+#include <QLabel>
+#include <QSpinBox>
+#include <QLineEdit>
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qspinbox.h>
-#include <qlineedit.h>
+#include <q3accel.h>
 
-AnimConvertWindow::AnimConvertWindow( QWidget * parent, const char * name )
-   : AnimConvertWinBase( parent, name, true ),
-     m_accel( new QAccel(this) ),
+AnimConvertWindow::AnimConvertWindow( QWidget * parent )
+   : QDialog( parent ),
+     m_accel( new Q3Accel(this) ),
      m_operation( OP_CONTINUE )
 {
+   setupUi( this );
+   setModal( true );
+
    m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
    connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
 }

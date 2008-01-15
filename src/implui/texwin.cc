@@ -36,30 +36,34 @@
 #include "helpwin.h"
 #include "errorobj.h"
 
-#include "mq3compat.h"
+#include <QComboBox>
+#include <QPushButton>
+#include <QInputDialog>
+#include <QFileDialog>
+#include <QLineEdit>
+#include <QSlider>
+#include <QLabel>
+#include <q3accel.h>
 
-#include <qcombobox.h>
-#include <qpushbutton.h>
 #include <list>
 #include <string>
-#include <qinputdialog.h>
-#include <qlineedit.h>
-#include <qslider.h>
-#include <qlabel.h>
 
 using std::list;
 using std::string;
 
-TextureWindow::TextureWindow( Model * model, QWidget * parent, const char * name )
-   : TextureWindowBase( parent, name, true, WDestructiveClose ),
-     m_accel( new QAccel(this) ),
+TextureWindow::TextureWindow( Model * model, QWidget * parent )
+   : QDialog( parent, Qt::WDestructiveClose ),
+     m_accel( new Q3Accel(this) ),
      m_model( model ),
      m_editing( false ),
      m_setting( false )
 {
+   setupUi( this );
+   setModal( true );
+
    m_textureFrame->setModel( model );
 
-   m_accel->insertItem( Key_F1, 0 );
+   m_accel->insertItem( Qt::Key_F1, 0 );
    connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
 
    int count = m_model->getTextureCount();
@@ -142,7 +146,6 @@ void TextureWindow::changeTextureFileEvent()
       dir = ".";
    }
 
-#ifdef HAVE_QT4
    QFileDialog d(NULL, "", dir, formatsStr + QString(";; All Files (*)" ) );
 
    d.setCaption( tr("Open texture image") );
@@ -151,17 +154,6 @@ void TextureWindow::changeTextureFileEvent()
    int execval = d.exec();
    std::string file = (const char *) d.selectedFile().utf8();
    QString path = d.directory().absolutePath().utf8();
-#else
-   QFileDialog d(dir, formatsStr, NULL, "", true );
-
-   d.setCaption( tr("Open texture image") );
-   d.addFilter( tr( "All Files (*)" ) );
-   d.setSelectedFilter( formatsStr );
-
-   int execval = d.exec();
-   std::string file = (const char *) d.selectedFile().utf8();
-   QString path = d.dir()->absPath();
-#endif
 
    if ( QDialog::Accepted == execval )
    {
@@ -383,7 +375,7 @@ void TextureWindow::updateEvent()
 void TextureWindow::accept()
 {
    m_model->operationComplete( tr("Texture changes").utf8() );
-   TextureWindowBase::accept();
+   QDialog::accept();
    DecalManager::getInstance()->modelUpdated( m_model );
 }
 
@@ -391,7 +383,7 @@ void TextureWindow::reject()
 {
    m_model->undoCurrent();
    DecalManager::getInstance()->modelUpdated( m_model );
-   TextureWindowBase::reject();
+   QDialog::reject();
 }
 
 void TextureWindow::previewValueChanged( int index )

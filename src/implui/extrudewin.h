@@ -29,17 +29,17 @@
 #include <list>
 #include <map>
 
-#include "mq3macro.h"
+#include <QDialog>
 
 class Model;
-class QAccel;
+class Q3Accel;
 
-class ExtrudeWin : public ExtrudeWinBase
+class ExtrudeWin : public QDialog, public Ui::ExtrudeWinBase
 {
    Q_OBJECT
 
    public:
-      ExtrudeWin( Model *, QWidget * parent = NULL, const char * name = "" );
+      ExtrudeWin( Model *, QWidget * parent = NULL );
       virtual ~ExtrudeWin();
 
    public slots:
@@ -72,7 +72,7 @@ class ExtrudeWin : public ExtrudeWinBase
       void addSide( unsigned a, unsigned b );
       bool sideIsEdge( unsigned a, unsigned b );
 
-      QAccel * m_accel;
+      Q3Accel * m_accel;
       Model * m_model;
 
       SideList          m_sides;

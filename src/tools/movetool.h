@@ -37,7 +37,7 @@ class MoveTool: public Tool
       const char * getName( int arg );
       bool getKeyBinding( int arg, int & keyBinding ) { keyBinding = Qt::Key_M; return true; };
  
-      void activated( int argc, Model * model, QMainWindow * mainwin );
+      void activated( int argc, Model * model, Q3MainWindow * mainwin );
 
       bool isManipulation() { return true; };
 

@@ -26,12 +26,15 @@
 
 #include "helpwin.h"
 
-#include "mq3compat.h"
+#include <q3accel.h>
 
 PluginWindow::PluginWindow()
-   : PluginWinBase( NULL, "", false, WDestructiveClose ),
-     m_accel( new QAccel(this) )
+   : QDialog( NULL, Qt::WDestructiveClose ),
+     m_accel( new Q3Accel(this) )
 {
+   setupUi( this );
+   setModal( false );
+
    m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
    connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
 
@@ -57,7 +60,7 @@ void PluginWindow::refreshPluginData()
 
    for ( it = plist.begin(); it != plist.end(); it++ )
    {
-      QListViewItem * item = new QListViewItem( m_pluginList );
+      QTreeWidgetItem * item = new QTreeWidgetItem( m_pluginList );
       item->setText( 0, QString( pmgr->getPluginName( *it ) ) + " " );
       item->setText( 1, QString( pmgr->getPluginVersion( *it ) ) + " " );
       item->setText( 2, QString( pmgr->getPluginDescription( *it ) ) + " " );

@@ -1,314 +1,290 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>ContextInfluencesBase</class>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>ContextInfluencesBase</cstring>
+<ui version="4.0" stdsetdef="1" >
+  <author></author>
+  <comment></comment>
+  <exportmacro></exportmacro>
+  <class>ContextInfluencesBase</class>
+  <widget class="QWidget" name="ContextInfluencesBase" >
+    <property name="geometry" >
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>248</width>
+        <height>183</height>
+      </rect>
     </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>248</width>
-            <height>183</height>
-        </rect>
+    <property name="windowTitle" >
+      <string>Influences</string>
     </property>
-    <property name="caption">
-        <string>Influences</string>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout2</cstring>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
+    <layout class="QVBoxLayout" >
+      <item>
+        <layout class="QGridLayout" >
+          <property name="margin" >
+            <number>0</number>
+          </property>
+          <item row="0" column="1" >
+            <widget class="QLabel" name="textLabel3" >
+              <property name="text" >
+                <string>Weight</string>
+              </property>
+              <property name="wordWrap" >
+                <bool>false</bool>
+              </property>
+            </widget>
+          </item>
+          <item row="4" column="1" >
+            <widget class="QComboBox" name="m_weight4" >
+              <property name="editable" >
+                <bool>true</bool>
+              </property>
+              <item>
+                <property name="text" >
+                  <string>&lt;Mixed></string>
                 </property>
-                <widget class="QLabel" row="0" column="1">
-                    <property name="name">
-                        <cstring>textLabel3</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Weight</string>
-                    </property>
-                </widget>
-                <widget class="QComboBox" row="4" column="1">
-                    <item>
-                        <property name="text">
-                            <string>&lt;Mixed&gt;</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Custom</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Auto</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Remaining</string>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>m_weight4</cstring>
-                    </property>
-                    <property name="editable">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QComboBox" row="2" column="1">
-                    <item>
-                        <property name="text">
-                            <string>&lt;Mixed&gt;</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Custom</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Auto</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Remaining</string>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>m_weight2</cstring>
-                    </property>
-                    <property name="editable">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QComboBox" row="3" column="0">
-                    <item>
-                        <property name="text">
-                            <string>&lt;None&gt;</string>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>m_joint3</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>textLabel2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Joint</string>
-                    </property>
-                </widget>
-                <widget class="QComboBox" row="4" column="0">
-                    <item>
-                        <property name="text">
-                            <string>&lt;None&gt;</string>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>m_joint4</cstring>
-                    </property>
-                </widget>
-                <widget class="QComboBox" row="1" column="1">
-                    <item>
-                        <property name="text">
-                            <string>&lt;Mixed&gt;</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Custom</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Auto</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Remaining</string>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>m_weight1</cstring>
-                    </property>
-                    <property name="editable">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QComboBox" row="3" column="1">
-                    <item>
-                        <property name="text">
-                            <string>&lt;Mixed&gt;</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Custom</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Auto</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Remaining</string>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>m_weight3</cstring>
-                    </property>
-                    <property name="editable">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QComboBox" row="1" column="0">
-                    <item>
-                        <property name="text">
-                            <string>&lt;None&gt;</string>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>m_joint1</cstring>
-                    </property>
-                </widget>
-                <widget class="QComboBox" row="2" column="0">
-                    <item>
-                        <property name="text">
-                            <string>&lt;None&gt;</string>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>m_joint2</cstring>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <spacer>
-            <property name="name">
-                <cstring>spacer1</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>41</height>
-                </size>
-            </property>
+              </item>
+              <item>
+                <property name="text" >
+                  <string>Custom</string>
+                </property>
+              </item>
+              <item>
+                <property name="text" >
+                  <string>Auto</string>
+                </property>
+              </item>
+              <item>
+                <property name="text" >
+                  <string>Remaining</string>
+                </property>
+              </item>
+            </widget>
+          </item>
+          <item row="2" column="1" >
+            <widget class="QComboBox" name="m_weight2" >
+              <property name="editable" >
+                <bool>true</bool>
+              </property>
+              <item>
+                <property name="text" >
+                  <string>&lt;Mixed></string>
+                </property>
+              </item>
+              <item>
+                <property name="text" >
+                  <string>Custom</string>
+                </property>
+              </item>
+              <item>
+                <property name="text" >
+                  <string>Auto</string>
+                </property>
+              </item>
+              <item>
+                <property name="text" >
+                  <string>Remaining</string>
+                </property>
+              </item>
+            </widget>
+          </item>
+          <item row="3" column="0" >
+            <widget class="QComboBox" name="m_joint3" >
+              <item>
+                <property name="text" >
+                  <string>&lt;None></string>
+                </property>
+              </item>
+            </widget>
+          </item>
+          <item row="0" column="0" >
+            <widget class="QLabel" name="textLabel2" >
+              <property name="text" >
+                <string>Joint</string>
+              </property>
+              <property name="wordWrap" >
+                <bool>false</bool>
+              </property>
+            </widget>
+          </item>
+          <item row="4" column="0" >
+            <widget class="QComboBox" name="m_joint4" >
+              <item>
+                <property name="text" >
+                  <string>&lt;None></string>
+                </property>
+              </item>
+            </widget>
+          </item>
+          <item row="1" column="1" >
+            <widget class="QComboBox" name="m_weight1" >
+              <property name="editable" >
+                <bool>true</bool>
+              </property>
+              <item>
+                <property name="text" >
+                  <string>&lt;Mixed></string>
+                </property>
+              </item>
+              <item>
+                <property name="text" >
+                  <string>Custom</string>
+                </property>
+              </item>
+              <item>
+                <property name="text" >
+                  <string>Auto</string>
+                </property>
+              </item>
+              <item>
+                <property name="text" >
+                  <string>Remaining</string>
+                </property>
+              </item>
+            </widget>
+          </item>
+          <item row="3" column="1" >
+            <widget class="QComboBox" name="m_weight3" >
+              <property name="editable" >
+                <bool>true</bool>
+              </property>
+              <item>
+                <property name="text" >
+                  <string>&lt;Mixed></string>
+                </property>
+              </item>
+              <item>
+                <property name="text" >
+                  <string>Custom</string>
+                </property>
+              </item>
+              <item>
+                <property name="text" >
+                  <string>Auto</string>
+                </property>
+              </item>
+              <item>
+                <property name="text" >
+                  <string>Remaining</string>
+                </property>
+              </item>
+            </widget>
+          </item>
+          <item row="1" column="0" >
+            <widget class="QComboBox" name="m_joint1" >
+              <item>
+                <property name="text" >
+                  <string>&lt;None></string>
+                </property>
+              </item>
+            </widget>
+          </item>
+          <item row="2" column="0" >
+            <widget class="QComboBox" name="m_joint2" >
+              <item>
+                <property name="text" >
+                  <string>&lt;None></string>
+                </property>
+              </item>
+            </widget>
+          </item>
+        </layout>
+      </item>
+      <item>
+        <spacer name="spacer1" >
+          <property name="sizeHint" >
+            <size>
+              <width>20</width>
+              <height>41</height>
+            </size>
+          </property>
+          <property name="sizeType" >
+            <enum>Expanding</enum>
+          </property>
+          <property name="orientation" >
+            <enum>Vertical</enum>
+          </property>
         </spacer>
-    </vbox>
-</widget>
-<connections>
-    <connection>
-        <sender>m_joint1</sender>
-        <signal>activated(int)</signal>
-        <receiver>ContextInfluencesBase</receiver>
-        <slot>joint1Changed()</slot>
-    </connection>
-    <connection>
-        <sender>m_joint2</sender>
-        <signal>activated(int)</signal>
-        <receiver>ContextInfluencesBase</receiver>
-        <slot>joint2Changed()</slot>
-    </connection>
-    <connection>
-        <sender>m_joint3</sender>
-        <signal>activated(int)</signal>
-        <receiver>ContextInfluencesBase</receiver>
-        <slot>joint3Changed()</slot>
-    </connection>
-    <connection>
-        <sender>m_joint4</sender>
-        <signal>activated(int)</signal>
-        <receiver>ContextInfluencesBase</receiver>
-        <slot>joint4Changed()</slot>
-    </connection>
-    <connection>
-        <sender>m_weight1</sender>
-        <signal>activated(int)</signal>
-        <receiver>ContextInfluencesBase</receiver>
-        <slot>type1Changed()</slot>
-    </connection>
-    <connection>
-        <sender>m_weight2</sender>
-        <signal>activated(int)</signal>
-        <receiver>ContextInfluencesBase</receiver>
-        <slot>type2Changed()</slot>
-    </connection>
-    <connection>
-        <sender>m_weight3</sender>
-        <signal>activated(int)</signal>
-        <receiver>ContextInfluencesBase</receiver>
-        <slot>type3Changed()</slot>
-    </connection>
-    <connection>
-        <sender>m_weight4</sender>
-        <signal>activated(int)</signal>
-        <receiver>ContextInfluencesBase</receiver>
-        <slot>type4Changed()</slot>
-    </connection>
-    <connection>
-        <sender>m_weight1</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>ContextInfluencesBase</receiver>
-        <slot>weight1Changed(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>m_weight2</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>ContextInfluencesBase</receiver>
-        <slot>weight2Changed(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>m_weight3</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>ContextInfluencesBase</receiver>
-        <slot>weight3Changed(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>m_weight4</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>ContextInfluencesBase</receiver>
-        <slot>weight4Changed(const QString&amp;)</slot>
-    </connection>
-</connections>
-<tabstops>
+      </item>
+    </layout>
+  </widget>
+  <layoutdefault spacing="6" margin="11" />
+  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+  <tabstops>
     <tabstop>m_joint1</tabstop>
     <tabstop>m_joint2</tabstop>
     <tabstop>m_joint3</tabstop>
     <tabstop>m_joint4</tabstop>
-</tabstops>
-<slots>
-    <slot>joint1Changed()</slot>
-    <slot>joint2Changed()</slot>
-    <slot>joint3Changed()</slot>
-    <slot>joint4Changed()</slot>
-    <slot>weight1Changed( const QString &amp; )</slot>
-    <slot>weight2Changed( const QString &amp; )</slot>
-    <slot>weight3Changed( const QString &amp; )</slot>
-    <slot>weight4Changed( const QString &amp; )</slot>
-    <slot>type1Changed()</slot>
-    <slot>type2Changed()</slot>
-    <slot>type3Changed()</slot>
-    <slot>type4Changed()</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+  </tabstops>
+  <connections>
+    <connection>
+      <sender>m_joint1</sender>
+      <signal>activated(int)</signal>
+      <receiver>ContextInfluencesBase</receiver>
+      <slot>joint1Changed()</slot>
+    </connection>
+    <connection>
+      <sender>m_joint2</sender>
+      <signal>activated(int)</signal>
+      <receiver>ContextInfluencesBase</receiver>
+      <slot>joint2Changed()</slot>
+    </connection>
+    <connection>
+      <sender>m_joint3</sender>
+      <signal>activated(int)</signal>
+      <receiver>ContextInfluencesBase</receiver>
+      <slot>joint3Changed()</slot>
+    </connection>
+    <connection>
+      <sender>m_joint4</sender>
+      <signal>activated(int)</signal>
+      <receiver>ContextInfluencesBase</receiver>
+      <slot>joint4Changed()</slot>
+    </connection>
+    <connection>
+      <sender>m_weight1</sender>
+      <signal>activated(int)</signal>
+      <receiver>ContextInfluencesBase</receiver>
+      <slot>type1Changed()</slot>
+    </connection>
+    <connection>
+      <sender>m_weight2</sender>
+      <signal>activated(int)</signal>
+      <receiver>ContextInfluencesBase</receiver>
+      <slot>type2Changed()</slot>
+    </connection>
+    <connection>
+      <sender>m_weight3</sender>
+      <signal>activated(int)</signal>
+      <receiver>ContextInfluencesBase</receiver>
+      <slot>type3Changed()</slot>
+    </connection>
+    <connection>
+      <sender>m_weight4</sender>
+      <signal>activated(int)</signal>
+      <receiver>ContextInfluencesBase</receiver>
+      <slot>type4Changed()</slot>
+    </connection>
+    <connection>
+      <sender>m_weight1</sender>
+      <signal>textChanged(QString)</signal>
+      <receiver>ContextInfluencesBase</receiver>
+      <slot>weight1Changed(QString)</slot>
+    </connection>
+    <connection>
+      <sender>m_weight2</sender>
+      <signal>textChanged(QString)</signal>
+      <receiver>ContextInfluencesBase</receiver>
+      <slot>weight2Changed(QString)</slot>
+    </connection>
+    <connection>
+      <sender>m_weight3</sender>
+      <signal>textChanged(QString)</signal>
+      <receiver>ContextInfluencesBase</receiver>
+      <slot>weight3Changed(QString)</slot>
+    </connection>
+    <connection>
+      <sender>m_weight4</sender>
+      <signal>textChanged(QString)</signal>
+      <receiver>ContextInfluencesBase</receiver>
+      <slot>weight4Changed(QString)</slot>
+    </connection>
+  </connections>
+</ui>

@@ -26,13 +26,12 @@
 
 #include "newanim.base.h"
 
-#include "mq3macro.h"
-
 #include "mm3dport.h"
 
-#include <qstring.h>
+#include <QDialog>
+#include <QString>
 
-class NewAnim : public NewAnimBase
+class NewAnim : public QDialog, public Ui::NewAnimBase
 {
     Q_OBJECT
 

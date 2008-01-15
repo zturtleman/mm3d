@@ -373,7 +373,7 @@ void ScaleTool::setPointValue( int newValue )
    m_point = newValue;
 }
 
-void ScaleTool::activated( int arg, Model * model, QMainWindow * mainwin )
+void ScaleTool::activated( int arg, Model * model, Q3MainWindow * mainwin )
 {
    model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Tip: Hold shift to restrict scaling to one dimension" ).utf8() );
    m_widget = new ScaleToolWidget( this, mainwin );

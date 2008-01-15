@@ -26,17 +26,17 @@
 
 #include "rgbawin.base.h"
 
-#include "mq3macro.h"
+#include <QDialog>
 
-class QAccel;
+class Q3Accel;
 
-class RgbaWin : public RgbaWinBase
+class RgbaWin : public QDialog, public Ui::RgbaWinBase
 {
    Q_OBJECT
 
    public:
 
-      RgbaWin( QWidget * parent = NULL, const char * name = "" );
+      RgbaWin( QWidget * parent = NULL );
       virtual ~RgbaWin();
 
       void setLabel( const char * newLabel );
@@ -69,7 +69,7 @@ class RgbaWin : public RgbaWinBase
 
    protected:
 
-      QAccel * m_accel;
+      Q3Accel * m_accel;
 
       // We don't want to update the edit box if the user is typing in it
       // So we set this to true when editing.  When we update the slider,

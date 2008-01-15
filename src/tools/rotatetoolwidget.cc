@@ -34,7 +34,7 @@
 
 RotateToolWidget::RotateToolWidget( Observer * observer, QWidget * parent,
       double x, double y, double z )
-   : QDockWindow ( QDockWindow::InDock, parent, "", WDestructiveClose ),
+   : Q3DockWindow ( Q3DockWindow::InDock, parent, "", Qt::WDestructiveClose ),
      m_observer( observer ),
      m_ignore( false )
 {

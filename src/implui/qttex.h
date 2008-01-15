@@ -26,7 +26,7 @@
 
 #include "texmgr.h"
 
-#include <qstringlist.h>
+#include <QStringList>
 
 class QImage;
 

@@ -35,7 +35,7 @@ class SpherifyWin : public ValueWin
    Q_OBJECT
 
    public:
-      SpherifyWin( Model * model, QWidget * parent = NULL, const char * name = "" );
+      SpherifyWin( Model * model, QWidget * parent = NULL );
       virtual ~SpherifyWin();
 
    public slots:

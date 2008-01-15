@@ -24,7 +24,8 @@
 #ifndef __TEXFRAME_H
 #define __TEXFRAME_H
 
-#include <qframe.h>
+#include <QFrame>
+#include <QResizeEvent>
 
 class Model;
 class TextureWidget;

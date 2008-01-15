@@ -26,17 +26,17 @@
 
 #include "pointwin.base.h"
 
-#include "mq3macro.h"
+#include <QDialog>
 
 class Model;
-class QAccel;
+class Q3Accel;
 
-class PointWin : public PointWinBase
+class PointWin : public QDialog, public Ui::PointWinBase
 {
    Q_OBJECT
 
    public:
-      PointWin( Model * model, QWidget * parent = NULL, const char * name = "" );
+      PointWin( Model * model, QWidget * parent = NULL );
       virtual ~PointWin();
 
    public slots:
@@ -52,7 +52,7 @@ class PointWin : public PointWinBase
       void reject();
 
    protected:
-      QAccel * m_accel;
+      Q3Accel * m_accel;
       Model  * m_model;
 };
 

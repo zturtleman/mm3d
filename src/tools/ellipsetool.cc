@@ -54,7 +54,7 @@ EllipsoidTool::~EllipsoidTool()
 {
 }
 
-void EllipsoidTool::activated( int arg, Model * model, QMainWindow * mainwin )
+void EllipsoidTool::activated( int arg, Model * model, Q3MainWindow * mainwin )
 {
    log_debug( "ellipse activated\n" );
    m_widget = new EllipsoidToolWidget( this, mainwin );

@@ -1,193 +1,211 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>Ms3dPromptBase</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>Ms3dPromptBase</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>317</width>
-            <height>287</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>MS3D Filter Options</string>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
+<ui version="4.0" >
+ <class>Ms3dPromptBase</class>
+ <widget class="QDialog" name="Ms3dPromptBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>317</width>
+    <height>287</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>MS3D Filter Options</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>11</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item>
+    <widget class="QGroupBox" name="buttonGroup1" >
+     <property name="title" >
+      <string>Format Subversion</string>
+     </property>
+     <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>6</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QRadioButton" name="m_subVersion0" >
+        <property name="text" >
+         <string>Subversion 0</string>
         </property>
-        <widget class="QButtonGroup">
-            <property name="name">
-                <cstring>buttonGroup1</cstring>
-            </property>
-            <property name="title">
-                <string>Format Subversion</string>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QRadioButton">
-                    <property name="name">
-                        <cstring>m_subVersion0</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Subversion 0</string>
-                    </property>
-                    <property name="checked">
-                        <bool>true</bool>
-                    </property>
-                    <property name="buttonGroupId">
-                        <number>0</number>
-                    </property>
-                </widget>
-                <widget class="QRadioButton">
-                    <property name="name">
-                        <cstring>m_subVersion1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Subversion 1</string>
-                    </property>
-                    <property name="buttonGroupId">
-                        <number>1</number>
-                    </property>
-                </widget>
-                <widget class="QRadioButton">
-                    <property name="name">
-                        <cstring>m_subVersion2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Subversion 2</string>
-                    </property>
-                    <property name="buttonGroupId">
-                        <number>2</number>
-                    </property>
-                </widget>
-            </vbox>
-        </widget>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>groupBox1</cstring>
-            </property>
-            <property name="title">
-                <string>Subversion Options</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Vertex Extra</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="0" column="1">
-                    <property name="name">
-                        <cstring>m_vertexExtra</cstring>
-                    </property>
-                    <property name="text">
-                        <string>FFFFFFFF</string>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <spacer>
-            <property name="name">
-                <cstring>spacer3</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>31</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout1</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer1</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>91</width>
-                            <height>21</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>m_okButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Ok</string>
-                    </property>
-                    <property name="default">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>m_cancelButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Cancel</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-    </vbox>
-</widget>
-<connections>
-    <connection>
-        <sender>m_okButton</sender>
-        <signal>clicked()</signal>
-        <receiver>Ms3dPromptBase</receiver>
-        <slot>accept()</slot>
-    </connection>
-    <connection>
-        <sender>m_cancelButton</sender>
-        <signal>clicked()</signal>
-        <receiver>Ms3dPromptBase</receiver>
-        <slot>reject()</slot>
-    </connection>
-    <connection>
-        <sender>buttonGroup1</sender>
-        <signal>clicked(int)</signal>
-        <receiver>Ms3dPromptBase</receiver>
-        <slot>subVersionChangedEvent(int)</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>m_okButton</tabstop>
-    <tabstop>m_cancelButton</tabstop>
-</tabstops>
-<slots>
-    <slot>subVersionChangedEvent(int)</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="m_subVersion1" >
+        <property name="text" >
+         <string>Subversion 1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="m_subVersion2" >
+        <property name="text" >
+         <string>Subversion 2</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox1" >
+     <property name="title" >
+      <string>Subversion Options</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>6</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="textLabel1" >
+        <property name="text" >
+         <string>Vertex Extra</string>
+        </property>
+        <property name="wordWrap" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QLineEdit" name="m_vertexExtra" >
+        <property name="text" >
+         <string>FFFFFFFF</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>31</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>91</width>
+         <height>21</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_okButton" >
+       <property name="text" >
+        <string>Ok</string>
+       </property>
+       <property name="default" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_cancelButton" >
+       <property name="text" >
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <tabstops>
+  <tabstop>m_okButton</tabstop>
+  <tabstop>m_cancelButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>m_okButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Ms3dPromptBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_cancelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Ms3dPromptBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonGroup1</sender>
+   <signal>clicked(int)</signal>
+   <receiver>Ms3dPromptBase</receiver>
+   <slot>subVersionChangedEvent(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -31,23 +31,24 @@
 #include "decalmgr.h"
 #include "helpwin.h"
 
-#include "mq3compat.h"
-
 #include "keycfg.h"
 #include "3dmprefs.h"
 
-#include <qpushbutton.h>
-#include <qbuttongroup.h>
-#include <qradiobutton.h>
-#include <qcheckbox.h>
-#include <qmessagebox.h>
-#include <qslider.h>
-#include <qlineedit.h>
+#include <QPushButton>
+#include <QButtonGroup>
+#include <QRadioButton>
+#include <QCheckBox>
+#include <QMessageBox>
+#include <QSlider>
+#include <QLineEdit>
+#include <QPixmap>
+#include <q3accel.h>
+
 #include <math.h>
 
-TextureCoord::TextureCoord( Model * model, QWidget * parent, const char * name )
-   : TextureCoordBase( parent, name ),
-     m_accel( new QAccel(this) ),
+TextureCoord::TextureCoord( Model * model, QWidget * parent )
+   : QDialog( parent ),
+     m_accel( new Q3Accel(this) ),
      m_undoCount( 0 ),
      m_redoCount( 0 ),
      m_inUndo( false ),
@@ -55,12 +56,15 @@ TextureCoord::TextureCoord( Model * model, QWidget * parent, const char * name )
      m_currentDirection( 0 ),
      m_currentMapScheme( 2 ) // if you change this, change the setChecked line below also
 {
+   setupUi( this );
+   setModal( true );
+
    // FIXME handle undo of select/unselect?
    // Can't do this until after constructor is done because of observer interface
    //setModel( m_model );
    m_textureFrame->setModel( model );
 
-   m_accel->insertItem( Key_F1, HELP_ID );
+   m_accel->insertItem( Qt::Key_F1, HELP_ID );
    connect( m_accel, SIGNAL(activated(int)), this, SLOT(accelEvent(int)) );
 
    m_accel->insertItem( Qt::CTRL + Qt::Key_Z, UNDO_ID );
@@ -140,7 +144,7 @@ void TextureCoord::show()
       // If we are visible, setModel already did this
       initWindow();
    }
-   TextureCoordBase::show();
+   QDialog::show();
 }
 
 void TextureCoord::initWindow()

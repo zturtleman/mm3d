@@ -28,7 +28,9 @@
 #include "model.h"
 #include "log.h"
 
-#include <qlayout.h>
+#include <QLayout>
+#include <QResizeEvent>
+#include <QFrame>
 
 TextureFrame::TextureFrame( QWidget * parent, const char * name )
    : QFrame( parent, name ),
