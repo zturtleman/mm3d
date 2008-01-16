@@ -35,30 +35,30 @@
 #include "3dmprefs.h"
 
 EllipsoidToolWidget::EllipsoidToolWidget( Observer * observer, QMainWindow * parent )
-   : QDockWidget ( NULL, Qt::WDestructiveClose ),
+   : ToolWidget ( parent ),
      m_observer( observer )
 {
    const int  DEFAULT_SMOOTHNESS = 2;
    const bool DEFAULT_SPHERE     = false;
    const bool DEFAULT_CENTER     = false;
 
-   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
+   m_layout = boxLayout();
 
-   m_smoothLabel = new QLabel( tr("Smoothness:"), this, "" );
+   m_smoothLabel = new QLabel( tr("Smoothness:"), mainWidget(), "" );
    m_layout->addWidget( m_smoothLabel );
-   m_smoothValue = new QSpinBox( this, "" );
+   m_smoothValue = new QSpinBox( mainWidget(), "" );
    m_layout->addWidget( m_smoothValue );
 
    m_smoothValue->setMinValue( 0 );
    m_smoothValue->setMaxValue( 5 );
 
-   m_facesLabel = new QLabel( tr("Faces: ") + QString("320"), this, "" );
+   m_facesLabel = new QLabel( tr("Faces: ") + QString("320"), mainWidget(), "" );
    m_layout->addWidget( m_facesLabel );
 
-   m_sphereCheckBox = new QCheckBox( tr("Sphere"), this, "" );
+   m_sphereCheckBox = new QCheckBox( tr("Sphere"), mainWidget(), "" );
    m_layout->addWidget( m_sphereCheckBox );
 
-   m_centerCheckBox = new QCheckBox( tr("From Center", "Checkbox that indicates if ellipsoid is created from center or far corner"), this, "" );
+   m_centerCheckBox = new QCheckBox( tr("From Center", "Checkbox that indicates if ellipsoid is created from center or far corner"), mainWidget(), "" );
    m_layout->addWidget( m_centerCheckBox );
 
    int smoothVal = DEFAULT_SMOOTHNESS;

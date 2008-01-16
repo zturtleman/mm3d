@@ -33,7 +33,7 @@
 #include <QLabel>
 
 CylinderToolWidget::CylinderToolWidget( Observer * observer, QMainWindow * parent )
-   : QDockWidget ( NULL, Qt::WDestructiveClose ),
+   : ToolWidget ( parent ),
      m_observer( observer )
 {
    const int DEFAULT_SEGMENTS = 4;
@@ -42,12 +42,12 @@ CylinderToolWidget::CylinderToolWidget( Observer * observer, QMainWindow * paren
    const int DEFAULT_SCALE  = 100;
    //const int DEFAULT_SHAPE  = 10;
 
-   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
+   m_layout = boxLayout();
 
-   m_segmentsLabel = new QLabel( tr("Segments"), this, "" );
+   m_segmentsLabel = new QLabel( tr("Segments"), mainWidget(), "" );
    m_layout->addWidget( m_segmentsLabel );
 
-   m_segmentsValue = new QSpinBox( this, "" );
+   m_segmentsValue = new QSpinBox( mainWidget(), "" );
    m_layout->addWidget( m_segmentsValue );
 
    m_segmentsValue->setMinValue( 1 );
@@ -64,10 +64,10 @@ CylinderToolWidget::CylinderToolWidget( Observer * observer, QMainWindow * paren
    }
    m_segmentsValue->setValue( segmentsVal );
 
-   m_sidesLabel = new QLabel( tr("Sides"), this, "" );
+   m_sidesLabel = new QLabel( tr("Sides"), mainWidget(), "" );
    m_layout->addWidget( m_sidesLabel );
 
-   m_sidesValue = new QSpinBox( this, "" );
+   m_sidesValue = new QSpinBox( mainWidget(), "" );
    m_layout->addWidget( m_sidesValue );
 
    m_sidesValue->setMinValue( 3 );
@@ -85,10 +85,10 @@ CylinderToolWidget::CylinderToolWidget( Observer * observer, QMainWindow * paren
    m_sidesValue->setValue( sidesVal );
  
 
-   m_widthLabel = new QLabel( tr("Width"), this, "" );
+   m_widthLabel = new QLabel( tr("Width"), mainWidget(), "" );
    m_layout->addWidget( m_widthLabel );
 
-   m_widthValue = new QSpinBox( this, "" );
+   m_widthValue = new QSpinBox( mainWidget(), "" );
    m_layout->addWidget( m_widthValue );
 
    m_widthValue->setMinValue( 0 );
@@ -104,10 +104,10 @@ CylinderToolWidget::CylinderToolWidget( Observer * observer, QMainWindow * paren
    }
    m_widthValue->setValue( widthVal );
 
-   m_scaleLabel = new QLabel( tr("Scale"), this, "" );
+   m_scaleLabel = new QLabel( tr("Scale"), mainWidget(), "" );
    m_layout->addWidget( m_scaleLabel );
 
-   m_scaleValue = new QSpinBox( this, "" );
+   m_scaleValue = new QSpinBox( mainWidget(), "" );
    m_layout->addWidget( m_scaleValue );
 
    m_scaleValue->setMinValue( 0 );
@@ -124,10 +124,10 @@ CylinderToolWidget::CylinderToolWidget( Observer * observer, QMainWindow * paren
    m_scaleValue->setValue( scaleVal );
 
    /*
-   m_shapeLabel = new QLabel( "Shape", this, "" );
+   m_shapeLabel = new QLabel( "Shape", mainWidget(), "" );
    m_layout->addWidget( m_shapeLabel );
 
-   m_shapeValue = new QSlider( Qt::Horizontal, this, "" );
+   m_shapeValue = new QSlider( Qt::Horizontal, mainWidget(), "" );
    m_layout->addWidget( m_shapeValue );
 
    m_shapeValue->setMinimumWidth( 64 );

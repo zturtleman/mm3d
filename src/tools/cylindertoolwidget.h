@@ -35,9 +35,9 @@ class QSpinBox;
 class QSlider;
 class QLabel;
 
-#include <QDockWidget>
+#include "toolwidget.h"
 
-class CylinderToolWidget : public QDockWidget
+class CylinderToolWidget : public ToolWidget
 {
    Q_OBJECT
 

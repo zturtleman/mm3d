@@ -35,9 +35,9 @@ class QSpinBox;
 class QLabel;
 class QCheckBox;
 
-#include <QDockWidget>
+#include "toolwidget.h"
 
-class EllipsoidToolWidget : public QDockWidget
+class EllipsoidToolWidget : public ToolWidget
 {
    Q_OBJECT
 

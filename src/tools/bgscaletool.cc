@@ -31,8 +31,6 @@
 #include "pixmap/bgscaletool.xpm"
 
 #include <math.h>
-#include <qobject.h>
-#include <qapplication.h>
 
 BgScaleTool::BgScaleTool()
 {
@@ -155,7 +153,6 @@ const char ** BgScaleTool::getPixmap()
 void BgScaleTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Scale background image" ).utf8() );
-   //m_widget = new BgScaleToolWidget( this, mainwin );
 }
 
 void BgScaleTool::deactivated()

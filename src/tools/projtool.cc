@@ -33,8 +33,8 @@
 
 #include "pixmap/projtool.xpm"
 
-#include <qobject.h>
-#include <qapplication.h>
+#include <QMainWindow>
+#include <QApplication>
 
 ProjectionTool::ProjectionTool()
    : m_type( Model::TPT_Sphere )
@@ -214,9 +214,6 @@ void ProjectionTool::setTypeValue( int newValue )
 void ProjectionTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    m_widget = new ProjToolWidget( this, mainwin );
-#ifdef HAVE_QT4
-   //mainwin->addDockWindow( m_widget, DockBottom );
-#endif
    m_widget->show();
 }
 

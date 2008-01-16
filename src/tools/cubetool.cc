@@ -31,9 +31,8 @@
 
 #include <math.h>
 
-#include <qobject.h>
-#include <qapplication.h>
-#include <qwidget.h>
+#include <QMainWindow>
+#include <QApplication>
 
 using std::vector;
 
@@ -305,9 +304,6 @@ void CubeTool::updateVertexCoords( Parent * parent, double x1, double y1, double
 void CubeTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    m_widget = new CubeToolWidget( this, mainwin );
-#ifdef HAVE_QT4
-   //mainwin->addDockWindow( m_widget, DockBottom );
-#endif
    m_widget->show();
 }
 

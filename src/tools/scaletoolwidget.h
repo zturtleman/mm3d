@@ -49,9 +49,9 @@ enum _ScalePoint_e
 };
 typedef enum _ScalePoint_e ScalePointE;
 
-#include <QDockWidget>
+#include "toolwidget.h"
 
-class ScaleToolWidget : public QDockWidget
+class ScaleToolWidget : public ToolWidget
 {
    Q_OBJECT
 

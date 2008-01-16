@@ -34,9 +34,9 @@ class QGroupBox;
 class QLineEdit;
 class QLabel;
 
-#include <QDockWidget>
+#include "toolwidget.h"
 
-class RotateToolWidget : public QDockWidget
+class RotateToolWidget : public ToolWidget
 {
    Q_OBJECT
 

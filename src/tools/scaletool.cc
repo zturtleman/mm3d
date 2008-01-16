@@ -30,9 +30,8 @@
 
 #include <math.h>
 
-#include <qobject.h>
-#include <qapplication.h>
-#include <qwidget.h>
+#include <QMainWindow>
+#include <QApplication>
 
 ScaleTool::ScaleTool()
 {
@@ -374,9 +373,6 @@ void ScaleTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Tip: Hold shift to restrict scaling to one dimension" ).utf8() );
    m_widget = new ScaleToolWidget( this, mainwin );
-#ifdef HAVE_QT4
-   //mainwin->addDockWindow( m_widget, DockBottom );
-#endif
    m_widget->show();
 }
 

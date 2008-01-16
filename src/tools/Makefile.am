@@ -34,6 +34,7 @@ libtools_HFILES = \
 	selectgrouptool.h \
 	selectvertextool.h \
 	sheartool.h \
+	toolwidget.h \
 	torustool.h \
 	torustoolwidget.h \
 	vertextool.h 
@@ -46,6 +47,7 @@ libtools_MOC = \
 	projtoolwidget.moc.cc \
 	rotatetoolwidget.moc.cc \
 	scaletoolwidget.moc.cc \
+	toolwidget.moc.cc \
 	torustoolwidget.moc.cc \
 	selectfacetoolwidget.moc.cc 
 
@@ -87,6 +89,7 @@ libtools_a_SOURCES = \
 	selectprojtool.cc \
 	sheartool.cc \
 	rectangletool.cc \
+	toolwidget.cc \
 	torustool.cc \
 	$(libtools_MOC) \
 	$(libtools_HFILES) 

@@ -25,6 +25,7 @@
 
 #include "3dmprefs.h"
 
+#include <QDockWidget>
 #include <QLayout>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -35,18 +36,18 @@
 
 // FIXME QT4 What to do about parent?
 CubeToolWidget::CubeToolWidget( Observer * observer, QMainWindow * parent )
-   : QDockWidget ( NULL, Qt::WDestructiveClose ),
+   : ToolWidget( parent ),
      m_observer( observer )
 {
    const int  DEFAULT_SEGMENT = 1;
    const bool DEFAULT_CUBE    = false;
 
-   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
+   m_layout = boxLayout();
 
-   m_cubeLabel = new QLabel( tr("Cube"), this, "" );
+   m_cubeLabel = new QLabel( tr("Cube"), mainWidget(), "" );
    m_layout->addWidget( m_cubeLabel );
 
-   m_cubeValue = new QCheckBox( this, "" );
+   m_cubeValue = new QCheckBox( mainWidget(), "" );
    m_layout->addWidget( m_cubeValue );
 
    bool isCube = DEFAULT_CUBE;
@@ -56,10 +57,10 @@ CubeToolWidget::CubeToolWidget( Observer * observer, QMainWindow * parent )
    }
    m_cubeValue->setChecked( isCube );
 
-   m_segmentLabel = new QLabel( tr("Segment"), this, "" );
+   m_segmentLabel = new QLabel( tr("Segment"), mainWidget(), "" );
    m_layout->addWidget( m_segmentLabel );
 
-   m_segmentValue = new QSpinBox( this, "" );
+   m_segmentValue = new QSpinBox( mainWidget(), "" );
    m_layout->addWidget( m_segmentValue );
 
    m_segmentValue->setMinValue( 1 );

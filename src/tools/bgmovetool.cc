@@ -31,8 +31,6 @@
 #include "pixmap/bgmovetool.xpm"
 
 #include <math.h>
-#include <qobject.h>
-#include <qapplication.h>
 
 BgMoveTool::BgMoveTool()
 {
@@ -131,7 +129,6 @@ const char ** BgMoveTool::getPixmap()
 void BgMoveTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Move background image" ).utf8() );
-   //m_widget = new BgMoveToolWidget( this, mainwin );
 }
 
 void BgMoveTool::deactivated()

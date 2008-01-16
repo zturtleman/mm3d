@@ -34,17 +34,17 @@
 #include <QComboBox>
 
 ProjToolWidget::ProjToolWidget( Observer * observer, QMainWindow * parent )
-   : QDockWidget ( NULL, Qt::WDestructiveClose ),
+   : ToolWidget ( parent ),
      m_observer( observer )
 {
    const int DEFAULT_TYPE = Model::TPT_Sphere;
 
-   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
+   m_layout = boxLayout();
 
-   m_typeLabel = new QLabel( tr("Type"), this, "" );
+   m_typeLabel = new QLabel( tr("Type"), mainWidget(), "" );
    m_layout->addWidget( m_typeLabel );
 
-   m_typeValue = new QComboBox( this, "" );
+   m_typeValue = new QComboBox( mainWidget(), "" );
    m_layout->addWidget( m_typeValue );
 
    m_typeValue->insertItem( tr("Cylinder", "Cylinder projection type"), Model::TPT_Cylinder );

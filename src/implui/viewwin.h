@@ -313,8 +313,8 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       int m_toolCount;
       Toolbox     * m_toolbox;
       ::Tool        ** m_toolList;
-      QToolButton ** m_toolButtons;
-      QToolButton * m_last;
+      QAction ** m_toolButtons;
+      QAction * m_last;
       ::Tool        * m_currentTool;
 
       QTimer      * m_savedTimer;

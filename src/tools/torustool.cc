@@ -35,9 +35,8 @@
 #include <math.h>
 #include <vector>
 
-#include <qobject.h>
-#include <qapplication.h>
-#include <qwidget.h>
+#include <QMainWindow>
+#include <QApplication>
 
 using std::vector;
 using std::list;
@@ -59,9 +58,6 @@ void TorusTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    log_debug( "torus activated\n" );
    m_widget = new TorusToolWidget( this, mainwin );
-#ifdef HAVE_QT4
-   ////mainwin->addDockWindow( m_widget, DockBottom );
-#endif
    m_widget->show();
 }
 

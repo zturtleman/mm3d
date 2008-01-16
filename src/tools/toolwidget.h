@@ -1,6 +1,6 @@
 /*  Misfit Model 3D
  * 
- *  Copyright (c) 2004-2007 Kevin Worcester
+ *  Copyright (c) 2008 Kevin Worcester
  * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,46 +21,29 @@
  */
 
 
-#ifndef __PROJTOOLWIDGET_H
-#define __PROJTOOLWIDGET_H
+#ifndef TOOLWIDGET_H_INC__
+#define TOOLWIDGET_H_INC__
 
-class QMainWindow;
+#include <QDockWidget>
+#include <QMainWindow>
+#include <QBoxLayout>
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QBoxLayout;
-
-class QGroupBox;
-class QComboBox;
-class QLabel;
-
-#include "toolwidget.h"
-
-class ProjToolWidget : public ToolWidget
+class ToolWidget : public QDockWidget
 {
    Q_OBJECT
 
    public:
-      class Observer
-      {
-         public:
-            virtual ~Observer() {};
-            virtual void setTypeValue( int newValue ) = 0;
-      };
-
-      ProjToolWidget( Observer * observer, QMainWindow * parent );
-      virtual ~ProjToolWidget();
-
-   public slots:
-      void typeValueChanged( int newValue );
+      ToolWidget( QMainWindow * window );
+      virtual ~ToolWidget();
 
    protected:
-      Observer    * m_observer;
+      QBoxLayout * boxLayout() { return m_layout; }
+      QWidget * mainWidget() { return m_mainWidget; }
 
-      QBoxLayout  * m_layout;
-
-      QLabel      * m_typeLabel;
-      QComboBox   * m_typeValue;
+   private:
+      QWidget * m_mainWidget;
+      QBoxLayout * m_layout;
 };
 
-#endif // __PROJTOOLWIDGET_H
+#endif  // TOOLWIDGET_H_INC__
+

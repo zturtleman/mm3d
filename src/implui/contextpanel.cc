@@ -33,17 +33,20 @@
 #include "log.h"
 
 #include <QLayout>
-#include <QLayout>
+#include <QSpacerItem>
 #include <QContextMenuEvent>
 
-ContextPanel::ContextPanel( QWidget * parent,
+ContextPanel::ContextPanel( QMainWindow * parent,
       ViewPanel * panel, ContextPanelObserver * ob )
    : QDockWidget( tr( "Properties", "Window title" ), parent ),
      m_model( NULL ),
      m_observer( ob ),
-     m_panel( panel )
+     m_panel( panel ),
+     m_mainWidget( new QWidget( parent ) ),
+     m_spacer( NULL )
 {
-   m_layout = new QBoxLayout( QBoxLayout::TopToBottom, this );
+   setWidget( m_mainWidget );
+   m_layout = new QBoxLayout( QBoxLayout::TopToBottom, m_mainWidget );
 
    //setHorizontallyStretchable( true );
    //setVerticallyStretchable( true );
@@ -66,6 +69,12 @@ void ContextPanel::setModel( Model * model )
       delete *it;
    }
    m_widgets.clear();
+
+   if ( m_spacer )
+   {
+      delete m_spacer;
+      m_spacer = NULL;
+   }
 
    if ( m_model != model )
    {
@@ -131,7 +140,7 @@ void ContextPanel::modelChanged( int changeBits )
          if ( (m_model->getSelectedBoneJointCount() 
                   + m_model->getSelectedPointCount()) == 1 )
          {
-            ContextName * name = new ContextName( this );
+            ContextName * name = new ContextName( m_mainWidget );
             name->setModel( m_model );
             m_layout->addWidget( name );
             name->show();
@@ -143,7 +152,7 @@ void ContextPanel::modelChanged( int changeBits )
       }
 
       // Position should always be visible
-      ContextPosition * pos = new ContextPosition( this );
+      ContextPosition * pos = new ContextPosition( m_mainWidget );
       pos->setModel( m_model );
       m_layout->addWidget( pos );
       pos->show();
@@ -158,7 +167,7 @@ void ContextPanel::modelChanged( int changeBits )
          if ( (m_model->getSelectedBoneJointCount() 
                   + m_model->getSelectedPointCount()) == 1 )
          {
-            ContextRotation * rot = new ContextRotation( this );
+            ContextRotation * rot = new ContextRotation( m_mainWidget );
             rot->setModel( m_model );
             m_layout->addWidget( rot );
             rot->show();
@@ -174,7 +183,7 @@ void ContextPanel::modelChanged( int changeBits )
       {
          if ( m_model->isTriangleSelected( t ) )
          {
-            ContextGroup * grp = new ContextGroup( this, m_observer );
+            ContextGroup * grp = new ContextGroup( m_mainWidget, m_observer );
             grp->setModel( m_model );
             m_layout->addWidget( grp );
             grp->show();
@@ -191,7 +200,7 @@ void ContextPanel::modelChanged( int changeBits )
       {
          if ( m_model->isProjectionSelected( p ) )
          {
-            ContextProjection * prj = new ContextProjection( this, m_observer );
+            ContextProjection * prj = new ContextProjection( m_mainWidget, m_observer );
             prj->setModel( m_model );
             m_layout->addWidget( prj );
             prj->show();
@@ -228,7 +237,7 @@ void ContextPanel::modelChanged( int changeBits )
 
          if ( showInfluences )
          {
-            ContextInfluences * prj = new ContextInfluences( this );
+            ContextInfluences * prj = new ContextInfluences( m_mainWidget );
             prj->setModel( m_model );
             m_layout->addWidget( prj );
             prj->show();
@@ -238,6 +247,7 @@ void ContextPanel::modelChanged( int changeBits )
             m_widgets.push_back( prj );
          }
       }
+      m_spacer = new QSpacerItem( 0, 0, QSizePolicy::Preferred, QSizePolicy::MinimumExpanding );
       setUpdatesEnabled( true );
    }
 }

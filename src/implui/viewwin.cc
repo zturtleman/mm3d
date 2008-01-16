@@ -109,7 +109,7 @@ const char DOCK_FILENAME[] = "dock.cfg";
 
 //using namespace QIconSet;
 
-typedef QToolButton * QToolButtonPtr;
+typedef QAction * QActionPtr;
 typedef ::Tool * ToolPtr;
 
 typedef std::list< ViewWindow *> ViewWindowList;
@@ -246,8 +246,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    //m_animWin->setHorizontallyStretchable( true );
    //m_animWin->setVerticallyStretchable( true );
    m_animWidget = new AnimWidget( m_model, false, m_animWin );
-   QBoxLayout * animWinLayout = new QBoxLayout( QBoxLayout::LeftToRight, m_animWin );
-   animWinLayout->addWidget( m_animWidget );
+   m_animWin->setWidget( m_animWidget );
    addDockWidget( Qt::BottomDockWidgetArea, m_animWin );
    m_animWin->hide();
 
@@ -259,7 +258,6 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    connect( this, SIGNAL(modelChanged(Model*)), m_contextPanel, SLOT(setModel(Model*)));
 
    addDockWidget( Qt::RightDockWidgetArea, m_contextPanel );
-   m_contextPanel->hide();
 
    m_boolPanel = new BoolPanel( m_model, this, m_viewPanel );
    connect( this, SIGNAL(modelChanged(Model*)), m_boolPanel, SLOT(setModel(Model*)));
@@ -275,7 +273,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
 
    setModel( m_model );
    addDockWidget( Qt::RightDockWidgetArea, m_boolPanel );
-   m_boolPanel->hide();
+   tabifyDockWidget( m_boolPanel, m_contextPanel );
 
    setCentralWidget( mainWidget );
 
@@ -1362,9 +1360,8 @@ void ViewWindow::viewportSettingsEvent()
 
 void ViewWindow::toolActivated( int id )
 {
-   ToolMenuItemList::iterator it;
-   it = m_tools.begin();
-   while ( it != m_tools.end() )
+   for ( ToolMenuItemList::iterator it = m_tools.begin();
+         it != m_tools.end(); ++it )
    {
       if ( (*it)->id == id )
       {
@@ -1373,16 +1370,15 @@ void ViewWindow::toolActivated( int id )
          {
             if ( m_toolList[t] == tool )
             {
-               if ( !m_toolButtons[t]->isOn() )
+               if ( !m_toolButtons[t]->isChecked() )
                {
-                  m_toolButtons[t]->setOn( true );
+                  m_toolButtons[t]->setChecked( true );
                }
                m_currentTool = m_toolList[ t ];
             }
          }
          return;
       }
-      it++;
    }
 }
 
@@ -1793,49 +1789,23 @@ void ViewWindow::contextPanelHidden()
 
 void ViewWindow::buttonToggled( bool on )
 {
-   QToolButton * newDown = NULL;
-   int newDownIndex = 0;
-
-   int downCount = 0;
-
-   for ( int t = 0; t < m_toolCount; t++ )
+   if ( on )
    {
-      if ( m_toolButtons[t]->isOn() )
+      if ( m_currentTool )
+         m_currentTool->deactivated();
+
+      for ( int t = 0; t < m_toolCount; t++ )
       {
-         downCount++;
-         if ( m_last != m_toolButtons[t] )
+         if ( m_toolButtons[t]->isChecked() )
          {
-            newDown = m_toolButtons[t];
-            newDownIndex = t;
+            if ( m_last != m_toolButtons[t] )
+            {
+               m_currentTool = m_toolList[ t ];
+               m_currentTool->activated( 0, m_model, this );
+               m_toolbox->setCurrentTool( m_currentTool );
+               break;
+            }
          }
-      }
-   }
-
-   if ( m_last && downCount > 1 )
-   {
-      m_last->setOn( false );
-   }
-
-   if ( newDown )
-   {
-      if ( on )
-      {
-         if ( m_currentTool )
-         {
-            m_currentTool->deactivated();
-         }
-         m_currentTool = m_toolList[ newDownIndex ];
-         m_currentTool->activated( 0, m_model, this );
-
-         m_last = newDown;
-         m_toolbox->setCurrentTool( m_currentTool );
-      }
-   }
-   else
-   {
-      if ( m_last )
-      {
-         m_last->setOn( true );
       }
    }
 }
@@ -1892,7 +1862,9 @@ void ViewWindow::initializeToolbox()
 {
    m_toolbox->registerAllTools();
 
-   m_toolButtons = new QToolButtonPtr[ m_toolbox->getToolCount() ];
+   QActionGroup * grp = new QActionGroup( this );
+
+   m_toolButtons = new QActionPtr[ m_toolbox->getToolCount() ];
    m_toolList    = new ToolPtr[ m_toolbox->getToolCount() ];
    m_toolCount = 0;
 
@@ -1926,15 +1898,17 @@ void ViewWindow::initializeToolbox()
                set.setPixmap( QPixmap( tool->getPixmap() ), QIcon::Small );
 
                m_toolList[m_toolCount] = tool;
-               m_toolButtons[ m_toolCount ] = new QToolButton( m_toolBar );
-               m_toolButtons[ m_toolCount ]->setToggleButton( true );
-               m_toolButtons[ m_toolCount ]->setIconSet( set );
+               // FIXME Text below
+               m_toolButtons[ m_toolCount ] = m_toolBar->addAction( set, "Text" );
+               m_toolButtons[ m_toolCount ]->setCheckable( true );
                if ( name && name[0] )
                {
-                  QToolTip::add( m_toolButtons[ m_toolCount ], _makeToolTip( tool, t ) );
+                  m_toolButtons[ m_toolCount ]->setToolTip( _makeToolTip( tool, t ) );
                }
 
                connect( m_toolButtons[m_toolCount], SIGNAL(toggled(bool)), this, SLOT(buttonToggled(bool)));
+
+               grp->addAction( m_toolButtons[ m_toolCount ] );
 
                m_toolCount++;
             }
@@ -1974,15 +1948,17 @@ void ViewWindow::initializeToolbox()
             set.setPixmap( QPixmap( tool->getPixmap() ), QIcon::Small );
 
             m_toolList[m_toolCount] = tool;
-            m_toolButtons[ m_toolCount ] = new QToolButton( m_toolBar );
-            m_toolButtons[ m_toolCount ]->setToggleButton( true );
-            m_toolButtons[ m_toolCount ]->setIconSet( set );
+            // FIXME Text below
+            m_toolButtons[ m_toolCount ] = m_toolBar->addAction( set, "Text" );
+            m_toolButtons[ m_toolCount ]->setCheckable( true );
             if ( name && name[0] )
             {
-               QToolTip::add( m_toolButtons[ m_toolCount ], _makeToolTip( tool, 0 ) );
+               m_toolButtons[ m_toolCount ]->setToolTip( _makeToolTip( tool, 0 ) );
             }
 
             connect( m_toolButtons[m_toolCount], SIGNAL(toggled(bool)), this, SLOT(buttonToggled(bool)));
+
+            grp->addAction( m_toolButtons[ m_toolCount ] );
 
             m_toolCount++;
          }

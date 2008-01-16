@@ -36,9 +36,9 @@ class QSpinBox;
 class QComboBox;
 class QLabel;
 
-#include <QDockWidget>
+#include "toolwidget.h"
 
-class PolyToolWidget : public QDockWidget
+class PolyToolWidget : public ToolWidget
 {
    Q_OBJECT
 

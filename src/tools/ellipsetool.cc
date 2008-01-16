@@ -33,9 +33,8 @@
 #include <math.h>
 #include <vector>
 
-#include <qobject.h>
-#include <qapplication.h>
-#include <qwidget.h>
+#include <QMainWindow>
+#include <QApplication>
 
 using std::vector;
 using std::list;

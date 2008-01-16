@@ -34,34 +34,34 @@
 
 RotateToolWidget::RotateToolWidget( Observer * observer, QMainWindow * parent,
       double x, double y, double z )
-   : QDockWidget ( NULL, Qt::WDestructiveClose ),
+   : ToolWidget ( parent ),
      m_observer( observer ),
      m_ignore( false )
 {
-   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
+   m_layout = boxLayout();
 
-   m_xLabel = new QLabel( tr("X"), this, "" );
+   m_xLabel = new QLabel( tr("X"), mainWidget(), "" );
    m_layout->addWidget( m_xLabel );
 
-   m_xValue = new QLineEdit( this, "" );
+   m_xValue = new QLineEdit( mainWidget(), "" );
    m_xValue->setMinimumWidth( 100 );
    m_layout->addWidget( m_xValue );
 
    m_xValue->setText( QString::number( x, 'f' ) );
 
-   m_yLabel = new QLabel( tr("Y"), this, "" );
+   m_yLabel = new QLabel( tr("Y"), mainWidget(), "" );
    m_layout->addWidget( m_yLabel );
 
-   m_yValue = new QLineEdit( this, "" );
+   m_yValue = new QLineEdit( mainWidget(), "" );
    m_yValue->setMinimumWidth( 100 );
    m_layout->addWidget( m_yValue );
 
    m_yValue->setText( QString::number( y, 'f' ) );
 
-   m_zLabel = new QLabel( tr("Z"), this, "" );
+   m_zLabel = new QLabel( tr("Z"), mainWidget(), "" );
    m_layout->addWidget( m_zLabel );
 
-   m_zValue = new QLineEdit( this, "" );
+   m_zValue = new QLineEdit( mainWidget(), "" );
    m_zValue->setMinimumWidth( 100 );
    m_layout->addWidget( m_zValue );
 

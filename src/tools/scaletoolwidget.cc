@@ -32,18 +32,18 @@
 #include <QComboBox>
 
 ScaleToolWidget::ScaleToolWidget( Observer * observer, QMainWindow * parent )
-   : QDockWidget ( NULL, Qt::WDestructiveClose ),
+   : ToolWidget ( parent ),
      m_observer( observer )
 {
    const int  DEFAULT_PROPORTION = ST_ScaleFree;
    const int  DEFAULT_POINT      = ST_ScalePointCenter;
 
-   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
+   m_layout = boxLayout();
 
-   m_proportionLabel = new QLabel( tr("Proportion"), this, "" );
+   m_proportionLabel = new QLabel( tr("Proportion"), mainWidget(), "" );
    m_layout->addWidget( m_proportionLabel );
 
-   m_proportionValue = new QComboBox( this, "" );
+   m_proportionValue = new QComboBox( mainWidget(), "" );
    m_layout->addWidget( m_proportionValue );
 
    m_proportionValue->insertItem( tr("Free", "Free scaling option"), ST_ScaleFree );
@@ -63,10 +63,10 @@ ScaleToolWidget::ScaleToolWidget( Observer * observer, QMainWindow * parent )
 
    connect( m_proportionValue, SIGNAL(activated(int)), this, SLOT(proportionValueChanged(int)) );
 
-   m_pointLabel = new QLabel( tr("Point"), this, "" );
+   m_pointLabel = new QLabel( tr("Point"), mainWidget(), "" );
    m_layout->addWidget( m_pointLabel );
 
-   m_pointValue = new QComboBox( this, "" );
+   m_pointValue = new QComboBox( mainWidget(), "" );
    m_layout->addWidget( m_pointValue );
 
    m_pointValue->insertItem( tr("Center", "Scale from center"), ST_ScalePointCenter );

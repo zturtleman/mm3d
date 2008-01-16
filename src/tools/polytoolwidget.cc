@@ -34,17 +34,17 @@
 #include <QComboBox>
 
 PolyToolWidget::PolyToolWidget( Observer * observer, QMainWindow * parent )
-   : QDockWidget ( NULL, Qt::WDestructiveClose ),
+   : ToolWidget ( parent ),
      m_observer( observer )
 {
    const int DEFAULT_FAN  = 0;
 
-   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
+   m_layout = boxLayout();
 
-   m_typeLabel = new QLabel( tr("Poly Type"), this, "" );
+   m_typeLabel = new QLabel( tr("Poly Type"), mainWidget(), "" );
    m_layout->addWidget( m_typeLabel );
 
-   m_typeValue = new QComboBox( this, "" );
+   m_typeValue = new QComboBox( mainWidget(), "" );
    m_typeValue->insertItem( tr("Strip", "Triangle strip option"), 0 );
    m_typeValue->insertItem( tr("Fan", "Triangle fan option"), 1 );
    m_layout->addWidget( m_typeValue );

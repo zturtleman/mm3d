@@ -35,7 +35,7 @@
 #include <QSlider>
 
 TorusToolWidget::TorusToolWidget( Observer * observer, QMainWindow * parent )
-   : QDockWidget ( NULL, Qt::WDestructiveClose ),
+   : ToolWidget ( parent ),
      m_observer( observer )
 {
    const int  DEFAULT_SEGMENTS = 8;
@@ -43,12 +43,12 @@ TorusToolWidget::TorusToolWidget( Observer * observer, QMainWindow * parent )
    const int  DEFAULT_WIDTH  = 50;
    const bool DEFAULT_CIRCLE = false;
 
-   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
+   m_layout = boxLayout();
 
-   m_segmentsLabel = new QLabel( tr("Segments"), this, "" );
+   m_segmentsLabel = new QLabel( tr("Segments"), mainWidget(), "" );
    m_layout->addWidget( m_segmentsLabel );
 
-   m_segmentsValue = new QSpinBox( this, "" );
+   m_segmentsValue = new QSpinBox( mainWidget(), "" );
    m_layout->addWidget( m_segmentsValue );
 
    m_segmentsValue->setMinValue( 3 );
@@ -65,10 +65,10 @@ TorusToolWidget::TorusToolWidget( Observer * observer, QMainWindow * parent )
    }
    m_segmentsValue->setValue( segmentsVal );
 
-   m_sidesLabel = new QLabel( tr("Sides"), this, "" );
+   m_sidesLabel = new QLabel( tr("Sides"), mainWidget(), "" );
    m_layout->addWidget( m_sidesLabel );
 
-   m_sidesValue = new QSpinBox( this, "" );
+   m_sidesValue = new QSpinBox( mainWidget(), "" );
    m_layout->addWidget( m_sidesValue );
 
    m_sidesValue->setMinValue( 3 );
@@ -85,10 +85,10 @@ TorusToolWidget::TorusToolWidget( Observer * observer, QMainWindow * parent )
    }
    m_sidesValue->setValue( sidesVal );
 
-   m_widthLabel = new QLabel( tr("Width"), this, "" );
+   m_widthLabel = new QLabel( tr("Width"), mainWidget(), "" );
    m_layout->addWidget( m_widthLabel );
 
-   m_widthValue = new QSpinBox( this, "" );
+   m_widthValue = new QSpinBox( mainWidget(), "" );
    m_layout->addWidget( m_widthValue );
 
    m_widthValue->setMinValue( 1 );
@@ -104,7 +104,7 @@ TorusToolWidget::TorusToolWidget( Observer * observer, QMainWindow * parent )
    }
    m_widthValue->setValue( widthVal );
 
-   m_circleValue = new QCheckBox( tr("Circle"), this, "" );
+   m_circleValue = new QCheckBox( tr("Circle"), mainWidget(), "" );
    m_layout->addWidget( m_circleValue );
 
    bool circleVal = DEFAULT_CIRCLE;
@@ -113,7 +113,7 @@ TorusToolWidget::TorusToolWidget( Observer * observer, QMainWindow * parent )
 
    m_circleValue->setChecked( circleVal );
 
-   m_centerValue = new QCheckBox( tr("From Center", "Checkbox that indicates if torus is created from center or from far corner"), this, "" );
+   m_centerValue = new QCheckBox( tr("From Center", "Checkbox that indicates if torus is created from center or from far corner"), mainWidget(), "" );
    m_layout->addWidget( m_centerValue );
 
    bool centerVal = DEFAULT_CIRCLE;

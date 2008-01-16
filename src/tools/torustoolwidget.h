@@ -36,9 +36,9 @@ class QCheckBox;
 class QSlider;
 class QLabel;
 
-#include <QDockWidget>
+#include "toolwidget.h"
 
-class TorusToolWidget : public QDockWidget
+class TorusToolWidget : public ToolWidget
 {
    Q_OBJECT
 

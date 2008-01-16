@@ -33,17 +33,17 @@
 #include <QCheckBox>
 
 SelectFaceToolWidget::SelectFaceToolWidget( Observer * observer, QMainWindow * parent )
-   : QDockWidget ( NULL, Qt::WDestructiveClose ),
+   : ToolWidget ( parent ),
      m_observer( observer )
 {
    const bool DEFAULT_BACKFACING  = true;
 
-   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
+   m_layout = boxLayout();
 
-   m_backfacingLabel = new QLabel( tr("Include Back-facing"), this, "" );
+   m_backfacingLabel = new QLabel( tr("Include Back-facing"), mainWidget(), "" );
    m_layout->addWidget( m_backfacingLabel );
 
-   m_backfacingValue = new QCheckBox( this, "" );
+   m_backfacingValue = new QCheckBox( mainWidget(), "" );
    m_layout->addWidget( m_backfacingValue );
 
    bool includeBackfacing = DEFAULT_BACKFACING;

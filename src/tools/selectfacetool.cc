@@ -32,9 +32,10 @@
 #include "pixmap/selectfacetool.xpm"
 
 #include <stdio.h>
-#include <qobject.h>
-#include <qapplication.h>
-#include <qnamespace.h>
+
+#include <QMainWindow>
+#include <QApplication>
+#include <QKeySequence>
 
 class NormalTest : public Model::SelectionTest
 {

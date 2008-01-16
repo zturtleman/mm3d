@@ -29,9 +29,11 @@
 #include "model.h"
 
 #include <QDockWidget>
+#include <QMainWindow>
 
 class QContextMenuEvent;
 class QBoxLayout;
+class QSpacerItem;
 
 class ViewPanel;
 class ContextPanelObserver;
@@ -41,7 +43,7 @@ class ContextPanel : public QDockWidget, public Model::Observer
    Q_OBJECT
 
    public:
-      ContextPanel( QWidget * parent, ViewPanel * panel, ContextPanelObserver * ob );
+      ContextPanel( QMainWindow * parent, ViewPanel * panel, ContextPanelObserver * ob );
       virtual ~ContextPanel();
 
       // QDockWidget methods
@@ -64,7 +66,9 @@ class ContextPanel : public QDockWidget, public Model::Observer
       ContextPanelObserver * m_observer;
       ViewPanel * m_panel;
 
+      QWidget * m_mainWidget;
       QBoxLayout * m_layout;
+      QSpacerItem * m_spacer;
       ContextWidgetList m_widgets;
 };
 

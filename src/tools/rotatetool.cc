@@ -32,8 +32,8 @@
 #include "modelstatus.h"
 
 #include <math.h>
-#include <qobject.h>
-#include <qapplication.h>
+#include <QMainWindow>
+#include <QApplication>
 
 static void _add_coords( double * dest, double * rhs, double * lhs )
 {
@@ -141,9 +141,6 @@ void RotateTool::activated( int arg, Model * model, QMainWindow * mainwin )
 
    m_widget = new RotateToolWidget( this, mainwin,
          m_coords[0], m_coords[1], m_coords[2] );
-#ifdef HAVE_QT4
-   //mainwin->addDockWindow( m_widget, DockBottom );
-#endif
    m_widget->show();
 }
 
