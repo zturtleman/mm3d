@@ -24,26 +24,19 @@
 #ifndef __PROJTOOLWIDGET_H
 #define __PROJTOOLWIDGET_H
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-//Added by qt3to4:
-#include <QLabel>
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
+class QMainWindow;
 
-class Q3MainWindow;
+class QVBoxLayout;
+class QHBoxLayout;
+class QBoxLayout;
 
-class Q3VBoxLayout;
-class Q3HBoxLayout;
-
-#ifdef HAVE_QT4
-#define Q3GroupBox Q3GroupBox
-#endif
-class Q3GroupBox;
+class QGroupBox;
 class QComboBox;
 class QLabel;
 
-class ProjToolWidget : public Q3DockWindow
+#include <QDockWidget>
+
+class ProjToolWidget : public QDockWidget
 {
    Q_OBJECT
 
@@ -55,7 +48,7 @@ class ProjToolWidget : public Q3DockWindow
             virtual void setTypeValue( int newValue ) = 0;
       };
 
-      ProjToolWidget( Observer * observer, QWidget * parent );
+      ProjToolWidget( Observer * observer, QMainWindow * parent );
       virtual ~ProjToolWidget();
 
    public slots:
@@ -64,7 +57,7 @@ class ProjToolWidget : public Q3DockWindow
    protected:
       Observer    * m_observer;
 
-      Q3BoxLayout  * m_layout;
+      QBoxLayout  * m_layout;
 
       QLabel      * m_typeLabel;
       QComboBox   * m_typeValue;

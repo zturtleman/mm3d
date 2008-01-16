@@ -25,17 +25,17 @@
 
 #include "3dmprefs.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
+#include <QLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGroupBox>
+#include <QLabel>
+#include <QSpinBox>
+#include <QCheckBox>
+#include <QSlider>
 
-#include <qlayout.h>
-#include <qspinbox.h>
-#include <qcheckbox.h>
-#include <qlabel.h>
-#include <qslider.h>
-
-TorusToolWidget::TorusToolWidget( Observer * observer, QWidget * parent )
-   : Q3DockWindow ( Q3DockWindow::InDock, parent, "", Qt::WDestructiveClose ),
+TorusToolWidget::TorusToolWidget( Observer * observer, QMainWindow * parent )
+   : QDockWidget ( NULL, Qt::WDestructiveClose ),
      m_observer( observer )
 {
    const int  DEFAULT_SEGMENTS = 8;
@@ -43,7 +43,7 @@ TorusToolWidget::TorusToolWidget( Observer * observer, QWidget * parent )
    const int  DEFAULT_WIDTH  = 50;
    const bool DEFAULT_CIRCLE = false;
 
-   m_layout = boxLayout();
+   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
 
    m_segmentsLabel = new QLabel( tr("Segments"), this, "" );
    m_layout->addWidget( m_segmentsLabel );

@@ -24,27 +24,20 @@
 #ifndef __ELLIPSETOOLWIDGET_H
 #define __ELLIPSETOOLWIDGET_H
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-//Added by qt3to4:
-#include <Q3VBoxLayout>
-#include <Q3HBoxLayout>
-#include <QLabel>
+class QMainWindow;
 
-class Q3MainWindow;
+class QVBoxLayout;
+class QHBoxLayout;
+class QBoxLayout;
 
-class Q3VBoxLayout;
-class Q3HBoxLayout;
-
-#ifdef HAVE_QT4
-#define Q3GroupBox Q3GroupBox
-#endif
-class Q3GroupBox;
+class QGroupBox;
 class QSpinBox;
 class QLabel;
 class QCheckBox;
 
-class EllipsoidToolWidget : public Q3DockWindow
+#include <QDockWidget>
+
+class EllipsoidToolWidget : public QDockWidget
 {
    Q_OBJECT
 
@@ -58,7 +51,7 @@ class EllipsoidToolWidget : public Q3DockWindow
             virtual void setCenter( bool o ) = 0;
       };
 
-      EllipsoidToolWidget( Observer * observer, QWidget * parent );
+      EllipsoidToolWidget( Observer * observer, QMainWindow * parent );
       virtual ~EllipsoidToolWidget();
 
    public slots:
@@ -69,9 +62,9 @@ class EllipsoidToolWidget : public Q3DockWindow
    protected:
       Observer    * m_observer;
 
-      Q3BoxLayout * m_layout;
+      QBoxLayout  * m_layout;
 
-      Q3GroupBox   * m_groupBox;
+      QGroupBox   * m_groupBox;
       QLabel      * m_smoothLabel;
       QSpinBox    * m_smoothValue;
       QLabel      * m_facesLabel;

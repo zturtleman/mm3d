@@ -24,26 +24,19 @@
 #ifndef ROTATETOOLWIDGET_H_INC__
 #define ROTATETOOLWIDGET_H_INC__
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-//Added by qt3to4:
-#include <Q3VBoxLayout>
-#include <Q3HBoxLayout>
-#include <QLabel>
+class QMainWindow;
 
-class Q3MainWindow;
+class QVBoxLayout;
+class QHBoxLayout;
+class QBoxLayout;
 
-class Q3VBoxLayout;
-class Q3HBoxLayout;
-
-#ifdef HAVE_QT4
-#define Q3GroupBox Q3GroupBox
-#endif
-class Q3GroupBox;
+class QGroupBox;
 class QLineEdit;
 class QLabel;
 
-class RotateToolWidget : public Q3DockWindow
+#include <QDockWidget>
+
+class RotateToolWidget : public QDockWidget
 {
    Q_OBJECT
 
@@ -58,7 +51,7 @@ class RotateToolWidget : public Q3DockWindow
             virtual void setZValue( double newValue )    = 0;
       };
 
-      RotateToolWidget( Observer * observer, QWidget * parent,
+      RotateToolWidget( Observer * observer, QMainWindow * parent,
             double x, double y, double z );
       virtual ~RotateToolWidget();
 
@@ -73,9 +66,9 @@ class RotateToolWidget : public Q3DockWindow
       Observer    * m_observer;
       bool m_ignore;
 
-      Q3BoxLayout * m_layout;
+      QBoxLayout  * m_layout;
 
-      Q3GroupBox   * m_groupBox;
+      QGroupBox   * m_groupBox;
       QLabel      * m_xLabel;
       QLineEdit   * m_xValue;
       QLabel      * m_yLabel;

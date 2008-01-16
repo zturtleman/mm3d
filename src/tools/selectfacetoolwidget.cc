@@ -25,20 +25,20 @@
 
 #include "3dmprefs.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
+#include <QLayout>
+#include <QLabel>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QGroupBox>
+#include <QCheckBox>
 
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qcheckbox.h>
-
-SelectFaceToolWidget::SelectFaceToolWidget( Observer * observer, QWidget * parent )
-   : Q3DockWindow ( Q3DockWindow::InDock, parent, "", Qt::WDestructiveClose ),
+SelectFaceToolWidget::SelectFaceToolWidget( Observer * observer, QMainWindow * parent )
+   : QDockWidget ( NULL, Qt::WDestructiveClose ),
      m_observer( observer )
 {
    const bool DEFAULT_BACKFACING  = true;
 
-   m_layout = boxLayout();
+   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
 
    m_backfacingLabel = new QLabel( tr("Include Back-facing"), this, "" );
    m_layout->addWidget( m_backfacingLabel );

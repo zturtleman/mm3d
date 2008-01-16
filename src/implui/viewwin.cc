@@ -66,11 +66,12 @@
 
 #include "qtmain.h"
 
+#include <QDockWidget>
 #include <QFileDialog>
 #include <QMenu>
 #include <QPixmap>
 #include <QVBoxLayout>
-#include <Q3ActionGroup>
+#include <QActionGroup>
 
 #include <QContextMenuEvent>
 
@@ -83,22 +84,21 @@
 
 #include "pixmap/mm3dlogo-32x32.xpm"
 
-#include <qapplication.h>
-#include <qlayout.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-#include <stdio.h>
-#include <qtoolbutton.h>
-#include <qtooltip.h>
-#include <qtimer.h>
+#include <QApplication>
+#include <QLayout>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QToolButton>
+#include <QToolTip>
+#include <QTimer>
 #include <q3textstream.h>
 
-#include <q3toolbar.h>
 #include <QMenu>
+#include <QToolBar>
 #include <QResizeEvent>
 #include <QCloseEvent>
 
-
+#include <stdio.h>
 #include <list>
 #include <string>
 
@@ -224,7 +224,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    setIcon( (const char **) mm3dlogo_32x32_xpm );
    setIconText( QString("Misfit Model 3D") );
 
-   m_accel->insertItem( Key_F1, 0 );
+   m_accel->insertItem( Qt::Key_F1, 0 );
    connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
 
    updateCaption();
@@ -233,21 +233,22 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
 
    MainWidget * mainWidget = new MainWidget( this );
 
-   m_viewPanel = new ViewPanel( m_toolbox, mainWidget, "" );
+   m_viewPanel = new ViewPanel( m_toolbox, mainWidget );
    mainWidget->addWidgetToLayout( m_viewPanel );
 
-   m_statusBar = new StatusBar( m_model, mainWidget, "" );
+   m_statusBar = new StatusBar( m_model, mainWidget );
    mainWidget->addWidgetToLayout( m_statusBar );
    m_statusBar->setText( tr( "Press F1 for help using any window" ).utf8() );
    m_statusBar->setMaximumHeight( 30 );
 
-   m_animWin = new QDockWindow( tr("Animations"), this );
-   m_animWin->setHorizontallyStretchable( true );
-   m_animWin->setVerticallyStretchable( true );
+   m_animWin = new QDockWidget( tr("Animations"), this );
+   // FIXME QT4 contextpanel.cc
+   //m_animWin->setHorizontallyStretchable( true );
+   //m_animWin->setVerticallyStretchable( true );
    m_animWidget = new AnimWidget( m_model, false, m_animWin );
    QBoxLayout * animWinLayout = new QBoxLayout( QBoxLayout::LeftToRight, m_animWin );
    animWinLayout->addWidget( m_animWidget );
-   moveDockWindow( m_animWin, Qt::DockBottom );
+   addDockWidget( Qt::BottomDockWidgetArea, m_animWin );
    m_animWin->hide();
 
    connect( m_animWidget, SIGNAL(animWindowClosed()), this, SLOT(animationModeDone()) );
@@ -257,7 +258,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
 
    connect( this, SIGNAL(modelChanged(Model*)), m_contextPanel, SLOT(setModel(Model*)));
 
-   moveDockWindow( m_contextPanel, Qt::DockRight );
+   addDockWidget( Qt::RightDockWidgetArea, m_contextPanel );
    m_contextPanel->hide();
 
    m_boolPanel = new BoolPanel( m_model, this, m_viewPanel );
@@ -273,13 +274,13 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    connect( this, SIGNAL(modelChanged(Model*)), m_transformWin, SLOT(setModel(Model*)));
 
    setModel( m_model );
-   moveDockWindow( m_boolPanel, Qt::DockRight );
+   addDockWidget( Qt::RightDockWidgetArea, m_boolPanel );
    m_boolPanel->hide();
 
    setCentralWidget( mainWidget );
 
-   m_mruMenu = new QMenu( this, "" );
-   m_scriptMruMenu = new QMenu( this, "" );
+   m_mruMenu = new QMenu( this );
+   m_scriptMruMenu = new QMenu( this );
    connect( m_mruMenu, SIGNAL(aboutToShow()), this, SLOT(fillMruMenu()) );
    connect( m_mruMenu, SIGNAL(activated(int)), this, SLOT(openMru(int)) );
    connect( m_scriptMruMenu, SIGNAL(aboutToShow()), this, SLOT(fillScriptMruMenu()) );
@@ -305,10 +306,10 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    m_fileMenu->insertItem( tr("Quit", "File|Quit"), this, SLOT(quitEvent()), g_keyConfig.getKey( "viewwin_file_quit" ) );
    
    m_renderMenu = new QMenu( this );
-   Q3ActionGroup * group;
+   QActionGroup * group;
 
    // Bones group
-   group = new Q3ActionGroup( this );
+   group = new QActionGroup( this );
    m_hideJointsItem     = m_renderMenu->addAction( tr("Hide Joints", "View|Hide Joints"),      this, SLOT(boneJointHide()), g_keyConfig.getKey( "viewwin_view_render_joints_hide" ) );
    m_drawJointLinesItem = m_renderMenu->addAction( tr("Draw Joint Lines", "View|Draw Joint Lines"), this, SLOT(boneJointLines()), g_keyConfig.getKey( "viewwin_view_render_joints_lines" ) );
    m_drawJointBonesItem = m_renderMenu->addAction( tr("Draw Joint Bones", "View|Draw Joint Bones"), this, SLOT(boneJointBones()), g_keyConfig.getKey( "viewwin_view_render_joints_bones" ) );
@@ -329,7 +330,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    m_renderMenu->insertSeparator();
 
    // Projection group
-   group = new Q3ActionGroup( this );
+   group = new QActionGroup( this );
    m_renderProjections   = m_renderMenu->addAction( tr("Draw Texture Projections", "View|Draw Texture Projections"),   this, SLOT(renderProjections()), g_keyConfig.getKey( "viewwin_view_render_projections_show" ) );
    m_noRenderProjections = m_renderMenu->addAction( tr("Hide Texture Projections", "View|Hide Texture Projections"),   this, SLOT(noRenderProjections()), g_keyConfig.getKey( "viewwin_view_render_projections_hide" ) );
 
@@ -343,7 +344,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    m_renderMenu->insertSeparator();
 
    // Bad texture group
-   group = new Q3ActionGroup( this );
+   group = new QActionGroup( this );
    m_renderBadItem   = m_renderMenu->addAction( tr("Use Red Error Texture", "View|Use Red Error Texture"),     this, SLOT(renderBadEvent()), g_keyConfig.getKey( "viewwin_view_render_badtex_red" ) );
    m_noRenderBadItem = m_renderMenu->addAction( tr("Use Blank Error Texture", "View|Use Blank Error Texture"),   this, SLOT(noRenderBadEvent()), g_keyConfig.getKey( "viewwin_view_render_badtex_blank" ) );
 
@@ -361,7 +362,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    m_renderMenu->insertSeparator();
 
    // 3D Lines group
-   group = new Q3ActionGroup( this );
+   group = new QActionGroup( this );
    m_renderSelectionItem   = m_renderMenu->addAction( tr("Render 3D Lines", "View|Render 3D Lines"),   this, SLOT(renderSelectionEvent()), g_keyConfig.getKey( "viewwin_view_render_3d_lines_show" ) );
    m_noRenderSelectionItem = m_renderMenu->addAction( tr("Hide 3D Lines", "View|Hide 3D Lines"),   this, SLOT(noRenderSelectionEvent()), g_keyConfig.getKey( "viewwin_view_render_3d_lines_hide" ) );
 
@@ -379,7 +380,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    m_renderMenu->insertSeparator();
 
    // Backfacing poly group
-   group = new Q3ActionGroup( this );
+   group = new QActionGroup( this );
    m_renderBackface   = m_renderMenu->addAction( tr("Draw Back-facing Triangles", "View|Draw Back-facing Triangles"),   this, SLOT(renderBackface()), g_keyConfig.getKey( "viewwin_view_render_backface_show" ) );
    m_noRenderBackface = m_renderMenu->addAction( tr("Hide Back-facing Triangles", "View|Hide Back-facing Triangles"),   this, SLOT(noRenderBackface()), g_keyConfig.getKey( "viewwin_view_render_backface_hide" ) );
 
@@ -450,7 +451,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    m_toolMenu->insertItem( tr("Snap To"), m_snapMenu );
    m_toolMenu->insertSeparator();
 
-   m_toolBar = new Q3ToolBar( this );
+   m_toolBar = new QToolBar( this );
    addToolBar( m_toolBar );
 
    m_toolBar->setWindowTitle( tr( "Tools" ) );
@@ -2133,7 +2134,7 @@ bool ViewWindow::openModel( const char * filename )
       model_show_alloc_stats();
 
       model->setSaved( true );
-      ViewWindow * win = new ViewWindow( model, NULL, "" );
+      ViewWindow * win = new ViewWindow( model, NULL );
       win->getSaved(); // Just so I don't have a warning
 
       prefs_recent_model( filename );
@@ -2359,7 +2360,7 @@ void ViewWindow::backgroundWindowEvent()
 
 void ViewWindow::newModelEvent()
 {
-   ViewWindow * win = new ViewWindow( new Model, NULL, "" );
+   ViewWindow * win = new ViewWindow( new Model, NULL );
    win->getSaved(); // Just so I don't have a warning
 }
 

@@ -211,7 +211,7 @@ void ProjectionTool::setTypeValue( int newValue )
    m_type = newValue;
 }
 
-void ProjectionTool::activated( int arg, Model * model, Q3MainWindow * mainwin )
+void ProjectionTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    m_widget = new ProjToolWidget( this, mainwin );
 #ifdef HAVE_QT4

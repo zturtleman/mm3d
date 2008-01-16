@@ -302,7 +302,7 @@ void CubeTool::updateVertexCoords( Parent * parent, double x1, double y1, double
    }
 }
 
-void CubeTool::activated( int arg, Model * model, Q3MainWindow * mainwin )
+void CubeTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    m_widget = new CubeToolWidget( this, mainwin );
 #ifdef HAVE_QT4

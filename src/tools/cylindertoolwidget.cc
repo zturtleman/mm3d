@@ -25,16 +25,15 @@
 
 #include "3dmprefs.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
+#include <QLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QSpinBox>
+#include <QSlider>
+#include <QLabel>
 
-#include <qlayout.h>
-#include <qspinbox.h>
-#include <qlabel.h>
-#include <qslider.h>
-
-CylinderToolWidget::CylinderToolWidget( Observer * observer, QWidget * parent )
-   : Q3DockWindow ( Q3DockWindow::InDock, parent, "", Qt::WDestructiveClose ),
+CylinderToolWidget::CylinderToolWidget( Observer * observer, QMainWindow * parent )
+   : QDockWidget ( NULL, Qt::WDestructiveClose ),
      m_observer( observer )
 {
    const int DEFAULT_SEGMENTS = 4;
@@ -43,7 +42,7 @@ CylinderToolWidget::CylinderToolWidget( Observer * observer, QWidget * parent )
    const int DEFAULT_SCALE  = 100;
    //const int DEFAULT_SHAPE  = 10;
 
-   m_layout = boxLayout();
+   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
 
    m_segmentsLabel = new QLabel( tr("Segments"), this, "" );
    m_layout->addWidget( m_segmentsLabel );

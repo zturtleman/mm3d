@@ -42,6 +42,7 @@ StatusBar::StatusBar( Model * model, QWidget * parent )
      m_model( model ),
      m_queueDisplay( false )
 {
+   setupUi( this );
    s_modelMap[ m_model ] = this;
 }
 

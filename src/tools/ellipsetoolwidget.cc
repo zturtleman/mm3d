@@ -23,26 +23,26 @@
 
 #include "ellipsetoolwidget.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-
-#include <qlayout.h>
-#include <qspinbox.h>
-#include <qlabel.h>
-#include <qcheckbox.h>
+#include <QLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGroupBox>
+#include <QLabel>
+#include <QSpinBox>
+#include <QCheckBox>
 #include <math.h>
 
 #include "3dmprefs.h"
 
-EllipsoidToolWidget::EllipsoidToolWidget( Observer * observer, QWidget * parent )
-   : Q3DockWindow ( Q3DockWindow::InDock, parent, "", Qt::WDestructiveClose ),
+EllipsoidToolWidget::EllipsoidToolWidget( Observer * observer, QMainWindow * parent )
+   : QDockWidget ( NULL, Qt::WDestructiveClose ),
      m_observer( observer )
 {
    const int  DEFAULT_SMOOTHNESS = 2;
    const bool DEFAULT_SPHERE     = false;
    const bool DEFAULT_CENTER     = false;
 
-   m_layout = boxLayout();
+   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
 
    m_smoothLabel = new QLabel( tr("Smoothness:"), this, "" );
    m_layout->addWidget( m_smoothLabel );

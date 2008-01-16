@@ -38,9 +38,7 @@ BoolPanel::BoolPanel( Model * model, QWidget * parent, ViewPanel * panel )
 {
    setCaption( tr("Boolean Operation") );
 
-   QBoxLayout * layout = new QBoxLayout( QBoxLayout::TopToBottom, this );
-
-   layout->addWidget( m_boolWidget );
+   setWidget( m_boolWidget );
    m_boolWidget->show();
 
    //setHorizontallyStretchable( true );

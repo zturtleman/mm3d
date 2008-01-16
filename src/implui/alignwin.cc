@@ -33,14 +33,13 @@
 #include <QRadioButton>
 #include <stdlib.h>
 
-#include <q3accel.h>
+#include <QShortcut>
 
 using std::list;
 using std::map;
 
 AlignWin::AlignWin( Model * model, QWidget * parent )
    : QDialog( parent, Qt::WDestructiveClose ),
-     m_accel( new Q3Accel(this) ),
      m_model( model ),
      m_atX( AT_Center ),
      m_atY( AT_Center ),
@@ -53,15 +52,15 @@ AlignWin::AlignWin( Model * model, QWidget * parent )
    m_yCenter->setChecked( true );
    m_zCenter->setChecked( true );
 
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
 AlignWin::~AlignWin()
 {
 }
 
-void AlignWin::helpNowEvent( int id )
+void AlignWin::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_alignwin.html", true );
    win->show();

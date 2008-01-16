@@ -131,7 +131,7 @@ const char ** ExtrudeTool::getPixmap()
    return (const char **) extrudetool_xpm;
 }
 
-void ExtrudeTool::activated( int argc, Model * model, Q3MainWindow * mainwin )
+void ExtrudeTool::activated( int argc, Model * model, QMainWindow * mainwin )
 {
    model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Tip: Hold shift to restrict movement to one dimension" ).utf8() );
 }

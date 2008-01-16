@@ -40,6 +40,8 @@ SpherifyWin::SpherifyWin( Model * model, QWidget * parent )
    : ValueWin( parent, Qt::WDestructiveClose ),
      m_model( model )
 {
+   setupUi(this);
+
    setLabel( "Spherify" );
    m_valueSlider->setMinValue( -100 );
    m_valueEdit->setText( QString("0") );

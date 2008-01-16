@@ -42,7 +42,7 @@ class PolyTool : public Tool, public PolyToolWidget::Observer
 
       bool isCreation() { return true; };
 
-      void activated( int arg, Model * model, Q3MainWindow * mainwin );
+      void activated( int arg, Model * model, QMainWindow * mainwin );
       void deactivated();
 
       void mouseButtonDown( Parent * parent, int buttonState, int x, int y );

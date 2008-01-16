@@ -24,7 +24,6 @@
 #ifndef __CYLINDERTOOL_H
 #define __CYLINDERTOOL_H
 
-#include "mq3macro.h"
 #include "tool.h"
 #include "cylindertoolwidget.h"
 
@@ -39,7 +38,7 @@ class CylinderTool : public Tool, public CylinderToolWidget::Observer
       int getToolCount() { return 1; };
       const char * getName( int arg );
 
-      void activated( int arg, Model * model, Q3MainWindow * mainwin );
+      void activated( int arg, Model * model, QMainWindow * mainwin );
       void deactivated();
 
       bool isCreation() { return true; };

@@ -29,7 +29,6 @@
 #include "glmath.h"
 #include "log.h"
 #include "modelstatus.h"
-#include "mq3compat.h"
 
 #include <math.h>
 
@@ -51,7 +50,7 @@ CylinderTool::~CylinderTool()
 {
 }
 
-void CylinderTool::activated( int arg, Model * model, Q3MainWindow * mainwin )
+void CylinderTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    log_debug( "cylinder activated\n" );
    m_widget = new CylinderToolWidget( this, mainwin );

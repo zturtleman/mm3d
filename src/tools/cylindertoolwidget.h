@@ -24,27 +24,20 @@
 #ifndef __CYLINDERTOOLWIDGET_H
 #define __CYLINDERTOOLWIDGET_H
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-//Added by qt3to4:
-#include <Q3VBoxLayout>
-#include <Q3HBoxLayout>
-#include <QLabel>
+class QMainWindow;
 
-class Q3MainWindow;
+class QVBoxLayout;
+class QHBoxLayout;
+class QBoxLayout;
 
-class Q3VBoxLayout;
-class Q3HBoxLayout;
-
-#ifdef HAVE_QT4
-#define Q3GroupBox Q3GroupBox
-#endif
-class Q3GroupBox;
+class QGroupBox;
 class QSpinBox;
 class QSlider;
 class QLabel;
 
-class CylinderToolWidget : public Q3DockWindow
+#include <QDockWidget>
+
+class CylinderToolWidget : public QDockWidget
 {
    Q_OBJECT
 
@@ -61,7 +54,7 @@ class CylinderToolWidget : public Q3DockWindow
             virtual void setShapeValue( int newValue )    = 0;
       };
 
-      CylinderToolWidget( Observer * observer, QWidget * parent );
+      CylinderToolWidget( Observer * observer, QMainWindow * parent );
       virtual ~CylinderToolWidget();
 
    public slots:
@@ -74,9 +67,9 @@ class CylinderToolWidget : public Q3DockWindow
    protected:
       Observer    * m_observer;
 
-      Q3BoxLayout * m_layout;
+      QBoxLayout * m_layout;
 
-      Q3GroupBox   * m_groupBox;
+      QGroupBox   * m_groupBox;
       QLabel      * m_segmentsLabel;
       QSpinBox    * m_segmentsValue;
       QLabel      * m_sidesLabel;

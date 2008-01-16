@@ -24,21 +24,22 @@
 #include "projtoolwidget.h"
 #include "3dmprefs.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
 #include "model.h"
 
-#include <qlayout.h>
-#include <qcombobox.h>
-#include <qlabel.h>
+#include <QLayout>
+#include <QLabel>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QGroupBox>
+#include <QComboBox>
 
-ProjToolWidget::ProjToolWidget( Observer * observer, QWidget * parent )
-   : Q3DockWindow ( Q3DockWindow::InDock, parent, "", Qt::WDestructiveClose ),
+ProjToolWidget::ProjToolWidget( Observer * observer, QMainWindow * parent )
+   : QDockWidget ( NULL, Qt::WDestructiveClose ),
      m_observer( observer )
 {
    const int DEFAULT_TYPE = Model::TPT_Sphere;
 
-   m_layout = boxLayout();
+   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
 
    m_typeLabel = new QLabel( tr("Type"), this, "" );
    m_layout->addWidget( m_typeLabel );

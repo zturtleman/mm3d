@@ -32,9 +32,6 @@
 #include "glmath.h"
 #include "weld.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-
 #include <math.h>
 #include <vector>
 
@@ -58,7 +55,7 @@ TorusTool::~TorusTool()
 {
 }
 
-void TorusTool::activated( int arg, Model * model, Q3MainWindow * mainwin )
+void TorusTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    log_debug( "torus activated\n" );
    m_widget = new TorusToolWidget( this, mainwin );

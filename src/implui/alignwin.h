@@ -31,7 +31,6 @@
 #include <QDialog>
 
 class Model;
-class Q3Accel;
 
 class AlignWin : public QDialog, public Ui::AlignWinBase
 {
@@ -61,10 +60,9 @@ class AlignWin : public QDialog, public Ui::AlignWinBase
       void reject();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
    protected:
-      Q3Accel * m_accel;
       Model * m_model;
 
       double m_xMin;

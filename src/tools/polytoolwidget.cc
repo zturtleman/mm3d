@@ -25,21 +25,21 @@
 
 #include "3dmprefs.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
+#include <QLabel>
+#include <QLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QGroupBox>
+#include <QSpinBox>
+#include <QComboBox>
 
-#include <qlayout.h>
-#include <qspinbox.h>
-#include <qlabel.h>
-#include <qcombobox.h>
-
-PolyToolWidget::PolyToolWidget( Observer * observer, QWidget * parent )
-   : Q3DockWindow ( Q3DockWindow::InDock, parent, "", Qt::WDestructiveClose ),
+PolyToolWidget::PolyToolWidget( Observer * observer, QMainWindow * parent )
+   : QDockWidget ( NULL, Qt::WDestructiveClose ),
      m_observer( observer )
 {
    const int DEFAULT_FAN  = 0;
 
-   m_layout = boxLayout();
+   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
 
    m_typeLabel = new QLabel( tr("Poly Type"), this, "" );
    m_layout->addWidget( m_typeLabel );

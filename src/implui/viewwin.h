@@ -35,7 +35,7 @@ using std::list;
 class QVBoxLayout;
 class QMenuBar;
 class QMenu;
-class Q3ToolBar;
+class QToolBar;
 
 class QTimer;
 class ViewPanel;
@@ -261,7 +261,7 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       QMenu  * m_scriptMruMenu;
       QMenu  * m_snapMenu;
 
-      Q3ToolBar    * m_toolBar;
+      QToolBar    * m_toolBar;
 
       ViewPanel    * m_viewPanel;
       ContextPanel * m_contextPanel;

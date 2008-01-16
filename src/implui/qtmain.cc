@@ -21,19 +21,20 @@
  */
 
 
-#include <qgl.h>
 #include "qtmain.h"
 #include "viewwin.h"
 #include "model.h"
 #include "sysconf.h"
 #include "config.h"
-#include <unistd.h>
-#include <qapplication.h>
-#include <qtranslator.h>
-#include <qtextcodec.h>
-#include <qlocale.h>
+
+#include <QGLFormat>
+#include <QApplication>
+#include <QTranslator>
+#include <QLocale>
+
 #include <list>
 #include <string>
+#include <unistd.h>
 
 #include "log.h"
 #include "mm3dport.h"
@@ -109,15 +110,11 @@ int ui_prep( int argc, char * argv[] )
 {
    s_app = new QApplication( argc, argv );
 
-   QString loc = mlocale_get();
+   QString loc = mlocale_get().c_str();
 
    if ( loc == "" )
    {
-#ifdef HAVE_QT4
       loc = QLocale::system().name();
-#else
-      loc = QTextCodec::locale();
-#endif
    }
 
    // General Qt translations

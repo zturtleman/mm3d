@@ -40,7 +40,7 @@ SpherifyCommand::~SpherifyCommand()
 
 bool SpherifyCommand::activated( int arg, Model * model )
 {
-   SpherifyWin * win = new SpherifyWin( model, NULL, "" );  
+   SpherifyWin * win = new SpherifyWin( model, NULL );  
    win->show();
    return true;
 }

@@ -30,9 +30,6 @@
 #include "log.h"
 #include "modelstatus.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-
 #include <math.h>
 #include <vector>
 
@@ -54,7 +51,7 @@ EllipsoidTool::~EllipsoidTool()
 {
 }
 
-void EllipsoidTool::activated( int arg, Model * model, Q3MainWindow * mainwin )
+void EllipsoidTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    log_debug( "ellipse activated\n" );
    m_widget = new EllipsoidToolWidget( this, mainwin );

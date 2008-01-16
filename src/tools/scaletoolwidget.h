@@ -24,22 +24,13 @@
 #ifndef __SCALETOOLWIDGET_H
 #define __SCALETOOLWIDGET_H
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-//Added by qt3to4:
-#include <Q3VBoxLayout>
-#include <Q3HBoxLayout>
-#include <QLabel>
+class QMainWindow;
 
-class Q3MainWindow;
+class QVBoxLayout;
+class QHBoxLayout;
+class QBoxLayout;
 
-class Q3VBoxLayout;
-class Q3HBoxLayout;
-
-#ifdef HAVE_QT4
-#define Q3GroupBox Q3GroupBox
-#endif
-class Q3GroupBox;
+class QGroupBox;
 class QComboBox;
 class QLabel;
 
@@ -58,7 +49,9 @@ enum _ScalePoint_e
 };
 typedef enum _ScalePoint_e ScalePointE;
 
-class ScaleToolWidget : public Q3DockWindow
+#include <QDockWidget>
+
+class ScaleToolWidget : public QDockWidget
 {
    Q_OBJECT
 
@@ -72,7 +65,7 @@ class ScaleToolWidget : public Q3DockWindow
       };
 
 
-      ScaleToolWidget( Observer * observer, QWidget * parent );
+      ScaleToolWidget( Observer * observer, QMainWindow * parent );
       virtual ~ScaleToolWidget();
 
    public slots:
@@ -82,9 +75,9 @@ class ScaleToolWidget : public Q3DockWindow
    protected:
       Observer    * m_observer;
 
-      Q3BoxLayout  * m_layout;
+      QBoxLayout  * m_layout;
 
-      Q3GroupBox   * m_groupBox;
+      QGroupBox   * m_groupBox;
       QLabel      * m_proportionLabel;
       QComboBox   * m_proportionValue;
       QLabel      * m_pointLabel;

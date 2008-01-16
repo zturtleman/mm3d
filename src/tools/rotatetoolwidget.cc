@@ -25,20 +25,20 @@
 
 #include "3dmprefs.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
+#include <QLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGroupBox>
+#include <QLabel>
+#include <QLineEdit>
 
-#include <qlayout.h>
-#include <qlineedit.h>
-#include <qlabel.h>
-
-RotateToolWidget::RotateToolWidget( Observer * observer, QWidget * parent,
+RotateToolWidget::RotateToolWidget( Observer * observer, QMainWindow * parent,
       double x, double y, double z )
-   : Q3DockWindow ( Q3DockWindow::InDock, parent, "", Qt::WDestructiveClose ),
+   : QDockWidget ( NULL, Qt::WDestructiveClose ),
      m_observer( observer ),
      m_ignore( false )
 {
-   m_layout = boxLayout();
+   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
 
    m_xLabel = new QLabel( tr("X"), this, "" );
    m_layout->addWidget( m_xLabel );

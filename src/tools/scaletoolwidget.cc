@@ -24,21 +24,21 @@
 #include "scaletoolwidget.h"
 #include "3dmprefs.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
+#include <QLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGroupBox>
+#include <QLabel>
+#include <QComboBox>
 
-#include <qlayout.h>
-#include <qcombobox.h>
-#include <qlabel.h>
-
-ScaleToolWidget::ScaleToolWidget( Observer * observer, QWidget * parent )
-   : Q3DockWindow ( Q3DockWindow::InDock, parent, "", Qt::WDestructiveClose ),
+ScaleToolWidget::ScaleToolWidget( Observer * observer, QMainWindow * parent )
+   : QDockWidget ( NULL, Qt::WDestructiveClose ),
      m_observer( observer )
 {
    const int  DEFAULT_PROPORTION = ST_ScaleFree;
    const int  DEFAULT_POINT      = ST_ScalePointCenter;
 
-   m_layout = boxLayout();
+   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
 
    m_proportionLabel = new QLabel( tr("Proportion"), this, "" );
    m_layout->addWidget( m_proportionLabel );

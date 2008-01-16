@@ -128,7 +128,7 @@ const char ** BgMoveTool::getPixmap()
    return (const char **) bgmovetool_xpm;
 }
 
-void BgMoveTool::activated( int arg, Model * model, Q3MainWindow * mainwin )
+void BgMoveTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Move background image" ).utf8() );
    //m_widget = new BgMoveToolWidget( this, mainwin );

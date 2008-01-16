@@ -25,19 +25,23 @@
 
 #include "3dmprefs.h"
 
-#include <qlayout.h>
-#include <qspinbox.h>
-#include <qlabel.h>
-#include <qcheckbox.h>
+#include <QLayout>
+#include <QLabel>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QGroupBox>
+#include <QSpinBox>
+#include <QCheckBox>
 
-CubeToolWidget::CubeToolWidget( Observer * observer, QWidget * parent )
-   : Q3DockWindow ( Q3DockWindow::InDock, parent, "", Qt::WDestructiveClose ),
+// FIXME QT4 What to do about parent?
+CubeToolWidget::CubeToolWidget( Observer * observer, QMainWindow * parent )
+   : QDockWidget ( NULL, Qt::WDestructiveClose ),
      m_observer( observer )
 {
    const int  DEFAULT_SEGMENT = 1;
    const bool DEFAULT_CUBE    = false;
 
-   m_layout = boxLayout();
+   m_layout = new QBoxLayout( QBoxLayout::LeftToRight, this );
 
    m_cubeLabel = new QLabel( tr("Cube"), this, "" );
    m_layout->addWidget( m_cubeLabel );
