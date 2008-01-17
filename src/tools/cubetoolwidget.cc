@@ -34,7 +34,6 @@
 #include <QSpinBox>
 #include <QCheckBox>
 
-// FIXME QT4 What to do about parent?
 CubeToolWidget::CubeToolWidget( Observer * observer, QMainWindow * parent )
    : ToolWidget( parent ),
      m_observer( observer )

@@ -217,25 +217,9 @@
   </connection>
   <connection>
    <sender>m_list</sender>
-   <signal>returnPressed(QListWidgetItem*)</signal>
+   <signal>itemActivated(QTreeWidgetItem*,int)</signal>
    <receiver>MetaWindowBase</receiver>
-   <slot>editItemEvent(QListWidgetItem*)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>m_list</sender>
-   <signal>doubleClicked(QListWidgetItem*)</signal>
-   <receiver>MetaWindowBase</receiver>
-   <slot>editItemEvent(QListWidgetItem*)</slot>
+   <slot>editItemEvent(QTreeWidgetItem*,int)</slot>
    <hints>
     <hint type="sourcelabel" >
      <x>20</x>

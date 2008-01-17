@@ -31,6 +31,7 @@ ToolWidget::ToolWidget( QMainWindow * window )
    m_layout->addStretch();
    setWidget( m_mainWidget );
    window->addDockWidget( Qt::TopDockWidgetArea, this );
+   setFeatures( QDockWidget::NoDockWidgetFeatures );
 }
 
 ToolWidget::~ToolWidget()
