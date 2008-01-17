@@ -1,6 +1,6 @@
 /*  Misfit Model 3D
  * 
- *  Copyright (c) 2004-2007 Kevin Worcester
+ *  Copyright (c) 2008 Kevin Worcester
  * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,48 +21,36 @@
  */
 
 
-#ifndef __TRANSFORMWIN_H
-#define __TRANSFORMWIN_H
+#ifndef ANIMWIN_H_INC__
+#define ANIMWIN_H_INC__
 
-#include "transformwin.base.h"
+#include <QDockWidget>
 
-#include "glmath.h"
-
-#include <QDialog>
+#include "animwidget.h"
 
 class Model;
-class RgbaWin;
-class Q3Accel;
 
-class TransformWindow : public QDialog, public Ui::TransformWindowBase
+class AnimWindow : public QDockWidget
 {
    Q_OBJECT
 
    public:
-      TransformWindow( Model * model, QWidget * parent = NULL );
-      virtual ~TransformWindow();
+      AnimWindow( Model * model, bool isUndo, QWidget * parent = NULL );
+      virtual ~AnimWindow();
 
-      bool matrixIsUndoable( const Matrix & m );
-      bool warnNoUndo( bool undoable );
+      AnimWidget * getAnimWidget() { return m_animWidget; }
+
+   signals:
+      void animWindowClosed();
 
    public slots:
-      // Transform window events
-      void translateEvent();
-      void rotateEulerEvent();
-      void rotateQuaternionEvent();
-      void scaleEvent();
-      void matrixEvent();
-
-      void setModel( Model * m );
-      void helpNowEvent( int );
-
       void close();
 
    protected:
+      void closeEvent( QCloseEvent * e );
 
-      Q3Accel * m_accel;
-      Model  * m_model;
-      bool     m_undoable;
+   private:
+      AnimWidget * m_animWidget;
 };
 
-#endif // __TRANSFORMWIN_H
+#endif  // ANIMWIN_H_INC__

@@ -43,6 +43,7 @@ class NewAnim : public QDialog, public Ui::NewAnimBase
       bool    isSkeletal();
       void    setSkeletal( bool o );
 
+   public slots:
       void nameChangedEvent();
 };
 

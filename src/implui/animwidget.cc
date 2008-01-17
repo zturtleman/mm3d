@@ -189,12 +189,6 @@ void AnimWidget::initialize( Model * model, bool isUndo )
    m_stop->setEnabled( false );
 }
 
-void AnimWidget::helpNowEvent( int )
-{
-   HelpWin * win = new HelpWin( "olh_animwin.html", true );
-   win->show();
-}
-
 void AnimWidget::nameSelected( int index )
 {
    log_debug( "anim name selected: %d\n", index );
@@ -557,23 +551,6 @@ void AnimWidget::doPause()
    m_animTimer->stop();
 }
 
-/*
-void AnimWidget::closeEvent( QCloseEvent * e )
-{
-   AnimWidgetBase::closeEvent( e );
-   //emit animWindowClosed();
-   stopAnimationMode();
-}
-*/
-
-void AnimWidget::close()
-{
-   log_debug( "hiding window on close\n" );
-   emit animWindowClosed();
-   stopAnimationMode();
-   hide();
-}
-
 void AnimWidget::timeElapsed()
 {
    PORT_timeval tv;
@@ -668,9 +645,6 @@ void AnimWidget::accelActivated( int id )
 {
    switch ( id )
    {
-      case ANIMWIN_HELP_ID:
-         helpNowEvent( id );
-         break;
       case ANIMWIN_UNDO_ID:
          undoRequest();
          break;

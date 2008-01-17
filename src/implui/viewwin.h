@@ -52,6 +52,7 @@ class Tool;
 class Script;
 
 class AnimWidget;
+class AnimWindow;
 class QToolButton;
 
 class Toolbox;
@@ -158,7 +159,9 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
 
       void startAnimationMode();
       void stopAnimationMode();
-      void animationModeDone();
+
+      void animationModeOn();
+      void animationModeOff();
 
       void contextPanelHidden();
 
@@ -271,7 +274,7 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       TransformWindow * m_transformWin;
       StatusBar   * m_statusBar;
       Model       * m_model;
-      QDockWidget * m_animWin;
+      AnimWindow  * m_animWin;
       AnimWidget  * m_animWidget;
 
       int           m_animSetsItem;

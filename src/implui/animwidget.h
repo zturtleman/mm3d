@@ -53,9 +53,6 @@ class AnimWidget : public QWidget, public Ui::AnimWidgetBase
       void animWindowClosed();
 
    public slots:
-      void helpNowEvent( int );
-      void close();
-
       void nameSelected(int);
       void deleteClicked();
       void setCurrentFrame(int);

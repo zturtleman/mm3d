@@ -46,6 +46,7 @@
 #include "aboutwin.h"
 #include "animsetwin.h"
 #include "animexportwin.h"
+#include "animwin.h"
 #include "animwidget.h"
 #include "metawin.h"
 #include "3dmprefs.h"
@@ -68,6 +69,8 @@
 
 #include <QDockWidget>
 #include <QFileDialog>
+#include <QFile>
+#include <QDataStream>
 #include <QMenu>
 #include <QPixmap>
 #include <QVBoxLayout>
@@ -105,7 +108,8 @@
 using std::list;
 using std::string;
 
-const char DOCK_FILENAME[] = "dock.cfg";
+const char DOCK_FILENAME[] = "dock.dat";
+const int DOCK_VERSION = 1;
 
 //using namespace QIconSet;
 
@@ -241,25 +245,23 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    m_statusBar->setText( tr( "Press F1 for help using any window" ).utf8() );
    m_statusBar->setMaximumHeight( 30 );
 
-   m_animWin = new QDockWidget( tr("Animations"), this );
-   // FIXME QT4 contextpanel.cc
-   //m_animWin->setHorizontallyStretchable( true );
-   //m_animWin->setVerticallyStretchable( true );
-   m_animWidget = new AnimWidget( m_model, false, m_animWin );
-   m_animWin->setWidget( m_animWidget );
+   m_animWin = new AnimWindow( m_model, false, this );
+   m_animWin->setObjectName( "mainwin_animwin" );
+   m_animWidget = m_animWin->getAnimWidget();
    addDockWidget( Qt::BottomDockWidgetArea, m_animWin );
-   m_animWin->hide();
 
-   connect( m_animWidget, SIGNAL(animWindowClosed()), this, SLOT(animationModeDone()) );
+   connect( m_animWin, SIGNAL(animWindowClosed()), this, SLOT(animationModeOff()) );
+   connect( m_animWidget, SIGNAL(animWindowClosed()), this, SLOT(animationModeOff()) );
 
    m_contextPanel = new ContextPanel( this, m_viewPanel, this );
+   m_contextPanel->setObjectName( "mainwin_properties" );
    m_contextPanel->setWindowTitle( tr( "Properties" ) );
 
    connect( this, SIGNAL(modelChanged(Model*)), m_contextPanel, SLOT(setModel(Model*)));
-
    addDockWidget( Qt::RightDockWidgetArea, m_contextPanel );
 
    m_boolPanel = new BoolPanel( m_model, this, m_viewPanel );
+   m_boolPanel->setObjectName( "mainwin_boolwin" );
    connect( this, SIGNAL(modelChanged(Model*)), m_boolPanel, SLOT(setModel(Model*)));
 
    m_projectionWin = new ProjectionWin( m_model, this, m_viewPanel );
@@ -271,9 +273,10 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    m_transformWin = new TransformWindow( m_model, this );
    connect( this, SIGNAL(modelChanged(Model*)), m_transformWin, SLOT(setModel(Model*)));
 
-   setModel( m_model );
    addDockWidget( Qt::RightDockWidgetArea, m_boolPanel );
-   tabifyDockWidget( m_boolPanel, m_contextPanel );
+   setModel( m_model );
+
+   tabifyDockWidget( m_contextPanel, m_boolPanel );
 
    setCentralWidget( mainWidget );
 
@@ -450,6 +453,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    m_toolMenu->insertSeparator();
 
    m_toolBar = new QToolBar( this );
+   m_toolBar->setObjectName( "mainwin_toolbar" );
    addToolBar( m_toolBar );
 
    m_toolBar->setWindowTitle( tr( "Tools" ) );
@@ -561,18 +565,14 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    m_viewPanel->modelUpdatedEvent();
    show();
 
-   // FIXME make sure this is fine
-   // QTimer::singleShot( 50, m_viewPanel, SLOT(reshow()) );
-
    QTimer * m_savedTimer = new QTimer();
    connect( m_savedTimer, SIGNAL(timeout()), this, SLOT(savedTimeoutCheck()) );
    m_savedTimer->start( 1000 );
 
    QString windowPos;
-   // FIXME QT4
-   //Q3TextStream ts( &windowPos, QIODevice::ReadWrite  );
 
    loadDockPositions();
+   m_animWin->hide();
 }
 
 ViewWindow::~ViewWindow()
@@ -1166,18 +1166,6 @@ int ViewWindow::insertMenuItem( QMenu * parentMenu,
       {
          // FIXME deal with multi-level paths
          addMenu = new QMenu( this );
-#if 0  // FIXME QT4: this was non-Qt4 code is it still needed?
-         // FIXME this is a hack, perhaps need a connect callback?
-         // Or just wait until Qt4 only to fix it?
-         if ( parentMenu == m_toolMenu )
-         {
-            connect( addMenu, SIGNAL(activated(int)), this, SLOT(toolActivated(int)));
-         }
-         else if ( parentMenu == m_geometryMenu )
-         {
-            connect( addMenu, SIGNAL(activated(int)), this, SLOT(primitiveCommandActivated(int)));
-         }
-#endif // 0
          // FIXME this is also a hack
          QString module = "Tool";
          if ( parentMenu != m_toolMenu )
@@ -1227,19 +1215,11 @@ void ViewWindow::frameSelectedEvent()
 
 void ViewWindow::showContextEvent()
 {
-   bool showContext = m_contextPanel->isVisible() ? false : true;
-   m_viewMenu->changeItem( m_showContext, showContext ? tr( "Hide Properties", "View|Hide Properties") : tr("Show Properties", "View|Show Properties") );
    m_viewPanel->modelUpdatedEvent();
 
-   if ( showContext )
-   {
-      m_contextPanel->show();
-      m_contextPanel->setModel( m_model );
-   }
-   else
-   {
-      m_contextPanel->hide();
-   }
+   m_contextPanel->setModel( m_model );
+   m_contextPanel->show();
+   m_contextPanel->raise();
 }
 
 void ViewWindow::renderBadEvent()
@@ -1492,6 +1472,7 @@ void ViewWindow::metaWindowEvent()
 void ViewWindow::boolWindowEvent()
 {
    m_boolPanel->show();
+   m_boolPanel->raise();
 }
 
 void ViewWindow::reloadTexturesEvent()
@@ -1521,20 +1502,8 @@ void ViewWindow::undoRequest()
 
          if ( m_model->getAnimationMode() )
          {
-            //m_animWin = new AnimWindow( m_model, true, this );
-            //connect( m_animWin, SIGNAL(animWindowClosed()), this, SLOT(animationModeDone()) );
-            m_animMenu->setItemEnabled( m_animExportItem, false );
-            //m_animMenu->setItemEnabled( m_animSetsItem, false );
-            m_animMenu->setItemEnabled( m_startAnimItem, false );
-            m_animMenu->setItemEnabled( m_stopAnimItem,  true  );
-            m_animMenu->setItemEnabled( m_animSetRotItem,  true  );
-            m_animMenu->setItemEnabled( m_animSetTransItem,  true  );
-            m_animMenu->setItemEnabled( m_animCopyFrame,  true  );
-            m_animMenu->setItemEnabled( m_animPasteFrame,  false  ); // Disabled until copy occurs
-            m_animMenu->setItemEnabled( m_animClearFrame,  true  );
-            m_animMenu->setItemEnabled( m_animCopySelected,  true  );
-            m_animMenu->setItemEnabled( m_animPasteSelected,  false  ); // Disabled until copy occurs
             m_animWidget->initialize( m_model, true );
+            animationModeOn();
             m_animWin->show();
          }
          else
@@ -1578,20 +1547,8 @@ void ViewWindow::redoRequest()
 
          if ( m_model->getAnimationMode() )
          {
-            //m_animWin = new AnimWindow( m_model, true, this );
-            //connect( m_animWin, SIGNAL(animWindowClosed()), this, SLOT(animationModeDone()) );
-            m_animMenu->setItemEnabled( m_animExportItem, false );
-            //m_animMenu->setItemEnabled( m_animSetsItem, false );
-            m_animMenu->setItemEnabled( m_startAnimItem, false );
-            m_animMenu->setItemEnabled( m_stopAnimItem,  true  );
-            m_animMenu->setItemEnabled( m_animSetRotItem,  true  );
-            m_animMenu->setItemEnabled( m_animSetTransItem,  true  );
-            m_animMenu->setItemEnabled( m_animCopyFrame,  true  );
-            m_animMenu->setItemEnabled( m_animPasteFrame,  false  ); // Disabled until copy occurs
-            m_animMenu->setItemEnabled( m_animClearFrame,  true  );
-            m_animMenu->setItemEnabled( m_animCopySelected,  true  );
-            m_animMenu->setItemEnabled( m_animPasteSelected,  false  ); // Disabled until copy occurs
             m_animWidget->initialize( m_model, true );
+            animationModeOn();
             m_animWin->show();
          }
          else
@@ -1736,11 +1693,22 @@ void ViewWindow::animClearFrameEvent()
 
 void ViewWindow::startAnimationMode()
 {
+   m_animWidget->initialize( m_model, false );
+   animationModeOn();
+   m_animWin->show();
+}
+
+void ViewWindow::stopAnimationMode()
+{
+   m_animWin->close();
+   m_animWidget->stopAnimationMode();
+   animationModeOff();
+}
+
+void ViewWindow::animationModeOn()
+{
    // FIXME centralize this logic (see undo/redo)
-   //m_animWin = new AnimWindow( m_model, false, this );
-   //connect( m_animWin, SIGNAL(animWindowClosed()), this, SLOT(animationModeDone()) );
    m_animMenu->setItemEnabled( m_animExportItem, false );
-   //m_animMenu->setItemEnabled( m_animSetsItem, false );
    m_animMenu->setItemEnabled( m_startAnimItem, false );
    m_animMenu->setItemEnabled( m_stopAnimItem,  true  );
    m_animMenu->setItemEnabled( m_animSetRotItem,  true  );
@@ -1750,24 +1718,12 @@ void ViewWindow::startAnimationMode()
    m_animMenu->setItemEnabled( m_animClearFrame,  true  );
    m_animMenu->setItemEnabled( m_animCopySelected,  true  );
    m_animMenu->setItemEnabled( m_animPasteSelected,  false  ); // Disabled until copy occurs
-   m_animWidget->initialize( m_model, false );
-   m_animWin->show();
 }
 
-void ViewWindow::stopAnimationMode()
-{
-   if ( m_animWin->isVisible() )
-   {
-      //m_animWin->close();
-      m_animWidget->stopAnimationMode();
-      animationModeDone();
-   }
-}
-
-void ViewWindow::animationModeDone()
+void ViewWindow::animationModeOff()
 {
    // FIXME centralize this logic (see undo/redo)
-   m_animWin->hide();
+   m_animWin->close();
    m_animMenu->setItemEnabled( m_animExportItem, true );
    //m_animMenu->setItemEnabled( m_animSetsItem, true );
    m_animMenu->setItemEnabled( m_startAnimItem, true );
@@ -2347,60 +2303,40 @@ void ViewWindow::savedTimeoutCheck()
 
 void ViewWindow::saveDockPositions()
 {
-   // FIXME re-implement
-   /*
-   std::string dockFile = getMm3dHomeDirectory();
+   QString dockFile( getMm3dHomeDirectory().c_str() );
    dockFile += "/";
    dockFile += DOCK_FILENAME;
 
-   FILE * fp = fopen( dockFile.c_str(), "w" );
-   if ( fp )
+   QFile fp( dockFile );
+   if ( fp.open( QIODevice::WriteOnly ) )
    {
       {
-         // ts must go out of scope before fp is closed
-         Q3TextStream ts( fp, QIODevice::WriteOnly );
-         ts << *this;
+         // Must go out of scope before fp is closed.
+         QDataStream stream(&fp);
+         stream << this->saveState( DOCK_VERSION );
       }
-      fclose( fp );
+      fp.close();
    }
-   */
 }
 
 void ViewWindow::loadDockPositions()
 {
-   // FIXME re-implement
-   /*
-   std::string dockFile = getMm3dHomeDirectory();
+   QString dockFile( getMm3dHomeDirectory().c_str() );
    dockFile += "/";
    dockFile += DOCK_FILENAME;
 
-   FILE * fp = fopen( dockFile.c_str(), "r" );
-   if ( fp )
+   QFile fp( dockFile );
+   if ( fp.open( QIODevice::ReadOnly ) )
    {
       {
-         // ts must go out of scope before fp is closed
-         Q3TextStream ts( fp, QIODevice::ReadOnly );
-         ts >> *this;
+         // Must go out of scope before fp is closed.
+         QDataStream stream(&fp);
+         QByteArray state;
+         stream >> state;
+         this->restoreState( state, DOCK_VERSION );
       }
-      fclose( fp );
-
-      // Update menu entry for context panel
-      if ( m_contextPanel->isVisible() )
-      {
-         m_viewMenu->changeItem( m_showContext, tr( "Hide Properties", "View|Hide Properties" ) );
-         m_contextPanel->setModel( m_model );
-      }
-      else
-      {
-         m_viewMenu->changeItem( m_showContext, tr("Show Properties", "View|Show Properties") );
-      }
-
-      // If the anim toolbar was visible on shutdown, it will be visible again.
-      // Hide it, and take the model out of animation mode.
-      m_model->setNoAnimation();
-      animationModeDone();
+      fp.close();
    }
-   */
 }
 
 void ViewWindow::updateCaption()

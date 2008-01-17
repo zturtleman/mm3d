@@ -8,6 +8,7 @@ libimplui_HFILES = \
 	animexportwin.h \
 	animsetwin.h \
 	animwidget.h \
+	animwin.h \
 	autoassignjointwin.h \
 	backgroundselect.h \
 	backgroundwin.h \
@@ -62,6 +63,7 @@ libimplui_MOC = \
    animexportwin.moc.cc \
 	animsetwin.moc.cc \
 	animwidget.moc.cc \
+	animwin.moc.cc \
 	autoassignjointwin.moc.cc \
 	backgroundselect.moc.cc \
 	backgroundwin.moc.cc \
@@ -112,6 +114,7 @@ libimplui_a_SOURCES = \
 	animexportwin.cc \
 	animsetwin.cc \
 	animwidget.cc \
+	animwin.cc \
 	autoassignjointwin.cc \
 	backgroundselect.cc \
 	backgroundwin.cc \

@@ -140,14 +140,14 @@ void AlignWin::selectedZMax()
 
 void AlignWin::accept()
 {
-   log_debug( "Alignment complete" );
+   log_debug( "Alignment complete\n" );
    m_model->operationComplete( tr( "Align Selected", "operation complete" ).utf8() );
    QDialog::accept();
 }
 
 void AlignWin::reject()
 {
-   log_debug( "Alignment canceled" );
+   log_debug( "Alignment canceled\n" );
    m_model->undoCurrent();
    DecalManager::getInstance()->modelUpdated( m_model );
    QDialog::reject();

@@ -90,11 +90,10 @@ void MetaWindow::newClicked()
 
 void MetaWindow::deleteClicked()
 {
-   // FIXME QT4 not sure if this is right.
    delete m_list->currentItem();
 }
 
-void MetaWindow::editItemEvent( QTreeWidgetItem * item )
+void MetaWindow::editItemEvent( QTreeWidgetItem * item, int col )
 {
    KeyValueWindow w( item );
    w.exec();

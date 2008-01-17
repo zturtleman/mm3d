@@ -40,6 +40,7 @@ class AlignWin : public QDialog, public Ui::AlignWinBase
       AlignWin( Model *, QWidget * parent = NULL );
       virtual ~AlignWin();
 
+   public slots:
       void alignX();
       void alignY();
       void alignZ();
@@ -59,7 +60,6 @@ class AlignWin : public QDialog, public Ui::AlignWinBase
       void accept();
       void reject();
 
-   public slots:
       void helpNowEvent();
 
    protected:

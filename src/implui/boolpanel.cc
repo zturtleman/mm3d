@@ -32,21 +32,11 @@
 #include <QContextMenuEvent>
 
 BoolPanel::BoolPanel( Model * model, QWidget * parent, ViewPanel * panel )
-   : QDockWidget( parent ),
+   : QDockWidget( tr("Boolean Operation"), parent ),
      m_panel( panel ),
      m_boolWidget( new BoolWin( model, panel, this ) )
 {
-   setCaption( tr("Boolean Operation") );
-
    setWidget( m_boolWidget );
-   m_boolWidget->show();
-
-   //setHorizontallyStretchable( true );
-   //setVerticallyStretchable( true );
-   //setResizeEnabled( true );
-
-   // FIXME QT4 (see contextpanel.cc)
-   // setCloseMode( 3DockWindow::Always );
 }
 
 BoolPanel::~BoolPanel()

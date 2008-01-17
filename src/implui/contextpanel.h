@@ -32,6 +32,7 @@
 #include <QMainWindow>
 
 class QContextMenuEvent;
+class QCloseEvent;
 class QBoxLayout;
 class QSpacerItem;
 
@@ -51,6 +52,7 @@ class ContextPanel : public QDockWidget, public Model::Observer
       void show();
       void close();
       void hide();
+      void closeEvent( QCloseEvent * e );
 
       void setModel( Model * m );
 

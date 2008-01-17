@@ -35,6 +35,7 @@
 #include <QLayout>
 #include <QSpacerItem>
 #include <QContextMenuEvent>
+#include <QCloseEvent>
 
 ContextPanel::ContextPanel( QMainWindow * parent,
       ViewPanel * panel, ContextPanelObserver * ob )
@@ -47,14 +48,6 @@ ContextPanel::ContextPanel( QMainWindow * parent,
 {
    setWidget( m_mainWidget );
    m_layout = new QBoxLayout( QBoxLayout::TopToBottom, m_mainWidget );
-
-   //setHorizontallyStretchable( true );
-   //setVerticallyStretchable( true );
-   //setResizeEnabled( true );
-
-   // FIXME QT4
-   // setCloseMode( Q3DockWindow::Always );
-   // setFeatures(QDockWidget::AllDockWidgetFeatures);
 }
 
 ContextPanel::~ContextPanel()
@@ -270,7 +263,6 @@ void ContextPanel::close()
 void ContextPanel::hide()
 {
    log_debug( "ContextPanel::hide()\n" );
-   emit panelHidden();
    QDockWidget::hide();
 }
 
@@ -278,3 +270,9 @@ void ContextPanel::contextMenuEvent( QContextMenuEvent * e )
 {
    e->ignore();
 }
+
+void ContextPanel::closeEvent( QCloseEvent * e )
+{
+   emit panelHidden();
+}
+

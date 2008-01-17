@@ -1,6 +1,6 @@
 /*  Misfit Model 3D
  * 
- *  Copyright (c) 2004-2007 Kevin Worcester
+ *  Copyright (c) 2008 Kevin Worcester
  * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,38 +20,32 @@
  *  See the COPYING file for full license text.
  */
 
-#ifndef __METAWIN_H
-#define __METAWIN_H
 
-#include "metawin.base.h"
+#include "animwin.h"
 
-#include <QDialog>
+#include "log.h"
 
-class Model;
-class QTreeWidgetItem;
-class Q3Accel;
+#include <QCloseEvent>
 
-class MetaWindow : public QDialog, public Ui::MetaWindowBase
+AnimWindow::AnimWindow( Model * model, bool isUndo, QWidget * parent )
+   : QDockWidget( tr("Animations"), parent ),
+     m_animWidget( new AnimWidget( model, isUndo, this ) )
 {
-      Q_OBJECT
-   public:
-      MetaWindow( Model *, QWidget * parent = NULL );
-      virtual ~MetaWindow();
+   setWidget( m_animWidget );
+}
 
-   public slots:
-      void helpNowEvent( int );
+AnimWindow::~AnimWindow()
+{
+   log_debug( "Destroying AnimWindow()\n" );
+}
 
-      void newClicked();
-      void deleteClicked();
-      void editItemEvent( QTreeWidgetItem * item, int col );
+void AnimWindow::close()
+{
+   QDockWidget::hide();
+}
 
-      void accept();
-      void reject();
-
-   protected:
-      Q3Accel * m_accel;
-      Model  * m_model;
-};
-
-#endif // __METAWIN_H
+void AnimWindow::closeEvent( QCloseEvent * e )
+{
+   emit animWindowClosed();
+}
 

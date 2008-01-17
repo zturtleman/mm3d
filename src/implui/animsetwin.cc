@@ -326,16 +326,18 @@ void AnimSetWindow::deleteClicked()
       fillAnimationList();
 
       count = m_animList->count();
+      for ( unsigned int t = 0; t < count; ++t )
+      {
+         m_animList->item(t)->setSelected( false );
+      }
       if ( count > 0 )
       {
          if ( lastDeleted < count )
          {
-            m_animList->item(lastDeleted)->setSelected( true );
             m_animList->setCurrentItem(m_animList->item(lastDeleted));
          }
          else
          {
-            m_animList->item(count - 1)->setSelected( true );
             m_animList->setCurrentItem(m_animList->item(count - 1));
          }
       }
