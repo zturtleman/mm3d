@@ -38,6 +38,7 @@ class BackgroundSelect : public QWidget, public Ui::BackgroundSelectBase
       BackgroundSelect( Model * mode, unsigned index, QWidget * parent = NULL );
       virtual ~BackgroundSelect();
 
+   public slots:
       void setFilename( const char * filename );
       void noneEvent();
       void selectFileEvent();

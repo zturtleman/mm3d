@@ -39,11 +39,11 @@ class BackgroundWin : public QDialog, public Ui::BackgroundWinBase
       BackgroundWin( Model *, QWidget * parent = NULL );
       virtual ~BackgroundWin();
 
+   public slots:
       void selectedPageEvent( const QString & str );
       void accept();
       void reject();
 
-   public slots:
       void helpNowEvent();
 
    protected:

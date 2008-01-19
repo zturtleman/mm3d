@@ -507,6 +507,8 @@ void AnimWidget::stopClicked()
    m_currentTime = 0;
    m_stop->setEnabled( false );
    m_play->setEnabled(true);
+   m_frameCount->setEnabled(true);
+   m_countSlider->setEnabled(true);
    m_playing = false;
    m_animTimer->stop();
    m_model->setCurrentAnimationFrame( m_countSlider->value() - 1 );
@@ -529,6 +531,9 @@ void AnimWidget::doPlay()
       return;
    }
    m_play->setEnabled(false);
+   m_frameCount->setEnabled(false);
+   m_countSlider->setEnabled(false);
+
    m_timeInterval = double (1.0 / m_model->getAnimFPS( m_mode, indexToAnim( m_animName->currentIndex() ) ));
 
    PORT_gettimeofday( &m_startTime );
@@ -648,10 +653,18 @@ void AnimWidget::refreshPage()
          index = indexToAnim( index );
 
          m_deleteButton->setEnabled( true );
-         m_frameCount->setEnabled( true );
+         if ( m_playing )
+         {
+            m_frameCount->setEnabled( false );
+            m_countSlider->setEnabled( false );
+         }
+         else
+         {
+            m_frameCount->setEnabled( true );
+            m_countSlider->setEnabled( true );
+         }
          m_fps->setEnabled( true );
          m_animName->setEnabled( true );
-         m_countSlider->setEnabled( true );
          m_play->setEnabled( true );
          m_loop->setEnabled( true );
 
@@ -695,9 +708,17 @@ void AnimWidget::refreshPage()
       if ( m_animCount > 0)
       {
          m_animName->setEnabled( true );
-         m_frameCount->setEnabled( true );
+         if ( m_playing )
+         {
+            m_frameCount->setEnabled( false );
+            m_countSlider->setEnabled( false );
+         }
+         else
+         {
+            m_frameCount->setEnabled( true );
+            m_countSlider->setEnabled( true );
+         }
          m_fps->setEnabled( true );
-         m_countSlider->setEnabled( true );
          m_play->setEnabled( true );
          m_stop->setEnabled( true );
          m_loop->setEnabled( true );

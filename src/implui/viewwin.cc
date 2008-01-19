@@ -221,6 +221,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent )
      m_last( NULL ),
      m_currentTool( NULL )
 {
+   m_model->setUndoEnabled( false );
    setAttribute( Qt::WA_DeleteOnClose );
    _winList.push_back( this );
 
@@ -564,9 +565,6 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent )
    m_helpMenu->setTitle( tr("&Help", "menu bar") );
    m_menuBar->addMenu( m_helpMenu );
 
-   // this is probably unnecessary now
-   m_model->setUndoEnabled( true );
-   
    resize( 
          g_prefs.exists( "ui_viewwin_width")  ? g_prefs( "ui_viewwin_width" )  : 900,
          g_prefs.exists( "ui_viewwin_height") ? g_prefs( "ui_viewwin_height" ) : 700 );
@@ -586,6 +584,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent )
 
    loadDockPositions();
    stopAnimationMode();
+   m_model->setUndoEnabled( true );
 }
 
 ViewWindow::~ViewWindow()
@@ -1757,6 +1756,8 @@ void ViewWindow::animationModeOn()
 
 void ViewWindow::animationModeOff()
 {
+   m_model->setNoAnimation();
+   m_viewPanel->modelUpdatedEvent();
    m_animWin->close();
    m_animExportItem->setEnabled( true );
    m_startAnimItem->setEnabled( true );

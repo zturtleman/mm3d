@@ -41,9 +41,12 @@ AboutWin::AboutWin( QWidget * parent )
 {
    setAttribute( Qt::WA_DeleteOnClose );
    setupUi( this );
+
    setModal( false );
    setWindowTitle( tr( "Misfit Model 3D - About") );
-   m_text->setText( QString( ABOUT_TEXT ) );
+
+   resize( 350, 300 );
+   m_text->setHtml( QString( ABOUT_TEXT ) );
 }
 
 AboutWin::~AboutWin()

@@ -120,7 +120,7 @@ ModelViewport::ModelViewport( QWidget * parent )
    g_prefs.setDefault( "ui_grid_inc", 4.0 );
 
    g_prefs.setDefault( "ui_3dgrid_inc", 4.0 );
-   g_prefs.setDefault( "ui_3dgrid_count", 6.0 );
+   g_prefs.setDefault( "ui_3dgrid_count", 6 );
 
    g_prefs.setDefault( "ui_3dgrid_xy", 0 );
    g_prefs.setDefault( "ui_3dgrid_xz", 1 );

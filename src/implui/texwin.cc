@@ -95,6 +95,9 @@ TextureWindow::TextureWindow( Model * model, QWidget * parent )
    m_textureComboBox->setCurrentIndex( textureId + 1 );
    textureChangedEvent( textureId + 1 );
 
+   m_lightingValue->setCurrentIndex(1); // Diffuse
+   lightValueChanged( m_lightingValue->currentIndex() );
+
    int previewIndex = 0;
    if ( g_prefs.exists( "ui_texwin_preview_index" ) )
    {

@@ -722,6 +722,9 @@ void TextureWidget::setTexture( int materialId, Texture * texture )
    m_materialId = materialId;
    m_texture = texture;
 
+   m_sClamp = m_model->getTextureSClamp( materialId );
+   m_tClamp = m_model->getTextureTClamp( materialId );
+
    if ( m_texture )
    {
       m_zoom    = 1.0;
