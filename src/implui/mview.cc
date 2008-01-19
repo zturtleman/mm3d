@@ -67,13 +67,13 @@ void ModelView::freeTextures()
 
 void ModelView::setViewDirection( int dir )
 {
-   m_viewInput->setCurrentItem( dir );
+   m_viewInput->setCurrentIndex( dir );
    m_modelView->viewChangeEvent( dir );
 }
 
 void ModelView::zoomLevelEnterEvent()
 {
-   m_modelView->setZoomLevel( atof(m_zoomInput->text()) );
+   m_modelView->setZoomLevel( atof(m_zoomInput->text().toLatin1()) );
 }
 
 void ModelView::zoomInEvent()
@@ -109,7 +109,7 @@ void ModelView::updateView()
 
 unsigned ModelView::getViewDirection()
 {
-   return m_viewInput->currentItem();
+   return m_viewInput->currentIndex();
 }
 
 QString ModelView::getViewDirectionLabel()

@@ -69,7 +69,7 @@ void ContextProjection::modelChanged( int changeBits )
          {
             if ( m_model->isProjectionSelected( p ) )
             {
-               m_typeValue->setCurrentItem( m_model->getProjectionType( p ) );
+               m_typeValue->setCurrentIndex( m_model->getProjectionType( p ) );
                break;
             }
          }
@@ -85,7 +85,7 @@ void ContextProjection::typeChanged()
    {
       m_update = true;
 
-      int type = m_typeValue->currentItem();
+      int type = m_typeValue->currentIndex();
 
       unsigned pcount = m_model->getProjectionCount();
       for ( unsigned p = 0; p < pcount; p++ )
@@ -95,7 +95,7 @@ void ContextProjection::typeChanged()
             m_model->setProjectionType( p, type );
          }
       }
-      m_model->operationComplete( tr( "Set Projection Type", "operation complete" ).utf8() );
+      m_model->operationComplete( tr( "Set Projection Type", "operation complete" ).toUtf8() );
 
       emit panelChange();
 

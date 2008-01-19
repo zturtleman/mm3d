@@ -30,8 +30,8 @@
 
 #include <list>
 #include <map>
-#include <qobject.h>
-#include <qapplication.h>
+#include <QObject>
+#include <QApplication>
 
 using std::list;
 using std::map;
@@ -66,7 +66,7 @@ bool DuplicateCommand::activated( int arg, Model * model )
 
       if ( !tri.empty() )
       {
-         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Selected primitives duplicated" ).utf8() );
+         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Selected primitives duplicated" ).toUtf8() );
 
          model->getSelectedVertices( vert );
 
@@ -230,12 +230,12 @@ bool DuplicateCommand::activated( int arg, Model * model )
 
       if ( joints.empty() && tri.empty() && points.empty() )
       {
-         model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have at least 1 face, joint, or point selected to Duplicate" ).utf8() );
+         model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have at least 1 face, joint, or point selected to Duplicate" ).toUtf8() );
          return false;
       }
       else
       {
-         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Duplicate complete" ).utf8() );
+         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Duplicate complete" ).toUtf8() );
       }
 
       return true;

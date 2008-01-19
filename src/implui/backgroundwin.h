@@ -30,7 +30,6 @@
 
 class Model;
 class BackgroundSelect;
-class Q3Accel;
 
 class BackgroundWin : public QDialog, public Ui::BackgroundWinBase
 {
@@ -45,10 +44,9 @@ class BackgroundWin : public QDialog, public Ui::BackgroundWinBase
       void reject();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
    protected:
-      Q3Accel * m_accel;
       Model * m_model;
       BackgroundSelect * m_bgSelect[6];
 };

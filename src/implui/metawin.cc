@@ -32,16 +32,16 @@
 #include <QCheckBox>
 #include <QRadioButton>
 #include <QTreeWidget>
-#include <q3accel.h>
+#include <QShortcut>
 
 #include <stdio.h>
 #include <stdlib.h>
 
 MetaWindow::MetaWindow( Model * model, QWidget * parent )
-   : QDialog( parent, Qt::WDestructiveClose ),
-     m_accel( new Q3Accel(this) ),
+   : QDialog( parent ),
      m_model( model )
 {
+   setAttribute( Qt::WA_DeleteOnClose );
    setupUi( this );
    setModal( true );
 
@@ -58,15 +58,15 @@ MetaWindow::MetaWindow( Model * model, QWidget * parent )
       item->setText( 1, QString::fromUtf8( value ) );
    }
 
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
 MetaWindow::~MetaWindow()
 {
 }
 
-void MetaWindow::helpNowEvent( int id )
+void MetaWindow::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_metawin.html", true );
    win->show();
@@ -107,11 +107,11 @@ void MetaWindow::accept()
    for ( int i = 0; i < count; ++i )
    {
       QTreeWidgetItem * item = m_list->topLevelItem(i);
-      m_model->addMetaData( (const char *) item->text(0).utf8(),
-            (const char *) item->text(1).utf8() );
+      m_model->addMetaData( (const char *) item->text(0).toUtf8(),
+            (const char *) item->text(1).toUtf8() );
    }
    
-   m_model->operationComplete( tr( "Change meta data", "operation complete" ).utf8() );
+   m_model->operationComplete( tr( "Change meta data", "operation complete" ).toUtf8() );
    QDialog::accept();
 }
 

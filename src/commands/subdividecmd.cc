@@ -28,8 +28,8 @@
 #include "log.h"
 #include "modelstatus.h"
 
-#include <qobject.h>
-#include <qapplication.h>
+#include <QObject>
+#include <QApplication>
 
 SubdivideCommand::SubdivideCommand()
 {
@@ -41,7 +41,7 @@ SubdivideCommand::~SubdivideCommand()
 
 bool SubdivideCommand::activated( int arg, Model * model )
 {
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Subdivide complete" ).utf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Subdivide complete" ).toUtf8() );
    model->subdivideSelectedTriangles();
    return true;
 }

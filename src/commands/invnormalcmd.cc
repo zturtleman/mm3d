@@ -29,8 +29,8 @@
 #include "modelstatus.h"
 
 #include <list>
-#include <qobject.h>
-#include <qapplication.h>
+#include <QObject>
+#include <QApplication>
 
 using std::list;
 
@@ -53,7 +53,7 @@ bool InvertNormalCommand::activated( int arg, Model * model )
       model->invertNormals( *it );
    }
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Normals inverted" ).utf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Normals inverted" ).toUtf8() );
 
    return true;
 }

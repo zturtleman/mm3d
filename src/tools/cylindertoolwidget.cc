@@ -44,14 +44,14 @@ CylinderToolWidget::CylinderToolWidget( Observer * observer, QMainWindow * paren
 
    m_layout = boxLayout();
 
-   m_segmentsLabel = new QLabel( tr("Segments"), mainWidget(), "" );
+   m_segmentsLabel = new QLabel( tr("Segments"), mainWidget() );
    m_layout->addWidget( m_segmentsLabel );
 
-   m_segmentsValue = new QSpinBox( mainWidget(), "" );
+   m_segmentsValue = new QSpinBox( mainWidget() );
    m_layout->addWidget( m_segmentsValue );
 
-   m_segmentsValue->setMinValue( 1 );
-   m_segmentsValue->setMaxValue( 100 );
+   m_segmentsValue->setMinimum( 1 );
+   m_segmentsValue->setMaximum( 100 );
    
    int segmentsVal = DEFAULT_SEGMENTS;
    if ( g_prefs.exists( "ui_cylindertool_segments" ) )
@@ -64,14 +64,14 @@ CylinderToolWidget::CylinderToolWidget( Observer * observer, QMainWindow * paren
    }
    m_segmentsValue->setValue( segmentsVal );
 
-   m_sidesLabel = new QLabel( tr("Sides"), mainWidget(), "" );
+   m_sidesLabel = new QLabel( tr("Sides"), mainWidget() );
    m_layout->addWidget( m_sidesLabel );
 
-   m_sidesValue = new QSpinBox( mainWidget(), "" );
+   m_sidesValue = new QSpinBox( mainWidget() );
    m_layout->addWidget( m_sidesValue );
 
-   m_sidesValue->setMinValue( 3 );
-   m_sidesValue->setMaxValue( 100 );
+   m_sidesValue->setMinimum( 3 );
+   m_sidesValue->setMaximum( 100 );
    
    int sidesVal = DEFAULT_SIDES;
    if ( g_prefs.exists( "ui_cylindertool_sides" ) )
@@ -85,14 +85,14 @@ CylinderToolWidget::CylinderToolWidget( Observer * observer, QMainWindow * paren
    m_sidesValue->setValue( sidesVal );
  
 
-   m_widthLabel = new QLabel( tr("Width"), mainWidget(), "" );
+   m_widthLabel = new QLabel( tr("Width"), mainWidget() );
    m_layout->addWidget( m_widthLabel );
 
-   m_widthValue = new QSpinBox( mainWidget(), "" );
+   m_widthValue = new QSpinBox( mainWidget() );
    m_layout->addWidget( m_widthValue );
 
-   m_widthValue->setMinValue( 0 );
-   m_widthValue->setMaxValue( 100 );
+   m_widthValue->setMinimum( 0 );
+   m_widthValue->setMaximum( 100 );
    int widthVal = DEFAULT_WIDTH;
    if ( g_prefs.exists( "ui_cylindertool_width" ) )
    {
@@ -104,14 +104,14 @@ CylinderToolWidget::CylinderToolWidget( Observer * observer, QMainWindow * paren
    }
    m_widthValue->setValue( widthVal );
 
-   m_scaleLabel = new QLabel( tr("Scale"), mainWidget(), "" );
+   m_scaleLabel = new QLabel( tr("Scale"), mainWidget() );
    m_layout->addWidget( m_scaleLabel );
 
-   m_scaleValue = new QSpinBox( mainWidget(), "" );
+   m_scaleValue = new QSpinBox( mainWidget() );
    m_layout->addWidget( m_scaleValue );
 
-   m_scaleValue->setMinValue( 0 );
-   m_scaleValue->setMaxValue( 100 );
+   m_scaleValue->setMinimum( 0 );
+   m_scaleValue->setMaximum( 100 );
    int scaleVal = DEFAULT_SCALE;
    if ( g_prefs.exists( "ui_cylindertool_scale" ) )
    {
@@ -124,15 +124,15 @@ CylinderToolWidget::CylinderToolWidget( Observer * observer, QMainWindow * paren
    m_scaleValue->setValue( scaleVal );
 
    /*
-   m_shapeLabel = new QLabel( "Shape", mainWidget(), "" );
+   m_shapeLabel = new QLabel( "Shape", mainWidget() );
    m_layout->addWidget( m_shapeLabel );
 
-   m_shapeValue = new QSlider( Qt::Horizontal, mainWidget(), "" );
+   m_shapeValue = new QSlider( Qt::Horizontal, mainWidget() );
    m_layout->addWidget( m_shapeValue );
 
    m_shapeValue->setMinimumWidth( 64 );
-   m_shapeValue->setMinValue( 0 );
-   m_shapeValue->setMaxValue( DEFAULT_SHAPE * 2 );
+   m_shapeValue->setMinimum( 0 );
+   m_shapeValue->setMaximum( DEFAULT_SHAPE * 2 );
    m_shapeValue->setValue( DEFAULT_SHAPE );
    m_shapeValue->setTickInterval( DEFAULT_SHAPE / 2);
    m_shapeValue->setTickmarks( QSlider::Below );

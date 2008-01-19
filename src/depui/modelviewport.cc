@@ -84,8 +84,8 @@ static ScrollButtonT s_buttons[ ModelViewport::ScrollButtonMAX ] =
 
 static Matrix s_mat;
 
-ModelViewport::ModelViewport( QWidget * parent, const char * name )
-   : QGLWidget( parent, name ),
+ModelViewport::ModelViewport( QWidget * parent )
+   : QGLWidget( parent ),
      m_model( NULL ),
      m_operation( MO_None ),
      m_activeButton( Qt::NoButton ),
@@ -114,6 +114,8 @@ ModelViewport::ModelViewport( QWidget * parent, const char * name )
    m_arcballPoint[0] = 0.0;
    m_arcballPoint[1] = 0.0;
    m_arcballPoint[2] = 0.0;
+
+   m_scrollTimer->setSingleShot( true );
 
    g_prefs.setDefault( "ui_grid_inc", 4.0 );
 
@@ -146,10 +148,10 @@ ModelViewport::ModelViewport( QWidget * parent, const char * name )
 
    glGenTextures( 2, m_scrollTextures );
 
-   img = arrow.convertToImage();
+   img = arrow.toImage();
    makeTextureFromImage( img, m_scrollTextures[0] );
 
-   img = cross.convertToImage();
+   img = cross.toImage();
    makeTextureFromImage( img, m_scrollTextures[1] );
 
    connect( m_scrollTimer, SIGNAL(timeout()), this, SLOT(scrollTimeout()));
@@ -1035,7 +1037,7 @@ void ModelViewport::updateBackground()
          if ( !m_texture )
          {
             QString str = tr("Could not load background %1").arg( m_backgroundFile.c_str() );
-            model_status( m_model, StatusError, STATUSTIME_LONG, "%s", (const char *) str.utf8() );
+            model_status( m_model, StatusError, STATUSTIME_LONG, "%s", (const char *) str.toUtf8() );
             m_texture = TextureManager::getInstance()->getDefaultTexture( m_backgroundFile.c_str() );
          }
          glBindTexture( GL_TEXTURE_2D, m_backgroundTexture );
@@ -1205,7 +1207,7 @@ void ModelViewport::wheelEvent( QWheelEvent * e )
 {
    if ( e->delta() > 0 )
    {
-      if ( (e->state() & Qt::ControlButton) == Qt::ControlButton )
+      if ( (e->modifiers() & Qt::ControlModifier) == Qt::ControlModifier )
       {
          rotateClockwise();
       }
@@ -1216,7 +1218,7 @@ void ModelViewport::wheelEvent( QWheelEvent * e )
    }
    else
    {
-      if ( (e->state() & Qt::ControlButton) == Qt::ControlButton )
+      if ( (e->modifiers() & Qt::ControlModifier) == Qt::ControlModifier )
       {
          rotateCounterClockwise();
       }
@@ -1373,7 +1375,7 @@ void ModelViewport::mousePressEvent( QMouseEvent * e )
       {
          m_overlayButton = (ScrollButtonE) b;
 
-         if ( (e->state() & Qt::ControlButton) == Qt::ControlButton )
+         if ( (e->modifiers() & Qt::ControlModifier) == Qt::ControlModifier )
          {
             m_operation = ( m_overlayButton == ScrollButtonPan )
                ? MO_Rotate : MO_RotateButton;
@@ -1394,28 +1396,32 @@ void ModelViewport::mousePressEvent( QMouseEvent * e )
                   rotateUp();
                else 
                   scrollUp();
-               m_scrollTimer->start( 300, true );
+               m_scrollTimer->setSingleShot( true );
+               m_scrollTimer->start( 300 );
                break;
             case ScrollButtonDown:
                if ( m_operation == MO_RotateButton )
                   rotateDown();
                else 
                   scrollDown();
-               m_scrollTimer->start( 300, true );
+               m_scrollTimer->setSingleShot( true );
+               m_scrollTimer->start( 300 );
                break;
             case ScrollButtonLeft:
                if ( m_operation == MO_RotateButton )
                   rotateLeft();
                else 
                   scrollLeft();
-               m_scrollTimer->start( 300, true );
+               m_scrollTimer->setSingleShot( true );
+               m_scrollTimer->start( 300 );
                break;
             case ScrollButtonRight:
                if ( m_operation == MO_RotateButton )
                   rotateRight();
                else 
                   scrollRight();
-               m_scrollTimer->start( 300, true );
+               m_scrollTimer->setSingleShot( true );
+               m_scrollTimer->start( 300 );
                break;
             default:
                break;
@@ -1431,7 +1437,7 @@ void ModelViewport::mousePressEvent( QMouseEvent * e )
          m_scrollStartPosition = e->pos();
       }
       else if ( (m_viewDirection == ViewPerspective && e->button() == Qt::LeftButton) 
-            || (e->state() & Qt::ControlButton) )
+            || (e->modifiers() & Qt::ControlModifier) )
       {
          m_operation = MO_Rotate;
          m_scrollStartPosition = e->pos();
@@ -1499,7 +1505,7 @@ void ModelViewport::mouseReleaseEvent( QMouseEvent * e )
          m_overlayButton = ScrollButtonMAX;
          m_scrollTimer->stop();
 
-         model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Use the middle mouse button to drag/pan the viewport").utf8() );
+         model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Use the middle mouse button to drag/pan the viewport").toUtf8() );
       }
       m_activeButton = Qt::NoButton;
       m_operation    = MO_None;
@@ -1797,7 +1803,7 @@ void ModelViewport::keyPressEvent( QKeyEvent * e )
          case Qt::Key_Equal:
          case Qt::Key_Plus:
             {
-               if ( (e->state() & Qt::ControlButton) == Qt::ControlButton )
+               if ( (e->modifiers() & Qt::ControlModifier) == Qt::ControlModifier )
                {
                   rotateClockwise();
                }
@@ -1810,7 +1816,7 @@ void ModelViewport::keyPressEvent( QKeyEvent * e )
          case Qt::Key_Minus:
          case Qt::Key_Underscore:
             {
-               if ( (e->state() & Qt::ControlButton) == Qt::ControlButton )
+               if ( (e->modifiers() & Qt::ControlModifier) == Qt::ControlModifier )
                {
                   rotateCounterClockwise();
                }
@@ -1890,25 +1896,25 @@ void ModelViewport::keyPressEvent( QKeyEvent * e )
             adjustViewport();
             break;
          case Qt::Key_Up:
-            if ( (e->state() & Qt::ControlButton) == Qt::ControlButton )
+            if ( (e->modifiers() & Qt::ControlModifier) == Qt::ControlModifier )
                rotateUp();
             else
                scrollUp();
             break;
          case Qt::Key_Down:
-            if ( (e->state() & Qt::ControlButton) == Qt::ControlButton )
+            if ( (e->modifiers() & Qt::ControlModifier) == Qt::ControlModifier )
                rotateDown();
             else
                scrollDown();
             break;
          case Qt::Key_Left:
-            if ( (e->state() & Qt::ControlButton) == Qt::ControlButton )
+            if ( (e->modifiers() & Qt::ControlModifier) == Qt::ControlModifier )
                rotateLeft();
             else
                scrollLeft();
             break;
          case Qt::Key_Right:
-            if ( (e->state() & Qt::ControlButton) == Qt::ControlButton )
+            if ( (e->modifiers() & Qt::ControlModifier) == Qt::ControlModifier )
                rotateRight();
             else
                scrollRight();
@@ -2260,6 +2266,7 @@ void ModelViewport::scrollTimeout()
       }
    }
 
+   m_scrollTimer->setSingleShot( false );
    m_scrollTimer->start( 100 );
 }
 
@@ -2970,25 +2977,25 @@ void ModelViewport::checkGlErrors()
       switch ( error )
       {
          case GL_INVALID_VALUE:
-            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Invalid Value").utf8() );
+            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Invalid Value").toUtf8() );
             break;
          case GL_INVALID_ENUM:
-            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Invalid Enum").utf8() );
+            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Invalid Enum").toUtf8() );
             break;
          case GL_INVALID_OPERATION:
-            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Invalid Operation").utf8() );
+            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Invalid Operation").toUtf8() );
             break;
          case GL_STACK_OVERFLOW:
-            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Stack Overflow").utf8() );
+            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Stack Overflow").toUtf8() );
             break;
          case GL_STACK_UNDERFLOW:
-            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Stack Underflow").utf8() );
+            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Stack Underflow").toUtf8() );
             break;
          case GL_OUT_OF_MEMORY:
-            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Out Of Memory").utf8() );
+            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Out Of Memory").toUtf8() );
             break;
          default:
-            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Unknown").utf8() );
+            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Unknown").toUtf8() );
             break;
       }
    }

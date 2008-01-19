@@ -28,27 +28,26 @@
 #include <QLineEdit>
 #include <QSlider>
 #include <QLabel>
-#include <q3accel.h>
+#include <QShortcut>
 
 #include <stdlib.h>
 
 RgbaWin::RgbaWin( QWidget * parent )
    : QDialog( parent ),
-     m_accel( new Q3Accel(this) ),
      m_editing( false )
 {
    setupUi( this );
    setModal( true );
 
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
 RgbaWin::~RgbaWin()
 {
 }
 
-void RgbaWin::helpNowEvent( int id )
+void RgbaWin::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_rgbawin.html", true );
    win->show();
@@ -101,7 +100,7 @@ void RgbaWin::alphaSliderChanged( int v )
 void RgbaWin::redEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.latin1() );
+   float v = atof( str.toLatin1() );
    m_redSlider->setValue( (int) (v * 100) );
    m_editing = false;
 }
@@ -109,7 +108,7 @@ void RgbaWin::redEditChanged( const QString & str )
 void RgbaWin::greenEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.latin1() );
+   float v = atof( str.toLatin1() );
    m_greenSlider->setValue( (int) (v * 100) );
    m_editing = false;
 }
@@ -117,7 +116,7 @@ void RgbaWin::greenEditChanged( const QString & str )
 void RgbaWin::blueEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.latin1() );
+   float v = atof( str.toLatin1() );
    m_blueSlider->setValue( (int) (v * 100) );
    m_editing = false;
 }
@@ -125,7 +124,7 @@ void RgbaWin::blueEditChanged( const QString & str )
 void RgbaWin::alphaEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.latin1() );
+   float v = atof( str.toLatin1() );
    m_alphaSlider->setValue( (int) (v * 100) );
    m_editing = false;
 }
@@ -154,7 +153,7 @@ void RgbaWin::setLabel( const char * newLabel )
 {
    if ( newLabel )
    {
-      setCaption( QString( newLabel ) );
+      setWindowTitle( QString( newLabel ) );
       QString str;
       str.sprintf( "<b>%s<b>", newLabel );
       m_propertyLabel->setText( str );

@@ -40,10 +40,10 @@ SelectFaceToolWidget::SelectFaceToolWidget( Observer * observer, QMainWindow * p
 
    m_layout = boxLayout();
 
-   m_backfacingLabel = new QLabel( tr("Include Back-facing"), mainWidget(), "" );
+   m_backfacingLabel = new QLabel( tr("Include Back-facing"), mainWidget() );
    m_layout->addWidget( m_backfacingLabel );
 
-   m_backfacingValue = new QCheckBox( mainWidget(), "" );
+   m_backfacingValue = new QCheckBox( mainWidget() );
    m_layout->addWidget( m_backfacingValue );
 
    bool includeBackfacing = DEFAULT_BACKFACING;

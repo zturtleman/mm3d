@@ -24,8 +24,7 @@
 #ifndef __TEXWIDGET_H
 #define __TEXWIDGET_H
 
-#include <qgl.h>
-//Added by qt3to4:
+#include <QGLWidget>
 #include <QWheelEvent>
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -102,7 +101,7 @@ class TextureWidget : public QGLWidget
       typedef struct _TextureTriangle_t TextureTriangleT;
       typedef std::vector< TextureTriangleT * > TextureTriangleVector;
 
-      TextureWidget( QWidget * parent = NULL, const char * name = "" );
+      TextureWidget( QWidget * parent = NULL );
       virtual ~TextureWidget();
 
       void setModel( Model * model );

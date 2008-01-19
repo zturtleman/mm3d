@@ -28,17 +28,16 @@
 
 #include <QRadioButton>
 #include <QLineEdit>
-#include <q3accel.h>
+#include <QShortcut>
 
 Ms3dPrompt::Ms3dPrompt()
-   : QDialog( NULL ),
-     m_accel( new Q3Accel(this) )
+   : QDialog( NULL )
 {
    setupUi( this );
    setModal( true );
 
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
 Ms3dPrompt::~Ms3dPrompt()
@@ -80,17 +79,18 @@ void Ms3dPrompt::getOptions( Ms3dFilter::Ms3dOptions * opts )
       opts->m_subVersion = 2;
 
    uint32_t val = 0xffffffff;
-   sscanf( m_vertexExtra->text().utf8(), "%X", &val);
+   sscanf( m_vertexExtra->text().toUtf8(), "%X", &val);
    opts->m_vertexExtra   = val;
 
    // TODO joint color
    //val = 0xffffffff;
-   //sscanf( m_jointColor->text().utf8(), "%X", &val);
+   //sscanf( m_jointColor->text().toUtf8(), "%X", &val);
    //opts->m_vertexExtra   = val;
 }
 
-void Ms3dPrompt::helpNowEvent( int id )
+void Ms3dPrompt::helpNowEvent()
 {
+   // FIXME Add help page
    //HelpWin * win = new HelpWin( "olh_pluginwin.html", true );
    //win->show();
 }

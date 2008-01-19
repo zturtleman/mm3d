@@ -327,10 +327,10 @@
  <resources/>
  <connections>
   <connection>
-   <sender>m_mapGroup</sender>
-   <signal>clicked(int)</signal>
+   <sender>m_selectButton</sender>
+   <signal>clicked(bool)</signal>
    <receiver>TextureCoordBase</receiver>
-   <slot>mapSchemeChangedEvent(int)</slot>
+   <slot>toolSelectEvent()</slot>
    <hints>
     <hint type="sourcelabel" >
      <x>20</x>
@@ -343,10 +343,90 @@
    </hints>
   </connection>
   <connection>
-   <sender>m_toolGroup</sender>
-   <signal>clicked(int)</signal>
+   <sender>m_moveButton</sender>
+   <signal>clicked(bool)</signal>
    <receiver>TextureCoordBase</receiver>
-   <slot>mouseToolChangedEvent(int)</slot>
+   <slot>toolMoveEvent()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_rotateButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>TextureCoordBase</receiver>
+   <slot>toolRotateEvent()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_scaleButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>TextureCoordBase</receiver>
+   <slot>toolScaleEvent()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_triangleButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>TextureCoordBase</receiver>
+   <slot>mapTriangle()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_quadButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>TextureCoordBase</receiver>
+   <slot>mapQuad()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_groupButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>TextureCoordBase</receiver>
+   <slot>mapGroupEvent()</slot>
    <hints>
     <hint type="sourcelabel" >
      <x>20</x>

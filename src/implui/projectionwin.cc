@@ -33,7 +33,7 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QLineEdit>
-#include <q3accel.h>
+#include <QShortcut>
 #include <list>
 
 using std::list;
@@ -46,7 +46,6 @@ using std::list;
 
 ProjectionWin::ProjectionWin( Model * model, QWidget * parent, ViewPanel * viewPanel )
    : QDialog( parent ),
-     m_accel( new Q3Accel(this) ),
      m_viewPanel( viewPanel ),
      m_undoCount( 0 ),
      m_redoCount( 0 ),
@@ -66,10 +65,13 @@ ProjectionWin::ProjectionWin( Model * model, QWidget * parent, ViewPanel * viewP
    connect( m_textureWidget, SIGNAL(updateSeamDoneSignal()), this, SLOT(applyProjectionEvent()) );
    connect( m_textureWidget, SIGNAL(zoomLevelChanged(QString)), this, SLOT(zoomLevelChangedEvent(QString)) );
 
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   m_accel->insertItem( QKeySequence( tr("Ctrl+Z", "Undo")), 1 );
-   m_accel->insertItem( QKeySequence( tr("Ctrl+Y", "Redo")), 2 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(accelEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
+
+   QShortcut * undo = new QShortcut( QKeySequence( tr("CTRL+Z", "Undo shortcut")), this );
+   connect( undo, SIGNAL(activated()), this, SLOT(undoEvent()) );
+   QShortcut * redo = new QShortcut( QKeySequence( tr("CTRL+Y", "Redo shortcut")), this );
+   connect( redo, SIGNAL(activated()), this, SLOT(redoEvent()) );
 
    // can't do this until constructor is done (because of Model::Observer interface)
    //setModel( model );
@@ -85,7 +87,7 @@ void ProjectionWin::refreshProjectionDisplay()
 
    if ( m_projection->count() > 0 )
    {
-      int proj = m_projection->currentItem();
+      int proj = m_projection->currentIndex();
       unsigned tcount = m_model->getTriangleCount();
       for ( unsigned t = 0; t < tcount; t++ )
       {
@@ -136,9 +138,9 @@ void ProjectionWin::modelChanged( int changeBits )
          {
             // a change to projection itself, or a non-projection change, just 
             // re-initialize the projection display for the current projection
-            int p = m_projection->currentItem();
-            m_projection->changeItem( QString::fromUtf8( m_model->getProjectionName( p )), p );
-            m_type->setCurrentItem( m_model->getProjectionType( p ) );
+            int p = m_projection->currentIndex();
+            m_projection->setItemText( p, QString::fromUtf8( m_model->getProjectionName( p )) );
+            m_type->setCurrentIndex( m_model->getProjectionType( p ) );
             // TODO material/test pattern?
             addProjectionTriangles();
          }
@@ -199,23 +201,10 @@ void ProjectionWin::setModel( Model * model )
    }
 }
 
-void ProjectionWin::accelEvent( int id )
+void ProjectionWin::helpNowEvent()
 {
-   switch ( id )
-   {
-      case 0:
-         {
-            HelpWin * win = new HelpWin( "olh_projectionwin.html", true );
-            win->show();
-         }
-         break;
-      case 1:
-         undoEvent();
-         break;
-      case 2:
-         redoEvent();
-         break;
-   }
+   HelpWin * win = new HelpWin( "olh_projectionwin.html", true );
+   win->show();
 }
 
 void ProjectionWin::undoEvent()
@@ -280,7 +269,7 @@ void ProjectionWin::initWindow()
       {
          for ( unsigned p = 0; p < pcount; p++ )
          {
-            m_projection->insertItem( QString::fromUtf8( m_model->getProjectionName(p) ), p );
+            m_projection->insertItem( p, QString::fromUtf8( m_model->getProjectionName(p) ) );
          }
 
          bool found = false;
@@ -290,7 +279,7 @@ void ProjectionWin::initWindow()
             if ( m_model->isProjectionSelected( p ) )
             {
                found = true;
-               m_projection->setCurrentItem( p );
+               m_projection->setCurrentIndex( p );
                projectionIndexChangedEvent( p );
                break;
             }
@@ -306,7 +295,7 @@ void ProjectionWin::initWindow()
                   int p = m_model->getTriangleProjection( t );
                   if ( p >= 0 )
                   {
-                     m_projection->setCurrentItem( p );
+                     m_projection->setCurrentIndex( p );
                      projectionIndexChangedEvent( p );
                      break;
                   }
@@ -341,7 +330,7 @@ void ProjectionWin::typeChangedEvent( int type )
    {
       m_model->setProjectionType( p, type );
       //m_model->applyProjection( p );
-      operationComplete( tr( "Set Projection Type", "operation complete" ).utf8() );
+      operationComplete( tr( "Set Projection Type", "operation complete" ).toUtf8() );
    }
 
    refreshProjectionDisplay();
@@ -360,7 +349,7 @@ void ProjectionWin::addFacesEvent()
       }
    }
    m_model->applyProjection( p );
-   operationComplete( tr( "Set Triangle Projection", "operation complete" ).utf8() );
+   operationComplete( tr( "Set Triangle Projection", "operation complete" ).toUtf8() );
    refreshProjectionDisplay();
 }
 
@@ -374,7 +363,7 @@ void ProjectionWin::removeFacesEvent()
          m_model->setTriangleProjection( t, -1 );
       }
    }
-   operationComplete( tr( "Set Triangle Projection", "operation complete" ).utf8() );
+   operationComplete( tr( "Set Triangle Projection", "operation complete" ).toUtf8() );
    refreshProjectionDisplay();
 }
 
@@ -392,7 +381,7 @@ void ProjectionWin::applyProjection()
 void ProjectionWin::applyProjectionEvent()
 {
    applyProjection();
-   operationComplete( tr("Apply Projection", "operation complete").utf8() );
+   operationComplete( tr("Apply Projection", "operation complete").toUtf8() );
 }
 
 void ProjectionWin::resetClickedEvent()
@@ -400,7 +389,7 @@ void ProjectionWin::resetClickedEvent()
    int p = getSelectedProjection();
 
    m_model->setProjectionRange( p, 0.0, 0.0, 1.0, 1.0 );
-   operationComplete( tr( "Reset UV Coordinates", "operation complete" ).utf8() );
+   operationComplete( tr( "Reset UV Coordinates", "operation complete" ).toUtf8() );
    addProjectionTriangles();
    //applyProjectionEvent();
 }
@@ -412,12 +401,12 @@ void ProjectionWin::renameClickedEvent()
    if ( p >= 0 )
    {
       bool ok = false;
-      QString projName = QInputDialog::getText( tr("Rename projection", "window title"), tr("Enter new point name:"), QLineEdit::Normal, QString::fromUtf8( m_model->getProjectionName( p )), &ok );
+      QString projName = QInputDialog::getText( this, tr("Rename projection", "window title"), tr("Enter new point name:"), QLineEdit::Normal, QString::fromUtf8( m_model->getProjectionName( p )), &ok );
       if ( ok )
       {
-         m_model->setProjectionName( p, projName.utf8() );
-         m_projection->changeItem( projName, p );
-         operationComplete( tr( "Rename Projection", "operation complete" ).utf8() );
+         m_model->setProjectionName( p, projName.toUtf8() );
+         m_projection->setItemText( p, projName );
+         operationComplete( tr( "Rename Projection", "operation complete" ).toUtf8() );
       }
    }
 }
@@ -425,7 +414,7 @@ void ProjectionWin::renameClickedEvent()
 void ProjectionWin::projectionIndexChangedEvent( int newIndex )
 {
    int type = m_model->getProjectionType( newIndex );
-   m_type->setCurrentItem( type );
+   m_type->setCurrentIndex( type );
 
    double uv[4] = { 0, 0, 0, 0 };
    m_model->getProjectionRange( newIndex, 
@@ -438,7 +427,7 @@ void ProjectionWin::projectionIndexChangedEvent( int newIndex )
 
 void ProjectionWin::zoomChangeEvent()
 {
-   double zoom = atof( m_zoomInput->text().latin1() );
+   double zoom = atof( m_zoomInput->text().toLatin1() );
    if ( zoom < 0.00001 )
    {
       zoom = 1;
@@ -488,7 +477,7 @@ int ProjectionWin::getSelectedProjection()
 {
    if ( m_projection->count() > 0 )
    {
-      return m_projection->currentItem();
+      return m_projection->currentIndex();
    }
    return -1;
 }

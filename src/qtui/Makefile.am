@@ -91,7 +91,7 @@ libqtui_a_SOURCES = $(libqtui_UIFILES)
 %.base.h: %.ui
 		$(QT_UIC) -o $@ $*.ui
 
-AM_CPPFLAGS = $(PROFILE) -DQT_COMPAT -Wall -I../libmm3d -I../mm3dcore -I../ -I../depui -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
+AM_CPPFLAGS = $(PROFILE) -Wall -I../libmm3d -I../mm3dcore -I../ -I../depui -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
 
 CLEANFILES = $(libqtui_UIHEADERS)
 

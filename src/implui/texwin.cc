@@ -43,7 +43,7 @@
 #include <QLineEdit>
 #include <QSlider>
 #include <QLabel>
-#include <q3accel.h>
+#include <QShortcut>
 
 #include <list>
 #include <string>
@@ -52,19 +52,19 @@ using std::list;
 using std::string;
 
 TextureWindow::TextureWindow( Model * model, QWidget * parent )
-   : QDialog( parent, Qt::WDestructiveClose ),
-     m_accel( new Q3Accel(this) ),
+   : QDialog( parent ),
      m_model( model ),
      m_editing( false ),
      m_setting( false )
 {
+   setAttribute( Qt::WA_DeleteOnClose );
    setupUi( this );
    setModal( true );
 
    m_textureFrame->setModel( model );
 
-   m_accel->insertItem( Qt::Key_F1, 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 
    int count = m_model->getTextureCount();
 
@@ -73,7 +73,7 @@ TextureWindow::TextureWindow( Model * model, QWidget * parent )
       //Texture * texture = m_model->getTextureData( t );
       //if ( texture )
       {
-         m_textureComboBox->insertItem( QString::fromUtf8( m_model->getTextureName(t) ), t+1 );
+         m_textureComboBox->insertItem( t+1, QString::fromUtf8( m_model->getTextureName(t) ) );
       }
    }
 
@@ -92,7 +92,7 @@ TextureWindow::TextureWindow( Model * model, QWidget * parent )
       }
    }
 
-   m_textureComboBox->setCurrentItem( textureId + 1 );
+   m_textureComboBox->setCurrentIndex( textureId + 1 );
    textureChangedEvent( textureId + 1 );
 
    int previewIndex = 0;
@@ -105,7 +105,7 @@ TextureWindow::TextureWindow( Model * model, QWidget * parent )
       }
    }
 
-   m_previewType->setCurrentItem( previewIndex );
+   m_previewType->setCurrentIndex( previewIndex );
    previewValueChanged( previewIndex );
 }
 
@@ -113,7 +113,7 @@ TextureWindow::~TextureWindow()
 {
 }
 
-void TextureWindow::helpNowEvent( int id )
+void TextureWindow::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_texturewin.html", true );
    win->show();
@@ -148,22 +148,23 @@ void TextureWindow::changeTextureFileEvent()
 
    QFileDialog d(NULL, "", dir, formatsStr + QString(";; All Files (*)" ) );
 
-   d.setCaption( tr("Open texture image") );
+   d.setWindowTitle( tr("Open texture image") );
    d.selectFilter( formatsStr );
 
    int execval = d.exec();
-   std::string file = (const char *) d.selectedFile().utf8();
-   QString path = d.directory().absolutePath().utf8();
+   QStringList files = d.selectedFiles();
 
-   if ( QDialog::Accepted == execval )
+   if ( QDialog::Accepted == execval && !files.empty() )
    {
-      g_prefs( "ui_texture_dir" ) = (const char *) path.utf8();
+      std::string file = (const char *) files[0].toUtf8();
+      QString path = d.directory().absolutePath().toUtf8();
+      g_prefs( "ui_texture_dir" ) = (const char *) path.toUtf8();
 
       Texture * tex = TextureManager::getInstance()->getTexture( file.c_str() );
 
       if ( tex )
       {
-         int textureId = m_textureComboBox->currentItem() - 1;
+         int textureId = m_textureComboBox->currentIndex() - 1;
          m_model->setMaterialTexture( textureId, tex );
          log_debug( "changed texture %d to %s\n", textureId, file.c_str() );
          textureChangedEvent( textureId + 1 );
@@ -180,14 +181,14 @@ void TextureWindow::changeTextureFileEvent()
          {
             err += tr("Could not open file");
          }
-         msg_error( (const char *) err.utf8() );
+         msg_error( (const char *) err.toUtf8() );
       }
    }
 }
 
 void TextureWindow::noTextureFileEvent()
 {
-   int textureId = m_textureComboBox->currentItem() - 1;
+   int textureId = m_textureComboBox->currentIndex() - 1;
    m_model->removeMaterialTexture( textureId );
    log_debug( "removed texture from material %d\n", textureId );
    textureChangedEvent( textureId + 1 );
@@ -196,50 +197,50 @@ void TextureWindow::noTextureFileEvent()
 void TextureWindow::newMaterialClickedEvent()
 {
    bool ok = false;
-   QString name = QInputDialog::getText( tr( "Color Material", "window title" ), tr( "Enter new material name:" ), QLineEdit::Normal, QString(""), &ok );
+   QString name = QInputDialog::getText( this, tr( "Color Material", "window title" ), tr( "Enter new material name:" ), QLineEdit::Normal, QString(""), &ok );
 
    if ( ok )
    {
-      int num = m_model->addColorMaterial( name.utf8() );
-      m_textureComboBox->insertItem( QString::fromUtf8( m_model->getTextureName(num)), num+1 );
-      m_textureComboBox->setCurrentItem( num+1 );
+      int num = m_model->addColorMaterial( name.toUtf8() );
+      m_textureComboBox->insertItem( num+1, QString::fromUtf8( m_model->getTextureName(num)) );
+      m_textureComboBox->setCurrentIndex( num+1 );
       textureChangedEvent( num+1 );
-      log_debug( "added %s as %d\n", (const char *) name.utf8(), num );
+      log_debug( "added %s as %d\n", (const char *) name.toUtf8(), num );
    }
 }
 
 void TextureWindow::renameClickedEvent()
 {
-   int textureId = m_textureComboBox->currentItem() - 1;
+   int textureId = m_textureComboBox->currentIndex() - 1;
 
    if ( textureId >= 0 )
    {
       bool ok = false;
-      QString name = QInputDialog::getText( tr( "Rename texture", "window title" ), tr( "Enter new texture name:" ), QLineEdit::Normal, QString::fromUtf8( m_model->getTextureName( textureId ) ), &ok );
+      QString name = QInputDialog::getText( this, tr( "Rename texture", "window title" ), tr( "Enter new texture name:" ), QLineEdit::Normal, QString::fromUtf8( m_model->getTextureName( textureId ) ), &ok );
 
       if ( ok )
       {
-         m_model->setTextureName( textureId, name.utf8() );
-         m_textureComboBox->changeItem( name, textureId + 1 );
+         m_model->setTextureName( textureId, name.toUtf8() );
+         m_textureComboBox->setItemText( textureId + 1, name );
       }
    }
 }
 
 void TextureWindow::deleteClickedEvent()
 {
-   int id = m_textureComboBox->currentItem();
+   int id = m_textureComboBox->currentIndex();
    if ( id > 0 )
    {
       m_model->deleteTexture( id - 1 );
       m_textureComboBox->removeItem( id );
-      m_textureComboBox->setCurrentItem( 0 );
+      m_textureComboBox->setCurrentIndex( 0 );
       textureChangedEvent( 0 );
    }
 }
 
 void TextureWindow::clampSChangedEvent( int index )
 {
-   int id = m_textureComboBox->currentItem() - 1;
+   int id = m_textureComboBox->currentIndex() - 1;
 
    if ( id >= 0 )
    {
@@ -250,7 +251,7 @@ void TextureWindow::clampSChangedEvent( int index )
 
 void TextureWindow::clampTChangedEvent( int index )
 {
-   int id = m_textureComboBox->currentItem() - 1;
+   int id = m_textureComboBox->currentIndex() - 1;
 
    if ( id >= 0 )
    {
@@ -262,7 +263,7 @@ void TextureWindow::clampTChangedEvent( int index )
 /*
 void TextureWindow::shininessClickedEvent()
 {
-   int id = (unsigned) m_textureComboBox->currentItem() - 1;
+   int id = (unsigned) m_textureComboBox->currentIndex() - 1;
    float val;
 
    if ( m_model->getTextureShininess( id, val) )
@@ -310,9 +311,9 @@ void TextureWindow::textureChangedEvent( int id )
       m_tClamp->setEnabled( true );
       m_fileButton->setEnabled( true );
 
-      lightValueChanged( m_lightingValue->currentItem() );
-      m_sClamp->setCurrentItem( (m_model->getTextureSClamp( id )) ? 1 : 0 );
-      m_tClamp->setCurrentItem( (m_model->getTextureTClamp( id )) ? 1 : 0 );
+      lightValueChanged( m_lightingValue->currentIndex() );
+      m_sClamp->setCurrentIndex( (m_model->getTextureSClamp( id )) ? 1 : 0 );
+      m_tClamp->setCurrentIndex( (m_model->getTextureTClamp( id )) ? 1 : 0 );
       m_textureFrame->getTextureWidget()->setSClamp( m_model->getTextureSClamp( id ) );
       m_textureFrame->getTextureWidget()->setTClamp( m_model->getTextureTClamp( id ) );
    }
@@ -340,7 +341,7 @@ void TextureWindow::textureChangedEvent( int id )
 
 void TextureWindow::updateEvent()
 {
-   int id = (unsigned) m_textureComboBox->currentItem() - 1;
+   int id = (unsigned) m_textureComboBox->currentIndex() - 1;
 
    float val[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
    val[0] = m_redSlider->value()   / 100.0;
@@ -348,7 +349,7 @@ void TextureWindow::updateEvent()
    val[2] = m_blueSlider->value()  / 100.0;
    val[3] = m_alphaSlider->value() / 100.0;
 
-   switch ( m_lightingValue->currentItem() )
+   switch ( m_lightingValue->currentIndex() )
    {
       case 0:
          m_model->setTextureAmbient( id, val );
@@ -374,7 +375,7 @@ void TextureWindow::updateEvent()
 
 void TextureWindow::accept()
 {
-   m_model->operationComplete( tr("Texture changes").utf8() );
+   m_model->operationComplete( tr("Texture changes").toUtf8() );
    QDialog::accept();
    DecalManager::getInstance()->modelUpdated( m_model );
 }
@@ -395,12 +396,12 @@ void TextureWindow::previewValueChanged( int index )
 
 void TextureWindow::lightValueChanged( int index )
 {
-   int id = (unsigned) m_textureComboBox->currentItem() - 1;
+   int id = (unsigned) m_textureComboBox->currentIndex() - 1;
    float val[4];
 
    bool haveLighting = false;
 
-   switch ( m_lightingValue->currentItem() )
+   switch ( m_lightingValue->currentIndex() )
    {
       case 0: // Ambient
          haveLighting = m_model->getTextureAmbient( id, val);
@@ -421,11 +422,11 @@ void TextureWindow::lightValueChanged( int index )
          break;
    }
 
-   if ( m_lightingValue->currentItem() == 4 )
+   if ( m_lightingValue->currentIndex() == 4 )
    {
       m_redLabel->setText( tr( "Shininess" ) );
-      m_redSlider->setMaxValue( 100 );
-      m_redSlider->setMinValue( 0 );
+      m_redSlider->setMaximum( 100 );
+      m_redSlider->setMinimum( 0 );
 
       m_greenLabel->hide();
       m_greenSlider->hide();
@@ -442,8 +443,8 @@ void TextureWindow::lightValueChanged( int index )
    else
    {
       m_redLabel->setText( tr( "Red" ) );
-      m_redSlider->setMaxValue( 100 );
-      m_redSlider->setMinValue( -100 );
+      m_redSlider->setMaximum( 100 );
+      m_redSlider->setMinimum( -100 );
 
       m_greenLabel->show();
       m_greenSlider->show();
@@ -538,7 +539,7 @@ void TextureWindow::alphaSliderChanged( int v )
 void TextureWindow::redEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.latin1() );
+   float v = atof( str.toLatin1() );
    m_redSlider->setValue( (int) (v * 100) );
    m_editing = false;
 }
@@ -546,7 +547,7 @@ void TextureWindow::redEditChanged( const QString & str )
 void TextureWindow::greenEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.latin1() );
+   float v = atof( str.toLatin1() );
    m_greenSlider->setValue( (int) (v * 100) );
    m_editing = false;
 }
@@ -554,7 +555,7 @@ void TextureWindow::greenEditChanged( const QString & str )
 void TextureWindow::blueEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.latin1() );
+   float v = atof( str.toLatin1() );
    m_blueSlider->setValue( (int) (v * 100) );
    m_editing = false;
 }
@@ -562,14 +563,14 @@ void TextureWindow::blueEditChanged( const QString & str )
 void TextureWindow::alphaEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.latin1() );
+   float v = atof( str.toLatin1() );
    m_alphaSlider->setValue( (int) (v * 100) );
    m_editing = false;
 }
 
 void TextureWindow::updateChangeButton()
 {
-   int textureId = m_textureComboBox->currentItem() - 1;
+   int textureId = m_textureComboBox->currentIndex() - 1;
 
    if ( textureId >= 0 )
    {

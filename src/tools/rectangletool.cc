@@ -28,8 +28,8 @@
 #include "model.h"
 #include "modelstatus.h"
 
-#include <qobject.h>
-#include <qapplication.h>
+#include <QObject>
+#include <QApplication>
 
 RectangleTool::RectangleTool()
    : m_tracking( false ),
@@ -80,7 +80,7 @@ void RectangleTool::mouseButtonDown( Parent * parent, int buttonState, int x, in
 
       parent->updateAllViews();
 
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Rectangle created" ).utf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Rectangle created" ).toUtf8() );
    }
 }
 

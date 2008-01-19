@@ -30,8 +30,6 @@
 
 #include <QDialog>
 
-class Q3Accel;
-
 class AnimSetWindow : public QDialog, public Ui::AnimSetWinBase
 {
       Q_OBJECT
@@ -40,7 +38,7 @@ class AnimSetWindow : public QDialog, public Ui::AnimSetWinBase
       virtual ~AnimSetWindow();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
       void animModeSelected( int index );
 
       void upClicked();
@@ -64,7 +62,6 @@ class AnimSetWindow : public QDialog, public Ui::AnimSetWinBase
       void fillAnimationList();
       Model::AnimationModeE indexToMode( int index );
 
-      Q3Accel * m_accel;
       Model  * m_model;
 };
 

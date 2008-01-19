@@ -28,31 +28,29 @@
 #include <QSlider>
 #include <QLineEdit>
 #include <QLabel>
-#include <q3accel.h>
+#include <QShortcut>
 
 #include <math.h>
 #include <stdlib.h>
 
 ValueWin::ValueWin( QWidget * parent, bool modal, Qt::WFlags flags )
    : QDialog( parent, flags ),
-     m_accel( new Q3Accel(this) ),
      m_editing( false )
 {
    setupUi( this );
    setModal( modal );
 
    m_valueEdit->setText( QString( "0" ) );
-   m_accel->insertItem( Qt::Key_F1, 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
 ValueWin::~ValueWin()
 {
 }
 
-void ValueWin::helpNowEvent( int id )
+void ValueWin::helpNowEvent()
 {
-   log_debug( "ValueWin::helpNowEvent()\n" );
    showHelp();
 }
 
@@ -66,7 +64,7 @@ void ValueWin::setLabel( const char * newLabel )
 {
    if ( newLabel )
    {
-      setCaption( QString( newLabel ) );
+      setWindowTitle( QString( newLabel ) );
       QString str;
       str.sprintf( "<b>%s<b>", newLabel );
       m_propertyLabel->setText( str );
@@ -96,7 +94,7 @@ void ValueWin::valueSliderChanged( int v )
 void ValueWin::valueEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.latin1() );
+   float v = atof( str.toLatin1() );
    m_valueSlider->setValue( (int) v );
    m_editing = false;
 }

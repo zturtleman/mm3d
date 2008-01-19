@@ -28,7 +28,6 @@
 #include <QDialog>
 
 class QTreeWidgetItem;
-class Q3Accel;
 
 class KeyValueWindow : public QDialog, public Ui::KeyValueWindowBase
 {

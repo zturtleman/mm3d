@@ -29,8 +29,9 @@
 #include <QPushButton>
 
 HelpWin::HelpWin( const char * document, bool modal, QWidget * parent )
-   : QDialog( parent, Qt::WDestructiveClose )
+   : QDialog( parent )
 {
+   setAttribute( Qt::WA_DeleteOnClose );
    setModal( modal );
    setupUi( this );
 #ifdef WIN32

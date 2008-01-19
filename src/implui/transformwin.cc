@@ -42,7 +42,7 @@
 #include <QLineEdit>
 #include <QSlider>
 #include <QLabel>
-#include <q3accel.h>
+#include <QShortcut>
 
 #include <list>
 #include <string>
@@ -52,17 +52,18 @@ using std::string;
 
 TransformWindow::TransformWindow( Model * model, QWidget * parent )
    : QDialog( parent ),
-     m_accel( new Q3Accel(this) ),
      m_model( model )
 {
    setupUi( this );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
 TransformWindow::~TransformWindow()
 {
 }
 
-void TransformWindow::helpNowEvent( int id )
+void TransformWindow::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_transformwin.html", true );
    win->show();
@@ -80,9 +81,9 @@ void TransformWindow::setModel( Model * m )
 
 void TransformWindow::translateEvent()
 {
-   double x = atof( m_transX->text().utf8() );
-   double y = atof( m_transY->text().utf8() );
-   double z = atof( m_transZ->text().utf8() );
+   double x = atof( m_transX->text().toUtf8() );
+   double y = atof( m_transY->text().toUtf8() );
+   double z = atof( m_transZ->text().toUtf8() );
 
    Matrix m;
    m.setTranslation( x, y, z );
@@ -90,7 +91,7 @@ void TransformWindow::translateEvent()
    if ( warnNoUndo( matrixIsUndoable( m ) ) )
    {
       m_model->applyMatrix( m, Model::OS_Global, true, m_undoable );
-      m_model->operationComplete( tr("Matrix Translate").utf8() );
+      m_model->operationComplete( tr("Matrix Translate").toUtf8() );
       DecalManager::getInstance()->modelUpdated( m_model );
    }
 }
@@ -98,9 +99,9 @@ void TransformWindow::translateEvent()
 void TransformWindow::rotateEulerEvent()
 {
    double vec[3];
-   vec[0] = atof( m_rotX->text().utf8() );
-   vec[1] = atof( m_rotY->text().utf8() );
-   vec[2] = atof( m_rotZ->text().utf8() );
+   vec[0] = atof( m_rotX->text().toUtf8() );
+   vec[1] = atof( m_rotY->text().toUtf8() );
+   vec[2] = atof( m_rotZ->text().toUtf8() );
 
    vec[0] *= PIOVER180; // convert to radians
    vec[1] *= PIOVER180; // convert to radians
@@ -112,7 +113,7 @@ void TransformWindow::rotateEulerEvent()
    if ( warnNoUndo( matrixIsUndoable( m ) ) )
    {
       m_model->applyMatrix( m, Model::OS_Global, true, m_undoable );
-      m_model->operationComplete( tr("Matrix Rotate").utf8() );
+      m_model->operationComplete( tr("Matrix Rotate").toUtf8() );
       DecalManager::getInstance()->modelUpdated( m_model );
    }
 }
@@ -120,10 +121,10 @@ void TransformWindow::rotateEulerEvent()
 void TransformWindow::rotateQuaternionEvent()
 {
    double vec[3];
-   vec[0] = atof( m_axisX->text().utf8() );
-   vec[1] = atof( m_axisY->text().utf8() );
-   vec[2] = atof( m_axisZ->text().utf8() );
-   double angle = atof( m_angle->text().utf8() );
+   vec[0] = atof( m_axisX->text().toUtf8() );
+   vec[1] = atof( m_axisY->text().toUtf8() );
+   vec[2] = atof( m_axisZ->text().toUtf8() );
+   double angle = atof( m_angle->text().toUtf8() );
 
    angle = angle * PIOVER180; // convert to radians
 
@@ -133,16 +134,16 @@ void TransformWindow::rotateQuaternionEvent()
    if ( warnNoUndo( matrixIsUndoable( m ) ) )
    {
       m_model->applyMatrix( m, Model::OS_Global, true, m_undoable );
-      m_model->operationComplete( tr("Matrix Rotate On Axis").utf8() );
+      m_model->operationComplete( tr("Matrix Rotate On Axis").toUtf8() );
       DecalManager::getInstance()->modelUpdated( m_model );
    }
 }
 
 void TransformWindow::scaleEvent()
 {
-   double x = atof( m_scaleX->text().utf8() );
-   double y = atof( m_scaleY->text().utf8() );
-   double z = atof( m_scaleZ->text().utf8() );
+   double x = atof( m_scaleX->text().toUtf8() );
+   double y = atof( m_scaleY->text().toUtf8() );
+   double z = atof( m_scaleZ->text().toUtf8() );
 
    Matrix m;
    m.set( 0, 0, x );
@@ -152,7 +153,7 @@ void TransformWindow::scaleEvent()
    if ( warnNoUndo( matrixIsUndoable( m ) ) )
    {
       m_model->applyMatrix( m, Model::OS_Global, true, m_undoable );
-      m_model->operationComplete( tr("Matrix Scale").utf8() );
+      m_model->operationComplete( tr("Matrix Scale").toUtf8() );
       DecalManager::getInstance()->modelUpdated( m_model );
    }
 }
@@ -160,27 +161,27 @@ void TransformWindow::scaleEvent()
 void TransformWindow::matrixEvent()
 {
    Matrix m;
-   m.set( 0, 0, atof( m_00->text().utf8() ) );
-   m.set( 0, 1, atof( m_01->text().utf8() ) );
-   m.set( 0, 2, atof( m_02->text().utf8() ) );
-   m.set( 0, 3, atof( m_03->text().utf8() ) );
-   m.set( 1, 0, atof( m_10->text().utf8() ) );
-   m.set( 1, 1, atof( m_11->text().utf8() ) );
-   m.set( 1, 2, atof( m_12->text().utf8() ) );
-   m.set( 1, 3, atof( m_13->text().utf8() ) );
-   m.set( 2, 0, atof( m_20->text().utf8() ) );
-   m.set( 2, 1, atof( m_21->text().utf8() ) );
-   m.set( 2, 2, atof( m_22->text().utf8() ) );
-   m.set( 2, 3, atof( m_23->text().utf8() ) );
-   m.set( 3, 0, atof( m_30->text().utf8() ) );
-   m.set( 3, 1, atof( m_31->text().utf8() ) );
-   m.set( 3, 2, atof( m_32->text().utf8() ) );
-   m.set( 3, 3, atof( m_33->text().utf8() ) );
+   m.set( 0, 0, atof( m_00->text().toUtf8() ) );
+   m.set( 0, 1, atof( m_01->text().toUtf8() ) );
+   m.set( 0, 2, atof( m_02->text().toUtf8() ) );
+   m.set( 0, 3, atof( m_03->text().toUtf8() ) );
+   m.set( 1, 0, atof( m_10->text().toUtf8() ) );
+   m.set( 1, 1, atof( m_11->text().toUtf8() ) );
+   m.set( 1, 2, atof( m_12->text().toUtf8() ) );
+   m.set( 1, 3, atof( m_13->text().toUtf8() ) );
+   m.set( 2, 0, atof( m_20->text().toUtf8() ) );
+   m.set( 2, 1, atof( m_21->text().toUtf8() ) );
+   m.set( 2, 2, atof( m_22->text().toUtf8() ) );
+   m.set( 2, 3, atof( m_23->text().toUtf8() ) );
+   m.set( 3, 0, atof( m_30->text().toUtf8() ) );
+   m.set( 3, 1, atof( m_31->text().toUtf8() ) );
+   m.set( 3, 2, atof( m_32->text().toUtf8() ) );
+   m.set( 3, 3, atof( m_33->text().toUtf8() ) );
 
    if ( warnNoUndo( matrixIsUndoable( m ) ) )
    {
       m_model->applyMatrix( m, Model::OS_Global, true, m_undoable );
-      m_model->operationComplete( tr("Apply Matrix").utf8() );
+      m_model->operationComplete( tr("Apply Matrix").toUtf8() );
       DecalManager::getInstance()->modelUpdated( m_model );
    }
 }

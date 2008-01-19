@@ -29,8 +29,8 @@
 #include "modelstatus.h"
 
 #include <list>
-#include <qobject.h>
-#include <qapplication.h>
+#include <QObject>
+#include <QApplication>
 
 using std::list;
 
@@ -83,7 +83,7 @@ bool FlattenCommand::activated( int arg, Model * model )
 
    if ( posList.empty() )
    {
-      model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "Need at least 1 vertex, joint, point, or face selected" ).utf8() );
+      model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "Need at least 1 vertex, joint, point, or face selected" ).toUtf8() );
       return false;
    }
 
@@ -108,7 +108,7 @@ bool FlattenCommand::activated( int arg, Model * model )
       model->movePosition( *it, coords[0], coords[1], coords[2] );
    }
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Selected primitives flattened" ).utf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Selected primitives flattened" ).toUtf8() );
 
    return true;
 }

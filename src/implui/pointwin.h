@@ -40,7 +40,7 @@ class PointWin : public QDialog, public Ui::PointWinBase
       virtual ~PointWin();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
       void deleteClicked();
       void renameClicked();

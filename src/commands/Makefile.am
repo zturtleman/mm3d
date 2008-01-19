@@ -62,6 +62,6 @@ libcommands_a_SOURCES = \
 	weldcmd.cc \
 	$(libcommands_HFILES) 
 
-AM_CPPFLAGS = $(CORE_PROFILE) -DQT_COMPAT -Wall -I../libmm3d -I../mm3dcore -I../depui -I../qtui -I../implui -I../ -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
+AM_CPPFLAGS = $(CORE_PROFILE) -Wall -I../libmm3d -I../mm3dcore -I../depui -I../qtui -I../implui -I../ -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
 
 

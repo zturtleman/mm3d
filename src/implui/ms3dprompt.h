@@ -30,7 +30,6 @@
 
 #include <QDialog>
 
-class Q3Accel;
 class Model;
 
 class Ms3dPrompt : public QDialog, public Ui::Ms3dPromptBase
@@ -45,15 +44,13 @@ class Ms3dPrompt : public QDialog, public Ui::Ms3dPromptBase
       void getOptions( Ms3dFilter::Ms3dOptions * o );
 
    public slots:
-      void helpNowEvent( int id );
+      void helpNowEvent();
 
       void subVersionChangedEvent( int );
 
    protected:
 
       void updateExtraEnabled();
-
-      Q3Accel * m_accel;
 };
 
 bool ms3dprompt_show( Model * model, ModelFilter::Options * o );

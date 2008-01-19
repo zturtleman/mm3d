@@ -36,7 +36,7 @@ class TextureFrame : public QFrame
    Q_OBJECT
 
    public:
-      TextureFrame( QWidget * parent = NULL, const char * name = "" );
+      TextureFrame( QWidget * parent = NULL );
       virtual ~TextureFrame();
 
       void setModel( Model * model );

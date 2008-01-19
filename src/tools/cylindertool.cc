@@ -229,7 +229,7 @@ void CylinderTool::mouseButtonDown( Parent * parent, int buttonState, int x, int
 
    parent->updateAllViews();
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Cylinder created" ).utf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Cylinder created" ).toUtf8() );
 }
 
 void CylinderTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )

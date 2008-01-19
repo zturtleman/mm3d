@@ -29,7 +29,6 @@
 #include <QDialog>
 
 class Model;
-class Q3Accel;
 
 class AutoAssignJointWin : public QDialog, public Ui::AutoAssignJointWinBase
 {
@@ -43,10 +42,9 @@ class AutoAssignJointWin : public QDialog, public Ui::AutoAssignJointWinBase
       bool getSelected();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
    protected:
-      Q3Accel * m_accel;
       Model * m_model;
 };
 

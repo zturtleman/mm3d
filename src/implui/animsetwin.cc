@@ -33,7 +33,7 @@
 #include <QComboBox>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <q3accel.h>
+#include <QShortcut>
 
 #include <list>
 
@@ -41,17 +41,16 @@ using std::list;
 
 AnimSetWindow::AnimSetWindow( Model * model, QWidget * parent )
    : QDialog( parent ),
-     m_accel( new Q3Accel(this) ),
      m_model( model )
 {
    setupUi( this );
    setModal( true );
 
-   m_animType->insertItem( tr( "Skeletal Animation" ) );
-   m_animType->insertItem( tr( "Frame Animation" ) );
+   m_animType->insertItem( 0, tr( "Skeletal Animation" ) );
+   m_animType->insertItem( 1, tr( "Frame Animation" ) );
 
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 
    unsigned skelCount     = m_model->getAnimCount( Model::ANIMMODE_SKELETAL );
    unsigned frameCount    = m_model->getAnimCount( Model::ANIMMODE_FRAME );
@@ -59,25 +58,25 @@ AnimSetWindow::AnimSetWindow( Model * model, QWidget * parent )
 
    if ( skelCount > 0 )
    {
-      m_animType->setCurrentItem(0);
+      m_animType->setCurrentIndex(0);
    }
    else if ( frameCount > 0 )
    {
-      m_animType->setCurrentItem(2);
+      m_animType->setCurrentIndex(2);
    }
    else if ( relativeCount > 0 )
    {
-      m_animType->setCurrentItem(2);
+      m_animType->setCurrentIndex(2);
    }
    else
    {
-      m_animType->setCurrentItem(0);
+      m_animType->setCurrentIndex(0);
    }
 
    fillAnimationList();
-   animModeSelected( m_animType->currentItem() );
+   animModeSelected( m_animType->currentIndex() );
 
-   //Model::AnimationModeE mode = indexToMode( m_animType->currentItem() );
+   //Model::AnimationModeE mode = indexToMode( m_animType->currentIndex() );
 
 }
 
@@ -85,7 +84,7 @@ AnimSetWindow::~AnimSetWindow()
 {
 }
 
-void AnimSetWindow::helpNowEvent( int id )
+void AnimSetWindow::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_animsetwin.html", true );
    win->show();
@@ -116,7 +115,7 @@ void AnimSetWindow::animModeSelected( int index )
 
 void AnimSetWindow::upClicked()
 {
-   Model::AnimationModeE mode = indexToMode( m_animType->currentItem() );
+   Model::AnimationModeE mode = indexToMode( m_animType->currentIndex() );
    unsigned count = m_animList->count();
 
    unsigned t = 0;
@@ -179,7 +178,7 @@ void AnimSetWindow::upClicked()
 
 void AnimSetWindow::downClicked()
 {
-   Model::AnimationModeE mode = indexToMode( m_animType->currentItem() );
+   Model::AnimationModeE mode = indexToMode( m_animType->currentIndex() );
    unsigned count = m_animList->count();
 
    int t = 0;
@@ -244,14 +243,14 @@ void AnimSetWindow::newClicked()
 {
    bool ok = false;
 
-   QString name = QInputDialog::getText(
+   QString name = QInputDialog::getText( this,
          tr( "Misfit 3D" ),
          tr( "New name:" ),
-         QLineEdit::Normal, QString(""), &ok, this );
+         QLineEdit::Normal, QString(""), &ok );
 
    if ( ok && !name.isEmpty() )
    {
-      int num = m_model->addAnimation( indexToMode( m_animType->currentItem() ), name.utf8() );
+      int num = m_model->addAnimation( indexToMode( m_animType->currentIndex() ), name.toUtf8() );
       if ( num >= 0 )
       {
          m_animList->insertItem( num, name );
@@ -282,20 +281,20 @@ void AnimSetWindow::renameClicked()
    {
       bool ok = false;
 
-      QString name = QInputDialog::getText(
+      QString name = QInputDialog::getText( this,
             tr( "Misfit 3D" ),
             tr( "New name:" ),
-            QLineEdit::Normal, m_animList->item( firstSelection )->text(), &ok, this );
+            QLineEdit::Normal, m_animList->item( firstSelection )->text(), &ok );
 
       if ( ok && !name.isEmpty() )
       {
-         Model::AnimationModeE mode = indexToMode( m_animType->currentItem() );
+         Model::AnimationModeE mode = indexToMode( m_animType->currentIndex() );
 
          for ( unsigned t = 0; t < count; t++ )
          {
             if ( m_animList->item(t)->isSelected() )
             {
-               m_model->setAnimName( mode, t, name.utf8() );
+               m_model->setAnimName( mode, t, name.toUtf8() );
                m_animList->item(t)->setText( name );
             }
          }
@@ -305,7 +304,7 @@ void AnimSetWindow::renameClicked()
 
 void AnimSetWindow::deleteClicked()
 {
-   Model::AnimationModeE mode = indexToMode( m_animType->currentItem() );
+   Model::AnimationModeE mode = indexToMode( m_animType->currentIndex() );
    unsigned count = m_animList->count();
    unsigned lastDeleted = 0;
 
@@ -346,7 +345,7 @@ void AnimSetWindow::deleteClicked()
 
 void AnimSetWindow::copyClicked()
 {
-   Model::AnimationModeE mode = indexToMode( m_animType->currentItem() );
+   Model::AnimationModeE mode = indexToMode( m_animType->currentIndex() );
    list<int> newAnims;
 
    unsigned count = m_animList->count();
@@ -357,7 +356,7 @@ void AnimSetWindow::copyClicked()
          QString name = m_animList->item( t )->text();
          name += QString( " " ) + tr( "copy" );
 
-         int num = m_model->copyAnimation( mode, t, name.utf8() );
+         int num = m_model->copyAnimation( mode, t, name.toUtf8() );
 
          if ( num >= 0 )
          {
@@ -383,7 +382,7 @@ void AnimSetWindow::copyClicked()
 
 void AnimSetWindow::splitClicked()
 {
-   Model::AnimationModeE mode = indexToMode( m_animType->currentItem() );
+   Model::AnimationModeE mode = indexToMode( m_animType->currentIndex() );
    unsigned count = m_animList->count();
 
    bool refillList = false;
@@ -396,14 +395,15 @@ void AnimSetWindow::splitClicked()
          {
             bool ok = false;
             QString name = QString::fromUtf8( m_model->getAnimName( mode, t ) );
-            unsigned frame = QInputDialog::getInteger( tr("Split at frame", "Split animation frame window title" ), tr("Split", "'Split' refers to splitting an animation into two separate animations" ) 
+            unsigned frame = QInputDialog::getInteger( this,
+                  tr("Split at frame", "Split animation frame window title" ), tr("Split", "'Split' refers to splitting an animation into two separate animations" ) 
                   + QString(" ") + name + QString(" ") + tr("at frame number", "the frame number where the second (split) animation begins" ),
                   2, 2, m_model->getAnimFrameCount( mode, t ), 1, &ok );
 
             if ( ok )
             {
                name = name + " " + tr("split");
-               if ( m_model->splitAnimation( mode, t, name.utf8(), frame ) )
+               if ( m_model->splitAnimation( mode, t, name.toUtf8(), frame ) )
                {
                   refillList = true;
                }
@@ -424,7 +424,7 @@ void AnimSetWindow::splitClicked()
 
 void AnimSetWindow::joinClicked()
 {
-   Model::AnimationModeE mode = indexToMode( m_animType->currentItem() );
+   Model::AnimationModeE mode = indexToMode( m_animType->currentIndex() );
 
    unsigned count = m_animList->count();
    int joinNum = -1;
@@ -466,7 +466,7 @@ void AnimSetWindow::joinClicked()
 
 void AnimSetWindow::mergeClicked()
 {
-   Model::AnimationModeE mode = indexToMode( m_animType->currentItem() );
+   Model::AnimationModeE mode = indexToMode( m_animType->currentIndex() );
 
    if ( mode == Model::ANIMMODE_SKELETAL )
    {
@@ -496,7 +496,7 @@ void AnimSetWindow::mergeClicked()
                   str = tr("Cannot merge animation %1 and %2,\n frame counts differ.")
                      .arg(m_model->getAnimName( mode, mergeNum ))
                      .arg(m_model->getAnimName( mode, currentAnim ));
-                  msg_error( (const char *) str.utf8() );
+                  msg_error( (const char *) str.toUtf8() );
                }
             }
             else
@@ -523,13 +523,13 @@ void AnimSetWindow::mergeClicked()
    }
    else
    {
-      msg_error( (const char *) tr("Can only merge skeletal animations.").utf8() );
+      msg_error( (const char *) tr("Can only merge skeletal animations.").toUtf8() );
    }
 }
 
 void AnimSetWindow::convertClicked()
 {
-   Model::AnimationModeE mode = indexToMode( m_animType->currentItem() );
+   Model::AnimationModeE mode = indexToMode( m_animType->currentIndex() );
    bool cancelled = false;
 
    unsigned count = m_animList->count();
@@ -550,7 +550,7 @@ void AnimSetWindow::convertClicked()
                   QString name = acw.getNewName();
                   unsigned frameCount = acw.getNewFrameCount();
 
-                  m_model->convertAnimToFrame( mode, t, name.utf8(), frameCount );
+                  m_model->convertAnimToFrame( mode, t, name.toUtf8(), frameCount );
                }
                break;
             case AnimConvertWindow::OP_CANCEL:
@@ -565,7 +565,7 @@ void AnimSetWindow::convertClicked()
 
 void AnimSetWindow::accept()
 {
-   m_model->operationComplete( tr( "Animation changes", "operation complete" ).utf8() );
+   m_model->operationComplete( tr( "Animation changes", "operation complete" ).toUtf8() );
    QDialog::accept();
 }
 
@@ -578,7 +578,7 @@ void AnimSetWindow::reject()
 
 void AnimSetWindow::fillAnimationList()
 {
-   Model::AnimationModeE mode = indexToMode( m_animType->currentItem() );
+   Model::AnimationModeE mode = indexToMode( m_animType->currentIndex() );
 
    m_animList->clear();
 

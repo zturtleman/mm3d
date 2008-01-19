@@ -34,7 +34,7 @@
 #include <QLayout>
 #include <QTabWidget>
 #include <QHBoxLayout>
-#include <q3accel.h>
+#include <QShortcut>
 
 #include <stdlib.h>
 
@@ -42,30 +42,30 @@ using std::list;
 using std::map;
 
 BackgroundWin::BackgroundWin( Model * model, QWidget * parent )
-   : QDialog( parent, Qt::WDestructiveClose ),
-     m_accel( new Q3Accel(this) ),
+   : QDialog( parent ),
      m_model( model )
 {
+   setAttribute( Qt::WA_DeleteOnClose );
    setupUi( this );
    setModal( true );
 
    for ( unsigned t = 0; t < 6; t++ )
    {
-      QWidget * p = m_tabs->page( t );
+      QWidget * p = m_tabs->widget( t );
       QHBoxLayout * l = new QHBoxLayout( p );
       m_bgSelect[t] = new BackgroundSelect( m_model, t, p );
       l->addWidget( m_bgSelect[t] );
    }
 
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
 BackgroundWin::~BackgroundWin()
 {
 }
 
-void BackgroundWin::helpNowEvent( int id )
+void BackgroundWin::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_backgroundwin.html", true );
    win->show();
@@ -73,13 +73,13 @@ void BackgroundWin::helpNowEvent( int id )
 
 void BackgroundWin::selectedPageEvent( const QString & str )
 {
-   QWidget * widget = m_tabs->currentPage();
+   QWidget * widget = m_tabs->currentWidget();
    widget->repaint();
 }
 
 void BackgroundWin::accept()
 {
-   m_model->operationComplete( tr( "Background Image", "operation complete" ).utf8() );
+   m_model->operationComplete( tr( "Background Image", "operation complete" ).toUtf8() );
    QDialog::accept();
 }
 

@@ -44,15 +44,16 @@
 #include <QLineEdit>
 #include <QFileDialog>
 #include <QPixmap>
-#include <q3accel.h>
+#include <QShortcut>
+
 #include <math.h>
 
 PaintTextureWin::PaintTextureWin( Model * model, QWidget * parent )
-   : QDialog( parent, Qt::WDestructiveClose ),
-     m_accel( new Q3Accel(this) ),
+   : QDialog( parent ),
      m_model( model ),
      m_saved( false )
 {
+   setAttribute( Qt::WA_DeleteOnClose );
    setupUi( this );
    setModal( true );
 
@@ -62,8 +63,8 @@ PaintTextureWin::PaintTextureWin( Model * model, QWidget * parent )
    m_textureWidget->setInteractive( false );
    m_textureWidget->setMouseOperation( TextureWidget::MouseRange );
 
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 
    bool foundTexture = false;
 
@@ -92,11 +93,11 @@ PaintTextureWin::PaintTextureWin( Model * model, QWidget * parent )
 
    addTriangles();
 
-   m_polygonsButton->setCurrentItem( 2 );
-   m_verticesButton->setCurrentItem( 0 );
+   m_polygonsButton->setCurrentIndex( 2 );
+   m_verticesButton->setCurrentIndex( 0 );
 
-   m_hSize->setCurrentItem( 3 );
-   m_vSize->setCurrentItem( 3 );
+   m_hSize->setCurrentIndex( 3 );
+   m_vSize->setCurrentIndex( 3 );
 
    if ( material >= 0 )
    {
@@ -108,13 +109,13 @@ PaintTextureWin::PaintTextureWin( Model * model, QWidget * parent )
 
          if ( x == y )
          {
-            m_hSize->setCurrentItem( 3 );
-            m_vSize->setCurrentItem( 3 );
+            m_hSize->setCurrentIndex( 3 );
+            m_vSize->setCurrentIndex( 3 );
          }
          else if ( y > x )
          {
-            m_hSize->setCurrentItem( 2 );
-            m_vSize->setCurrentItem( 5 );
+            m_hSize->setCurrentIndex( 2 );
+            m_vSize->setCurrentIndex( 5 );
 
             int index = 2;
             while ( y > x )
@@ -122,12 +123,12 @@ PaintTextureWin::PaintTextureWin( Model * model, QWidget * parent )
                y = y / 2;
                index++;
             }
-            m_vSize->setCurrentItem( index );
+            m_vSize->setCurrentIndex( index );
          }
          else
          {
-            m_vSize->setCurrentItem( 2 );
-            m_hSize->setCurrentItem( 5 );
+            m_vSize->setCurrentIndex( 2 );
+            m_hSize->setCurrentIndex( 5 );
 
             int index = 2;
             while ( x > y )
@@ -135,7 +136,7 @@ PaintTextureWin::PaintTextureWin( Model * model, QWidget * parent )
                x = x / 2;
                index++;
             }
-            m_hSize->setCurrentItem( index );
+            m_hSize->setCurrentIndex( index );
          }
       }
    }
@@ -155,7 +156,7 @@ PaintTextureWin::~PaintTextureWin()
 {
 }
 
-void PaintTextureWin::helpNowEvent( int )
+void PaintTextureWin::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_painttexturewin.html", true );
    win->show();
@@ -208,9 +209,9 @@ void PaintTextureWin::saveEvent()
       {
          bool save = true;
 
-         if ( file_exists( filename.latin1() ) )
+         if ( file_exists( filename.toUtf8() ) )
          {
-            char val = msg_warning_prompt( (const char *) tr( "File exists.  Overwrite?" ).utf8(), "yNc" );
+            char val = msg_warning_prompt( (const char *) tr( "File exists.  Overwrite?" ).toUtf8(), "yNc" );
             switch ( val )
             {
                case 'N':
@@ -229,18 +230,18 @@ void PaintTextureWin::saveEvent()
 
          if ( save )
          {
-            int h = atoi( m_hSize->currentText().latin1() );
-            int v = atoi( m_vSize->currentText().latin1() );
+            int h = atoi( m_hSize->currentText().toLatin1() );
+            int v = atoi( m_vSize->currentText().toLatin1() );
             QPixmap pixmap = m_textureWidget->renderPixmap( h, v);
 
-            QImage img = pixmap.convertToImage();
+            QImage img = pixmap.toImage();
 
             if ( !img.save( filename, "PNG", 100 ) )
             {
                QString msg = tr( "Could not write file: " ) + QString( "\n" );
                msg += filename;
 
-               msg_error( (const char *) msg.utf8() );
+               msg_error( (const char *) msg.toUtf8() );
             }
 
             updateDisplay();
@@ -282,15 +283,15 @@ void PaintTextureWin::addTriangles()
 
 void PaintTextureWin::updateDisplay()
 {
-   int dm = m_polygonsButton->currentItem();
+   int dm = m_polygonsButton->currentIndex();
 
    dm++;
 
    m_textureWidget->setDrawMode( static_cast<TextureWidget::DrawModeE>(dm) );
-   m_textureWidget->setDrawVertices( (m_verticesButton->currentItem() != 0) ? true : false );
+   m_textureWidget->setDrawVertices( (m_verticesButton->currentIndex() != 0) ? true : false );
 
-   m_textureFrame->sizeOverride( atoi( m_hSize->currentText().latin1() ),
-         atoi( m_vSize->currentText().latin1() ) );
+   m_textureFrame->sizeOverride( atoi( m_hSize->currentText().toLatin1() ),
+         atoi( m_vSize->currentText().toLatin1() ) );
 
    m_textureWidget->updateGL();
 }

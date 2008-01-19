@@ -27,7 +27,7 @@
 
 #include "log.h"
 
-#include <qlayout.h>
+#include <QLayout>
 
 #include <QContextMenuEvent>
 

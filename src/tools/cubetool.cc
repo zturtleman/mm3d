@@ -204,7 +204,7 @@ void CubeTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y )
 
       parent->updateAllViews();
 
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Cube created" ).utf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Cube created" ).toUtf8() );
    }
 }
 

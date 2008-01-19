@@ -32,8 +32,8 @@
 #include <QResizeEvent>
 #include <QFrame>
 
-TextureFrame::TextureFrame( QWidget * parent, const char * name )
-   : QFrame( parent, name ),
+TextureFrame::TextureFrame( QWidget * parent )
+   : QFrame( parent ),
      m_materialId( -1 ),
      m_texture( NULL ),
      m_3d( false ),
@@ -44,7 +44,7 @@ TextureFrame::TextureFrame( QWidget * parent, const char * name )
    setFrameStyle( StyledPanel );
    setFrameShadow( Sunken );
 
-   m_textureWidget= new TextureWidget( this, "" );
+   m_textureWidget= new TextureWidget( this );
 }
 
 TextureFrame::~TextureFrame()

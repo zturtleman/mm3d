@@ -39,12 +39,13 @@ using std::list;
 using std::map;
 
 AlignWin::AlignWin( Model * model, QWidget * parent )
-   : QDialog( parent, Qt::WDestructiveClose ),
+   : QDialog( parent ),
      m_model( model ),
      m_atX( AT_Center ),
      m_atY( AT_Center ),
      m_atZ( AT_Center )
 {
+   setAttribute( Qt::WA_DeleteOnClose );
    setModal( true );
    setupUi( this );
 
@@ -68,29 +69,29 @@ void AlignWin::helpNowEvent()
 
 void AlignWin::alignX()
 {
-   double val = atof( m_xValue->text().latin1() );
+   double val = atof( m_xValue->text().toLatin1() );
    log_debug( "aligning x on %f\n", val );
    alignSelectedX( m_model, m_atX, val );
    DecalManager::getInstance()->modelUpdated( m_model );
-   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align X").utf8() );
+   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align X").toUtf8() );
 }
 
 void AlignWin::alignY()
 {
-   double val = atof( m_yValue->text().latin1() );
+   double val = atof( m_yValue->text().toLatin1() );
    log_debug( "aligning y on %f\n", val );
    alignSelectedY( m_model, m_atY, val );
    DecalManager::getInstance()->modelUpdated( m_model );
-   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align Y").utf8() );
+   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align Y").toUtf8() );
 }
 
 void AlignWin::alignZ()
 {
-   double val = atof( m_zValue->text().latin1() );
+   double val = atof( m_zValue->text().toLatin1() );
    log_debug( "aligning z on %f\n", val );
    alignSelectedZ( m_model, m_atZ, val );
    DecalManager::getInstance()->modelUpdated( m_model );
-   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align Z").utf8() );
+   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align Z").toUtf8() );
 }
 
 void AlignWin::selectedXCenter()
@@ -141,7 +142,7 @@ void AlignWin::selectedZMax()
 void AlignWin::accept()
 {
    log_debug( "Alignment complete\n" );
-   m_model->operationComplete( tr( "Align Selected", "operation complete" ).utf8() );
+   m_model->operationComplete( tr( "Align Selected", "operation complete" ).toUtf8() );
    QDialog::accept();
 }
 

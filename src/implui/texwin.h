@@ -29,7 +29,6 @@
 #include <QDialog>
 
 class Model;
-class Q3Accel;
 class RgbaWin;
 
 class TextureWindow : public QDialog, public Ui::TextureWindowBase
@@ -41,7 +40,7 @@ class TextureWindow : public QDialog, public Ui::TextureWindowBase
       virtual ~TextureWindow();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
       void updateEvent();
 
@@ -76,7 +75,6 @@ class TextureWindow : public QDialog, public Ui::TextureWindowBase
    protected:
       void updateChangeButton();
 
-      Q3Accel * m_accel;
       Model  * m_model;
       bool      m_editing;
       bool      m_setting;

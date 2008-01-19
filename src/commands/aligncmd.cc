@@ -28,8 +28,8 @@
 #include "align.h"
 #include "log.h"
 
-#include <qobject.h>
-#include <qapplication.h>
+#include <QObject>
+#include <QApplication>
 
 AlignCommand::AlignCommand()
 {

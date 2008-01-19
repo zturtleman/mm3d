@@ -129,7 +129,7 @@ void ProjectionTool::mouseButtonDown( Parent * parent, int buttonState, int x, i
 
    parent->updateAllViews();
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Projection created" ).utf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Projection created" ).toUtf8() );
 }
 
 void ProjectionTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )

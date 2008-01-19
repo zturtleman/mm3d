@@ -25,15 +25,12 @@
 
 #include "model.h"
 #include "glmath.h"
-#include "helpwin.h"
 
 #include <QCheckBox>
 #include <QRadioButton>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QTreeWidgetItem>
-
-#include <q3accel.h>
 
 #include <stdio.h>
 #include <stdlib.h>

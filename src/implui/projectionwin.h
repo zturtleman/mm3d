@@ -32,7 +32,6 @@
 
 class ViewPanel;
 class TextureWidget;
-class Q3Accel;
 
 class ProjectionWin : public QDialog, public Ui::ProjectionWinBase, public Model::Observer
 {
@@ -50,12 +49,12 @@ class ProjectionWin : public QDialog, public Ui::ProjectionWinBase, public Model
 
    public slots:
       void show();
-      void accelEvent( int );
       void setModel( Model * m );
       void zoomIn();
       void zoomOut();
       void undoEvent();
       void redoEvent();
+      void helpNowEvent();
 
    protected slots:
       void closeEvent( QCloseEvent * e );
@@ -77,7 +76,6 @@ class ProjectionWin : public QDialog, public Ui::ProjectionWinBase, public Model
       int  getSelectedProjection();
       void operationComplete( const char * opname );
 
-      Q3Accel * m_accel;
       Model  * m_model;
       ViewPanel * m_viewPanel;
       TextureWidget * m_textureWidget;

@@ -187,7 +187,7 @@ void EllipsoidTool::mouseButtonDown( Parent * parent, int buttonState, int x, in
 
    parent->updateAllViews();
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Ellipsoid created" ).utf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Ellipsoid created" ).toUtf8() );
 }
 
 void EllipsoidTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )

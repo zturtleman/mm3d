@@ -68,7 +68,7 @@ bool QtTextureFilter::canRead( const char * filename )
 
       if ( (int) len >= (int) cmpstr.length() )
       {
-         if ( strcasecmp( &filename[len-cmpstr.length()], cmpstr.latin1()) == 0 )
+         if ( strcasecmp( &filename[len-cmpstr.length()], (const char *) cmpstr.toUtf8()) == 0 )
          {
             return true;
          }
@@ -98,7 +98,7 @@ bool QtTextureFilter::canWrite( const char * filename )
 
       if ( (int) len >= (int) cmpstr.length() )
       {
-         if ( strcasecmp( &filename[len-cmpstr.length()], cmpstr.latin1()) == 0 )
+         if ( strcasecmp( &filename[len-cmpstr.length()], (const char *) cmpstr.toUtf8()) == 0 )
          {
             return true;
          }
@@ -224,9 +224,9 @@ Texture::ErrorE QtTextureFilter::writeFile( Texture * texture, const char * file
    
    Texture::ErrorE err = Texture::ERROR_NONE;
    {
-      QImage image ( data, texture->m_width, texture->m_height, 32, NULL, 0, QImage::IgnoreEndian );
+      QImage image ( data, texture->m_width, texture->m_height, QImage::Format_ARGB32 );
 
-      if ( ! image.save( QString::fromUtf8( filename ), QString(fmt), 100 ) )
+      if ( ! image.save( QString::fromUtf8( filename ), fmt, 100 ) )
       {
          return Texture::ERROR_FILE_WRITE;
       }
@@ -261,7 +261,7 @@ Texture::ErrorE QtTextureFilter::writeMemory( const char * format, Texture * tex
 
    Texture::ErrorE err = Texture::ERROR_NONE;
    {
-      QImage image ( data, texture->m_width, texture->m_height, 32, NULL, 0, QImage::IgnoreEndian );
+      QImage image ( data, texture->m_width, texture->m_height, QImage::Format_ARGB32 );
 
       QByteArray ba;
       QBuffer buffer( &ba );
@@ -290,7 +290,7 @@ list<string> QtTextureFilter::getReadTypes()
    QStringList::Iterator it;
    for ( it = m_read.begin(); it != m_read.end(); it++ )
    {
-      rval.push_back( (QString("*.") + *it).latin1() );
+      rval.push_back( (const char *) (QString("*.") + *it).toUtf8() );
    }
 
    return rval;
@@ -305,7 +305,7 @@ list<string> QtTextureFilter::getWriteTypes()
    QStringList::Iterator it;
    for ( it = m_write.begin(); it != m_write.end(); it++ )
    {
-      rval.push_back( (QString("*.") + *it).latin1() );
+      rval.push_back( (const char *) (QString("*.") + *it).toUtf8() );
    }
 
    return rval;
@@ -379,7 +379,7 @@ void QtTextureFilter::imageToTexture( Texture * texture, QImage * image )
    texture->m_width  = image->width();
    texture->m_height = image->height();
 
-   bool hasAlpha = image->hasAlphaBuffer();
+   bool hasAlpha = image->hasAlphaChannel();
    log_debug( "Alpha channel: %s\n", hasAlpha ? "present" : "not present" );
 
    unsigned pixelBytes = hasAlpha ? 4 : 3;

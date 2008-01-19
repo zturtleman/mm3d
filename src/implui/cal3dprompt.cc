@@ -26,17 +26,16 @@
 #include "model.h"
 
 #include <QRadioButton>
-#include <q3accel.h>
+#include <QShortcut>
 
 Cal3dPrompt::Cal3dPrompt()
-   : QDialog( NULL ),
-     m_accel( new Q3Accel(this) )
+   : QDialog( NULL )
 {
    setupUi( this );
    setModal( true );
 
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
 Cal3dPrompt::~Cal3dPrompt()
@@ -62,8 +61,9 @@ void Cal3dPrompt::getOptions( Cal3dFilter::Cal3dOptions * opts )
    opts->m_xmlMatFile     = m_xmlMatFile->isChecked();
 }
 
-void Cal3dPrompt::helpNowEvent( int id )
+void Cal3dPrompt::helpNowEvent()
 {
+   // FIXME Add help page
    //HelpWin * win = new HelpWin( "olh_pluginwin.html", true );
    //win->show();
 }

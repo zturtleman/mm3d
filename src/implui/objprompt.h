@@ -30,7 +30,6 @@
 
 #include <QDialog>
 
-class Q3Accel;
 class Model;
 
 class ObjPrompt : public QDialog, public Ui::ObjPromptBase
@@ -45,11 +44,10 @@ class ObjPrompt : public QDialog, public Ui::ObjPromptBase
       void getOptions( ObjFilter::ObjOptions * o );
 
    public slots:
-      void helpNowEvent( int id );
+      void helpNowEvent();
 
    protected:
 
-      Q3Accel * m_accel;
 };
 
 bool objprompt_show( Model * model, ModelFilter::Options * o );

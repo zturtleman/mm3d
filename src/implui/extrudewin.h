@@ -32,7 +32,6 @@
 #include <QDialog>
 
 class Model;
-class Q3Accel;
 
 class ExtrudeWin : public QDialog, public Ui::ExtrudeWinBase
 {
@@ -43,7 +42,7 @@ class ExtrudeWin : public QDialog, public Ui::ExtrudeWinBase
       virtual ~ExtrudeWin();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
       void absoluteExtrudeEvent();
       void normalExtrudeEvent();
@@ -72,7 +71,6 @@ class ExtrudeWin : public QDialog, public Ui::ExtrudeWinBase
       void addSide( unsigned a, unsigned b );
       bool sideIsEdge( unsigned a, unsigned b );
 
-      Q3Accel * m_accel;
       Model * m_model;
 
       SideList          m_sides;

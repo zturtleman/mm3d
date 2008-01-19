@@ -42,13 +42,12 @@
 #include <QSlider>
 #include <QLineEdit>
 #include <QPixmap>
-#include <q3accel.h>
+#include <QShortcut>
 
 #include <math.h>
 
 TextureCoord::TextureCoord( Model * model, QWidget * parent )
    : QDialog( parent ),
-     m_accel( new Q3Accel(this) ),
      m_undoCount( 0 ),
      m_redoCount( 0 ),
      m_inUndo( false ),
@@ -64,15 +63,22 @@ TextureCoord::TextureCoord( Model * model, QWidget * parent )
    //setModel( m_model );
    m_textureFrame->setModel( model );
 
-   m_accel->insertItem( Qt::Key_F1, HELP_ID );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(accelEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 
-   m_accel->insertItem( Qt::CTRL + Qt::Key_Z, UNDO_ID );
-   m_accel->insertItem( Qt::CTRL + Qt::Key_Y, REDO_ID );
-   m_accel->insertItem( g_keyConfig.getKey( "tool_select_vertices" ), TOOL_SELECT_ID );
-   m_accel->insertItem( g_keyConfig.getKey( "tool_move" ), TOOL_MOVE_ID );
-   m_accel->insertItem( g_keyConfig.getKey( "tool_rotate" ), TOOL_ROTATE_ID );
-   m_accel->insertItem( g_keyConfig.getKey( "tool_scale" ), TOOL_SCALE_ID );
+   QShortcut * undo = new QShortcut( QKeySequence( tr("CTRL+Z", "Undo shortcut")), this );
+   connect( undo, SIGNAL(activated()), this, SLOT(undoEvent()) );
+   QShortcut * redo = new QShortcut( QKeySequence( tr("CTRL+Y", "Redo shortcut")), this );
+   connect( redo, SIGNAL(activated()), this, SLOT(redoEvent()) );
+
+   QShortcut * select = new QShortcut( g_keyConfig.getKey( "tool_select_vertices" ), this );
+   connect( select, SIGNAL(activated()), this, SLOT(toolSelectEvent()) );
+   QShortcut * move = new QShortcut( g_keyConfig.getKey( "tool_move" ), this );
+   connect( move, SIGNAL(activated()), this, SLOT(toolMoveEvent()) );
+   QShortcut * rotate = new QShortcut( g_keyConfig.getKey( "tool_rotate" ), this );
+   connect( rotate, SIGNAL(activated()), this, SLOT(toolRotateEvent()) );
+   QShortcut * scale = new QShortcut( g_keyConfig.getKey( "tool_scale" ), this );
+   connect( scale, SIGNAL(activated()), this, SLOT(toolScaleEvent()) );
 
    m_textureWidget = m_textureFrame->getTextureWidget();
    m_textureWidget->setInteractive( true );
@@ -94,7 +100,7 @@ TextureCoord::TextureCoord( Model * model, QWidget * parent )
    connect( m_textureWidget, SIGNAL(zoomLevelChanged(QString)), this, SLOT(zoomLevelChangedEvent(QString)) );
 
    m_selectButton->setChecked( true );
-   mouseToolChangedEvent( 0 );
+   m_textureWidget->setMouseOperation( TextureWidget::MouseSelect );
 
    m_groupButton->setChecked( true );  // if you change this, change m_currentMapScheme also
 }
@@ -111,6 +117,7 @@ void TextureCoord::undoEvent()
       m_model->undo();
       m_undoCount--;
       m_inUndo = false;
+      m_textureWidget->updateGL();
    }
 }
 
@@ -122,6 +129,7 @@ void TextureCoord::redoEvent()
       m_model->redo();
       m_undoCount++;
       m_inUndo = false;
+      m_textureWidget->updateGL();
    }
 }
 
@@ -199,110 +207,57 @@ void TextureCoord::setModel( Model * model )
    }
 }
 
-void TextureCoord::accelEvent( int id )
+void TextureCoord::helpNowEvent()
 {
-   switch ( id )
-   {
-      case HELP_ID:
-         {
-            HelpWin * win = new HelpWin( "olh_texturecoordwin.html", true );
-            win->show();
-         }
-         break;
+   HelpWin * win = new HelpWin( "olh_texturecoordwin.html", true );
+   win->show();
+}
 
-      case UNDO_ID:
-         undoEvent();
-         break;
-      case REDO_ID:
-         redoEvent();
-         break;
-
-      case TOOL_SELECT_ID:
-         m_selectButton->setChecked( true );
-         m_textureWidget->setMouseOperation( TextureWidget::MouseSelect );
-         break;
-
-      case TOOL_MOVE_ID:
-         m_moveButton->setChecked( true );
-         m_textureWidget->setMouseOperation( TextureWidget::MouseMove );
-         break;
-
-      case TOOL_ROTATE_ID:
-         m_rotateButton->setChecked( true );
-         m_textureWidget->setMouseOperation( TextureWidget::MouseRotate );
-         break;
-
-      case TOOL_SCALE_ID:
-         m_scaleButton->setChecked( true );
-         m_textureWidget->setMouseOperation( TextureWidget::MouseScale );
-         break;
-
-      default:
-         break;
-   }
+void TextureCoord::toolSelectEvent()
+{
+   m_selectButton->setChecked( true );
+   m_textureWidget->setMouseOperation( TextureWidget::MouseSelect );
    m_textureWidget->updateGL();
 }
 
-void TextureCoord::mapSchemeChangedEvent( int scheme )
+void TextureCoord::toolMoveEvent()
 {
-   if ( scheme == m_currentMapScheme )
+   m_moveButton->setChecked( true );
+   m_textureWidget->setMouseOperation( TextureWidget::MouseMove );
+   m_textureWidget->updateGL();
+}
+
+void TextureCoord::toolRotateEvent()
+{
+   m_rotateButton->setChecked( true );
+   m_textureWidget->setMouseOperation( TextureWidget::MouseRotate );
+   m_textureWidget->updateGL();
+}
+
+void TextureCoord::toolScaleEvent()
+{
+   m_scaleButton->setChecked( true );
+   m_textureWidget->setMouseOperation( TextureWidget::MouseScale );
+   m_textureWidget->updateGL();
+}
+
+void TextureCoord::mapGroupEvent()
+{
+   if ( m_currentMapScheme == MapSchemeGroup )
    {
       return;
    }
 
-   switch ( scheme )
+   MapDirection dir;
+   dir.setMapDirection( getDefaultDirection() );
+   if ( dir.exec() )
    {
-      case MapSchemeTriangle:
-         m_currentMapScheme = scheme;
-         mapTriangle();
-         break;
-      case MapSchemeQuad:
-         m_currentMapScheme = scheme;
-         mapQuad();
-         break;
-      case MapSchemeGroup:
-         {
-            MapDirection dir;
-            dir.setMapDirection( getDefaultDirection() );
-            if ( dir.exec() )
-            {
-               m_currentMapScheme = scheme;
-               mapGroup( dir.getMapDirection() );
-            }
-            else
-            {
-               cancelMapChange();
-               return;
-            }
-         }
-         break;
-      default:
-         log_error( "unknown map scheme: %d\n", scheme );
-         return; // Error, don't set m_currentMapScheme
-         break;
+      mapGroup( dir.getMapDirection() );
    }
-
-   m_textureWidget->updateGL();
-}
-
-void TextureCoord::mouseToolChangedEvent( int tool )
-{
-   switch ( tool )
+   else
    {
-      case 0:
-         m_textureWidget->setMouseOperation( TextureWidget::MouseSelect );
-         break;
-      case 1:
-         m_textureWidget->setMouseOperation( TextureWidget::MouseMove );
-         break;
-      case 2:
-         m_textureWidget->setMouseOperation( TextureWidget::MouseRotate );
-         break;
-      case 3:
-         m_textureWidget->setMouseOperation( TextureWidget::MouseScale );
-         break;
-      default:
-         break;
+      cancelMapChange();
+      return;
    }
    m_textureWidget->updateGL();
 }
@@ -343,7 +298,7 @@ void TextureCoord::resetClickedEvent()
 
 void TextureCoord::updateDoneEvent()
 {
-   operationComplete( tr("Move texture coordinates").utf8() );
+   operationComplete( tr("Move texture coordinates").toUtf8() );
 }
 
 void TextureCoord::updateTextureCoordsEvent()
@@ -425,7 +380,7 @@ void TextureCoord::zoomOut()
 
 void TextureCoord::zoomChangeEvent()
 {
-   double zoom = atof( m_zoomInput->text().latin1() );
+   double zoom = atof( m_zoomInput->text().toLatin1() );
    if ( zoom < 0.00001 )
    {
       zoom = 1;
@@ -440,6 +395,13 @@ void TextureCoord::zoomLevelChangedEvent( QString zoomStr )
 
 void TextureCoord::mapTriangle()
 {
+   if ( MapSchemeTriangle == m_currentMapScheme )
+   {
+      return;
+   }
+
+   m_currentMapScheme = MapSchemeTriangle;
+
    m_textureWidget->clearCoordinates();
    clearTriangles();
 
@@ -453,10 +415,18 @@ void TextureCoord::mapTriangle()
    m_triangles.push_back( m_textureWidget->addTriangle( v1, v2, v3 ) );
    updateTextureCoordsEvent();
    updateDoneEvent();
+   m_textureWidget->updateGL();
 }
 
 void TextureCoord::mapQuad()
 {
+   if ( MapSchemeQuad == m_currentMapScheme )
+   {
+      return;
+   }
+
+   m_currentMapScheme = MapSchemeQuad;
+
    m_textureWidget->clearCoordinates();
    clearTriangles();
 
@@ -472,11 +442,20 @@ void TextureCoord::mapQuad()
    m_triangles.push_back( m_textureWidget->addTriangle( v1, v3, v4 ) );
    updateTextureCoordsEvent();
    updateDoneEvent();
+   m_textureWidget->updateGL();
 }
 
 void TextureCoord::mapGroup( int direction )
 {
    log_debug( "mapGroup( %d )\n", direction );
+
+   if ( MapSchemeGroup == m_currentMapScheme )
+   {
+      log_debug( "  ignored\n" );
+      return;
+   }
+
+   m_currentMapScheme = MapSchemeGroup;
 
    double range = 1.0; //m_textureWidget->getMaxViewCoord() - m_textureWidget->getMinViewCoord();
    double xOff  = 0.0; //m_textureWidget->getMinViewCoord();
@@ -592,6 +571,7 @@ void TextureCoord::mapGroup( int direction )
 
    updateTextureCoordsEvent();
    updateDoneEvent();
+   m_textureWidget->updateGL();
 }
 
 void TextureCoord::clearTriangles()

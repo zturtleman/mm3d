@@ -57,7 +57,6 @@ class QToolButton;
 
 class Toolbox;
 class CommandManager;
-class Q3Accel;
 
 class QContextMenuEvent;
 class QCloseEvent;
@@ -70,7 +69,7 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
    Q_OBJECT
 
    public:
-      ViewWindow( Model * model, QWidget * parent = NULL, const char * name = "" );
+      ViewWindow( Model * model, QWidget * parent = NULL );
       virtual ~ViewWindow();
 
       static bool closeAllWindows();
@@ -98,7 +97,7 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       void modelChanged( Model * m );
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
       void saveModelEvent();
       void saveModelAsEvent();
@@ -141,10 +140,10 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
 
       void buttonToggled( bool on );
 
-      void toolActivated( int id );
-      void primitiveCommandActivated( int id );
-      void groupCommandActivated( int id );
-      void scriptActivated( int id );
+      void toolActivated( QAction * id );
+      void primitiveCommandActivated( QAction * id );
+      void groupCommandActivated( QAction * id );
+      void scriptActivated( QAction * id );
 
       void animSetWindowEvent();
       void animExportWindowEvent();
@@ -168,13 +167,13 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       void undoRequest();
       void redoRequest();
 
-      void snapToSelectedEvent( int snapTo );
+      void snapToSelectedEvent( QAction * snapTo );
 
       void fillMruMenu();
-      void openMru( int id );
+      void openMru( QAction * id );
 
       void fillScriptMruMenu();
-      void openScriptMru( int id );
+      void openScriptMru( QAction * id );
 
       void openModelEvent();
       void newModelEvent();
@@ -217,12 +216,12 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       void resizeEvent( QResizeEvent * );
 
       // returns id in menu
-      int insertMenuItem( QMenu * parentMenu,
+      QAction * insertMenuItem( QMenu * parentMenu,
             const QString & path, const QString & name, QMenu * subMenu );
 
       struct _ToolMenuItem_t
       {
-         int id;
+         QAction * id;
          ::Tool * tool;
          int arg;
       };
@@ -232,7 +231,7 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
 
       typedef struct _CommandMenuItem_t
       {
-         int id;
+         QAction * id;
          Command * command;
          int arg;
       } CommandMenuItemT;
@@ -247,7 +246,6 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
 
       typedef list< MenuItemT > MenuItemList;
 
-      Q3Accel      * m_accel;
       QMenuBar    * m_menuBar;
       QMenu  * m_fileMenu;
       QMenu  * m_viewMenu;
@@ -277,18 +275,21 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       AnimWindow  * m_animWin;
       AnimWidget  * m_animWidget;
 
-      int           m_animSetsItem;
-      int           m_animExportItem;
-      int           m_animSetRotItem;
-      int           m_animSetTransItem;
-      int           m_animCopyFrame;
-      int           m_animPasteFrame;
-      int           m_animCopySelected;
-      int           m_animPasteSelected;
-      int           m_animClearFrame;
-      int           m_startAnimItem;
-      int           m_stopAnimItem;
-      int           m_showContext;
+      QAction *     m_snapToGrid;
+      QAction *     m_snapToVertex;
+
+      QAction *     m_animSetsItem;
+      QAction *     m_animExportItem;
+      QAction *     m_animSetRotItem;
+      QAction *     m_animSetTransItem;
+      QAction *     m_animCopyFrame;
+      QAction *     m_animPasteFrame;
+      QAction *     m_animCopySelected;
+      QAction *     m_animPasteSelected;
+      QAction *     m_animClearFrame;
+      QAction *     m_startAnimItem;
+      QAction *     m_stopAnimItem;
+      QAction *     m_showContext;
 
       QAction *     m_renderBadItem;
       QAction *     m_noRenderBadItem;

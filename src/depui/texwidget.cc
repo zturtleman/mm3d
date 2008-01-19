@@ -73,8 +73,8 @@ static ScrollButtonT s_buttons[ TextureWidget::ScrollButtonMAX ] =
 using std::vector;
 using std::list;
 
-TextureWidget::TextureWidget( QWidget * parent, const char * name )
-   : QGLWidget( parent, name ),
+TextureWidget::TextureWidget( QWidget * parent )
+   : QGLWidget( parent ),
      m_sClamp( false ),
      m_tClamp( false ),
      m_zoom( 1.0 ),
@@ -147,10 +147,10 @@ void TextureWidget::initializeGL()
 
    glGenTextures( 2, m_scrollTextures );
 
-   img = arrow.convertToImage();
+   img = arrow.toImage();
    makeTextureFromImage( img, m_scrollTextures[0] );
 
-   img = cross.convertToImage();
+   img = cross.toImage();
    makeTextureFromImage( img, m_scrollTextures[1] );
 
    // set up GL texture
@@ -840,19 +840,23 @@ void TextureWidget::mousePressEvent( QMouseEvent * e )
                   break;
                case ScrollButtonUp:
                   scrollUp();
-                  m_scrollTimer->start( 300, true );
+                  m_scrollTimer->setSingleShot( true );
+                  m_scrollTimer->start( 300 );
                   break;
                case ScrollButtonDown:
                   scrollDown();
-                  m_scrollTimer->start( 300, true );
+                  m_scrollTimer->setSingleShot( true );
+                  m_scrollTimer->start( 300 );
                   break;
                case ScrollButtonLeft:
                   scrollLeft();
-                  m_scrollTimer->start( 300, true );
+                  m_scrollTimer->setSingleShot( true );
+                  m_scrollTimer->start( 300 );
                   break;
                case ScrollButtonRight:
                   scrollRight();
-                  m_scrollTimer->start( 300, true );
+                  m_scrollTimer->setSingleShot( true );
+                  m_scrollTimer->start( 300 );
                   break;
                default:
                   break;
@@ -871,7 +875,7 @@ void TextureWidget::mousePressEvent( QMouseEvent * e )
             switch ( m_operation )
             {
                case MouseSelect:
-                  if ( !( (e->state() & Qt::ShiftButton) || (e->button() &  Qt::RightButton) ) )
+                  if ( !( (e->modifiers() & Qt::ShiftModifier) || (e->button() &  Qt::RightButton) ) )
                   {
                      clearSelected();
                   }
@@ -1279,7 +1283,7 @@ void TextureWidget::keyPressEvent( QKeyEvent * e )
       {
          case Qt::Key_Home:
             {
-               if ( (e->state() & Qt::ShiftButton) == Qt::ShiftButton )
+               if ( (e->modifiers() & Qt::ShiftModifier) == Qt::ShiftModifier )
                {
                   if ( m_drawMode == DM_Edit )
                   {
@@ -1461,6 +1465,7 @@ void TextureWidget::scrollTimeout()
          return;
    }
 
+   m_scrollTimer->setSingleShot( false );
    m_scrollTimer->start( 100 );
 }
 

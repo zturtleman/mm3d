@@ -31,8 +31,8 @@
 
 #include "pixmap/pointtool.xpm"
 
-#include <qobject.h>
-#include <qapplication.h>
+#include <QObject>
+#include <QApplication>
 
 PointTool::PointTool()
 {
@@ -85,7 +85,7 @@ void PointTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y 
 
    parent->updateAllViews();
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Point created" ).utf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Point created" ).toUtf8() );
 }
 
 void PointTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )

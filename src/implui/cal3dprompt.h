@@ -30,7 +30,6 @@
 
 #include <QDialog>
 
-class Q3Accel;
 class Model;
 
 class Cal3dPrompt : public QDialog, public Ui::Cal3dPromptBase
@@ -45,11 +44,9 @@ class Cal3dPrompt : public QDialog, public Ui::Cal3dPromptBase
       void getOptions( Cal3dFilter::Cal3dOptions * o );
 
    public slots:
-      void helpNowEvent( int id );
+      void helpNowEvent();
 
    protected:
-
-      Q3Accel * m_accel;
 };
 
 bool cal3dprompt_show( Model * model, ModelFilter::Options * o );

@@ -27,8 +27,6 @@
 
 #include <QDialog>
 
-class Q3Accel;
-
 class ViewportSettings : public QDialog, public Ui::ViewportSettingsBase
 {
    Q_OBJECT
@@ -38,11 +36,10 @@ class ViewportSettings : public QDialog, public Ui::ViewportSettingsBase
       virtual ~ViewportSettings();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
       void accept();
 
    private:
-      Q3Accel * m_accel;
 };
 
 #endif // __VIEWPORTSETTINGS_H

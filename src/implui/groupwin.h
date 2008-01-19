@@ -29,7 +29,6 @@
 #include <QDialog>
 
 class Model;
-class Q3Accel;
 
 class GroupWindow : public QDialog, public Ui::GroupWinBase
 {
@@ -40,7 +39,7 @@ class GroupWindow : public QDialog, public Ui::GroupWinBase
       virtual ~GroupWindow();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
       void newClickedEvent();
       void renameClickedEvent();
@@ -61,7 +60,6 @@ class GroupWindow : public QDialog, public Ui::GroupWinBase
    protected:
       void updateTexture();
 
-      Q3Accel * m_accel;
       Model  * m_model;
 };
 

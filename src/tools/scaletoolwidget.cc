@@ -40,15 +40,15 @@ ScaleToolWidget::ScaleToolWidget( Observer * observer, QMainWindow * parent )
 
    m_layout = boxLayout();
 
-   m_proportionLabel = new QLabel( tr("Proportion"), mainWidget(), "" );
+   m_proportionLabel = new QLabel( tr("Proportion"), mainWidget() );
    m_layout->addWidget( m_proportionLabel );
 
-   m_proportionValue = new QComboBox( mainWidget(), "" );
+   m_proportionValue = new QComboBox( mainWidget() );
    m_layout->addWidget( m_proportionValue );
 
-   m_proportionValue->insertItem( tr("Free", "Free scaling option"), ST_ScaleFree );
-   m_proportionValue->insertItem( tr("Keep Aspect 2D", "2D scaling aspect option"), ST_ScaleProportion2D );
-   m_proportionValue->insertItem( tr("Keep Aspect 3D", "3D scaling aspect option"), ST_ScaleProportion3D );
+   m_proportionValue->insertItem( ST_ScaleFree, tr("Free", "Free scaling option") );
+   m_proportionValue->insertItem( ST_ScaleProportion2D, tr("Keep Aspect 2D", "2D scaling aspect option") );
+   m_proportionValue->insertItem( ST_ScaleProportion3D, tr("Keep Aspect 3D", "3D scaling aspect option") );
 
    int aspectIndex = DEFAULT_PROPORTION;
    if ( g_prefs.exists("ui_scaletool_aspect_index") )
@@ -59,18 +59,18 @@ ScaleToolWidget::ScaleToolWidget( Observer * observer, QMainWindow * parent )
          aspectIndex = temp;
       }
    }
-   m_proportionValue->setCurrentItem( aspectIndex );
+   m_proportionValue->setCurrentIndex( aspectIndex );
 
    connect( m_proportionValue, SIGNAL(activated(int)), this, SLOT(proportionValueChanged(int)) );
 
-   m_pointLabel = new QLabel( tr("Point"), mainWidget(), "" );
+   m_pointLabel = new QLabel( tr("Point"), mainWidget() );
    m_layout->addWidget( m_pointLabel );
 
-   m_pointValue = new QComboBox( mainWidget(), "" );
+   m_pointValue = new QComboBox( mainWidget() );
    m_layout->addWidget( m_pointValue );
 
-   m_pointValue->insertItem( tr("Center", "Scale from center"), ST_ScalePointCenter );
-   m_pointValue->insertItem( tr("Far Corner", "Scale from far corner"), ST_ScalePointFar );
+   m_pointValue->insertItem( ST_ScalePointCenter, tr("Center", "Scale from center") );
+   m_pointValue->insertItem( ST_ScalePointFar, tr("Far Corner", "Scale from far corner") );
 
    int pointIndex = DEFAULT_POINT;
    if ( g_prefs.exists("ui_scaletool_point_index") )
@@ -81,7 +81,7 @@ ScaleToolWidget::ScaleToolWidget( Observer * observer, QMainWindow * parent )
          pointIndex = temp;
       }
    }
-   m_pointValue->setCurrentItem( pointIndex );
+   m_pointValue->setCurrentIndex( pointIndex );
 
    connect( m_pointValue, SIGNAL(activated(int)), this, SLOT(pointValueChanged(int)) );
 

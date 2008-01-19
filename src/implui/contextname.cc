@@ -88,7 +88,7 @@ void ContextName::textChangedEvent( const QString & nameStr )
       {
          if ( m_model->isBoneJointSelected( b ) )
          {
-            m_model->setBoneJointName( b, (const char*) nameStr.utf8() );
+            m_model->setBoneJointName( b, (const char*) nameStr.toUtf8() );
             break;
          }
       }
@@ -98,12 +98,12 @@ void ContextName::textChangedEvent( const QString & nameStr )
       {
          if ( m_model->isPointSelected( p ) )
          {
-            m_model->setPointName( p, (const char*) nameStr.utf8() );
+            m_model->setPointName( p, (const char*) nameStr.toUtf8() );
             break;
          }
       }
 
-      m_model->operationComplete( tr( "Rename", "operation complete" ).utf8() );
+      m_model->operationComplete( tr( "Rename", "operation complete" ).toUtf8() );
 
       emit panelChange();
 

@@ -196,7 +196,8 @@ void ViewPanel::makeViews()
    int width  = 3;
    int height = 3;
 
-   m_gridLayout = new QGridLayout( this, 1, 1, 0, 0 );
+   // FIXME QT4 check margin and space
+   m_gridLayout = new QGridLayout( this );
 
    switch ( m_viewCount )
    {

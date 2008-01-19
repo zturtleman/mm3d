@@ -28,13 +28,14 @@
 #include <QTextBrowser>
 
 LicenseWin::LicenseWin( QWidget * parent )
-   : QDialog( parent, Qt::WDestructiveClose )
+   : QDialog( parent )
 {
+   setAttribute( Qt::WA_DeleteOnClose );
    setModal( false );
    setupUi( this );
 
    resize( 600, 400 );
-   setCaption( tr("GNU General Public License") );
+   setWindowTitle( tr("GNU General Public License") );
 #ifdef WIN32
    QString source = 
         QString( getDocDirectory().c_str() )

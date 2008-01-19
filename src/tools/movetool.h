@@ -25,7 +25,7 @@
 #define __MOVETOOL_H
 
 #include "tool.h"
-#include <qnamespace.h>
+#include <QKeySequence>
 
 class MoveTool: public Tool
 {

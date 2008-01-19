@@ -29,7 +29,6 @@
 #include <QDialog>
 
 class Model;
-class Q3Accel;
 
 class JointWin : public QDialog, public Ui::JointWinBase
 {
@@ -40,7 +39,7 @@ class JointWin : public QDialog, public Ui::JointWinBase
       virtual ~JointWin();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
       void deleteClicked();
       void renameClicked();
@@ -55,7 +54,6 @@ class JointWin : public QDialog, public Ui::JointWinBase
       void reject();
 
    protected:
-      Q3Accel * m_accel;
       Model  * m_model;
 };
 

@@ -27,17 +27,16 @@
 
 #include <QSpinBox>
 #include <QCheckBox>
-#include <q3accel.h>
+#include <QShortcut>
 
 ObjPrompt::ObjPrompt()
-   : QDialog( NULL ),
-     m_accel( new Q3Accel(this) )
+   : QDialog( NULL )
 {
    setupUi( this );
    setModal( true );
 
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
 ObjPrompt::~ObjPrompt()
@@ -60,7 +59,7 @@ void ObjPrompt::getOptions( ObjFilter::ObjOptions * opts )
    opts->m_normalPlaces  = m_normalPlacesValue->value();
 }
 
-void ObjPrompt::helpNowEvent( int id )
+void ObjPrompt::helpNowEvent()
 {
    //HelpWin * win = new HelpWin( "olh_pluginwin.html", true );
    //win->show();

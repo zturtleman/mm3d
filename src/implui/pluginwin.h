@@ -28,8 +28,6 @@
 
 #include <QDialog>
 
-class Q3Accel;
-
 class PluginWindow : public QDialog, public Ui::PluginWinBase
 {
    Q_OBJECT
@@ -39,12 +37,11 @@ class PluginWindow : public QDialog, public Ui::PluginWinBase
       virtual ~PluginWindow();
 
    public slots:
-      void helpNowEvent( int id );
+      void helpNowEvent();
 
    protected:
       void refreshPluginData();
 
-      Q3Accel * m_accel;
 };
 
 #endif // __PLUGINWIN_H

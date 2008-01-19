@@ -67,29 +67,29 @@ void ContextGroup::modelChanged( int changeBits )
 
          // Update group fields
          m_groupValue->clear();
-         m_groupValue->insertItem( tr( "<None>" ), 0 );
+         m_groupValue->insertItem( 0, tr( "<None>" ) );
          m_materialValue->clear();
-         m_materialValue->insertItem( tr( "<None>" ), 0 );
+         m_materialValue->insertItem( 0, tr( "<None>" ) );
          m_projectionValue->clear();
-         m_projectionValue->insertItem( tr( "<None>" ), 0 );
+         m_projectionValue->insertItem( 0, tr( "<None>" ) );
 
          unsigned int gcount = m_model->getGroupCount();
          for ( unsigned int g = 0; g < gcount; g++ )
          {
-            m_groupValue->insertItem( QString::fromUtf8( m_model->getGroupName( g ) ), g + 1 );
+            m_groupValue->insertItem( g + 1, QString::fromUtf8( m_model->getGroupName( g ) ) );
          }
-         m_groupValue->insertItem( tr( "<New>" ), m_groupValue->count() );
+         m_groupValue->insertItem( m_groupValue->count(), tr( "<New>" ) );
 
          unsigned int mcount = m_model->getTextureCount();
          for ( unsigned int m = 0; m < mcount; m++ )
          {
-            m_materialValue->insertItem( QString::fromUtf8( m_model->getTextureName( m ) ), m + 1 );
+            m_materialValue->insertItem( m + 1, QString::fromUtf8( m_model->getTextureName( m ) ) );
          }
 
          unsigned int pcount = m_model->getProjectionCount();
          for ( unsigned int p = 0; p < pcount; p++ )
          {
-            m_projectionValue->insertItem( QString::fromUtf8( m_model->getProjectionName( p ) ), p + 1 );
+            m_projectionValue->insertItem( p + 1, QString::fromUtf8( m_model->getProjectionName( p ) ) );
          }
 
          int group = -1;
@@ -114,11 +114,11 @@ void ContextGroup::modelChanged( int changeBits )
          {
             m_materialValue->setEnabled( true );
             m_materialProperties->setEnabled( true );
-            m_groupValue->setCurrentItem( group + 1 );
+            m_groupValue->setCurrentIndex( group + 1 );
             int texId = m_model->getGroupTextureId( group );
             if ( texId >= 0 )
             {
-               m_materialValue->setCurrentItem( texId + 1 );
+               m_materialValue->setCurrentIndex( texId + 1 );
             }
          }
          else
@@ -130,7 +130,7 @@ void ContextGroup::modelChanged( int changeBits )
          if ( proj >= 0 )
          {
             m_projectionProperties->setEnabled( true );
-            m_projectionValue->setCurrentItem( proj + 1 );
+            m_projectionValue->setCurrentIndex( proj + 1 );
          }
          else
          {
@@ -140,7 +140,7 @@ void ContextGroup::modelChanged( int changeBits )
          m_change = false;
       }
    }
-   m_lastGroup = m_groupValue->currentItem();
+   m_lastGroup = m_groupValue->currentIndex();
 }
 
 void ContextGroup::groupChanged()
@@ -149,7 +149,7 @@ void ContextGroup::groupChanged()
    {
       m_update = true;
 
-      int g = m_groupValue->currentItem() - 1;
+      int g = m_groupValue->currentIndex() - 1;
 
       if ( g >= 0 )
       {
@@ -160,7 +160,7 @@ void ContextGroup::groupChanged()
          if ( g >= m_model->getGroupCount() )
          {
             // FIXME pick unique name?
-            QString groupName = QInputDialog::getText( tr("New Group", "Name of new group, window title" ), tr("Enter new group name:"), QLineEdit::Normal, QString::null, &addSelected );
+            QString groupName = QInputDialog::getText( this, tr("New Group", "Name of new group, window title" ), tr("Enter new group name:"), QLineEdit::Normal, QString::null, &addSelected );
             if ( groupName.length() == 0 )
             {
                addSelected = false;
@@ -168,30 +168,30 @@ void ContextGroup::groupChanged()
 
             if ( addSelected )
             {
-               m_model->addGroup( groupName.utf8() );
-               m_groupValue->changeItem( groupName, g + 1 );
-               m_groupValue->insertItem( tr( "<New>" ), m_groupValue->count() );
+               m_model->addGroup( groupName.toUtf8() );
+               m_groupValue->setItemText( g + 1, groupName );
+               m_groupValue->insertItem( m_groupValue->count(), tr( "<New>" ) );
             }
             else
             {
-               m_groupValue->setCurrentItem( m_lastGroup );
+               m_groupValue->setCurrentIndex( m_lastGroup );
             }
          }
 
          if ( addSelected )
          {
             m_model->addSelectedToGroup( g );
-            m_model->operationComplete( tr( "Set Group", "operation complete" ).utf8() );
+            m_model->operationComplete( tr( "Set Group", "operation complete" ).toUtf8() );
          }
 
          int texId = m_model->getGroupTextureId( g );
          if ( texId >= 0 )
          {
-            m_materialValue->setCurrentItem( texId + 1 );
+            m_materialValue->setCurrentIndex( texId + 1 );
          }
          else
          {
-            m_materialValue->setCurrentItem( 0 );
+            m_materialValue->setCurrentIndex( 0 );
          }
 
       }
@@ -212,7 +212,7 @@ void ContextGroup::groupChanged()
                }
             }
          }
-         m_model->operationComplete( tr( "Unset Group", "operation complete" ).utf8() );
+         m_model->operationComplete( tr( "Unset Group", "operation complete" ).toUtf8() );
       }
 
       emit panelChange();
@@ -227,13 +227,13 @@ void ContextGroup::materialChanged()
    {
       m_update = true;
 
-      int g = m_groupValue->currentItem() - 1;
-      int m = m_materialValue->currentItem() - 1;
+      int g = m_groupValue->currentIndex() - 1;
+      int m = m_materialValue->currentIndex() - 1;
 
       if ( g >= 0 )
       {
          m_model->setGroupTextureId( g, m );
-         m_model->operationComplete( tr( "Set Material", "operation complete" ).utf8() );
+         m_model->operationComplete( tr( "Set Material", "operation complete" ).toUtf8() );
       }
 
       emit panelChange();
@@ -248,7 +248,7 @@ void ContextGroup::projectionChanged()
    {
       m_update = true;
 
-      int proj = m_projectionValue->currentItem() - 1;
+      int proj = m_projectionValue->currentIndex() - 1;
 
       unsigned tcount = m_model->getTriangleCount();
       for ( unsigned t = 0; t < tcount; t++ )
@@ -269,7 +269,7 @@ void ContextGroup::projectionChanged()
          m_projectionProperties->setEnabled( false );
       }
 
-      m_model->operationComplete( tr( "Set Projection", "operation complete" ).utf8() );
+      m_model->operationComplete( tr( "Set Projection", "operation complete" ).toUtf8() );
 
       emit panelChange();
 

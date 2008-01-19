@@ -25,9 +25,9 @@
 
 #include "model.h"
 #include "modelstatus.h"
-#include <qnamespace.h>
-#include <qobject.h>
-#include <qapplication.h>
+#include <QObject>
+#include <QApplication>
+#include <QKeySequence>
 
 HideCommand::HideCommand()
 {
@@ -83,17 +83,17 @@ bool HideCommand::activated( int arg, Model * model )
    switch ( arg )
    {
       case 2:
-         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Selected primitives hidden" ).utf8() );
+         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Selected primitives hidden" ).toUtf8() );
          model->hideSelected();
          return true;
          break;
       case 3:
-         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Primitives unhidden" ).utf8() );
+         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Primitives unhidden" ).toUtf8() );
          model->unhideAll();
          return true;
          break;
       default:
-         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Unselected primitives hidden" ).utf8() );
+         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Unselected primitives hidden" ).toUtf8() );
          model->hideUnselected();
          return true;
          break;

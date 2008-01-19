@@ -29,8 +29,6 @@
 
 class Model;
 class QTreeWidgetItem;
-class Q3Accel;
-
 class MetaWindow : public QDialog, public Ui::MetaWindowBase
 {
       Q_OBJECT
@@ -39,7 +37,7 @@ class MetaWindow : public QDialog, public Ui::MetaWindowBase
       virtual ~MetaWindow();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
       void newClicked();
       void deleteClicked();
@@ -49,7 +47,6 @@ class MetaWindow : public QDialog, public Ui::MetaWindowBase
       void reject();
 
    protected:
-      Q3Accel * m_accel;
       Model  * m_model;
 };
 

@@ -34,8 +34,8 @@
 
 #include <list>
 #include <map>
-#include <qobject.h>
-#include <qapplication.h>
+#include <QObject>
+#include <QApplication>
 
 using std::list;
 using std::map;
@@ -65,7 +65,7 @@ bool PasteCommand::activated( int arg, Model * model )
       // FIXME can't allow undo if there are frame animations
       model->mergeModels( m, true, Model::AM_NONE, false );
 
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Paste complete" ).utf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Paste complete" ).toUtf8() );
 
       return true;
    }

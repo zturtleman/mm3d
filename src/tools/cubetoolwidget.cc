@@ -43,10 +43,10 @@ CubeToolWidget::CubeToolWidget( Observer * observer, QMainWindow * parent )
 
    m_layout = boxLayout();
 
-   m_cubeLabel = new QLabel( tr("Cube"), mainWidget(), "" );
+   m_cubeLabel = new QLabel( tr("Cube"), mainWidget() );
    m_layout->addWidget( m_cubeLabel );
 
-   m_cubeValue = new QCheckBox( mainWidget(), "" );
+   m_cubeValue = new QCheckBox( mainWidget() );
    m_layout->addWidget( m_cubeValue );
 
    bool isCube = DEFAULT_CUBE;
@@ -56,14 +56,14 @@ CubeToolWidget::CubeToolWidget( Observer * observer, QMainWindow * parent )
    }
    m_cubeValue->setChecked( isCube );
 
-   m_segmentLabel = new QLabel( tr("Segment"), mainWidget(), "" );
+   m_segmentLabel = new QLabel( tr("Segment"), mainWidget() );
    m_layout->addWidget( m_segmentLabel );
 
-   m_segmentValue = new QSpinBox( mainWidget(), "" );
+   m_segmentValue = new QSpinBox( mainWidget() );
    m_layout->addWidget( m_segmentValue );
 
-   m_segmentValue->setMinValue( 1 );
-   m_segmentValue->setMaxValue( 25 );
+   m_segmentValue->setMinimum( 1 );
+   m_segmentValue->setMaximum( 25 );
    int segmentVal = DEFAULT_SEGMENT;
    if ( g_prefs.exists( "ui_cubetool_segment" ) )
    {

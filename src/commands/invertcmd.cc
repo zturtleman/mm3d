@@ -27,8 +27,8 @@
 #include "log.h"
 #include "msg.h"
 #include "modelstatus.h"
-#include <qobject.h>
-#include <qapplication.h>
+#include <QObject>
+#include <QApplication>
 
 InvertSelectionCommand::InvertSelectionCommand()
 {
@@ -43,7 +43,7 @@ bool InvertSelectionCommand::activated( int arg, Model * model )
    if ( model )
    {
       model->invertSelection();
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Selection inverted" ).utf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Selection inverted" ).toUtf8() );
       return true;
    }
    else

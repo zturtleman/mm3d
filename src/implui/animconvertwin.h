@@ -55,7 +55,7 @@ class AnimConvertWindow : public QDialog, public Ui::AnimConvertWinBase
       OperationE requestedOperation();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
       void continueClicked();
       void cancelClicked();

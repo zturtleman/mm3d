@@ -33,7 +33,6 @@
 #include <QWidget>
 
 class QTimer;
-class Q3Accel;
 
 class AnimWidget : public QWidget, public Ui::AnimWidgetBase
 {
@@ -71,7 +70,6 @@ class AnimWidget : public QWidget, public Ui::AnimWidgetBase
 
       void undoRequest();
       void redoRequest();
-      void accelActivated( int id );
 
       void refreshPage();
 
@@ -137,7 +135,6 @@ class AnimWidget : public QWidget, public Ui::AnimWidgetBase
       FramePointCopyList    m_framePointCopyList;
 
       QTimer * m_animTimer;
-      Q3Accel * m_accel;
 };
 
 #endif // __ANIMWIDGET_H

@@ -24,7 +24,7 @@
 #ifndef __MENUCONF_H
 #define __MENUCONF_H
 
-#include <qapplication.h>
+#include <QApplication>
 
 #include "config.h"
 

@@ -29,8 +29,8 @@
 #include "modelstatus.h"
 
 #include <list>
-#include <qobject.h>
-#include <qapplication.h>
+#include <QObject>
+#include <QApplication>
 
 using std::list;
 
@@ -57,7 +57,7 @@ bool FaceOutCommand::activated( int arg, Model * model )
       }
    }
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Normals Face Out" ).utf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Normals Face Out" ).toUtf8() );
 
    return true;
 }

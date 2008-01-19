@@ -26,17 +26,17 @@
 
 #include "helpwin.h"
 
-#include <q3accel.h>
+#include <QShortcut>
 
 PluginWindow::PluginWindow()
-   : QDialog( NULL, Qt::WDestructiveClose ),
-     m_accel( new Q3Accel(this) )
+   : QDialog( NULL )
 {
+   setAttribute( Qt::WA_DeleteOnClose );
    setupUi( this );
    setModal( false );
 
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 
    refreshPluginData();
 }
@@ -45,7 +45,7 @@ PluginWindow::~PluginWindow()
 {
 }
 
-void PluginWindow::helpNowEvent( int id )
+void PluginWindow::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_pluginwin.html", true );
    win->show();

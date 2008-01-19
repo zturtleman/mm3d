@@ -28,8 +28,6 @@
 
 #include <QDialog>
 
-class Q3Accel;
-
 class ValueWin : public QDialog, public Ui::ValueWinBase
 {
    Q_OBJECT
@@ -46,16 +44,14 @@ class ValueWin : public QDialog, public Ui::ValueWinBase
       void setValue( const float & v );
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
-      void valueEditChanged( const QString & );
-      void valueSliderChanged( int );
+      virtual void valueEditChanged( const QString & );
+      virtual void valueSliderChanged( int );
 
    protected:
 
       virtual void showHelp();
-
-      Q3Accel * m_accel;
 
       // We don't want to update the edit box if the user is typing in it
       // So we set this to true when editing.  When we update the slider,

@@ -133,7 +133,7 @@ void BoolWin::doOperationEvent()
          break;
       }
 
-      m_model->operationComplete( opStr.utf8() );
+      m_model->operationComplete( opStr.toUtf8() );
       clearObject();
       m_panel->modelUpdatedEvent();
    }
@@ -141,11 +141,11 @@ void BoolWin::doOperationEvent()
    {
       if ( bl.empty() )
       {
-         model_status( m_model, StatusError, STATUSTIME_LONG, tr("You must have at least once face selected").utf8() );
+         model_status( m_model, StatusError, STATUSTIME_LONG, tr("You must have at least once face selected").toUtf8() );
       }
       else
       {
-         model_status( m_model, StatusError, STATUSTIME_LONG, tr("Object A triangles are still selected").utf8() );
+         model_status( m_model, StatusError, STATUSTIME_LONG, tr("Object A triangles are still selected").toUtf8() );
       }
    }
 }

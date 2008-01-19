@@ -97,16 +97,19 @@ void BackgroundSelect::selectFileEvent()
 
    QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; All Files (*)" ) );
 
-   d.setCaption( tr("Open background image") );
+   d.setWindowTitle( tr("Open background image") );
    d.selectFilter( formatsStr );
 
    int execval = d.exec();
-   std::string file = d.selectedFile().latin1();
-   QString path = d.directory().absolutePath().latin1();
 
-   if ( QDialog::Accepted == execval )
+   QStringList files = d.selectedFiles();
+   if ( QDialog::Accepted == execval && !files.empty() )
    {
-      g_prefs( "ui_background_dir" ) = path.latin1();
+      // FIXME QT4 prevent multiple selections (on all selectedFiles list)
+      std::string file = (const char *) files[0].toUtf8();
+      QString path = d.directory().absolutePath();
+
+      g_prefs( "ui_background_dir" ) = (const char *) path.toUtf8();
 
       Texture * tex = TextureManager::getInstance()->getTexture( file.c_str() );
       if ( tex )
@@ -129,7 +132,7 @@ void BackgroundSelect::selectFileEvent()
          {
             err += tr("Could not open file");
          }
-         msg_error( (const char *) err.utf8() );
+         msg_error( (const char *) err.toUtf8() );
       }
    }
 }

@@ -28,6 +28,7 @@
 
 #include "modelstatus.h"
 
+#include <QPalette>
 #include <QWidget>
 
 #include <map>
@@ -74,6 +75,7 @@ class StatusBar : public QWidget, public Ui::StatusBarBase, public StatusObject
       typedef struct _TextQueueItem_t TextQueueItemT;
 
       Model * m_model;
+      QPalette m_palette;
 
       std::list<TextQueueItemT> m_queue;
       bool m_queueDisplay;

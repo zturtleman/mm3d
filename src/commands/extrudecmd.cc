@@ -25,8 +25,8 @@
 
 #include "extrudewin.h"
 #include "log.h"
-#include <qapplication.h>
-#include <qobject.h>
+#include <QObject>
+#include <QApplication>
 
 ExtrudeCommand::ExtrudeCommand()
 {

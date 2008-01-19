@@ -63,7 +63,7 @@ void RotateTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    m_model = model;
 
-   model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Tip: Hold shift to rotate in 15 degree increments" ).utf8() );
+   model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Tip: Hold shift to rotate in 15 degree increments" ).toUtf8() );
 
    m_coords[0] = 0;
    m_coords[1] = 0;
@@ -194,7 +194,7 @@ void RotateTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y
       }
 
       m_startAngle = angle;
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Rotating selected primitives" ).utf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Rotating selected primitives" ).toUtf8() );
    }
    else if ( buttonState & BS_Right && model->getAnimationMode() != Model::ANIMMODE_SKELETAL )
    {
@@ -208,7 +208,7 @@ void RotateTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y
 
       m_widget->setCoords( m_coords[0], m_coords[1], m_coords[2] );
       m_rotatePoint->setPoint( m_coords[0], m_coords[1], m_coords[2] );
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Setting rotation point" ).utf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Setting rotation point" ).toUtf8() );
    }
    parent->updateAllViews();
 }
@@ -277,7 +277,7 @@ void RotateTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
 
    if ( buttonState & BS_Left )
    {
-      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Rotate complete" ).utf8() );
+      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Rotate complete" ).toUtf8() );
    }
 }
 

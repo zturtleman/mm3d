@@ -27,7 +27,8 @@
 #include "tool.h"
 #include "glmath.h"
 
-#include <qnamespace.h>
+#include <QKeySequence>
+
 #include <list>
 
 class DragVertexTool: public Tool

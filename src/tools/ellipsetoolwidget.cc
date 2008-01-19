@@ -44,21 +44,21 @@ EllipsoidToolWidget::EllipsoidToolWidget( Observer * observer, QMainWindow * par
 
    m_layout = boxLayout();
 
-   m_smoothLabel = new QLabel( tr("Smoothness:"), mainWidget(), "" );
+   m_smoothLabel = new QLabel( tr("Smoothness:"), mainWidget() );
    m_layout->addWidget( m_smoothLabel );
-   m_smoothValue = new QSpinBox( mainWidget(), "" );
+   m_smoothValue = new QSpinBox( mainWidget() );
    m_layout->addWidget( m_smoothValue );
 
-   m_smoothValue->setMinValue( 0 );
-   m_smoothValue->setMaxValue( 5 );
+   m_smoothValue->setMinimum( 0 );
+   m_smoothValue->setMaximum( 5 );
 
-   m_facesLabel = new QLabel( tr("Faces: ") + QString("320"), mainWidget(), "" );
+   m_facesLabel = new QLabel( tr("Faces: ") + QString("320"), mainWidget() );
    m_layout->addWidget( m_facesLabel );
 
-   m_sphereCheckBox = new QCheckBox( tr("Sphere"), mainWidget(), "" );
+   m_sphereCheckBox = new QCheckBox( tr("Sphere"), mainWidget() );
    m_layout->addWidget( m_sphereCheckBox );
 
-   m_centerCheckBox = new QCheckBox( tr("From Center", "Checkbox that indicates if ellipsoid is created from center or far corner"), mainWidget(), "" );
+   m_centerCheckBox = new QCheckBox( tr("From Center", "Checkbox that indicates if ellipsoid is created from center or far corner"), mainWidget() );
    m_layout->addWidget( m_centerCheckBox );
 
    int smoothVal = DEFAULT_SMOOTHNESS;

@@ -133,9 +133,9 @@ void ContextRotation::updateRotation()
 
       // Change model based on text field input
       double rad[3];
-      rad[0] = atof( m_xValue->text().latin1() );
-      rad[1] = atof( m_yValue->text().latin1() );
-      rad[2] = atof( m_zValue->text().latin1() );
+      rad[0] = atof( m_xValue->text().toLatin1() );
+      rad[1] = atof( m_yValue->text().toLatin1() );
+      rad[2] = atof( m_zValue->text().toLatin1() );
 
       rad[0] = rad[0] * PIOVER180;
       rad[1] = rad[1] * PIOVER180;
@@ -174,7 +174,7 @@ void ContextRotation::updateRotation()
 
       if ( !searching )
       {
-         m_model->operationComplete( tr( "Set Rotation", "operation complete" ).utf8() );
+         m_model->operationComplete( tr( "Set Rotation", "operation complete" ).toUtf8() );
 
          emit panelChange();
       }

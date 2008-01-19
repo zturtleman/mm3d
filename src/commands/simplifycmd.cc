@@ -28,8 +28,8 @@
 #include "log.h"
 #include "modelstatus.h"
 
-#include <qobject.h>
-#include <qapplication.h>
+#include <QObject>
+#include <QApplication>
 
 SimplifyMeshCommand::SimplifyMeshCommand()
 {

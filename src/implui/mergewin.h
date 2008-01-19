@@ -28,7 +28,6 @@
 #include <QDialog>
 
 class Model;
-class Q3Accel;
 
 class MergeWindow : public QDialog, public Ui::MergeWinBase
 {
@@ -44,7 +43,7 @@ class MergeWindow : public QDialog, public Ui::MergeWinBase
       bool getAnimationMerge() { return m_animInclude->isChecked() && m_animMerge->isChecked(); };
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
       void includeAnimEvent( bool o );
 
@@ -52,7 +51,6 @@ class MergeWindow : public QDialog, public Ui::MergeWinBase
       void reject();
 
    protected:
-      Q3Accel * m_accel;
       Model  * m_model;
 };
 

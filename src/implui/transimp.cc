@@ -22,12 +22,12 @@
 
 #include "transimp.h"
 
-#include <qapplication.h>
+#include <QApplication>
 #include "translate.h"
 
 std::string _qt_translate( const char * str )
 {
-   return std::string( (const char *) qApp->translate( "LowLevel", str ).utf8() );
+   return std::string( (const char *) qApp->translate( "LowLevel", str ).toUtf8() );
 }
 
 void transimp_install_translator()

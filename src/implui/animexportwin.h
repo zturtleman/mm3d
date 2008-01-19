@@ -29,7 +29,6 @@
 
 #include <QDialog>
 
-class Q3Accel;
 class ViewPanel;
 class Model;
 
@@ -42,14 +41,13 @@ class AnimExportWindow : public QDialog, public Ui::AnimExportWinBase
       virtual ~AnimExportWindow();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
       void accept();
       void reject();
 
       void directoryButtonClicked();
 
    protected:
-      Q3Accel * m_accel;
       Model * m_model;
       ViewPanel * m_viewPanel;
 

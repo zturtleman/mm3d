@@ -30,7 +30,7 @@ MapDirection::MapDirection( QWidget * parent )
 {
    setupUi( this );
    setModal( true );
-   m_directionComboBox->setCurrentItem( 0 );
+   m_directionComboBox->setCurrentIndex( 0 );
 }
 
 MapDirection::~MapDirection()
@@ -39,10 +39,10 @@ MapDirection::~MapDirection()
 
 int MapDirection::getMapDirection()
 {
-   return m_directionComboBox->currentItem();
+   return m_directionComboBox->currentIndex();
 }
 
 void MapDirection::setMapDirection( int index )
 {
-   m_directionComboBox->setCurrentItem( index );
+   m_directionComboBox->setCurrentIndex( index );
 }

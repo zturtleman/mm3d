@@ -25,7 +25,7 @@
 
 #include "version.h"
 
-#include <q3textbrowser.h>
+#include <QTextBrowser>
 
 #define ABOUT_TEXT "<html><head><title>Misfit Model 3D - About</title></head> " \
    "<body><center><br>" \
@@ -37,11 +37,12 @@
    "</center></body></html>" 
 
 AboutWin::AboutWin( QWidget * parent )
-   : QDialog( parent, Qt::WDestructiveClose )
+   : QDialog( parent )
 {
+   setAttribute( Qt::WA_DeleteOnClose );
    setupUi( this );
    setModal( false );
-   setCaption( tr( "Misfit Model 3D - About") );
+   setWindowTitle( tr( "Misfit Model 3D - About") );
    m_text->setText( QString( ABOUT_TEXT ) );
 }
 

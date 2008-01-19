@@ -31,9 +31,9 @@
 #include "pixmap/selectbonetool.xpm"
 
 #include <stdio.h>
-#include <qobject.h>
-#include <qapplication.h>
-#include <qnamespace.h>
+#include <QObject>
+#include <QApplication>
+#include <QKeySequence>
 
 SelectBoneTool::SelectBoneTool()
    : m_boundingBox( NULL),
@@ -90,7 +90,7 @@ void SelectBoneTool::mouseButtonDown( Parent * parent, int buttonState, int x, i
 
    parent->updateAllViews();
 
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Starting selection" ).utf8() );
+   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Starting selection" ).toUtf8() );
 }
 
 void SelectBoneTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
@@ -136,7 +136,7 @@ void SelectBoneTool::mouseButtonUp( Parent * parent, int buttonState, int x, int
       m_boundingBox = NULL;
 
       parent->updateAllViews();
-      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Selection complete" ).utf8() );
+      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Selection complete" ).toUtf8() );
    }
 }
 

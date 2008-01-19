@@ -32,7 +32,6 @@
 
 class Model;
 class RgbaWin;
-class Q3Accel;
 
 class TransformWindow : public QDialog, public Ui::TransformWindowBase
 {
@@ -54,13 +53,12 @@ class TransformWindow : public QDialog, public Ui::TransformWindowBase
       void matrixEvent();
 
       void setModel( Model * m );
-      void helpNowEvent( int );
+      void helpNowEvent();
 
       void close();
 
    protected:
 
-      Q3Accel * m_accel;
       Model  * m_model;
       bool     m_undoable;
 };

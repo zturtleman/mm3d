@@ -175,7 +175,7 @@ libimplui_a_SOURCES = \
 		$(QT_UIC) -o $@ -impl $*.base.h $*.ui
 
 # -DQT_NO_CAST_ASCII
-AM_CPPFLAGS = $(PROFILE) -DQT_COMPAT -Wall -I../libmm3d -I../mm3dcore -I../depui -I../qtui -I../ -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
+AM_CPPFLAGS = $(PROFILE) -Wall -I../libmm3d -I../mm3dcore -I../depui -I../qtui -I../ -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
 
 CLEANFILES = $(libimplui_MOC) $(mm3d_UIHEADERS)
 

@@ -26,7 +26,7 @@
 
 #include "command.h"
 
-#include <qnamespace.h>
+#include <QKeySequence>
 
 class AlignCommand : public Command
 {

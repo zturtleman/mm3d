@@ -32,8 +32,8 @@
 #include "weld.h" // does the real work
 
 #include <map>
-#include <qobject.h>
-#include <qapplication.h>
+#include <QObject>
+#include <QApplication>
 
 using std::list;
 
@@ -56,12 +56,12 @@ bool UnweldCommand::activated( int arg, Model * model )
          int unwelded = 0;
          int welded = 0;
          unweldSelectedVertices( model, unwelded, welded );
-         model_status( model, StatusNormal, STATUSTIME_SHORT, (qApp->translate( "Command", "Unwelded %1 vertices into %2 vertices" ).arg(welded).arg(unwelded)).utf8() );
+         model_status( model, StatusNormal, STATUSTIME_SHORT, (qApp->translate( "Command", "Unwelded %1 vertices into %2 vertices" ).arg(welded).arg(unwelded)).toUtf8() );
          return true;
       }
       else
       {
-         model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have 1 or more vertices selected to unweld." ).utf8() );
+         model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have 1 or more vertices selected to unweld." ).toUtf8() );
       }
    }
    

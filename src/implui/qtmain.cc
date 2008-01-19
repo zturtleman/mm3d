@@ -89,7 +89,7 @@ static bool loadTranslationFile( QTranslator * xlat, const QString & localeFile 
    // try current directory first (for override), then mm3d system directory
    for ( std::list<std::string>::iterator it = path_list.begin(); it != path_list.end(); ++it )
    {
-      log_debug( "attempting to load translation %s from %s\n", (const char *) localeFile.utf8(), (const char *) it->c_str() );
+      log_debug( "attempting to load translation %s from %s\n", (const char *) localeFile.toUtf8(), (const char *) it->c_str() );
       if ( s_qtXlat->load( localeFile, it->c_str() ) )
       {
          log_debug( "  loaded.\n" );
@@ -97,7 +97,7 @@ static bool loadTranslationFile( QTranslator * xlat, const QString & localeFile 
       }
    }
 
-   log_warning( "unable to load translation for %s\n", (const char *) localeFile.utf8() );
+   log_warning( "unable to load translation for %s\n", (const char *) localeFile.toUtf8() );
    return false;
 }
 
@@ -178,7 +178,7 @@ int ui_init( int argc, char * argv[] )
          for ( unsigned t = 0; t < openCount; t++ )
          {
             Model * m = cmdline_getOpenModel( t );
-            ViewWindow * win = new ViewWindow( m, NULL, "" );
+            ViewWindow * win = new ViewWindow( m );
             win->getSaved(); // Just so I don't have a warning
             opened = true;
          }

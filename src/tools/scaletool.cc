@@ -216,7 +216,7 @@ void ScaleTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y 
       m_projScale = model->getProjectionScale( m_projList.front() );
    }
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Scaling selected primitives" ).utf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Scaling selected primitives" ).toUtf8() );
 }
 
 void ScaleTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )
@@ -339,7 +339,7 @@ void ScaleTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
       //parent->getModel()->applyProjection( m_projList.front() );
       //parent->updateAllViews();
    }
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Scale complete" ).utf8() );
+   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Scale complete" ).toUtf8() );
 }
 
 const char ** ScaleTool::getPixmap()
@@ -371,7 +371,7 @@ void ScaleTool::setPointValue( int newValue )
 
 void ScaleTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
-   model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Tip: Hold shift to restrict scaling to one dimension" ).utf8() );
+   model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Tip: Hold shift to restrict scaling to one dimension" ).toUtf8() );
    m_widget = new ScaleToolWidget( this, mainwin );
    m_widget->show();
 }

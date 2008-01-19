@@ -35,7 +35,6 @@ using std::map;
 
 #include <QDialog>
 
-class Q3Accel;
 class Model;
 class TextureWidget;
 
@@ -47,7 +46,7 @@ class PaintTextureWin : public QDialog, public Ui::PaintTextureWinBase
       ~PaintTextureWin();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
       virtual void textureSizeChangeEvent();
       virtual void displayChangedEvent();
       virtual void clearEvent();
@@ -59,7 +58,6 @@ class PaintTextureWin : public QDialog, public Ui::PaintTextureWinBase
       void updateDisplay();
       void addTriangles();
 
-      Q3Accel  * m_accel;
       TextureWidget * m_textureWidget;
       Model * m_model;
       bool    m_saved;
