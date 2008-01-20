@@ -1006,15 +1006,11 @@ void ViewWindow::mergeModelsEvent()
       if ( files.empty() )
          return;
 
-      // FIXME QT4 Did I have a good reason for this...?
-      // Or the other strdup's in this file? Probably want to report
-      // an error if I can't guarantee at least one selected file.
-      // If I can guarantee a selected file, this logic gets simpler.
-      char * filename = strdup( files[0].toUtf8() );
+      std::string filename = (const char *) files[0].toUtf8();
 
       Model::ModelErrorE err;
       Model * model = new Model();
-      if ( (err = FilterManager::getInstance()->readFile( model, filename )) == Model::ERROR_NONE)
+      if ( (err = FilterManager::getInstance()->readFile( model, filename.c_str() )) == Model::ERROR_NONE)
       {
          model_show_alloc_stats();
 
@@ -1044,7 +1040,7 @@ void ViewWindow::mergeModelsEvent()
             m_viewPanel->modelUpdatedEvent();
          }
 
-         prefs_recent_model( filename );
+         prefs_recent_model( filename.c_str() );
          delete model;
       }
       else
@@ -1052,13 +1048,11 @@ void ViewWindow::mergeModelsEvent()
          if ( Model::operationFailed( err ) )
          {
             QString reason = modelErrStr( err, model );
-            reason = tr(filename) + tr(":\n") + reason;
+            reason = tr(filename.c_str()) + tr(":\n") + reason;
             msg_error( (const char *) reason.toUtf8() );
          }
          delete model;
       }
-
-      free( filename );
    }
 }
 
@@ -1101,17 +1095,17 @@ void ViewWindow::mergeAnimationsEvent()
       if ( files.empty() )
          return;
 
-      char * filename = strdup( files[0].toUtf8() );
+      std::string filename = (const char *) files[0].toUtf8();
 
       Model::ModelErrorE err;
       Model * model = new Model();
-      if ( (err = FilterManager::getInstance()->readFile( model, filename )) == Model::ERROR_NONE)
+      if ( (err = FilterManager::getInstance()->readFile( model, filename.c_str() )) == Model::ERROR_NONE)
       {
          model_show_alloc_stats();
 
          m_model->mergeAnimations( model );
 
-         prefs_recent_model( filename );
+         prefs_recent_model( filename.c_str() );
          delete model;
       }
       else
@@ -1119,13 +1113,11 @@ void ViewWindow::mergeAnimationsEvent()
          if ( Model::operationFailed( err ) )
          {
             QString reason = modelErrStr( err, model );
-            reason = tr(filename) + tr(":\n") + reason;
+            reason = tr(filename.c_str()) + tr(":\n") + reason;
             msg_error( (const char *) reason.toUtf8() );
          }
          delete model;
       }
-
-      free( filename );
    }
 }
 
@@ -1153,10 +1145,8 @@ void ViewWindow::scriptEvent()
 
       g_prefs( "ui_script_dir" ) = (const char *) d.directory().absolutePath().toUtf8();
 
-      char * filename = strdup( files[0].toUtf8() );
-      runScript( filename );
-
-      free( filename );
+      std::string filename = (const char *) files[0].toUtf8();
+      runScript( filename.c_str() );
    }
 #endif // HAVE_LUALIB
 }

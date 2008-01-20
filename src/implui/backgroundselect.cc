@@ -105,7 +105,6 @@ void BackgroundSelect::selectFileEvent()
    QStringList files = d.selectedFiles();
    if ( QDialog::Accepted == execval && !files.empty() )
    {
-      // FIXME QT4 prevent multiple selections (on all selectedFiles list)
       std::string file = (const char *) files[0].toUtf8();
       QString path = d.directory().absolutePath();
 
