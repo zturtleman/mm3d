@@ -291,6 +291,26 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       QAction *     m_stopAnimItem;
       QAction *     m_showContext;
 
+      QAction *     m_3dWire;
+      QAction *     m_3dFlat;
+      QAction *     m_3dSmooth;
+      QAction *     m_3dTexture;
+      QAction *     m_3dAlpha;
+
+      QAction *     m_canvasWire;
+      QAction *     m_canvasFlat;
+      QAction *     m_canvasSmooth;
+      QAction *     m_canvasTexture;
+      QAction *     m_canvasAlpha;
+
+      QAction *     m_view1;
+      QAction *     m_view1x2;
+      QAction *     m_view2x1;
+      QAction *     m_view2x2;
+      QAction *     m_view2x3;
+      QAction *     m_view3x2;
+      QAction *     m_view3x3;
+
       QAction *     m_renderBadItem;
       QAction *     m_noRenderBadItem;
       QAction *     m_renderSelectionItem;

@@ -56,7 +56,6 @@ TextureCoord::TextureCoord( Model * model, QWidget * parent )
      m_currentMapScheme( 2 ) // if you change this, change the setChecked line below also
 {
    setupUi( this );
-   setModal( true );
 
    // FIXME handle undo of select/unselect?
    // Can't do this until after constructor is done because of observer interface

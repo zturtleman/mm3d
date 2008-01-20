@@ -896,7 +896,7 @@ void TextureWidget::mousePressEvent( QMouseEvent * e )
                   break;
                case MouseRotate:
                   {
-                     double aspect = this->width() / this->height();
+                     double aspect = (double) this->width() / (double) this->height();
 
                      if ( (e->button() & Qt::RightButton) )
                      {
@@ -1111,7 +1111,7 @@ void TextureWidget::mouseMoveEvent( QMouseEvent * e )
                         xNew -= m_xRotPoint;
                         yNew -= m_yRotPoint;
 
-                        double aspect = this->width() / this->height();
+                        double aspect = (double) this->width() / (double) this->height();
 
                         double opposite = yNew;
                         double adjacent = xNew * aspect;
@@ -1733,7 +1733,7 @@ void TextureWidget::drawRotationPoint()
    glBegin( GL_LINES );
 
    double offset = m_zoom * 0.04;
-   double aspect = this->width() / this->height();
+   double aspect = (double) this->width() / (double) this->height();
    double xoff = offset / aspect;
    double yoff = offset;
 
@@ -2127,7 +2127,7 @@ void TextureWidget::rotateSelectedVertices( double angle )
    rot[2] = angle;
    m.setRotation( rot );
    
-   double aspect = this->width() / this->height();
+   double aspect = (double) this->width() / (double) this->height();
 
    unsigned vcount = m_rotateVertices.size();
    for ( unsigned v = 0; v < vcount; v++ )

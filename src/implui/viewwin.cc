@@ -408,26 +408,97 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent )
    m_renderMenu->setTitle( tr( "Render Options", "View|Render Options") );
    m_viewMenu->addMenu( m_renderMenu );
    m_viewMenu->addSeparator();
-   m_viewMenu->addAction( tr( "3D Wireframe", "View|3D"),   m_viewPanel, SLOT(wireframeEvent()), g_keyConfig.getKey( "viewwin_view_3d_wireframe" ) );
-   m_viewMenu->addAction( tr( "3D Flat", "View|3D"),        m_viewPanel, SLOT(flatEvent()), g_keyConfig.getKey( "viewwin_view_3d_flat" ) );
-   m_viewMenu->addAction( tr( "3D Smooth", "View|3D"),      m_viewPanel, SLOT(smoothEvent()), g_keyConfig.getKey( "viewwin_view_3d_smooth" ) );
-   m_viewMenu->addAction( tr( "3D Texture", "View|3D"),     m_viewPanel, SLOT(textureEvent()), g_keyConfig.getKey( "viewwin_view_3d_textured" ) );
-   m_viewMenu->addAction( tr( "3D Alpha Blend", "View|3D"), m_viewPanel, SLOT(alphaEvent()), g_keyConfig.getKey( "viewwin_view_3d_alpha" ) );
-   m_viewMenu->addSeparator();
-   m_viewMenu->addAction( tr( "Canvas Wireframe", "View|Canvas"),   m_viewPanel, SLOT(canvasWireframeEvent()), g_keyConfig.getKey( "viewwin_view_ortho_wireframe" ) );
-   m_viewMenu->addAction( tr( "Canvas Flat", "View|Canvas"),        m_viewPanel, SLOT(canvasFlatEvent()), g_keyConfig.getKey( "viewwin_view_ortho_flat" ) );
-   m_viewMenu->addAction( tr( "Canvas Smooth", "View|Canvas"),      m_viewPanel, SLOT(canvasSmoothEvent()), g_keyConfig.getKey( "viewwin_view_ortho_smooth" ) );
-   m_viewMenu->addAction( tr( "Canvas Texture", "View|Canvas"),     m_viewPanel, SLOT(canvasTextureEvent()), g_keyConfig.getKey( "viewwin_view_ortho_textured" ) );
-   m_viewMenu->addAction( tr( "Canvas Alpha Blend", "View|Canvas"), m_viewPanel, SLOT(canvasAlphaEvent()), g_keyConfig.getKey( "viewwin_view_ortho_alpha" ) );
+
+   // 3D View group
+   group = new QActionGroup(this);
+   m_3dWire = group->addAction( m_viewMenu->addAction( tr( "3D Wireframe", "View|3D"),   m_viewPanel, SLOT(wireframeEvent()), g_keyConfig.getKey( "viewwin_view_3d_wireframe" ) ) );
+   m_3dFlat = group->addAction( m_viewMenu->addAction( tr( "3D Flat", "View|3D"),        m_viewPanel, SLOT(flatEvent()), g_keyConfig.getKey( "viewwin_view_3d_flat" ) ) );
+   m_3dSmooth = group->addAction( m_viewMenu->addAction( tr( "3D Smooth", "View|3D"),      m_viewPanel, SLOT(smoothEvent()), g_keyConfig.getKey( "viewwin_view_3d_smooth" ) ) );
+   m_3dTexture = group->addAction( m_viewMenu->addAction( tr( "3D Texture", "View|3D"),     m_viewPanel, SLOT(textureEvent()), g_keyConfig.getKey( "viewwin_view_3d_textured" ) ) );
+   m_3dAlpha = group->addAction( m_viewMenu->addAction( tr( "3D Alpha Blend", "View|3D"), m_viewPanel, SLOT(alphaEvent()), g_keyConfig.getKey( "viewwin_view_3d_alpha" ) ) );
    m_viewMenu->addSeparator();
 
-   m_viewMenu->addAction( tr( "1 View", "View|Viewports"),   m_viewPanel, SLOT(view1()), g_keyConfig.getKey( "viewwin_view_1" )   );
-   m_viewMenu->addAction( tr( "1x2 View", "View|Viewports"), m_viewPanel, SLOT(view1x2()), g_keyConfig.getKey( "viewwin_view_1x2" ) );
-   m_viewMenu->addAction( tr( "2x1 View", "View|Viewports"), m_viewPanel, SLOT(view2x1()), g_keyConfig.getKey( "viewwin_view_2x1" ) );
-   m_viewMenu->addAction( tr( "2x2 View", "View|Viewports"), m_viewPanel, SLOT(view2x2()), g_keyConfig.getKey( "viewwin_view_2x2" ) );
-   m_viewMenu->addAction( tr( "2x3 View", "View|Viewports"), m_viewPanel, SLOT(view2x3()), g_keyConfig.getKey( "viewwin_view_2x3" ) );
-   m_viewMenu->addAction( tr( "3x2 View", "View|Viewports"), m_viewPanel, SLOT(view3x2()), g_keyConfig.getKey( "viewwin_view_3x2" ) );
-   m_viewMenu->addAction( tr( "3x3 View", "View|Viewports"), m_viewPanel, SLOT(view3x3()), g_keyConfig.getKey( "viewwin_view_3x3" ) );
+   // Canvas Group
+   group = new QActionGroup(this);
+   m_canvasWire = group->addAction( m_viewMenu->addAction( tr( "Canvas Wireframe", "View|Canvas"),   m_viewPanel, SLOT(canvasWireframeEvent()), g_keyConfig.getKey( "viewwin_view_ortho_wireframe" ) ) );
+   m_canvasFlat = group->addAction( m_viewMenu->addAction( tr( "Canvas Flat", "View|Canvas"),        m_viewPanel, SLOT(canvasFlatEvent()), g_keyConfig.getKey( "viewwin_view_ortho_flat" ) ) );
+   m_canvasSmooth = group->addAction( m_viewMenu->addAction( tr( "Canvas Smooth", "View|Canvas"),      m_viewPanel, SLOT(canvasSmoothEvent()), g_keyConfig.getKey( "viewwin_view_ortho_smooth" ) ) );
+   m_canvasTexture = group->addAction( m_viewMenu->addAction( tr( "Canvas Texture", "View|Canvas"),     m_viewPanel, SLOT(canvasTextureEvent()), g_keyConfig.getKey( "viewwin_view_ortho_textured" ) ) );
+   m_canvasAlpha = group->addAction( m_viewMenu->addAction( tr( "Canvas Alpha Blend", "View|Canvas"), m_viewPanel, SLOT(canvasAlphaEvent()), g_keyConfig.getKey( "viewwin_view_ortho_alpha" ) ) );
+   m_viewMenu->addSeparator();
+
+   // Num viewports group
+   group = new QActionGroup(this);
+   m_view1 = group->addAction( m_viewMenu->addAction( tr( "1 View", "View|Viewports"),   m_viewPanel, SLOT(view1()), g_keyConfig.getKey( "viewwin_view_1" )   ) );
+   m_view1x2 = group->addAction( m_viewMenu->addAction( tr( "1x2 View", "View|Viewports"), m_viewPanel, SLOT(view1x2()), g_keyConfig.getKey( "viewwin_view_1x2" ) ) );
+   m_view2x1 = group->addAction( m_viewMenu->addAction( tr( "2x1 View", "View|Viewports"), m_viewPanel, SLOT(view2x1()), g_keyConfig.getKey( "viewwin_view_2x1" ) ) );
+   m_view2x2 = group->addAction( m_viewMenu->addAction( tr( "2x2 View", "View|Viewports"), m_viewPanel, SLOT(view2x2()), g_keyConfig.getKey( "viewwin_view_2x2" ) ) );
+   m_view2x3 = group->addAction( m_viewMenu->addAction( tr( "2x3 View", "View|Viewports"), m_viewPanel, SLOT(view2x3()), g_keyConfig.getKey( "viewwin_view_2x3" ) ) );
+   m_view3x2 = group->addAction( m_viewMenu->addAction( tr( "3x2 View", "View|Viewports"), m_viewPanel, SLOT(view3x2()), g_keyConfig.getKey( "viewwin_view_3x2" ) ) );
+   m_view3x3 = group->addAction( m_viewMenu->addAction( tr( "3x3 View", "View|Viewports"), m_viewPanel, SLOT(view3x3()), g_keyConfig.getKey( "viewwin_view_3x3" ) ) );
+
+   m_3dWire->setCheckable( true );
+   m_3dFlat->setCheckable( true );
+   m_3dSmooth->setCheckable( true );
+   m_3dTexture->setCheckable( true );
+   m_3dAlpha->setCheckable( true );
+
+   m_3dTexture->setChecked( true );
+
+   m_canvasWire->setCheckable( true );
+   m_canvasFlat->setCheckable( true );
+   m_canvasSmooth->setCheckable( true );
+   m_canvasTexture->setCheckable( true );
+   m_canvasAlpha->setCheckable( true );
+
+   m_canvasWire->setChecked( true );
+
+   m_view1->setCheckable( true );
+   m_view1x2->setCheckable( true );
+   m_view2x1->setCheckable( true );
+   m_view2x2->setCheckable( true );
+   m_view2x3->setCheckable( true );
+   m_view3x2->setCheckable( true );
+   m_view3x3->setCheckable( true );
+
+   int count = 4;
+   bool tall = false;
+
+   if ( g_prefs.exists( "ui_viewport_count" ) )
+      count = g_prefs( "ui_viewport_count" ).intValue();
+   if ( g_prefs.exists( "ui_viewport_tall" ) )
+      tall = (g_prefs( "ui_viewport_tall" ).intValue() != 0);
+
+   switch ( count )
+   {
+      case 1:
+         m_view1->setChecked( true );
+         break;
+
+      case 2:
+         if ( tall )
+            m_view1x2->setChecked( true );
+         else
+            m_view2x1->setChecked( true );
+         break;
+
+      default:
+      case 4:
+         m_view2x2->setChecked( true );
+         break;
+
+      case 6:
+         if ( tall )
+            m_view2x3->setChecked( true );
+         else
+            m_view3x2->setChecked( true );
+         break;
+
+      case 9:
+         m_view3x3->setChecked( true );
+         break;
+   }
+
    
    m_viewMenu->addSeparator();
    m_viewMenu->addAction( tr( "Viewport Settings...", "View|Viewport Settings" ), this, SLOT(viewportSettingsEvent()), g_keyConfig.getKey( "viewwin_view_viewport_settings" ) );
@@ -1612,7 +1683,6 @@ void ViewWindow::redoRequest()
 void ViewWindow::snapToSelectedEvent( QAction * snapTo )
 {
    log_debug( "snapToSelectedEvent( %d )\n", snapTo );
-   snapTo->setChecked( !snapTo->isChecked() );
    g_prefs( "ui_snap_grid" )   = ( m_snapToGrid->isChecked() ) ? 1 : 0;
    g_prefs( "ui_snap_vertex" ) = ( m_snapToVertex->isChecked() ) ? 1 : 0;
 }

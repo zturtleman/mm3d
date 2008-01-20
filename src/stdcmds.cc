@@ -159,8 +159,9 @@ int init_std_cmds( CommandManager * cmdMgr )
 
    // ----------------------
 
-   cmd = new PointCommand();
-   cmdMgr->registerCommand( cmd );
+   // This doesn't really do anything any more (use properties to rename)
+   //cmd = new PointCommand();
+   //cmdMgr->registerCommand( cmd );
 
    return 0;
 }
