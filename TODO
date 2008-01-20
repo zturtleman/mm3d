@@ -5,10 +5,10 @@ For 1.4:
       Enums changed
    Update ad3dsfilter with canExport
 
-   Make sure unknown texture types are handled (for adding gradients)
    Profile 1.3.4 vs. 1.3.5 on unaccelerated config
 
    Test merge on multiple bone joint assignments, points, and projections
+   Review FIXMEs
 
 For 1.6:
    Resample animation

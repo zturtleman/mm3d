@@ -204,6 +204,8 @@ MainWidget::MainWidget( QWidget * parent )
    : QWidget( parent )
 {
    m_layout = new QVBoxLayout( this );
+   m_layout->setMargin(2);
+   m_layout->setSpacing(2);
 }
 
 void MainWidget::addWidgetToLayout( QWidget * w )
