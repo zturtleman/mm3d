@@ -1,0 +1,30 @@
+animsetswin.h
+   Up/down with multiple selected can cause extra selections
+
+paintwidget.h
+   Used to segfault. Does it still?
+painttexturewin.h
+   Test other stuff here too
+
+pointwin.h
+   Remove -- this serves no purpose
+
+projectionwin.h
+   Test pattern doesn't do anything
+
+viewwin.h
+   Set action group for Canvas and Perspective view options (wireframe/alpha/etc)
+   Action group for NxN
+
+texturecoord.h
+   Undo texture coordinates undoes *everything*
+      Should undo last mouse down->up operation
+   Map group should preserve aspect ratio
+   Rotate doesn't work (just first time? does undo kick it into working state?)
+   Weirdness on first select with select vertices
+      (might have gone away when m_textureWidget tool was initialized)
+   Icons - Zoom buttons missing (present in other windows, like mview)
+
+transformwin.h
+   No help
+
