@@ -1,12 +1,5 @@
-animsetswin.h
-   Up/down with multiple selected can cause extra selections
-      Can't reproduce this now
-
 projectionwin.h
    Test pattern doesn't do anything
-
-texturecoord.h
-   Map group should preserve aspect ratio
 
 transformwin.h
    No help

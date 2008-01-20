@@ -1,12 +1,12 @@
 For 1.4:
    Bump mm3dfilter version
 
+   Make sure all plugins work with 1.3
+      Enums changed
    Update ad3dsfilter with canExport
 
    Make sure unknown texture types are handled (for adding gradients)
    Profile 1.3.4 vs. 1.3.5 on unaccelerated config
-   Texture paint segfault
-      Segfault (dvh bb post on 8/18)
 
    Test merge on multiple bone joint assignments, points, and projections
 
@@ -26,10 +26,8 @@ For 1.6:
       Types
          Icosahedron
    Gradient textures
+   Only list supported image formats in animation capture export
    Integrate libmisfit
-   Qt 4.x (probably need to continue with Qt 3.x compatibility classes for 1.4)
-      Only list supported image formats in animation capture export
-      Qt4 - On startup every window says "Perspective" (make permanent fix)
    Make middle mouse button scroll zoom in on point under the mouse
    Delay normal calculation when manipulating a large number of vertices
    Fix MM3D data size problem (assume size instead of using read size)
@@ -137,4 +135,6 @@ Probably never:
       Renderman
       Blender
       Maya ASCII
+   Texture coordinates
+      Map group should preserve aspect ratio
 
