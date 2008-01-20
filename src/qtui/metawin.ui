@@ -21,6 +21,9 @@
    </property>
    <item>
     <widget class="QTreeWidget" name="m_list" >
+     <property name="rootIsDecorated" >
+      <bool>false</bool>
+     </property>
      <property name="allColumnsShowFocus" >
       <bool>true</bool>
      </property>

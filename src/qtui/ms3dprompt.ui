@@ -192,10 +192,42 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonGroup1</sender>
-   <signal>clicked(int)</signal>
+   <sender>m_subVersion0</sender>
+   <signal>clicked(bool)</signal>
    <receiver>Ms3dPromptBase</receiver>
-   <slot>subVersionChangedEvent(int)</slot>
+   <slot>subVersionChangedEvent()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_subVersion1</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>Ms3dPromptBase</receiver>
+   <slot>subVersionChangedEvent()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_subVersion2</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>Ms3dPromptBase</receiver>
+   <slot>subVersionChangedEvent()</slot>
    <hints>
     <hint type="sourcelabel" >
      <x>20</x>

@@ -32,6 +32,7 @@
 #include <QCheckBox>
 #include <QRadioButton>
 #include <QTreeWidget>
+#include <QHeaderView>
 #include <QShortcut>
 
 #include <stdio.h>
@@ -44,6 +45,9 @@ MetaWindow::MetaWindow( Model * model, QWidget * parent )
    setAttribute( Qt::WA_DeleteOnClose );
    setupUi( this );
    setModal( true );
+
+   m_list->header()->setClickable( false );
+   m_list->header()->setMovable( false );
 
    unsigned count = m_model->getMetaDataCount();
 

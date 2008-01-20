@@ -46,7 +46,7 @@ class Ms3dPrompt : public QDialog, public Ui::Ms3dPromptBase
    public slots:
       void helpNowEvent();
 
-      void subVersionChangedEvent( int );
+      void subVersionChangedEvent();
 
    protected:
 

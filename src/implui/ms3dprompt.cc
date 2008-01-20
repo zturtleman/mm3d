@@ -95,7 +95,7 @@ void Ms3dPrompt::helpNowEvent()
    //win->show();
 }
 
-void Ms3dPrompt::subVersionChangedEvent( int id )
+void Ms3dPrompt::subVersionChangedEvent()
 {
    updateExtraEnabled();
 }

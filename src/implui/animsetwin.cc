@@ -371,12 +371,17 @@ void AnimSetWindow::copyClicked()
 
       list<int>::iterator it;
       
+      m_animList->setCurrentItem(m_animList->item(newAnims.back()));
+
+      count = m_animList->count();
+      for ( unsigned int t = 0; t < count; ++t )
+      {
+         m_animList->item(t)->setSelected( false );
+      }
       for ( it = newAnims.begin(); it != newAnims.end(); it++ )
       {
          m_animList->item( *it )->setSelected( true );
       }
-
-      m_animList->setCurrentItem(m_animList->item(newAnims.back()));
    }
 }
 
@@ -387,10 +392,13 @@ void AnimSetWindow::splitClicked()
 
    bool refillList = false;
 
+   int splitNum = 0;
+
    for ( int t = count - 1; t >= 0; t-- )
    {
       if ( m_animList->item(t)->isSelected() )
       {
+         splitNum = t;
          if ( m_model->getAnimFrameCount( mode, t ) >= 2 )
          {
             bool ok = false;
@@ -419,6 +427,13 @@ void AnimSetWindow::splitClicked()
    if ( refillList )
    {
       fillAnimationList();
+      m_animList->setCurrentItem(m_animList->item(splitNum));
+      count = m_animList->count();
+      for ( unsigned int t = 0; t < count; ++t )
+      {
+         m_animList->item(t)->setSelected( false );
+      }
+      m_animList->item( splitNum )->setSelected( true );
    }
 }
 
@@ -459,8 +474,13 @@ void AnimSetWindow::joinClicked()
    {
       fillAnimationList();
 
-      m_animList->item( joinNum )->setSelected( true );
       m_animList->setCurrentItem(m_animList->item(joinNum));
+      count = m_animList->count();
+      for ( unsigned int t = 0; t < count; ++t )
+      {
+         m_animList->item(t)->setSelected( false );
+      }
+      m_animList->item( joinNum )->setSelected( true );
    }
 }
 
@@ -517,8 +537,13 @@ void AnimSetWindow::mergeClicked()
       {
          fillAnimationList();
 
-         m_animList->item( mergeNum )->setSelected( true );
          m_animList->setCurrentItem(m_animList->item(mergeNum));
+         count = m_animList->count();
+         for ( unsigned int t = 0; t < count; ++t )
+         {
+            m_animList->item(t)->setSelected( false );
+         }
+         m_animList->item( mergeNum )->setSelected( true );
       }
    }
    else
