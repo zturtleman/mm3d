@@ -29,6 +29,7 @@
 #include <stdint.h>
 #include <sys/types.h>
 
+#include "mm3dtypes.h"
 #include "model.h"
 
 //-----------------------------------------------------------------------------
@@ -39,8 +40,11 @@
 // It can export binary or ASCII data. Binary data can be little endian
 // (Intel byte order) or big endian (network byte order).
 //
-// DataDest provides FIXME advantages over direct file I/O:
-//    * FIXME
+// DataDest provides three advantages over direct file I/O:
+//    * Natively handles byte order conversions
+//    * Offers convenience methods for common data sizes and other
+//      write operations.
+//    * Allows writing to non-file sources (memory buffers, etc)
 //
 //-----------------------------------------------------------------------------
 // The DataDest API
@@ -138,7 +142,7 @@ class DataDest
       bool write( uint16_t val );
       bool write( int32_t val );
       bool write( uint32_t val );
-      bool write( float val );     // FIXME float32_t
+      bool write( float32_t val );
 
       // An error occured, either atFileLimit() is true, or getErrno()
       // is not 0.

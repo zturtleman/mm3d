@@ -33,7 +33,7 @@
 
 #ifdef MM3D_EDIT
 
-int Model::addAnimation( const AnimationModeE & m, const char * name )
+int Model::addAnimation( AnimationModeE m, const char * name )
 {
    LOG_PROFILE();
 
@@ -90,7 +90,7 @@ int Model::addAnimation( const AnimationModeE & m, const char * name )
    return num;
 }
 
-void Model::deleteAnimation( const AnimationModeE & m, const unsigned & index )
+void Model::deleteAnimation( AnimationModeE m, unsigned index )
 {
    LOG_PROFILE();
 
@@ -121,7 +121,7 @@ void Model::deleteAnimation( const AnimationModeE & m, const unsigned & index )
    }
 }
 
-bool Model::setAnimName( const AnimationModeE & m, const unsigned & anim, const char * name )
+bool Model::setAnimName( AnimationModeE m, unsigned anim, const char * name )
 {
    switch ( m )
    {
@@ -153,7 +153,7 @@ bool Model::setAnimName( const AnimationModeE & m, const unsigned & anim, const 
    return false;
 }
 
-bool Model::setAnimFrameCount( const AnimationModeE & m, const unsigned & anim, const unsigned & count )
+bool Model::setAnimFrameCount( AnimationModeE m, unsigned anim, unsigned count )
 {
    switch ( m )
    {
@@ -266,7 +266,7 @@ bool Model::setAnimFrameCount( const AnimationModeE & m, const unsigned & anim, 
    return false;
 }
 
-bool Model::setAnimFPS( const AnimationModeE & m, const unsigned & anim, const double & fps )
+bool Model::setAnimFPS( AnimationModeE m, unsigned anim, double fps )
 {
    switch ( m )
    {
@@ -310,7 +310,7 @@ bool Model::setAnimFPS( const AnimationModeE & m, const unsigned & anim, const d
    return false;
 }
 
-void Model::setFrameAnimPointCount( const unsigned & pointCount )
+void Model::setFrameAnimPointCount( unsigned pointCount )
 {
    unsigned anim = 0;
    unsigned frame = 0;
@@ -346,8 +346,8 @@ void Model::setFrameAnimPointCount( const unsigned & pointCount )
    sendUndo( undo );
 }
 
-bool Model::setFrameAnimPointCoords( const unsigned & anim, const unsigned & frame, const unsigned & point,
-      const double & x, const double & y, const double & z )
+bool Model::setFrameAnimPointCoords( unsigned anim, unsigned frame, unsigned point,
+      double x, double y, double z )
 {
    if ( anim < m_frameAnims.size() 
          && frame < m_frameAnims[anim]->m_frameData.size()
@@ -380,8 +380,8 @@ bool Model::setFrameAnimPointCoords( const unsigned & anim, const unsigned & fra
    }
 }
 
-bool Model::setFrameAnimPointRotation( const unsigned & anim, const unsigned & frame, const unsigned & point,
-      const double & x, const double & y, const double & z )
+bool Model::setFrameAnimPointRotation( unsigned anim, unsigned frame, unsigned point,
+      double x, double y, double z )
 {
    if ( anim < m_frameAnims.size() 
          && frame < m_frameAnims[anim]->m_frameData.size()
@@ -414,8 +414,8 @@ bool Model::setFrameAnimPointRotation( const unsigned & anim, const unsigned & f
    }
 }
 
-bool Model::getFrameAnimPointCoords( const unsigned & anim, const unsigned & frame, const unsigned & point,
-      double & x, double & y, double & z )
+bool Model::getFrameAnimPointCoords( unsigned anim, unsigned frame, unsigned point,
+      double & x, double & y, double & z ) const
 {
    if ( anim < m_frameAnims.size() 
          && frame < m_frameAnims[anim]->m_frameData.size()
@@ -440,8 +440,8 @@ bool Model::getFrameAnimPointCoords( const unsigned & anim, const unsigned & fra
    }
 }
 
-bool Model::getFrameAnimPointRotation( const unsigned & anim, const unsigned & frame, const unsigned & point,
-      double & x, double & y, double & z )
+bool Model::getFrameAnimPointRotation( unsigned anim, unsigned frame, unsigned point,
+      double & x, double & y, double & z ) const
 {
    if ( anim < m_frameAnims.size() 
          && frame < m_frameAnims[anim]->m_frameData.size()
@@ -466,7 +466,7 @@ bool Model::getFrameAnimPointRotation( const unsigned & anim, const unsigned & f
    }
 }
 
-void Model::setFrameAnimVertexCount( const unsigned & vertexCount )
+void Model::setFrameAnimVertexCount( unsigned vertexCount )
 {
    unsigned anim = 0;
    unsigned frame = 0;
@@ -502,8 +502,8 @@ void Model::setFrameAnimVertexCount( const unsigned & vertexCount )
    sendUndo( undo );
 }
 
-bool Model::setFrameAnimVertexCoords( const unsigned & anim, const unsigned & frame, const unsigned & vertex,
-      const double & x, const double & y, const double & z )
+bool Model::setFrameAnimVertexCoords( unsigned anim, unsigned frame, unsigned vertex,
+      double x, double y, double z )
 {
    if ( anim < m_frameAnims.size() 
          && frame < m_frameAnims[anim]->m_frameData.size()
@@ -541,8 +541,8 @@ bool Model::setFrameAnimVertexCoords( const unsigned & anim, const unsigned & fr
    }
 }
 
-bool Model::setQuickFrameAnimVertexCoords( const unsigned & anim, const unsigned & frame, const unsigned & vertex,
-      const double & x, const double & y, const double & z )
+bool Model::setQuickFrameAnimVertexCoords( unsigned anim, unsigned frame, unsigned vertex,
+      double x, double y, double z )
 {
    if ( anim < m_frameAnims.size() 
          && frame < m_frameAnims[anim]->m_frameData.size()
@@ -569,7 +569,7 @@ bool Model::setQuickFrameAnimVertexCoords( const unsigned & anim, const unsigned
    }
 }
 
-int Model::copyAnimation( const AnimationModeE & mode, const unsigned & anim, const char * newName )
+int Model::copyAnimation( AnimationModeE mode, unsigned anim, const char * newName )
 {
    int num = -1;
    switch ( mode )
@@ -636,7 +636,7 @@ int Model::copyAnimation( const AnimationModeE & mode, const unsigned & anim, co
    return num;
 }
 
-int Model::splitAnimation( const AnimationModeE & mode, const unsigned & anim, const char * newName, const unsigned & frame )
+int Model::splitAnimation( AnimationModeE mode, unsigned anim, const char * newName, unsigned frame )
 {
    int num = -1;
    switch ( mode )
@@ -712,7 +712,7 @@ int Model::splitAnimation( const AnimationModeE & mode, const unsigned & anim, c
    return num;
 }
 
-bool Model::joinAnimations( const AnimationModeE & mode, const unsigned & anim1, const unsigned & anim2 )
+bool Model::joinAnimations( AnimationModeE mode, unsigned anim1, unsigned anim2 )
 {
    log_debug( "join %d anim %d + %d\n", mode, anim1, anim2 );
    if ( anim1 == anim2 )
@@ -787,7 +787,7 @@ bool Model::joinAnimations( const AnimationModeE & mode, const unsigned & anim1,
    return false;
 }
 
-bool Model::mergeAnimations( const AnimationModeE & mode, const unsigned & anim1, const unsigned & anim2 )
+bool Model::mergeAnimations( AnimationModeE mode, unsigned anim1, unsigned anim2 )
 {
    log_debug( "merge %d anim %d + %d\n", mode, anim1, anim2 );
    if ( anim1 == anim2 )
@@ -831,7 +831,7 @@ bool Model::mergeAnimations( const AnimationModeE & mode, const unsigned & anim1
    return false;
 }
 
-bool Model::moveAnimation( const AnimationModeE & mode, const unsigned & oldIndex, const unsigned & newIndex )
+bool Model::moveAnimation( AnimationModeE mode, unsigned oldIndex, unsigned newIndex )
 {
    if ( oldIndex == newIndex )
    {
@@ -901,7 +901,7 @@ bool Model::moveAnimation( const AnimationModeE & mode, const unsigned & oldInde
    return false;
 }
 
-int Model::convertAnimToFrame( const AnimationModeE & mode, const unsigned & anim, const char * newName, const unsigned & frameCount )
+int Model::convertAnimToFrame( AnimationModeE mode, unsigned anim, const char * newName, unsigned frameCount )
 {
    int num = -1;
    
@@ -974,7 +974,7 @@ int Model::convertAnimToFrame( const AnimationModeE & mode, const unsigned & ani
    return num;
 }
 
-bool Model::clearAnimFrame( const AnimationModeE & m, const unsigned & anim, const unsigned & frame )
+bool Model::clearAnimFrame( AnimationModeE m, unsigned anim, unsigned frame )
 {
    switch ( m )
    {
@@ -1032,8 +1032,8 @@ bool Model::clearAnimFrame( const AnimationModeE & m, const unsigned & anim, con
    return false;
 }
 
-int Model::setSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, const unsigned & joint, const bool & isRotation,
-      const double & x, const double & y, const double & z )
+int Model::setSkelAnimKeyframe( unsigned anim, unsigned frame, unsigned joint, bool isRotation,
+      double x, double y, double z )
 {
    if ( anim < m_skelAnims.size() 
          && frame < m_skelAnims[anim]->m_frameCount
@@ -1112,7 +1112,7 @@ int Model::setSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, c
    }
 }
 
-bool Model::deleteSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, const unsigned & joint, const bool & isRotation )
+bool Model::deleteSkelAnimKeyframe( unsigned anim, unsigned frame, unsigned joint, bool isRotation )
 {
    if ( anim < m_skelAnims.size() && frame < m_skelAnims[anim]->m_frameCount )
    {
@@ -1143,7 +1143,7 @@ bool Model::deleteSkelAnimKeyframe( const unsigned & anim, const unsigned & fram
    return rval;
 }
 
-bool Model::insertSkelAnimKeyframe( const unsigned & anim, Keyframe * keyframe )
+bool Model::insertSkelAnimKeyframe( unsigned anim, Keyframe * keyframe )
 {
    if ( anim < m_skelAnims.size() 
          && keyframe->m_frame < m_skelAnims[anim]->m_frameCount 
@@ -1159,7 +1159,7 @@ bool Model::insertSkelAnimKeyframe( const unsigned & anim, Keyframe * keyframe )
    }
 }
 
-bool Model::removeSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, const unsigned & joint, const bool & isRotation, bool release )
+bool Model::removeSkelAnimKeyframe( unsigned anim, unsigned frame, unsigned joint, bool isRotation, bool release )
 {
    if ( anim < m_skelAnims.size() && frame < m_skelAnims[anim]->m_frameCount )
    {
@@ -1188,7 +1188,7 @@ bool Model::removeSkelAnimKeyframe( const unsigned & anim, const unsigned & fram
    }
 }
 
-void Model::insertFrameAnim( const unsigned & index, FrameAnim * anim )
+void Model::insertFrameAnim( unsigned index, FrameAnim * anim )
 {
    LOG_PROFILE();
 
@@ -1216,7 +1216,7 @@ void Model::insertFrameAnim( const unsigned & index, FrameAnim * anim )
    }
 }
 
-void Model::removeFrameAnim( const unsigned & index )
+void Model::removeFrameAnim( unsigned index )
 {
    LOG_PROFILE();
 
@@ -1242,7 +1242,7 @@ void Model::removeFrameAnim( const unsigned & index )
    }
 }
 
-void Model::insertSkelAnim( const unsigned & index, SkelAnim * anim )
+void Model::insertSkelAnim( unsigned index, SkelAnim * anim )
 {
    LOG_PROFILE();
 
@@ -1270,7 +1270,7 @@ void Model::insertSkelAnim( const unsigned & index, SkelAnim * anim )
    }
 }
 
-void Model::removeSkelAnim( const unsigned & index )
+void Model::removeSkelAnim( unsigned index )
 {
    LOG_PROFILE();
 
@@ -1296,7 +1296,7 @@ void Model::removeSkelAnim( const unsigned & index )
    }
 }
 
-void Model::insertFrameAnimFrame( const unsigned & anim, const unsigned & frame, 
+void Model::insertFrameAnimFrame( unsigned anim, unsigned frame, 
       Model::FrameAnimData * data )
 {
    if ( anim < m_frameAnims.size() )
@@ -1327,7 +1327,7 @@ void Model::insertFrameAnimFrame( const unsigned & anim, const unsigned & frame,
    }
 }
 
-void Model::removeFrameAnimFrame( const unsigned & anim, const unsigned & frame )
+void Model::removeFrameAnimFrame( unsigned anim, unsigned frame )
 {
    if ( anim < m_frameAnims.size() && m_frameAnims[anim]->m_frameData.size() )
    {
@@ -1348,7 +1348,7 @@ void Model::removeFrameAnimFrame( const unsigned & anim, const unsigned & frame 
 
 #endif // MM3D_EDIT
 
-bool Model::setCurrentAnimation( const AnimationModeE & m, const char * name )
+bool Model::setCurrentAnimation( AnimationModeE m, const char * name )
 {
 #ifdef MM3D_EDIT
    bool needUndo = m_animationMode ? false : true;
@@ -1498,7 +1498,7 @@ bool Model::setCurrentAnimation( const AnimationModeE & m, const char * name )
    return false;
 }
 
-bool Model::setCurrentAnimation( const AnimationModeE & m, unsigned index )
+bool Model::setCurrentAnimation( AnimationModeE m, unsigned index )
 {
 #ifdef MM3D_EDIT
    bool needUndo = (m_animationMode) ? false : true;
@@ -2024,17 +2024,17 @@ bool Model::setCurrentAnimationTime( double frameTime )
    }
 }
 
-unsigned Model::getCurrentAnimation()
+unsigned Model::getCurrentAnimation() const
 {
    return m_currentAnim;
 }
 
-unsigned Model::getCurrentAnimationFrame()
+unsigned Model::getCurrentAnimationFrame() const
 {
    return m_currentFrame;
 }
 
-double Model::getCurrentAnimationTime()
+double Model::getCurrentAnimationTime() const
 {
    return m_currentTime;
 }
@@ -2044,7 +2044,7 @@ void Model::setAnimationLooping( bool o )
    m_animationLoop = o;
 }
 
-bool Model::isAnimationLooping()
+bool Model::isAnimationLooping() const
 {
    return m_animationLoop;
 }
@@ -2165,7 +2165,7 @@ void Model::setupJoints()
    */
 }
 
-unsigned Model::getAnimCount( const AnimationModeE & m ) const
+unsigned Model::getAnimCount( AnimationModeE m ) const
 {
    switch ( m )
    {
@@ -2181,7 +2181,7 @@ unsigned Model::getAnimCount( const AnimationModeE & m ) const
 
    return 0;
 }
-const char * Model::getAnimName( const AnimationModeE & m, const unsigned & anim )
+const char * Model::getAnimName( AnimationModeE m, unsigned anim ) const
 {
    switch ( m )
    {
@@ -2204,7 +2204,7 @@ const char * Model::getAnimName( const AnimationModeE & m, const unsigned & anim
    return NULL;
 }
 
-unsigned Model::getAnimFrameCount( const AnimationModeE & m, const unsigned & anim )
+unsigned Model::getAnimFrameCount( AnimationModeE m, unsigned anim ) const
 {
    switch ( m )
    {
@@ -2227,7 +2227,7 @@ unsigned Model::getAnimFrameCount( const AnimationModeE & m, const unsigned & an
    return 0;
 }
 
-double Model::getAnimFPS( const AnimationModeE & m, const unsigned & anim )
+double Model::getAnimFPS( AnimationModeE m, unsigned anim ) const
 {
    switch ( m )
    {
@@ -2250,8 +2250,8 @@ double Model::getAnimFPS( const AnimationModeE & m, const unsigned & anim )
    return 0;
 }
 
-bool Model::getFrameAnimVertexCoords( const unsigned & anim, const unsigned & frame, const unsigned & vertex,
-      double & x, double & y, double & z )
+bool Model::getFrameAnimVertexCoords( unsigned anim, unsigned frame, unsigned vertex,
+      double & x, double & y, double & z ) const
 {
    if ( anim < m_frameAnims.size() 
          && frame < m_frameAnims[anim]->m_frameData.size()
@@ -2276,8 +2276,8 @@ bool Model::getFrameAnimVertexCoords( const unsigned & anim, const unsigned & fr
    }
 }
 
-bool Model::getFrameAnimVertexNormal( const unsigned & anim, const unsigned & frame, const unsigned & vertex,
-      double & x, double & y, double & z )
+bool Model::getFrameAnimVertexNormal( unsigned anim, unsigned frame, unsigned vertex,
+      double & x, double & y, double & z ) const
 {
    if ( anim < m_frameAnims.size() 
          && frame < m_frameAnims[anim]->m_frameData.size()
@@ -2309,7 +2309,7 @@ bool Model::getFrameAnimVertexNormal( const unsigned & anim, const unsigned & fr
 }
 
 bool Model::hasSkelAnimKeyframe( unsigned anim, unsigned frame,
-      unsigned joint, bool isRotation )
+      unsigned joint, bool isRotation ) const
 {
    if ( anim < m_skelAnims.size() 
          && frame < m_skelAnims[anim]->m_frameCount
@@ -2345,7 +2345,7 @@ bool Model::hasSkelAnimKeyframe( unsigned anim, unsigned frame,
 
 bool Model::getSkelAnimKeyframe( unsigned anim, unsigned frame,
       unsigned joint, bool isRotation,
-      double & x, double & y, double & z )
+      double & x, double & y, double & z ) const
 {
    if ( anim < m_skelAnims.size() 
          && frame < m_skelAnims[anim]->m_frameCount
@@ -2391,7 +2391,7 @@ bool Model::getSkelAnimKeyframe( unsigned anim, unsigned frame,
 
 bool Model::interpSkelAnimKeyframe( unsigned anim, unsigned frame,
       bool loop, unsigned j, bool isRotation,
-      double & x, double & y, double & z )
+      double & x, double & y, double & z ) const
 {
    if ( anim < m_skelAnims.size() 
          && frame < m_skelAnims[anim]->m_frameCount
@@ -2421,7 +2421,7 @@ bool Model::interpSkelAnimKeyframe( unsigned anim, unsigned frame,
 }
 
 bool Model::interpSkelAnimKeyframeTime( unsigned anim, double frameTime,
-      bool loop, unsigned j, Matrix & transform )
+      bool loop, unsigned j, Matrix & transform ) const
 {
    if ( anim < m_skelAnims.size() && j < m_joints.size() )
    {

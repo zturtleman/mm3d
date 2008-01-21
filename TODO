@@ -12,16 +12,10 @@ For 1.4:
          (animwin open when no animation)
       Help for cal3d prompt
       Help for ms3d prompt
-      Hide test pattern selection on projection window
-      Texture coord undo/redo doesn't always need to change the texture
+      Help for transformwin
       Apply matrix to selected
       Implement triangle group memberships as a set?
-      Move _calculateNormal to glmath.h
-      Move float32_t into common header (glmath.h?)
-      Comments on datadest.h
       utf8strtrunc
-      Comments on modelfilter.h
-      model.h cleanup
 
 
 For 1.6:

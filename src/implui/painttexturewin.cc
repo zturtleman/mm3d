@@ -145,7 +145,7 @@ PaintTextureWin::PaintTextureWin( Model * model, QWidget * parent )
       m_textureFrame->textureChangedEvent( 0 );
    }
 
-   // FIXME allow background, or remove clear button
+   // TODO allow background, or remove clear button
    m_clearButton->hide();
    m_textureWidget->setSolidBackground( true );
 

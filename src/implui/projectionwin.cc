@@ -54,6 +54,9 @@ ProjectionWin::ProjectionWin( Model * model, QWidget * parent, ViewPanel * viewP
 {
    setupUi( this );
 
+   m_material->hide();
+   m_materialLabel->hide();
+
    m_textureWidget = m_textureFrame->getTextureWidget();
    m_textureWidget->setInteractive( true );
    m_textureWidget->setMouseOperation( TextureWidget::MouseRange );

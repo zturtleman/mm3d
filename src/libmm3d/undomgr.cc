@@ -46,7 +46,7 @@ void UndoManager::setSaved()
    m_saveLevel = 0;
 }
 
-bool UndoManager::isSaved()
+bool UndoManager::isSaved() const
 {
    return ( m_saveLevel == 0 ) ? true : false;
 }
@@ -175,7 +175,7 @@ UndoList * UndoManager::redo()
    }
 }
 
-const char * UndoManager::getUndoOpName()
+const char * UndoManager::getUndoOpName() const
 {
    if ( m_currentUndo )
    {
@@ -191,7 +191,7 @@ const char * UndoManager::getUndoOpName()
    }
 }
 
-const char * UndoManager::getRedoOpName()
+const char * UndoManager::getRedoOpName() const
 {
    if ( ! m_atomicRedo.empty() )
    {
@@ -272,15 +272,15 @@ void UndoManager::clearRedo()
    }
 }
 
-void UndoManager::showStatistics()
+void UndoManager::showStatistics() const
 {
    int undoItems = 0;
    int redoItems = 0;
    unsigned undoSize = 0;
    unsigned redoSize = 0;
 
-   AtomicList::iterator it;
-   UndoList::iterator uit;
+   AtomicList::const_iterator it;
+   UndoList::const_iterator uit;
 
    log_debug( "Undo:\n" );
    for ( it = m_atomic.begin(); it != m_atomic.end(); it++ )

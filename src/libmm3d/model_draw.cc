@@ -117,16 +117,6 @@ static void _drawPointOrientation( bool selected, float scale,
     _drawPointOrientation( selected, scale, m );
 }
 
-static void _calculateNormal( double * normal,
-      double * a, double * b, double * c )
-{
-   normal[0] = a[1] * (b[2] - c[2]) + b[1] * (c[2] - a[2]) + c[1] * (a[2] - b[2]);
-   normal[1] = a[2] * (b[0] - c[0]) + b[2] * (c[0] - a[0]) + c[2] * (a[0] - b[0]);
-   normal[2] = a[0] * (b[1] - c[1]) + b[0] * (c[1] - a[1]) + c[0] * (a[1] - b[1]);
-
-   normalize3( normal );
-}
-
 static const int CYL_VERT_COUNT = 8;
 static const int CYL_SEAM_VERT  = 2;
 
@@ -155,7 +145,7 @@ static void _drawProjectionCylinder( bool selected, float scale,
 
     double left[3] = {0,0,0};
     double orig[3] = {0,0,0};
-    _calculateNormal( left, orig, (double *) up.getVector(), (double *) seam.getVector() );
+    calculate_normal( left, orig, (double *) up.getVector(), (double *) seam.getVector() );
 
     double len = mag3( up.getVector() );
 
@@ -295,7 +285,7 @@ static void _drawProjectionSphere( bool selected, float scale,
 
     double left[3] = {0,0,0};
     double orig[3] = {0,0,0};
-    _calculateNormal( left, orig, (double *) up.getVector(), (double *) seam.getVector() );
+    calculate_normal( left, orig, (double *) up.getVector(), (double *) seam.getVector() );
 
     Vector seamVec = seam;
 
@@ -417,7 +407,7 @@ static void _drawProjectionPlane( bool selected, float scale,
 
     double left[3] = {0,0,0};
     double orig[3] = {0,0,0};
-    _calculateNormal( left, orig, (double *) up.getVector(), (double *) seam.getVector() );
+    calculate_normal( left, orig, (double *) up.getVector(), (double *) seam.getVector() );
 
     Vector seamVec = seam;
 

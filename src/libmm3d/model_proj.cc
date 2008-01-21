@@ -31,17 +31,7 @@
 #include "modelstatus.h"
 #endif // MM3D_EDIT
 
-static void _calculateNormal( double * normal,
-      double * a, double * b, double * c )
-{
-   normal[0] = a[1] * (b[2] - c[2]) + b[1] * (c[2] - a[2]) + c[1] * (a[2] - b[2]);
-   normal[1] = a[2] * (b[0] - c[0]) + b[2] * (c[0] - a[0]) + c[2] * (a[0] - b[0]);
-   normal[2] = a[0] * (b[1] - c[1]) + b[0] * (c[1] - a[1]) + c[0] * (a[1] - b[1]);
-
-   normalize3( normal );
-}
-
-const char * Model::getProjectionName( const unsigned & proj )
+const char * Model::getProjectionName( unsigned proj ) const
 {
    if ( proj < m_projections.size() )
    {
@@ -53,7 +43,7 @@ const char * Model::getProjectionName( const unsigned & proj )
    }
 }
 
-bool Model::setProjectionName( const unsigned & proj, const char * name )
+bool Model::setProjectionName( unsigned proj, const char * name )
 {
    if ( proj < m_projections.size() && name && name[0] )
    {
@@ -70,7 +60,7 @@ bool Model::setProjectionName( const unsigned & proj, const char * name )
    }
 }
 
-int Model::getProjectionType( const unsigned int & proj )
+int Model::getProjectionType( unsigned proj ) const
 {
    if ( proj < m_projections.size() )
    {
@@ -79,7 +69,7 @@ int Model::getProjectionType( const unsigned int & proj )
    return -1;
 }
 
-bool Model::setProjectionType( const unsigned & proj, int type )
+bool Model::setProjectionType( unsigned proj, int type )
 {
    if ( proj < m_projections.size() )
    {
@@ -112,7 +102,7 @@ void Model::setTriangleProjection( unsigned triangleNum, int proj )
    }
 }
 
-int Model::getTriangleProjection( unsigned triangleNum )
+int Model::getTriangleProjection( unsigned triangleNum ) const
 {
    if ( triangleNum < m_triangles.size() )
    {
@@ -121,7 +111,7 @@ int Model::getTriangleProjection( unsigned triangleNum )
    return -1;
 }
 
-bool Model::getProjectionCoords( unsigned proj, double *coord )
+bool Model::getProjectionCoords( unsigned proj, double *coord ) const
 {
    if ( proj < m_projections.size() )
    {
@@ -154,7 +144,7 @@ bool Model::setProjectionUp( unsigned proj, const double * upVec )
    return false;
 }
 
-bool Model::getProjectionUp( unsigned proj, double *upVec )
+bool Model::getProjectionUp( unsigned proj, double *upVec ) const
 {
    if ( proj < m_projections.size() )
    {
@@ -184,7 +174,7 @@ bool Model::setProjectionSeam( unsigned proj, const double * seamVec )
    return false;
 }
 
-bool Model::getProjectionSeam( unsigned proj, double *seamVec )
+bool Model::getProjectionSeam( unsigned proj, double *seamVec ) const
 {
    if ( proj < m_projections.size() )
    {
@@ -197,7 +187,7 @@ bool Model::getProjectionSeam( unsigned proj, double *seamVec )
 }
 
 bool Model::getProjectionRange( unsigned proj, 
-      double & xmin, double & ymin, double & xmax, double & ymax )
+      double & xmin, double & ymin, double & xmax, double & ymax ) const
 {
    if ( proj < m_projections.size() )
    {
@@ -312,7 +302,7 @@ void   Model::setProjectionScale( unsigned proj, double scale )
    }
 }
 
-double Model::getProjectionScale( unsigned proj )
+double Model::getProjectionScale( unsigned proj ) const
 {
    if ( proj < m_projections.size() )
    {
@@ -395,7 +385,7 @@ void Model::applyCylinderProjection( unsigned int p )
       // Because up and seam are vectors from pos, we can assume
       // that pos is at the origin. The math works out the same.
       double orig[3] = { 0, 0, 0 };
-      _calculateNormal( planeNormal, orig, up, seam );
+      calculate_normal( planeNormal, orig, up, seam );
 
       //log_debug( "up    = %f,%f,%f\n", up[0],    up[1],    up[2] );
       //log_debug( "seam  = %f,%f,%f\n", seam[0],  seam[1],  seam[2] );
@@ -636,7 +626,7 @@ void Model::applySphereProjection( unsigned int p )
       // Because up and seam are vectors from pos, we can assume
       // that pos is at the origin. The math works out the same.
       double orig[3] = { 0, 0, 0 };
-      _calculateNormal( planeNormal, orig, up, seam );
+      calculate_normal( planeNormal, orig, up, seam );
 
       //log_debug( "up    = %f,%f,%f\n", up[0],    up[1],    up[2] );
       //log_debug( "seam  = %f,%f,%f\n", seam[0],  seam[1],  seam[2] );
@@ -874,7 +864,7 @@ void Model::applyPlaneProjection( unsigned int p )
       // Because up and seam are vectors from pos, we can assume
       // that pos is at the origin. The math works out the same.
       double orig[3] = { 0, 0, 0 };
-      _calculateNormal( planeNormal, orig, up, seam );
+      calculate_normal( planeNormal, orig, up, seam );
 
       //log_debug( "up    = %f,%f,%f\n", up[0],    up[1],    up[2] );
       //log_debug( "seam  = %f,%f,%f\n", seam[0],  seam[1],  seam[2] );

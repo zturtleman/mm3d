@@ -50,7 +50,7 @@ static bool _float_equiv( double lhs, double rhs, double tolerance )
    return ( fabs( lhs - rhs ) < tolerance );
 }
 
-int Model::equivalent( const Model * model, int compareMask, double tolerance )
+int Model::equivalent( const Model * model, int compareMask, double tolerance ) const
 {
    int matchVal = 0;
 
@@ -694,7 +694,7 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance )
    return matchVal;
 }
 
-int Model::equal( const Model * model, int compareMask, double tolerance )
+int Model::equal( const Model * model, int compareMask, double tolerance ) const
 {
    int matchVal = compareMask;
 

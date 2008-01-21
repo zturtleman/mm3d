@@ -27,17 +27,6 @@
 
 #include "modelundo.h"
 
-// FIXME I really need to put this glmath
-static void _calculateNormal( double * normal,
-      double * a, double * b, double * c )
-{
-   normal[0] = a[1] * (b[2] - c[2]) + b[1] * (c[2] - a[2]) + c[1] * (a[2] - b[2]);
-   normal[1] = a[2] * (b[0] - c[0]) + b[2] * (c[0] - a[0]) + c[2] * (a[0] - b[0]);
-   normal[2] = a[0] * (b[1] - c[1]) + b[0] * (c[1] - a[1]) + c[0] * (a[1] - b[1]);
-
-   normalize3( normal );
-}
-
 void Model::setSelectionMode( Model::SelectionModeE m )
 {
    if ( m != m_selectionMode )
@@ -361,7 +350,7 @@ bool Model::unselectProjection( unsigned p )
    }
 }
 
-bool Model::isVertexSelected( unsigned v )
+bool Model::isVertexSelected( unsigned v ) const
 {
    if ( v < m_vertices.size() )
    {
@@ -373,7 +362,7 @@ bool Model::isVertexSelected( unsigned v )
    }
 }
 
-bool Model::isTriangleSelected( unsigned v )
+bool Model::isTriangleSelected( unsigned v ) const
 {
    if ( v < m_triangles.size() )
    {
@@ -385,7 +374,7 @@ bool Model::isTriangleSelected( unsigned v )
    }
 }
 
-bool Model::isGroupSelected( unsigned v )
+bool Model::isGroupSelected( unsigned v ) const
 {
    if ( v < m_groups.size() )
    {
@@ -397,7 +386,7 @@ bool Model::isGroupSelected( unsigned v )
    }
 }
 
-bool Model::isBoneJointSelected( unsigned j )
+bool Model::isBoneJointSelected( unsigned j ) const
 {
    if ( j < m_joints.size() )
    {
@@ -409,7 +398,7 @@ bool Model::isBoneJointSelected( unsigned j )
    }
 }
 
-bool Model::isPointSelected( unsigned p )
+bool Model::isPointSelected( unsigned p ) const
 {
    if ( p < m_points.size() )
    {
@@ -421,7 +410,7 @@ bool Model::isPointSelected( unsigned p )
    }
 }
 
-bool Model::isProjectionSelected( unsigned p )
+bool Model::isProjectionSelected( unsigned p ) const
 {
    if ( p < m_projections.size() )
    {
@@ -973,7 +962,7 @@ bool Model::selectProjectionsInVolumeMatrix( bool select, const Matrix & viewMat
             // Because up and seam are vectors from pos, we can assume
             // that pos is at the origin. The math works out the same.
             double orig[3] = { 0, 0, 0 };
-            _calculateNormal( left.getVector(), orig, up.getVector(), seam.getVector() );
+            calculate_normal( left.getVector(), orig, up.getVector(), seam.getVector() );
 
             up.scale3( upMag );
             left.scale3( upMag );
@@ -1674,7 +1663,7 @@ void Model::endSelectionDifference()
    }
 }
 
-void Model::getSelectedPositions( list< Position > & positions )
+void Model::getSelectedPositions( list< Position > & positions ) const
 {
    unsigned count;
    unsigned t;
@@ -1730,7 +1719,7 @@ void Model::getSelectedPositions( list< Position > & positions )
    }
 }
 
-void Model::getSelectedVertices( list<int> & vertices )
+void Model::getSelectedVertices( list<int> & vertices ) const
 {
    vertices.clear();
 
@@ -1743,7 +1732,7 @@ void Model::getSelectedVertices( list<int> & vertices )
    }
 }
 
-void Model::getSelectedTriangles( list<int> & triangles )
+void Model::getSelectedTriangles( list<int> & triangles ) const
 {
    triangles.clear();
 
@@ -1756,7 +1745,7 @@ void Model::getSelectedTriangles( list<int> & triangles )
    }
 }
 
-void Model::getSelectedGroups( list<int> & groups )
+void Model::getSelectedGroups( list<int> & groups ) const
 {
    groups.clear();
 
@@ -1769,7 +1758,7 @@ void Model::getSelectedGroups( list<int> & groups )
    }
 }
 
-void Model::getSelectedBoneJoints( list<int> & joints )
+void Model::getSelectedBoneJoints( list<int> & joints ) const
 {
    joints.clear();
 
@@ -1782,7 +1771,7 @@ void Model::getSelectedBoneJoints( list<int> & joints )
    }
 }
 
-void Model::getSelectedPoints( list<int> & points )
+void Model::getSelectedPoints( list<int> & points ) const
 {
    points.clear();
 
@@ -1795,7 +1784,7 @@ void Model::getSelectedPoints( list<int> & points )
    }
 }
 
-void Model::getSelectedProjections( list<int> & projections )
+void Model::getSelectedProjections( list<int> & projections ) const
 {
    projections.clear();
 
@@ -1808,7 +1797,7 @@ void Model::getSelectedProjections( list<int> & projections )
    }
 }
 
-unsigned Model::getSelectedVertexCount()
+unsigned Model::getSelectedVertexCount() const
 {
    unsigned c = m_vertices.size();
    unsigned count = 0;
@@ -1824,7 +1813,7 @@ unsigned Model::getSelectedVertexCount()
    return count;
 }
 
-unsigned Model::getSelectedTriangleCount()
+unsigned Model::getSelectedTriangleCount() const
 {
    unsigned c = m_triangles.size();
    unsigned count = 0;
@@ -1840,7 +1829,7 @@ unsigned Model::getSelectedTriangleCount()
    return count;
 }
 
-unsigned Model::getSelectedBoneJointCount()
+unsigned Model::getSelectedBoneJointCount() const
 {
    unsigned c = m_joints.size();
    unsigned count = 0;
@@ -1856,7 +1845,7 @@ unsigned Model::getSelectedBoneJointCount()
    return count;
 }
 
-unsigned Model::getSelectedPointCount()
+unsigned Model::getSelectedPointCount() const
 {
    unsigned c = m_points.size();
    unsigned count = 0;
@@ -1872,7 +1861,7 @@ unsigned Model::getSelectedPointCount()
    return count;
 }
 
-unsigned Model::getSelectedProjectionCount()
+unsigned Model::getSelectedProjectionCount() const
 {
    unsigned c = m_projections.size();
    unsigned count = 0;
@@ -1888,7 +1877,7 @@ unsigned Model::getSelectedProjectionCount()
    return count;
 }
 
-bool Model::parentJointSelected( int joint )
+bool Model::parentJointSelected( int joint ) const
 {
    while ( m_joints[joint]->m_parent >= 0 )
    {
@@ -1902,7 +1891,7 @@ bool Model::parentJointSelected( int joint )
    return false;
 }
 
-bool Model::directParentJointSelected( int joint )
+bool Model::directParentJointSelected( int joint ) const
 {
    int p = m_joints[joint]->m_parent;
    if ( p >= 0 )
@@ -1912,7 +1901,7 @@ bool Model::directParentJointSelected( int joint )
    return false;
 }
 
-bool Model::getSelectedBoundingRegion( double *x1, double *y1, double *z1, double *x2, double *y2, double *z2 )
+bool Model::getSelectedBoundingRegion( double *x1, double *y1, double *z1, double *x2, double *y2, double *z2 ) const
 {
    if ( x1 && y1 && z1 && x2 && y2 && z2 )
    {

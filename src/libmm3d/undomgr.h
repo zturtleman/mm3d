@@ -42,7 +42,7 @@ class UndoList : public std::list<Undo *>
       void setOpName( const char * name ) { 
          if ( m_name ) { free(m_name); }
          if ( name )   { m_name = strdup(name); } };
-      const char * getOpName() { return m_name; };
+      const char * getOpName() const { return m_name; };
 
    protected:
       char * m_name;
@@ -59,7 +59,7 @@ class UndoManager
       void clear();
 
       void setSaved();
-      bool isSaved();
+      bool isSaved() const;
 
       void addUndo( Undo * u, bool listCombine = false );
       void operationComplete( const char * opname = NULL );
@@ -71,19 +71,19 @@ class UndoManager
       UndoList * redo();
 
       // True if there is an undo list available
-      bool canUndo() { return m_atomic.empty() ? false : true; };
+      bool canUndo() const { return m_atomic.empty() ? false : true; };
 
       // True if there is a redo list available
-      bool canRedo() { return m_atomicRedo.empty() ? false : true ; }; 
+      bool canRedo() const { return m_atomicRedo.empty() ? false : true ; }; 
 
-      const char * getUndoOpName();
-      const char * getRedoOpName();
+      const char * getUndoOpName() const;
+      const char * getRedoOpName() const;
 
       // Only returns undo list if there is one being built
       // Items should be applied in reverse order (back to front)
       UndoList * undoCurrent();
 
-      void showStatistics();
+      void showStatistics() const;
 
       void setSizeLimit( unsigned sizeLimit )   { m_sizeLimit  = sizeLimit; };
       void setCountLimit( unsigned countLimit ) { m_countLimit = countLimit; };

@@ -86,7 +86,7 @@ void Model::deleteGroup( unsigned groupNum )
    removeGroup( groupNum );
 }
 
-bool Model::setGroupSmooth( const unsigned & groupNum, const uint8_t & smooth )
+bool Model::setGroupSmooth( unsigned groupNum, uint8_t smooth )
 {
    if ( m_animationMode )
    {
@@ -109,7 +109,7 @@ bool Model::setGroupSmooth( const unsigned & groupNum, const uint8_t & smooth )
    }
 }
 
-bool Model::setGroupAngle( const unsigned & groupNum, const uint8_t & angle )
+bool Model::setGroupAngle( unsigned groupNum, uint8_t angle )
 {
    if ( m_animationMode )
    {
@@ -322,7 +322,7 @@ void Model::removeTriangleFromGroup( unsigned groupNum, unsigned triangleNum )
 
 #endif // MM3D_EDIT
 
-list<int> Model::getUngroupedTriangles()
+list<int> Model::getUngroupedTriangles() const
 {
    list<int> triangles;
 
@@ -373,7 +373,7 @@ list<int> Model::getGroupTriangles( unsigned groupNumber ) const
    return triangles;
 }
 
-int Model::getTriangleGroup( unsigned triangleNumber )
+int Model::getTriangleGroup( unsigned triangleNumber ) const
 {
    for ( unsigned g = 0; g < m_groups.size(); g++ )
    {
@@ -390,7 +390,7 @@ int Model::getTriangleGroup( unsigned triangleNumber )
    return -1;
 }
 
-const char * Model::getGroupName( unsigned groupNum )
+const char * Model::getGroupName( unsigned groupNum ) const
 {
    if ( groupNum >= 0 && groupNum < m_groups.size() )
    {
@@ -402,7 +402,7 @@ const char * Model::getGroupName( unsigned groupNum )
    }
 }
 
-int Model::getGroupByName( const char * const groupName, bool ignoreCase )
+int Model::getGroupByName( const char * const groupName, bool ignoreCase ) const
 {
    int (*compare)(const char *, const char *);
    compare = ignoreCase ? strcasecmp : strcmp;
@@ -421,7 +421,7 @@ int Model::getGroupByName( const char * const groupName, bool ignoreCase )
    return groupNumber;
 }
 
-uint8_t Model::getGroupSmooth( const unsigned & groupNum  )
+uint8_t Model::getGroupSmooth( unsigned groupNum  ) const
 {
    if ( groupNum < m_groups.size()  )
    {
@@ -433,7 +433,7 @@ uint8_t Model::getGroupSmooth( const unsigned & groupNum  )
    }
 }
 
-uint8_t Model::getGroupAngle( const unsigned & groupNum  )
+uint8_t Model::getGroupAngle( unsigned groupNum  ) const
 {
    if ( groupNum < m_groups.size()  )
    {

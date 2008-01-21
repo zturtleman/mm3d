@@ -27,6 +27,8 @@
 #include <stdio.h>
 #include <math.h>
 
+#include "mm3dtypes.h"
+
 const double PI = 3.1415926;
 const double PIOVER180 = PI / 180.0;
 
@@ -228,6 +230,17 @@ template<typename T> bool equiv3( T * lhs, T * rhs )
    return(   fabs(lhs[0] - rhs[0]) < 0.0001
          &&  fabs(lhs[1] - rhs[1]) < 0.0001
          &&  fabs(lhs[2] - rhs[2]) < 0.0001 );
+}
+
+template<typename T>
+static void calculate_normal( T * normal,
+      T * a, T * b, T * c )
+{
+   normal[0] = a[1] * (b[2] - c[2]) + b[1] * (c[2] - a[2]) + c[1] * (a[2] - b[2]);
+   normal[1] = a[2] * (b[0] - c[0]) + b[2] * (c[0] - a[0]) + c[2] * (a[0] - b[0]);
+   normal[2] = a[0] * (b[1] - c[1]) + b[0] * (c[1] - a[1]) + c[0] * (a[1] - b[1]);
+
+   normalize3( normal );
 }
 
 #endif // __GLMATH_H
