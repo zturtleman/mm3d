@@ -62,7 +62,6 @@ bool PasteCommand::activated( int arg, Model * model )
 
       FilterManager::getInstance()->readFile( m, clipfile.c_str() );
 
-      // FIXME can't allow undo if there are frame animations
       model->mergeModels( m, true, Model::AM_NONE, false );
 
       model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Paste complete" ).toUtf8() );

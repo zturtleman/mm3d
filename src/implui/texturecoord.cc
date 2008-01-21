@@ -57,7 +57,7 @@ TextureCoord::TextureCoord( Model * model, QWidget * parent )
 {
    setupUi( this );
 
-   // FIXME handle undo of select/unselect?
+   // TODO handle undo of select/unselect?
    // Can't do this until after constructor is done because of observer interface
    //setModel( m_model );
    m_textureFrame->setModel( model );

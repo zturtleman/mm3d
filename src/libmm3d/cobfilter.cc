@@ -1498,7 +1498,7 @@ void CobFilter::writeBTriangleGroup( const std::list<int> & triList, const std::
     writeBLong( uvcount );
 
     // Write uv data
-    // FIXME deal with out of range UVs (related to UV Offset/Repeat on Material?)
+    // TODO deal with out of range UVs (related to UV Offset/Repeat on Material?)
     for ( size_t uv = 0; uv < uvcount; uv++ )
     {
         writeBFloat( uvList[uv].u );
@@ -1671,7 +1671,7 @@ void CobFilter::writeBMaterial( int32_t parentId, size_t materialNumber, int gro
           texFile = getFileNameFromPath( texFile.c_str() );
           writeBString( texFile );
 
-          // FIXME make sure these are handled correctly
+          // TODO make sure these are handled correctly
           writeBFloat( 0.0 ); // U Offset
           writeBFloat( 0.0 ); // V Offset
           writeBFloat( 1.0 ); // U Repeat

@@ -989,7 +989,7 @@ bool Model::mergeAnimations( Model * model )
 
    invalidateNormals();
 
-   forceAddOrDelete( canAdd );
+   forceAddOrDelete( canAdd && m_frameAnims.empty() );
 
    return true;
 }
@@ -1497,7 +1497,7 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
    invalidateNormals();
    setupJoints();
 
-   forceAddOrDelete( canAdd );
+   forceAddOrDelete( canAdd && m_frameAnims.empty() );
 
    return true;
 }

@@ -7,8 +7,22 @@ For 1.4:
 
    Profile 1.3.4 vs. 1.3.5 on unaccelerated config
 
-   Test merge on multiple bone joint assignments, points, and projections
-   Review FIXMEs
+   FIXMEs
+      Prevent editing model when invalid animation is active
+         (animwin open when no animation)
+      Help for cal3d prompt
+      Help for ms3d prompt
+      Hide test pattern selection on projection window
+      Texture coord undo/redo doesn't always need to change the texture
+      Apply matrix to selected
+      Implement triangle group memberships as a set?
+      Move _calculateNormal to glmath.h
+      Move float32_t into common header (glmath.h?)
+      Comments on datadest.h
+      utf8strtrunc
+      Comments on modelfilter.h
+      model.h cleanup
+
 
 For 1.6:
    Resample animation

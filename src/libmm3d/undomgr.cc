@@ -53,6 +53,7 @@ bool UndoManager::isSaved()
 
 void UndoManager::clear()
 {
+   operationComplete( "Doomed operation" );
    clearRedo();
 
    while ( ! m_atomic.empty() )

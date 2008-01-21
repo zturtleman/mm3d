@@ -209,7 +209,6 @@ void AnimWidget::nameSelected( int index )
       }
       else
       {
-         // FIXME get previously selected index
          if ( m_animCount > 0 )
          {
             index = animToIndex( m_mode, m_currentAnim );

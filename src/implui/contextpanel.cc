@@ -128,10 +128,9 @@ void ContextPanel::modelChanged( int changeBits )
       m_widgets.clear();
 
       {
-         // FIXME only allow points in None and Frame
-         // FIXME only allow joints (for keyframe) in Skel
-         if ( (m_model->getSelectedBoneJointCount() 
-                  + m_model->getSelectedPointCount()) == 1 )
+         if ( Model::ANIMMODE_NONE == m_model->getAnimationMode()
+               && (m_model->getSelectedBoneJointCount() 
+                   + m_model->getSelectedPointCount()) == 1 )
          {
             ContextName * name = new ContextName( m_mainWidget );
             name->setModel( m_model );
@@ -155,10 +154,12 @@ void ContextPanel::modelChanged( int changeBits )
       m_widgets.push_back( pos );
 
       {
-         // FIXME only allow points in None and Frame
-         // FIXME only allow joints (for keyframe) in Skel
-         if ( (m_model->getSelectedBoneJointCount() 
-                  + m_model->getSelectedPointCount()) == 1 )
+         // Only allow points in None and Frame
+         // Only allow joints (for keyframe) in Skel
+         int pcount = m_model->getSelectedPointCount();
+         int jcount = m_model->getSelectedBoneJointCount();
+         if ( ((pcount == 1) && (jcount == 0) && m_model->getAnimationMode() != Model::ANIMMODE_SKELETAL )
+               || ((jcount == 1) && (pcount == 0) && m_model->getAnimationMode() == Model::ANIMMODE_SKELETAL ) )
          {
             ContextRotation * rot = new ContextRotation( m_mainWidget );
             rot->setModel( m_model );

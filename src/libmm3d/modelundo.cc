@@ -300,8 +300,6 @@ void MU_Select::undo( Model * model )
 
 void MU_Select::redo( Model * model )
 {
-   log_debug( "redo select %d\n", m_mode );
-
    SelectionDifferenceList::iterator it;
 
    // Set selection from our list

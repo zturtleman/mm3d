@@ -582,7 +582,6 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent )
    initializeCommands();
 
    connect( m_geometryMenu, SIGNAL(triggered(QAction*)), this, SLOT(primitiveCommandActivated(QAction*)) );
-   connect( m_materialsMenu,     SIGNAL(triggered(QAction*)), this, SLOT(groupCommandActivated(QAction*))     );
 
    //m_scriptMenu = new QPopupMenu( this );
 
@@ -658,6 +657,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent )
    loadDockPositions();
    stopAnimationMode();
    m_model->setUndoEnabled( true );
+   m_model->clearUndo();
 }
 
 ViewWindow::~ViewWindow()
@@ -1260,9 +1260,10 @@ QAction * ViewWindow::insertMenuItem( QMenu * parentMenu,
 
       if ( !found )
       {
-         // FIXME deal with multi-level paths
+         // TODO deal with multi-level paths
          addMenu = new QMenu( this );
-         // FIXME this is also a hack
+         // This is a hack (comparing against menu to see which
+         // module we should translate from)
          QString module = "Tool";
          if ( parentMenu != m_toolMenu )
          {
@@ -1477,28 +1478,6 @@ void ViewWindow::primitiveCommandActivated( QAction * id )
       }
       it++;
    }
-}
-
-// FIXME remove this
-void ViewWindow::groupCommandActivated( QAction * id )
-{
-   /*
-   CommandMenuItemList::iterator it;
-   it = m_groupCommands.begin();
-   while ( it != m_groupCommands.end() )
-   {
-      if ( (*it)->id == id )
-      {
-         if ( ((*it)->command)->activated( (*it)->arg, m_model ) )
-         {
-            m_model->operationComplete( qApp->translate( "Command", ((*it)->command)->getName( (*it)->arg ) ) );
-            m_viewPanel->modelUpdatedEvent();
-         }
-         break;
-      }
-      it++;
-   }
-   */
 }
 
 void ViewWindow::scriptActivated( QAction * id )
@@ -1950,7 +1929,7 @@ void ViewWindow::initializeToolbox()
                set.addPixmap( QPixmap( tool->getPixmap() ) );
 
                m_toolList[m_toolCount] = tool;
-               // FIXME Text below
+               // Text below
                m_toolButtons[ m_toolCount ] = m_toolBar->addAction( set, "Text" );
                m_toolButtons[ m_toolCount ]->setCheckable( true );
                if ( name && name[0] )
@@ -2000,7 +1979,7 @@ void ViewWindow::initializeToolbox()
             set.addPixmap( QPixmap( tool->getPixmap() ) );
 
             m_toolList[m_toolCount] = tool;
-            // FIXME Text below
+            // Text below
             m_toolButtons[ m_toolCount ] = m_toolBar->addAction( set, "Text" );
             m_toolButtons[ m_toolCount ]->setCheckable( true );
             if ( name && name[0] )

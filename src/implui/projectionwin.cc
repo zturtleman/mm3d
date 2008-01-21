@@ -124,7 +124,7 @@ void ProjectionWin::modelChanged( int changeBits )
          m_redoCount = 0;
       }
 
-      // FIXME need some way to re-select the projection we were looking at
+      // TODO need some way to re-select the projection we were looking at
       if ( isVisible() )
       {
          int projCount = m_model->getProjectionCount();

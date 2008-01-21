@@ -2005,7 +2005,7 @@ void Model::applyMatrix( const Matrix & m, OperationScopeE scope, bool animation
    }
    else
    {
-      m_undoMgr->clear();
+      clearUndo();
    }
 }
 
@@ -2066,7 +2066,7 @@ void Model::subdivideSelectedTriangles()
                getVertexCoords( a, pa );
                getVertexCoords( b, pb );
 
-               // FIXME this should really use addVertex()
+               // TODO this should really use addVertex()
                Vertex * vertex = Vertex::get();
 
                vertex->m_coord[0] = (pa[0] + pb[0]) / 2;
@@ -2275,6 +2275,26 @@ void Model::operationComplete( const char * opname )
 
    m_undoMgr->operationComplete( opname );
    updateObservers();
+}
+
+void Model::forceAddOrDelete( bool o )
+{
+   if ( !o && m_forceAddOrDelete )
+      clearUndo();
+
+   m_forceAddOrDelete = o;
+}
+
+bool Model::setUndoEnabled( bool o )
+{
+   bool old = m_undoEnabled;
+   m_undoEnabled = o;
+   return old;
+}
+
+void Model::clearUndo()
+{
+   m_undoMgr->clear();
 }
 
 bool Model::canUndo()

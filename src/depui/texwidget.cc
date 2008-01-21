@@ -539,13 +539,13 @@ void TextureWidget::paintInternal()
          break;
    }
 
-   // FIXME may want to make "draw points" a separate property
+   // TODO may want to make "draw points" a separate property
    if ( m_operation == MouseRange )
    {
       glColor3f( 1.0, 1.0, 1.0 );
    }
 
-   // FIXME may want to make "draw points" a separate property
+   // TODO may want to make "draw points" a separate property
    if ( m_operation != MouseRange || m_drawVertices )
    {
       glPointSize( 3.0 );

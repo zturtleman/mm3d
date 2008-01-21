@@ -1125,7 +1125,7 @@ class Model
       //
       // In other words, setting this to true is probably a really bad idea unless
       // you know what you're doing.
-      void forceAddOrDelete( bool o ) { m_forceAddOrDelete = o; };
+      void forceAddOrDelete( bool o );
 
       bool canAddOrDelete() { return (m_frameAnims.size() == 0 || m_forceAddOrDelete); };
 
@@ -1454,12 +1454,15 @@ class Model
       // Undo/Redo functions
       // ------------------------------------------------------------------
 
-      bool setUndoEnabled( bool o ) { bool old = m_undoEnabled; m_undoEnabled = o; return old; };
+      bool setUndoEnabled( bool o );
 
       // Indicates that a user-specified operation is complete. A single
       // "operation" may span many function calls and different types of
       // manipulations.
       void operationComplete( const char * opname = NULL );
+
+      // Clear undo list
+      void clearUndo();
 
       bool canUndo();
       bool canRedo();

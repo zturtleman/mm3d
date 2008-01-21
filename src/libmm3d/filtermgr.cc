@@ -93,12 +93,12 @@ Model::ModelErrorE FilterManager::readFile( Model * model, const char * filename
 
       if ( filter && filter->isSupported( filename ) && filter->canRead() )
       {
+         model->setUndoEnabled( false );
          model->forceAddOrDelete( true );
          Model::ModelErrorE rval = filter->readFile( model, filename );
          model->forceAddOrDelete( false );
-#ifdef MM3D_EDIT
          model->setUndoEnabled( true );
-#endif // MM3D_EDIT
+         model->clearUndo();
          m_factory.closeAll();
          return rval;
       }
