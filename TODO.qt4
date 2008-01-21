@@ -1,3 +1,9 @@
+Overall:
+   Test with Qt 4.0, 4.1
+
 transformwin.h
    No help
+
+viewwin.h
+   Change bone joint drawing to lines, shows as bones when selecting
 
