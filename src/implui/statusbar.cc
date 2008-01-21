@@ -44,8 +44,10 @@ StatusBar::StatusBar( Model * model, QWidget * parent )
 {
    setupUi( this );
 
-   m_palette = m_statusLabel->palette();
+   m_palette = this->palette();
+   this->setAutoFillBackground( true );
    m_statusLabel->setAutoFillBackground( true );
+   m_labelFrame->setAutoFillBackground( true );
    s_modelMap[ m_model ] = this;
 }
 
@@ -95,8 +97,10 @@ void StatusBar::addText( StatusTypeE type, unsigned ms, const char * str )
 {
    if ( m_queueDisplay )
    {
+      // Clear non-errors first
       bool removing = true;
-      while ( removing && m_queue.size() > 2 )
+      size_t max_queue_size = 2;
+      while ( removing && m_queue.size() > max_queue_size )
       {
          removing = false;
          std::list< TextQueueItemT >::iterator it;
@@ -111,6 +115,17 @@ void StatusBar::addText( StatusTypeE type, unsigned ms, const char * str )
             }
          }
       }
+
+      // If we still have more than max_queue_size in the queue, and the
+      // new message is an error, start removing the oldest errors.
+      if ( m_queue.size() > max_queue_size )
+      {
+         if ( type != StatusError )
+            return;
+         while ( m_queue.size() > max_queue_size )
+            m_queue.pop_front();
+      }
+
       TextQueueItemT tqi;
       tqi.str  = QString::fromUtf8( str );
       tqi.ms   = ms;
@@ -125,8 +140,8 @@ void StatusBar::addText( StatusTypeE type, unsigned ms, const char * str )
       {
          QPalette p = m_palette;
          p.setColor( QPalette::WindowText, QColor( 255, 255, 255 ) );
-         p.setColor( QPalette::Background, QColor( 255, 0, 0 ) );
-         m_statusLabel->setPalette( m_palette );
+         p.setColor( QPalette::Window, QColor( 255, 0, 0 ) );
+         m_labelFrame->setPalette( p );
       }
       m_queueDisplay = true;
    }
@@ -134,7 +149,7 @@ void StatusBar::addText( StatusTypeE type, unsigned ms, const char * str )
 
 void StatusBar::timerExpired()
 {
-   m_statusLabel->setPalette( m_palette );
+   m_labelFrame->setPalette( m_palette );
    if ( !m_queue.empty() )
    {
       TextQueueItemT tqi = m_queue.front();
@@ -147,8 +162,8 @@ void StatusBar::timerExpired()
       {
          QPalette p = m_palette;
          p.setColor( QPalette::WindowText, QColor( 255, 255, 255 ) );
-         p.setColor( QPalette::Background, QColor( 255, 0, 0 ) );
-         m_statusLabel->setPalette( m_palette );
+         p.setColor( QPalette::Window, QColor( 255, 0, 0 ) );
+         m_labelFrame->setPalette( p );
       }
 
       if ( tqi.ms > 0 )

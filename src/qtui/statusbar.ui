@@ -20,7 +20,7 @@
     <number>2</number>
    </property>
    <item>
-    <widget class="QFrame" name="Frame2" >
+    <widget class="QFrame" name="m_labelFrame" >
      <property name="sizePolicy" >
       <sizepolicy>
        <hsizetype>1</hsizetype>
@@ -46,6 +46,9 @@
        <widget class="QLabel" name="m_statusLabel" >
         <property name="text" >
          <string>Status text</string>
+        </property>
+        <property name="textFormat" >
+         <enum>Qt::PlainText</enum>
         </property>
         <property name="wordWrap" >
          <bool>false</bool>
