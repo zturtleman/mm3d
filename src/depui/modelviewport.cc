@@ -1494,8 +1494,12 @@ void ModelViewport::mouseReleaseEvent( QMouseEvent * e )
 
             if ( m_model->getSelectedBoneJointCount() > 0 )
             {
-               m_model->setDrawJoints( 
-                     static_cast<Model::DrawJointModeE>( g_prefs( "ui_draw_joints" ).intValue() ) );
+               Model::DrawJointModeE mode = 
+                  static_cast<Model::DrawJointModeE>(
+                        g_prefs( "ui_draw_joints" ).intValue() );
+               if ( mode == Model::JOINTMODE_NONE )
+                  mode = Model::JOINTMODE_BONES;
+               m_model->setDrawJoints( mode );
                updateView();
             }
          }
