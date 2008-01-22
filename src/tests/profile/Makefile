@@ -8,6 +8,7 @@ PROFILES = \
 		  load_md3.prof \
 		  calc_fnormals.prof \
 		  calc_normals.prof \
+		  group_triangles.prof \
 
 all: $(PROFILES)
 

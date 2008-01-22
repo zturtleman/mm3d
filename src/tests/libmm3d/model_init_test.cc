@@ -61,7 +61,7 @@ private:
       QVERIFY_EQ( -1, g->m_materialIndex );
       QVERIFY_EQ( (size_t) 0, g->m_triangleIndices.size() );
       QVERIFY_EQ( (uint8_t) 255, g->m_smooth );
-      QVERIFY_EQ( (uint8_t) 180, g->m_angle );
+      QVERIFY_EQ( (uint8_t) 89, g->m_angle );
       QVERIFY_TRUE( g->m_visible );
       QVERIFY_FALSE( g->m_selected );
    }
@@ -164,7 +164,7 @@ private slots:
 
       g->m_name = "dummy name";
       g->m_materialIndex = 7;
-      g->m_triangleIndices.push_back(0);
+      g->m_triangleIndices.insert(0);
       g->m_smooth = 8;
       g->m_angle = 9;
       g->m_visible = false;
