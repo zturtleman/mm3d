@@ -756,27 +756,18 @@ void Model::adjustTriangleIndices( unsigned index, int count )
 {
    for ( unsigned g = 0; g < m_groups.size(); g++ )
    {
-      vector<int>::iterator it;
-      it = m_groups[g]->m_triangleIndices.begin();
-      while ( it != m_groups[g]->m_triangleIndices.end() )
+      Group * grp = m_groups[g];
+      std::set<int> newSet;
+      for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+            it != grp->m_triangleIndices.end();
+            ++it )
       {
-         /*
-         if ( (unsigned) (*it) == index )
-         {
-            m_groups[g]->m_triangleIndices.erase( it );
-         }
-         else
-         */
          if ( (unsigned) *it >= index )
-         {
-            (*it) += count;
-            it++;
-         }
+            newSet.insert( *it + count );
          else
-         {
-            it++;
-         }
+            newSet.insert( *it );
       }
+      grp->m_triangleIndices = newSet;
    }
 }
 

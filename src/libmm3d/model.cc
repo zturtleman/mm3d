@@ -4169,22 +4169,23 @@ void Model::calculateNormals()
    }
 
    // Apply accumulated normals to triangles
-   unsigned t;
 
    for ( unsigned g = 0; g < m_groups.size(); g++ )
    {
-      float maxAngle = m_groups[g]->m_angle;
+      Group * grp = m_groups[g];
+
+      float maxAngle = grp->m_angle;
       if ( maxAngle < 0.50f )
       {
          maxAngle = 0.50f;
       }
       maxAngle *= PIOVER180;
 
-      for ( unsigned t2 = 0; t2 < m_groups[g]->m_triangleIndices.size(); t2++ )
+      for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+            it != grp->m_triangleIndices.end();
+            ++it )
       {
-         t = m_groups[g]->m_triangleIndices[t2];
-
-         Triangle * tri = m_triangles[t];
+         Triangle * tri = m_triangles[*it];
          tri->m_marked = true;
          for ( int vert = 0; vert < 3; vert++ )
          {
@@ -4300,14 +4301,18 @@ void Model::calculateNormals()
 
    for ( unsigned m = 0; m < m_groups.size(); m++ )
    {
-      double percent = (double) m_groups[m]->m_smooth / 255.0;
-      for ( unsigned t = 0; t < m_groups[m]->m_triangleIndices.size(); t++ )
+      Group * grp = m_groups[m];
+
+      double percent = (double) grp->m_smooth / 255.0;
+      for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+            it != grp->m_triangleIndices.end();
+            ++it )
       {
-         Triangle * tri = m_triangles[ m_groups[m]->m_triangleIndices[t] ];
+         Triangle * tri = m_triangles[ *it ];
 
          for ( int v = 0; v < 3; v++ )
          {
-            if ( m_groups[m]->m_smooth > 0 )
+            if ( grp->m_smooth > 0 )
             {
                for ( unsigned i = 0; i < 3; i++ )
                {
@@ -4438,16 +4443,19 @@ void Model::calculateBspTree()
 
    for ( unsigned m = 0; m < m_groups.size(); m++ )
    {
-      if ( m_groups[ m ]->m_materialIndex >= 0 )
+      Group * grp = m_groups[m];
+      if ( grp->m_materialIndex >= 0 )
       {
-         int index = m_groups[m]->m_materialIndex;
+         int index = grp->m_materialIndex;
 
          Texture * tex = m_materials[index]->m_textureData;
          if ( tex && tex->m_format == Texture::FORMAT_RGBA )
          {
-            for ( unsigned t = 0; t < m_groups[m]->m_triangleIndices.size(); t++ )
+            for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+                  it != grp->m_triangleIndices.end();
+                  ++it )
             {
-               Triangle * triangle = m_triangles[ m_groups[m]->m_triangleIndices[t] ];
+               Triangle * triangle = m_triangles[ *it ];
                triangle->m_marked = true;
 
                if ( triangle->m_visible )

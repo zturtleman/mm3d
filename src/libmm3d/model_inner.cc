@@ -386,11 +386,11 @@ bool Model::Group::equal(const Group & rhs, int compareBits ) const
 
       hash_set<int> lhs_tris;
 
-      std::vector<int>::const_iterator lhs_it;
-      std::vector<int>::const_iterator rhs_it;
+      std::set<int>::const_iterator lhs_it;
+      std::set<int>::const_iterator rhs_it;
 
-      const std::vector<int> & lh = m_triangleIndices;
-      const std::vector<int> & rh = rhs.m_triangleIndices;
+      const std::set<int> & lh = m_triangleIndices;
+      const std::set<int> & rh = rhs.m_triangleIndices;
 
       hash_set<int>::iterator it;
       for ( lhs_it = lh.begin(); lhs_it != lh.end(); ++lhs_it )

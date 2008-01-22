@@ -1343,13 +1343,16 @@ void Model::selectTrianglesFromGroups()
 
    for ( unsigned g = 0; g < m_groups.size(); g++ )
    {
-      if ( m_groups[g]->m_selected )
+      Group * grp = m_groups[g];
+      if ( grp->m_selected )
       {
-         for ( unsigned t = 0; t < m_groups[g]->m_triangleIndices.size(); t++ )
+         for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+               it != grp->m_triangleIndices.end();
+               ++it )
          {
-            if ( m_triangles[ m_groups[g]->m_triangleIndices[t] ]->m_visible )
+            if ( m_triangles[ *it ]->m_visible )
             {
-               m_triangles[ m_groups[g]->m_triangleIndices[t] ]->m_selected = true;
+               m_triangles[ *it ]->m_selected = true;
             }
          }
       }
@@ -1410,10 +1413,13 @@ void Model::selectGroupsFromTriangles( bool all )
 
    for ( unsigned g = 0; g < m_groups.size(); g++ )
    {
+      Group * grp = m_groups[g];
       unsigned count = 0;
-      for ( unsigned t = 0; t < m_groups[g]->m_triangleIndices.size(); t++ )
+      for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+            it != grp->m_triangleIndices.end();
+            ++it )
       {
-         if ( m_triangles[ m_groups[g]->m_triangleIndices[t] ]->m_selected )
+         if ( m_triangles[ *it ]->m_selected )
          {
             count++;
          }
@@ -1423,22 +1429,22 @@ void Model::selectGroupsFromTriangles( bool all )
       {
          if ( count == m_groups[g]->m_triangleIndices.size() )
          {
-            m_groups[g]->m_selected = true;
+            grp->m_selected = true;
          }
          else
          {
-            m_groups[g]->m_selected = false;
+            grp->m_selected = false;
          }
       }
       else
       {
          if ( count > 0 )
          {
-            m_groups[g]->m_selected = true;
+            grp->m_selected = true;
          }
          else
          {
-            m_groups[g]->m_selected = false;
+            grp->m_selected = false;
          }
       }
    }

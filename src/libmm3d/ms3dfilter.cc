@@ -391,7 +391,7 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
                      triIndex, modelTriangles.size() );
                return Model::ERROR_BAD_DATA;
             }
-            group->m_triangleIndices.push_back( triIndex );
+            group->m_triangleIndices.insert( triIndex );
          }
 
          int8_t material = 0;

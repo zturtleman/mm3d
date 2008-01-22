@@ -169,11 +169,12 @@ void Model::setSelectedAsGroup( unsigned groupNum )
 
    if ( groupNum < m_groups.size() )
    {
+      Group * grp = m_groups[groupNum];
       unsigned t = 0;
 
-      while ( m_groups[groupNum]->m_triangleIndices.size() )
+      while ( !grp->m_triangleIndices.empty() )
       {
-         removeTriangleFromGroup( groupNum, m_groups[groupNum]->m_triangleIndices[0] );
+         removeTriangleFromGroup( groupNum, *grp->m_triangleIndices.begin() );
       }
 
       // Put selected triangles into group groupNum
@@ -222,40 +223,15 @@ void Model::addSelectedToGroup( unsigned groupNum )
       {
          if ( m_triangles[t]->m_selected )
          {
-            m_triangles[t]->m_marked = true;
-         }
-         else
-         {
-            m_triangles[t]->m_marked = false;
-         }
-      }
-
-      // Unmark triangles already in this group
-      for ( unsigned t = 0; t < m_groups[groupNum]->m_triangleIndices.size(); t++ )
-      {
-         if ( m_triangles[ m_groups[groupNum]->m_triangleIndices[t] ]->m_selected )
-         {
-            m_triangles[ m_groups[groupNum]->m_triangleIndices[t] ]->m_marked = false;
-         }
-      }
-
-      // Put marked triangles into group groupNum
-      for ( unsigned t = 0; t < m_triangles.size(); t++ )
-      {
-         if ( m_triangles[t]->m_marked )
-         {
-            for ( unsigned g = 0; g < m_groups.size(); g++ )
+            int g = getTriangleGroup( t );
+            if ( g != (int) groupNum )
             {
-               if ( g != groupNum )
-               {
+               if ( g >= 0 )
                   removeTriangleFromGroup( g, t );
-               }
+               addTriangleToGroup( groupNum, t );
             }
-
-            addTriangleToGroup( groupNum, t );
          }
       }
-
    }
 }
 
@@ -273,7 +249,7 @@ void Model::addTriangleToGroup( unsigned groupNum, unsigned triangleNum )
    {
       m_validBspTree = false;
 
-      m_groups[groupNum]->m_triangleIndices.push_back( triangleNum );
+      m_groups[groupNum]->m_triangleIndices.insert( triangleNum );
 
       MU_AddToGroup * undo = new MU_AddToGroup();
       undo->addToGroup( groupNum, triangleNum );
@@ -297,20 +273,15 @@ void Model::removeTriangleFromGroup( unsigned groupNum, unsigned triangleNum )
 
    if ( groupNum < m_groups.size() && triangleNum < m_triangles.size() )
    {
-      vector<int>::iterator it = m_groups[groupNum]->m_triangleIndices.begin();
-      while ( it != m_groups[groupNum]->m_triangleIndices.end() )
+      Group * grp = m_groups[ groupNum ];
+      std::set<int>::iterator it = grp->m_triangleIndices.find( triangleNum );
+      if ( it != grp->m_triangleIndices.end() )
       {
-         if ( (unsigned) (*it) == triangleNum )
-         {
-            m_groups[groupNum]->m_triangleIndices.erase( it );
+         grp->m_triangleIndices.erase( it );
 
-            MU_RemoveFromGroup * undo = new MU_RemoveFromGroup();
-            undo->removeFromGroup( groupNum, triangleNum );
-            sendUndo( undo );
-
-            return;
-         }
-         it++;
+         MU_RemoveFromGroup * undo = new MU_RemoveFromGroup();
+         undo->removeFromGroup( groupNum, triangleNum );
+         sendUndo( undo );
       }
    }
    else
@@ -339,11 +310,12 @@ list<int> Model::getUngroupedTriangles() const
 
    for ( g = 0; g < gcount; g++ )
    {
-      unsigned ti = 0;
-      unsigned ticount = m_groups[g]->m_triangleIndices.size();
-      for ( ti = 0; ti < ticount; ti++ )
+      Group * grp = m_groups[g];
+      for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+            it != grp->m_triangleIndices.end();
+            ++it )
       {
-         m_triangles[ m_groups[g]->m_triangleIndices[ti] ]->m_marked = true;
+         m_triangles[ *it ]->m_marked = true;
       }
    }
 
@@ -363,10 +335,12 @@ list<int> Model::getGroupTriangles( unsigned groupNumber ) const
    list<int> triangles;
    if ( groupNumber < m_groups.size() )
    {
-      Group * group = m_groups[ groupNumber ];
-      for ( unsigned t = 0; t < group->m_triangleIndices.size(); t++ )
+      Group * grp = m_groups[ groupNumber ];
+      for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+            it != grp->m_triangleIndices.end();
+            ++it )
       {
-         triangles.push_back( group->m_triangleIndices[t] );
+         triangles.push_back( *it );
       }
    }
 
@@ -377,12 +351,11 @@ int Model::getTriangleGroup( unsigned triangleNumber ) const
 {
    for ( unsigned g = 0; g < m_groups.size(); g++ )
    {
-      for ( unsigned t = 0; t < m_groups[g]->m_triangleIndices.size(); t++ )
+      Group * grp = m_groups[g];
+      if ( grp->m_triangleIndices.end()
+            != grp->m_triangleIndices.find( triangleNumber ) )
       {
-         if ( m_groups[g]->m_triangleIndices[t] == (int) triangleNumber )
-         {
-            return g;
-         }
+         return g;
       }
    }
    

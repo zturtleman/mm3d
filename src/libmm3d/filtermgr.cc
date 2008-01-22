@@ -155,6 +155,7 @@ Model::ModelErrorE FilterManager::writeFile( Model * model, const char * filenam
             if ( doWrite )
             {
                err = filter->writeFile( model, filename, o );
+               m_factory.closeAll();
             }
             else
             {

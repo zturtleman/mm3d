@@ -39,6 +39,7 @@
 
 #include <list>
 #include <vector>
+#include <set>
 #include <string>
 
 using std::list;
@@ -311,7 +312,7 @@ class Model
 
             std::string m_name;
             int         m_materialIndex;    // Material index (-1 for none)
-            vector<int> m_triangleIndices;  // List of triangles in this group
+            std::set<int>  m_triangleIndices;  // List of triangles in this group
 
             // Percentage of blending between flat normals and smooth normals
             // 0 = 0%, 255 = 100%

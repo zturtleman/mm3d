@@ -442,21 +442,10 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance ) 
                match = false;
             }
 
-            unsigned numGroupTriangles = m_groups[g]->m_triangleIndices.size();
-            if ( numGroupTriangles == model->m_groups[g]->m_triangleIndices.size() )
+            if ( m_groups[g]->m_triangleIndices
+                  != model->m_groups[g]->m_triangleIndices )
             {
-               for ( t = 0; match && t < numGroupTriangles; t++ )
-               {
-                  if ( m_groups[g]->m_triangleIndices[t] != model->m_groups[g]->m_triangleIndices[t] )
-                  {
-                     log_debug( "match failed at group triangle assignments for group %d triangle %d\n", g, t );
-                     match = false;
-                  }
-               }
-            }
-            else
-            {
-               log_debug( "match failed at group triangle count for group %d\n", g );
+               log_debug( "match failed at group triangle set for group %d\n", g );
                match = false;
             }
          }
