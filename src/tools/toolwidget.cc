@@ -27,6 +27,7 @@ ToolWidget::ToolWidget( QMainWindow * window )
      m_mainWidget( new QWidget( window ) ),
      m_layout( new QBoxLayout( QBoxLayout::LeftToRight, m_mainWidget ) )
 {
+   setObjectName( "mainwin_toolwin" );
    m_layout->setMargin(0);
    m_layout->addStretch();
    setWidget( m_mainWidget );
