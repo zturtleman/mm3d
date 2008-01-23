@@ -767,7 +767,7 @@ void Model::adjustTriangleIndices( unsigned index, int count )
          else
             newSet.insert( *it );
       }
-      grp->m_triangleIndices = newSet;
+      grp->m_triangleIndices.swap( newSet );
    }
 }
 

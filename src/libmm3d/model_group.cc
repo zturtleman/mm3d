@@ -218,7 +218,6 @@ void Model::addSelectedToGroup( unsigned groupNum )
 
    if ( groupNum < m_groups.size() )
    {
-      // Mark selected triangles
       for ( unsigned t = 0; t < m_triangles.size(); t++ )
       {
          if ( m_triangles[t]->m_selected )
