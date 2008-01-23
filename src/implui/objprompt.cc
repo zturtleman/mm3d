@@ -25,6 +25,8 @@
 #include "objfilter.h"
 #include "model.h"
 
+#include "helpwin.h"
+
 #include <QSpinBox>
 #include <QCheckBox>
 #include <QShortcut>
@@ -61,8 +63,8 @@ void ObjPrompt::getOptions( ObjFilter::ObjOptions * opts )
 
 void ObjPrompt::helpNowEvent()
 {
-   //HelpWin * win = new HelpWin( "olh_pluginwin.html", true );
-   //win->show();
+   HelpWin * win = new HelpWin( "olh_objprompt.html", true );
+   win->show();
 }
 
 // This function takes a ModelFilter::Options argument, downcasts it

@@ -5,5 +5,5 @@ transformwin.h
    No help
 
 viewwin.h
-   Change bone joint drawing to lines, shows as bones when selecting
+   Tool widget: Changing sphere smoothness moves smoothness spinbox
 

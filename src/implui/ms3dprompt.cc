@@ -26,6 +26,8 @@
 #include "model.h"
 #include "mm3dport.h"
 
+#include "helpwin.h"
+
 #include <QRadioButton>
 #include <QLineEdit>
 #include <QShortcut>
@@ -90,9 +92,8 @@ void Ms3dPrompt::getOptions( Ms3dFilter::Ms3dOptions * opts )
 
 void Ms3dPrompt::helpNowEvent()
 {
-   // FIXME Add help page
-   //HelpWin * win = new HelpWin( "olh_pluginwin.html", true );
-   //win->show();
+   HelpWin * win = new HelpWin( "olh_ms3dprompt.html", true );
+   win->show();
 }
 
 void Ms3dPrompt::subVersionChangedEvent()

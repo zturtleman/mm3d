@@ -25,6 +25,8 @@
 #include "cal3dfilter.h"
 #include "model.h"
 
+#include "helpwin.h"
+
 #include <QRadioButton>
 #include <QShortcut>
 
@@ -63,9 +65,8 @@ void Cal3dPrompt::getOptions( Cal3dFilter::Cal3dOptions * opts )
 
 void Cal3dPrompt::helpNowEvent()
 {
-   // FIXME Add help page
-   //HelpWin * win = new HelpWin( "olh_pluginwin.html", true );
-   //win->show();
+   HelpWin * win = new HelpWin( "olh_cal3dprompt.html", true );
+   win->show();
 }
 
 // This function takes a ModelFilter::Options argument, downcasts it
