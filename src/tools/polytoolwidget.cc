@@ -53,6 +53,8 @@ PolyToolWidget::PolyToolWidget( Observer * observer, QMainWindow * parent )
    int index = g_prefs( "ui_polytool_isfan" ).intValue();
    m_typeValue->setCurrentIndex( (index == 0) ? 0 : 1 );
 
+   m_layout->addStretch();
+
    connect( m_typeValue,  SIGNAL(activated(int)), this, SLOT(typeValueChanged(int))  );
 
    m_typeLabel->show();

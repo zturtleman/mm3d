@@ -83,6 +83,8 @@ EllipsoidToolWidget::EllipsoidToolWidget( Observer * observer, QMainWindow * par
 
    m_centerCheckBox->setChecked( fromCenter );
 
+   m_layout->addStretch();
+
    connect( m_smoothValue,    SIGNAL(valueChanged(int)), this, SLOT(smoothnessValueChanged(int))      );
    connect( m_sphereCheckBox, SIGNAL(toggled(bool)),     this, SLOT(sphereCheckBoxValueChanged(bool)) );
    connect( m_centerCheckBox, SIGNAL(toggled(bool)),     this, SLOT(centerCheckBoxValueChanged(bool)) );

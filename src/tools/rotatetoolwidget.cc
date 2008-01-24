@@ -67,6 +67,8 @@ RotateToolWidget::RotateToolWidget( Observer * observer, QMainWindow * parent,
 
    m_zValue->setText( QString::number( z, 'f' ) );
 
+   m_layout->addStretch();
+
    connect( m_xValue, SIGNAL(textChanged(const QString &)), this, SLOT(xValueChanged(const QString &)) );
    connect( m_yValue, SIGNAL(textChanged(const QString &)), this, SLOT(yValueChanged(const QString &)) );
    connect( m_zValue, SIGNAL(textChanged(const QString &)), this, SLOT(zValueChanged(const QString &)) );

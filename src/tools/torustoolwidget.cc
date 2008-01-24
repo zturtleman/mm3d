@@ -122,6 +122,8 @@ TorusToolWidget::TorusToolWidget( Observer * observer, QMainWindow * parent )
 
    m_centerValue->setChecked( centerVal );
 
+   m_layout->addStretch();
+
    connect( m_segmentsValue, SIGNAL(valueChanged(int)), this, SLOT(segmentsValueChanged(int)) );
    connect( m_sidesValue, SIGNAL(valueChanged(int)), this, SLOT(sidesValueChanged(int)) );
    connect( m_widthValue,  SIGNAL(valueChanged(int)), this, SLOT(widthValueChanged(int))   );

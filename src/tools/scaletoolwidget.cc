@@ -83,6 +83,8 @@ ScaleToolWidget::ScaleToolWidget( Observer * observer, QMainWindow * parent )
    }
    m_pointValue->setCurrentIndex( pointIndex );
 
+   m_layout->addStretch();
+
    connect( m_pointValue, SIGNAL(activated(int)), this, SLOT(pointValueChanged(int)) );
 
    m_proportionLabel->show();

@@ -75,6 +75,8 @@ CubeToolWidget::CubeToolWidget( Observer * observer, QMainWindow * parent )
    }
    m_segmentValue->setValue( segmentVal );
 
+   m_layout->addStretch();
+
    connect( m_cubeValue,  SIGNAL(toggled(bool)), this, SLOT(cubeValueChanged(bool))  );
    connect( m_segmentValue, SIGNAL(valueChanged(int)), this, SLOT(segmentValueChanged(int)) );
 
@@ -85,6 +87,7 @@ CubeToolWidget::CubeToolWidget( Observer * observer, QMainWindow * parent )
 
    cubeValueChanged( isCube );
    segmentValueChanged( segmentVal );
+   m_layout->addStretch();
 }
 
 CubeToolWidget::~CubeToolWidget()

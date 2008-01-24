@@ -53,6 +53,8 @@ SelectFaceToolWidget::SelectFaceToolWidget( Observer * observer, QMainWindow * p
    }
    m_backfacingValue->setChecked( includeBackfacing );
 
+   m_layout->addStretch();
+
    connect( m_backfacingValue,  SIGNAL(toggled(bool)), this, SLOT(backfacingValueChanged(bool))  );
 
    m_backfacingLabel->show();

@@ -3,7 +3,7 @@ For 1.4:
 
    Make sure all plugins work with 1.3
       Enums changed
-   Update ad3dsfilter with canExport
+      Update ad3dsfilter with canExport
 
    Profile 1.3.4 vs. 1.3.5 on unaccelerated config
 

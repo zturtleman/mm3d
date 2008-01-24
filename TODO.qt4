@@ -1,9 +1,4 @@
 Overall:
    Test with Qt 4.0, 4.1
-
-transformwin.h
-   No help
-
-viewwin.h
-   Tool widget: Changing sphere smoothness moves smoothness spinbox
+   Test on various distros (Gentoo, Fedora, Slack?)
 

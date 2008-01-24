@@ -60,6 +60,8 @@ ProjToolWidget::ProjToolWidget( Observer * observer, QMainWindow * parent )
    }
    m_typeValue->setCurrentIndex( typeIndex );
 
+   m_layout->addStretch();
+
    connect( m_typeValue, SIGNAL(activated(int)), this, SLOT(typeValueChanged(int)) );
 
    m_typeLabel->show();
