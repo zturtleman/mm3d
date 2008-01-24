@@ -34,6 +34,7 @@ SPAGES =  \
 	olh_cal3dprompt.htm \
 	olh_ms3dprompt.htm \
 	olh_objprompt.htm \
+	olh_painttexturewin.htm \
 	olh_pointwin.htm \
 	olh_pluginwin.htm \
 	olh_projectionwin.htm \
@@ -88,6 +89,7 @@ PAGES =  \
 	olh_cal3dprompt.html \
 	olh_ms3dprompt.html \
 	olh_objprompt.html \
+	olh_painttexturewin.html \
 	olh_pointwin.html \
 	olh_pluginwin.html \
 	olh_projectionwin.html \
