@@ -231,10 +231,27 @@ void PaintTextureWin::saveEvent()
          if ( save )
          {
             int h = atoi( m_hSize->currentText().toLatin1() );
-            int v = atoi( m_vSize->currentText().toLatin1() );
-            QPixmap pixmap = m_textureWidget->renderPixmap( h, v);
 
-            QImage img = pixmap.toImage();
+            // This is a total hack. For some reason Qt refuses to repaint
+            // the widget here. To force an update I have to resize the
+            // OpenGL widget, repaint, and then resize it back to the
+            // original size. It's an ugly hack, but it makes this function
+            // work.
+            {
+               int hack_w = m_textureWidget->width();
+               int hack_h = m_textureWidget->height();
+               m_textureWidget->resize( 4, 4 );
+               m_textureWidget->updateGL();
+               m_textureWidget->resize( hack_w, hack_h );
+            }
+
+            QImage img = m_textureWidget->grabFrameBuffer( false );
+            for ( int t = 0; t < 1; ++t )
+            {
+               m_textureWidget->updateGL();
+               img = m_textureWidget->grabFrameBuffer( false );
+            }
+            img = img.scaledToWidth( h, Qt::SmoothTransformation );
 
             if ( !img.save( filename, "PNG", 100 ) )
             {
