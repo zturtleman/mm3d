@@ -10,12 +10,8 @@ For 1.4:
    FIXMEs
       Prevent editing model when invalid animation is active
          (animwin open when no animation)
-      Apply matrix
-         To selected (with/without frame anims)
-         Global (with/without frame anims)
-         Either will always affect skeletal anims implicitly
       utf8strtrunc
-      Remove joint color from MS3D export options
+      Document vertex extra in MS3D export options help
 
 
 For 1.6:

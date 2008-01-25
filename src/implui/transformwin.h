@@ -59,8 +59,9 @@ class TransformWindow : public QDialog, public Ui::TransformWindowBase
 
    protected:
 
+      void applyMatrix( const Matrix & m, const QString & action );
+
       Model  * m_model;
-      bool     m_undoable;
 };
 
 #endif // __TRANSFORMWIN_H

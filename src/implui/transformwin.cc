@@ -88,12 +88,7 @@ void TransformWindow::translateEvent()
    Matrix m;
    m.setTranslation( x, y, z );
 
-   if ( warnNoUndo( matrixIsUndoable( m ) ) )
-   {
-      m_model->applyMatrix( m, Model::OS_Global, true, m_undoable );
-      m_model->operationComplete( tr("Matrix Translate").toUtf8() );
-      DecalManager::getInstance()->modelUpdated( m_model );
-   }
+   applyMatrix( m,  tr("Matrix Translate") );
 }
 
 void TransformWindow::rotateEulerEvent()
@@ -110,12 +105,7 @@ void TransformWindow::rotateEulerEvent()
    Matrix m;
    m.setRotation( vec );
 
-   if ( warnNoUndo( matrixIsUndoable( m ) ) )
-   {
-      m_model->applyMatrix( m, Model::OS_Global, true, m_undoable );
-      m_model->operationComplete( tr("Matrix Rotate").toUtf8() );
-      DecalManager::getInstance()->modelUpdated( m_model );
-   }
+   applyMatrix( m, tr("Matrix Rotate") );
 }
 
 void TransformWindow::rotateQuaternionEvent()
@@ -131,12 +121,7 @@ void TransformWindow::rotateQuaternionEvent()
    Matrix m;
    m.setRotationOnAxis( vec, angle );
 
-   if ( warnNoUndo( matrixIsUndoable( m ) ) )
-   {
-      m_model->applyMatrix( m, Model::OS_Global, true, m_undoable );
-      m_model->operationComplete( tr("Matrix Rotate On Axis").toUtf8() );
-      DecalManager::getInstance()->modelUpdated( m_model );
-   }
+   applyMatrix( m, tr("Matrix Rotate On Axis") );
 }
 
 void TransformWindow::scaleEvent()
@@ -150,12 +135,7 @@ void TransformWindow::scaleEvent()
    m.set( 1, 1, y );
    m.set( 2, 2, z );
 
-   if ( warnNoUndo( matrixIsUndoable( m ) ) )
-   {
-      m_model->applyMatrix( m, Model::OS_Global, true, m_undoable );
-      m_model->operationComplete( tr("Matrix Scale").toUtf8() );
-      DecalManager::getInstance()->modelUpdated( m_model );
-   }
+   applyMatrix( m, tr("Matrix Scale") );
 }
 
 void TransformWindow::matrixEvent()
@@ -178,26 +158,15 @@ void TransformWindow::matrixEvent()
    m.set( 3, 2, atof( m_32->text().toUtf8() ) );
    m.set( 3, 3, atof( m_33->text().toUtf8() ) );
 
-   if ( warnNoUndo( matrixIsUndoable( m ) ) )
-   {
-      m_model->applyMatrix( m, Model::OS_Global, true, m_undoable );
-      m_model->operationComplete( tr("Apply Matrix").toUtf8() );
-      DecalManager::getInstance()->modelUpdated( m_model );
-   }
+   applyMatrix( m, tr("Apply Matrix") );
 }
 
 bool TransformWindow::matrixIsUndoable( const Matrix & m )
 {
    if ( fabs( m.getDeterminant() ) >= 0.0006 ) 
-   {
-      m_undoable = true;
       return true;
-   }
    else
-   {
-      m_undoable = false;
       return false;
-   }
 }
 
 bool TransformWindow::warnNoUndo( bool undoable )
@@ -206,14 +175,22 @@ bool TransformWindow::warnNoUndo( bool undoable )
    {
       if ( QMessageBox::warning( NULL, tr("Transform Cannot Be Undone", "window title"), tr("This transformation cannot be undone.") + QString("\n") + tr("Are you sure you wish to continue?" ),
                tr("Apply Transformation", "button" ), tr("Cancel Transformation", "button" ) ) == 0 )
-      {
          return true;
-      }
       else
-      {
          return false;
-      }
    }
    return true;
 }
 
+void TransformWindow::applyMatrix( const Matrix & m, const QString & action )
+{
+   bool undoable = matrixIsUndoable( m );
+   if ( warnNoUndo( undoable ) )
+   {
+      Model::OperationScopeE scope = (m_scope->currentIndex() == 0)
+         ? Model::OS_Selected : Model::OS_Global;
+      m_model->applyMatrix( m, scope, true, undoable );
+      m_model->operationComplete( action.toUtf8() );
+      DecalManager::getInstance()->modelUpdated( m_model );
+   }
+}

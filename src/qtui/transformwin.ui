@@ -667,10 +667,18 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox5" >
+      <widget class="QComboBox" name="m_scope" >
+       <property name="currentIndex" >
+        <number>1</number>
+       </property>
        <item>
         <property name="text" >
-         <string>Entire Model and Animations</string>
+         <string>Selected (including animations)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>Entire Model (including animations)</string>
         </property>
        </item>
       </widget>
@@ -746,7 +754,7 @@
   <tabstop>m_transY</tabstop>
   <tabstop>m_transZ</tabstop>
   <tabstop>m_translateButton</tabstop>
-  <tabstop>comboBox5</tabstop>
+  <tabstop>m_scope</tabstop>
   <tabstop>m_rotX</tabstop>
   <tabstop>m_rotY</tabstop>
   <tabstop>m_rotZ</tabstop>
