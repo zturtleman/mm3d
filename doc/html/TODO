@@ -5,7 +5,6 @@ TODO:
    Add "tell me more..." links to window-specific documentation
    Screenshot for Persp/Ortho comparison
    Remove all scripting references
-   Add any other missing window documentation
 
    Write up details for tips doc
 
@@ -33,4 +32,4 @@ TODO:
 
 Docs:
    olh_mm3dformat.htm
-   olh_use.htm
+ - olh_use.htm (going away)
