@@ -27,8 +27,8 @@
 
 #include "helpwin.h"
 
-#include <QRadioButton>
-#include <QShortcut>
+#include <QtGui/QRadioButton>
+#include <QtGui/QShortcut>
 
 Cal3dPrompt::Cal3dPrompt()
    : QDialog( NULL )

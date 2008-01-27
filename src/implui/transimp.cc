@@ -22,7 +22,7 @@
 
 #include "transimp.h"
 
-#include <QApplication>
+#include <QtGui/QApplication>
 #include "translate.h"
 
 std::string _qt_translate( const char * str )

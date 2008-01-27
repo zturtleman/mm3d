@@ -32,9 +32,9 @@
 #include "pixmap/selectbonetool.xpm"
 
 #include <stdio.h>
-#include <QObject>
-#include <QApplication>
-#include <QKeySequence>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
+#include <QtGui/QKeySequence>
 
 SelectBoneTool::SelectBoneTool()
    : m_boundingBox( NULL),

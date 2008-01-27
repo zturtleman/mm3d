@@ -31,9 +31,9 @@
 #include "pixmap/selectprojtool.xpm"
 
 #include <stdio.h>
-#include <QObject>
-#include <QApplication>
-#include <QKeySequence>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
+#include <QtGui/QKeySequence>
 
 SelectProjectionTool::SelectProjectionTool()
    : m_boundingBox( NULL),

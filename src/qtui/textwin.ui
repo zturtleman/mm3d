@@ -24,7 +24,7 @@
       </property>
       <item>
         <widget class="QTextBrowser" name="m_text" >
-          <property name="text" >
+          <property name="html" >
             <string/>
           </property>
         </widget>

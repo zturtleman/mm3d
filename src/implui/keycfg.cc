@@ -25,7 +25,7 @@
 #include "log.h"
 #include "qtmain.h"
 
-#include <QApplication>
+#include <QtGui/QApplication>
 
 static void _chomp( char * str )
 {

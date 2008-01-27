@@ -27,8 +27,8 @@
 #include "log.h"
 #include "msg.h"
 #include "modelstatus.h"
-#include <QObject>
-#include <QApplication>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 InvertSelectionCommand::InvertSelectionCommand()
 {

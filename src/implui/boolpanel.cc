@@ -27,9 +27,8 @@
 
 #include "log.h"
 
-#include <QLayout>
-
-#include <QContextMenuEvent>
+#include <QtGui/QLayout>
+#include <QtGui/QContextMenuEvent>
 
 BoolPanel::BoolPanel( Model * model, QWidget * parent, ViewPanel * panel )
    : QDockWidget( tr("Boolean Operation"), parent ),

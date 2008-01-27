@@ -26,11 +26,11 @@
 #include "model.h"
 #include "glmath.h"
 
-#include <QCheckBox>
-#include <QRadioButton>
-#include <QPushButton>
-#include <QLineEdit>
-#include <QTreeWidgetItem>
+#include <QtGui/QCheckBox>
+#include <QtGui/QRadioButton>
+#include <QtGui/QPushButton>
+#include <QtGui/QLineEdit>
+#include <QtGui/QTreeWidgetItem>
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -22,15 +22,14 @@
 
 
 #include "menuconf.h"
-#include <QKeySequence>
+#include <QtCore/QObject>
+#include <QtGui/QKeySequence>
+#include <QtGui/QApplication>
 
 #include "selectfreecmd.h"
 #include "model.h"
 #include "msg.h"
 #include "modelstatus.h"
-
-#include <qobject.h>
-#include <qapplication.h>
 
 SelectFreeCommand::SelectFreeCommand()
 {

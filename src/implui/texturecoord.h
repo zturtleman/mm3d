@@ -28,7 +28,7 @@
 
 #include "model.h"
 
-#include <QDialog>
+#include <QtGui/QDialog>
 
 #include <list>
 #include <map>

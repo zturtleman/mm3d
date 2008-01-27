@@ -28,9 +28,9 @@
 
 #include "helpwin.h"
 
-#include <QRadioButton>
-#include <QLineEdit>
-#include <QShortcut>
+#include <QtGui/QRadioButton>
+#include <QtGui/QLineEdit>
+#include <QtGui/QShortcut>
 
 Ms3dPrompt::Ms3dPrompt()
    : QDialog( NULL )

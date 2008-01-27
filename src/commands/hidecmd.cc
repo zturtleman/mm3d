@@ -25,9 +25,9 @@
 
 #include "model.h"
 #include "modelstatus.h"
-#include <QObject>
-#include <QApplication>
-#include <QKeySequence>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
+#include <QtGui/QKeySequence>
 
 HideCommand::HideCommand()
 {

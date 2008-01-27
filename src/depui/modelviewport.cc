@@ -37,14 +37,13 @@
 #include "pixmap/arrow.xpm"
 #include "pixmap/crosshairrow.xpm"
 
-#include <QFont>
-#include <QTimer>
-//Added by qt3to4:
-#include <QPixmap>
-#include <QFocusEvent>
-#include <QKeyEvent>
-#include <QMouseEvent>
-#include <QWheelEvent>
+#include <QtCore/QTimer>
+#include <QtGui/QFont>
+#include <QtGui/QPixmap>
+#include <QtGui/QFocusEvent>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QWheelEvent>
 #include <math.h>
 #include <stdarg.h>
 

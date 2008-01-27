@@ -28,11 +28,11 @@
 #include "texwin.h"
 #include "projectionwin.h"
 
-#include <QLabel>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QPushButton>
-#include <QInputDialog>
+#include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
+#include <QtGui/QComboBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QInputDialog>
 
 #include <stdlib.h>
 

@@ -29,13 +29,12 @@
 #include "mm3dport.h"
 #include <math.h>
 
-#include <QTimer>
-#include <QCursor>
-//Added by qt3to4:
-#include <QPixmap>
-#include <QMouseEvent>
-#include <QWheelEvent>
-#include <QKeyEvent>
+#include <QtCore/QTimer>
+#include <QtGui/QCursor>
+#include <QtGui/QPixmap>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QWheelEvent>
+#include <QtGui/QKeyEvent>
 
 #include "pixmap/arrow.xpm"
 #include "pixmap/crosshairrow.xpm"

@@ -36,16 +36,16 @@
 
 #include <unistd.h>
 
-#include <QFileDialog>
-#include <QPushButton>
-#include <QLabel>
-#include <QShortcut>
-#include <QSpinBox>
-#include <QLineEdit>
-#include <QRadioButton>
-#include <QComboBox>
-#include <QImage>
-#include <QShortcut>
+#include <QtGui/QFileDialog>
+#include <QtGui/QPushButton>
+#include <QtGui/QLabel>
+#include <QtGui/QShortcut>
+#include <QtGui/QSpinBox>
+#include <QtGui/QLineEdit>
+#include <QtGui/QRadioButton>
+#include <QtGui/QComboBox>
+#include <QtGui/QImage>
+#include <QtGui/QShortcut>
 
 AnimExportWindow::AnimExportWindow( Model * model, ViewPanel * viewPanel, QWidget * parent )
    : QDialog( parent ),

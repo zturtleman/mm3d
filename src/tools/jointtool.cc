@@ -31,8 +31,8 @@
 
 #include "pixmap/jointtool.xpm"
 
-#include <QObject>
-#include <QApplication>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 JointTool::JointTool()
 {

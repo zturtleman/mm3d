@@ -27,10 +27,10 @@
 #include "sysconf.h"
 #include "config.h"
 
-#include <QGLFormat>
-#include <QApplication>
-#include <QTranslator>
-#include <QLocale>
+#include <QtCore/QLocale>
+#include <QtCore/QTranslator>
+#include <QtGui/QApplication>
+#include <QtOpenGL/QGLFormat>
 
 #include <list>
 #include <string>

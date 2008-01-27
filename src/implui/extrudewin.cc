@@ -30,9 +30,9 @@
 #include "3dmprefs.h"
 #include "helpwin.h"
 
-#include <QLineEdit>
-#include <QCheckBox>
-#include <QShortcut>
+#include <QtGui/QLineEdit>
+#include <QtGui/QCheckBox>
+#include <QtGui/QShortcut>
 
 using std::list;
 using std::map;

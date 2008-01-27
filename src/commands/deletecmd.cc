@@ -21,9 +21,9 @@
  */
 
 
-#include <QObject>
-#include <QApplication>
-#include <QKeySequence>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
+#include <QtGui/QKeySequence>
 
 #include "deletecmd.h"
 #include "model.h"

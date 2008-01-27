@@ -28,8 +28,8 @@
 
 #include "mm3dport.h"
 
-#include <QDialog>
-#include <QString>
+#include <QtGui/QDialog>
+#include <QtCore/QString>
 
 class NewAnim : public QDialog, public Ui::NewAnimBase
 {

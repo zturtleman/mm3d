@@ -26,10 +26,10 @@
 #include "model.h"
 #include "misc.h"
 
-#include <QLabel>
-#include <QPixmap>
-#include <QToolTip>
-#include <QTimer>
+#include <QtCore/QTimer>
+#include <QtGui/QLabel>
+#include <QtGui/QPixmap>
+#include <QtGui/QToolTip>
 
 #include <stdarg.h>
 

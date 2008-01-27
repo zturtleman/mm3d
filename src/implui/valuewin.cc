@@ -25,10 +25,10 @@
 #include "helpwin.h"
 #include "log.h"
 
-#include <QSlider>
-#include <QLineEdit>
-#include <QLabel>
-#include <QShortcut>
+#include <QtGui/QSlider>
+#include <QtGui/QLineEdit>
+#include <QtGui/QLabel>
+#include <QtGui/QShortcut>
 
 #include <math.h>
 #include <stdlib.h>

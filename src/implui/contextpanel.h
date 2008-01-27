@@ -28,8 +28,8 @@
 #include "contextwidget.h"
 #include "model.h"
 
-#include <QDockWidget>
-#include <QMainWindow>
+#include <QtGui/QDockWidget>
+#include <QtGui/QMainWindow>
 
 class QContextMenuEvent;
 class QCloseEvent;

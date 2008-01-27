@@ -29,11 +29,12 @@
 #include "decalmgr.h"
 #include "helpwin.h"
 
-#include <QLineEdit>
-#include <QRadioButton>
+#include <QtGui/QLineEdit>
+#include <QtGui/QRadioButton>
+#include <QtGui/QShortcut>
+
 #include <stdlib.h>
 
-#include <QShortcut>
 
 using std::list;
 using std::map;

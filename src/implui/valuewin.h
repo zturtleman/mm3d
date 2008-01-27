@@ -26,7 +26,7 @@
 
 #include "valuewin.base.h"
 
-#include <QDialog>
+#include <QtGui/QDialog>
 
 class ValueWin : public QDialog, public Ui::ValueWinBase
 {

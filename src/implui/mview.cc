@@ -27,10 +27,10 @@
 #include "log.h"
 #include "decalmgr.h"
 
-#include <QComboBox>
-#include <QLineEdit>
-#include <QLabel>
-#include <QImage>
+#include <QtGui/QComboBox>
+#include <QtGui/QLineEdit>
+#include <QtGui/QLabel>
+#include <QtGui/QImage>
 
 ModelView::ModelView( Toolbox * toolbox, QWidget * parent )
    : QWidget( parent ),

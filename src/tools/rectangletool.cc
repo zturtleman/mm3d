@@ -28,8 +28,8 @@
 #include "model.h"
 #include "modelstatus.h"
 
-#include <QObject>
-#include <QApplication>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 RectangleTool::RectangleTool()
    : m_tracking( false ),

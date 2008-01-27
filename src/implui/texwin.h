@@ -26,7 +26,7 @@
 
 #include "texwin.base.h"
 
-#include <QDialog>
+#include <QtGui/QDialog>
 
 class Model;
 class RgbaWin;

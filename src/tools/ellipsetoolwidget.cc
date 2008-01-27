@@ -23,13 +23,13 @@
 
 #include "ellipsetoolwidget.h"
 
-#include <QLayout>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGroupBox>
-#include <QLabel>
-#include <QSpinBox>
-#include <QCheckBox>
+#include <QtGui/QLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QGroupBox>
+#include <QtGui/QLabel>
+#include <QtGui/QSpinBox>
+#include <QtGui/QCheckBox>
 #include <math.h>
 
 #include "3dmprefs.h"

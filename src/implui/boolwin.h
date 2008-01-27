@@ -28,7 +28,7 @@
 
 #include "model.h"
 
-#include <QWidget>
+#include <QtGui/QWidget>
 
 class ViewPanel;
 

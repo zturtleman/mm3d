@@ -24,12 +24,11 @@
 #include "animconvertwin.h"
 #include "helpwin.h"
 
-#include <QPushButton>
-#include <QLabel>
-#include <QShortcut>
-#include <QSpinBox>
-#include <QLineEdit>
-#include <QShortcut>
+#include <QtGui/QPushButton>
+#include <QtGui/QLabel>
+#include <QtGui/QShortcut>
+#include <QtGui/QSpinBox>
+#include <QtGui/QLineEdit>
 
 AnimConvertWindow::AnimConvertWindow( QWidget * parent )
    : QDialog( parent ),

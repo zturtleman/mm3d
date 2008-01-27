@@ -26,12 +26,12 @@
 
 #include "model.h"
 
-#include <QLayout>
-#include <QLabel>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QGroupBox>
-#include <QComboBox>
+#include <QtGui/QLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QGroupBox>
+#include <QtGui/QComboBox>
 
 ProjToolWidget::ProjToolWidget( Observer * observer, QMainWindow * parent )
    : ToolWidget ( parent ),

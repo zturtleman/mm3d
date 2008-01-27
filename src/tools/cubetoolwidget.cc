@@ -25,14 +25,14 @@
 
 #include "3dmprefs.h"
 
-#include <QDockWidget>
-#include <QLayout>
-#include <QLabel>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QGroupBox>
-#include <QSpinBox>
-#include <QCheckBox>
+#include <QtGui/QDockWidget>
+#include <QtGui/QLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QGroupBox>
+#include <QtGui/QSpinBox>
+#include <QtGui/QCheckBox>
 
 CubeToolWidget::CubeToolWidget( Observer * observer, QMainWindow * parent )
    : ToolWidget( parent ),

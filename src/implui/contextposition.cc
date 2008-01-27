@@ -24,7 +24,7 @@
 
 #include "model.h"
 
-#include <QLineEdit>
+#include <QtGui/QLineEdit>
 
 #include <stdlib.h>
 

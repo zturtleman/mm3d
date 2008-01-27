@@ -28,8 +28,8 @@
 
 #include "modelstatus.h"
 
-#include <QPalette>
-#include <QWidget>
+#include <QtGui/QPalette>
+#include <QtGui/QWidget>
 
 #include <map>
 #include <list>

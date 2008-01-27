@@ -67,18 +67,27 @@
 
 #include "qtmain.h"
 
-#include <QDockWidget>
-#include <QFileDialog>
-#include <QFile>
-#include <QDataStream>
-#include <QMenu>
-#include <QPixmap>
-#include <QIcon>
-#include <QVBoxLayout>
-#include <QActionGroup>
-#include <QShortcut>
-
-#include <QContextMenuEvent>
+#include <QtCore/QDataStream>
+#include <QtCore/QFile>
+#include <QtCore/QTimer>
+#include <QtGui/QActionGroup>
+#include <QtGui/QApplication>
+#include <QtGui/QCloseEvent>
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QDockWidget>
+#include <QtGui/QFileDialog>
+#include <QtGui/QIcon>
+#include <QtGui/QLayout>
+#include <QtGui/QMenu>
+#include <QtGui/QMenuBar>
+#include <QtGui/QMessageBox>
+#include <QtGui/QPixmap>
+#include <QtGui/QResizeEvent>
+#include <QtGui/QShortcut>
+#include <QtGui/QToolBar>
+#include <QtGui/QToolButton>
+#include <QtGui/QToolTip>
+#include <QtGui/QVBoxLayout>
 
 #include "errorobj.h"
 
@@ -87,18 +96,6 @@
 
 #include "pixmap/mm3dlogo-32x32.xpm"
 
-#include <QApplication>
-#include <QLayout>
-#include <QMenuBar>
-#include <QMessageBox>
-#include <QToolButton>
-#include <QToolTip>
-#include <QTimer>
-
-#include <QMenu>
-#include <QToolBar>
-#include <QResizeEvent>
-#include <QCloseEvent>
 
 #include <stdio.h>
 #include <list>

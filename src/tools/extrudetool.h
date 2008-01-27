@@ -25,7 +25,7 @@
 #define __EXTRUDETOOL_H
 
 #include "tool.h"
-#include <QKeySequence>
+#include <QtGui/QKeySequence>
 
 #include <list>
 #include <map>

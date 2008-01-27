@@ -27,8 +27,8 @@
 #include "model.h"
 #include "log.h"
 #include "modelstatus.h"
-#include <QObject>
-#include <QApplication>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 EdgeDivideCommand::EdgeDivideCommand()
 {

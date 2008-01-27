@@ -28,7 +28,7 @@
 #include "modelfilter.h"
 #include "objfilter.h"
 
-#include <QDialog>
+#include <QtGui/QDialog>
 
 class Model;
 

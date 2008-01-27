@@ -33,9 +33,9 @@
 
 #include <stdio.h>
 
-#include <QMainWindow>
-#include <QApplication>
-#include <QKeySequence>
+#include <QtGui/QMainWindow>
+#include <QtGui/QApplication>
+#include <QtGui/QKeySequence>
 
 class NormalTest : public Model::SelectionTest
 {

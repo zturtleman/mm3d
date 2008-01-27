@@ -26,7 +26,7 @@
 
 #include "mapdirection.base.h"
 
-#include <QDialog>
+#include <QtGui/QDialog>
 
 class MapDirection : public QDialog, public Ui::MapDirectionBase
 {

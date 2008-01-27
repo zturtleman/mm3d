@@ -25,12 +25,12 @@
 
 #include "3dmprefs.h"
 
-#include <QLayout>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QSpinBox>
-#include <QSlider>
-#include <QLabel>
+#include <QtGui/QLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QSpinBox>
+#include <QtGui/QSlider>
+#include <QtGui/QLabel>
 
 CylinderToolWidget::CylinderToolWidget( Observer * observer, QMainWindow * parent )
    : ToolWidget ( parent ),

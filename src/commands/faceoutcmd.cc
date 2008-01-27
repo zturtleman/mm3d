@@ -29,8 +29,8 @@
 #include "modelstatus.h"
 
 #include <list>
-#include <QObject>
-#include <QApplication>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 using std::list;
 

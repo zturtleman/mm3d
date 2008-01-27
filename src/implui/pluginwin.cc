@@ -26,8 +26,8 @@
 
 #include "helpwin.h"
 
-#include <QHeaderView>
-#include <QShortcut>
+#include <QtGui/QHeaderView>
+#include <QtGui/QShortcut>
 
 PluginWindow::PluginWindow()
    : QDialog( NULL )

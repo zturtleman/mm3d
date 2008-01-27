@@ -30,8 +30,8 @@
 
 #include "pixmap/vertextool.xpm"
 
-#include <QObject>
-#include <QApplication>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 VertexTool::VertexTool()
 {

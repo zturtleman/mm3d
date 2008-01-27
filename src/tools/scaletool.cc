@@ -30,8 +30,8 @@
 
 #include <math.h>
 
-#include <QMainWindow>
-#include <QApplication>
+#include <QtGui/QMainWindow>
+#include <QtGui/QApplication>
 
 ScaleTool::ScaleTool()
 {

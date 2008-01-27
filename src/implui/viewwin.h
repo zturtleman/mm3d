@@ -62,7 +62,7 @@ class QContextMenuEvent;
 class QCloseEvent;
 class QResizeEvent;
 
-#include <QMainWindow>
+#include <QtGui/QMainWindow>
 
 class ViewWindow : public QMainWindow, public ContextPanelObserver
 {

@@ -36,14 +36,14 @@
 #include "helpwin.h"
 #include "errorobj.h"
 
-#include <QComboBox>
-#include <QPushButton>
-#include <QInputDialog>
-#include <QFileDialog>
-#include <QLineEdit>
-#include <QSlider>
-#include <QLabel>
-#include <QShortcut>
+#include <QtGui/QComboBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QInputDialog>
+#include <QtGui/QFileDialog>
+#include <QtGui/QLineEdit>
+#include <QtGui/QSlider>
+#include <QtGui/QLabel>
+#include <QtGui/QShortcut>
 
 #include <list>
 #include <string>

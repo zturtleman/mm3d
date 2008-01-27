@@ -25,7 +25,7 @@
 
 #include "metawin.base.h"
 
-#include <QDialog>
+#include <QtGui/QDialog>
 
 class Model;
 class QTreeWidgetItem;

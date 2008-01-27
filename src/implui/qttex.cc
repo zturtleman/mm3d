@@ -29,12 +29,11 @@
 
 #include <ctype.h>
 
-#include <QBuffer>
-#include <QImage>
-#include <QImageReader>
-#include <QImageWriter>
-
-#include <QString>
+#include <QtCore/QBuffer>
+#include <QtCore/QString>
+#include <QtGui/QImage>
+#include <QtGui/QImageReader>
+#include <QtGui/QImageWriter>
 
 using std::list;
 using std::string;

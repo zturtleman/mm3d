@@ -25,14 +25,14 @@
 
 #include "3dmprefs.h"
 
-#include <QLayout>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGroupBox>
-#include <QLabel>
-#include <QSpinBox>
-#include <QCheckBox>
-#include <QSlider>
+#include <QtGui/QLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QGroupBox>
+#include <QtGui/QLabel>
+#include <QtGui/QSpinBox>
+#include <QtGui/QCheckBox>
+#include <QtGui/QSlider>
 
 TorusToolWidget::TorusToolWidget( Observer * observer, QMainWindow * parent )
    : ToolWidget ( parent ),

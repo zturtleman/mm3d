@@ -26,7 +26,7 @@
 
 #include "command.h"
 
-#include <QKeySequence>
+#include <QtGui/QKeySequence>
 
 class BackgroundCommand : public Command
 {

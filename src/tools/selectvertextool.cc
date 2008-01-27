@@ -32,9 +32,9 @@
 #include "pixmap/selectvertextool.xpm"
 
 #include <stdio.h>
-#include <QObject>
-#include <QApplication>
-#include <QKeySequence>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
+#include <QtGui/QKeySequence>
 
 SelectVertexTool::SelectVertexTool()
    : m_boundingBox( NULL ),

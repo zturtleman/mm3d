@@ -29,7 +29,7 @@
 #include <list>
 #include <map>
 
-#include <QDialog>
+#include <QtGui/QDialog>
 
 class Model;
 

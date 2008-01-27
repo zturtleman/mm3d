@@ -32,9 +32,9 @@
 #include "pixmap/selectconnectedtool.xpm"
 
 #include <stdio.h>
-#include <QObject>
-#include <QApplication>
-#include <QKeySequence>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
+#include <QtGui/QKeySequence>
 
 SelectConnectedTool::SelectConnectedTool()
    : m_boundingBox( NULL),

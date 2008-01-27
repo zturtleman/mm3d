@@ -24,12 +24,12 @@
 #include "scaletoolwidget.h"
 #include "3dmprefs.h"
 
-#include <QLayout>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGroupBox>
-#include <QLabel>
-#include <QComboBox>
+#include <QtGui/QLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QGroupBox>
+#include <QtGui/QLabel>
+#include <QtGui/QComboBox>
 
 ScaleToolWidget::ScaleToolWidget( Observer * observer, QMainWindow * parent )
    : ToolWidget ( parent ),

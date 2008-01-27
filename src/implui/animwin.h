@@ -24,7 +24,7 @@
 #ifndef ANIMWIN_H_INC__
 #define ANIMWIN_H_INC__
 
-#include <QDockWidget>
+#include <QtGui/QDockWidget>
 
 #include "animwidget.h"
 

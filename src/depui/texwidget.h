@@ -24,10 +24,10 @@
 #ifndef __TEXWIDGET_H
 #define __TEXWIDGET_H
 
-#include <QGLWidget>
-#include <QWheelEvent>
-#include <QMouseEvent>
-#include <QKeyEvent>
+#include <QtOpenGL/QGLWidget>
+#include <QtGui/QWheelEvent>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QKeyEvent>
 
 #include <vector>
 #include <list>

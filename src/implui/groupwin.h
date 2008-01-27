@@ -26,7 +26,7 @@
 
 #include "groupwin.base.h"
 
-#include <QDialog>
+#include <QtGui/QDialog>
 
 class Model;
 

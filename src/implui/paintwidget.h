@@ -24,7 +24,7 @@
 #ifndef __PAINTWIDGET_H
 #define __PAINTWIDGET_H
 
-#include <QGLWidget>
+#include <QtOpenGL/QGLWidget>
 
 #include <vector>
 #include <list>

@@ -26,8 +26,8 @@
 #include "pointwin.h"
 #include "log.h"
 
-#include <QObject>
-#include <QApplication>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 PointCommand::PointCommand()
 {

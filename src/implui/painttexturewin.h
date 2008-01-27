@@ -24,7 +24,7 @@
 #ifndef __PAINTTEXTUREWIN_H
 #define __PAINTTEXTUREWIN_H
 
-#include "qpixmap.h"
+#include <QtGui/QPixmap>
 #include "painttexturewin.base.h"
 
 #include <list>
@@ -33,7 +33,7 @@
 using std::list;
 using std::map;
 
-#include <QDialog>
+#include <QtGui/QDialog>
 
 class Model;
 class TextureWidget;

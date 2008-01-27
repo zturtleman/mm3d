@@ -29,8 +29,8 @@
 #include "log.h"
 
 #include <list>
-#include <QObject>
-#include <QApplication>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 AssignJointCommand::AssignJointCommand()
 {

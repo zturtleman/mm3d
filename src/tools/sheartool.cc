@@ -28,8 +28,8 @@
 #include "pixmap/sheartool.xpm"
 #include "log.h"
 
-#include <QObject>
-#include <QApplication>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 #include <math.h>
 
 ShearTool::ShearTool()

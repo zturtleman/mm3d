@@ -28,7 +28,7 @@
 
 #include "model.h"
 
-#include <QDialog>
+#include <QtGui/QDialog>
 
 class AnimSetWindow : public QDialog, public Ui::AnimSetWinBase
 {

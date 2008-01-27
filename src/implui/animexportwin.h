@@ -27,7 +27,7 @@
 
 #include "model.h"
 
-#include <QDialog>
+#include <QtGui/QDialog>
 
 class ViewPanel;
 class Model;

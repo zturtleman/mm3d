@@ -30,8 +30,8 @@
 
 #include <list>
 #include <map>
-#include <QObject>
-#include <QApplication>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 using std::list;
 using std::map;

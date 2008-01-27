@@ -32,10 +32,10 @@
 
 #include "log.h"
 
-#include <QLayout>
-#include <QSpacerItem>
-#include <QContextMenuEvent>
-#include <QCloseEvent>
+#include <QtGui/QLayout>
+#include <QtGui/QSpacerItem>
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QCloseEvent>
 
 ContextPanel::ContextPanel( QMainWindow * parent,
       ViewPanel * panel, ContextPanelObserver * ob )

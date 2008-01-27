@@ -27,7 +27,7 @@
 #include "tool.h"
 #include "glmath.h"
 
-#include <QKeySequence>
+#include <QtGui/QKeySequence>
 
 #include <list>
 

@@ -27,8 +27,8 @@
 #include "spherifywin.h"
 #include "log.h"
 
-#include <QObject>
-#include <QApplication>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 SpherifyCommand::SpherifyCommand()
 {

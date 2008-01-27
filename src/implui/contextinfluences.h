@@ -26,7 +26,7 @@
 
 #include "contextinfluences.base.h"
 
-#include <QWidget>
+#include <QtGui/QWidget>
 
 #include "contextwidget.h"
 

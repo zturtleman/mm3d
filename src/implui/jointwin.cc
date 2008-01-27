@@ -25,10 +25,10 @@
 #include "decalmgr.h"
 #include "helpwin.h"
 
-#include <QInputDialog>
-#include <QPushButton>
-#include <QComboBox>
-#include <QShortcut>
+#include <QtGui/QInputDialog>
+#include <QtGui/QPushButton>
+#include <QtGui/QComboBox>
+#include <QtGui/QShortcut>
 
 #include <list>
 

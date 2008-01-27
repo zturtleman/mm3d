@@ -30,8 +30,8 @@
 
 #include "pixmap/polytool.xpm"
 
-#include <QMainWindow>
-#include <QApplication>
+#include <QtGui/QMainWindow>
+#include <QtGui/QApplication>
 
 PolyTool::PolyTool()
    : m_model( NULL ),

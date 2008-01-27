@@ -29,8 +29,8 @@
 #include "cmdmgr.h"
 #include "log.h"
 
-#include <QObject>
-#include <QApplication>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 RotateTextureCommand::RotateTextureCommand()
 {

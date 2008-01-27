@@ -38,8 +38,8 @@
 #include <math.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <QObject>
-#include <QApplication>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 
 SnapCommand::SnapCommand()

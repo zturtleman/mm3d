@@ -27,8 +27,8 @@
 #include "projectionwin.base.h"
 #include "model.h"
 
-#include <QDialog>
-#include <QCloseEvent>
+#include <QtGui/QDialog>
+#include <QtGui/QCloseEvent>
 
 class ViewPanel;
 class TextureWidget;

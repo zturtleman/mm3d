@@ -26,7 +26,7 @@
 #include <list>
 #include <string>
 
-#include <QKeySequence>
+#include <QtGui/QKeySequence>
 
 class KeyConfig
 {

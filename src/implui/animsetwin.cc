@@ -29,11 +29,11 @@
 #include "msg.h"
 #include "helpwin.h"
 
-#include <QPushButton>
-#include <QComboBox>
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QShortcut>
+#include <QtGui/QPushButton>
+#include <QtGui/QComboBox>
+#include <QtGui/QInputDialog>
+#include <QtGui/QMessageBox>
+#include <QtGui/QShortcut>
 
 #include <list>
 

@@ -26,7 +26,7 @@
 
 #include "textwin.base.h"
 
-#include <QDialog>
+#include <QtGui/QDialog>
 
 class AboutWin : public QDialog, public Ui::TextWinBase
 {

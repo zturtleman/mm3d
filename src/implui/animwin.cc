@@ -25,7 +25,7 @@
 
 #include "log.h"
 
-#include <QCloseEvent>
+#include <QtGui/QCloseEvent>
 
 AnimWindow::AnimWindow( Model * model, bool isUndo, QWidget * parent )
    : QDockWidget( tr("Animations"), parent ),

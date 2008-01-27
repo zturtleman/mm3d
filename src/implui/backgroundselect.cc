@@ -35,9 +35,10 @@
 #include "model.h"
 #include "errorobj.h"
 
-#include <QPushButton>
-#include <QPixmap>
-#include <QFileDialog>
+#include <QtGui/QPushButton>
+#include <QtGui/QPixmap>
+#include <QtGui/QFileDialog>
+
 #include <stdlib.h>
 
 #include <string>

@@ -26,7 +26,7 @@
 
 #include "command.h"
 
-#include <QKeySequence>
+#include <QtGui/QKeySequence>
 
 class UnweldCommand : public Command
 {

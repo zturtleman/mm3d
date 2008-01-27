@@ -28,8 +28,8 @@
 #include "log.h"
 #include "modelstatus.h"
 
-#include <QObject>
-#include <QApplication>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 SubdivideCommand::SubdivideCommand()
 {

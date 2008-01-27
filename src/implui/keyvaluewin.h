@@ -25,7 +25,7 @@
 
 #include "keyvaluewin.base.h"
 
-#include <QDialog>
+#include <QtGui/QDialog>
 
 class QTreeWidgetItem;
 

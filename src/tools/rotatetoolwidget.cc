@@ -25,12 +25,12 @@
 
 #include "3dmprefs.h"
 
-#include <QLayout>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGroupBox>
-#include <QLabel>
-#include <QLineEdit>
+#include <QtGui/QLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QGroupBox>
+#include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
 
 RotateToolWidget::RotateToolWidget( Observer * observer, QMainWindow * parent,
       double x, double y, double z )

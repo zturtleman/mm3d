@@ -28,10 +28,10 @@
 
 #include "log.h"
 
-#include <QLabel>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QInputDialog>
+#include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
+#include <QtGui/QComboBox>
+#include <QtGui/QInputDialog>
 
 #include <stdlib.h>
 
