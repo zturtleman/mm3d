@@ -222,7 +222,7 @@ char * PORT_dirname( const char * path )
    if ( path )
    {
       strncpy( rval, path, PATH_MAX );
-      rval[ PATH_MAX ] = '\0';
+      rval[ PATH_MAX - 1 ] = '\0';
 
       char * end = strrchr( rval, '/' );
 
@@ -234,7 +234,10 @@ char * PORT_dirname( const char * path )
 
       if ( end )
       {
-         *end = '\0';
+         if ( end == rval )
+            end[1] = '\0';
+         else
+            end[0] = '\0';
          return rval;
       }
    }

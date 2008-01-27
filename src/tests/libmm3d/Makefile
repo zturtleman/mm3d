@@ -13,12 +13,12 @@ TESTS = \
 		  model_init_test.unit \
 		  model_equal_test.unit \
 		  model_add_test.unit \
-		  model_group_test.unit \
 		  model_select_test.unit \
 		  model_test.unit \
 		  new_mm3d_test.unit \
 		  cmdlinemgr_test.unit \
 		  util_test.unit \
+		  misc_test.unit \
 
 # Add moc dependencies here
 
@@ -42,8 +42,6 @@ model_equal_test.unit: model_equal_test.moc $(LIB)
 
 model_add_test.unit: model_add_test.moc $(LIB)
 
-model_group_test.unit: model_group_test.moc $(LIB)
-
 model_select_test.unit: model_select_test.moc $(LIB)
 
 model_test.unit: model_test.moc $(LIB)
@@ -51,6 +49,8 @@ model_test.unit: model_test.moc $(LIB)
 new_mm3d_test.unit: new_mm3d_test.moc $(LIB)
 
 util_test.unit: util_test.moc $(LIB)
+
+misc_test.unit: misc_test.moc $(LIB)
 
 test: $(TESTS)
 
@@ -65,10 +65,10 @@ check: test
 	./model_init_test.unit -silent
 	./model_equal_test.unit -silent
 	./model_add_test.unit -silent
-	./model_group_test.unit -silent
 	./model_select_test.unit -silent
 	./model_test.unit -silent
 	./util_test.unit -silent
+	./misc_test.unit -silent
 	./cmdlinemgr_test.unit -silent
 
 fullcheck: check
