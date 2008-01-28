@@ -55,7 +55,6 @@ class ViewPanel : public QWidget
       ModelView * getModelView( unsigned index ) { return (index < m_viewCount) ? m_modelView[index] : NULL; };
 
    public slots:
-      void reshow();
 
       void modelUpdatedEvent();
 
@@ -85,8 +84,6 @@ class ViewPanel : public QWidget
       void viewportRecallStateEvent(int);
 
    protected:
-
-      void showInternal();
 
       void deleteViews();
       void makeViews();

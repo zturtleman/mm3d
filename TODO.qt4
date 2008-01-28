@@ -1,4 +1,9 @@
 Overall:
-   Test with Qt 4.0, 4.1
-   Test on various distros (Gentoo, Fedora, Slack?)
+   Test on various distros
+    X Feisty auto-detect
+      Gutsy ?
+    X Fedora auto-detect
+    X Slackware auto-detect (but weird viewport window sizes)
+    X Mandriva auto-detect (xmu-devel)
+   Problem: extremely slow on non-accelerated setup
 

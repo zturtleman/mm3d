@@ -1,13 +1,12 @@
 For 1.4:
    Bump mm3dfilter version
 
-   Update ad3dsfilter with canExport
+   Update plugin docs to point to User's 1.4 plugin directory
    Profile 1.3.4 vs. 1.3.5 on unaccelerated config
 
    FIXMEs
       Prevent editing model when invalid animation is active
          (animwin open when no animation)
-      utf8strtrunc
 
 
 For 1.6:

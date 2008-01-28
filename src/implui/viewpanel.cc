@@ -41,28 +41,6 @@ ViewPanel::ViewPanel( Toolbox * toolbox, QWidget * parent )
      m_tall( false ),
      m_toolbox( toolbox )
 {
-   showInternal();
-
-   show();
-}
-
-ViewPanel::~ViewPanel()
-{
-   log_debug( "deleting view panel\n" );
-}
-
-void ViewPanel::reshow()
-{
-   hide();
-   deleteViews();
-
-   showInternal();
-
-   show();
-}
-
-void ViewPanel::showInternal()
-{
    if ( g_prefs.exists( "ui_viewport_count" ) )
    {
       m_viewCount = g_prefs( "ui_viewport_count" ).intValue();
@@ -83,6 +61,13 @@ void ViewPanel::showInternal()
    {
       m_viewState[s].rotation[0] = -1000.0;
    }
+
+   show();
+}
+
+ViewPanel::~ViewPanel()
+{
+   log_debug( "deleting view panel\n" );
 }
 
 void ViewPanel::freeTextures()
