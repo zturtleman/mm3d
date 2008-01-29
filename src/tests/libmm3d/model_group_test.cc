@@ -70,7 +70,7 @@ Model * newTestModel()
    return model;
 }
 
-class ModelSelectTest : public QObject
+class ModelGroupTest : public QObject
 {
    Q_OBJECT
 private:
@@ -276,11 +276,12 @@ private slots:
       m->unselectAll();
    }
 
-   // FIXME undo
    // FIXME deletion preserves triangle indices
+   // FIXME get/set group properties
+   // FIXME undo
 
 };
 
-QTEST_MAIN(ModelSelectTest)
+QTEST_MAIN(ModelGroupTest)
 #include "model_group_test.moc"
 
