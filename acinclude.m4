@@ -527,8 +527,6 @@ AC_DEFUN([BNV_HAVE_QT],
         QT_UIC="$bnv_qt_bin_dir/uic-qt4"
       elif test -x "$bnv_qt_bin_dir/qt4-uic"; then
         QT_UIC="$bnv_qt_bin_dir/qt4-uic"
-      elif test -x "$bnv_qt_bin_dir/uic4"; then
-        QT_UIC="$bnv_qt_bin_dir/uic4"
       elif test -x "$bnv_qt_bin_dir/uic"; then
         QT_UIC="$bnv_qt_bin_dir/uic"
       fi
@@ -537,8 +535,6 @@ AC_DEFUN([BNV_HAVE_QT],
         QT_MOC="$bnv_qt_bin_dir/moc-qt4"
       elif test -x "$bnv_qt_bin_dir/qt4-moc"; then
         QT_MOC="$bnv_qt_bin_dir/qt4-moc"
-      elif test -x "$bnv_qt_bin_dir/moc4"; then
-        QT_MOC="$bnv_qt_bin_dir/moc4"
       elif test -x "$bnv_qt_bin_dir/moc"; then
         QT_MOC="$bnv_qt_bin_dir/moc"
       fi
@@ -550,8 +546,6 @@ AC_DEFUN([BNV_HAVE_QT],
         QT_UIC="$bnv_qt_dir/bin/uic-qt4"
       elif test -x "$bnv_qt_dir/bin/qt4-uic"; then
         QT_UIC="$bnv_qt_dir/bin/qt4-uic"
-      elif test -x "$bnv_qt_dir/bin/uic4"; then
-        QT_UIC="$bnv_qt_dir/bin/uic4"
       elif test -x "$bnv_qt_dir/bin/uic"; then
         QT_UIC="$bnv_qt_dir/bin/uic"
       fi
@@ -560,32 +554,29 @@ AC_DEFUN([BNV_HAVE_QT],
         QT_MOC="$bnv_qt_dir/bin/moc-qt4"
       elif test -x "$bnv_qt_dir/bin/qt4-moc"; then
         QT_MOC="$bnv_qt_dir/bin/qt4-moc"
-      elif test -x "$bnv_qt_dir/bin/moc4"; then
-        QT_MOC="$bnv_qt_dir/bin/moc4"
       elif test -x "$bnv_qt_dir/bin/moc"; then
         QT_MOC="$bnv_qt_dir/bin/moc"
       fi
-    else
-      # Last possibility is that they are in $PATH
+    fi
+
+    # If binaries are still not set, try $PATH
+    if test x"$QT_UIC" = x; then
       # UIC detection
-      QT_MOC="`which uic-qt4`"
-      if test -x `which uic-qt4`; then
+      if test `which uic-qt4 2> /dev/null`; then
         QT_UIC=`which uic-qt4`
-      elif test -x `which qt4-uic`; then
+      elif test `which qt4-uic 2> /dev/null`; then
         QT_UIC=`which qt4-uic`
-      elif test -x `which uic4`; then
-        QT_UIC=`which uic4`
-      elif test -x `which uic`; then
+      elif test `which uic 2> /dev/null`; then
         QT_UIC=`which uic`
       fi
+    fi
+    if test x"$QT_MOC" = x; then
       # MOC detection
-      if test -x `which moc-qt4`; then
+      if test `which moc-qt4 2> /dev/null`; then
         QT_MOC=`which moc-qt4`
-      elif test -x `which qt4-moc`; then
+      elif test `which qt4-moc 2> /dev/null`; then
         QT_MOC=`which qt4-moc`
-      elif test -x `which moc4`; then
-        QT_MOC=`which moc4`
-      elif test -x `which moc`; then
+      elif test `which moc 2> /dev/null`; then
         QT_MOC=`which moc`
       fi
     fi
@@ -725,6 +716,7 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
       `ls -dr /opt/qt*/include 2>/dev/null`
       `ls -dr /usr/qt*/include 2>/dev/null`
       `ls -dr /usr/qt/*/include 2>/dev/null`
+      `ls -dr /usr/include/qt/* 2>/dev/null`
     "
     for bnv_dir in $bnv_include_path_list; do
       if test -r "$bnv_dir/Qt/$qt_direct_test_header"; then
