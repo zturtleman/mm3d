@@ -538,6 +538,14 @@ AC_DEFUN([BNV_HAVE_QT],
       elif test -x "$bnv_qt_bin_dir/moc"; then
         QT_MOC="$bnv_qt_bin_dir/moc"
       fi
+      # LRELEASE detection
+      if test -x "$bnv_qt_bin_dir/lrelease-qt4"; then
+        QT_LRELEASE="$bnv_qt_bin_dir/lrelease-qt4"
+      elif test -x "$bnv_qt_bin_dir/qt4-lrelease"; then
+        QT_LRELEASE="$bnv_qt_bin_dir/qt4-lrelease"
+      elif test -x "$bnv_qt_bin_dir/lrelease"; then
+        QT_LRELEASE="$bnv_qt_bin_dir/lrelease"
+      fi
     elif test x"$bnv_qt_dir" != x; then
       # If bnv_qt_dir is defined, utilities are expected to be in the
       # bin subdirectory
@@ -556,6 +564,14 @@ AC_DEFUN([BNV_HAVE_QT],
         QT_MOC="$bnv_qt_dir/bin/qt4-moc"
       elif test -x "$bnv_qt_dir/bin/moc"; then
         QT_MOC="$bnv_qt_dir/bin/moc"
+      fi
+      # LRELEASE detection
+      if test -x "$bnv_qt_dir/bin/lrelease-qt4"; then
+        QT_LRELEASE="$bnv_qt_dir/bin/lrelease-qt4"
+      elif test -x "$bnv_qt_dir/bin/qt4-lrelease"; then
+        QT_LRELEASE="$bnv_qt_dir/bin/qt4-lrelease"
+      elif test -x "$bnv_qt_dir/bin/lrelease"; then
+        QT_LRELEASE="$bnv_qt_dir/bin/lrelease"
       fi
     fi
 
@@ -580,13 +596,24 @@ AC_DEFUN([BNV_HAVE_QT],
         QT_MOC=`which moc`
       fi
     fi
+    if test x"$QT_LRELEASE" = x; then
+      # LRELEASE detection
+      if test `which lrelease-qt4 2> /dev/null`; then
+        QT_LRELEASE=`which lrelease-qt4`
+      elif test `which qt4-lrelease 2> /dev/null`; then
+        QT_LRELEASE=`which qt4-lrelease`
+      elif test `which lrelease 2> /dev/null`; then
+        QT_LRELEASE=`which lrelease`
+      fi
+    fi
     # All variables are defined, report the result
     AC_MSG_RESULT([$have_qt:
     QT_CXXFLAGS=$QT_CXXFLAGS
     QT_DIR=$QT_DIR
     QT_LIBS=$QT_LIBS
     QT_UIC=$QT_UIC
-    QT_MOC=$QT_MOC])
+    QT_MOC=$QT_MOC
+    QT_LRELEASE=$QT_LRELEASE])
   else
     # Qt was not found
     QT_CXXFLAGS=
@@ -594,6 +621,7 @@ AC_DEFUN([BNV_HAVE_QT],
     QT_LIBS=
     QT_UIC=
     QT_MOC=
+    QT_LRELEASE=
     AC_MSG_RESULT($have_qt)
   fi
   if test x"$bnv_is_qt4" = xyes; then
@@ -606,6 +634,7 @@ AC_DEFUN([BNV_HAVE_QT],
   AC_SUBST(QT_LIBS)
   AC_SUBST(QT_UIC)
   AC_SUBST(QT_MOC)
+  AC_SUBST(QT_LRELEASE)
 
 
   #### Being paranoid:

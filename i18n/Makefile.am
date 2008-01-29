@@ -42,7 +42,7 @@ tsfiles:
 qmfiles: $(QMFILES)
 
 %.qm: %.ts
-	lrelease-qt4 $<
+	$(QT_LRELEASE) $<
 
 install:
 	$(INSTALL) -d $(DESTDIR)$(datadir)/mm3d/i18n
