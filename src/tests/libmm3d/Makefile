@@ -13,6 +13,7 @@ TESTS = \
 		  model_init_test.unit \
 		  model_equal_test.unit \
 		  model_add_test.unit \
+		  model_vertex_test.unit \
 		  model_select_test.unit \
 		  model_test.unit \
 		  new_mm3d_test.unit \
@@ -42,6 +43,8 @@ model_equal_test.unit: model_equal_test.moc $(LIB)
 
 model_add_test.unit: model_add_test.moc $(LIB)
 
+model_vertex_test.unit: model_vertex_test.moc $(LIB)
+
 model_select_test.unit: model_select_test.moc $(LIB)
 
 model_test.unit: model_test.moc $(LIB)
@@ -65,6 +68,7 @@ check: test
 	./model_init_test.unit -silent
 	./model_equal_test.unit -silent
 	./model_add_test.unit -silent
+	./model_vertex_test.unit -silent
 	./model_select_test.unit -silent
 	./model_test.unit -silent
 	./util_test.unit -silent
