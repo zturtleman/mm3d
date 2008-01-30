@@ -134,6 +134,7 @@ Probably never:
       Renderman
       Blender
       Maya ASCII
+      Raw OpenGL (Triangle Vertices, Normals, and Texture Coords)
    Texture coordinates
       Map group should preserve aspect ratio
 
