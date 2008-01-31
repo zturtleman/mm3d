@@ -152,7 +152,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <tabstops>
   <tabstop>m_okButton</tabstop>
   <tabstop>m_cancelButton</tabstop>

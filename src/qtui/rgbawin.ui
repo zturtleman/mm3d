@@ -262,7 +262,6 @@
     </layout>
   </widget>
   <layoutdefault spacing="6" margin="11" />
-  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
   <tabstops>
     <tabstop>m_redSlider</tabstop>
     <tabstop>m_redEdit</tabstop>

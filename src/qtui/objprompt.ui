@@ -173,7 +173,6 @@
     </layout>
   </widget>
   <layoutdefault spacing="6" margin="11" />
-  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
   <tabstops>
     <tabstop>m_normalsValue</tabstop>
     <tabstop>m_placesValue</tabstop>
