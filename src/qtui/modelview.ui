@@ -80,6 +80,19 @@
       </widget>
      </item>
      <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <widget class="QLineEdit" name="m_zoomInput" >
        <property name="sizePolicy" >
         <sizepolicy>
@@ -192,7 +205,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>_zoomInput</sender>
+   <sender>m_zoomInput</sender>
    <signal>returnPressed()</signal>
    <receiver>ModelViewBase</receiver>
    <slot>zoomLevelEnterEvent()</slot>
