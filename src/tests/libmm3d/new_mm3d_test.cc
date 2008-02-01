@@ -42,11 +42,6 @@
 #include "release_ptr.h"
 
 
-void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... )
-{
-   // FIXME hack
-}
-
 Model * loadModelOrDie( const char * filename, bool useReference )
 {
    Model * model = new Model;

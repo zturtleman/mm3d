@@ -29,75 +29,13 @@
 
 #include "model.h"
 #include "texture.h"
-#include "modelstatus.h"
 #include "log.h"
-#include "mm3dfilter.h"
 
 #include "local_array.h"
 #include "local_ptr.h"
 #include "release_ptr.h"
 
 #include <vector>
-
-void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... )
-{
-   // FIXME hack
-}
-
-Model * loadModelOrDie( const char * filename )
-{
-   MisfitFilter f;
-
-   Model * model = new Model;
-   Model::ModelErrorE err = f.readFile( model, filename );
-
-   if ( err != Model::ERROR_NONE )
-   {
-      fprintf( stderr, "fatal: %s: %s\n", filename, Model::errorToString( err ) );
-      delete model;
-      exit( -1 );
-   }
-
-   model->setUndoEnabled( true );
-   model->forceAddOrDelete( true );
-   return model;
-}
-
-Model * newTestModel()
-{
-   Model * model = new Model;
-   model->setUndoEnabled( true );
-   model->forceAddOrDelete( true );
-   return model;
-}
-
-typedef std::vector<Model *> ModelList;
-
-void checkUndoRedo( int operations, Model * lhs, const ModelList & rhs_list )
-{
-   // N operations, N+1 models in the list to compare against
-   QVERIFY_EQ( (int) rhs_list.size(), operations + 1 );
-
-   int bits = Model::CompareAll;
-   QVERIFY_EQ( bits, lhs->equal( rhs_list.back(), bits ) );
-
-   for ( int iter = 0; iter < 2; ++iter )
-   {
-      for ( int i = operations - 1; i >= 0; --i )
-      {
-         //printf( "undo operation %d\n", i );
-         lhs->undo();
-         QVERIFY_EQ( bits, lhs->equal( rhs_list[i], bits ) );
-      }
-
-      for ( int i = 1; i <= operations; ++i )
-      {
-         //printf( "redo operation %d\n", i );
-         lhs->redo();
-         QVERIFY_EQ( bits, lhs->equal( rhs_list[i], bits ) );
-      }
-   }
-}
 
 class ModelVertexTest : public QObject
 {
@@ -157,9 +95,43 @@ private slots:
       QVERIFY_FALSE( lhs->isVertexSelected( 0 ) );
       QVERIFY_FALSE( lhs->isVertexSelected( 1 ) );
       QVERIFY_FALSE( lhs->isVertexSelected( 2 ) );
-      lhs->operationComplete( "Unselect vertex" );
+      lhs->operationComplete( "Unselect all" );
 
       checkUndoRedo( 5, lhs.get(), rhs_list );
+   }
+
+   void testMoveVertex()
+   {
+      local_ptr<Model> lhs = newTestModel();
+      local_ptr<Model> rhs_empty = newTestModel();
+      local_ptr<Model> rhs_orig = newTestModel();
+      local_ptr<Model> rhs_moved = newTestModel();
+
+      ModelList rhs_list;
+      rhs_list.push_back( rhs_empty.get() );
+      rhs_list.push_back( rhs_orig.get() );
+      rhs_list.push_back( rhs_moved.get() );
+
+      lhs->addVertex( 0, 0, 0 );
+      lhs->addVertex( 1, 0, 0 );
+      lhs->addVertex( 1, 1, 0 );
+      rhs_orig->addVertex( 0, 0, 0 );
+      rhs_orig->addVertex( 1, 0, 0 );
+      rhs_orig->addVertex( 1, 1, 0 );
+      rhs_moved->addVertex( 3, 4, 5 );
+      rhs_moved->addVertex( 2, 1, 0 );
+      rhs_moved->addVertex( -3, -4, -5 );
+      // FIXME test get getVertexCoords
+
+      lhs->operationComplete( "Add vertices" );
+      lhs->moveVertex( 0, 3, 4, 5 );
+      lhs->moveVertex( 1, 2, 1, 0 );
+      lhs->moveVertex( 2, -3, -4, -5 );
+
+      // FIXME test get getVertexCoords
+      lhs->operationComplete( "Move vertices" );
+
+      checkUndoRedo( 2, lhs.get(), rhs_list );
    }
 
    void testSetFree()
@@ -318,6 +290,95 @@ private slots:
       checkUndoRedo( 2, lhs.get(), rhs_list );
    }
 
+   void testDeleteVertexDeletesTriangle()
+   {
+      local_ptr<Model> lhs = newTestModel();
+      local_ptr<Model> rhs_empty = newTestModel();
+      local_ptr<Model> rhs_triangle = newTestModel();
+      local_ptr<Model> rhs_selected = newTestModel();
+
+      ModelList rhs_list;
+      rhs_list.push_back( rhs_empty.get() );
+      rhs_list.push_back( rhs_triangle.get() );
+      rhs_list.push_back( rhs_selected.get() );
+      rhs_list.push_back( rhs_empty.get() );
+
+      lhs->addVertex( 0, 0, 0 );
+      lhs->addVertex( 1, 0, 0 );
+      lhs->addVertex( 1, 1, 0 );
+      lhs->addTriangle( 0, 1, 2 );
+      rhs_triangle->addVertex( 0, 0, 0 );
+      rhs_triangle->addVertex( 1, 0, 0 );
+      rhs_triangle->addVertex( 1, 1, 0 );
+      rhs_triangle->addTriangle( 0, 1, 2 );
+      rhs_selected->addVertex( 0, 0, 0 );
+      rhs_selected->addVertex( 1, 0, 0 );
+      rhs_selected->addVertex( 1, 1, 0 );
+      rhs_selected->addTriangle( 0, 1, 2 );
+      rhs_selected->selectVertex( 1 );
+
+      lhs->operationComplete( "Add vertices" );
+
+      // Deleting one vertex will delete one triangle, but not the other.
+      // Other vertices remain undeleted.
+      lhs->selectVertex( 1 );
+      lhs->operationComplete( "Select Vertex" );
+      lhs->deleteSelected();
+      lhs->operationComplete( "Delete Selected" );
+
+      checkUndoRedo( 3, lhs.get(), rhs_list );
+   }
+
+   void testDeleteVertexDeletesSelf()
+   {
+      local_ptr<Model> lhs = newTestModel();
+      local_ptr<Model> rhs_empty = newTestModel();
+      local_ptr<Model> rhs_triangle = newTestModel();
+      local_ptr<Model> rhs_selected = newTestModel();
+      local_ptr<Model> rhs_deleted = newTestModel();
+
+      ModelList rhs_list;
+      rhs_list.push_back( rhs_empty.get() );
+      rhs_list.push_back( rhs_triangle.get() );
+      rhs_list.push_back( rhs_selected.get() );
+      rhs_list.push_back( rhs_deleted.get() );
+
+      lhs->addVertex( 0, 0, 0 );
+      lhs->addVertex( 1, 0, 0 );
+      lhs->addVertex( 1, 1, 0 );
+      lhs->addVertex( 0, 1, 1 );
+      lhs->addTriangle( 0, 1, 2 );
+      lhs->addTriangle( 0, 2, 3 );
+      rhs_triangle->addVertex( 0, 0, 0 );
+      rhs_triangle->addVertex( 1, 0, 0 );
+      rhs_triangle->addVertex( 1, 1, 0 );
+      rhs_triangle->addVertex( 0, 1, 1 );
+      rhs_triangle->addTriangle( 0, 1, 2 );
+      rhs_triangle->addTriangle( 0, 2, 3 );
+      rhs_selected->addVertex( 0, 0, 0 );
+      rhs_selected->addVertex( 1, 0, 0 );
+      rhs_selected->addVertex( 1, 1, 0 );
+      rhs_selected->addVertex( 0, 1, 1 );
+      rhs_selected->addTriangle( 0, 1, 2 );
+      rhs_selected->addTriangle( 0, 2, 3 );
+      rhs_selected->selectVertex( 1 );
+      rhs_deleted->addVertex( 0, 0, 0 );
+      rhs_deleted->addVertex( 1, 1, 0 );
+      rhs_deleted->addVertex( 0, 1, 1 );
+      rhs_deleted->addTriangle( 0, 1, 2 );
+
+      lhs->operationComplete( "Add vertices" );
+
+      // Deleting one vertex will delete one triangle, but not the other.
+      // Other vertices remain undeleted.
+      lhs->selectVertex( 1 );
+      lhs->operationComplete( "Select Vertex" );
+      lhs->deleteSelected();
+      lhs->operationComplete( "Delete Selected" );
+
+      checkUndoRedo( 3, lhs.get(), rhs_list );
+   }
+
    void testHideVertexHidesTriangle()
    {
       local_ptr<Model> lhs = newTestModel();
@@ -428,16 +489,11 @@ private slots:
       checkUndoRedo( 3, lhs.get(), rhs_list );
    }
 
-   // FIXME add tests
-   // FIXME undo
-   // move coords
+   // FIXME Tests to add
+   // getSelectedVertices
    //
-   // Triangle tests:
-   //   Deleting triangle deletes vertex
-   //   Deleting triangle does not delete free vertex
-   //   Deleting triangle does not delete shared vertex
-   //   Set triangle vertex
-   // 
+   // FIXME Tests to add (in other files):
+   //
    // add/remove influences
    // Frame anim vertex tests
    // Vertex animated with (weighted) bone joints

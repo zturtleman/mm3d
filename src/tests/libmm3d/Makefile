@@ -1,6 +1,6 @@
 include ../Makefile.common
 
-LIB = ../../libmm3d/libmm3d.a
+LIB = ../common/libtest_common.a ../../libmm3d/libmm3d.a
 
 # If you add a test, be sure to add a moc dependency, and a run line below
 
@@ -14,6 +14,7 @@ TESTS = \
 		  model_equal_test.unit \
 		  model_add_test.unit \
 		  model_vertex_test.unit \
+		  model_triangle_test.unit \
 		  model_select_test.unit \
 		  model_test.unit \
 		  new_mm3d_test.unit \
@@ -45,6 +46,8 @@ model_add_test.unit: model_add_test.moc $(LIB)
 
 model_vertex_test.unit: model_vertex_test.moc $(LIB)
 
+model_triangle_test.unit: model_triangle_test.moc $(LIB)
+
 model_select_test.unit: model_select_test.moc $(LIB)
 
 model_test.unit: model_test.moc $(LIB)
@@ -69,6 +72,7 @@ check: test
 	./model_equal_test.unit -silent
 	./model_add_test.unit -silent
 	./model_vertex_test.unit -silent
+	./model_triangle_test.unit -silent
 	./model_select_test.unit -silent
 	./model_test.unit -silent
 	./util_test.unit -silent

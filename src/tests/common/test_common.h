@@ -1,17 +1,41 @@
+/*  Misfit Model 3D
+ * 
+ *  Copyright (c) 2008 Kevin Worcester
+ * 
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+ *  USA.
+ *
+ *  See the COPYING file for full license text.
+ */
+
+
 #ifndef TEST_COMMON_H__
 #define TEST_COMMON_H__
 
+#include "modelstatus.h"
+
+#include <vector>
 #include <QtTest/QtTest>
 
-QString CompareValToString( int val ) 
-{
-   return QString::number( val );
-}
+/*
+QString ConvertValToString( float val );
+QString ConvertValToString( double val );
+*/
 
-QString CompareValToString( const std::string & val ) 
-{
-   return QString( val.c_str() );
-}
+QString ConvertValToString( int val );
+QString ConvertValToString( const std::string & val );
 
 template<typename T>
 void CompareValLessThan(const T & lhs, const T & rhs,
@@ -22,7 +46,7 @@ void CompareValLessThan(const T & lhs, const T & rhs,
    {
       QString msg = QString("'") + QString(lhs_text) + " < " + QString(rhs_text);
       msg += "' eval: ";
-      msg += CompareValToString( lhs ) + QString(" < ") + CompareValToString( rhs );
+      msg += ConvertValToString( lhs ) + QString(" < ") + ConvertValToString( rhs );
       QTest::qFail( msg.toUtf8(), file, line );
    }
 }
@@ -36,7 +60,7 @@ void CompareValGreaterThan(const T & lhs, const T & rhs,
    {
       QString msg = QString("'") + QString(lhs_text) + " > " + QString(rhs_text);
       msg += "' eval: ";
-      msg += CompareValToString( lhs ) + QString(" > ") + CompareValToString( rhs );
+      msg += ConvertValToString( lhs ) + QString(" > ") + ConvertValToString( rhs );
       QTest::qFail( msg.toUtf8(), file, line );
    }
 }
@@ -50,7 +74,7 @@ void CompareValLessEqual(const T & lhs, const T & rhs,
    {
       QString msg = QString("'") + QString(lhs_text) + " <= " + QString(rhs_text);
       msg += "' eval: ";
-      msg += CompareValToString( lhs ) + QString(" <= ") + CompareValToString( rhs );
+      msg += ConvertValToString( lhs ) + QString(" <= ") + ConvertValToString( rhs );
       QTest::qFail( msg.toUtf8(), file, line );
    }
 }
@@ -64,10 +88,41 @@ void CompareValGreaterEqual(const T & lhs, const T & rhs,
    {
       QString msg = QString("'") + QString(lhs_text) + " >= " + QString(rhs_text);
       msg += "' eval: ";
-      msg += CompareValToString( lhs ) + QString(" >= ") + CompareValToString( rhs );
+      msg += ConvertValToString( lhs ) + QString(" >= ") + ConvertValToString( rhs );
       QTest::qFail( msg.toUtf8(), file, line );
    }
 }
+
+/*
+// FIXME look up template specialization
+void CompareValEqual(const double & lhs, const double & rhs,
+      const char * lhs_text, const char * rhs_text,
+      const char * file, int line )
+{
+   printf( "double compare!\n" );
+   if ( fabs(lhs - rhs) > 0.00001 )
+   {
+      QString msg = QString("'") + QString(lhs_text) + " == " + QString(rhs_text);
+      msg += "' eval: ";
+      msg += ConvertValToString( lhs ) + QString(" == ") + ConvertValToString( rhs );
+      QTest::qFail( msg.toUtf8(), file, line );
+   }
+}
+
+void CompareValEqual(const float & lhs, const float & rhs,
+      const char * lhs_text, const char * rhs_text,
+      const char * file, int line )
+{
+   printf( "float compare!\n" );
+   if ( fabs(lhs - rhs) > 0.00001 )
+   {
+      QString msg = QString("'") + QString(lhs_text) + " == " + QString(rhs_text);
+      msg += "' eval: ";
+      msg += ConvertValToString( lhs ) + QString(" == ") + ConvertValToString( rhs );
+      QTest::qFail( msg.toUtf8(), file, line );
+   }
+}
+*/
 
 template<typename T>
 void CompareValEqual(const T & lhs, const T & rhs,
@@ -78,7 +133,7 @@ void CompareValEqual(const T & lhs, const T & rhs,
    {
       QString msg = QString("'") + QString(lhs_text) + " == " + QString(rhs_text);
       msg += "' eval: ";
-      msg += CompareValToString( lhs ) + QString(" == ") + CompareValToString( rhs );
+      msg += ConvertValToString( lhs ) + QString(" == ") + ConvertValToString( rhs );
       QTest::qFail( msg.toUtf8(), file, line );
    }
 }
@@ -92,30 +147,13 @@ void CompareValNotEqual(const T & lhs, const T & rhs,
    {
       QString msg = QString("'") + QString(lhs_text) + " != " + QString(rhs_text);
       msg += "' eval: ";
-      msg += CompareValToString( lhs ) + QString(" != ") + CompareValToString( rhs );
+      msg += ConvertValToString( lhs ) + QString(" != ") + ConvertValToString( rhs );
       QTest::qFail( msg.toUtf8(), file, line );
    }
 }
 
-void CompareValTrue(bool cond, const char * cond_text, const char * file, int line )
-{
-   if ( !cond )
-   {
-      QString msg = QString("'") + QString(cond_text);
-      msg += "' returned FALSE (expected TRUE)";
-      QTest::qFail( msg.toUtf8(), file, line );
-   }
-}
-
-void CompareValFalse(bool cond, const char * cond_text, const char * file, int line )
-{
-   if ( !(!cond) )
-   {
-      QString msg = QString("'") + QString(cond_text);
-      msg += "' returned TRUE (expected FALSE)";
-      QTest::qFail( msg.toUtf8(), file, line );
-   }
-}
+void CompareValTrue(bool cond, const char * cond_text, const char * file, int line );
+void CompareValFalse(bool cond, const char * cond_text, const char * file, int line );
 
 template<typename T>
 void ComparePred(bool cond, const T & pred, const char * file, int line )
@@ -209,5 +247,13 @@ class MatchesRegExp
    private:
       QString m_msg;
 };
+
+void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... );
+
+Model * loadModelOrDie( const char * filename );
+Model * newTestModel();
+
+typedef std::vector<Model *> ModelList;
+void checkUndoRedo( int operations, Model * lhs, const ModelList & rhs_list );
 
 #endif // TEST_COMMON_H__

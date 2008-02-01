@@ -39,29 +39,6 @@
 #include "release_ptr.h"
 
 
-void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... )
-{
-   // FIXME hack
-}
-
-Model * loadModelOrDie( const char * filename )
-{
-   MisfitFilter f;
-
-   Model * model = new Model;
-   Model::ModelErrorE err = f.readFile( model, filename );
-
-   if ( err != Model::ERROR_NONE )
-   {
-      fprintf( stderr, "fatal: %s: %s\n", filename, Model::errorToString( err ) );
-      delete model;
-      exit( -1 );
-   }
-
-   model->forceAddOrDelete( true );
-   return model;
-}
-
 class ModelEqualTest : public QObject
 {
    Q_OBJECT
