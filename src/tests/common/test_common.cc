@@ -27,14 +27,73 @@
 #include "mm3dfilter.h"
 #include "test_common.h"
 
-QString ConvertValToString( int val )
-{
-   return QString::number( val );
-}
 
-QString ConvertValToString( const std::string & val )
+template<>
+QString ConvertValToString<std::string>( const std::string & val )
 {
    return QString( val.c_str() );
+}
+
+template<>
+QString ConvertValToString<QString>( const QString & val )
+{
+   return val;
+}
+
+template<>
+void CompareValEqual<double>(const double & lhs, const double & rhs,
+      const char * lhs_text, const char * rhs_text,
+      const char * file, int line )
+{
+   if ( fabs(lhs - rhs) > 0.00001 )
+   {
+      QString msg = QString("'") + QString(lhs_text) + " == " + QString(rhs_text);
+      msg += "' eval: ";
+      msg += ConvertValToString( lhs ) + QString(" == ") + ConvertValToString( rhs );
+      QTest::qFail( msg.toUtf8(), file, line );
+   }
+}
+
+template<>
+void CompareValEqual<float>(const float & lhs, const float & rhs,
+      const char * lhs_text, const char * rhs_text,
+      const char * file, int line )
+{
+   if ( fabs(lhs - rhs) > 0.00001 )
+   {
+      QString msg = QString("'") + QString(lhs_text) + " == " + QString(rhs_text);
+      msg += "' eval: ";
+      msg += ConvertValToString( lhs ) + QString(" == ") + ConvertValToString( rhs );
+      QTest::qFail( msg.toUtf8(), file, line );
+   }
+}
+
+template<>
+void CompareValNotEqual<double>(const double & lhs, const double & rhs,
+      const char * lhs_text, const char * rhs_text,
+      const char * file, int line )
+{
+   if ( fabs(lhs - rhs) < 0.00001 )
+   {
+      QString msg = QString("'") + QString(lhs_text) + " != " + QString(rhs_text);
+      msg += "' eval: ";
+      msg += ConvertValToString( lhs ) + QString(" != ") + ConvertValToString( rhs );
+      QTest::qFail( msg.toUtf8(), file, line );
+   }
+}
+
+template<>
+void CompareValNotEqual<float>(const float & lhs, const float & rhs,
+      const char * lhs_text, const char * rhs_text,
+      const char * file, int line )
+{
+   if ( fabs(lhs - rhs) < 0.00001 )
+   {
+      QString msg = QString("'") + QString(lhs_text) + " != " + QString(rhs_text);
+      msg += "' eval: ";
+      msg += ConvertValToString( lhs ) + QString(" != ") + ConvertValToString( rhs );
+      QTest::qFail( msg.toUtf8(), file, line );
+   }
 }
 
 void CompareValTrue(bool cond, const char * cond_text, const char * file, int line )

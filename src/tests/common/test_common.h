@@ -26,16 +26,21 @@
 
 #include "modelstatus.h"
 
+#include <math.h>
 #include <vector>
+
 #include <QtTest/QtTest>
 
-/*
-QString ConvertValToString( float val );
-QString ConvertValToString( double val );
-*/
+template<typename T>
+QString ConvertValToString( const T & val )
+{
+   return QString::number( val );
+}
 
-QString ConvertValToString( int val );
-QString ConvertValToString( const std::string & val );
+template<>
+QString ConvertValToString<std::string>( const std::string & val );
+template<>
+QString ConvertValToString<QString>( const QString & val );
 
 template<typename T>
 void CompareValLessThan(const T & lhs, const T & rhs,
@@ -93,37 +98,6 @@ void CompareValGreaterEqual(const T & lhs, const T & rhs,
    }
 }
 
-/*
-// FIXME look up template specialization
-void CompareValEqual(const double & lhs, const double & rhs,
-      const char * lhs_text, const char * rhs_text,
-      const char * file, int line )
-{
-   printf( "double compare!\n" );
-   if ( fabs(lhs - rhs) > 0.00001 )
-   {
-      QString msg = QString("'") + QString(lhs_text) + " == " + QString(rhs_text);
-      msg += "' eval: ";
-      msg += ConvertValToString( lhs ) + QString(" == ") + ConvertValToString( rhs );
-      QTest::qFail( msg.toUtf8(), file, line );
-   }
-}
-
-void CompareValEqual(const float & lhs, const float & rhs,
-      const char * lhs_text, const char * rhs_text,
-      const char * file, int line )
-{
-   printf( "float compare!\n" );
-   if ( fabs(lhs - rhs) > 0.00001 )
-   {
-      QString msg = QString("'") + QString(lhs_text) + " == " + QString(rhs_text);
-      msg += "' eval: ";
-      msg += ConvertValToString( lhs ) + QString(" == ") + ConvertValToString( rhs );
-      QTest::qFail( msg.toUtf8(), file, line );
-   }
-}
-*/
-
 template<typename T>
 void CompareValEqual(const T & lhs, const T & rhs,
       const char * lhs_text, const char * rhs_text,
@@ -137,6 +111,15 @@ void CompareValEqual(const T & lhs, const T & rhs,
       QTest::qFail( msg.toUtf8(), file, line );
    }
 }
+
+template<>
+void CompareValEqual<double>(const double & lhs, const double & rhs,
+      const char * lhs_text, const char * rhs_text,
+      const char * file, int line );
+template<>
+void CompareValEqual<float>(const float & lhs, const float & rhs,
+      const char * lhs_text, const char * rhs_text,
+      const char * file, int line );
 
 template<typename T>
 void CompareValNotEqual(const T & lhs, const T & rhs,
@@ -152,6 +135,15 @@ void CompareValNotEqual(const T & lhs, const T & rhs,
    }
 }
 
+template<>
+void CompareValNotEqual<double>(const double & lhs, const double & rhs,
+      const char * lhs_text, const char * rhs_text,
+      const char * file, int line );
+template<>
+void CompareValNotEqual<float>(const float & lhs, const float & rhs,
+      const char * lhs_text, const char * rhs_text,
+      const char * file, int line );
+
 void CompareValTrue(bool cond, const char * cond_text, const char * file, int line );
 void CompareValFalse(bool cond, const char * cond_text, const char * file, int line );
 
@@ -164,6 +156,57 @@ void ComparePred(bool cond, const T & pred, const char * file, int line )
    }
 }
 
+template<typename T>
+void CompareArrayEqual(const T * lhs, int lhs_len,
+      const T * rhs, int rhs_len,
+      const char * lhs_text, const char * rhs_text,
+      const char * file, int line )
+{
+   bool eq = true;
+   QString msg;
+   if ( lhs_len != rhs_len )
+   {
+      msg = QString("'len(") + QString(lhs_text) + ") == len(" + QString(rhs_text);
+      msg += ")' eval: ";
+      msg += ConvertValToString( lhs_len ) + QString(" == ") + ConvertValToString( rhs_len );
+      msg += "\n";
+      eq = false;
+   }
+
+   for ( int i = 0; eq && i < lhs_len; ++i )
+   {
+      if ( eq && !(lhs[i] == rhs[i]) )
+      {
+         msg = QString("'") + QString(lhs_text) + QString("[") + QString::number(i);
+         msg += "] == " + QString(rhs_text) + "[" + QString::number(i);
+         msg += "]'";
+         msg += " eval: ";
+         msg += ConvertValToString( lhs[i] ) + QString(" == ") + ConvertValToString( rhs[i] );
+         msg += "\n";
+         eq = false;
+      }
+   }
+   
+   if ( !eq )
+   {
+      for ( int i = 0; i < lhs_len || i < rhs_len; ++i )
+      {
+         msg += "  ";
+         if ( i < lhs_len )
+            msg += ConvertValToString(lhs[i]) + " == ";
+         else
+            msg += "N/A == ";
+
+         if ( i < rhs_len )
+            msg += ConvertValToString(rhs[i]) + "\n";
+         else
+            msg += "N/A\n";
+      }
+      QTest::qFail( msg.toUtf8(), file, line );
+   }
+}
+
+
 #define QVERIFY_LT( lhs, rhs ) { CompareValLessThan( (lhs), (rhs), #lhs, #rhs, __FILE__, __LINE__ ); }
 #define QVERIFY_GT( lhs, rhs ) { CompareValGreaterThan( (lhs), (rhs), #lhs, #rhs, __FILE__, __LINE__ ); }
 #define QVERIFY_LE( lhs, rhs ) { CompareValLessEqual( (lhs), (rhs), #lhs, #rhs, __FILE__, __LINE__ ); }
@@ -173,6 +216,8 @@ void ComparePred(bool cond, const T & pred, const char * file, int line )
 #define QVERIFY_TRUE( cond ) { CompareValTrue( (cond), #cond, __FILE__, __LINE__ ); }
 #define QVERIFY_FALSE( cond ) { CompareValFalse( (cond), #cond, __FILE__, __LINE__ ); }
 #define QVERIFY_PRED( pred, expect, actual ) { pred pred_val; ComparePred( pred_val.compare(expect, actual), pred_val, __FILE__, __LINE__ ); }
+
+#define QVERIFY_ARRAY_EQ( lhs, lhs_len, rhs, rhs_len ) { CompareArrayEqual( (lhs), lhs_len, (rhs), rhs_len, #lhs, #rhs, __FILE__, __LINE__ ); }
 
 // Common predicates for QVERIFY_PRED
 
