@@ -65,6 +65,12 @@ Model * loadModelOrDie( const char * filename, bool useReference )
    return model;
 }
 
+void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... )
+{
+   // FIXME hack
+}
+
+
 class NewMm3dTest : public QObject
 {
    Q_OBJECT
