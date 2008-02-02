@@ -697,12 +697,11 @@ private slots:
    //    Normal calculation
    //       Flat
    //       Smoothed
-   //       Blending
    //    Invert normal
    //  x Selection
    //  x getSelectedTriangles
    //  x Hiding/visbility
-   //    Texture projection assignment
+   //  x Texture projection assignment
    //    cosToPoint
    //  x triangleFacesIn
    //  x triangle count
@@ -713,6 +712,7 @@ private slots:
    // FIXME test in other files:
    //    simplify mesh?
    //    select vertices from triangles
+   //    Group normal blending
 
 };
 
