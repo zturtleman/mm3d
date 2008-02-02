@@ -761,10 +761,16 @@ void ModelViewport::drawGridLines()
             break;
       }
 
-      // TODO: Broken with Qt4 + mesa GL
-      // QString text;
-      // text.sprintf( "%g", unitWidth );
-      // renderText( 2, this->height() - 12, text, QFont( "Sans", 10 ) );
+      g_prefs.setDefault( "ui_render_text", 0 );
+      if ( g_prefs( "ui_render_text" ).intValue() != 0 )
+      {
+         // Broken with Qt4 + non-accelerated nVidia card (possibly other configs as
+         // well). That is why it is disabled by default. You can set ui_render_text
+         // to a non-zero value in your mm3drc file to enable text rendering.
+         QString text;
+         text.sprintf( "%g", unitWidth );
+         renderText( 2, this->height() - 12, text, QFont( "Sans", 10 ) );
+      }
    }
 }
 
