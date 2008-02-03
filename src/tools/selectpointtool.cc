@@ -161,11 +161,7 @@ const char ** SelectPointTool::getPixmap()
 
 const char * SelectPointTool::getPath()
 {
-#ifdef HAVE_QT4
-   return "";
-#else
    return TOOLS_SELECT_MENU;
-#endif
 }
 
 const char * SelectPointTool::getName( int arg )

@@ -50,9 +50,6 @@ void PolyTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    m_model = model;
    m_widget = new PolyToolWidget( this, mainwin );
-#ifdef HAVE_QT4
-   //mainwin->addDockWindow( m_widget, DockBottom );
-#endif
    m_widget->show();
 }
 

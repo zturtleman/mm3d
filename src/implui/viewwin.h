@@ -215,7 +215,7 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       void resizeEvent( QResizeEvent * );
 
       // returns id in menu
-      QAction * insertMenuItem( QMenu * parentMenu,
+      QAction * insertMenuItem( QMenu * parentMenu, bool isTool,
             const QString & path, const QString & name, QMenu * subMenu );
 
       struct _ToolMenuItem_t

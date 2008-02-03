@@ -161,11 +161,7 @@ const char ** SelectConnectedTool::getPixmap()
 
 const char * SelectConnectedTool::getPath()
 {
-#ifdef HAVE_QT4
-   return "";
-#else
    return TOOLS_SELECT_MENU;
-#endif
 }
 
 const char * SelectConnectedTool::getName( int arg )

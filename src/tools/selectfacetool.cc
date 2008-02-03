@@ -242,11 +242,7 @@ const char ** SelectFaceTool::getPixmap()
 
 const char * SelectFaceTool::getPath()
 {
-#ifdef HAVE_QT4
-   return "";
-#else
    return TOOLS_SELECT_MENU;
-#endif
 }
 
 const char * SelectFaceTool::getName( int arg )

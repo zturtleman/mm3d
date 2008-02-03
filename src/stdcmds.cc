@@ -102,10 +102,8 @@ int init_std_cmds( CommandManager * cmdMgr )
    cmd = new RotateTextureCommand();
    cmdMgr->registerCommand( cmd );
 
-#ifdef HAVE_QT4
    cmd = new SeparatorCommand();
    cmdMgr->registerCommand( cmd );
-#endif // HAVE_QT4
 
    // Meshes
 

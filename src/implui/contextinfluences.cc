@@ -520,13 +520,7 @@ void ContextInfluences::type4Changed()
 void ContextInfluences::weight1Changed( const QString & weight )
 {
    int index = 0;
-   if ( 
-#ifdef HAVE_QT4
-         weight.size() != 0 
-#else
-         weight.length() != 0 
-#endif
-         && weight[0].isDigit() )
+   if ( weight.size() != 0 && weight[0].isDigit() )
    {
       weightChanged( index, atof( weight.toUtf8()) / 100.0 );
    }
@@ -535,13 +529,7 @@ void ContextInfluences::weight1Changed( const QString & weight )
 void ContextInfluences::weight2Changed( const QString & weight )
 {
    int index = 1;
-   if ( 
-#ifdef HAVE_QT4
-         weight.size() != 0 
-#else
-         weight.length() != 0 
-#endif
-         && weight[0].isDigit() )
+   if ( weight.size() != 0 && weight[0].isDigit() )
    {
       weightChanged( index, atof( weight.toUtf8() ) / 100.0 );
    }
@@ -550,13 +538,7 @@ void ContextInfluences::weight2Changed( const QString & weight )
 void ContextInfluences::weight3Changed( const QString & weight )
 {
    int index = 2;
-   if ( 
-#ifdef HAVE_QT4
-         weight.size() != 0 
-#else
-         weight.length() != 0 
-#endif
-         && weight[0].isDigit() )
+   if ( weight.size() != 0 && weight[0].isDigit() )
    {
       weightChanged( index, atof( weight.toUtf8()) / 100.0 );
    }
@@ -565,13 +547,7 @@ void ContextInfluences::weight3Changed( const QString & weight )
 void ContextInfluences::weight4Changed( const QString & weight )
 {
    int index = 3;
-   if ( 
-#ifdef HAVE_QT4
-         weight.size() != 0 
-#else
-         weight.length() != 0 
-#endif
-         && weight[0].isDigit() )
+   if ( weight.size() != 0 && weight[0].isDigit() )
    {
       weightChanged( index, atof( weight.toUtf8()) / 100.0 );
    }

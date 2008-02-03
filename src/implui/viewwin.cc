@@ -1244,7 +1244,7 @@ void ViewWindow::closeEvent( QCloseEvent * e )
 #endif // CODE_DEBUG
 }
 
-QAction * ViewWindow::insertMenuItem( QMenu * parentMenu,
+QAction * ViewWindow::insertMenuItem( QMenu * parentMenu, bool isTool,
       const QString & path, const QString & name, QMenu * subMenu )
 {
    QMenu * addMenu = parentMenu;
@@ -1267,12 +1267,17 @@ QAction * ViewWindow::insertMenuItem( QMenu * parentMenu,
       {
          // TODO deal with multi-level paths
          addMenu = new QMenu( this );
-         // This is a hack (comparing against menu to see which
-         // module we should translate from)
-         QString module = "Tool";
-         if ( parentMenu != m_toolMenu )
+
+         QString module;
+         if ( isTool )
+         {
+            module = "Tool";
+            connect( addMenu, SIGNAL(triggered(QAction*)), this, SLOT(toolActivated(QAction*)));
+         }
+         else
          {
             module = "Command";
+            connect( addMenu, SIGNAL(triggered(QAction*)), this, SLOT(primitiveCommandActivated(QAction*)) );
          }
          addMenu->setTitle( qApp->translate( module.toUtf8(), path.toUtf8() ) );
          parentMenu->addMenu( addMenu );
@@ -1321,9 +1326,13 @@ void ViewWindow::showContextEvent()
 {
    m_viewPanel->modelUpdatedEvent();
 
+   // Set model so that it is properly initialized before display
    m_contextPanel->setModel( m_model );
    m_contextPanel->show();
    m_contextPanel->raise();
+
+   // Set model again so that it actually displays properties
+   m_contextPanel->setModel( m_model );
 }
 
 void ViewWindow::renderBadEvent()
@@ -1444,6 +1453,7 @@ void ViewWindow::viewportSettingsEvent()
 
 void ViewWindow::toolActivated( QAction * id )
 {
+   log_debug( "toolActivated(%p)\n", id );
    for ( ToolMenuItemList::iterator it = m_tools.begin();
          it != m_tools.end(); ++it )
    {
@@ -1896,6 +1906,7 @@ static QString _makeToolTip( ::Tool * tool, int index )
 
 void ViewWindow::initializeToolbox()
 {
+   connect( m_toolMenu, SIGNAL(triggered(QAction*)), this, SLOT(toolActivated(QAction*)));
    m_toolbox->registerAllTools();
 
    QActionGroup * grp = new QActionGroup( this );
@@ -1915,6 +1926,7 @@ void ViewWindow::initializeToolbox()
          if ( count > 1 )
          {
             QMenu * menu = new QMenu( this );
+            connect( menu, SIGNAL(triggered(QAction*)), this, SLOT(toolActivated(QAction*)));
             for ( int t = 1; t < count; t++ )
             {
                const char * name = tool->getName( t );
@@ -1950,7 +1962,7 @@ void ViewWindow::initializeToolbox()
             }
 
             //id = m_toolMenu->addAction( qApp->translate( "Tool", tool->getName(0)), menu );
-            id = insertMenuItem( m_toolMenu, tool->getPath(), 
+            id = insertMenuItem( m_toolMenu, true, tool->getPath(),
                   qApp->translate( "Tool", tool->getName(0)), menu );
 
             _registerKeyBinding( tool, 0, m_toolMenu, id );
@@ -1961,13 +1973,12 @@ void ViewWindow::initializeToolbox()
             item->arg = 0;
 
             m_tools.push_back( item );
-            connect( menu, SIGNAL(activated(int)), this, SLOT(toolActivated(int)));
          }
          else
          {
             const char * name = tool->getName( 0 );
             //id = m_toolMenu->addAction( qApp->translate( "Tool", name ) );
-            id = insertMenuItem( m_toolMenu, tool->getPath(), 
+            id = insertMenuItem( m_toolMenu, true, tool->getPath(),
                   qApp->translate( "Tool", tool->getName(0)), NULL );
 
             _registerKeyBinding( tool, 0, m_toolMenu, id );
@@ -2005,8 +2016,6 @@ void ViewWindow::initializeToolbox()
       }
       tool = m_toolbox->getNextTool();
    }
-   connect( m_toolMenu, SIGNAL(triggered(QAction*)), this, SLOT(toolActivated(QAction*)));
-
 }
 
 static void _registerKeyBinding( Command * cmd, int index,
@@ -2061,7 +2070,7 @@ void ViewWindow::initializeCommands()
             }
 
             log_debug( "adding command '%s' to menus\n", cmd->getName(0) );
-            id = insertMenuItem( m_geometryMenu, cmd->getPath(), 
+            id = insertMenuItem( m_geometryMenu, false, cmd->getPath(),
                   qApp->translate( "Command", cmd->getName(0) ), menu );
             //id = m_geometryMenu->addAction( qApp->translate( "Command", cmd->getName(0) ), menu );
             _registerKeyBinding( cmd, 0, m_geometryMenu, id );
@@ -2072,11 +2081,12 @@ void ViewWindow::initializeCommands()
             item->arg = 0;
 
             m_primitiveCommands.push_back( item );
+            connect( menu, SIGNAL(triggered(QAction*)), this, SLOT(primitiveCommandActivated(QAction*)) );
          }
          else
          {
             QMenu * curMenu = m_geometryMenu;
-            id = insertMenuItem( m_geometryMenu, cmd->getPath(), 
+            id = insertMenuItem( m_geometryMenu, false, cmd->getPath(),
                    qApp->translate( "Command", cmd->getName(0)), NULL );
             //id = curMenu->addAction( qApp->translate( "Command", cmd->getName(0)) );
             item = new CommandMenuItemT;

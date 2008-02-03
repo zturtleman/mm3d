@@ -54,9 +54,6 @@ void EllipsoidTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    log_debug( "ellipse activated\n" );
    m_widget = new EllipsoidToolWidget( this, mainwin );
-#ifdef HAVE_QT4
-   //mainwin->addDockWindow( m_widget, DockBottom );
-#endif
    m_widget->show();
 }
 

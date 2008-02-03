@@ -162,11 +162,7 @@ const char ** SelectVertexTool::getPixmap()
 
 const char * SelectVertexTool::getPath()
 {
-#ifdef HAVE_QT4
-   return "";
-#else
    return TOOLS_SELECT_MENU;
-#endif
 }
 
 const char * SelectVertexTool::getName( int arg )

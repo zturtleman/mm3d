@@ -169,11 +169,7 @@ const char ** SelectBoneTool::getPixmap()
 
 const char * SelectBoneTool::getPath()
 {
-#ifdef HAVE_QT4
-   return "";
-#else
    return TOOLS_SELECT_MENU;
-#endif
 }
 
 const char * SelectBoneTool::getName( int arg )

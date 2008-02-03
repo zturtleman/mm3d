@@ -163,11 +163,7 @@ const char ** SelectProjectionTool::getPixmap()
 
 const char * SelectProjectionTool::getPath()
 {
-#ifdef HAVE_QT4
-   return "";
-#else
    return TOOLS_SELECT_MENU;
-#endif
 }
 
 const char * SelectProjectionTool::getName( int arg )

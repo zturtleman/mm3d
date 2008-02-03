@@ -161,11 +161,7 @@ const char ** SelectGroupTool::getPixmap()
 
 const char * SelectGroupTool::getPath()
 {
-#ifdef HAVE_QT4
-   return "";
-#else
    return TOOLS_SELECT_MENU;
-#endif
 }
 
 const char * SelectGroupTool::getName( int arg )
