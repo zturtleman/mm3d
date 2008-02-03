@@ -655,6 +655,12 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent )
    stopAnimationMode();
    m_model->setUndoEnabled( true );
    m_model->clearUndo();
+
+   if ( !m_boolPanel->isVisible() )
+   {
+      m_boolPanel->show();
+      m_boolPanel->hide();
+   }
 }
 
 ViewWindow::~ViewWindow()
