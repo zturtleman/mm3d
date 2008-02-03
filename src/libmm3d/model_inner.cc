@@ -312,7 +312,7 @@ bool Model::Triangle::equal(const Triangle & rhs, int compareBits ) const
 Model::Group::Group()
    : m_materialIndex( -1 ),
      m_smooth( 255 ),
-     m_angle( 180 ),
+     m_angle( 89 ),
      m_selected( false ),
      m_visible( true )
 {
@@ -328,7 +328,7 @@ void Model::Group::init()
 {
    m_materialIndex = -1;
    m_smooth = 255;
-   m_angle = 180;
+   m_angle = 89;
    m_selected = false;
    m_visible = true;
    m_name.clear();
