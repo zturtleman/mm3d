@@ -246,11 +246,6 @@ void PaintTextureWin::saveEvent()
             }
 
             QImage img = m_textureWidget->grabFrameBuffer( false );
-            for ( int t = 0; t < 1; ++t )
-            {
-               m_textureWidget->updateGL();
-               img = m_textureWidget->grabFrameBuffer( false );
-            }
             img = img.scaledToWidth( h, Qt::SmoothTransformation );
 
             if ( !img.save( filename, "PNG", 100 ) )
