@@ -656,6 +656,8 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent )
    m_model->setUndoEnabled( true );
    m_model->clearUndo();
 
+   // This is a hack to prevent a minimized bool panel from blocking the left
+   // side of the menu bar.
    if ( !m_boolPanel->isVisible() )
    {
       m_boolPanel->show();
