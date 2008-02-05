@@ -54,11 +54,18 @@ void DataSource::setEndianness( EndiannessE e )
    {
       m_endfunc16 = ltoh_u16;
       m_endfunc32 = ltoh_u32;
+      m_endfuncfl = ltoh_float;
    }
    else
    {
+#ifdef WIN32
+      m_endfunc16 = btoh_u16;
+      m_endfunc32 = btoh_u32;
+#else  // !WIN32
       m_endfunc16 = ntohs;
       m_endfunc32 = ntohl;
+#endif  // WIN32
+      m_endfuncfl = btoh_float;
    }
 }
 

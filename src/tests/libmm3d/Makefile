@@ -6,6 +6,7 @@ LIB = ../common/libtest_common.a ../../libmm3d/libmm3d.a
 
 TESTS = \
 		  memutil_test.unit \
+		  big_endian_test.unit \
 		  datasource_test.unit \
 		  datadest_test.unit \
 		  filedatasource_test.unit \
@@ -27,6 +28,8 @@ TESTS = \
 all:
 
 cmdlinemgr_test.unit: cmdlinemgr_test.moc $(LIB)
+
+big_endian_test.unit: big_endian_test.moc $(LIB)
 
 datasource_test.unit: datasource_test.moc $(LIB)
 
@@ -64,6 +67,7 @@ test: $(TESTS)
 
 check: test
 	./memutil_test.unit -silent
+	./big_endian_test.unit -silent
 	./datasource_test.unit -silent
 	./filedatasource_test.unit -silent
 	./datadest_test.unit -silent

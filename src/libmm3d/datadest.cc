@@ -55,11 +55,18 @@ void DataDest::setEndianness( EndiannessE e )
    {
       m_endfunc16 = htol_u16;
       m_endfunc32 = htol_u32;
+      m_endfuncfl = htol_float;
    }
    else
    {
+#ifdef WIN32
+      m_endfunc16 = htob_u16;
+      m_endfunc32 = htob_u32;
+#else  // !WIN32
       m_endfunc16 = htons;
       m_endfunc32 = htonl;
+#endif  // WIN32
+      m_endfuncfl = htob_float;
    }
 }
 
