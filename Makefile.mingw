@@ -7,7 +7,7 @@ DEL=rm -f
 CXXFLAGS=-O1
 DEFS=-DMM3D_EDIT -DQT3_SUPPORT -DWIN32 -I.. -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${QTDIR}/include  -I${QTDIR}/include/QtCore -I${QTDIR}/include/QtGui -I${QTDIR}/include/QtOpenGL -I${QTDIR}/include/QtNetwork -I${QTDIR}/include/Qt3Support 
 #DEFS=-DMM3D_EDIT -DQT3_SUPPORT -DCODE_DEBUG -DWIN32 -I.. -I. -I./src -I./src/libmm3d -I${QTDIR}/include -I${QTDIR}/QtCore -I${QTDIR}/QtGui -I${QTDIR}/QtOpenGL -I${QTDIR}/QtNetwork -I${QTDIR}/Qt3Support 
-UIC=${QTDIR}/bin/uic3.exe
+UIC=${QTDIR}/bin/uic.exe
 MOC=${QTDIR}/bin/moc.exe
 LINK=-L${QTDIR}/lib -mwindows -lQtCore4 -lQtGui4 -lQtOpenGL4 -lQtNetwork4 -lQt3Support4 -lopengl32 -lglu32 -lwsock32 
 #-lpsapi
@@ -16,7 +16,14 @@ LIB_OBJ= \
 	src/libmm3d/bsptree.o \
 	src/libmm3d/cal3dfilter.o \
 	src/libmm3d/cobfilter.o \
+	src/libmm3d/datadest.o \
+	src/libmm3d/datasource.o \
+	src/libmm3d/filedatadest.o \
+	src/libmm3d/filedatasource.o \
+	src/libmm3d/memdatadest.o \
+	src/libmm3d/memdatasource.o \
 	src/libmm3d/dxffilter.o \
+	src/libmm3d/filefactory.o \
 	src/libmm3d/filtermgr.o \
 	src/libmm3d/glmath.o \
 	src/libmm3d/log.o \
@@ -103,48 +110,6 @@ MM3D_UI= \
 	src/qtui/valuewin.base.h \
 	src/qtui/viewportsettings.base.h
 
-MM3D_UI_OBJ= \
-	src/qtui/alignwin.base.h.o \
-	src/qtui/animconvertwin.base.h.o \
-	src/qtui/animexportwin.base.h.o \
-	src/qtui/animsetwin.base.h.o \
-	src/qtui/animwidget.base.h.o \
-	src/qtui/autoassignjointwin.base.h.o \
-	src/qtui/backgroundselect.base.h.o \
-	src/qtui/backgroundwin.base.h.o \
-	src/qtui/boolwin.base.h.o \
-	src/qtui/contextgroup.base.h.o \
-	src/qtui/contextinfluences.base.h.o \
-	src/qtui/contextname.base.h.o \
-	src/qtui/contextposition.base.h.o \
-	src/qtui/contextprojection.base.h.o \
-	src/qtui/contextrotation.base.h.o \
-	src/qtui/extrudewin.base.h.o \
-	src/qtui/groupwin.base.h.o \
-	src/qtui/helpwin.base.h.o \
-	src/qtui/jointwin.base.h.o \
-	src/qtui/painttexturewin.base.h.o \
-	src/qtui/pointwin.base.h.o \
-	src/qtui/projectionwin.base.h.o \
-	src/qtui/keyvaluewin.base.h.o \
-	src/qtui/mapdirection.base.h.o \
-	src/qtui/mergewin.base.h.o \
-	src/qtui/metawin.base.h.o \
-	src/qtui/modelview.base.h.o \
-	src/qtui/newanim.base.h.o \
-	src/qtui/cal3dprompt.base.h.o \
-	src/qtui/ms3dprompt.base.h.o \
-	src/qtui/objprompt.base.h.o \
-	src/qtui/pluginwin.base.h.o \
-	src/qtui/rgbawin.base.h.o \
-	src/qtui/statusbar.base.h.o \
-	src/qtui/texturecoord.base.h.o \
-	src/qtui/textwin.base.h.o \
-	src/qtui/texwin.base.h.o \
-	src/qtui/transformwin.base.h.o \
-	src/qtui/valuewin.base.h.o \
-	src/qtui/viewportsettings.base.h.o
-
 MM3D_MOC= \
 	src/implui/alignwin.moc.cc \
 	src/implui/aboutwin.moc.cc \
@@ -201,47 +166,6 @@ MM3D_MOC= \
 	src/implui/viewportsettings.moc.cc \
 	src/implui/viewpanel.moc.cc \
 	src/implui/viewwin.moc.cc \
-	src/qtui/alignwin.base.moc.cc \
-	src/qtui/animconvertwin.base.moc.cc \
-	src/qtui/animexportwin.base.moc.cc \
-	src/qtui/animsetwin.base.moc.cc \
-	src/qtui/animwidget.base.moc.cc \
-	src/qtui/autoassignjointwin.base.moc.cc \
-	src/qtui/backgroundselect.base.moc.cc \
-	src/qtui/backgroundwin.base.moc.cc \
-	src/qtui/boolwin.base.moc.cc \
-	src/qtui/contextgroup.base.moc.cc \
-	src/qtui/contextinfluences.base.moc.cc \
-	src/qtui/contextname.base.moc.cc \
-	src/qtui/contextposition.base.moc.cc \
-	src/qtui/contextprojection.base.moc.cc \
-	src/qtui/contextrotation.base.moc.cc \
-	src/qtui/extrudewin.base.moc.cc \
-	src/qtui/groupwin.base.moc.cc \
-	src/qtui/helpwin.base.moc.cc \
-	src/qtui/jointwin.base.moc.cc \
-	src/qtui/painttexturewin.base.moc.cc \
-	src/qtui/pointwin.base.moc.cc \
-	src/qtui/projectionwin.base.moc.cc \
-	src/qtui/keyvaluewin.base.moc.cc \
-	src/qtui/mapdirection.base.moc.cc \
-	src/qtui/mergewin.base.moc.cc \
-	src/qtui/metawin.base.moc.cc \
-	src/qtui/modelview.base.moc.cc \
-	src/qtui/newanim.base.moc.cc \
-	src/qtui/cal3dprompt.base.moc.cc \
-	src/qtui/ms3dprompt.base.moc.cc \
-	src/qtui/objprompt.base.moc.cc \
-	src/qtui/pluginwin.base.moc.cc \
-	src/qtui/rgbawin.base.moc.cc \
-	src/qtui/statusbar.base.moc.cc \
-	src/qtui/texturecoord.base.moc.cc \
-	src/qtui/textwin.base.moc.cc \
-	src/qtui/texwin.base.moc.cc \
-	src/qtui/transformwin.base.moc.cc \
-	src/tools/torustoolwidget.moc.cc \
-	src/qtui/valuewin.base.moc.cc \
-	src/qtui/viewportsettings.base.moc.cc
 
 MM3D_MOC_OBJ= \
 	src/implui/alignwin.moc.o \
@@ -301,47 +225,6 @@ MM3D_MOC_OBJ= \
 	src/implui/viewportsettings.moc.o \
 	src/implui/viewpanel.moc.o \
 	src/implui/viewwin.moc.o \
-	src/qtui/alignwin.base.moc.o \
-	src/qtui/animconvertwin.base.moc.o \
-	src/qtui/animexportwin.base.moc.o \
-	src/qtui/animsetwin.base.moc.o \
-	src/qtui/animwidget.base.moc.o \
-	src/qtui/autoassignjointwin.base.moc.o \
-	src/qtui/backgroundselect.base.moc.o \
-	src/qtui/backgroundwin.base.moc.o \
-	src/qtui/boolwin.base.moc.o \
-	src/qtui/contextgroup.base.moc.o \
-	src/qtui/contextinfluences.base.moc.o \
-	src/qtui/contextname.base.moc.o \
-	src/qtui/contextposition.base.moc.o \
-	src/qtui/contextprojection.base.moc.o \
-	src/qtui/contextrotation.base.moc.o \
-	src/qtui/extrudewin.base.moc.o \
-	src/qtui/groupwin.base.moc.o \
-	src/qtui/helpwin.base.moc.o \
-	src/qtui/jointwin.base.moc.o \
-	src/qtui/painttexturewin.base.moc.o \
-	src/qtui/pointwin.base.moc.o \
-	src/qtui/projectionwin.base.moc.o \
-	src/qtui/keyvaluewin.base.moc.o \
-	src/qtui/mapdirection.base.moc.o \
-	src/qtui/mergewin.base.moc.o \
-	src/qtui/metawin.base.moc.o \
-	src/qtui/modelview.base.moc.o \
-	src/qtui/newanim.base.moc.o \
-	src/qtui/cal3dprompt.base.moc.o \
-	src/qtui/ms3dprompt.base.moc.o \
-	src/qtui/objprompt.base.moc.o \
-	src/qtui/pluginwin.base.moc.o \
-	src/qtui/rgbawin.base.moc.o \
-	src/qtui/statusbar.base.moc.o \
-	src/qtui/texturecoord.base.moc.o \
-	src/qtui/textwin.base.moc.o \
-	src/qtui/texwin.base.moc.o \
-	src/qtui/transformwin.base.moc.o \
-	src/tools/torustoolwidget.moc.o \
-	src/qtui/valuewin.base.moc.o \
-	src/qtui/viewportsettings.base.moc.o
 
 MM3D_OBJ= \
 	src/3dm.o \
@@ -505,9 +388,9 @@ mm3d_ui: ${MM3D_UI}
 
 mm3d_moc: ${MM3D_MOC}
 
-mm3d: ${MM3D_UI_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} ${MM3D_OBJ}
+mm3d: ${MM3D_MOC_OBJ} ${LIB_OBJ} ${MM3D_OBJ}
 	${WINDRES} src/icon.rc src/icon.o
-	${CXX} ${CXXFLAGS} ${DEFS} -o mm3d.exe ${MM3D_OBJ} ${MM3D_UI_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} src/icon.o ${LINK}
+	${CXX} ${CXXFLAGS} ${DEFS} -o mm3d.exe ${MM3D_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} src/icon.o ${LINK}
 
 %.o : %.cc
 	${CXX} ${DEFS} -c $< -o $@ ${CXXFLAGS}
@@ -515,9 +398,8 @@ mm3d: ${MM3D_UI_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} ${MM3D_OBJ}
 %.o : %.c
 	${CC} ${DEFS} -c $< -o $@ ${CXXFLAGS}
 
-%.base.h %.base.h.cc: %.ui
+%.base.h: %.ui
 	${UIC} $< -o $@
-	${UIC} $< -impl $@ -o $@.cc
 
 %.moc.cc: %.h
 	${MOC} $< -o $@
@@ -527,7 +409,6 @@ clean:
 	${DEL} ${MM3D_UI}
 	${DEL} ${MM3D_MOC}
 	${DEL} ${MM3D_OBJ}
-	${DEL} ${MM3D_UI_OBJ}
 	${DEL} ${MM3D_MOC_OBJ}
 	${DEL} src/*.base.*
 	${DEL} src/icon.o
