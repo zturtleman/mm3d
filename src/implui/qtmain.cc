@@ -106,7 +106,7 @@ QApplication * ui_getapp()
    return s_app;
 }
 
-int ui_prep( int argc, char * argv[] )
+int ui_prep( int & argc, char * argv[] )
 {
    s_app = new QApplication( argc, argv );
 
@@ -132,7 +132,7 @@ int ui_prep( int argc, char * argv[] )
    return 0;
 }
 
-int ui_init( int argc, char * argv[] )
+int ui_init( int & argc, char * argv[] )
 {
    int rval = 0;
 

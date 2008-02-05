@@ -28,8 +28,8 @@ class QApplication;
 
 extern QApplication * ui_getapp();
 
-extern int ui_prep( int argc, char * argv[] );
-extern int ui_init( int argc, char * argv[] );
+extern int ui_prep( int & argc, char * argv[] );
+extern int ui_init( int & argc, char * argv[] );
 extern void ui_exit();
 
 #endif // __QTMAIN_H
