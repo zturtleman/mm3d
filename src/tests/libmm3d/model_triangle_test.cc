@@ -483,6 +483,82 @@ private slots:
       checkUndoRedo( 2, lhs.get(), rhs_list );
    }
 
+   void testTriangleTextureCoords()
+   {
+      local_ptr<Model> lhs = newTestModel();
+      local_ptr<Model> rhs_empty = newTestModel();
+      local_ptr<Model> rhs_unassigned = newTestModel();
+      local_ptr<Model> rhs_assigned = newTestModel();
+
+      ModelList rhs_list;
+      rhs_list.push_back( rhs_empty.get() );
+      rhs_list.push_back( rhs_unassigned.get() );
+      rhs_list.push_back( rhs_assigned.get() );
+
+      lhs->addVertex( 0, 0, 0 );
+      lhs->addVertex( 1, 0, 0 );
+      lhs->addVertex( 1, 1, 0 );
+      lhs->addVertex( 0, 1, 0 );
+      lhs->addTriangle( 0, 1, 2 );
+      lhs->addTriangle( 1, 2, 3 );
+      rhs_unassigned->addVertex( 0, 0, 0 );
+      rhs_unassigned->addVertex( 1, 0, 0 );
+      rhs_unassigned->addVertex( 1, 1, 0 );
+      rhs_unassigned->addVertex( 0, 1, 0 );
+      rhs_unassigned->addTriangle( 0, 1, 2 );
+      rhs_unassigned->addTriangle( 1, 2, 3 );
+      rhs_assigned->addVertex( 0, 0, 0 );
+      rhs_assigned->addVertex( 1, 0, 0 );
+      rhs_assigned->addVertex( 1, 1, 0 );
+      rhs_assigned->addVertex( 0, 1, 0 );
+      rhs_assigned->addTriangle( 0, 1, 2 );
+      rhs_assigned->addTriangle( 1, 2, 3 );
+
+      rhs_assigned->setTextureCoords( 0, 0, 0.0, 1.0 );
+      rhs_assigned->setTextureCoords( 0, 1, 0.1, 0.9 );
+      rhs_assigned->setTextureCoords( 0, 2, 0.2, 0.8 );
+      rhs_assigned->setTextureCoords( 1, 0, 0.5, 0.5 );
+      rhs_assigned->setTextureCoords( 1, 1, 0.6, 0.4 );
+      rhs_assigned->setTextureCoords( 1, 2, 0.7, 0.3 );
+
+      lhs->operationComplete( "Add triangle and projections" );
+
+      lhs->setTextureCoords( 0, 0, 0.0, 1.0 );
+      lhs->setTextureCoords( 0, 1, 0.1, 0.9 );
+      lhs->setTextureCoords( 0, 2, 0.2, 0.8 );
+      lhs->setTextureCoords( 1, 0, 0.5, 0.5 );
+      lhs->setTextureCoords( 1, 1, 0.6, 0.4 );
+      lhs->setTextureCoords( 1, 2, 0.7, 0.3 );
+
+      // FIXME verify texture coords with getTextureCoords
+      //QVERIFY_EQ( 0, lhs->getTriangleProjection( 0 ) );
+      /*
+      float s = 0.0;
+      float t = 0.0;
+      lhs->getTextureCoords( 0, 0, s, t );
+      QVERIFY_EQ( 0.0f, s );
+      QVERIFY_EQ( 1.0f, t );
+      lhs->getTextureCoords( 0, 1, s, t );
+      QVERIFY_EQ( 0.1f, s );
+      QVERIFY_EQ( 0.9f, t );
+      lhs->getTextureCoords( 0, 2, s, t );
+      QVERIFY_EQ( 0.2f, s );
+      QVERIFY_EQ( 0.8f, t );
+      lhs->getTextureCoords( 1, 0, s, t );
+      QVERIFY_EQ( 0.5f, s );
+      QVERIFY_EQ( 0.5f, t );
+      lhs->getTextureCoords( 1, 1, s, t );
+      QVERIFY_EQ( 0.6f, s );
+      QVERIFY_EQ( 0.4f, t );
+      lhs->getTextureCoords( 1, 2, s, t );
+      QVERIFY_EQ( 0.7f, s );
+      QVERIFY_EQ( 0.3f, t );
+      */
+      lhs->operationComplete( "Set texture coords" );
+
+      checkUndoRedo( 2, lhs.get(), rhs_list );
+   }
+
    void testTriangleProjection()
    {
       local_ptr<Model> lhs = newTestModel();
@@ -541,6 +617,213 @@ private slots:
       lhs->operationComplete( "Set no projection" );
 
       checkUndoRedo( 4, lhs.get(), rhs_list );
+   }
+
+   void testFlatNormal()
+   {
+      // +X
+      {
+         local_ptr<Model> lhs = newTestModel();
+
+         lhs->addVertex( 0, 0, 0 );
+         lhs->addVertex( 0, 1, 0 );
+         lhs->addVertex( 0, 1, 1 );
+         lhs->addTriangle( 0, 1, 2 );
+         lhs->calculateNormals();
+
+         float expected[3] = { 1.0f, 0.0f, 0.0f };
+         float norm[3];
+         lhs->getFlatNormal( 0, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 0, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 1, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 2, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+      }
+
+      // -X
+      {
+         local_ptr<Model> lhs = newTestModel();
+
+         lhs->addVertex( 0, 0, 0 );
+         lhs->addVertex( 0, 1, 1 );
+         lhs->addVertex( 0, 1, 0 );
+         lhs->addTriangle( 0, 1, 2 );
+         lhs->calculateNormals();
+
+         float expected[3] = { -1.0f, 0.0f, 0.0f };
+         float norm[3];
+         lhs->getFlatNormal( 0, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 0, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 1, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 2, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+      }
+
+      // +Y
+      {
+         local_ptr<Model> lhs = newTestModel();
+
+         lhs->addVertex( 0, 0, 0 );
+         lhs->addVertex( 0, 0, 1 );
+         lhs->addVertex( 1, 0, 1 );
+         lhs->addTriangle( 0, 1, 2 );
+         lhs->calculateNormals();
+
+         float expected[3] = { 0.0f, 1.0f, 0.0f };
+         float norm[3];
+         lhs->getFlatNormal( 0, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 0, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 1, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 2, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+      }
+
+      // -Y
+      {
+         local_ptr<Model> lhs = newTestModel();
+
+         lhs->addVertex( 0, 0, 0 );
+         lhs->addVertex( 1, 0, 1 );
+         lhs->addVertex( 0, 0, 1 );
+         lhs->addTriangle( 0, 1, 2 );
+         lhs->calculateNormals();
+
+         float expected[3] = { 0.0f, -1.0f, 0.0f };
+         float norm[3];
+         lhs->getFlatNormal( 0, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 0, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 1, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 2, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+      }
+
+      // +Z
+      {
+         local_ptr<Model> lhs = newTestModel();
+
+         lhs->addVertex( 0, 0, 0 );
+         lhs->addVertex( 1, 0, 0 );
+         lhs->addVertex( 1, 1, 0 );
+         lhs->addTriangle( 0, 1, 2 );
+         lhs->calculateNormals();
+
+         float expected[3] = { 0.0f, 0.0f, 1.0f };
+         float norm[3];
+         lhs->getFlatNormal( 0, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 0, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 1, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 2, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+      }
+
+      // -Z
+      {
+         local_ptr<Model> lhs = newTestModel();
+
+         lhs->addVertex( 0, 0, 0 );
+         lhs->addVertex( 1, 1, 0 );
+         lhs->addVertex( 1, 0, 0 );
+         lhs->addTriangle( 0, 1, 2 );
+         lhs->calculateNormals();
+
+         float expected[3] = { 0.0f, 0.0f, -1.0f };
+         float norm[3];
+         lhs->getFlatNormal( 0, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 0, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 1, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+         memset( norm, 0, sizeof(norm) );
+         lhs->getNormal( 0, 2, norm );
+         QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+      }
+   }
+
+   void testInvertNormals()
+   {
+      local_ptr<Model> lhs = newTestModel();
+      local_ptr<Model> rhs_empty = newTestModel();
+      local_ptr<Model> rhs_front = newTestModel();
+      local_ptr<Model> rhs_back = newTestModel();
+
+      ModelList rhs_list;
+      rhs_list.push_back( rhs_empty.get() );
+      rhs_list.push_back( rhs_front.get() );
+      rhs_list.push_back( rhs_back.get() );
+
+      lhs->addVertex( 0, 0, 0 );
+      lhs->addVertex( 0, 1, 0 );
+      lhs->addVertex( 0, 1, 1 );
+      lhs->addTriangle( 0, 1, 2 );
+      rhs_front->addVertex( 0, 0, 0 );
+      rhs_front->addVertex( 0, 1, 0 );
+      rhs_front->addVertex( 0, 1, 1 );
+      rhs_front->addTriangle( 0, 1, 2 );
+      rhs_back->addVertex( 0, 0, 0 );
+      rhs_back->addVertex( 0, 1, 0 );
+      rhs_back->addVertex( 0, 1, 1 );
+      rhs_back->addTriangle( 2, 1, 0 );
+
+      lhs->operationComplete( "Add triangle" );
+
+      float norm[3];
+
+      float expected[3] = { 1.0f, 0.0f, 0.0f };
+      lhs->getFlatNormal( 0, norm );
+      QVERIFY_ARRAY_EQ( expected, 3, norm, 3 );
+
+      lhs->invertNormals( 0 );
+      lhs->operationComplete( "Invert normals" );
+
+      float inverted[3] = { -1.0f, 0.0f, 0.0f };
+      lhs->getFlatNormal( 0, norm );
+      QVERIFY_ARRAY_EQ( inverted, 3, norm, 3 );
+
+      // FIXME want to test that 0 and 2 swap texture coords?
+
+      float s = 0;
+      float t = 0;
+      lhs->getTextureCoords( 0, 0, s, t );
+      rhs_back->setTextureCoords( 0, 0, s, t );
+      lhs->getTextureCoords( 0, 1, s, t );
+      rhs_back->setTextureCoords( 0, 1, s, t );
+      lhs->getTextureCoords( 0, 2, s, t );
+      rhs_back->setTextureCoords( 0, 2, s, t );
+
+      checkUndoRedo( 2, lhs.get(), rhs_list );
    }
 
    void testFaceOutNone()
@@ -693,11 +976,9 @@ private slots:
    //  x Deleting triangle does not delete free vertex
    //  x Deleting triangle does not delete shared vertex
    //  x Set triangle vertex
-   //    Set texture coords
-   //    Normal calculation
-   //       Flat
-   //       Smoothed
-   //    Invert normal
+   //  x Set texture coords
+   //  x Normal calculation
+   //  x Invert normal
    //  x Selection
    //  x getSelectedTriangles
    //  x Hiding/visbility
@@ -707,6 +988,14 @@ private slots:
    //  x triangle count
    //  x deleteFlattendTriangles
    //    subdivide
+   //       For each triangle
+   //         if contains one original point
+   //           contains no other original points
+   //           vector to other points is unchanged
+   //         else
+   //           one triangle contains three unique non-original points
+   //         normal matches original triangle
+   //       Triangle count and welded vertex count are correct
    //  x getTriangleVertex
    //
    // FIXME test in other files:
