@@ -34,22 +34,35 @@ AC_DEFUN([KSW_IS_DEBUG],
   AC_MSG_CHECKING(for debug)
 
   AC_ARG_ENABLE([debug],
-    [  --enable-debug=yes/no       Specify "yes" to enable a debug build.])
+    [  --enable-debug=yes/no/cov   Specify "yes" to enable a debug build.])
 
   is_debug=no
 
+  enable_debug_save_COVFLAGS="${COVFLAGS}"
+  enable_debug_save_COVLFLAGS="${COVLFLAGS}"
   enable_debug_save_CFLAGS="${CFLAGS}"
   enable_debug_save_CXXFLAGS="${CXXFLAGS}"
   enable_debug_save_LDFLAGS="${LDFLAGS}"
   if test x"$enable_debug" = xyes; then
+    COVFLAGS=""
+    COVLFLAGS=""
     CFLAGS="-g"
     CXXFLAGS="${CFLAGS}"
     LDFLAGS=""
+  elif test x"$enable_debug" = xcov; then
+    COVFLAGS="-coverage"
+    COVLFLAGS="-lgcov"
+    CFLAGS=""
+    CXXFLAGS="${CFLAGS}"
+    LDFLAGS=""
+    is_debug=coverage
   else
     omit_frame=
     if test x"${CORE_PROFILE}" = "x"; then
        omit_frame="-fomit-frame-pointer"
     fi
+    COVFLAGS=""
+    COVLFLAGS=""
     CFLAGS="-O2 ${omit_frame} -fno-math-errno"
     CXXFLAGS="${CFLAGS}"
     LDFLAGS="${omit_frame} -fno-math-errno"
@@ -63,13 +76,17 @@ dnl Yay!
     fi
    ], [
 dnl Boo! 
-    if test x"$enable_debug" = xyes; then
+    if test x"$enable_debug" != xyes; then
+      COVFLAGS="${enable_debug_save_COVFLAGS}"
+      COVLFLAGS="${enable_debug_save_COVLFLAGS}"
       CFLAGS="${enable_debug_save_CFLAGS}"
       CXXFLAGS="${enable_debug_save_CXXFLAGS}"
       LDFLAGS="${enable_debug_save_LDFLAGS}"
       AC_DEFINE( CODE_DEBUG )
       is_debug=yes
     else
+      COVFLAGS="${enable_debug_save_COVFLAGS}"
+      COVLFLAGS="${enable_debug_save_COVLFLAGS}"
       CFLAGS="${enable_debug_save_CFLAGS}"
       CXXFLAGS="${enable_debug_save_CXXFLAGS}"
       LDFLAGS="${enable_debug_save_LDFLAGS}"

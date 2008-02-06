@@ -23,10 +23,7 @@ libdepui_a_SOURCES = \
 %.moc.cc: %.h
 		$(QT_MOC) -o $@ $<
 
-AM_CPPFLAGS = $(CORE_PROFILE) -Wall -I../libmm3d -I../mm3dcore -I../ -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
+AM_CPPFLAGS = $(CORE_PROFILE) -coverage -Wall -I../libmm3d -I../mm3dcore -I../ -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
 
-CLEANFILES = $(libdepui_MOC)
-
-
-
+CLEANFILES = $(libdepui_MOC) *.gcno *.gcda
 
