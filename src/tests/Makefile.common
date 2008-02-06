@@ -6,7 +6,7 @@ LFLAGS = -lQtTest -lQtCore -Wall -g -lGL -lGLU
 	g++ $(CXXFLAGS) -c $<
 
 .cc.unit:
-	g++ $(CXXFLAGS) $(LFLAGS) -o $*.unit $< $(LIB)
+	g++ $(CXXFLAGS) $(LFLAGS) -o $*.unit $< $(LIB) -lgcov
 
 .cc.moc:
 	moc-qt4 $< > $*.moc
