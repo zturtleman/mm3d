@@ -100,6 +100,45 @@ private slots:
 
    // FIXME add more tests
 
+   void testGroupName()
+   {
+      local_ptr<Model> lhs = newTestModel();
+      local_ptr<Model> rhs_empty = newTestModel();
+      local_ptr<Model> rhs_firstname = newTestModel();
+      local_ptr<Model> rhs_secondname = newTestModel();
+
+      ModelList rhs_list;
+      rhs_list.push_back( rhs_empty.get() );
+      rhs_list.push_back( rhs_firstname.get() );
+      rhs_list.push_back( rhs_secondname.get() );
+
+      lhs->addGroup( "Group A" );
+      lhs->addGroup( "First Name" );
+      lhs->addGroup( "Group B" );
+      rhs_firstname->addGroup( "Group A" );
+      rhs_firstname->addGroup( "First Name" );
+      rhs_firstname->addGroup( "Group B" );
+      rhs_secondname->addGroup( "Group A" );
+      rhs_secondname->addGroup( "Second Name" );
+      rhs_secondname->addGroup( "Group B" );
+
+      QVERIFY_EQ( std::string("Group A"), std::string(lhs->getGroupName(0)));
+      QVERIFY_EQ( std::string("First Name"), std::string(lhs->getGroupName(1)));
+      QVERIFY_EQ( std::string("Group B"), std::string(lhs->getGroupName(2)));
+
+      lhs->operationComplete( "Add groups" );
+
+      lhs->setGroupName(1, "Second Name" );
+
+      QVERIFY_EQ( std::string("Group A"), std::string(lhs->getGroupName(0)));
+      QVERIFY_EQ( std::string("Second Name"), std::string(lhs->getGroupName(1)));
+      QVERIFY_EQ( std::string("Group B"), std::string(lhs->getGroupName(2)));
+
+      lhs->operationComplete( "Set group name" );
+
+      checkUndoRedo( 2, lhs.get(), rhs_list );
+   }
+
    void testAddRemove()
    {
       local_ptr<Model> m = loadModelOrDie( "data/model_hidden_test.mm3d" );
@@ -244,11 +283,15 @@ private slots:
       m->unselectAll();
    }
 
-   // FIXME deletion preserves triangle indices
-   // FIXME get/set group properties
-   // FIXME normal blending
-   // FIXME normal angle honored
-   // FIXME undo
+   // FIXME add tests:
+   //   deletion preserves triangle indices
+   //   get/set smooth
+   //   get/set angle
+   //   get group by name
+   //   get ungrouped triangles
+   //   normal blending
+   //   normal angle honored
+   //   undo
 
 };
 

@@ -530,9 +530,6 @@ private slots:
       lhs->setTextureCoords( 1, 1, 0.6, 0.4 );
       lhs->setTextureCoords( 1, 2, 0.7, 0.3 );
 
-      // FIXME verify texture coords with getTextureCoords
-      //QVERIFY_EQ( 0, lhs->getTriangleProjection( 0 ) );
-      /*
       float s = 0.0;
       float t = 0.0;
       lhs->getTextureCoords( 0, 0, s, t );
@@ -553,7 +550,6 @@ private slots:
       lhs->getTextureCoords( 1, 2, s, t );
       QVERIFY_EQ( 0.7f, s );
       QVERIFY_EQ( 0.3f, t );
-      */
       lhs->operationComplete( "Set texture coords" );
 
       checkUndoRedo( 2, lhs.get(), rhs_list );
@@ -971,22 +967,7 @@ private slots:
    // FIXME Tests to add
    //
    // Triangle tests:
-   //  x Add/delete triangle
-   //  x Deleting triangle deletes vertex
-   //  x Deleting triangle does not delete free vertex
-   //  x Deleting triangle does not delete shared vertex
-   //  x Set triangle vertex
-   //  x Set texture coords
-   //  x Normal calculation
-   //  x Invert normal
-   //  x Selection
-   //  x getSelectedTriangles
-   //  x Hiding/visbility
-   //  x Texture projection assignment
    //    cosToPoint
-   //  x triangleFacesIn
-   //  x triangle count
-   //  x deleteFlattendTriangles
    //    subdivide
    //       For each triangle
    //         if contains one original point
@@ -996,7 +977,6 @@ private slots:
    //           one triangle contains three unique non-original points
    //         normal matches original triangle
    //       Triangle count and welded vertex count are correct
-   //  x getTriangleVertex
    //
    // FIXME test in other files:
    //    simplify mesh?

@@ -100,6 +100,52 @@ private slots:
       checkUndoRedo( 5, lhs.get(), rhs_list );
    }
 
+   void testGetSelectedList()
+   {
+      local_ptr<Model> lhs = newTestModel();
+
+      lhs->addVertex( 0, 0, 0 );
+      lhs->addVertex( 1, 0, 0 );
+      lhs->addVertex( 1, 1, 0 );
+      lhs->addVertex( 1, 1, 1 );
+      lhs->addVertex( 0, 1, 1 );
+      lhs->addVertex( 0, 0, 1 );
+
+      std::list<int> verts;
+      std::list<int>::const_iterator it;
+
+      lhs->getSelectedVertices( verts );
+      QVERIFY(verts.begin() == verts.end());
+
+      QVERIFY_EQ( 0, (int) lhs->getSelectedVertexCount() );
+      lhs->selectVertex( 0 );
+      QVERIFY_EQ( 1, (int) lhs->getSelectedVertexCount() );
+      lhs->selectVertex( 5 );
+      QVERIFY_EQ( 2, (int) lhs->getSelectedVertexCount() );
+      lhs->selectVertex( 3 );
+      QVERIFY_EQ( 3, (int) lhs->getSelectedVertexCount() );
+      lhs->selectVertex( 2 );
+      QVERIFY_EQ( 4, (int) lhs->getSelectedVertexCount() );
+
+      lhs->getSelectedVertices( verts );
+      QVERIFY(verts.begin() != verts.end());
+
+      it = verts.begin();
+      QVERIFY(it != verts.end());
+      QVERIFY_EQ(0, *it );
+      ++it;
+      QVERIFY(it != verts.end());
+      QVERIFY_EQ(2, *it );
+      ++it;
+      QVERIFY(it != verts.end());
+      QVERIFY_EQ(3, *it );
+      ++it;
+      QVERIFY(it != verts.end());
+      QVERIFY_EQ(5, *it );
+      ++it;
+      QVERIFY(it == verts.end());
+   }
+
    void testMoveVertex()
    {
       local_ptr<Model> lhs = newTestModel();
@@ -121,14 +167,35 @@ private slots:
       rhs_moved->addVertex( 3, 4, 5 );
       rhs_moved->addVertex( 2, 1, 0 );
       rhs_moved->addVertex( -3, -4, -5 );
-      // FIXME test get getVertexCoords
+
+      double expected[3] = { 0, 0, 0 };
+      double actual[3] = { 0, 0, 0 };
+
+      expected[0] = 0; expected[1] = 0; expected[2] = 0;
+      lhs->getVertexCoords( 0, actual );
+      QVERIFY_ARRAY_EQ( expected, 3, actual, 3 );
+      expected[0] = 1; expected[1] = 0; expected[2] = 0;
+      lhs->getVertexCoords( 1, actual );
+      QVERIFY_ARRAY_EQ( expected, 3, actual, 3 );
+      expected[0] = 1; expected[1] = 1; expected[2] = 0;
+      lhs->getVertexCoords( 2, actual );
+      QVERIFY_ARRAY_EQ( expected, 3, actual, 3 );
 
       lhs->operationComplete( "Add vertices" );
       lhs->moveVertex( 0, 3, 4, 5 );
       lhs->moveVertex( 1, 2, 1, 0 );
       lhs->moveVertex( 2, -3, -4, -5 );
 
-      // FIXME test get getVertexCoords
+      expected[0] = 3; expected[1] = 4; expected[2] = 5;
+      lhs->getVertexCoords( 0, actual );
+      QVERIFY_ARRAY_EQ( expected, 3, actual, 3 );
+      expected[0] = 2; expected[1] = 1; expected[2] = 0;
+      lhs->getVertexCoords( 1, actual );
+      QVERIFY_ARRAY_EQ( expected, 3, actual, 3 );
+      expected[0] = -3; expected[1] = -4; expected[2] = -5;
+      lhs->getVertexCoords( 2, actual );
+      QVERIFY_ARRAY_EQ( expected, 3, actual, 3 );
+
       lhs->operationComplete( "Move vertices" );
 
       checkUndoRedo( 2, lhs.get(), rhs_list );
@@ -489,9 +556,6 @@ private slots:
       checkUndoRedo( 3, lhs.get(), rhs_list );
    }
 
-   // FIXME Tests to add
-   // getSelectedVertices
-   //
    // FIXME Tests to add (in other files):
    //
    // add/remove influences
