@@ -26,7 +26,6 @@
 #include "endianconfig.h"
 
 #include <stdarg.h>
-#include <arpa/inet.h>
 
 DataDest::DataDest()
    : m_endian( LittleEndian ),
@@ -213,14 +212,14 @@ ssize_t DataDest::printf( const char * fmt, ... )
 
 ssize_t DataDest::writeAsciiz( const char * buf )
 {
-   size_t len = strlen( buf ) + 1;
+   ssize_t len = strlen( buf ) + 1;
 
    return writeBytes( (uint8_t *) buf, len ) ? len : -1;
 }
 
 ssize_t DataDest::writeString( const char * buf )
 {
-   size_t len = strlen( buf );
+   ssize_t len = strlen( buf );
 
    return writeBytes( (uint8_t *) buf, len ) ? len : -1;
 }

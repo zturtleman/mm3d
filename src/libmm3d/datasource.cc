@@ -25,8 +25,6 @@
 
 #include "endianconfig.h"
 
-#include <arpa/inet.h>
-
 DataSource::DataSource()
    : m_endian( LittleEndian ),
      m_buf( NULL ),
