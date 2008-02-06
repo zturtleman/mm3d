@@ -16,6 +16,7 @@ TESTS = \
 		  model_add_test.unit \
 		  model_vertex_test.unit \
 		  model_triangle_test.unit \
+		  model_group_test.unit \
 		  model_select_test.unit \
 		  model_test.unit \
 		  new_mm3d_test.unit \
@@ -51,6 +52,8 @@ model_vertex_test.unit: model_vertex_test.moc $(LIB)
 
 model_triangle_test.unit: model_triangle_test.moc $(LIB)
 
+model_group_test.unit: model_group_test.moc $(LIB)
+
 model_select_test.unit: model_select_test.moc $(LIB)
 
 model_test.unit: model_test.moc $(LIB)
@@ -77,6 +80,7 @@ check: test
 	./model_add_test.unit -silent
 	./model_vertex_test.unit -silent
 	./model_triangle_test.unit -silent
+	./model_group_test.unit -silent
 	./model_select_test.unit -silent
 	./model_test.unit -silent
 	./util_test.unit -silent
@@ -86,5 +90,12 @@ check: test
 fullcheck: check
 	./new_mm3d_test.unit -silent
 
+cov:
+	mkdir -p cov_html
+	lcov -c -d ../../ -o cov_html/coverage.dat
+	./genhtml -o cov_html/ cov_html/coverage.dat
+
 clean:
-	rm -rf *.unit *.moc core core.*
+	rm -rf *.unit *.moc core core.* *.gcno
+
+.PHONY: cov
