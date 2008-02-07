@@ -17,6 +17,7 @@ TESTS = \
 		  model_vertex_test.unit \
 		  model_triangle_test.unit \
 		  model_group_test.unit \
+		  model_material_test.unit \
 		  model_select_test.unit \
 		  model_test.unit \
 		  new_mm3d_test.unit \
@@ -54,6 +55,8 @@ model_triangle_test.unit: model_triangle_test.moc $(LIB)
 
 model_group_test.unit: model_group_test.moc $(LIB)
 
+model_material_test.unit: model_material_test.moc $(LIB)
+
 model_select_test.unit: model_select_test.moc $(LIB)
 
 model_test.unit: model_test.moc $(LIB)
@@ -81,6 +84,7 @@ check: test
 	./model_vertex_test.unit -silent
 	./model_triangle_test.unit -silent
 	./model_group_test.unit -silent
+	./model_material_test.unit -silent
 	./model_select_test.unit -silent
 	./model_test.unit -silent
 	./util_test.unit -silent
