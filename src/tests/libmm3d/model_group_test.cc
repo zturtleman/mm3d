@@ -45,10 +45,15 @@ private:
 
    void checkGroupContents( std::list<int> & lhs, Model * m, int grp )
    {
-      std::list<int> rhs = m->getGroupTriangles( grp );
+      std::list<int> rhs;
+      if ( grp >= 0 )
+         rhs = m->getGroupTriangles( grp );
+      else
+         rhs = m->getUngroupedTriangles();
       lhs.sort();
       rhs.sort();
-      QVERIFY( lhs == rhs );
+
+      QVERIFY_TRUE( lhs == rhs );
 
       std::list<int>::const_iterator it = lhs.begin();
       int tcount = m->getTriangleCount();
@@ -125,6 +130,10 @@ private slots:
       QVERIFY_EQ( std::string("Group A"), std::string(lhs->getGroupName(0)));
       QVERIFY_EQ( std::string("First Name"), std::string(lhs->getGroupName(1)));
       QVERIFY_EQ( std::string("Group B"), std::string(lhs->getGroupName(2)));
+      QVERIFY_EQ( 0, lhs->getGroupByName("Group A"));
+      QVERIFY_EQ( 1, lhs->getGroupByName("First Name"));
+      QVERIFY_EQ( 2, lhs->getGroupByName("Group B"));
+      QVERIFY_EQ( -1, lhs->getGroupByName("Second Name"));
 
       lhs->operationComplete( "Add groups" );
 
@@ -133,8 +142,61 @@ private slots:
       QVERIFY_EQ( std::string("Group A"), std::string(lhs->getGroupName(0)));
       QVERIFY_EQ( std::string("Second Name"), std::string(lhs->getGroupName(1)));
       QVERIFY_EQ( std::string("Group B"), std::string(lhs->getGroupName(2)));
+      QVERIFY_EQ( 0, lhs->getGroupByName("Group A"));
+      QVERIFY_EQ( 1, lhs->getGroupByName("Second Name"));
+      QVERIFY_EQ( 2, lhs->getGroupByName("Group B"));
+      QVERIFY_EQ( -1, lhs->getGroupByName("First Name"));
 
       lhs->operationComplete( "Set group name" );
+
+      checkUndoRedo( 2, lhs.get(), rhs_list );
+   }
+
+   void testGroupAngle()
+   {
+      local_ptr<Model> lhs = newTestModel();
+      local_ptr<Model> rhs_empty = newTestModel();
+      local_ptr<Model> rhs_first = newTestModel();
+      local_ptr<Model> rhs_second = newTestModel();
+
+      ModelList rhs_list;
+      rhs_list.push_back( rhs_empty.get() );
+      rhs_list.push_back( rhs_first.get() );
+      rhs_list.push_back( rhs_second.get() );
+
+      lhs->addGroup( "Group A" );
+      lhs->addGroup( "Group B" );
+      lhs->addGroup( "Group C" );
+      rhs_first->addGroup( "Group A" );
+      rhs_first->addGroup( "Group B" );
+      rhs_first->addGroup( "Group C" );
+      rhs_second->addGroup( "Group A" );
+      rhs_second->addGroup( "Group B" );
+      rhs_second->addGroup( "Group C" );
+
+      lhs->setGroupSmooth( 0, 10 );
+      lhs->setGroupSmooth( 1, 20 );
+      lhs->setGroupSmooth( 2, 30 );
+      rhs_first->setGroupSmooth( 0, 10 );
+      rhs_first->setGroupSmooth( 1, 20 );
+      rhs_first->setGroupSmooth( 2, 30 );
+      rhs_second->setGroupSmooth( 0, 10 );
+      rhs_second->setGroupSmooth( 1, 80 );
+      rhs_second->setGroupSmooth( 2, 30 );
+
+      QVERIFY_EQ( (uint8_t) 10, lhs->getGroupSmooth(0));
+      QVERIFY_EQ( (uint8_t) 20, lhs->getGroupSmooth(1));
+      QVERIFY_EQ( (uint8_t) 30, lhs->getGroupSmooth(2));
+
+      lhs->operationComplete( "Add groups" );
+
+      lhs->setGroupSmooth(1, 80 );
+
+      QVERIFY_EQ( (uint8_t) 10, lhs->getGroupSmooth(0));
+      QVERIFY_EQ( (uint8_t) 80, lhs->getGroupSmooth(1));
+      QVERIFY_EQ( (uint8_t) 30, lhs->getGroupSmooth(2));
+
+      lhs->operationComplete( "Set group smoothness" );
 
       checkUndoRedo( 2, lhs.get(), rhs_list );
    }
@@ -202,27 +264,56 @@ private slots:
 
    void testAddSelected()
    {
-      local_ptr<Model> m = loadModelOrDie( "data/model_hidden_test.mm3d" );
+      local_ptr<Model> m = newTestModel();
 
-      m->unhideAll();
+      for ( int t = 0; t < 12; ++t )
+      {
+         m->addVertex( (double) t, (double) t + 1, (double) t - 1 );
+      }
+      for ( int t = 0; t < 10; ++t )
+      {
+         m->addTriangle( t, t + 1, t + 2 );
+      }
+
       int grp = m->addGroup( "New Group" );
 
       std::list<int> lhs;
 
       // Should be empty
       QVERIFY( lhs == m->getGroupTriangles( grp ) );
+      lhs.clear();
+      lhs.push_back(0);
+      lhs.push_back(1);
+      lhs.push_back(2);
+      lhs.push_back(3);
+      lhs.push_back(4);
+      lhs.push_back(5);
+      lhs.push_back(6);
+      lhs.push_back(7);
+      lhs.push_back(8);
+      lhs.push_back(9);
+      checkGroupContents( lhs, m.get(), -1 );
 
       // Test addSelectedToGroup()
       m->selectTriangle( 0 );
       m->selectTriangle( 1 );
       m->selectTriangle( 2 );
       m->selectTriangle( 3 );
+      lhs.clear();
       lhs.push_back( 0 );
       lhs.push_back( 1 );
       lhs.push_back( 2 );
       lhs.push_back( 3 );
       m->addSelectedToGroup( grp );
       checkGroupContents( lhs, m.get(), grp );
+      lhs.clear();
+      lhs.push_back(4);
+      lhs.push_back(5);
+      lhs.push_back(6);
+      lhs.push_back(7);
+      lhs.push_back(8);
+      lhs.push_back(9);
+      checkGroupContents( lhs, m.get(), -1 );
       m->unselectAll();
 
       // Test addSelectedToGroup() does not duplicate triangles in group
@@ -230,10 +321,21 @@ private slots:
       m->selectTriangle( 3 );
       m->selectTriangle( 4 );
       m->selectTriangle( 5 );
+      lhs.clear();
+      lhs.push_back( 0 );
+      lhs.push_back( 1 );
+      lhs.push_back( 2 );
+      lhs.push_back( 3 );
       lhs.push_back( 4 );
       lhs.push_back( 5 );
       m->addSelectedToGroup( grp );
       checkGroupContents( lhs, m.get(), grp );
+      lhs.clear();
+      lhs.push_back(6);
+      lhs.push_back(7);
+      lhs.push_back(8);
+      lhs.push_back(9);
+      checkGroupContents( lhs, m.get(), -1 );
       m->unselectAll();
 
       // Test setSelectedAsGroup(), including removal of triangles that
@@ -252,6 +354,13 @@ private slots:
       lhs.push_back( 9 );
       m->setSelectedAsGroup( grp );
       checkGroupContents( lhs, m.get(), grp );
+      lhs.clear();
+      lhs.push_back(0);
+      lhs.push_back(2);
+      lhs.push_back(4);
+      lhs.push_back(6);
+      lhs.push_back(8);
+      checkGroupContents( lhs, m.get(), -1 );
       m->unselectAll();
 
       // Test that addSelectedToGroup removes triangles from another group
@@ -268,6 +377,13 @@ private slots:
       lhs.push_back( 3 );
       lhs.push_back( 5 );
       checkGroupContents( lhs, m.get(), grp2 );
+      lhs.clear();
+      lhs.push_back(0);
+      lhs.push_back(2);
+      lhs.push_back(4);
+      lhs.push_back(6);
+      lhs.push_back(8);
+      checkGroupContents( lhs, m.get(), -1 );
       m->unselectAll();
 
       // Test that setSelecedAsGroup removes triangles from another group
@@ -280,17 +396,29 @@ private slots:
       lhs.push_back( 7 );
       lhs.push_back( 9 );
       checkGroupContents( lhs, m.get(), grp );
+      lhs.clear();
+      lhs.push_back(0);
+      lhs.push_back(2);
+      lhs.push_back(3);
+      lhs.push_back(4);
+      lhs.push_back(5);
+      lhs.push_back(6);
+      lhs.push_back(8);
+      checkGroupContents( lhs, m.get(), -1 );
       m->unselectAll();
+
+      // FIXME test undo
    }
 
    // FIXME add tests:
    //   deletion preserves triangle indices
-   //   get/set smooth
-   //   get/set angle
-   //   get group by name
-   //   get ungrouped triangles
+   // x get/set smooth
+   // x get/set angle
+   // x get group by name
+   // x get ungrouped triangles
    //   normal blending
-   //   normal angle honored
+   //     smoothness
+   //     max angle
    //   undo
 
 };
