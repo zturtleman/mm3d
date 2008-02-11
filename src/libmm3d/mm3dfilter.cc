@@ -1830,7 +1830,6 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
       uint32_t offset   = _offsetGet( MDT_FrameAnims, offsetList );
 
       m_src->seek(offset);
-      log_debug( "seeking to %u\n", offset );
 
       uint16_t flags = 0;
       uint32_t count = 0;
@@ -3059,7 +3058,6 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
 
          unsigned vcount = modelVertices.size();
 
-         //animSize += frameCount * sizeof(uint32_t);
          animSize += frameCount * vcount * sizeof(float32_t) * 3;
 
          uint16_t  flags = 0x0000;
