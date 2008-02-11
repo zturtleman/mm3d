@@ -1830,6 +1830,7 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
       uint32_t offset   = _offsetGet( MDT_FrameAnims, offsetList );
 
       m_src->seek(offset);
+      log_debug( "seeking to %u\n", offset );
 
       uint16_t flags = 0;
       uint32_t count = 0;
@@ -1853,7 +1854,8 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
 
          if ( size > m_src->getRemaining() )
          {
-            log_error( "Size of frame animation is too large for file data\n" );
+            log_error( "Size of frame animation is too large for file data (%d > %d)\n",
+                  size, m_src->getRemaining() );
             return Model::ERROR_BAD_DATA;
          }
 
@@ -2478,6 +2480,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
             lightProp = mat->m_emissive[i];
             m_dst->write( lightProp );
          }
+         lightProp = mat->m_shininess;
          m_dst->write( lightProp );
 
       }
@@ -3056,7 +3059,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
 
          unsigned vcount = modelVertices.size();
 
-         animSize += frameCount * sizeof(uint32_t);
+         //animSize += frameCount * sizeof(uint32_t);
          animSize += frameCount * vcount * sizeof(float32_t) * 3;
 
          uint16_t  flags = 0x0000;
@@ -3073,6 +3076,8 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
          {
             Model::FrameAnimVertexList * list = fa->m_frameData[f]->m_frameVertices;
             unsigned avcount = list->size();
+            log_debug( "vcount = %d, avcount = %d, size = %d\n",
+                  vcount, avcount, animSize );
             for ( unsigned v = 0; v < vcount; v++ )
             {
                if ( v < avcount )
