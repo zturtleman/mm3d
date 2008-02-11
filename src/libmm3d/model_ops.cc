@@ -720,6 +720,8 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
    if ( !match )
       matchVal &= ~(CompareGeometry | CompareMeta | CompareInfluences);
 
+   log_debug( "  after vertices: %X\n", matchVal );
+
    match = false;
 
    if ( (matchVal & (CompareGeometry | CompareFaces | CompareTextures | CompareMeta))
@@ -739,6 +741,8 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
 
    if ( !match )
       matchVal &= ~(CompareGeometry | CompareFaces | CompareMeta | CompareTextures );
+
+   log_debug( "  after triangles: %X\n", matchVal );
 
    match = false;
 
@@ -760,6 +764,8 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
    if ( !match )
       matchVal &= ~(CompareGroups | CompareGeometry | CompareMaterials | CompareMeta);
 
+   log_debug( "  after groups: %X\n", matchVal );
+
    match = false;
 
    if ( (matchVal & (CompareSkeleton | CompareMeta))
@@ -780,6 +786,8 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
    if ( !match )
       matchVal &= ~(CompareSkeleton | CompareMeta);
 
+   log_debug( "  after joints: %X\n", matchVal );
+
    match = false;
 
    if ( (matchVal & (ComparePoints | CompareInfluences | CompareMeta))
@@ -799,6 +807,8 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
 
    if ( !match )
       matchVal &= ~(ComparePoints | CompareMeta | CompareInfluences);
+
+   log_debug( "  after points: %X\n", matchVal );
 
    match = false;
 
@@ -833,6 +843,8 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
    if ( !match )
       matchVal &= ~(CompareMaterials | CompareTextures);
 
+   log_debug( "  after projections: %X\n", matchVal );
+
    match = false;
 
    if ( (matchVal & (CompareAnimData | CompareAnimSets))
@@ -862,6 +874,8 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
 
    if ( !match )
       matchVal &= ~(CompareAnimData | CompareAnimSets);
+
+   log_debug( "  after anims: %X\n", matchVal );
 
    match = false;
 
@@ -906,6 +920,8 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
 
    if ( !match )
       matchVal &= ~CompareMeta;
+
+   log_debug( "  after meta: %X\n", matchVal );
 
    return matchVal;
 }
