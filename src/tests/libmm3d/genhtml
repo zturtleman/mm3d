@@ -535,7 +535,9 @@ sub gen_html()
 	# Process each subdirectory and collect overview information
 	foreach $dir_name (@dir_list)
 	{
+      # KSW: Skip some directories that I don't want in my coverage report
       next if ( $dir_name =~ m#^/usr# );
+      next if ( $dir_name =~ m#/src/tests/# );
 
 		($lines_found, $lines_hit) = process_dir($dir_name);
 
