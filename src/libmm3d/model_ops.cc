@@ -709,7 +709,7 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
 
       for ( v = 0; match && v < numVertices; v++ )
       {
-         if ( !m_vertices[v]->equal( *model->m_vertices[v], compareMask ) )
+         if ( !m_vertices[v]->equal( *model->m_vertices[v], compareMask, tolerance ) )
          {
             log_debug( "match failed at vertex %d\n", v );
             match = false;
@@ -729,9 +729,9 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
    {
       match = true;
 
-      for ( t = 0; t < numTriangles; t++ )
+      for ( t = 0; match && t < numTriangles; t++ )
       {
-         if ( !m_triangles[t]->equal( *model->m_triangles[t], compareMask ) )
+         if ( !m_triangles[t]->equal( *model->m_triangles[t], compareMask, tolerance ) )
          {
             log_debug( "match failed at triangle %d\n", t );
             match = false;
@@ -753,7 +753,7 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
 
       for ( unsigned int g = 0; match && g < numGroups; g++ )
       {
-         if ( !m_groups[g]->equal( *model->m_groups[g], compareMask ) )
+         if ( !m_groups[g]->equal( *model->m_groups[g], compareMask, tolerance ) )
          {
             match = false;
             log_debug( "match failed at group %d\n", g );
@@ -775,7 +775,7 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
 
       for ( unsigned j = 0; match && j < numJoints; j++ )
       {
-         if ( !m_joints[j]->equal( *model->m_joints[j], compareMask ) )
+         if ( !m_joints[j]->equal( *model->m_joints[j], compareMask, tolerance ) )
          {
             log_debug( "match failed at joint %d\n", j );
             match = false;
@@ -797,7 +797,7 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
 
       for ( unsigned p = 0; match && p < numPoints; p++ )
       {
-         if ( !m_points[p]->equal( *model->m_points[p], compareMask ) )
+         if ( !m_points[p]->equal( *model->m_points[p], compareMask, tolerance ) )
          {
             match = false;
             log_debug( "match failed at point %d\n", p );
@@ -820,7 +820,7 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
 
       for ( t = 0; t < numTextures; t++ )
       {
-         if ( !m_materials[t]->equal( *model->m_materials[t], compareMask ) )
+         if ( !m_materials[t]->equal( *model->m_materials[t], compareMask, tolerance ) )
          {
             log_debug( "match failed at material %d\n", t );
             match = false;
@@ -831,7 +831,7 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
       {
          for ( t = 0; t < numProjections; t++ )
          {
-            if ( !m_projections[t]->equal( *model->m_projections[t], compareMask ) )
+            if ( !m_projections[t]->equal( *model->m_projections[t], compareMask, tolerance ) )
             {
                log_debug( "match failed at projection %d\n", t );
                match = false;
@@ -855,7 +855,7 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
 
       for ( t = 0; match && t < numSkelAnims; t++ )
       {
-         if ( !m_skelAnims[t]->equal( *model->m_skelAnims[t], compareMask ) )
+         if ( !m_skelAnims[t]->equal( *model->m_skelAnims[t], compareMask, tolerance ) )
          {
             log_debug( "match failed at skel animation %d\n", t );
             match = false;
@@ -864,7 +864,7 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
 
       for ( t = 0; match && t < numFrameAnims; t++ )
       {
-         if ( !m_frameAnims[t]->equal( *model->m_frameAnims[t], compareMask ) )
+         if ( !m_frameAnims[t]->equal( *model->m_frameAnims[t], compareMask, tolerance ) )
          {
             log_debug( "match failed at frame animation %d\n", t );
             match = false;
@@ -910,7 +910,7 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
 
       for ( unsigned int b = 0; b < MAX_BACKGROUND_IMAGES; ++b )
       {
-         if ( !m_background[b]->equal( *model->m_background[b], compareMask ) )
+         if ( !m_background[b]->equal( *model->m_background[b], compareMask, tolerance ) )
          {
             log_debug( "match failed at background image %d\n", t );
             match = false;

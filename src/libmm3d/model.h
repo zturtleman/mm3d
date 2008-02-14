@@ -220,6 +220,7 @@ class Model
             static void stats();
             static Vertex * get();
             void release();
+            void sprint( std::string & dest );
 
             double m_coord[3];     // Absolute vertex location
             double m_kfCoord[3];   // Animated position
@@ -237,7 +238,7 @@ class Model
             // List of bone joints that move the vertex in skeletal animations.
             InfluenceList m_influences;
 
-            bool equal( const Vertex & rhs, int compareBits = CompareAll ) const;
+            bool equal( const Vertex & rhs, int compareBits = CompareAll, double tolerance = 0.00001 ) const;
             bool operator==( const Vertex & rhs ) const
                { return equal( rhs ); }
 
@@ -261,6 +262,7 @@ class Model
             static void stats();
             static Triangle * get();
             void release();
+            void sprint( std::string & dest );
 
             unsigned m_vertexIndices[3];
 
@@ -283,7 +285,7 @@ class Model
             bool  m_userMarked;
             int   m_projection;  // Index of texture projection (-1 for none)
 
-            bool equal( const Triangle & rhs, int compareBits = CompareAll ) const;
+            bool equal( const Triangle & rhs, int compareBits = CompareAll, double tolerance = 0.00001 ) const;
             bool operator==( const Triangle & rhs ) const
                { return equal( rhs ); }
 
@@ -309,6 +311,7 @@ class Model
             static void stats();
             static Group * get();
             void release();
+            void sprint( std::string & dest );
 
             std::string m_name;
             int         m_materialIndex;    // Material index (-1 for none)
@@ -327,7 +330,7 @@ class Model
             bool        m_visible;
             bool        m_marked;
 
-            bool equal( const Group & rhs, int compareBits = CompareAll ) const;
+            bool equal( const Group & rhs, int compareBits = CompareAll, double tolerance = 0.00001 ) const;
             bool operator==(const Group & rhs ) const
                { return equal( rhs ); }
 
@@ -361,6 +364,7 @@ class Model
             static void stats();
             static Material * get();
             void release();
+            void sprint( std::string & dest );
 
             std::string   m_name;
             MaterialTypeE m_type;         // See MaterialTypeE above
@@ -391,7 +395,7 @@ class Model
             std::string   m_alphaFilename;  // Unused
             Texture     * m_textureData;    // Texture data (for MATTYPE_TEXTURE)
 
-            bool equal( const Material & rhs, int compareBits = CompareAll ) const;
+            bool equal( const Material & rhs, int compareBits = CompareAll, double tolerance = 0.00001 ) const;
             bool operator==(const Material & rhs ) const
                { return equal( rhs ); }
 
@@ -416,6 +420,7 @@ class Model
             static Keyframe * get();
 
             void release();
+            void sprint( std::string & dest );
 
             int m_jointIndex;       // Joint that this keyframe affects
             unsigned m_frame;       // Frame number for this keyframe
@@ -431,7 +436,7 @@ class Model
             {
                return ( this->m_frame == rhs.m_frame && this->m_isRotation == rhs.m_isRotation );
             };
-            bool equal( const Keyframe & rhs, int compareBits = CompareAll ) const;
+            bool equal( const Keyframe & rhs, int compareBits = CompareAll, double tolerance = 0.00001 ) const;
 
          protected:
             Keyframe();
@@ -455,6 +460,7 @@ class Model
             static void stats();
             static Joint * get();
             void release();
+            void sprint( std::string & dest );
 
             std::string m_name;
             double m_localRotation[3];     // Rotation relative to parent joint (or origin if no parent)
@@ -473,7 +479,7 @@ class Model
             bool m_visible;
             bool m_marked;
 
-            bool equal( const Joint & rhs, int compareBits = CompareAll ) const;
+            bool equal( const Joint & rhs, int compareBits = CompareAll, double tolerance = 0.00001 ) const;
             bool operator==(const Joint & rhs ) const
                { return equal( rhs ); }
 
@@ -495,6 +501,7 @@ class Model
             static void stats();
             static Point * get();
             void release();
+            void sprint( std::string & dest );
 
             std::string m_name;
             int m_type;
@@ -515,7 +522,7 @@ class Model
             // List of bone joints that move the point in skeletal animations.
             InfluenceList m_influences;
 
-            bool equal( const Point & rhs, int compareBits = CompareAll ) const;
+            bool equal( const Point & rhs, int compareBits = CompareAll, double tolerance = 0.00001 ) const;
             bool operator==(const Point & rhs ) const
                { return equal( rhs ); }
 
@@ -538,6 +545,7 @@ class Model
             static void stats();
             static TextureProjection * get();
             void release();
+            void sprint( std::string & dest );
 
             std::string m_name;
             int m_type;            // See TextureProjectionTypeE
@@ -549,7 +557,7 @@ class Model
             bool   m_selected;
             bool   m_marked;
 
-            bool equal( const TextureProjection & rhs, int compareBits = CompareAll ) const;
+            bool equal( const TextureProjection & rhs, int compareBits = CompareAll, double tolerance = 0.00001 ) const;
             bool operator==(const TextureProjection & rhs ) const
                { return equal( rhs ); }
 
@@ -576,6 +584,7 @@ class Model
             static SkelAnim * get();
             void release();
             void releaseData();
+            void sprint( std::string & dest );
 
             std::string m_name;
             JointKeyframeList m_jointKeyframes;
@@ -584,7 +593,7 @@ class Model
             unsigned m_frameCount;    // Number of frames in the animation
             bool     m_validNormals;  // Whether or not the normals have been calculated for the current animation frame
 
-            bool equal( const SkelAnim & rhs, int compareBits = CompareAll ) const;
+            bool equal( const SkelAnim & rhs, int compareBits = CompareAll, double tolerance = 0.00001 ) const;
             bool operator==(const SkelAnim & rhs ) const
                { return equal( rhs ); }
 
@@ -607,11 +616,12 @@ class Model
             static void stats();
             static FrameAnimVertex * get();
             void release();
+            void sprint( std::string & dest );
 
             double m_coord[3];
             double m_normal[3];
 
-            bool equal( const FrameAnimVertex & rhs, int compareBits = CompareAll ) const;
+            bool equal( const FrameAnimVertex & rhs, int compareBits = CompareAll, double tolerance = 0.00001 ) const;
             bool operator==(const FrameAnimVertex & rhs ) const
                { return equal( rhs ); }
 
@@ -636,11 +646,12 @@ class Model
             static void stats();
             static FrameAnimPoint * get();
             void release();
+            void sprint( std::string & dest );
 
             double m_trans[3];
             double m_rot[3];
 
-            bool equal( const FrameAnimPoint & rhs, int compareBits = CompareAll ) const;
+            bool equal( const FrameAnimPoint & rhs, int compareBits = CompareAll, double tolerance = 0.00001 ) const;
             bool operator==(const FrameAnimPoint & rhs ) const
                { return equal( rhs ); }
 
@@ -666,7 +677,7 @@ class Model
 
               void releaseData();
 
-              bool equal( const FrameAnimData & rhs, int compareBits = CompareAll ) const;
+              bool equal( const FrameAnimData & rhs, int compareBits = CompareAll, double tolerance = 0.00001 ) const;
               bool operator==(const FrameAnimData & rhs ) const
                { return equal( rhs ); }
       };
@@ -686,6 +697,7 @@ class Model
             static FrameAnim * get();
             void release();
             void releaseData();
+            void sprint( std::string & dest );
 
             std::string m_name;
             // Each element in m_frameData is one frame. The frames hold lists of
@@ -695,7 +707,7 @@ class Model
             double m_fps;  // Frames per second
             bool   m_validNormals;  // Whether or not the normals have been calculated
 
-            bool equal( const FrameAnim & rhs, int compareBits = CompareAll ) const;
+            bool equal( const FrameAnim & rhs, int compareBits = CompareAll, double tolerance = 0.00001 ) const;
             bool operator==(const FrameAnim & rhs ) const
                { return equal( rhs ); }
 
@@ -731,11 +743,13 @@ class Model
             BackgroundImage();
             virtual ~BackgroundImage();
 
+            void sprint( std::string & dest );
+
             std::string m_filename;
             float m_scale;      // 1.0 means 1 GL unit from the center to the edges of the image
             float m_center[3];  // Point in the viewport where the image is centered
 
-            bool equal( const BackgroundImage & rhs, int compareBits = CompareAll ) const;
+            bool equal( const BackgroundImage & rhs, int compareBits = CompareAll, double tolerance = 0.00001 ) const;
             bool operator==(const BackgroundImage & rhs ) const
                { return equal( rhs ); }
       };
@@ -913,6 +927,8 @@ class Model
       // Compares if two models are equal. Returns maks of successful
       // compares (see CompareBits). FIXME tolerance is ignored.
       int equal( const Model * model, int compareMask = CompareGeometry, double tolerance = 0.00001 ) const;
+
+      void sprint( std::string & dest );
 
       // ------------------------------------------------------------------
       // "Meta" data, model information that is not rendered in a viewport.

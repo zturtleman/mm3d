@@ -59,10 +59,10 @@ list<Model::FrameAnimPoint *> Model::FrameAnimPoint::s_recycle;
 const double EQ_TOLERANCE = 0.00001;
 
 template<typename T>
-bool floatCompareVector( T * lhs, T * rhs, size_t len )
+bool floatCompareVector( T * lhs, T * rhs, size_t len, double tolerance = EQ_TOLERANCE )
 {
    for ( size_t index = 0; index < len; ++index )
-      if ( fabs( lhs[index] - rhs[index] ) > EQ_TOLERANCE )
+      if ( fabs( lhs[index] - rhs[index] ) > tolerance )
          return false;
    return true;
 }
@@ -138,11 +138,11 @@ void Model::Vertex::release()
    }
 }
 
-bool Model::Vertex::equal(const Vertex & rhs, int compareBits ) const
+bool Model::Vertex::equal(const Vertex & rhs, int compareBits, double tolerance ) const
 {
    if ( (compareBits & CompareGeometry) != 0 )
    {
-      if ( !floatCompareVector( m_coord, rhs.m_coord, 3 ) )
+      if ( !floatCompareVector( m_coord, rhs.m_coord, 3, tolerance ) )
          return false;
    }
 
@@ -263,7 +263,7 @@ void Model::Triangle::release()
    }
 }
 
-bool Model::Triangle::equal(const Triangle & rhs, int compareBits ) const
+bool Model::Triangle::equal(const Triangle & rhs, int compareBits, double tolerance ) const
 {
    if ( (compareBits & (CompareGeometry | CompareFaces)) != 0 )
    {
@@ -372,7 +372,7 @@ void Model::Group::release()
    }
 }
 
-bool Model::Group::equal(const Group & rhs, int compareBits ) const
+bool Model::Group::equal(const Group & rhs, int compareBits, double tolerance ) const
 {
    if ( (compareBits & CompareGroups) != 0
          || (compareBits & CompareGeometry) != 0 )
@@ -514,7 +514,7 @@ void Model::Material::release()
    }
 }
 
-bool Model::Material::equal(const Material & rhs, int compareBits ) const
+bool Model::Material::equal(const Material & rhs, int compareBits, double tolerance ) const
 {
    if ( (compareBits & CompareMaterials) != 0 )
    {
@@ -522,15 +522,15 @@ bool Model::Material::equal(const Material & rhs, int compareBits ) const
          return false;
 
       // Compare lighting
-      if ( !floatCompareVector( m_ambient, rhs.m_ambient, 4 ) )
+      if ( !floatCompareVector( m_ambient, rhs.m_ambient, 4, tolerance ) )
          return false;
-      if ( !floatCompareVector( m_diffuse, rhs.m_diffuse, 4 ) )
+      if ( !floatCompareVector( m_diffuse, rhs.m_diffuse, 4, tolerance ) )
          return false;
-      if ( !floatCompareVector( m_specular, rhs.m_specular, 4 ) )
+      if ( !floatCompareVector( m_specular, rhs.m_specular, 4, tolerance ) )
          return false;
-      if ( !floatCompareVector( m_emissive, rhs.m_emissive, 4 ) )
+      if ( !floatCompareVector( m_emissive, rhs.m_emissive, 4, tolerance ) )
          return false;
-      if ( fabs(m_shininess - rhs.m_shininess) > EQ_TOLERANCE )
+      if ( fabs(m_shininess - rhs.m_shininess) > tolerance )
          return false;
    }
 
@@ -637,7 +637,7 @@ void Model::Keyframe::release()
    }
 }
 
-bool Model::Keyframe::equal(const Keyframe & rhs, int compareBits ) const
+bool Model::Keyframe::equal(const Keyframe & rhs, int compareBits, double tolerance ) const
 {
    if ( (compareBits & CompareAnimData) != 0 )
    {
@@ -649,7 +649,7 @@ bool Model::Keyframe::equal(const Keyframe & rhs, int compareBits ) const
          return false;
       if ( fabs( m_time - rhs.m_time ) > EQ_TOLERANCE )
          return false;
-      if ( !floatCompareVector( m_parameter, rhs.m_parameter, 3 ) )
+      if ( !floatCompareVector( m_parameter, rhs.m_parameter, 3, tolerance ) )
          return false;
    }
 
@@ -720,7 +720,7 @@ void Model::Joint::stats()
    log_debug( "Joint: %d/%d\n", s_recycle.size(), s_allocated );
 }
 
-bool Model::Joint::equal(const Joint & rhs, int compareBits ) const
+bool Model::Joint::equal(const Joint & rhs, int compareBits, double tolerance ) const
 {
    if ( (compareBits & CompareSkeleton) != 0 )
    {
@@ -828,7 +828,7 @@ void Model::Point::stats()
    log_debug( "Point: %d/%d\n", s_recycle.size(), s_allocated );
 }
 
-bool Model::Point::equal(const Point & rhs, int compareBits ) const
+bool Model::Point::equal(const Point & rhs, int compareBits, double tolerance ) const
 {
    if ( (compareBits & ComparePoints) != 0 )
    {
@@ -950,21 +950,21 @@ void Model::TextureProjection::stats()
    log_debug( "TextureProjection: %d/%d\n", 0, s_allocated );
 }
 
-bool Model::TextureProjection::equal(const TextureProjection & rhs, int compareBits ) const
+bool Model::TextureProjection::equal(const TextureProjection & rhs, int compareBits, double tolerance ) const
 {
    if ( (compareBits & CompareTextures) != 0 )
    {
       if ( m_type != rhs.m_type )
          return false;
-      if ( !floatCompareVector( m_pos, rhs.m_pos, 3 ) )
+      if ( !floatCompareVector( m_pos, rhs.m_pos, 3, tolerance ) )
          return false;
-      if ( !floatCompareVector( m_upVec, rhs.m_upVec, 3 ) )
+      if ( !floatCompareVector( m_upVec, rhs.m_upVec, 3, tolerance ) )
          return false;
-      if ( !floatCompareVector( m_seamVec, rhs.m_seamVec, 3 ) )
+      if ( !floatCompareVector( m_seamVec, rhs.m_seamVec, 3, tolerance ) )
          return false;
-      if ( !floatCompareVector( m_range[0], rhs.m_range[0], 2 ) )
+      if ( !floatCompareVector( m_range[0], rhs.m_range[0], 2, tolerance ) )
          return false;
-      if ( !floatCompareVector( m_range[1], rhs.m_range[1], 2 ) )
+      if ( !floatCompareVector( m_range[1], rhs.m_range[1], 2, tolerance ) )
          return false;
    }
 
@@ -1059,7 +1059,7 @@ void Model::SkelAnim::stats()
    log_debug( "SkelAnim: %d/%d\n", s_recycle.size(), s_allocated );
 }
 
-bool Model::SkelAnim::equal(const SkelAnim & rhs, int compareBits ) const
+bool Model::SkelAnim::equal(const SkelAnim & rhs, int compareBits, double tolerance ) const
 {
    if ( (compareBits & CompareAnimSets) != 0 )
    {
@@ -1198,7 +1198,7 @@ void Model::FrameAnim::stats()
    log_debug( "FrameAnim: %d/%d\n", s_recycle.size(), s_allocated );
 }
 
-bool Model::FrameAnim::equal(const FrameAnim & rhs, int compareBits ) const
+bool Model::FrameAnim::equal(const FrameAnim & rhs, int compareBits, double tolerance ) const
 {
    if ( (compareBits & CompareAnimSets) != 0 )
    {
@@ -1219,7 +1219,7 @@ bool Model::FrameAnim::equal(const FrameAnim & rhs, int compareBits ) const
       for ( ; lhs_it != m_frameData.end() && rhs_it != m_frameData.end();
             ++lhs_it, ++rhs_it )
       {
-         if ( !(*lhs_it)->equal( **rhs_it ) )
+         if ( !(*lhs_it)->equal( **rhs_it, compareBits, tolerance ) )
             return false;
       }
    }
@@ -1293,11 +1293,11 @@ void Model::FrameAnimVertex::stats()
    log_debug( "FrameAnimVertex: %d/%d\n", s_recycle.size(), s_allocated );
 }
 
-bool Model::FrameAnimVertex::equal(const FrameAnimVertex & rhs, int compareBits ) const
+bool Model::FrameAnimVertex::equal(const FrameAnimVertex & rhs, int compareBits, double tolerance ) const
 {
    if ( (compareBits & CompareAnimData) != 0 )
    {
-      if ( !floatCompareVector( m_coord, rhs.m_coord, 3 ) )
+      if ( !floatCompareVector( m_coord, rhs.m_coord, 3, tolerance ) )
          return false;
    }
 
@@ -1370,20 +1370,20 @@ void Model::FrameAnimPoint::stats()
    log_debug( "FrameAnimPoint: %d/%d\n", s_recycle.size(), s_allocated );
 }
 
-bool Model::FrameAnimPoint::equal(const FrameAnimPoint & rhs, int compareBits ) const
+bool Model::FrameAnimPoint::equal(const FrameAnimPoint & rhs, int compareBits, double tolerance ) const
 {
    if ( (compareBits & CompareAnimData) != 0 )
    {
-      if ( !floatCompareVector( m_trans, rhs.m_trans, 3 ) )
+      if ( !floatCompareVector( m_trans, rhs.m_trans, 3, tolerance ) )
          return false;
-      if ( !floatCompareVector( m_rot, rhs.m_rot, 3 ) )
+      if ( !floatCompareVector( m_rot, rhs.m_rot, 3, tolerance ) )
          return false;
    }
 
    return true;
 }
 
-bool Model::FrameAnimData::equal(const FrameAnimData & rhs, int compareBits ) const
+bool Model::FrameAnimData::equal(const FrameAnimData & rhs, int compareBits, double tolerance ) const
 {
    if ( (compareBits & CompareAnimData) != 0 )
    {
@@ -1395,7 +1395,7 @@ bool Model::FrameAnimData::equal(const FrameAnimData & rhs, int compareBits ) co
 
       for ( ; lv != m_frameVertices->end(), rv != rhs.m_frameVertices->end(); ++lv, ++rv )
       {
-         if ( !(*lv)->equal( **rv ) )
+         if ( !(*lv)->equal( **rv, compareBits, tolerance ) )
             return false;
       }
 
@@ -1442,7 +1442,7 @@ Model::BackgroundImage::~BackgroundImage()
 {
 }
 
-bool Model::BackgroundImage::equal(const BackgroundImage & rhs, int compareBits ) const
+bool Model::BackgroundImage::equal(const BackgroundImage & rhs, int compareBits, double tolerance ) const
 {
    if ( (compareBits & CompareMeta) != 0 )
    {
@@ -1452,7 +1452,7 @@ bool Model::BackgroundImage::equal(const BackgroundImage & rhs, int compareBits 
       if ( fabs( m_scale - rhs.m_scale ) > EQ_TOLERANCE )
          return false;
 
-      if ( !floatCompareVector( m_center, rhs.m_center, 3 ) )
+      if ( !floatCompareVector( m_center, rhs.m_center, 3, tolerance ) )
          return false;
    }
 
