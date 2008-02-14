@@ -63,7 +63,7 @@ static std::string _convertFormat = "";
 
 static bool _doBatch = false;
 
-static bool _doScripts = true;
+static bool _doScripts = false;
 static bool _doFilterTest = false;
 static bool _doTextureTest = false;
 static bool _doModelTest = false;
