@@ -85,7 +85,7 @@ libmm3d_a_SOURCES = \
 	mesh.cc \
 	misc.cc \
 	mlocale.cc \
-	model.cc model_anim.cc model_bool.cc model_copy.cc model_draw.cc model_group.cc model_influence.cc model_inner.cc model_insert.cc model_meta.cc model_ops.cc model_proj.cc model_select.cc model_texture.cc model_test.cc \
+	model.cc model_anim.cc model_bool.cc model_copy.cc model_draw.cc model_group.cc model_influence.cc model_inner.cc model_insert.cc model_meta.cc model_ops.cc model_print.cc model_proj.cc model_select.cc model_texture.cc model_test.cc \
 	modelfilter.cc \
 	modelstatus.cc \
 	modelundo.cc \
