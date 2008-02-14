@@ -37,8 +37,8 @@
 //   * Invalidate textures
 //   * Texture data compare fuzziness
 //   * add/delete/get format data
-//   * background images
-//   * meta data get/set/remove
+//   * background images get/set image/scale/center
+//   * meta data get(by name/index)/set/removeLast(internal)/clear
 //   * merge models
 //   * merge animations
 //   * boolean operations
@@ -48,27 +48,31 @@
 //   * Deletions
 //     - Delete selected
 //     - Force add/delete
-//     - Remove oprhaned vertices (and not free vertices)
-//     - Remove flattened triangles
+//     x Remove oprhaned vertices (and not free vertices)
+//     x Remove flattened triangles
 //   * Set/get primitive properties
-//     - Vertices
-//     - Faces
-//     - Groups
-//     - Materials
+//     x Vertices
+//     x Faces
+//     x Groups
+//     x Materials
 //     - Bone Joints
 //     - Points
 //     - Texture Projections (seam/up/range/scale/type/rotation(misnamed arg))
 //     - Moving
-//   * Hiding
-//   * Volume selection
-//     - Selection mode
-//     - Interaction with visibility
-//     - Selection test
-//   * Invert selection
-//   * Selection difference
-//   * Joint parent selection
-//   * Select primitives from other primitives
-//   * getSelected{PRIMITIVE} list
+//   - Hiding
+//     x Hide selected
+//     - Hide unselected
+//     x Unhide all
+//   * Selection
+//      - Volume selection
+//        - Selection mode
+//        - Interaction with visibility
+//        - Selection test
+//      - Invert selection
+//      - Selection difference
+//      - Joint parent selection
+//      - Select primitives from other primitives
+//      - getSelected{PRIMITIVE} list
 //   * Bounding region
 //   * Transforms
 //     - Translate
@@ -97,8 +101,13 @@
 //   * Redo works on everything
 //   * Undo current
 //   * Enable/disable works
+//   * Size calculation works
 //   * Limits work
+//   * Atomic operation names
+//   * canUndo/canRedo
+//   * setUndoEnabled
 //   * Save interaction (getSaved/setSaved)
+//   x undoRelease/redoRelease
 //
 // TODO Animation:
 //   * Add/remove animation
