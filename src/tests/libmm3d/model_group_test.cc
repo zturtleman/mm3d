@@ -21,7 +21,7 @@
  */
 
 
-// This file tests grouping methods in the Model class.
+// This file tests material methods in the Model class.
 
 #include <QtTest/QtTest>
 
@@ -411,11 +411,7 @@ private slots:
    }
 
    // FIXME add tests:
-   //   deletion preserves triangle indices
-   // x get/set smooth
-   // x get/set angle
-   // x get group by name
-   // x get ungrouped triangles
+   //   deletion preserves triangle indices in group membership set
    //   normal blending
    //     smoothness
    //     max angle
