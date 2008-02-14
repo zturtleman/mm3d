@@ -34,7 +34,8 @@
 MemDataDest::MemDataDest( uint8_t * buf, size_t bufSize )
    : m_buf( buf ),
      m_bufSize( bufSize ),
-     m_bufOffset( 0 )
+     m_bufOffset( 0 ),
+     m_dataLen( 0 )
 {
    if ( m_buf == NULL )
    {
@@ -60,6 +61,9 @@ bool MemDataDest::internalSeek( off_t off )
 
    m_bufOffset = off;
 
+   if ( m_bufOffset > m_dataLen )
+      m_dataLen = m_bufOffset;
+
    return true;
 }
 
@@ -70,12 +74,16 @@ bool MemDataDest::internalWrite( const uint8_t * buf, size_t bufLen )
 
    if ( m_bufOffset + bufLen > m_bufSize )
    {
+      m_dataLen = m_bufOffset;
       setAtFileLimit( true );
       return false;
    }
 
    memcpy( &m_buf[m_bufOffset], buf, bufLen );
    m_bufOffset += bufLen;
+
+   if ( m_bufOffset > m_dataLen )
+      m_dataLen = m_bufOffset;
 
    return true;
 }
