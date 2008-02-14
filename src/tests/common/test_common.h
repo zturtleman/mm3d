@@ -206,6 +206,18 @@ void CompareArrayEqual(const T * lhs, int lhs_len,
    }
 }
 
+template<>
+void CompareArrayEqual<double>(const double * lhs, int lhs_len,
+      const double * rhs, int rhs_len,
+      const char * lhs_text, const char * rhs_text,
+      const char * file, int line );
+
+template<>
+void CompareArrayEqual<float>(const float * lhs, int lhs_len,
+      const float * rhs, int rhs_len,
+      const char * lhs_text, const char * rhs_text,
+      const char * file, int line );
+
 
 #define QVERIFY_LT( lhs, rhs ) { CompareValLessThan( (lhs), (rhs), #lhs, #rhs, __FILE__, __LINE__ ); }
 #define QVERIFY_GT( lhs, rhs ) { CompareValGreaterThan( (lhs), (rhs), #lhs, #rhs, __FILE__, __LINE__ ); }

@@ -96,6 +96,106 @@ void CompareValNotEqual<float>(const float & lhs, const float & rhs,
    }
 }
 
+template<>
+void CompareArrayEqual<double>(const double * lhs, int lhs_len,
+      const double * rhs, int rhs_len,
+      const char * lhs_text, const char * rhs_text,
+      const char * file, int line )
+{
+   bool eq = true;
+   QString msg;
+   if ( lhs_len != rhs_len )
+   {
+      msg = QString("'len(") + QString(lhs_text) + ") == len(" + QString(rhs_text);
+      msg += ")' eval: ";
+      msg += ConvertValToString( lhs_len ) + QString(" == ") + ConvertValToString( rhs_len );
+      msg += "\n";
+      eq = false;
+   }
+
+   for ( int i = 0; eq && i < lhs_len; ++i )
+   {
+      if ( eq && fabs(lhs_len - rhs_len) > 0.00001 )
+      {
+         msg = QString("'") + QString(lhs_text) + QString("[") + QString::number(i);
+         msg += "] == " + QString(rhs_text) + "[" + QString::number(i);
+         msg += "]'";
+         msg += " eval: ";
+         msg += ConvertValToString( lhs[i] ) + QString(" == ") + ConvertValToString( rhs[i] );
+         msg += "\n";
+         eq = false;
+      }
+   }
+   
+   if ( !eq )
+   {
+      for ( int i = 0; i < lhs_len || i < rhs_len; ++i )
+      {
+         msg += "  ";
+         if ( i < lhs_len )
+            msg += ConvertValToString(lhs[i]) + " == ";
+         else
+            msg += "N/A == ";
+
+         if ( i < rhs_len )
+            msg += ConvertValToString(rhs[i]) + "\n";
+         else
+            msg += "N/A\n";
+      }
+      QTest::qFail( msg.toUtf8(), file, line );
+   }
+}
+
+template<>
+void CompareArrayEqual<float>(const float * lhs, int lhs_len,
+      const float * rhs, int rhs_len,
+      const char * lhs_text, const char * rhs_text,
+      const char * file, int line )
+{
+   bool eq = true;
+   QString msg;
+   if ( lhs_len != rhs_len )
+   {
+      msg = QString("'len(") + QString(lhs_text) + ") == len(" + QString(rhs_text);
+      msg += ")' eval: ";
+      msg += ConvertValToString( lhs_len ) + QString(" == ") + ConvertValToString( rhs_len );
+      msg += "\n";
+      eq = false;
+   }
+
+   for ( int i = 0; eq && i < lhs_len; ++i )
+   {
+      if ( eq && fabs(lhs_len - rhs_len) > 0.00001 )
+      {
+         msg = QString("'") + QString(lhs_text) + QString("[") + QString::number(i);
+         msg += "] == " + QString(rhs_text) + "[" + QString::number(i);
+         msg += "]'";
+         msg += " eval: ";
+         msg += ConvertValToString( lhs[i] ) + QString(" == ") + ConvertValToString( rhs[i] );
+         msg += "\n";
+         eq = false;
+      }
+   }
+   
+   if ( !eq )
+   {
+      for ( int i = 0; i < lhs_len || i < rhs_len; ++i )
+      {
+         msg += "  ";
+         if ( i < lhs_len )
+            msg += ConvertValToString(lhs[i]) + " == ";
+         else
+            msg += "N/A == ";
+
+         if ( i < rhs_len )
+            msg += ConvertValToString(rhs[i]) + "\n";
+         else
+            msg += "N/A\n";
+      }
+      QTest::qFail( msg.toUtf8(), file, line );
+   }
+}
+
 void CompareValTrue(bool cond, const char * cond_text, const char * file, int line )
 {
    if ( !cond )
