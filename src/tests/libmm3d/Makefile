@@ -10,6 +10,7 @@ TESTS = \
 		  datasource_test.unit \
 		  datadest_test.unit \
 		  filedatasource_test.unit \
+		  undomgr_test.unit \
 		  texcompare_test.unit \
 		  model_init_test.unit \
 		  model_equal_test.unit \
@@ -18,12 +19,17 @@ TESTS = \
 		  model_triangle_test.unit \
 		  model_group_test.unit \
 		  model_material_test.unit \
+		  model_joint_test.unit \
 		  model_select_test.unit \
 		  model_test.unit \
 		  new_mm3d_test.unit \
+		  filter_mm3d_test.unit \
+		  filter_obj_test.unit \
+		  filter_md2_test.unit \
 		  cmdlinemgr_test.unit \
 		  util_test.unit \
 		  misc_test.unit \
+		  translation_test.unit \
 
 # Add moc dependencies here
 
@@ -38,6 +44,8 @@ datasource_test.unit: datasource_test.moc $(LIB)
 datadest_test.unit: datadest_test.moc $(LIB)
 
 filedatasource_test.unit: filedatasource_test.moc $(LIB)
+
+undomgr_test.unit: undomgr_test.moc $(LIB)
 
 memutil_test.unit: memutil_test.moc $(LIB)
 
@@ -57,15 +65,25 @@ model_group_test.unit: model_group_test.moc $(LIB)
 
 model_material_test.unit: model_material_test.moc $(LIB)
 
+model_joint_test.unit: model_joint_test.moc $(LIB)
+
 model_select_test.unit: model_select_test.moc $(LIB)
 
 model_test.unit: model_test.moc $(LIB)
 
 new_mm3d_test.unit: new_mm3d_test.moc $(LIB)
 
+filter_mm3d_test.unit: filter_mm3d_test.moc $(LIB)
+
+filter_obj_test.unit: filter_obj_test.moc $(LIB)
+
+filter_md2_test.unit: filter_md2_test.moc $(LIB)
+
 util_test.unit: util_test.moc $(LIB)
 
 misc_test.unit: misc_test.moc $(LIB)
+
+translation_test.unit: translation_test.moc $(LIB)
 
 test: $(TESTS)
 
@@ -76,6 +94,7 @@ check: test
 	./big_endian_test.unit -silent
 	./datasource_test.unit -silent
 	./filedatasource_test.unit -silent
+	./undomgr_test.unit -silent
 	./datadest_test.unit -silent
 	./texcompare_test.unit -silent
 	./model_init_test.unit -silent
@@ -85,10 +104,12 @@ check: test
 	./model_triangle_test.unit -silent
 	./model_group_test.unit -silent
 	./model_material_test.unit -silent
+	./model_joint_test.unit -silent
 	./model_select_test.unit -silent
 	./model_test.unit -silent
 	./util_test.unit -silent
 	./misc_test.unit -silent
+	./translation_test.unit -silent
 	./cmdlinemgr_test.unit -silent
 
 fullcheck: check
