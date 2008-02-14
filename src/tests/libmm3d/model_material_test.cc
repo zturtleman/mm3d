@@ -104,7 +104,6 @@ private slots:
 
       QVERIFY_EQ( (int) Model::Material::MATTYPE_BLANK, (int) lhs->getMaterialType(1) );
       QVERIFY_TRUE( NULL == lhs->getTextureData(1) );
-      //QVERIFY_TRUE( NULL == lhs->getTextureFilename(1) );
 
       QVERIFY_EQ( std::string("One"), std::string(lhs->getTextureName(0)));
       QVERIFY_EQ( std::string("Two"), std::string(lhs->getTextureName(1)));
@@ -115,7 +114,7 @@ private slots:
       QVERIFY_EQ( 2, lhs->getMaterialByName("Three"));
       QVERIFY_EQ( -1, lhs->getMaterialByName("Renamed"));
 
-      lhs->operationComplete( "Add groups" );
+      lhs->operationComplete( "Add materials" );
 
       lhs->setTextureName(1, "Renamed" );
 
@@ -177,7 +176,7 @@ private slots:
       QVERIFY_EQ( 2, lhs->getMaterialByName("test_rgba_comp"));
       QVERIFY_EQ( -1, lhs->getMaterialByName("Renamed"));
 
-      lhs->operationComplete( "Add groups" );
+      lhs->operationComplete( "Add materials" );
 
       lhs->setTextureName(1, "Renamed" );
 
@@ -195,30 +194,480 @@ private slots:
       checkUndoRedo( 2, lhs.get(), rhs_list );
    }
 
-   // FIXME add tests:
-   // x create material (of each type)
-   // x get/set material name
-   // x get type
-   // x get count
-   // x get by name
-   //   delete material
-   //     (implicitly test noTexture)
-   //   setMaterialTexture
-   //   removeMaterialTexture
-   //   getTextureFilename
-   //   getTextureData
-   //   lighting
-   //   clamp
-   //   group material index
-   //   load textures
-   //   invalidate textures
-   //   undo
-   //
+   void testDeleteMaterial()
+   {
+      local_ptr<Model> lhs = newTestModel();
+      local_ptr<Model> rhs_empty = newTestModel();
+      local_ptr<Model> rhs_1 = newTestModel();
+      local_ptr<Model> rhs_2 = newTestModel();
+
+      ModelList rhs_list;
+      rhs_list.push_back( rhs_empty.get() );
+      rhs_list.push_back( rhs_1.get() );
+      rhs_list.push_back( rhs_2.get() );
+
+      QVERIFY_EQ( 0, lhs->getTextureCount() );
+
+      lhs->addColorMaterial( "One" );
+      lhs->addColorMaterial( "Two" );
+      lhs->addColorMaterial( "Three" );
+      lhs->addGroup( "One" );
+      lhs->addGroup( "Two" );
+      lhs->addGroup( "Three" );
+      lhs->setGroupTextureId( 0, 2 );
+      lhs->setGroupTextureId( 1, 1 );
+      lhs->setGroupTextureId( 2, 0 );
+      rhs_1->addColorMaterial( "One" );
+      rhs_1->addColorMaterial( "Two" );
+      rhs_1->addColorMaterial( "Three" );
+      rhs_1->addGroup( "One" );
+      rhs_1->addGroup( "Two" );
+      rhs_1->addGroup( "Three" );
+      rhs_1->setGroupTextureId( 0, 2 );
+      rhs_1->setGroupTextureId( 1, 1 );
+      rhs_1->setGroupTextureId( 2, 0 );
+      rhs_2->addColorMaterial( "One" );
+      rhs_2->addColorMaterial( "Three" );
+      rhs_2->addGroup( "One" );
+      rhs_2->addGroup( "Two" );
+      rhs_2->addGroup( "Three" );
+      rhs_2->setGroupTextureId( 0, 1 );
+      rhs_2->setGroupTextureId( 2, 0 );
+
+      QVERIFY_EQ( 3, lhs->getTextureCount() );
+
+      lhs->operationComplete( "Add materials and groups" );
+
+      lhs->deleteTexture( 1 );
+      QVERIFY_EQ( 2, lhs->getTextureCount() );
+
+      QVERIFY_EQ( 1, lhs->getGroupTextureId(0));
+      QVERIFY_EQ( -1, lhs->getGroupTextureId(1));
+      QVERIFY_EQ( 0, lhs->getGroupTextureId(2));
+
+      QVERIFY_EQ( std::string("One"), std::string(lhs->getTextureName(0)));
+      QVERIFY_EQ( std::string("Three"), std::string(lhs->getTextureName(1)));
+
+      lhs->operationComplete( "Delete material" );
+
+      checkUndoRedo( 2, lhs.get(), rhs_list );
+   }
+
+   void testAddRemoveTexture()
+   {
+      local_ptr<Texture> tex1 = loadTgaOrDie( "data/test_rgb_comp.tga" );
+
+      local_ptr<Model> lhs = newTestModel();
+      local_ptr<Model> rhs_empty = newTestModel();
+      local_ptr<Model> rhs_1 = newTestModel();
+      local_ptr<Model> rhs_2 = newTestModel();
+
+      ModelList rhs_list;
+      rhs_list.push_back( rhs_empty.get() );
+      rhs_list.push_back( rhs_1.get() );
+      rhs_list.push_back( rhs_2.get() );
+      rhs_list.push_back( rhs_1.get() );
+
+      QVERIFY_EQ( 0, lhs->getTextureCount() );
+
+      lhs->addColorMaterial( "One" );
+      lhs->addColorMaterial( "Two" );
+      lhs->addColorMaterial( "Three" );
+      rhs_1->addColorMaterial( "One" );
+      rhs_1->addColorMaterial( "Two" );
+      rhs_1->addColorMaterial( "Three" );
+      rhs_2->addColorMaterial( "One" );
+      rhs_2->addColorMaterial( "Two" );
+      rhs_2->addColorMaterial( "Three" );
+      rhs_2->setMaterialTexture( 1, tex1.get() );
+
+      QVERIFY_EQ( std::string("One"), std::string(lhs->getTextureName(0)));
+      QVERIFY_EQ( std::string("Two"), std::string(lhs->getTextureName(1)));
+      QVERIFY_EQ( std::string("Three"), std::string(lhs->getTextureName(2)));
+
+      QVERIFY_EQ( (int) Model::Material::MATTYPE_BLANK, (int) lhs->getMaterialType(1) );
+      QVERIFY_TRUE( NULL == lhs->getTextureData(1) );
+
+      lhs->operationComplete( "Add materials" );
+
+      lhs->setMaterialTexture(1, tex1.get() );
+      QVERIFY_TRUE( tex1.get() == lhs->getTextureData(1) );
+      QVERIFY_EQ( std::string("data/test_rgb_comp.tga"), std::string(lhs->getTextureFilename(1)) );
+
+      QVERIFY_EQ( (int) Model::Material::MATTYPE_TEXTURE, (int) lhs->getMaterialType(1) );
+
+      QVERIFY_EQ( std::string("One"), std::string(lhs->getTextureName(0)));
+      QVERIFY_EQ( std::string("Two"), std::string(lhs->getTextureName(1)));
+      QVERIFY_EQ( std::string("Three"), std::string(lhs->getTextureName(2)));
+
+      lhs->operationComplete( "Set material texture" );
+
+      lhs->removeMaterialTexture( 1 );
+
+      QVERIFY_EQ( (int) Model::Material::MATTYPE_BLANK, (int) lhs->getMaterialType(1) );
+      QVERIFY_TRUE( NULL == lhs->getTextureData(1) );
+
+      QVERIFY_EQ( std::string("One"), std::string(lhs->getTextureName(0)));
+      QVERIFY_EQ( std::string("Two"), std::string(lhs->getTextureName(1)));
+      QVERIFY_EQ( std::string("Three"), std::string(lhs->getTextureName(2)));
+
+      lhs->operationComplete( "Set material texture" );
+
+      checkUndoRedo( 3, lhs.get(), rhs_list );
+   }
+
+   void testSetGroupMaterial()
+   {
+      local_ptr<Model> lhs = newTestModel();
+      local_ptr<Model> rhs_empty = newTestModel();
+      local_ptr<Model> rhs_1 = newTestModel();
+      local_ptr<Model> rhs_2 = newTestModel();
+
+      ModelList rhs_list;
+      rhs_list.push_back( rhs_empty.get() );
+      rhs_list.push_back( rhs_1.get() );
+      rhs_list.push_back( rhs_2.get() );
+
+      QVERIFY_EQ( 0, lhs->getTextureCount() );
+
+      lhs->addColorMaterial( "One" );
+      lhs->addColorMaterial( "Two" );
+      lhs->addColorMaterial( "Three" );
+      lhs->addGroup( "One" );
+      lhs->addGroup( "Two" );
+      lhs->addGroup( "Three" );
+      lhs->setGroupTextureId( 0, 0 );
+      lhs->setGroupTextureId( 1, 1 );
+      lhs->setGroupTextureId( 2, 2 );
+      rhs_1->addColorMaterial( "One" );
+      rhs_1->addColorMaterial( "Two" );
+      rhs_1->addColorMaterial( "Three" );
+      rhs_1->addGroup( "One" );
+      rhs_1->addGroup( "Two" );
+      rhs_1->addGroup( "Three" );
+      rhs_1->setGroupTextureId( 0, 0 );
+      rhs_1->setGroupTextureId( 1, 1 );
+      rhs_1->setGroupTextureId( 2, 2 );
+      rhs_2->addColorMaterial( "One" );
+      rhs_2->addColorMaterial( "Two" );
+      rhs_2->addColorMaterial( "Three" );
+      rhs_2->addGroup( "One" );
+      rhs_2->addGroup( "Two" );
+      rhs_2->addGroup( "Three" );
+      rhs_2->setGroupTextureId( 0, 2 );
+      rhs_2->setGroupTextureId( 2, 0 );
+
+      QVERIFY_EQ( 0, lhs->getGroupTextureId(0));
+      QVERIFY_EQ( 1, lhs->getGroupTextureId(1));
+      QVERIFY_EQ( 2, lhs->getGroupTextureId(2));
+
+      lhs->operationComplete( "Add materials and groups" );
+
+      lhs->setGroupTextureId( 0, 2 );
+      lhs->setGroupTextureId( 1, -1 );
+      lhs->setGroupTextureId( 2, 0 );
+
+      QVERIFY_EQ( 2, lhs->getGroupTextureId(0));
+      QVERIFY_EQ( -1, lhs->getGroupTextureId(1));
+      QVERIFY_EQ( 0, lhs->getGroupTextureId(2));
+
+      lhs->operationComplete( "Set group material ID" );
+
+      checkUndoRedo( 2, lhs.get(), rhs_list );
+   }
+
+   void testSetClamp()
+   {
+      local_ptr<Model> lhs = newTestModel();
+      local_ptr<Model> rhs_empty = newTestModel();
+      local_ptr<Model> rhs_1 = newTestModel();
+      local_ptr<Model> rhs_2 = newTestModel();
+      local_ptr<Model> rhs_3 = newTestModel();
+
+      ModelList rhs_list;
+      rhs_list.push_back( rhs_empty.get() );
+      rhs_list.push_back( rhs_1.get() );
+      rhs_list.push_back( rhs_2.get() );
+      rhs_list.push_back( rhs_3.get() );
+
+      QVERIFY_EQ( 0, lhs->getTextureCount() );
+
+      lhs->addColorMaterial( "One" );
+      lhs->addColorMaterial( "Two" );
+      lhs->addColorMaterial( "Three" );
+      rhs_1->addColorMaterial( "One" );
+      rhs_1->addColorMaterial( "Two" );
+      rhs_1->addColorMaterial( "Three" );
+      rhs_2->addColorMaterial( "One" );
+      rhs_2->addColorMaterial( "Two" );
+      rhs_2->addColorMaterial( "Three" );
+      rhs_3->addColorMaterial( "One" );
+      rhs_3->addColorMaterial( "Two" );
+      rhs_3->addColorMaterial( "Three" );
+
+      lhs->setTextureSClamp( 1, false );
+      rhs_1->setTextureSClamp( 1, false );
+      rhs_2->setTextureSClamp( 1, true );
+      rhs_3->setTextureSClamp( 1, true );
+      lhs->setTextureTClamp( 1, false );
+      rhs_1->setTextureTClamp( 1, false );
+      rhs_2->setTextureTClamp( 1, false );
+      rhs_3->setTextureTClamp( 1, true );
+
+      QVERIFY_FALSE( lhs->getTextureSClamp(1) );
+      QVERIFY_FALSE( lhs->getTextureTClamp(1) );
+
+      lhs->operationComplete( "Add materials" );
+
+      lhs->setTextureSClamp( 1, true );
+
+      QVERIFY_TRUE( lhs->getTextureSClamp(1) );
+      QVERIFY_FALSE( lhs->getTextureTClamp(1) );
+
+      lhs->operationComplete( "Set material S clamp" );
+
+      lhs->setTextureTClamp( 1, true );
+
+      QVERIFY_TRUE( lhs->getTextureSClamp(1) );
+      QVERIFY_TRUE( lhs->getTextureTClamp(1) );
+
+      lhs->operationComplete( "Set material T clamp" );
+
+      checkUndoRedo( 3, lhs.get(), rhs_list );
+   }
+
+   void testSetAmbient()
+   {
+      local_ptr<Model> lhs = newTestModel();
+      local_ptr<Model> rhs_empty = newTestModel();
+      local_ptr<Model> rhs_1 = newTestModel();
+      local_ptr<Model> rhs_2 = newTestModel();
+
+      ModelList rhs_list;
+      rhs_list.push_back( rhs_empty.get() );
+      rhs_list.push_back( rhs_1.get() );
+      rhs_list.push_back( rhs_2.get() );
+
+      lhs->addColorMaterial( "One" );
+      lhs->addColorMaterial( "Two" );
+      lhs->addColorMaterial( "Three" );
+      rhs_1->addColorMaterial( "One" );
+      rhs_1->addColorMaterial( "Two" );
+      rhs_1->addColorMaterial( "Three" );
+      rhs_2->addColorMaterial( "One" );
+      rhs_2->addColorMaterial( "Two" );
+      rhs_2->addColorMaterial( "Three" );
+
+      const float orig[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+      const float change[4] = { 0.2f, 0.4f, 0.6f, 0.8f };
+      float actual[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+      lhs->setTextureAmbient( 1, orig );
+      rhs_1->setTextureAmbient( 1, orig );
+      rhs_2->setTextureAmbient( 1, change );
+
+      lhs->getTextureAmbient( 1, actual );
+      QVERIFY_ARRAY_EQ( orig, 4, actual, 4 );
+
+      lhs->operationComplete( "Add materials" );
+
+      lhs->setTextureAmbient( 1, change );
+
+      lhs->getTextureAmbient( 1, actual );
+      QVERIFY_ARRAY_EQ( change, 4, actual, 4 );
+
+      lhs->operationComplete( "Set material ambient" );
+
+      checkUndoRedo( 2, lhs.get(), rhs_list );
+   }
+
+   void testSetDiffuse()
+   {
+      local_ptr<Model> lhs = newTestModel();
+      local_ptr<Model> rhs_empty = newTestModel();
+      local_ptr<Model> rhs_1 = newTestModel();
+      local_ptr<Model> rhs_2 = newTestModel();
+
+      ModelList rhs_list;
+      rhs_list.push_back( rhs_empty.get() );
+      rhs_list.push_back( rhs_1.get() );
+      rhs_list.push_back( rhs_2.get() );
+
+      lhs->addColorMaterial( "One" );
+      lhs->addColorMaterial( "Two" );
+      lhs->addColorMaterial( "Three" );
+      rhs_1->addColorMaterial( "One" );
+      rhs_1->addColorMaterial( "Two" );
+      rhs_1->addColorMaterial( "Three" );
+      rhs_2->addColorMaterial( "One" );
+      rhs_2->addColorMaterial( "Two" );
+      rhs_2->addColorMaterial( "Three" );
+
+      const float orig[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+      const float change[4] = { 0.2f, 0.4f, 0.6f, 0.8f };
+      float actual[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+      lhs->setTextureDiffuse( 1, orig );
+      rhs_1->setTextureDiffuse( 1, orig );
+      rhs_2->setTextureDiffuse( 1, change );
+
+      lhs->getTextureDiffuse( 1, actual );
+      QVERIFY_ARRAY_EQ( orig, 4, actual, 4 );
+
+      lhs->operationComplete( "Add materials" );
+
+      lhs->setTextureDiffuse( 1, change );
+
+      lhs->getTextureDiffuse( 1, actual );
+      QVERIFY_ARRAY_EQ( change, 4, actual, 4 );
+
+      lhs->operationComplete( "Set material diffuse" );
+
+      checkUndoRedo( 2, lhs.get(), rhs_list );
+   }
+
+   void testSetEmissive()
+   {
+      local_ptr<Model> lhs = newTestModel();
+      local_ptr<Model> rhs_empty = newTestModel();
+      local_ptr<Model> rhs_1 = newTestModel();
+      local_ptr<Model> rhs_2 = newTestModel();
+
+      ModelList rhs_list;
+      rhs_list.push_back( rhs_empty.get() );
+      rhs_list.push_back( rhs_1.get() );
+      rhs_list.push_back( rhs_2.get() );
+
+      lhs->addColorMaterial( "One" );
+      lhs->addColorMaterial( "Two" );
+      lhs->addColorMaterial( "Three" );
+      rhs_1->addColorMaterial( "One" );
+      rhs_1->addColorMaterial( "Two" );
+      rhs_1->addColorMaterial( "Three" );
+      rhs_2->addColorMaterial( "One" );
+      rhs_2->addColorMaterial( "Two" );
+      rhs_2->addColorMaterial( "Three" );
+
+      const float orig[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+      const float change[4] = { 0.2f, 0.4f, 0.6f, 0.8f };
+      float actual[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+      lhs->setTextureEmissive( 1, orig );
+      rhs_1->setTextureEmissive( 1, orig );
+      rhs_2->setTextureEmissive( 1, change );
+
+      lhs->getTextureEmissive( 1, actual );
+      QVERIFY_ARRAY_EQ( orig, 4, actual, 4 );
+
+      lhs->operationComplete( "Add materials" );
+
+      lhs->setTextureEmissive( 1, change );
+
+      lhs->getTextureEmissive( 1, actual );
+      QVERIFY_ARRAY_EQ( change, 4, actual, 4 );
+
+      lhs->operationComplete( "Set material emissive" );
+
+      checkUndoRedo( 2, lhs.get(), rhs_list );
+   }
+
+   void testSetSpecular()
+   {
+      local_ptr<Model> lhs = newTestModel();
+      local_ptr<Model> rhs_empty = newTestModel();
+      local_ptr<Model> rhs_1 = newTestModel();
+      local_ptr<Model> rhs_2 = newTestModel();
+
+      ModelList rhs_list;
+      rhs_list.push_back( rhs_empty.get() );
+      rhs_list.push_back( rhs_1.get() );
+      rhs_list.push_back( rhs_2.get() );
+
+      lhs->addColorMaterial( "One" );
+      lhs->addColorMaterial( "Two" );
+      lhs->addColorMaterial( "Three" );
+      rhs_1->addColorMaterial( "One" );
+      rhs_1->addColorMaterial( "Two" );
+      rhs_1->addColorMaterial( "Three" );
+      rhs_2->addColorMaterial( "One" );
+      rhs_2->addColorMaterial( "Two" );
+      rhs_2->addColorMaterial( "Three" );
+
+      const float orig[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+      const float change[4] = { 0.2f, 0.4f, 0.6f, 0.8f };
+      float actual[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+      lhs->setTextureSpecular( 1, orig );
+      rhs_1->setTextureSpecular( 1, orig );
+      rhs_2->setTextureSpecular( 1, change );
+
+      lhs->getTextureSpecular( 1, actual );
+      QVERIFY_ARRAY_EQ( orig, 4, actual, 4 );
+
+      lhs->operationComplete( "Add materials" );
+
+      lhs->setTextureSpecular( 1, change );
+
+      lhs->getTextureSpecular( 1, actual );
+      QVERIFY_ARRAY_EQ( change, 4, actual, 4 );
+
+      lhs->operationComplete( "Set material specular" );
+
+      checkUndoRedo( 2, lhs.get(), rhs_list );
+   }
+
+   void testSetShininess()
+   {
+      local_ptr<Model> lhs = newTestModel();
+      local_ptr<Model> rhs_empty = newTestModel();
+      local_ptr<Model> rhs_1 = newTestModel();
+      local_ptr<Model> rhs_2 = newTestModel();
+
+      ModelList rhs_list;
+      rhs_list.push_back( rhs_empty.get() );
+      rhs_list.push_back( rhs_1.get() );
+      rhs_list.push_back( rhs_2.get() );
+
+      lhs->addColorMaterial( "One" );
+      lhs->addColorMaterial( "Two" );
+      lhs->addColorMaterial( "Three" );
+      rhs_1->addColorMaterial( "One" );
+      rhs_1->addColorMaterial( "Two" );
+      rhs_1->addColorMaterial( "Three" );
+      rhs_2->addColorMaterial( "One" );
+      rhs_2->addColorMaterial( "Two" );
+      rhs_2->addColorMaterial( "Three" );
+
+      const float orig = 1.0f;
+      const float change = 0.5f;
+      float actual = 1.0f;
+
+      lhs->setTextureShininess( 1, orig );
+      rhs_1->setTextureShininess( 1, orig );
+      rhs_2->setTextureShininess( 1, change );
+
+      lhs->getTextureShininess( 1, actual );
+      QVERIFY_EQ( orig, actual );
+
+      lhs->operationComplete( "Add materials" );
+
+      lhs->setTextureShininess( 1, change );
+
+      lhs->getTextureShininess( 1, actual );
+      QVERIFY_EQ( change, actual );
+
+      lhs->operationComplete( "Set material shininess" );
+
+      checkUndoRedo( 2, lhs.get(), rhs_list );
+   }
+
    // FIXME in another file:
    //   rendering
    //     type
    //     lighting
    //     clamp
+   //    load textures
+   //    invalidate textures
 
 };
 
