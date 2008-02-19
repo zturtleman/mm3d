@@ -14,6 +14,7 @@ TESTS = \
 		  texcompare_test.unit \
 		  model_init_test.unit \
 		  model_equal_test.unit \
+		  model_equiv_test.unit \
 		  model_add_test.unit \
 		  model_vertex_test.unit \
 		  model_triangle_test.unit \
@@ -24,12 +25,14 @@ TESTS = \
 		  model_test.unit \
 		  new_mm3d_test.unit \
 		  filter_mm3d_test.unit \
+		  filter_dxf_test.unit \
 		  filter_obj_test.unit \
 		  filter_md2_test.unit \
 		  cmdlinemgr_test.unit \
 		  util_test.unit \
 		  misc_test.unit \
 		  translation_test.unit \
+		  msg_test.unit \
 
 # Add moc dependencies here
 
@@ -55,6 +58,8 @@ model_init_test.unit: model_init_test.moc $(LIB)
 
 model_equal_test.unit: model_equal_test.moc $(LIB)
 
+model_equiv_test.unit: model_equiv_test.moc $(LIB)
+
 model_add_test.unit: model_add_test.moc $(LIB)
 
 model_vertex_test.unit: model_vertex_test.moc $(LIB)
@@ -75,6 +80,8 @@ new_mm3d_test.unit: new_mm3d_test.moc $(LIB)
 
 filter_mm3d_test.unit: filter_mm3d_test.moc $(LIB)
 
+filter_dxf_test.unit: filter_dxf_test.moc $(LIB)
+
 filter_obj_test.unit: filter_obj_test.moc $(LIB)
 
 filter_md2_test.unit: filter_md2_test.moc $(LIB)
@@ -82,6 +89,8 @@ filter_md2_test.unit: filter_md2_test.moc $(LIB)
 util_test.unit: util_test.moc $(LIB)
 
 misc_test.unit: misc_test.moc $(LIB)
+
+msg_test.unit: msg_test.moc $(LIB)
 
 translation_test.unit: translation_test.moc $(LIB)
 
@@ -99,6 +108,7 @@ check: test
 	./texcompare_test.unit -silent
 	./model_init_test.unit -silent
 	./model_equal_test.unit -silent
+	./model_equiv_test.unit -silent
 	./model_add_test.unit -silent
 	./model_vertex_test.unit -silent
 	./model_triangle_test.unit -silent
@@ -110,10 +120,17 @@ check: test
 	./util_test.unit -silent
 	./misc_test.unit -silent
 	./translation_test.unit -silent
+	./msg_test.unit -silent
 	./cmdlinemgr_test.unit -silent
 
-fullcheck: check
+filtercheck:
 	./new_mm3d_test.unit -silent
+	./filter_mm3d_test.unit -silent
+	./filter_md2_test.unit -silent
+	./filter_obj_test.unit -silent
+	./filter_dxf_test.unit -silent
+
+fullcheck: check filtercheck
 
 cov:
 	mkdir -p cov_html
@@ -123,4 +140,4 @@ cov:
 clean:
 	rm -rf *.unit *.moc core core.* *.gcno
 
-.PHONY: cov
+.PHONY: check fullcheck filtercheck cov clean

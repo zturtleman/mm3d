@@ -24,6 +24,7 @@
 #ifndef DATADEST_INC_H__
 #define DATADEST_INC_H__
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -126,7 +127,16 @@ class DataDest
 
       // Write a printf-style formatted string to output
       // Returns the size written in bytes (or -1 on error)
-      ssize_t printf( const char * format, ... );
+      ssize_t writePrintf( const char * format, ... );
+
+      // Write a printf-style formatted string to output
+      // Returns the size written in bytes (or -1 on error)
+
+      // This implementation writes the string to a buffer using snprintf, and
+      // then calls writeBytes. writePrintf calls this function.  This function
+      // is virtual so that you can make this more efficient if you are
+      // implementing a DataDest.
+      virtual ssize_t writeVPrintf( const char * format, va_list ap );
 
       // Writes a null-terminated string to output (including null)
       ssize_t writeAsciiz( const char * str );

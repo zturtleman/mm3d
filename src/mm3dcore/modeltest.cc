@@ -78,8 +78,6 @@ int modelTestRun( const char * modelDir )
                   Model * same   = new Model;
                   Model * native = new Model;
 
-                  int bits = Model::CompareAll & (~Model::CompareMeta);
-
                   if ( mgr->readFile( orig, filename.c_str() ) == Model::ERROR_NONE )
                   {
                      mgr->writeFile( orig, nativename.c_str(), true, FilterManager::WO_ModelNoPrompt );
@@ -87,14 +85,13 @@ int modelTestRun( const char * modelDir )
 
                      if ( mgr->readFile( same, samename.c_str() ) == Model::ERROR_NONE )
                      {
-                        int b = orig->equivalent( same, bits, 0.0001 );
-                        if ( b == bits )
+                        if ( orig->equivalent( same, 0.0001 ) )
                         {
                            printf( "  %s success\n", samename.c_str() );
                         }
                         else
                         {
-                           printf( "  %s failed (%02x/%02x)\n", samename.c_str(), b, bits );
+                           printf( "  %s failed\n", samename.c_str() );
                            failures++;
                         }
                      }
@@ -107,14 +104,13 @@ int modelTestRun( const char * modelDir )
 
                      if ( mgr->readFile( native, nativename.c_str() ) == Model::ERROR_NONE )
                      {
-                        int b = orig->equivalent( native, bits, 0.0001 );
-                        if ( b == bits )
+                        if ( orig->equivalent( native, 0.0001 ) )
                         {
                            printf( "  %s success\n", nativename.c_str() );
                         }
                         else
                         {
-                           printf( "  %s failed (%02x/%02x)\n", nativename.c_str(), b, bits );
+                           printf( "  %s failed\n", nativename.c_str() );
                            failures++;
                         }
                      }

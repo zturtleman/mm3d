@@ -21,9 +21,7 @@
  */
 
 
-// This file tests the MD2 model file filter.
-
-// FIXME implement
+// This file tests the OBJ model file filter.
 
 #include <QtTest/QtTest>
 #include <unistd.h>
@@ -120,23 +118,29 @@ void saveObjOrDie( Model * model, const char * filename, FileFactory * factory =
    }
 }
 
-void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... )
-{
-   // FIXME hack
-}
+//void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... )
+//{
+//   // FIXME hack
+//}
 
 
 class FilterObjTest : public QObject
 {
    Q_OBJECT
 private:
-   void testModelFile( const char * lhs_file, const Model * rhs )
+   void testModelFile( const char * lhs_file, const Model * rhs, bool equivOk = false )
    {
       // The lhs pointer is from the original filter
       local_ptr<Model> lhs = loadMm3dOrDie( lhs_file );
 
-      int bits = Model::CompareAll;
-      QVERIFY_EQ( bits, lhs->equal( rhs, bits ) );
+      if ( equivOk )
+      {
+         QVERIFY_TRUE( lhs->equivalent( rhs, 0.001 ) );
+      }
+      else
+      {
+         QVERIFY_TRUE( lhs->propEqual( rhs ) );
+      }
    }
 
    void testReadAndWrite( const char * infile, const char * outfile,
@@ -146,11 +150,9 @@ private:
       local_ptr<Model> m = loadObjOrDie( infile, &factory );
       testModelFile( reffile, m.get() );
 
-      /*
       saveObjOrDie( m.get(), outfile, &factory );
       m = loadObjOrDie( outfile, &factory );
-      testModelFile( reffile, m.get() );
-      */
+      testModelFile( reffile, m.get(), true );
    }
 
 private slots:
@@ -196,8 +198,6 @@ private slots:
    }
 
    // FIXME add tests:
-   //   read
-   //   write
    //   error handling
    //   options
 };

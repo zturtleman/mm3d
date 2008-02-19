@@ -31,6 +31,8 @@
 #include <string>
 #include <vector>
 
+class DataSource;
+class DataDest;
 
 class ObjFilter : public ModelFilter
 {
@@ -128,6 +130,8 @@ class ObjFilter : public ModelFilter
       Model       * m_model;
       ObjOptions  * m_options;
       FILE        * m_fp;
+      DataSource  * m_src;
+      DataDest    * m_dst;
       int           m_curGroup;
       int           m_curMaterial;
       bool          m_needGroup;

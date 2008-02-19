@@ -24,6 +24,8 @@
 #include "msg.h"
 
 #include <stdio.h>
+#include <ctype.h>
+#include <string.h>
 
 static msg_func _user_info;
 static msg_func _user_warn;
@@ -85,6 +87,24 @@ extern "C" void msg_error( const char * str )
    }
 }
 
+static char return_caps( const char * opts )
+{
+   if ( opts == NULL )
+      return '\0';
+
+   size_t len = strlen( opts );
+
+   if ( len == 0 )
+      return '\0';
+
+   for ( size_t n = 0; n < len; ++n )
+   {
+      if ( isupper( opts[n] ) )
+         return toupper( opts[n] );
+   }
+   return toupper( opts[0] );
+}
+
 // Do you want to save first (yes, no, cancel) [Y/n/c]?
 // Do you want to save first (abort, retry, ignore) [A/r/i]?
 extern "C" char msg_info_prompt( const char * str, const char * opts )
@@ -96,7 +116,7 @@ extern "C" char msg_info_prompt( const char * str, const char * opts )
    else
    {
       printf( "%s\n", str );
-      return '\0';
+      return return_caps(opts);
    }
 }
 
@@ -109,7 +129,7 @@ extern "C" char msg_warning_prompt( const char * str, const char * opts )
    else
    {
       printf( "%s\n", str );
-      return '\0';
+      return return_caps(opts);
    }
 }
 
@@ -122,7 +142,7 @@ extern "C" char msg_error_prompt( const char * str, const char * opts )
    else
    {
       printf( "%s\n", str );
-      return '\0';
+      return return_caps(opts);
    }
 }
 

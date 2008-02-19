@@ -76,14 +76,14 @@ static int _loadModels( const char * source, const char * target,
    return 0;
 }
 
-static int _startCompare( const char * test, int opts, Model * m1, Model * m2, Model * m3 )
+static int _startCompare( const char * test, Model * m1, Model * m2, Model * m3 )
 {
-   if ( (m3->equivalent( m1, opts ) & opts) != opts )
+   if ( (m3->equivalent( m1 )) )
    {
       _error( "%s: initial models do not match\n", test );
       return 1;
    }
-   if ( (m3->equivalent( m2, opts ) & opts) == opts )
+   if ( (m3->equivalent( m2 )) )
    {
       _error( "%s: source/target models match\n", test );
       return 1;
@@ -91,22 +91,22 @@ static int _startCompare( const char * test, int opts, Model * m1, Model * m2, M
    return 0;
 }
 
-static int _endCompare( const char * test, int opts, Model * m1, Model * m2, Model * m3 )
+static int _endCompare( const char * test, Model * m1, Model * m2, Model * m3 )
 {
-   if ( (m3->equivalent( m2, opts ) & opts) != opts )
+   if ( (m3->equivalent( m2 )) )
    {
       _error( "%s: model does not match target after operation\n", test );
       return 1;
    }
    m3->operationComplete( "Test Operation" );
    m3->undo();
-   if ( (m3->equivalent( m1, opts ) & opts) != opts )
+   if ( (m3->equivalent( m1 )) )
    {
       _error( "%s: model does not match source after undo\n", test );
       return 1;
    }
    m3->redo();
-   if ( (m3->equivalent( m2, opts ) & opts) != opts )
+   if ( (m3->equivalent( m2 )) )
    {
       _error( "%s: model does not match target after redo\n", test );
       return 1;
@@ -129,16 +129,14 @@ int model_test_set_as_group()
 
    int rval = 1;
 
-   int opts = Model::CompareGeometry | Model::CompareFaces | Model::CompareGroups;
-
    if ( 0 == _loadModels( "testmodels/mt_set_as_group_1.mm3d",
          "testmodels/mt_set_as_group_2.mm3d",
          m1, m2, m3 ) )
    {
-      if ( 0 == _startCompare( "set_as_group", opts, m1, m2, m3 ) )
+      if ( 0 == _startCompare( "set_as_group", m1, m2, m3 ) )
       {
          m3->setSelectedAsGroup( 1 );
-         if ( 0 == _endCompare( "set_as_group", opts, m1, m2, m3 ) )
+         if ( 0 == _endCompare( "set_as_group", m1, m2, m3 ) )
          {
             rval = 0;
          }
@@ -157,16 +155,14 @@ int model_test_add_to_group()
 
    int rval = 1;
 
-   int opts = Model::CompareGeometry | Model::CompareFaces | Model::CompareGroups;
-
    if ( 0 == _loadModels( "testmodels/mt_add_to_group_1.mm3d",
          "testmodels/mt_add_to_group_2.mm3d",
          m1, m2, m3 ) )
    {
-      if ( 0 == _startCompare( "add_to_group", opts, m1, m2, m3 ) )
+      if ( 0 == _startCompare( "add_to_group", m1, m2, m3 ) )
       {
          m3->addSelectedToGroup( 1 );
-         if ( 0 == _endCompare( "add_to_group", opts, m1, m2, m3 ) )
+         if ( 0 == _endCompare( "add_to_group", m1, m2, m3 ) )
          {
             rval = 0;
          }
@@ -185,16 +181,14 @@ int model_test_delete_faces()
 
    int rval = 1;
 
-   int opts = Model::CompareGeometry | Model::CompareFaces | Model::CompareGroups;
-
    if ( 0 == _loadModels( "testmodels/mt_delete_faces_1.mm3d",
          "testmodels/mt_delete_faces_2.mm3d",
          m1, m2, m3 ) )
    {
-      if ( 0 == _startCompare( "delete_faces", opts, m1, m2, m3 ) )
+      if ( 0 == _startCompare( "delete_faces", m1, m2, m3 ) )
       {
          m3->deleteSelected();
-         if ( 0 == _endCompare( "delete_faces", opts, m1, m2, m3 ) )
+         if ( 0 == _endCompare( "delete_faces", m1, m2, m3 ) )
          {
             rval = 0;
          }
@@ -213,16 +207,14 @@ int model_test_delete_vertices()
 
    int rval = 1;
 
-   int opts = Model::CompareGeometry | Model::CompareFaces | Model::CompareGroups;
-
    if ( 0 == _loadModels( "testmodels/mt_delete_vertices_1.mm3d",
          "testmodels/mt_delete_vertices_2.mm3d",
          m1, m2, m3 ) )
    {
-      if ( 0 == _startCompare( "delete_vertices", opts, m1, m2, m3 ) )
+      if ( 0 == _startCompare( "delete_vertices", m1, m2, m3 ) )
       {
          m3->deleteSelected();
-         if ( 0 == _endCompare( "delete_vertices", opts, m1, m2, m3 ) )
+         if ( 0 == _endCompare( "delete_vertices", m1, m2, m3 ) )
          {
             rval = 0;
          }

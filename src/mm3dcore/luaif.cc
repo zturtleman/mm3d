@@ -1534,59 +1534,8 @@ extern "C" int luaif_modelCompareToCurrent( lua_State * L )
    {
       Model * otherModel = (Model *) lua_topointer( L, 1 );
 
-      int bits = 0;
-
-      unsigned count = lua_gettop( L );
-
-      if ( count > 1 )
+      if ( model->equivalent( otherModel ) )
       {
-         for ( unsigned t = 2; t <= count; t++ )
-         {
-            const char * str = lua_tostring( L, t );
-
-            if ( strcasecmp( str, "all" ) == 0 )
-            {
-               bits |= Model::CompareAll;
-               break;  // no point in going on now...
-            }
-            if ( strcasecmp( str, "geometry" ) == 0 )
-            {
-               bits |= Model::CompareGeometry;
-            }
-            if ( strcasecmp( str, "faces" ) == 0 )
-            {
-               bits |= Model::CompareFaces;
-            }
-            if ( strcasecmp( str, "skeleton" ) == 0 )
-            {
-               bits |= Model::CompareSkeleton;
-            }
-            if ( strcasecmp( str, "textures" ) == 0 )
-            {
-               bits |= Model::CompareMaterials;
-            }
-            if ( strcasecmp( str, "animsets" ) == 0 )
-            {
-               bits |= Model::CompareAnimSets;
-            }
-            if ( strcasecmp( str, "animdata" ) == 0 )
-            {
-               bits |= Model::CompareAnimData;
-            }
-            if ( strcasecmp( str, "meta" ) == 0 )
-            {
-               bits |= Model::CompareMeta;
-            }
-         }
-      }
-      else
-      {
-         bits = Model::CompareAll;
-      }
-
-      if ( bits == model->equivalent( otherModel, bits ) )
-      {
-         log_debug( "match on bits %08X\n", bits );
          match = true;
       }
    }

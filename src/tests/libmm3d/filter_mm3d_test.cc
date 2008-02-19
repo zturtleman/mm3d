@@ -109,10 +109,10 @@ void saveMm3dOrDie( Model * model, const char * filename, FileFactory * factory 
    }
 }
 
-void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... )
-{
-   // FIXME hack
-}
+//void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... )
+//{
+//   // FIXME hack
+//}
 
 
 class FilterMm3dTest : public QObject
@@ -124,8 +124,7 @@ private:
       // The lhs pointer is from the original filter
       local_ptr<Model> lhs = loadMm3dOrDie( lhs_file );
 
-      int bits = Model::CompareAll;
-      QVERIFY_EQ( bits, lhs->equal( rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs ) );
    }
 
 private slots:

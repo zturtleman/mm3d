@@ -97,7 +97,9 @@ class DxfFilter : public ModelFilter
       bool materialHasColor( unsigned int material );
 
       Model       * m_model;
-      FILE        * m_fp;
+
+      DataSource  * m_src;
+      DataDest    * m_dst;
       
       ReadStateE   m_state;
       int          m_lastCode;

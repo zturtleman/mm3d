@@ -45,7 +45,7 @@ DataDest * TestFileFactory::createDest( const char * filename )
    BufferMap::iterator it = m_fileBuffers.find( filename );
    if ( it == m_fileBuffers.end() )
    {
-      const int MAX_SIZE = 1256000;
+      const int MAX_SIZE = 2000000;
 
       FileBuffer fb;
       fb.buf = new uint8_t[ MAX_SIZE ];

@@ -21,9 +21,7 @@
  */
 
 
-// This file tests the MD2 model file filter.
-
-// FIXME fix tolerance issue
+// This file tests the DXF model file filter.
 
 #include <QtTest/QtTest>
 #include <unistd.h>
@@ -35,7 +33,7 @@
 #include "texture.h"
 #include "modelstatus.h"
 #include "log.h"
-#include "md2filter.h"
+#include "dxffilter.h"
 #include "mm3dfilter.h"
 
 #include "local_array.h"
@@ -96,17 +94,17 @@ Model * loadMm3dOrDie( const char * filename, FileFactory * factory = NULL )
    return loadModelOrDie( f, filename );
 }
 
-Model * loadMd2OrDie( const char * filename, FileFactory * factory = NULL )
+Model * loadDxfOrDie( const char * filename, FileFactory * factory = NULL )
 {
-   Md2Filter f;
+   DxfFilter f;
    if ( factory )
       f.setFactory( factory );
    return loadModelOrDie( f, filename );
 }
 
-void saveMd2OrDie( Model * model, const char * filename, FileFactory * factory = NULL )
+void saveDxfOrDie( Model * model, const char * filename, FileFactory * factory = NULL )
 {
-   Md2Filter filter;
+   DxfFilter filter;
    if ( factory )
       filter.setFactory( factory );
 
@@ -126,29 +124,35 @@ void saveMd2OrDie( Model * model, const char * filename, FileFactory * factory =
 //}
 
 
-class FilterMd2Test : public QObject
+class FilerDxfTest : public QObject
 {
    Q_OBJECT
 private:
-   void testModelFile( const char * lhs_file, const Model * rhs )
+   void testModelFile( const char * lhs_file, const Model * rhs, bool equivOk = false )
    {
       // The lhs pointer is from the original filter
       local_ptr<Model> lhs = loadMm3dOrDie( lhs_file );
 
-      QVERIFY_TRUE( lhs->propEqual( rhs, ~Model::PartMeta,
-               ~Model::PropName, 0.008 ) );
+      if ( equivOk )
+      {
+         QVERIFY_TRUE( lhs->equivalent( rhs, 0.01 ) );
+      }
+      else
+      {
+         QVERIFY_TRUE( lhs->propEqual( rhs ) );
+      }
    }
 
    void testReadAndWrite( const char * infile, const char * outfile,
          const char * reffile )
    {
       TestFileFactory factory;
-      local_ptr<Model> m = loadMd2OrDie( infile, &factory );
+      local_ptr<Model> m = loadDxfOrDie( infile, &factory );
       testModelFile( reffile, m.get() );
 
-      saveMd2OrDie( m.get(), outfile, &factory );
-      m = loadMd2OrDie( outfile, &factory );
-      testModelFile( reffile, m.get() );
+      saveDxfOrDie( m.get(), outfile, &factory );
+      m = loadDxfOrDie( outfile, &factory );
+      testModelFile( reffile, m.get(), true );
    }
 
 private slots:
@@ -164,25 +168,32 @@ private slots:
    void testMd2ModelA()
    {
       testReadAndWrite(
-            "filtertest/md2/hellpig/hellpig.md2",
-            "filtertest/md2/hellpig/hellpig.md2",
-            "filtertest/md2/hellpig/hellpig.mm3d" );
+            "filtertest/dxf/ref_sit_down.dxf",
+            "filtertest/dxf/test_out.dxf",
+            "filtertest/dxf/ref_sit_down.mm3d" );
    }
 
    void testMd2ModelB()
    {
       testReadAndWrite(
-            "filtertest/md2/tekkblade/tekkblade.md2",
-            "filtertest/md2/tekkblade/tekkblade.md2",
-            "filtertest/md2/tekkblade/tekkblade.mm3d" );
+            "filtertest/dxf/ref_sit.dxf",
+            "filtertest/dxf/test_out.dxf",
+            "filtertest/dxf/ref_sit.mm3d" );
+   }
+
+   void testMd2ModelC()
+   {
+      testReadAndWrite(
+            "filtertest/dxf/ref_standing.dxf",
+            "filtertest/dxf/test_out.dxf",
+            "filtertest/dxf/ref_standing.mm3d" );
    }
 
    // FIXME add tests:
-   //   read
-   //   write
    //   error handling
+   //   options
 };
 
-QTEST_MAIN(FilterMd2Test)
-#include "filter_md2_test.moc"
+QTEST_MAIN(FilerDxfTest)
+#include "filter_dxf_test.moc"
 

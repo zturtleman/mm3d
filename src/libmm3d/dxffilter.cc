@@ -31,6 +31,8 @@
 #include "filtermgr.h"
 //#include "version.h"
 #include "mm3dport.h"
+#include "datadest.h"
+#include "datasource.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,6 +47,18 @@ using std::string;
 #ifdef PLUGIN
 static DxfFilter * s_filter = NULL;
 #endif // PLUGIN
+
+// FIXME centralize this
+template<typename T>
+class FunctionCaller
+{
+   public:
+      FunctionCaller( T * obj, void (T::*method)(void) ) { m_obj = obj; m_method = method; }
+      ~FunctionCaller() { (m_obj->*m_method)(); }
+   private:
+      T * m_obj;
+      void (T::*m_method)(void);
+};
 
 static bool _float_equiv( float rhs, float lhs )
 {
@@ -353,63 +367,47 @@ DxfFilter::~DxfFilter()
 
 Model::ModelErrorE DxfFilter::readFile( Model * model, const char * const filename )
 {
-   m_fp = fopen( filename, "r" );
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   m_src = openInput( filename, err );
+   FunctionCaller<DataSource> fc( m_src, &DataSource::close );
 
-   if ( m_fp )
+   if ( err != Model::ERROR_NONE )
+      return err;
+
+   log_debug( "dxf filter reading file %s\n", filename );
+   m_modelPath = "";
+   m_modelBaseName = "";
+   m_modelFullName = "";
+
+   normalizePath( filename, m_modelFullName, m_modelPath, m_modelBaseName );
+
+   model->setFilename( m_modelFullName.c_str() );
+
+   m_model = model;
+
+   m_materialColor.clear();
+
+   m_currentGroup = -1;
+   m_currentColor =  7; // white
+
+   setReadState( RS_MAIN );
+
+   char line[ 1024 ];
+   while ( m_src->readLine( line, sizeof(line) ) )
    {
-      log_debug( "dxf filter reading file %s\n", filename );
-      m_modelPath = "";
-      m_modelBaseName = "";
-      m_modelFullName = "";
-
-      normalizePath( filename, m_modelFullName, m_modelPath, m_modelBaseName );
-
-      model->setFilename( m_modelFullName.c_str() );
-
-      m_model = model;
-
-      m_materialColor.clear();
-
-      m_currentGroup = -1;
-      m_currentColor =  7; // white
-
-      setReadState( RS_MAIN );
-
-      char line[ 1024 ];
-      while ( fgets( line, sizeof(line), m_fp ) )
+      line[ sizeof( line ) - 1 ] = '\0';
+      int len = strlen( line ) - 1;
+      while ( len >= 0 && isspace( line[len] ) )
       {
-         line[ sizeof( line ) - 1 ] = '\0';
-         int len = strlen( line ) - 1;
-         while ( len >= 0 && isspace( line[len] ) )
-         {
-             line[len] = '\0';
-             len--;
-         }
-         int pos = 0;
-         while ( isspace( line[pos] ) )
-         {
-            pos++;
-         }
-         readLine( &line[pos] );
+         line[len] = '\0';
+         len--;
       }
-
-      fclose( m_fp );
-      m_fp = NULL;
-   }
-   else
-   {
-      switch ( errno )
+      int pos = 0;
+      while ( isspace( line[pos] ) )
       {
-         case EACCES:
-         case EPERM:
-            return Model::ERROR_NO_ACCESS;
-         case ENOENT:
-            return Model::ERROR_NO_FILE;
-         case EISDIR:
-            return Model::ERROR_BAD_DATA;
-         default:
-            return Model::ERROR_FILE_OPEN;
+         pos++;
       }
+      readLine( &line[pos] );
    }
 
    return Model::ERROR_NONE;
@@ -425,33 +423,18 @@ Model::ModelErrorE DxfFilter::writeFile( Model * model, const char * const filen
 
    normalizePath( filename, m_modelFullName, m_modelPath, m_modelBaseName );
 
-   m_fp = fopen( filename, "w" );
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   m_dst = openOutput( filename, err );
+   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
 
-   if ( m_fp == NULL )
-   {
-      switch ( errno )
-      {
-         case EACCES:
-         case EPERM:
-            return Model::ERROR_NO_ACCESS;
-         case ENOENT:
-            return Model::ERROR_NO_FILE;
-         case EISDIR:
-            return Model::ERROR_BAD_DATA;
-         default:
-            return Model::ERROR_FILE_OPEN;
-      }
-   }
+   if ( err != Model::ERROR_NONE )
+      return err;
 
    writeHeader();
    writeGroups();
    writeFaces();
    writeLine( "0" );
    writeLine( "EOF" );
-
-   fclose( m_fp );
-
-   m_fp = NULL;
 
    return Model::ERROR_NONE;
 }
@@ -506,22 +489,16 @@ list< string > DxfFilter::getWriteTypes()
 
 bool DxfFilter::writeLine( const char * line, ... )
 {
-   if ( m_fp )
-   {
-      va_list ap;
-      va_start( ap, line );
-      vfprintf( m_fp, line, ap );
+   va_list ap;
+   va_start( ap, line );
+   m_dst->writeVPrintf( line, ap );
+   va_end( ap );
 #ifdef WIN32
-      fprintf( m_fp, "\n" );
+   m_dst->writeString( "\n" );
 #else // WIN32
-      fprintf( m_fp, "\r\n" );
+   m_dst->writeString( "\r\n" );
 #endif // WIN32
-      return true;
-   }
-   else
-   {
-      return false;
-   }
+   return true;
 }
 
 bool DxfFilter::readLine( const char * line )

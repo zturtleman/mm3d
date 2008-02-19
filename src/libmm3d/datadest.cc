@@ -24,6 +24,7 @@
 #include "datadest.h"
 
 #include "endianconfig.h"
+#include "mm3dport.h"
 
 #include <stdarg.h>
 
@@ -194,12 +195,18 @@ bool DataDest::writeBytes( const uint8_t * buf, size_t bufLen )
    return internalWrite( buf, bufLen );
 }
 
-ssize_t DataDest::printf( const char * fmt, ... )
+ssize_t DataDest::writePrintf( const char * fmt, ... )
 {
    va_list ap;
    va_start( ap, fmt );
-   ssize_t rval = vsnprintf( m_strbuf, MAX_PRINTF_SIZE, fmt, ap );
+   ssize_t rval = writeVPrintf( fmt, ap );
    va_end( ap );
+   return rval;
+}
+
+ssize_t DataDest::writeVPrintf( const char * fmt, va_list ap )
+{
+   ssize_t rval = PORT_vsnprintf( m_strbuf, MAX_PRINTF_SIZE, fmt, ap );
 
    if ( rval >= 0 )
    {

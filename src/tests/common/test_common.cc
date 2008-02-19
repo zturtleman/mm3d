@@ -255,8 +255,7 @@ void checkUndoRedo( int operations, Model * lhs, const ModelList & rhs_list )
    // N operations, N+1 models in the list to compare against
    QVERIFY_EQ( (int) rhs_list.size(), operations + 1 );
 
-   int bits = Model::CompareAll;
-   QVERIFY_EQ( bits, lhs->equal( rhs_list.back(), bits ) );
+   QVERIFY_TRUE( lhs->propEqual( rhs_list.back() ) );
 
    for ( int iter = 0; iter < 2; ++iter )
    {
@@ -264,14 +263,14 @@ void checkUndoRedo( int operations, Model * lhs, const ModelList & rhs_list )
       {
          //printf( "undo operation %d\n", i );
          lhs->undo();
-         QVERIFY_EQ( bits, lhs->equal( rhs_list[i], bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs_list[i] ) );
       }
 
       for ( int i = 1; i <= operations; ++i )
       {
          //printf( "redo operation %d\n", i );
          lhs->redo();
-         QVERIFY_EQ( bits, lhs->equal( rhs_list[i], bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs_list[i] ) );
       }
    }
 }

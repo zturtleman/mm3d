@@ -50,186 +50,354 @@ static bool _float_equiv( double lhs, double rhs, double tolerance )
    return ( fabs( lhs - rhs ) < tolerance );
 }
 
-int Model::equivalent( const Model * model, int compareMask, double tolerance ) const
+// FIXME centralize this
+const double EQ_TOLERANCE = 0.00001;
+
+// FIXME centralize this
+template<typename T>
+bool floatCompareVector( T * lhs, T * rhs, size_t len, double tolerance = EQ_TOLERANCE )
 {
-   int matchVal = 0;
+   for ( size_t index = 0; index < len; ++index )
+      if ( fabs( lhs[index] - rhs[index] ) > tolerance )
+         return false;
+   return true;
+}
 
-   unsigned numVertices    = m_vertices.size();
-   unsigned numTriangles   = m_triangles.size();
-   unsigned numGroups      = m_groups.size();
-   unsigned numJoints      = m_joints.size();
-   unsigned numPoints      = m_points.size();
-   unsigned numTextures    = m_materials.size();
-   unsigned numFrameAnims  = m_frameAnims.size();
-   unsigned numSkelAnims   = m_skelAnims.size();
+// FIXME centralize this
+// FIXME test this
+static bool matrixEquiv( const Matrix & lhs, const Matrix & rhs, double tolerance = EQ_TOLERANCE )
+{
+   Vector lright( 2, 0, 0 );
+   Vector lup( 0, 2, 0 );
+   Vector lfront( 0, 0, 2 );
 
-   unsigned t = 0;
-   unsigned v = 0;
-   unsigned p = 0;
+   Vector rright( 2, 0, 0 );
+   Vector rup( 0, 2, 0 );
+   Vector rfront( 0, 0, 2 );
 
-   if ( compareMask & CompareGeometry )
+   lhs.apply( lright );
+   lhs.apply( lup );
+   lhs.apply( lfront );
+
+   rhs.apply( rright );
+   rhs.apply( rup );
+   rhs.apply( rfront );
+
+   if ( (lright - rright).mag3() > tolerance )
+      return false;
+   if ( (lup - rup).mag3() > tolerance )
+      return false;
+   if ( (lfront - rfront).mag3() > tolerance )
+      return false;
+
+   return true;
+}
+
+static bool jointsMatch( const Model * lhs, int lb, const Model * rhs, int rb )
+{
+   // Check for root joints
+   if ( lb < 0 && rb < 0 )
+      return true;  // both are root joints, match
+   else if ( lb < 0 )
+      return false;  // only left is root, no match
+   else if ( rb < 0 )
+      return false;  // only right is root, no match
+
+   Matrix lMat;
+   Matrix rMat;
+
+   lhs->getBoneJointFinalMatrix( lb, lMat );
+   rhs->getBoneJointFinalMatrix( rb, rMat );
+
+   if ( matrixEquiv( lMat, rMat ) )
    {
-      if ( numVertices == model->m_vertices.size() && numTriangles == model->m_triangles.size() )
+      // It's only a match if the parents match
+      return jointsMatch(
+            lhs, lhs->getBoneJointParent(lb),
+            rhs, rhs->getBoneJointParent(rb) );
+   }
+
+   return false;
+}
+
+bool Model::equivalent( const Model * model, double tolerance ) const
+{
+   int lhsTCount    = m_triangles.size();
+   int rhsTCount    = model->m_triangles.size();
+   int lhsGCount    = m_groups.size();
+   int rhsGCount    = model->m_groups.size();
+   int lhsBCount    = m_joints.size();
+   int rhsBCount    = model->m_joints.size();
+   int lhsPCount    = m_points.size();
+   int rhsPCount    = model->m_points.size();
+
+   if ( lhsTCount != rhsTCount )
+   {
+      log_warning( "lhs triangle count %d does not match rhs %d\n", lhsTCount, rhsTCount );
+      return false;
+   }
+
+   if ( lhsPCount != rhsPCount )
+   {
+      log_warning( "lhs point count %d does not match rhs %d\n", lhsPCount, rhsPCount );
+      return false;
+   }
+
+   if ( lhsBCount != rhsBCount )
+   {
+      log_warning( "lhs bone joint count %d does not match rhs %d\n", lhsBCount, rhsBCount );
+      return false;
+   }
+
+   int v = 0;
+   int g = 0;
+   int m = 0;
+   int b = 0;
+   int p = 0;
+
+   // Mapping to a list of ints allows a single group on the lhs to be equal
+   // several smaller groups on the rhs.
+   typedef std::map<int,std::list<int> > IntListMap;
+   typedef std::vector<bool> BoolList;
+   typedef std::list<int> IntList;
+   typedef std::map<int,int> IntMap;
+
+   // Match skeletons
+
+   BoolList jointMatched;
+   jointMatched.resize( rhsBCount, false );
+
+   // Save joint mapping for influence comparision.
+   // Key = lhs joint, value = rhs joint
+   IntMap jointMap;
+
+   for ( b = 0; b < lhsBCount; ++b )
+   {
+      bool match = false;
+      for ( int rb = 0; !match && rb < rhsBCount; ++rb )
       {
-         bool match = true;
-         for ( v = 0; match && v < numVertices; v++ )
+         if ( !jointMatched[rb] )
          {
-            for ( unsigned i = 0; i < 3; i++ )
+            if ( jointsMatch( this, b, model, rb ) )
             {
-               if ( fabs( m_vertices[v]->m_coord[i] - model->m_vertices[v]->m_coord[i]) > tolerance )
+               jointMatched[ rb ] = true;
+               jointMap[ b ] = rb;
+               match = true;
+            }
+         }
+      }
+
+      if ( !match )
+      {
+         std::string dstr;
+         m_joints[ b ]->sprint( dstr );
+         log_warning( "no match for lhs joint %d:\n%s\n", b, dstr.c_str() );
+         return false;
+      }
+   }
+
+   // Find groups that are equivalent.
+
+   IntListMap groupMap;
+
+   // FIXME need to check vertex influences.
+
+   for ( g = 0; g < lhsGCount; ++g )
+   {
+      for ( int r = 0; r < rhsGCount; ++r )
+      {
+         if ( m_groups[g]->propEqual( *model->m_groups[r], Model::PropNormals ) )
+         {
+            bool match = false;
+
+            m = getGroupTextureId(g);
+            int rm = model->getGroupTextureId(r);
+            if ( m < 0 && rm < 0 )
+            {
+               match = true;
+            }
+            if ( m >= 0 && rm >= 0 )
+            {
+               if ( m_materials[m]->propEqual( *model->m_materials[rm],
+                          Model::PropType
+                        | Model::PropLighting
+                        | Model::PropClamp
+                        | Model::PropPixels
+                        | Model::PropDimensions) )
                {
-                  match = false;
-                  log_debug( "match failed at vertex coordinates %d[%d]\n", v, i );
+                  match = true;
                }
             }
-         }
 
-         for ( t = 0; match && t < numTriangles; t++ )
-         {
-            if (  m_triangles[t]->m_vertexIndices[0] != model->m_triangles[t]->m_vertexIndices[0]
-               || m_triangles[t]->m_vertexIndices[1] != model->m_triangles[t]->m_vertexIndices[1]
-               || m_triangles[t]->m_vertexIndices[2] != model->m_triangles[t]->m_vertexIndices[2] )
-            {
-               match = false;
-               log_debug( "match failed at triangle %d\n", t );
-               log_debug( "   %d %d %d\n", 
-                     m_triangles[t]->m_vertexIndices[0], 
-                     m_triangles[t]->m_vertexIndices[1], 
-                     m_triangles[t]->m_vertexIndices[2] );
-               log_debug( "   %d %d %d\n", 
-                     model->m_triangles[t]->m_vertexIndices[0], 
-                     model->m_triangles[t]->m_vertexIndices[1], 
-                     model->m_triangles[t]->m_vertexIndices[2] );
-            }
-         }
-
-         if ( match )
-         {
-            matchVal |= CompareGeometry;
-            matchVal |= CompareFaces;
+            if ( match )
+               groupMap[g].push_back( r );
          }
       }
    }
-   else if ( compareMask & CompareFaces )
-   {
-      if ( numTriangles == model->m_triangles.size() )
-      {
-         for ( t = 0; t < numTriangles; t++ )
-         {
-            m_triangles[t]->m_marked = false;
-            model->m_triangles[t]->m_marked = false;
-         }
 
-         for ( t = 0; t < numTriangles; t++ )
+   BoolList triMatched;
+   triMatched.resize( rhsTCount, false );
+
+   IntList gtris;
+   IntList rgtris;
+
+   // For each triangle in each group, find a match in a corresponding group.
+   for ( g = -1; g < lhsGCount; ++g )
+   {
+      if ( g >= 0 )
+      {
+         gtris = getGroupTriangles( g );
+
+         rgtris.clear();
+         if ( !gtris.empty() )
          {
-            for ( unsigned i = 0; i < model->m_triangles.size(); i++ )
+            // Add all triangles from all matching groups to rgtris
+            IntListMap::const_iterator it = groupMap.find( g );
+
+            if ( it != groupMap.end() )
             {
-               if ( !model->m_triangles[i]->m_marked )
+               for ( IntList::const_iterator lit = it->second.begin();
+                     lit != it->second.end(); ++lit )
                {
-                  bool match = true;
-                  for ( unsigned j = 0; j < 3; j++ )  // triangle vertex
+                  IntList temp = model->getGroupTriangles( *lit );
+                  rgtris.insert( rgtris.end(), temp.begin(), temp.end() );
+               }
+            }
+         }
+      }
+      else
+      {
+         gtris = getUngroupedTriangles();
+         rgtris = model->getUngroupedTriangles();
+      }
+
+      // Don't compare group sizes.  This causes a failure if the lhs has two
+      // equal groups that are combined into one on the rhs.
+
+      bool compareTexCoords = false;
+
+      if ( g >= 0 )
+      {
+         // Only compare texture coordinates if the coordinates affect the
+         // material at that vertex (texture map, gradient, etc).
+         compareTexCoords =
+            (getMaterialType(g) != Model::Material::MATTYPE_BLANK);
+      }
+
+      for ( IntList::const_iterator it = gtris.begin(); it != gtris.end(); ++it )
+      {
+         bool match = false;
+         for ( IntList::const_iterator rit = rgtris.begin();
+               !match && rit != rgtris.end(); ++rit )
+         {
+            if ( triMatched[ *rit ] )
+               continue;
+
+            for ( int i = 0; !match && i < 3; i++ )
+            {
+               match = true;
+               for ( int j = 0; match && j < 3; ++j )
+               {
+                  double coords[3];
+                  double rcoords[3];
+
+                  v = m_triangles[*it]->m_vertexIndices[j];
+                  int rv = model->m_triangles[*rit]->m_vertexIndices[ (j+i) % 3];
+                  getVertexCoords( v, coords );
+                  model->getVertexCoords( rv, rcoords );
+
+                  if ( !floatCompareVector( coords, rcoords, 3, tolerance ) )
                   {
-                     Vertex * v1 = m_vertices[ m_triangles[t]->m_vertexIndices[j] ];
-                     Vertex * v2 = model->m_vertices[ model->m_triangles[i]->m_vertexIndices[j] ];
-                     for ( unsigned k = 0; k < 3; k++ ) // vertex coord
+                     log_warning( "failed match coords for index %d\n", j );
+                     match = false;
+                  }
+
+                  if ( match && compareTexCoords )
+                  {
+                     float s = 0.0f;
+                     float t = 0.0f;
+                     float rs = 0.0f;
+                     float rt = 0.0f;
+
+                     getTextureCoords( *it, j, s, t );
+                     model->getTextureCoords( *rit, (j+i) % 3, rs, rt );
+
+                     if ( fabs( s -rs ) > tolerance
+                           || fabs( t -rt ) > tolerance )
                      {
-                        if (   fabs( v1->m_coord[k] - v2->m_coord[k] ) > tolerance )
-                        {
-                           match = false;
-                        }
+                        match = false;
                      }
                   }
-                  if ( match )
-                  {
-                     m_triangles[t]->m_marked = true;
-                     model->m_triangles[i]->m_marked = true;
-                     break; // break inner loop
-                  }
+               }
+
+               if ( match )
+               {
+                  triMatched[ *rit ] = true;
                }
             }
          }
 
-         bool match = true;
-         for ( t = 0; t < numTriangles; t++ )
+         if ( !match )
          {
-            if ( !m_triangles[t]->m_marked )
-            {
-               match = false;
-               log_debug( "match failed at triangle %d, no match for face\n", t );
-            }
-         }
-         if ( match )
-         {
-            matchVal |= CompareFaces;
+            std::string dstr;
+            m_triangles[ *it ]->sprint( dstr );
+            log_warning( "no match for lhs triangle %d: %s\n", *it, dstr.c_str() );
+            return false;
          }
       }
    }
 
-   if ( compareMask & CompareGroups )
+   // Find points that are equivalent.
+
+   BoolList pointMatched;
+   pointMatched.resize( rhsPCount, false );
+
+   double trans[3] = { 0, 0, 0 };
+   double rot[3] = { 0, 0, 0 };
+
+   for ( p = 0; p < lhsPCount; ++p )
    {
-      std::list<int> l1;
-      std::list<int> l2;
-      std::list<int>::iterator it1;
-      std::list<int>::iterator it2;
-
       bool match = false;
-
-      if ( getGroupCount() == model->getGroupCount() )
+      for ( int rp = 0; !match && rp < rhsPCount; ++rp )
       {
-         unsigned int t = 0;
-         unsigned int gcount = getGroupCount();
-         unsigned int tcount = getTriangleCount();
-         match = true;
-
-         for ( unsigned int g = 0; match && g < gcount; g++ )
+         if ( !pointMatched[rp] )
          {
-            for ( t = 0; t < tcount; t++ )
-            {
-               m_triangles[t]->m_marked = false;
-            }
+            Matrix lMat;
+            Matrix rMat;
 
-            std::list<int> l1 = getGroupTriangles( g );
-            std::list<int> l2 = model->getGroupTriangles( g );
+            getPointRotation( p, rot );
+            getPointTranslation( p, trans );
+            lMat.setRotation( rot );
+            lMat.setTranslation( trans );
 
-            if ( l1.size() == l2.size() )
+            model->getPointRotation( rp, rot );
+            model->getPointTranslation( rp, trans );
+            rMat.setRotation( rot );
+            rMat.setTranslation( trans );
+
+            if ( matrixEquiv( lMat, rMat ) )
             {
-               for ( it1  = l1.begin(); match && it1 != l1.end(); it1++ )
-               {
-                  if ( m_triangles[ *it1 ]->m_marked )
-                  {
-                     log_debug( "match failed in groups, triangle %d is in group %d twice\n", (*it1), g );
-                  }
-                  else
-                  {
-                     m_triangles[ *it1 ]->m_marked = true;
-                  }
-               }
-               for ( it2  = l2.begin(); match && it2 != l2.end(); it2++ )
-               {
-                  if ( !m_triangles[ *it2 ]->m_marked )
-                  {
-                     log_debug( "match failed in groups, triangle %d is in group %d for rhs but not lhs\n", (*it2), g );
-                  }
-                  else
-                  {
-                     m_triangles[ *it2 ]->m_marked = false;
-                  }
-               }
-            }
-            else
-            {
-               log_debug( "match failed in groups, triangle count %d != %d for group %d\n", l1.size(), l2.size(), g );
-               match = false;
+               match = true;
+               pointMatched[ rp ] = true;
             }
          }
       }
 
-      if ( match )
+      if ( !match )
       {
-         matchVal |= CompareGroups;
+         std::string dstr;
+         m_points[ p ]->sprint( dstr );
+         log_warning( "no match for lhs point %d:\n%s\n", p, dstr.c_str() );
+         return false;
       }
+
+      // FIXME match influences
    }
 
+   // FIXME finish this (animations)
+   // Don't need to check texture contents, already did that above.
+
+#if 0
    if ( compareMask & CompareSkeleton )
    {
       if ( numJoints == model->m_joints.size() && numVertices == model->m_vertices.size() )
@@ -241,18 +409,18 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance ) 
             if ( m_joints[j]->m_parent != model->m_joints[j]->m_parent )
             {
                match = false;
-               log_debug( "match failed at joint parent for joint %d\n", j );
+               log_warning( "match failed at joint parent for joint %d\n", j );
             }
             for ( unsigned i = 0; i < 3; i++ )
             {
                if ( fabs( m_joints[j]->m_localRotation[i] - model->m_joints[j]->m_localRotation[i] ) > tolerance )
                {
-                  log_debug( "match failed at joint rotation for joint %d\n", j );
+                  log_warning( "match failed at joint rotation for joint %d\n", j );
                   match = false;
                }
                if ( fabs( m_joints[j]->m_localTranslation[i] - model->m_joints[j]->m_localTranslation[i] ) > tolerance )
                {
-                  log_debug( "match failed at joint translation for joint %d\n", j );
+                  log_warning( "match failed at joint translation for joint %d\n", j );
                   match = false;
                }
             }
@@ -274,17 +442,17 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance ) 
                {
                   if ( (*ita).m_boneId != (*itb).m_boneId )
                   {
-                     log_debug( "match failed at vertex influence joint for vertex %d\n", v );
+                     log_warning( "match failed at vertex influence joint for vertex %d\n", v );
                      match = false;
                   }
                   if ( (*ita).m_type != (*itb).m_type )
                   {
-                     log_debug( "match failed at vertex influence type for vertex %d\n", v );
+                     log_warning( "match failed at vertex influence type for vertex %d\n", v );
                      match = false;
                   }
                   if ( !_float_equiv( (*ita).m_weight, (*itb).m_weight, tolerance ) )
                   {
-                     log_debug( "match failed at vertex influence weight for vertex %d\n", v );
+                     log_warning( "match failed at vertex influence weight for vertex %d\n", v );
                      match = false;
                   }
                }
@@ -311,17 +479,17 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance ) 
                {
                   if ( (*ita).m_boneId != (*itb).m_boneId )
                   {
-                     log_debug( "match failed at point influence joint for point %d\n", p );
+                     log_warning( "match failed at point influence joint for point %d\n", p );
                      match = false;
                   }
                   if ( (*ita).m_type != (*itb).m_type )
                   {
-                     log_debug( "match failed at point influence type for point %d\n", p );
+                     log_warning( "match failed at point influence type for point %d\n", p );
                      match = false;
                   }
                   if ( !_float_equiv( (*ita).m_weight, (*itb).m_weight, tolerance ) )
                   {
-                     log_debug( "match failed at point influence weight for point %d\n", p );
+                     log_warning( "match failed at point influence weight for point %d\n", p );
                      match = false;
                   }
                }
@@ -350,18 +518,18 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance ) 
             if ( m_points[p]->m_type != model->m_points[p]->m_type )
             {
                match = false;
-               log_debug( "match failed at point type for point %d\n", p );
+               log_warning( "match failed at point type for point %d\n", p );
             }
             for ( unsigned i = 0; i < 3; i++ )
             {
                if ( fabs( m_points[p]->m_rot[i] - model->m_points[p]->m_rot[i] ) > tolerance )
                {
-                  log_debug( "match failed at point rotation for point %d\n", p );
+                  log_warning( "match failed at point rotation for point %d\n", p );
                   match = false;
                }
                if ( fabs( m_points[p]->m_trans[i] - model->m_points[p]->m_trans[i] ) > tolerance )
                {
-                  log_debug( "match failed at point translation for point %d\n", p );
+                  log_warning( "match failed at point translation for point %d\n", p );
                   match = false;
                }
             }
@@ -371,97 +539,6 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance ) 
          {
             matchVal |= ComparePoints;
          }
-      }
-   }
-
-   // TODO want to check texture contents?
-   if ( compareMask & CompareMaterials )
-   {
-      if (     numTextures  == model->m_materials.size() 
-            && numTriangles == model->m_triangles.size() 
-            && numGroups    == model->m_groups.size()     )
-      {
-         bool match = true;
-
-         for ( t = 0; t < numTextures; t++ )
-         {
-            for ( unsigned i = 0; i < 4; i++ )
-            {
-               if ( fabs( m_materials[t]->m_ambient[i] - model->m_materials[t]->m_ambient[i] ) > tolerance )
-               {
-                  log_debug( "match failed at texture ambient for texture %d\n", t );
-                  match = false;
-               }
-               if ( fabs( m_materials[t]->m_diffuse[i] - model->m_materials[t]->m_diffuse[i] ) > tolerance )
-               {
-                  log_debug( "match failed at texture diffuse for texture %d\n", t );
-                  match = false;
-               }
-               if ( fabs( m_materials[t]->m_specular[i] - model->m_materials[t]->m_specular[i] ) > tolerance )
-               {
-                  log_debug( "match failed at texture specular for texture %d\n", t );
-                  match = false;
-               }
-               if ( fabs( m_materials[t]->m_emissive[i] - model->m_materials[t]->m_emissive[i] ) > tolerance )
-               {
-                  log_debug( "match failed at texture emissive for texture %d\n", t );
-                  match = false;
-               }
-
-            }
-
-            if ( m_materials[t]->m_shininess != model->m_materials[t]->m_shininess )
-            {
-               log_debug( "match failed at texture shininess for texture %d\n", t );
-               match = false;
-            }
-         }
-
-         for ( t = 0; match && t < numTriangles; t++ )
-         {
-            for ( unsigned i = 0; i < 3; i++ )
-            {
-               if ( fabs( m_triangles[t]->m_s[i] - model->m_triangles[t]->m_s[i] ) > tolerance )
-               {
-                  log_debug( "match failed at texture coordinates for triangle %d\n", t );
-                  match = false;
-               }
-            }
-         }
-
-         for ( unsigned g = 0; match && g < numGroups; g++ )
-         {
-            if ( m_groups[g]->m_smooth != model->m_groups[g]->m_smooth )
-            {
-               log_debug( "match failed at group smoothness group %d\n", g );
-               match = false;
-            }
-            if ( m_groups[g]->m_materialIndex != model->m_groups[g]->m_materialIndex )
-            {
-               log_debug( "match failed at group texture for group %d\n", g );
-               match = false;
-            }
-
-            if ( m_groups[g]->m_triangleIndices
-                  != model->m_groups[g]->m_triangleIndices )
-            {
-               log_debug( "match failed at group triangle set for group %d\n", g );
-               match = false;
-            }
-         }
-
-         if ( match )
-         {
-            matchVal |= CompareMaterials;
-         }
-      }
-      else
-      {
-         log_debug( "not comparing because of primitive mismatch\n" );
-         log_debug( " (%d/%d) (%d/%d) (%d/%d)\n",
-               numTextures,  model->m_materials.size(),
-               numTriangles, model->m_triangles.size(), 
-               numGroups,    model->m_groups.size() );
       }
    }
 
@@ -476,12 +553,12 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance ) 
          {
             if ( m_frameAnims[t]->m_frameData.size() != model->m_frameAnims[t]->m_frameData.size() )
             {
-               log_debug( "match failed at frame animation frame count for frame anim %d\n", t );
+               log_warning( "match failed at frame animation frame count for frame anim %d\n", t );
                match = false;
             }
             if ( fabs( m_frameAnims[t]->m_fps - model->m_frameAnims[t]->m_fps ) > tolerance )
             {
-               log_debug( "match failed at frame animation fps for frame anim %d\n", t );
+               log_warning( "match failed at frame animation fps for frame anim %d\n", t );
                match = false;
             }
 
@@ -494,7 +571,7 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance ) 
                      if ( fabs( ((*m_frameAnims[t]->m_frameData[i]->m_frameVertices)[v]->m_coord[n] )
                             - ((*model->m_frameAnims[t]->m_frameData[i]->m_frameVertices)[v]->m_coord[n] ) ) > tolerance )
                      {
-                        log_debug( "match failed at frame animation coords for frame anim %d, vertex %d\n", t, v );
+                        log_warning( "match failed at frame animation coords for frame anim %d, vertex %d\n", t, v );
                         match = false;
                      }
                   }
@@ -506,7 +583,7 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance ) 
                      if ( fabs( ((*m_frameAnims[t]->m_frameData[i]->m_framePoints)[p]->m_trans[n] )
                             - ((*model->m_frameAnims[t]->m_frameData[i]->m_framePoints)[p]->m_trans[n] ) ) > tolerance )
                      {
-                        log_debug( "match failed at frame animation coords for frame anim %d, point %d\n", t, p );
+                        log_warning( "match failed at frame animation coords for frame anim %d, point %d\n", t, p );
                         match = false;
                      }
                   }
@@ -518,12 +595,12 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance ) 
          {
             if ( m_skelAnims[t]->m_frameCount != model->m_skelAnims[t]->m_frameCount )
             {
-               log_debug( "match failed at skel animation frame count for skel anim %d\n", t );
+               log_warning( "match failed at skel animation frame count for skel anim %d\n", t );
                match = false;
             }
             if ( fabs( m_skelAnims[t]->m_fps - model->m_skelAnims[t]->m_fps ) > tolerance )
             {
-               log_debug( "match failed at skel animation fps for skel anim %d\n", t );
+               log_warning( "match failed at skel animation fps for skel anim %d\n", t );
                match = false;
             }
 
@@ -534,13 +611,13 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance ) 
                   if (    m_skelAnims[t]->m_jointKeyframes[j][i]->m_isRotation 
                        != model->m_skelAnims[t]->m_jointKeyframes[j][i]->m_isRotation )
                   {
-                     log_debug( "match failed at skel animation keyframe rotation for skel anim %d joint %d, keyframe %i\n", t, j, i );
+                     log_warning( "match failed at skel animation keyframe rotation for skel anim %d joint %d, keyframe %i\n", t, j, i );
                      match = false;
                   }
                   if (   fabs( m_skelAnims[t]->m_jointKeyframes[j][i]->m_time 
                        - model->m_skelAnims[t]->m_jointKeyframes[j][i]->m_time ) > tolerance )
                   {
-                     log_debug( "match failed at skel animation keyframe time for skel anim %d joint %d, keyframe %i\n", t, j, i );
+                     log_warning( "match failed at skel animation keyframe time for skel anim %d joint %d, keyframe %i\n", t, j, i );
                      match = false;
                   }
                   for ( unsigned n = 0; n < 3; n++ )
@@ -548,7 +625,7 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance ) 
                      if (   fabs( m_skelAnims[t]->m_jointKeyframes[j][i]->m_parameter[n] 
                               - model->m_skelAnims[t]->m_jointKeyframes[j][i]->m_parameter[n] ) > tolerance )
                      {
-                        log_debug( "match failed at skel animation keyframe parameter for skel anim %d joint %d, keyframe %i\n", t, j, i );
+                        log_warning( "match failed at skel animation keyframe parameter for skel anim %d joint %d, keyframe %i\n", t, j, i );
                         match = false;
                      }
                   }
@@ -606,87 +683,13 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance ) 
       }
    }
 
-   if ( compareMask & CompareMeta )
-   {
-      if ( numGroups == model->m_groups.size()
-            && numTextures == model->m_materials.size()
-            && numJoints == model->m_joints.size()
-            && numSkelAnims == model->m_skelAnims.size()
-            && numFrameAnims == model->m_frameAnims.size() )
-      {
-         bool match = true;
-
-         for ( t = 0; match && t < numGroups; t++ )
-         {
-            if ( strcmp( m_groups[t]->m_name.c_str(), model->m_groups[t]->m_name.c_str() ) != 0 )
-            {
-               match = false;
-            }
-         }
-
-         for ( t = 0; match && t < numTextures; t++ )
-         {
-            if ( strcmp( m_materials[t]->m_name.c_str(), model->m_materials[t]->m_name.c_str() ) != 0 )
-            {
-               match = false;
-            }
-            if ( strcmp( m_materials[t]->m_filename.c_str(), model->m_materials[t]->m_filename.c_str() ) != 0 )
-            {
-               match = false;
-            }
-            if ( strcmp( m_materials[t]->m_alphaFilename.c_str(), model->m_materials[t]->m_alphaFilename.c_str() ) != 0 )
-            {
-               match = false;
-            }
-         }
-
-         for ( t = 0; match && t < numJoints; t++ )
-         {
-            if ( strcmp( m_joints[t]->m_name.c_str(), model->m_joints[t]->m_name.c_str() ) != 0 )
-            {
-               match = false;
-            }
-         }
-
-         for ( t = 0; match && t < numPoints; t++ )
-         {
-            if ( strcmp( m_points[t]->m_name.c_str(), model->m_points[t]->m_name.c_str() ) != 0 )
-            {
-               match = false;
-            }
-         }
-
-         for ( t = 0; match && t < numSkelAnims; t++ )
-         {
-            if ( strcmp( m_skelAnims[t]->m_name.c_str(), model->m_skelAnims[t]->m_name.c_str() ) != 0 )
-            {
-               match = false;
-            }
-         }
-
-         for ( t = 0; match && t < numFrameAnims; t++ )
-         {
-            if ( strcmp( m_frameAnims[t]->m_name.c_str(), model->m_frameAnims[t]->m_name.c_str() ) != 0 )
-            {
-               match = false;
-            }
-         }
-
-         if ( match )
-         {
-            matchVal |= CompareMeta;
-         }
-      }
-   }
-
-   matchVal &= compareMask;
-   return matchVal;
+#endif  // 0
+   return true;
 }
 
-int Model::equal( const Model * model, int compareMask, double tolerance ) const
+bool Model::propEqual( const Model * model, int partBits, int propBits,
+      double tolerance ) const
 {
-   int matchVal = compareMask;
-
    unsigned numVertices    = m_vertices.size();
    unsigned numTriangles   = m_triangles.size();
    unsigned numGroups      = m_groups.size();
@@ -700,189 +703,222 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
    unsigned t = 0;
    unsigned v = 0;
 
-   bool match = false;
+   std::string dstr;
 
-   if ( (matchVal & (CompareGeometry | CompareMeta | CompareInfluences))
-      && numVertices == model->m_vertices.size() )
+   if ( partBits & PartVertices )
    {
-      match = true;
-
-      for ( v = 0; match && v < numVertices; v++ )
+      if (numVertices != model->m_vertices.size())
       {
-         if ( !m_vertices[v]->equal( *model->m_vertices[v], compareMask, tolerance ) )
+         log_warning( "match failed at vertex count %d != %d\n",
+               numVertices, model->m_vertices.size() );
+         return false;
+      }
+
+      for ( v = 0; v < numVertices; v++ )
+      {
+         if ( !m_vertices[v]->propEqual( *model->m_vertices[v], partBits, tolerance ) )
          {
-            log_debug( "match failed at vertex %d\n", v );
-            match = false;
+            log_warning( "match failed at vertex %d\n", v );
+            m_vertices[v]->sprint( dstr );
+            log_warning( "lhs:\n%s\n", dstr.c_str() );
+            model->m_vertices[v]->sprint( dstr );
+            log_warning( "rhs:\n%s\n", dstr.c_str() );
+            return false;
          }
       }
    }
 
-   if ( !match )
-      matchVal &= ~(CompareGeometry | CompareMeta | CompareInfluences);
-
-   log_debug( "  after vertices: %X\n", matchVal );
-
-   match = false;
-
-   if ( (matchVal & (CompareGeometry | CompareFaces | CompareTextures | CompareMeta))
-         && numTriangles == model->m_triangles.size() )
+   if ( partBits & PartFaces )
    {
-      match = true;
-
-      for ( t = 0; match && t < numTriangles; t++ )
+      if (numTriangles != model->m_triangles.size())
       {
-         if ( !m_triangles[t]->equal( *model->m_triangles[t], compareMask, tolerance ) )
+         log_warning( "match failed at triangle count %d != %d\n",
+               numTriangles, model->m_triangles.size() );
+         return false;
+      }
+
+      for ( t = 0; t < numTriangles; t++ )
+      {
+         if ( !m_triangles[t]->propEqual( *model->m_triangles[t], propBits, tolerance ) )
          {
-            log_debug( "match failed at triangle %d\n", t );
-            match = false;
+            log_warning( "match failed at triangle %d\n", t );
+            m_triangles[t]->sprint( dstr );
+            log_warning( "lhs:\n%s\n", dstr.c_str() );
+            model->m_triangles[t]->sprint( dstr );
+            log_warning( "rhs:\n%s\n", dstr.c_str() );
+            return false;
          }
       }
    }
 
-   if ( !match )
-      matchVal &= ~(CompareGeometry | CompareFaces | CompareMeta | CompareTextures );
-
-   log_debug( "  after triangles: %X\n", matchVal );
-
-   match = false;
-
-   if ( (compareMask & (CompareGroups | CompareGeometry | CompareMaterials | CompareMeta))
-         && getGroupCount() == model->getGroupCount() )
+   if ( partBits & PartGroups )
    {
-      match = true;
-
-      for ( unsigned int g = 0; match && g < numGroups; g++ )
+      if ( numGroups != (unsigned) model->getGroupCount() )
       {
-         if ( !m_groups[g]->equal( *model->m_groups[g], compareMask, tolerance ) )
+         log_warning( "match failed at group count %d != %d\n",
+               numGroups, model->m_groups.size() );
+         return false;
+      }
+
+      for ( unsigned int g = 0; g < numGroups; g++ )
+      {
+         if ( !m_groups[g]->propEqual( *model->m_groups[g], propBits, tolerance ) )
          {
-            match = false;
-            log_debug( "match failed at group %d\n", g );
+            log_warning( "match failed at group %d\n", g );
+            m_groups[g]->sprint( dstr );
+            log_warning( "lhs:\n%s\n", dstr.c_str() );
+            model->m_groups[g]->sprint( dstr );
+            log_warning( "rhs:\n%s\n", dstr.c_str() );
+            return false;
          }
       }
    }
 
-   if ( !match )
-      matchVal &= ~(CompareGroups | CompareGeometry | CompareMaterials | CompareMeta);
-
-   log_debug( "  after groups: %X\n", matchVal );
-
-   match = false;
-
-   if ( (matchVal & (CompareSkeleton | CompareMeta))
-         && numJoints == model->m_joints.size() )
+   if ( partBits & PartJoints )
    {
-      match = true;
-
-      for ( unsigned j = 0; match && j < numJoints; j++ )
+      if ( numJoints != model->m_joints.size() )
       {
-         if ( !m_joints[j]->equal( *model->m_joints[j], compareMask, tolerance ) )
+         log_warning( "match failed at joint count %d != %d\n",
+               numJoints, model->m_joints.size() );
+         return false;
+      }
+
+      for ( unsigned j = 0; j < numJoints; j++ )
+      {
+         if ( !m_joints[j]->propEqual( *model->m_joints[j], propBits, tolerance ) )
          {
-            log_debug( "match failed at joint %d\n", j );
-            match = false;
+            log_warning( "match failed at joint %d\n", j );
+            /*
+            // FIXME
+            m_joints[j]->sprint( dstr );
+            log_warning( "lhs:\n%s\n", dstr.c_str() );
+            model->m_joints[j]->sprint( dstr );
+            log_warning( "rhs:\n%s\n", dstr.c_str() );
+            */
+            return false;
          }
       }
    }
 
-   if ( !match )
-      matchVal &= ~(CompareSkeleton | CompareMeta);
-
-   log_debug( "  after joints: %X\n", matchVal );
-
-   match = false;
-
-   if ( (matchVal & (ComparePoints | CompareInfluences | CompareMeta))
-         && numPoints == model->m_points.size() )
+   if ( partBits & PartPoints )
    {
-      match = true;
-
-      for ( unsigned p = 0; match && p < numPoints; p++ )
+      if ( numPoints != model->m_points.size() )
       {
-         if ( !m_points[p]->equal( *model->m_points[p], compareMask, tolerance ) )
+         log_warning( "match failed at point count %d != %d\n",
+               numPoints, model->m_points.size() );
+         return false;
+      }
+
+      for ( unsigned p = 0; p < numPoints; p++ )
+      {
+         if ( !m_points[p]->propEqual( *model->m_points[p], propBits, tolerance ) )
          {
-            match = false;
-            log_debug( "match failed at point %d\n", p );
+            log_warning( "match failed at point %d\n", p );
+            m_points[p]->sprint( dstr );
+            log_warning( "lhs:\n%s\n", dstr.c_str() );
+            model->m_points[p]->sprint( dstr );
+            log_warning( "rhs:\n%s\n", dstr.c_str() );
+            return false;
          }
       }
    }
 
-   if ( !match )
-      matchVal &= ~(ComparePoints | CompareMeta | CompareInfluences);
-
-   log_debug( "  after points: %X\n", matchVal );
-
-   match = false;
-
-   if ( (matchVal & (CompareMaterials | CompareTextures))
-         && numTextures  == model->m_materials.size() 
-         && numProjections == model->m_projections.size() )
+   if ( partBits & (PartMaterials | PartTextures) )
    {
-      match = true;
+      if (numTextures  != model->m_materials.size())
+      {
+         log_warning( "match failed at material count %d != %d\n",
+               numTextures, model->m_materials.size() );
+         return false;
+      }
 
       for ( t = 0; t < numTextures; t++ )
       {
-         if ( !m_materials[t]->equal( *model->m_materials[t], compareMask, tolerance ) )
+         if ( !m_materials[t]->propEqual( *model->m_materials[t], propBits, tolerance ) )
          {
-            log_debug( "match failed at material %d\n", t );
-            match = false;
-         }
-      }
+            log_warning( "match failed at material %d\n", t );
+            m_materials[t]->sprint( dstr );
+            log_warning( "lhs:\n%s\n", dstr.c_str() );
+            model->m_materials[t]->sprint( dstr );
+            log_warning( "rhs:\n%s\n", dstr.c_str() );
 
-      if ( matchVal & CompareTextures )
-      {
-         for ( t = 0; t < numProjections; t++ )
-         {
-            if ( !m_projections[t]->equal( *model->m_projections[t], compareMask, tolerance ) )
-            {
-               log_debug( "match failed at projection %d\n", t );
-               match = false;
-            }
+            return false;
          }
       }
    }
 
-   if ( !match )
-      matchVal &= ~(CompareMaterials | CompareTextures);
-
-   log_debug( "  after projections: %X\n", matchVal );
-
-   match = false;
-
-   if ( (matchVal & (CompareAnimData | CompareAnimSets))
-         && numFrameAnims == model->m_frameAnims.size()
-         && numSkelAnims == model->m_skelAnims.size()    )
+   if ( partBits & PartProjections )
    {
-      match = true;
-
-      for ( t = 0; match && t < numSkelAnims; t++ )
+      if ( numProjections != model->m_projections.size() )
       {
-         if ( !m_skelAnims[t]->equal( *model->m_skelAnims[t], compareMask, tolerance ) )
-         {
-            log_debug( "match failed at skel animation %d\n", t );
-            match = false;
-         }
+         log_warning( "match failed at projection count %d != %d\n",
+               numVertices, model->m_vertices.size() );
+         return false;
       }
 
-      for ( t = 0; match && t < numFrameAnims; t++ )
+      for ( t = 0; t < numProjections; t++ )
       {
-         if ( !m_frameAnims[t]->equal( *model->m_frameAnims[t], compareMask, tolerance ) )
+         if ( !m_projections[t]->propEqual( *model->m_projections[t], propBits, tolerance ) )
          {
-            log_debug( "match failed at frame animation %d\n", t );
-            match = false;
+            log_warning( "match failed at projection %d\n", t );
+            /*
+            // FIXME
+            m_projections[t]->sprint( dstr );
+            log_warning( "lhs:\n%s\n", dstr.c_str() );
+            model->m_projections[t]->sprint( dstr );
+            log_warning( "rhs:\n%s\n", dstr.c_str() );
+            */
+            return false;
          }
       }
    }
 
-   if ( !match )
-      matchVal &= ~(CompareAnimData | CompareAnimSets);
-
-   log_debug( "  after anims: %X\n", matchVal );
-
-   match = false;
-
-   if (matchVal & CompareMeta
-         && getMetaDataCount() == model->getMetaDataCount() )
+   if ( partBits & PartSkelAnims )
    {
-      match = true;
+      if ( numSkelAnims != model->m_skelAnims.size() )
+      {
+         log_warning( "match failed at skel anim count %d != %d\n",
+               numSkelAnims, model->m_skelAnims.size() );
+         return false;
+      }
+
+      for ( t = 0; t < numSkelAnims; t++ )
+      {
+         if ( !m_skelAnims[t]->propEqual( *model->m_skelAnims[t], propBits, tolerance ) )
+         {
+            log_warning( "match failed at skel animation %d\n", t );
+            return false;
+         }
+      }
+   }
+
+   if ( partBits & PartFrameAnims )
+   {
+      if ( numFrameAnims != model->m_frameAnims.size() )
+      {
+         log_warning( "match failed at frameAnim count %d != %d\n",
+               numVertices, model->m_vertices.size() );
+         return false;
+      }
+
+      for ( t = 0; t < numFrameAnims; t++ )
+      {
+         if ( !m_frameAnims[t]->propEqual( *model->m_frameAnims[t], propBits, tolerance ) )
+         {
+            log_warning( "match failed at frame animation %d\n", t );
+            return false;
+         }
+      }
+   }
+
+   if ( partBits & PartMeta )
+   {
+      if ( getMetaDataCount() != model->getMetaDataCount() )
+      {
+         log_warning( "match failed at meta data count %d != %d\n",
+               getMetaDataCount(), model->getMetaDataCount() );
+         return false;
+      }
 
       unsigned int mcount = getMetaDataCount();
       for ( unsigned int m = 0; m < mcount; ++m )
@@ -895,35 +931,41 @@ int Model::equal( const Model * model, int compareMask, double tolerance ) const
 
          if ( !model->getMetaData( m, key, sizeof(key), value_rhs, sizeof(value_rhs) ) )
          {
-            log_debug( "missing meta data key: '%s'\n", key );
-            match = false;
+            log_warning( "missing meta data key: '%s'\n", key );
+            return false;
          }
          else
          {
             if ( strcmp( value_lhs, value_rhs ) != 0 )
             {
-               log_debug( "meta data value mismatch for '%s'\n", key );
-               match = false;
+               log_warning( "meta data value mismatch for '%s'\n", key );
+               log_warning( "  '%s' != '%s'\n", value_lhs, value_rhs );
+               return false;
             }
-         }
-      }
-
-      for ( unsigned int b = 0; b < MAX_BACKGROUND_IMAGES; ++b )
-      {
-         if ( !m_background[b]->equal( *model->m_background[b], compareMask, tolerance ) )
-         {
-            log_debug( "match failed at background image %d\n", t );
-            match = false;
          }
       }
    }
 
-   if ( !match )
-      matchVal &= ~CompareMeta;
+   if ( partBits & PartBackgrounds )
+   {
+      for ( unsigned int b = 0; b < MAX_BACKGROUND_IMAGES; ++b )
+      {
+         if ( !m_background[b]->propEqual( *model->m_background[b], propBits, tolerance ) )
+         {
+            log_warning( "match failed at background image %d\n", t );
+            /*
+            // FIXME
+            m_background[b]->sprint( dstr );
+            log_warning( "lhs:\n%s\n", dstr.c_str() );
+            model->m_background[b]->sprint( dstr );
+            log_warning( "rhs:\n%s\n", dstr.c_str() );
+            */
+            return false;
+         }
+      }
+   }
 
-   log_debug( "  after meta: %X\n", matchVal );
-
-   return matchVal;
+   return true;
 }
 
 #ifdef MM3D_EDIT

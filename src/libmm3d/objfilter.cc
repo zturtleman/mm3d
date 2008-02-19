@@ -30,6 +30,8 @@
 #include "misc.h"
 #include "filtermgr.h"
 #include "mm3dport.h"
+#include "datadest.h"
+#include "datasource.h"
 #include "release_ptr.h"
 
 #include <stdio.h>
@@ -45,6 +47,18 @@ using std::string;
 #ifdef PLUGIN
 static ObjFilter * s_filter = NULL;
 #endif // PLUGIN
+
+// FIXME centralize this
+template<typename T>
+class FunctionCaller
+{
+   public:
+      FunctionCaller( T * obj, void (T::*method)(void) ) { m_obj = obj; m_method = method; }
+      ~FunctionCaller() { (m_obj->*m_method)(); }
+   private:
+      T * m_obj;
+      void (T::*m_method)(void);
+};
 
 ObjFilter::ObjOptions::ObjOptions()
    : m_saveNormals( true ),
@@ -85,63 +99,54 @@ ObjFilter::~ObjFilter()
 
 Model::ModelErrorE ObjFilter::readFile( Model * model, const char * const filename )
 {
-   m_fp = fopen( filename, "r" );
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   m_src = openInput( filename, err );
+   FunctionCaller<DataSource> fc( m_src, &DataSource::close );
 
-   if ( m_fp )
+   if ( err != Model::ERROR_NONE )
+      return err;
+
+   m_modelPath = "";
+   m_modelBaseName = "";
+   m_modelFullName = "";
+
+   normalizePath( filename, m_modelFullName, m_modelPath, m_modelBaseName );
+
+   model->setFilename( m_modelFullName.c_str() );
+
+   m_model = model;
+   log_debug( "model has %d faces\n", model->getTriangleCount() );
+
+   m_vertices  =  0;
+   m_faces     =  0;
+   m_groups    =  0;
+   m_curGroup  = -1;
+   m_curMaterial = -1;
+   m_needGroup = false;
+   m_uvList.clear();
+   m_mgList.clear();
+
+   char line[ 1024 ];
+   while ( m_src->readLine( line, sizeof(line) ) )
    {
-      m_modelPath = "";
-      m_modelBaseName = "";
-      m_modelFullName = "";
-
-      normalizePath( filename, m_modelFullName, m_modelPath, m_modelBaseName );
-
-      model->setFilename( m_modelFullName.c_str() );
-
-      m_model = model;
-      log_debug( "model has %d faces\n", model->getTriangleCount() );
-
-      m_vertices  =  0;
-      m_faces     =  0;
-      m_groups    =  0;
-      m_curGroup  = -1;
-      m_curMaterial = -1;
-      m_needGroup = false;
-      m_uvList.clear();
-      m_mgList.clear();
-
-      char line[ 1024 ];
-      while ( fgets( line, sizeof(line), m_fp ) )
-      {
-         line[ sizeof( line ) - 1 ] = '\0';
-         readLine( line );
-      }
-
-      log_debug( "read %d vertices, %d faces, %d groups\n", m_vertices, m_faces, m_groups );
-
-      fclose( m_fp );
-      m_fp = NULL;
+      line[ sizeof( line ) - 1 ] = '\0';
+      readLine( line );
    }
-   else
-   {
-      switch ( errno )
-      {
-         case EACCES:
-         case EPERM:
-            return Model::ERROR_NO_ACCESS;
-         case ENOENT:
-            return Model::ERROR_NO_FILE;
-         case EISDIR:
-            return Model::ERROR_BAD_DATA;
-         default:
-            return Model::ERROR_FILE_OPEN;
-      }
-   }
+
+   log_debug( "read %d vertices, %d faces, %d groups\n", m_vertices, m_faces, m_groups );
 
    return Model::ERROR_NONE;
 }
 
 Model::ModelErrorE ObjFilter::writeFile( Model * model, const char * const filename, ModelFilter::Options * o )
 {
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   m_dst = openOutput( filename, err );
+   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
+
+   if ( err != Model::ERROR_NONE )
+      return err;
+
    m_model = model;
 
    m_materialNames.clear();
@@ -151,24 +156,6 @@ Model::ModelErrorE ObjFilter::writeFile( Model * model, const char * const filen
    m_modelFullName = "";
 
    normalizePath( filename, m_modelFullName, m_modelPath, m_modelBaseName );
-
-   m_fp = fopen( filename, "w" );
-
-   if ( m_fp == NULL )
-   {
-      switch ( errno )
-      {
-         case EACCES:
-         case EPERM:
-            return Model::ERROR_NO_ACCESS;
-         case ENOENT:
-            return Model::ERROR_NO_FILE;
-         case EISDIR:
-            return Model::ERROR_BAD_DATA;
-         default:
-            return Model::ERROR_FILE_OPEN;
-      }
-   }
 
    // Use dynamic cast to determine if the object is of the proper type
    // If not, create new one that we will delete later.
@@ -188,31 +175,21 @@ Model::ModelErrorE ObjFilter::writeFile( Model * model, const char * const filen
    writeMaterials();
    writeGroups();
 
-   fclose( m_fp );
-
-   m_fp = NULL;
-
    return Model::ERROR_NONE;
 }
 
 bool ObjFilter::writeLine( const char * line, ... )
 {
-   if ( m_fp )
-   {
-      va_list ap;
-      va_start( ap, line );
-      vfprintf( m_fp, line, ap );
+   va_list ap;
+   va_start( ap, line );
+   m_dst->writeVPrintf( line, ap );
+   va_end( ap );
 #ifdef WIN32
-      fprintf( m_fp, "\n" );
+   m_dst->writePrintf( "\n" );
 #else // WIN32
-      fprintf( m_fp, "\r\n" );
+   m_dst->writePrintf( "\r\n" );
 #endif // WIN32
-      return true;
-   }
-   else
-   {
-      return false;
-   }
+   return true;
 }
 
 enum _OFWS_State_e
@@ -227,353 +204,389 @@ typedef enum _OFWS_State_e OFWS_StateE;
 
 bool ObjFilter::writeStripped( const char * fmt, ... )
 {
-   if ( m_fp )
+   char line[512];
+   char line2[512];
+
+   va_list ap;
+   va_start( ap, fmt );
+   PORT_vsnprintf( line, sizeof(line), fmt, ap );
+   va_end( ap );
+
+   OFWS_StateE state = OFWS_Whitespace;
+
+   size_t s = 0;
+   size_t d = 0;
+   size_t len = strlen( line );
+
+   while ( s < len )
    {
-      char line[512];
-      char line2[512];
-
-      va_list ap;
-      va_start( ap, fmt );
-      PORT_vsnprintf( line, sizeof(line), fmt, ap );
-
-      OFWS_StateE state = OFWS_Whitespace;
-
-      size_t s = 0;
-      size_t d = 0;
-      size_t len = strlen( line );
-
-      while ( s < len )
+      switch ( state )
       {
-         switch ( state )
-         {
-            case OFWS_Token:
+         case OFWS_Token:
+            line2[d] = line[s];
+            if ( isspace( line2[d] ) )
+            {
+               state = OFWS_Whitespace;
+            }
+            s++;
+            d++;
+            break;
+         case OFWS_Whitespace:
+            line2[d] = line[s];
+            if ( !isspace( line2[d] ) )
+            {
+               if ( isdigit( line2[d] ) || line2[d] == '-' )
+               {
+                  state = OFWS_Number;
+               }
+               else
+               {
+                  state = OFWS_Token;
+               }
+            }
+            s++;
+            d++;
+            break;
+         case OFWS_Number:
+            line2[d] = line[s];
+            if ( !isdigit( line2[d] ) )
+            {
+               if ( line2[d] == '.' )
+               {
+                  state = OFWS_Decimal;
+               }
+               else if ( isspace( line2[d] ) )
+               {
+                  state = OFWS_Whitespace;
+               }
+               else
+               {
+                  state = OFWS_Token;
+               }
+            }
+            s++;
+            d++;
+            break;
+         case OFWS_Decimal:
+            line2[d] = line[s];
+            if ( isdigit( line2[d] ) )
+            {
+               state = OFWS_AfterDecimal;
+            }
+            else
+            {
+               if ( isspace( line2[d] ) )
+               {
+                  state = OFWS_Whitespace;
+               }
+               else
+               {
+                  state = OFWS_Token;
+               }
+            }
+            s++;
+            d++;
+         case OFWS_AfterDecimal:
+            if ( isdigit( line[s] ) )
+            {
+               if ( line[s] == '0' )
+               {
+                  size_t bak = s;
+
+                  while ( line[s] == '0' )
+                  {
+                     s++;
+                  }
+
+                  if ( isspace( line[s] ) || line[s] == '\0' )
+                  {
+                     state = OFWS_Whitespace;
+                  }
+                  else
+                  {
+                     s = bak;
+                  }
+               }
+               line2[d] = line[s];
+            }
+            else
+            {
                line2[d] = line[s];
                if ( isspace( line2[d] ) )
                {
                   state = OFWS_Whitespace;
                }
-               s++;
-               d++;
-               break;
-            case OFWS_Whitespace:
-               line2[d] = line[s];
-               if ( !isspace( line2[d] ) )
-               {
-                  if ( isdigit( line2[d] ) || line2[d] == '-' )
-                  {
-                     state = OFWS_Number;
-                  }
-                  else
-                  {
-                     state = OFWS_Token;
-                  }
-               }
-               s++;
-               d++;
-               break;
-            case OFWS_Number:
-               line2[d] = line[s];
-               if ( !isdigit( line2[d] ) )
-               {
-                  if ( line2[d] == '.' )
-                  {
-                     state = OFWS_Decimal;
-                  }
-                  else if ( isspace( line2[d] ) )
-                  {
-                     state = OFWS_Whitespace;
-                  }
-                  else
-                  {
-                     state = OFWS_Token;
-                  }
-               }
-               s++;
-               d++;
-               break;
-            case OFWS_Decimal:
-               line2[d] = line[s];
-               if ( isdigit( line2[d] ) )
-               {
-                  state = OFWS_AfterDecimal;
-               }
                else
                {
-                  if ( isspace( line2[d] ) )
-                  {
-                     state = OFWS_Whitespace;
-                  }
-                  else
-                  {
-                     state = OFWS_Token;
-                  }
+                  state = OFWS_Token;
                }
-               s++;
-               d++;
-            case OFWS_AfterDecimal:
-               if ( isdigit( line[s] ) )
-               {
-                  if ( line[s] == '0' )
-                  {
-                     size_t bak = s;
-
-                     while ( line[s] == '0' )
-                     {
-                        s++;
-                     }
-
-                     if ( isspace( line[s] ) || line[s] == '\0' )
-                     {
-                        state = OFWS_Whitespace;
-                     }
-                     else
-                     {
-                        s = bak;
-                     }
-                  }
-                  line2[d] = line[s];
-               }
-               else
-               {
-                  line2[d] = line[s];
-                  if ( isspace( line2[d] ) )
-                  {
-                     state = OFWS_Whitespace;
-                  }
-                  else
-                  {
-                     state = OFWS_Token;
-                  }
-               }
-               s++;
-               d++;
-               break;
-         }
+            }
+            s++;
+            d++;
+            break;
       }
-      line2[ d ] = '\0';
+   }
+   line2[ d ] = '\0';
 
 #ifdef WIN32
-      fprintf( m_fp, "%s\n", line2 );
+   m_dst->writePrintf( "%s\n", line2 );
 #else // WIN32
-      fprintf( m_fp, "%s\r\n", line2 );
+   m_dst->writePrintf( "%s\r\n", line2 );
 #endif // WIN32
 
-      return true;
-   }
-   else
-   {
-      return false;
-   }
+   return true;
 }
 
 bool ObjFilter::writeHeader()
 {
-   if ( m_fp )
+   writeLine( "# Wavefront OBJ file" );
+
+   writeLine( "# Exported by Misfit Model 3D %s", VERSION );
+
+   time_t tval;
+   struct tm tmval;
+   char   tstr[32];
+
+   time( &tval );
+   PORT_localtime_r( &tval, &tmval );
+   PORT_asctime_r( &tmval, tstr );
+
+   unsigned tlen = strlen( tstr );
+   while( isspace( tstr[ tlen - 1 ] ) )
    {
-      writeLine( "# Wavefront OBJ file" );
-
-      writeLine( "# Exported by Misfit Model 3D %s", VERSION );
-
-      time_t tval;
-      struct tm tmval;
-      char   tstr[32];
-
-      time( &tval );
-      PORT_localtime_r( &tval, &tmval );
-      PORT_asctime_r( &tmval, tstr );
-
-      unsigned tlen = strlen( tstr );
-      while( isspace( tstr[ tlen - 1 ] ) )
-      {
-         tstr[ tlen - 1 ] = '\0';
-         tlen--;
-      }
-
-      writeLine( "# %s", tstr );
-
-      writeLine( "" );
-
-      return true;
+      tstr[ tlen - 1 ] = '\0';
+      tlen--;
    }
-   else
-   {
-      return false;
-   }
+
+   writeLine( "# %s", tstr );
+
+   writeLine( "" );
+
+   return true;
 }
 
 bool ObjFilter::writeMaterials()
 {
-   if ( m_fp )
+   if ( m_model->getTextureCount() > 0 )
    {
-      if ( m_model->getTextureCount() > 0 )
+      char * base = strdup( m_modelBaseName.c_str() );
+      int baseLen = strlen( base );
+      for ( int t = baseLen - 1; t >= 0; t-- )
       {
-         char * base = strdup( m_modelBaseName.c_str() );
-         int baseLen = strlen( base );
-         for ( int t = baseLen - 1; t >= 0; t-- )
+         if ( base[t] == '.' )
          {
-            if ( base[t] == '.' )
-            {
-               base[t] = '\0';
-               break;
-            }
-         }
-         m_materialFile = std::string( base ) + ".mtl";
-         free( base );
-
-         m_materialFullFile = m_modelPath + std::string( "/" ) + m_materialFile;
-
-         FILE * fp = fopen( m_materialFullFile.c_str(), "w" );
-         if ( fp )
-         {
-            writeLine( "mtllib %s", m_materialFile.c_str() );
-            writeLine( "" );
-
-            FILE * savefp = m_fp;
-            m_fp = fp;
-
-            writeLine( "# Material file for %s", m_modelBaseName.c_str() );
-            writeLine( "" );
-
-            unsigned m = 0;
-            unsigned mcount = m_model->getTextureCount();
-
-            for ( m = 0; m < mcount; m++ )
-            {
-               char * matName = strdup( m_model->getTextureName(m) );
-               unsigned matNameLen = strlen( matName );
-               for ( unsigned n = 0; n < matNameLen; n++ )
-               {
-                  if ( isspace( matName[n] ) )
-                  {
-                     matName[n] = '_';
-                  }
-               }
-
-               m_materialNames.push_back( matName );
-
-               writeLine( "newmtl %s", matName );
-               float shininess = 1.0f;
-               m_model->getTextureShininess( m, shininess );
-               writeLine( "\tNs %d", (int) shininess );
-               writeLine( "\td 1" );  // TODO adjust this if I ever support transparency
-               writeLine( "\tillum 2" );
-
-               float fval[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-
-               m_model->getTextureDiffuse( m, fval );
-               writeStripped( "\tKd %f %f %f", fval[0], fval[1], fval[2] );
-               m_model->getTextureSpecular( m, fval );
-               writeStripped( "\tKs %f %f %f", fval[0], fval[1], fval[2] );
-               m_model->getTextureAmbient( m, fval );
-               writeStripped( "\tKa %f %f %f", fval[0], fval[1], fval[2] );
-
-               if ( m_model->getMaterialType( m ) == Model::Material::MATTYPE_TEXTURE )
-               {
-                  std::string filename = getRelativePath( m_modelPath.c_str(), m_model->getTextureFilename( m ) );
-                  char * filecpy = strdup( filename.c_str() );
-                  replaceSlash( filecpy );
-                  writeStripped( "\tmap_Kd %s", 
-                        ( (strncmp( filecpy, ".\\", 2 ) == 0 ) ? &filecpy[2] : filecpy ) );
-                  free( filecpy );
-               }
-
-               writeLine( "" );
-
-               free( matName );
-            }
-
-            m_fp = savefp;
-
-            fclose( fp );
+            base[t] = '\0';
+            break;
          }
       }
-      return true;
+      m_materialFile = std::string( base ) + ".mtl";
+      free( base );
+
+      m_materialFullFile = m_modelPath + std::string( "/" ) + m_materialFile;
+
+      Model::ModelErrorE err = Model::ERROR_NONE;
+      DataDest * dst = openOutput( m_materialFullFile.c_str(), err );
+      if ( dst->errorOccurred() )
+      {
+         dst->close();
+         return false;
+      }
+
+      writeLine( "mtllib %s", m_materialFile.c_str() );
+      writeLine( "" );
+
+      DataDest * saveDst = m_dst;
+      m_dst = dst;
+
+      writeLine( "# Material file for %s", m_modelBaseName.c_str() );
+      writeLine( "" );
+
+      unsigned m = 0;
+      unsigned mcount = m_model->getTextureCount();
+
+      for ( m = 0; m < mcount; m++ )
+      {
+         std::string matName = m_model->getTextureName(m);
+         unsigned matNameLen = matName.size();
+         for ( unsigned n = 0; n < matNameLen; n++ )
+         {
+            if ( isspace( matName[n] ) )
+            {
+               matName[n] = '_';
+            }
+         }
+
+         m_materialNames.push_back( matName );
+
+         writeLine( "newmtl %s", matName.c_str() );
+         float shininess = 1.0f;
+         m_model->getTextureShininess( m, shininess );
+         writeLine( "\tNs %d", (int) shininess );
+         writeLine( "\td 1" );  // TODO adjust this if I ever support transparency
+         writeLine( "\tillum 2" );
+
+         float fval[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+         m_model->getTextureDiffuse( m, fval );
+         writeStripped( "\tKd %f %f %f", fval[0], fval[1], fval[2] );
+         m_model->getTextureSpecular( m, fval );
+         writeStripped( "\tKs %f %f %f", fval[0], fval[1], fval[2] );
+         m_model->getTextureAmbient( m, fval );
+         writeStripped( "\tKa %f %f %f", fval[0], fval[1], fval[2] );
+
+         if ( m_model->getMaterialType( m ) == Model::Material::MATTYPE_TEXTURE )
+         {
+            std::string filename = getRelativePath( m_modelPath.c_str(), m_model->getTextureFilename( m ) );
+            char * filecpy = strdup( filename.c_str() );
+            replaceSlash( filecpy );
+            writeStripped( "\tmap_Kd %s", 
+                  ( (strncmp( filecpy, ".\\", 2 ) == 0 ) ? &filecpy[2] : filecpy ) );
+            free( filecpy );
+         }
+
+         writeLine( "" );
+      }
+
+      m_dst = saveDst;
+
+      dst->close();
    }
-   else
-   {
-      return false;
-   }
+   return true;
 }
 
 bool ObjFilter::writeGroups()
 {
-   if ( m_fp )
+   list<int> tris;
+
+   unsigned v = 0;
+   unsigned vcount = m_model->getVertexCount();
+   unsigned t = 0;
+   unsigned tcount = m_model->getTriangleCount();
+   unsigned g = 0;
+   unsigned gcount = m_model->getGroupCount();
+
+   char vertfmt[20];
+   char texfmt[20];
+   char normfmt[20];
+
+   sprintf( vertfmt, "v %%.%df %%.%df %%.%df",
+         m_options->m_places, m_options->m_places, m_options->m_places );
+
+   sprintf( texfmt, "vt %%.%df %%.%df",
+         m_options->m_texPlaces, m_options->m_texPlaces );
+
+   sprintf( normfmt, "vn %%.%df %%.%df %%.%df",
+         m_options->m_normalPlaces, m_options->m_normalPlaces, m_options->m_normalPlaces );
+
+   writeLine( "# %d Vertices", vcount );
+
+   for ( v = 0; v < vcount; v++ )
    {
-      list<int> tris;
+      double coords[3];
+      m_model->getVertexCoords( v, coords );
+      writeStripped( vertfmt, coords[0], coords[1], coords[2] );
+   }
+   writeLine( "" );
 
-      unsigned v = 0;
-      unsigned vcount = m_model->getVertexCount();
-      unsigned t = 0;
-      unsigned tcount = m_model->getTriangleCount();
-      unsigned g = 0;
-      unsigned gcount = m_model->getGroupCount();
+   writeLine( "# %d Texture Coordinates", tcount * 3 );
 
-      char vertfmt[20];
-      char texfmt[20];
-      char normfmt[20];
+   for ( t = 0; t < tcount; t++ )
+   {
+      float u, v;
 
-      sprintf( vertfmt, "v %%.%df %%.%df %%.%df",
-            m_options->m_places, m_options->m_places, m_options->m_places );
+      m_model->getTextureCoords( t, 0, u, v );
+      writeStripped( texfmt, u, v );
+      m_model->getTextureCoords( t, 1, u, v );
+      writeStripped( texfmt, u, v );
+      m_model->getTextureCoords( t, 2, u, v );
+      writeStripped( texfmt, u, v );
+   }
+   writeLine( "" );
 
-      sprintf( texfmt, "vt %%.%df %%.%df",
-            m_options->m_texPlaces, m_options->m_texPlaces );
-
-      sprintf( normfmt, "vn %%.%df %%.%df %%.%df",
-            m_options->m_normalPlaces, m_options->m_normalPlaces, m_options->m_normalPlaces );
-
-      writeLine( "# %d Vertices", vcount );
-
-      for ( v = 0; v < vcount; v++ )
-      {
-         double coords[3];
-         m_model->getVertexCoords( v, coords );
-         writeStripped( vertfmt, coords[0], coords[1], coords[2] );
-      }
-      writeLine( "" );
-
-      writeLine( "# %d Texture Coordinates", tcount * 3 );
+   if ( m_options->m_saveNormals )
+   {
+      writeLine( "# %d Vertex Normals", tcount * 3 );
 
       for ( t = 0; t < tcount; t++ )
       {
-         float u, v;
+         float norm[3];
 
-         m_model->getTextureCoords( t, 0, u, v );
-         writeStripped( texfmt, u, v );
-         m_model->getTextureCoords( t, 1, u, v );
-         writeStripped( texfmt, u, v );
-         m_model->getTextureCoords( t, 2, u, v );
-         writeStripped( texfmt, u, v );
+         m_model->getNormal( t, 0, norm );
+         writeStripped( normfmt, norm[0], norm[1], norm[2] );
+         m_model->getNormal( t, 1, norm );
+         writeStripped( normfmt, norm[0], norm[1], norm[2] );
+         m_model->getNormal( t, 2, norm );
+         writeStripped( normfmt, norm[0], norm[1], norm[2] );
       }
+      writeLine( "" );
+   }
+
+   tris = m_model->getUngroupedTriangles();
+
+   if ( tris.size() )
+   {
+      writeLine( "# %d Ungrouped triangles", tris.size() );
+      writeLine( "" );
+
+      writeLine( "o ungrouped" );
+      writeLine( "g ungrouped" );
       writeLine( "" );
 
       if ( m_options->m_saveNormals )
       {
-         writeLine( "# %d Vertex Normals", tcount * 3 );
-
-         for ( t = 0; t < tcount; t++ )
+         list<int>::iterator it;
+         for ( it = tris.begin(); it != tris.end(); it++ )
          {
-            float norm[3];
-
-            m_model->getNormal( t, 0, norm );
-            writeStripped( normfmt, norm[0], norm[1], norm[2] );
-            m_model->getNormal( t, 1, norm );
-            writeStripped( normfmt, norm[0], norm[1], norm[2] );
-            m_model->getNormal( t, 2, norm );
-            writeStripped( normfmt, norm[0], norm[1], norm[2] );
+            writeLine( "f %d/%d/%d %d/%d/%d %d/%d/%d",
+                  m_model->getTriangleVertex( *it, 0) + 1, (*it) * 3 + 1, (*it) * 3 + 1,
+                  m_model->getTriangleVertex( *it, 1) + 1, (*it) * 3 + 2, (*it) * 3 + 2,
+                  m_model->getTriangleVertex( *it, 2) + 1, (*it) * 3 + 3, (*it) * 3 + 3 );
          }
-         writeLine( "" );
       }
+      else
+      {
+         list<int>::iterator it;
+         for ( it = tris.begin(); it != tris.end(); it++ )
+         {
+            writeLine( "f %d/%d %d/%d %d/%d",
+                  m_model->getTriangleVertex( *it, 0) + 1, (*it) * 3 + 1,
+                  m_model->getTriangleVertex( *it, 1) + 1, (*it) * 3 + 2,
+                  m_model->getTriangleVertex( *it, 2) + 1, (*it) * 3 + 3 );
+         }
+      }
+   }
 
-      tris = m_model->getUngroupedTriangles();
+   for ( g = 0; g < gcount; g++ )
+   {
+      tris = m_model->getGroupTriangles( g );
 
       if ( tris.size() )
       {
-         writeLine( "# %d Ungrouped triangles", tris.size() );
+         char * grpStr = strdup( m_model->getGroupName( g ) );
+         unsigned grpStrLen = strlen( grpStr );
+
+         for ( unsigned n = 0; n < grpStrLen; n++ )
+         {
+            if ( isspace( grpStr[n] ) )
+            {
+               grpStr[n] = '_';
+            }
+         }
+
+         writeLine( "# %s, %d grouped triangles", grpStr, tris.size() );
          writeLine( "" );
 
-         writeLine( "o ungrouped" );
-         writeLine( "g ungrouped" );
+         int matId = m_model->getGroupTextureId( g );
+         if ( matId >= 0 )
+         {
+            writeLine( "usemtl %s", m_materialNames[ matId ].c_str() );
+         }
+
+         writeLine( "o %s", grpStr );
+         writeLine( "g %s", grpStr );
          writeLine( "" );
+
+         free( grpStr );
 
          if ( m_options->m_saveNormals )
          {
@@ -598,70 +611,9 @@ bool ObjFilter::writeGroups()
             }
          }
       }
-
-      for ( g = 0; g < gcount; g++ )
-      {
-         tris = m_model->getGroupTriangles( g );
-
-         if ( tris.size() )
-         {
-            char * grpStr = strdup( m_model->getGroupName( g ) );
-            unsigned grpStrLen = strlen( grpStr );
-
-            for ( unsigned n = 0; n < grpStrLen; n++ )
-            {
-               if ( isspace( grpStr[n] ) )
-               {
-                  grpStr[n] = '_';
-               }
-            }
-
-            writeLine( "# %s, %d grouped triangles", grpStr, tris.size() );
-            writeLine( "" );
-
-            int matId = m_model->getGroupTextureId( g );
-            if ( matId >= 0 )
-            {
-               writeLine( "usemtl %s", m_materialNames[ matId ].c_str() );
-            }
-
-            writeLine( "o %s", grpStr );
-            writeLine( "g %s", grpStr );
-            writeLine( "" );
-
-            free( grpStr );
-
-            if ( m_options->m_saveNormals )
-            {
-               list<int>::iterator it;
-               for ( it = tris.begin(); it != tris.end(); it++ )
-               {
-                  writeLine( "f %d/%d/%d %d/%d/%d %d/%d/%d",
-                        m_model->getTriangleVertex( *it, 0) + 1, (*it) * 3 + 1, (*it) * 3 + 1,
-                        m_model->getTriangleVertex( *it, 1) + 1, (*it) * 3 + 2, (*it) * 3 + 2,
-                        m_model->getTriangleVertex( *it, 2) + 1, (*it) * 3 + 3, (*it) * 3 + 3 );
-               }
-            }
-            else
-            {
-               list<int>::iterator it;
-               for ( it = tris.begin(); it != tris.end(); it++ )
-               {
-                  writeLine( "f %d/%d %d/%d %d/%d",
-                        m_model->getTriangleVertex( *it, 0) + 1, (*it) * 3 + 1,
-                        m_model->getTriangleVertex( *it, 1) + 1, (*it) * 3 + 2,
-                        m_model->getTriangleVertex( *it, 2) + 1, (*it) * 3 + 3 );
-               }
-            }
-         }
-      }
-
-      return true;
    }
-   else
-   {
-      return false;
-   }
+
+   return true;
 }
 
 bool ObjFilter::canRead( const char * filename )
@@ -1084,123 +1036,121 @@ bool ObjFilter::readMaterial( const char * line )
 
 bool ObjFilter::readMaterialLibrary( const char * filename )
 {
-   FILE * fp = fopen( filename, "r" );
-
-   if ( fp )
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   DataSource * src = openInput( filename, err );
+   if ( src->errorOccurred() )
    {
-      char line[1024];
-      char * ptr;
+      src->close();
+      return false;
+   }
 
-      ObjMaterial * objmat = NULL;
+   char line[1024];
+   char * ptr;
 
-      while ( fgets( line, sizeof(line), fp ) )
+   ObjMaterial * objmat = NULL;
+
+   while ( src->readLine( line, sizeof(line) ) )
+   {
+      ptr = line;
+      while ( ptr[0] && isspace(ptr[0]) )
       {
-         ptr = line;
-         while ( ptr[0] && isspace(ptr[0]) )
+         ptr++;
+      }
+
+      if ( strncmp( "newmtl", ptr, 6 ) == 0 )
+      {
+         if ( objmat )
+         {
+            addObjMaterial( objmat );
+            delete objmat;
+         }
+         objmat = new ObjMaterial();
+
+         ptr += 7;
+         while ( ptr[0] && isspace( ptr[0] ) )
          {
             ptr++;
          }
 
-         if ( strncmp( "newmtl", ptr, 6 ) == 0 )
+         char * name = ptr;
+         while ( ptr[0] && !isspace( ptr[0] ) )
          {
-            if ( objmat )
-            {
-               addObjMaterial( objmat );
-               delete objmat;
-            }
-            objmat = new ObjMaterial();
-                  
-            ptr += 7;
-            while ( ptr[0] && isspace( ptr[0] ) )
-            {
-               ptr++;
-            }
+            ptr++;
+         }
+         ptr[0] = '\0';
 
-            char * name = ptr;
-            while ( ptr[0] && !isspace( ptr[0] ) )
-            {
-               ptr++;
-            }
-            ptr[0] = '\0';
-
-            objmat->name = name;
-         }
-         else if ( strncmp( "map_Kd", ptr, 6 ) == 0 )
-         {
-            ptr += 7;
-            while ( ptr[0] && isspace( ptr[0] ) )
-            {
-               ptr++;
-            }
-
-            char * filename = ptr;
-            while ( ptr[0] && ptr[0] != '\r' && ptr[0] != '\n' )
-            {
-               ptr++;
-            }
-            ptr[0] = '\0';
-
-            objmat->textureMap = m_modelPath + std::string("/") + fixFileCase( m_modelPath.c_str(), filename );
-            log_debug( "  texture map is '%s'\n", objmat->textureMap.c_str() );
-         }
-         else if ( strncmp( "Kd ", ptr, 3 ) == 0 )
-         {
-            ptr += 3;
-            if ( objmat )
-            {
-               sscanf( ptr, "%f %f %f", 
-                     &objmat->diffuse[0], 
-                     &objmat->diffuse[1], 
-                     &objmat->diffuse[2] );
-            }
-         }
-         else if ( strncmp( "Ka ", ptr, 3 ) == 0 )
-         {
-            ptr += 3;
-            if ( objmat )
-            {
-               sscanf( ptr, "%f %f %f", 
-                     &objmat->ambient[0], 
-                     &objmat->ambient[1], 
-                     &objmat->ambient[2] );
-            }
-         }
-         else if ( strncmp( "Ks ", ptr, 3 ) == 0 )
-         {
-            ptr += 3;
-            if ( objmat )
-            {
-               sscanf( ptr, "%f %f %f", 
-                     &objmat->specular[0], 
-                     &objmat->specular[1], 
-                     &objmat->specular[2] );
-            }
-         }
-         else if ( strncmp( "Ns ", ptr, 3 ) == 0 )
-         {
-            ptr += 3;
-            objmat->shininess = atof( ptr );
-         }
-         else if ( strncmp( "d ", ptr, 2 ) == 0 || strncmp( "Tr ", ptr, 3 ) == 0 )
-         {
-            ptr += 2;
-            objmat->alpha = atof( ptr );
-         }
+         objmat->name = name;
       }
-
-      if ( objmat )
+      else if ( strncmp( "map_Kd", ptr, 6 ) == 0 )
       {
-         addObjMaterial( objmat );
-         delete objmat;
-      }
+         ptr += 7;
+         while ( ptr[0] && isspace( ptr[0] ) )
+         {
+            ptr++;
+         }
 
-      fclose( fp );
-      return true;
+         char * filename = ptr;
+         while ( ptr[0] && ptr[0] != '\r' && ptr[0] != '\n' )
+         {
+            ptr++;
+         }
+         ptr[0] = '\0';
+
+         objmat->textureMap = m_modelPath + std::string("/") + fixFileCase( m_modelPath.c_str(), filename );
+         log_debug( "  texture map is '%s'\n", objmat->textureMap.c_str() );
+      }
+      else if ( strncmp( "Kd ", ptr, 3 ) == 0 )
+      {
+         ptr += 3;
+         if ( objmat )
+         {
+            sscanf( ptr, "%f %f %f", 
+                  &objmat->diffuse[0], 
+                  &objmat->diffuse[1], 
+                  &objmat->diffuse[2] );
+         }
+      }
+      else if ( strncmp( "Ka ", ptr, 3 ) == 0 )
+      {
+         ptr += 3;
+         if ( objmat )
+         {
+            sscanf( ptr, "%f %f %f", 
+                  &objmat->ambient[0], 
+                  &objmat->ambient[1], 
+                  &objmat->ambient[2] );
+         }
+      }
+      else if ( strncmp( "Ks ", ptr, 3 ) == 0 )
+      {
+         ptr += 3;
+         if ( objmat )
+         {
+            sscanf( ptr, "%f %f %f", 
+                  &objmat->specular[0], 
+                  &objmat->specular[1], 
+                  &objmat->specular[2] );
+         }
+      }
+      else if ( strncmp( "Ns ", ptr, 3 ) == 0 )
+      {
+         ptr += 3;
+         objmat->shininess = atof( ptr );
+      }
+      else if ( strncmp( "d ", ptr, 2 ) == 0 || strncmp( "Tr ", ptr, 3 ) == 0 )
+      {
+         ptr += 2;
+         objmat->alpha = atof( ptr );
+      }
    }
-   else
+
+   if ( objmat )
    {
-      return false;
+      addObjMaterial( objmat );
+      delete objmat;
    }
+
+   return true;
 }
 
 

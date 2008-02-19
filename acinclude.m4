@@ -52,7 +52,7 @@ AC_DEFUN([KSW_IS_DEBUG],
   elif test x"$enable_debug" = xcov; then
     COVFLAGS="-coverage"
     COVLFLAGS="-lgcov"
-    CFLAGS=""
+    CFLAGS="-g"
     CXXFLAGS="${CFLAGS}"
     LDFLAGS=""
     is_debug=coverage

@@ -13,6 +13,8 @@ Changes for 1.3.7
    Do not perform selection in frame animation mode if there are no
       animations
    Changed poly tool's "Fan" checkbox into a Strip/Fan combo box
+   Implemented new equiv test and split CompareBits into
+      CompareParts and PartProperties
 
 Changes for 1.3.6
    Save/restore window size
