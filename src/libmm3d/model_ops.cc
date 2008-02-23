@@ -64,7 +64,6 @@ bool floatCompareVector( T * lhs, T * rhs, size_t len, double tolerance = EQ_TOL
 }
 
 // FIXME centralize this
-// FIXME test this
 static bool matrixEquiv( const Matrix & lhs, const Matrix & rhs, double tolerance = EQ_TOLERANCE )
 {
    Vector lright( 2, 0, 0 );
@@ -120,6 +119,66 @@ static bool jointsMatch( const Model * lhs, int lb, const Model * rhs, int rb )
    return false;
 }
 
+typedef std::map<int,int> IntMap;
+typedef std::map<int,double> WeightMap;
+
+static bool influencesMatch( const Model::InfluenceList & lhs,
+      const Model::InfluenceList & rhs, const IntMap jointMap )
+{
+   WeightMap lhsInfMap;
+   WeightMap rhsInfMap;
+
+   Model::InfluenceList::const_iterator it;
+
+   double totalWeight = 0.0;
+   for ( it = lhs.begin(); it != lhs.end(); ++it )
+   {
+      totalWeight += it->m_weight;
+   }
+   for ( it = lhs.begin(); it != lhs.end(); ++it )
+   {
+      if ( it->m_weight > 0.0 )
+         lhsInfMap[ it->m_boneId ] = it->m_weight / totalWeight;
+   }
+
+   totalWeight = 0.0;
+   for ( it = rhs.begin(); it != rhs.end(); ++it )
+   {
+      totalWeight += it->m_weight;
+   }
+   for ( it = rhs.begin(); it != rhs.end(); ++it )
+   {
+      if ( it->m_weight > 0.0 )
+         rhsInfMap[ it->m_boneId ] = it->m_weight / totalWeight;
+   }
+
+   if ( lhsInfMap.size() != rhsInfMap.size() )
+      return false;
+
+   for ( it = lhs.begin(); it != lhs.end(); ++it )
+   {
+      if ( it->m_weight > 0.0 )
+      {
+         IntMap::const_iterator boneIt = jointMap.find( it->m_boneId );
+         if ( boneIt == jointMap.end() )
+            return false;
+
+         WeightMap::const_iterator lwit = lhsInfMap.find( it->m_boneId );
+         if ( lwit == lhsInfMap.end() )
+            return false;
+
+         WeightMap::const_iterator rwit = rhsInfMap.find( boneIt->second );
+         if ( rwit == rhsInfMap.end() )
+            return false;
+
+         if ( fabs ( rwit->second - lwit->second ) > EQ_TOLERANCE )
+            return false;
+      }
+   }
+
+   return true;
+}
+
 bool Model::equivalent( const Model * model, double tolerance ) const
 {
    int lhsTCount    = m_triangles.size();
@@ -160,7 +219,6 @@ bool Model::equivalent( const Model * model, double tolerance ) const
    typedef std::map<int,std::list<int> > IntListMap;
    typedef std::vector<bool> BoolList;
    typedef std::list<int> IntList;
-   typedef std::map<int,int> IntMap;
 
    // Match skeletons
 
@@ -199,8 +257,6 @@ bool Model::equivalent( const Model * model, double tolerance ) const
    // Find groups that are equivalent.
 
    IntListMap groupMap;
-
-   // FIXME need to check vertex influences.
 
    for ( g = 0; g < lhsGCount; ++g )
    {
@@ -278,10 +334,14 @@ bool Model::equivalent( const Model * model, double tolerance ) const
 
       if ( g >= 0 )
       {
+         int m = getGroupTextureId( g );
          // Only compare texture coordinates if the coordinates affect the
          // material at that vertex (texture map, gradient, etc).
-         compareTexCoords =
-            (getMaterialType(g) != Model::Material::MATTYPE_BLANK);
+         if ( m >= 0 )
+         {
+            compareTexCoords =
+               (getMaterialType(g) != Model::Material::MATTYPE_BLANK);
+         }
       }
 
       for ( IntList::const_iterator it = gtris.begin(); it != gtris.end(); ++it )
@@ -312,6 +372,18 @@ bool Model::equivalent( const Model * model, double tolerance ) const
                      match = false;
                   }
 
+                  // Check to see if vertex influences match
+                  if ( match )
+                  {
+                     Model::InfluenceList ilhs;
+                     Model::InfluenceList irhs;
+
+                     getVertexInfluences( v, ilhs );
+                     model->getVertexInfluences( rv, irhs );
+
+                     match = influencesMatch( ilhs, irhs, jointMap );
+                  }
+
                   if ( match && compareTexCoords )
                   {
                      float s = 0.0f;
@@ -322,8 +394,8 @@ bool Model::equivalent( const Model * model, double tolerance ) const
                      getTextureCoords( *it, j, s, t );
                      model->getTextureCoords( *rit, (j+i) % 3, rs, rt );
 
-                     if ( fabs( s -rs ) > tolerance
-                           || fabs( t -rt ) > tolerance )
+                     if ( fabs( s - rs ) > tolerance
+                           || fabs( t - rt ) > tolerance )
                      {
                         match = false;
                      }
@@ -380,6 +452,17 @@ bool Model::equivalent( const Model * model, double tolerance ) const
                match = true;
                pointMatched[ rp ] = true;
             }
+
+            if ( match )
+            {
+               Model::InfluenceList ilhs;
+               Model::InfluenceList irhs;
+
+               getPointInfluences( p, ilhs );
+               model->getPointInfluences( rp, irhs );
+
+               match = influencesMatch( ilhs, irhs, jointMap );
+            }
          }
       }
 
@@ -390,12 +473,76 @@ bool Model::equivalent( const Model * model, double tolerance ) const
          log_warning( "no match for lhs point %d:\n%s\n", p, dstr.c_str() );
          return false;
       }
-
-      // FIXME match influences
    }
 
-   // FIXME finish this (animations)
-   // Don't need to check texture contents, already did that above.
+   // Don't need to check texture contents, already did that in the group
+   // and material check above.
+
+   // Compare animations. This assumes animations are in the same order.
+   // FIXME test
+   Model::AnimationModeE mode = Model::ANIMMODE_SKELETAL;
+   int acount = getAnimCount( mode );
+   if ( acount != (int) model->getAnimCount( mode ) )
+      return false;
+
+   for ( int a = 0; a < acount; ++a )
+   {
+      if ( std::string( getAnimName( mode, a ) )
+            != std::string( model->getAnimName( mode, a ) ) )
+         return false;
+      if ( getAnimFrameCount( mode, a ) != model->getAnimFrameCount( mode, a ) )
+         return false;
+      if ( getAnimFPS( mode, a ) != model->getAnimFPS( mode, a ) )
+         return false;
+
+      int fcount = getAnimFrameCount( mode, a );
+
+      for ( int f = 0; f < fcount; ++f )
+      {
+         for ( b = 0; b < lhsBCount; ++b )
+         {
+            int rb = jointMap[ b ];
+
+            bool lhs_havekf;
+            bool rhs_havekf;
+            double lhs_param[3];
+            double rhs_param[3];
+
+            lhs_havekf = getSkelAnimKeyframe( a, f, b, true,
+                  lhs_param[0], lhs_param[1], lhs_param[2] );
+            rhs_havekf = getSkelAnimKeyframe( a, f, rb, true,
+                  rhs_param[0], rhs_param[1], rhs_param[2] );
+
+            if ( lhs_havekf != rhs_havekf )
+               return false;
+
+            if ( lhs_havekf )
+            {
+               Matrix lhs_mat;
+               Matrix rhs_mat;
+               lhs_mat.setRotation( lhs_param );
+               rhs_mat.setRotation( rhs_param );
+
+               if ( !matrixEquiv( lhs_mat, rhs_mat ) )
+                  return false;
+            }
+
+            lhs_havekf = getSkelAnimKeyframe( a, f, b, false,
+                  lhs_param[0], lhs_param[1], lhs_param[2] );
+            rhs_havekf = getSkelAnimKeyframe( a, f, rb, false,
+                  rhs_param[0], rhs_param[1], rhs_param[2] );
+
+            if ( lhs_havekf != rhs_havekf )
+               return false;
+
+            if ( lhs_havekf )
+            {
+               if ( !floatCompareVector( lhs_param, rhs_param, 3, tolerance ) )
+                  return false;
+            }
+         }
+      }
+   }
 
 #if 0
    if ( compareMask & CompareSkeleton )
@@ -788,13 +935,10 @@ bool Model::propEqual( const Model * model, int partBits, int propBits,
          if ( !m_joints[j]->propEqual( *model->m_joints[j], propBits, tolerance ) )
          {
             log_warning( "match failed at joint %d\n", j );
-            /*
-            // FIXME
             m_joints[j]->sprint( dstr );
             log_warning( "lhs:\n%s\n", dstr.c_str() );
             model->m_joints[j]->sprint( dstr );
             log_warning( "rhs:\n%s\n", dstr.c_str() );
-            */
             return false;
          }
       }
