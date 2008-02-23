@@ -25,6 +25,7 @@ TESTS = \
 		  model_test.unit \
 		  new_mm3d_test.unit \
 		  filter_mm3d_test.unit \
+		  filter_cob_test.unit \
 		  filter_dxf_test.unit \
 		  filter_obj_test.unit \
 		  filter_md2_test.unit \
@@ -80,6 +81,8 @@ new_mm3d_test.unit: new_mm3d_test.moc $(LIB)
 
 filter_mm3d_test.unit: filter_mm3d_test.moc $(LIB)
 
+filter_cob_test.unit: filter_cob_test.moc $(LIB)
+
 filter_dxf_test.unit: filter_dxf_test.moc $(LIB)
 
 filter_obj_test.unit: filter_obj_test.moc $(LIB)
@@ -128,6 +131,7 @@ filtercheck:
 	./filter_mm3d_test.unit -silent
 	./filter_md2_test.unit -silent
 	./filter_obj_test.unit -silent
+	./filter_cob_test.unit -silent
 	./filter_dxf_test.unit -silent
 
 fullcheck: check filtercheck
