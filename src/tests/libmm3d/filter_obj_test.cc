@@ -165,7 +165,7 @@ private slots:
       log_enable_error( false );
    }
 
-   void testMd2ModelA()
+   void testObjModelA()
    {
       testReadAndWrite(
             "filtertest/obj/ref_sit_down.obj",
@@ -173,7 +173,7 @@ private slots:
             "filtertest/obj/ref_sit_down.mm3d" );
    }
 
-   void testMd2ModelB()
+   void testObjModelB()
    {
       testReadAndWrite(
             "filtertest/obj/ref_sit.obj",
@@ -181,7 +181,7 @@ private slots:
             "filtertest/obj/ref_sit.mm3d" );
    }
 
-   void testMd2ModelC()
+   void testObjModelC()
    {
       testReadAndWrite(
             "filtertest/obj/ref_standing.obj",
@@ -189,7 +189,7 @@ private slots:
             "filtertest/obj/ref_standing.mm3d" );
    }
 
-   void testMd2ModelD()
+   void testObjModelD()
    {
       testReadAndWrite(
             "filtertest/obj/jackolan.obj",
