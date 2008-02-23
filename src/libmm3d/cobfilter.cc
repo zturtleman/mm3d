@@ -987,7 +987,7 @@ bool CobFilter::readAMaterialChunk( const CobFilter::ChunkHeaderT & header, CobF
        std::string newPath = m_modelPath + "/";
        log_debug( "texture filename is '%s'\n", file.c_str() );
 
-       material.texFile = fixFileCase( newPath.c_str(), file.c_str() );
+       material.texFile = newPath + fixFileCase( newPath.c_str(), file.c_str() );
 
        skipAString( "offset" );
        material.uOffset = readAFloat();
@@ -1271,10 +1271,10 @@ bool CobFilter::readBMaterialChunk( const CobFilter::ChunkHeaderT & header, CobF
 
        std::string file = getFileNameFromPath( path.c_str() );
 
-       file = m_modelPath + std::string("/") + file;
        log_debug( "texture filename is '%s'\n", file.c_str() );
 
-       material.texFile = file;
+       std::string newPath = m_modelPath + std::string("/");
+       material.texFile = newPath + fixFileCase( newPath.c_str(), file.c_str() );
 
        material.uOffset = readBFloat();
        material.vOffset = readBFloat();
