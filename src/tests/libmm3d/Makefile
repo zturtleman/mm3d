@@ -12,6 +12,7 @@ TESTS = \
 		  filedatasource_test.unit \
 		  undomgr_test.unit \
 		  texcompare_test.unit \
+		  texscale_test.unit \
 		  model_init_test.unit \
 		  model_equal_test.unit \
 		  model_equiv_test.unit \
@@ -55,6 +56,8 @@ undomgr_test.unit: undomgr_test.moc $(LIB)
 memutil_test.unit: memutil_test.moc $(LIB)
 
 texcompare_test.unit: texcompare_test.moc $(LIB)
+
+texscale_test.unit: texscale_test.moc $(LIB)
 
 model_init_test.unit: model_init_test.moc $(LIB)
 
@@ -112,6 +115,7 @@ check: test
 	./undomgr_test.unit -silent
 	./datadest_test.unit -silent
 	./texcompare_test.unit -silent
+	./texscale_test.unit -silent
 	./model_init_test.unit -silent
 	./model_equal_test.unit -silent
 	./model_equiv_test.unit -silent

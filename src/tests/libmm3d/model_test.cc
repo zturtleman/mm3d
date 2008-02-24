@@ -99,14 +99,14 @@
 // TODO Undo:
 //   * Undo works on everything
 //   * Redo works on everything
-//   * Undo current
+//   x Undo current
 //   * Enable/disable works
-//   * Size calculation works
-//   * Limits work
-//   * Atomic operation names
-//   * canUndo/canRedo
+//   x Size calculation works
+//   x Limits work
+//   x Atomic operation names
+//   x canUndo/canRedo
 //   * setUndoEnabled
-//   * Save interaction (getSaved/setSaved)
+//   x Save interaction (getSaved/setSaved)
 //   x undoRelease/redoRelease
 //
 // TODO Animation:
