@@ -45,14 +45,14 @@ typedef struct _NewVertices_t
 
 typedef std::list<NewVerticesT> NewVerticesList;
 
-void weldSelectedVertices ( Model * model, double tolerance )
+void weldSelectedVertices( Model * model, double tolerance )
 {
    int dummy1 = 0;
    int dummy2 = 0;
    weldSelectedVertices( model, tolerance, dummy1, dummy2 );
 }
 
-void weldSelectedVertices ( Model * model, double tolerance, int & unweldnum, int & weldnum )
+void weldSelectedVertices( Model * model, double tolerance, int & unweldnum, int & weldnum )
 {
    list<int> vert;
    model->getSelectedVertices( vert );
@@ -166,7 +166,6 @@ void unweldSelectedVertices( Model * model, int & unweldnum, int & weldnum )
          {
             nv.selected[i] = true;
             vertCount[ nv.v[i] ]++;
-            unweldnum++;
 
             if ( vertCount[ nv.v[i] ] > 1 )
             {
@@ -176,8 +175,17 @@ void unweldSelectedVertices( Model * model, int & unweldnum, int & weldnum )
 
                model->getVertexCoords( nv.v[i], coords );
                int temp  = model->addVertex( coords[0], coords[1], coords[2] );
-               int joint = model->getVertexBoneJoint( nv.v[i] );
-               model->setVertexBoneJoint( temp, joint );
+
+               Model::InfluenceList inf;
+
+               model->getVertexInfluences( nv.v[i], inf );
+               for ( Model::InfluenceList::const_iterator it = inf.begin();
+                     it != inf.end(); ++it )
+               {
+                  model->addVertexInfluence( temp,
+                        it->m_boneId, it->m_type, it->m_weight );
+               }
+
                nv.v[i] = temp;
                added++;
                unweldnum++;
@@ -206,26 +214,23 @@ void unweldSelectedVertices( Model * model, int & unweldnum, int & weldnum )
    list<int> tri;
    model->getSelectedTriangles( tri );
 
-   if ( tri.empty() )
+   model->unselectAll();
+   model->unselectAll();
+   for ( it = tri.begin(); it != tri.end(); it++ )
    {
-      model->unselectAll();
-      for ( nvit = nvl.begin(); nvit != nvl.end(); nvit++ )
+      model->selectTriangle( *it );
+   }
+
+   for ( nvit = nvl.begin(); nvit != nvl.end(); nvit++ )
+   {
+      for ( int i = 0; i < 3; i++ )
       {
-         for ( int i = 0; i < 3; i++ )
+         if ( (*nvit).selected[i] )
          {
-            if ( (*nvit).selected[i] )
-            {
-               model->selectVertex( (*nvit).v[i] );
-            }
+            model->selectVertex( (*nvit).v[i] );
          }
       }
    }
-   else
-   {
-      model->unselectAll();
-      for ( it = tri.begin(); it != tri.end(); it++ )
-      {
-         model->selectTriangle( *it );
-      }
-   }
+
+   unweldnum += weldnum;
 }
