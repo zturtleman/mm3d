@@ -350,19 +350,6 @@ private slots:
       QVERIFY_TRUE( lhs->propEqual( rhs_fourvert.get() ) );
    }
 
-   // FIXME test
-   //   X Weld
-   //   X Unweld
-   //   X Vertex count is right
-   //   X welded/unwelded count is right
-   //   X Model equivalanece
-   //   X Undo/redo
-   //   X Unweld preserves influences
-   //   X Tolerance respected
-   //   X UV coords unchanged
-   //   X Selected/unselected respected
-   //   X Deletes flattened
-
 };
 
 QTEST_MAIN(ModelWeldTest)
