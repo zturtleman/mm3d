@@ -2,6 +2,8 @@ Changes for 1.3.7
    Added "Apply to selected" for Transform Model
    Export Selected (geometry, joints, points, and textures)
    Set exact position of rotate point for rotate tool
+   More complete version support for Cal3D (700 through 1200)
+   Read compressed animations in Cal3D
    Report error if saving MD2 or MD3 with faces that are not assigned
       to a group
    Performance fixes for normal calculation (about 40% speed improvement)

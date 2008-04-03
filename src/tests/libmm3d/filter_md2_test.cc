@@ -178,8 +178,7 @@ private slots:
    }
 
    // FIXME add tests:
-   //   read
-   //   write
+   //   unanimated
    //   error handling
 };
 

@@ -84,14 +84,6 @@ class Ms3dFilter : public ModelFilter
 
    protected:
 
-      void read( uint8_t & val );
-      void read( uint16_t & val );
-      void read( uint32_t & val );
-      void read( int8_t & val );
-      void read( int16_t & val );
-      void read( int32_t & val );
-      void read( float32_t & val );
-      void readBytes( void * buf, size_t len );
       void readString( char * buf, size_t len );
 
       bool readCommentSection();
@@ -99,18 +91,6 @@ class Ms3dFilter : public ModelFilter
 
       bool readVertexWeight( int subVersion, int vertex,
             VertexWeightList & weightList );
-
-      void skipBytes( size_t len );
-
-      void write( uint8_t val );
-      void write( uint16_t val );
-      void write( uint32_t val );
-      void write( int8_t val );
-      void write( int16_t val );
-      void write( int32_t val );
-      void write( float32_t val );
-      void writeBytes( const void * buf, size_t len );
-      void writeString( const char * buf, size_t len );
 
       void writeCommentSection();
       void writeVertexWeightSection( const MeshList & ml );
@@ -120,10 +100,8 @@ class Ms3dFilter : public ModelFilter
       void writeVertexWeight( int subVersion,
             const Model::InfluenceList & ilist );
 
-      uint8_t * m_buffer;
-      uint8_t * m_bufPos;
-      uint8_t * m_bufEnd;
-      FILE    * m_fp;
+      DataDest   * m_dst;
+      DataSource * m_src;
 
       Model   * m_model;
       

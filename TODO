@@ -7,6 +7,8 @@ For 1.4:
    FIXMEs
       Prevent editing model when invalid animation is active
          (animwin open when no animation)
+      Centralize the FunctionCaller
+      Make Cal3D errors translatable
 
 
 For 1.6:

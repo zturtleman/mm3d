@@ -145,7 +145,7 @@ class DataDest
       ssize_t writeString( const char * str );
 
       // Write an integer value of the specified size and store it in val.
-      // Returns false if a read error occurred.
+      // Returns false if a write error occurred.
       bool write( int8_t val );
       bool write( uint8_t val );
       bool write( int16_t val );

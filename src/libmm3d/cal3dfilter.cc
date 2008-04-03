@@ -21,19 +21,54 @@
  */
 
 
+// Cal 3D notes:
+//
+// Main file may be .cal or .cfg
+//
+// The .cal file may be ascii text .ini style, or XML. The XML .cal file
+// format is not supported.
+//
+// Versions:
+//
+// Version numbers are decimal
+//
+// Binary version 700 = XML Version 900 or 1000
+//
+// XML version 900:
+//   File has a <HEADER/> element with version
+// XML version 1000:
+//   No header, version is part of top-level tag
+//
+// Binary version 1200:
+//   Animation has an extra flag field at the start that indicates if
+//   the animation tracks are compressed, plus possibly compressed tracks.
+
+// FIXME things to test:
+//
+// Write version based on meta data (TEST)
+// Read compressed tracks (TEST)
+// Allow user to specify binary version (TEST)
+//    Write '0' flags, don't bother writing compressed tracks (TEST)
+// Allow user to specify XML version (TEST)
+//    Omit header if >= 1000 (TEST)
+// Are .cal and .cfg different? Looks like mesh/animation keys
+//    don't have names (mesh= instead of mesh_foo=)
+
 #include "cal3dfilter.h"
 
 #include "model.h"
 #include "texture.h"
 #include "log.h"
-#include "binutil.h"
+#include "endianconfig.h"
 #include "misc.h"
 #include "filtermgr.h"
-#include "endianconfig.h"
 #include "texmgr.h"
 #include "mesh.h"
 #include "modelstatus.h"
+#include "mm3dport.h"
 #include "translate.h"
+#include "datadest.h"
+#include "datasource.h"
 #include "file_closer.h"
 #include "local_array.h"
 #include "release_ptr.h"
@@ -59,17 +94,36 @@ using std::string;
 static Cal3dFilter * s_filter = NULL;
 #endif // PLUGIN
 
-// Yes, that's supposed to be decimal
-#define CAL3D_VERSION  700
-#define CAL3D_VERSION2 799
-#define CAL3D_XVERSION 900
+// These values are decimal, not hexadecimal
+#define CAL3D_MIN_BVERSION  700
+#define CAL3D_MAX_BVERSION  1200
 
+#define CAL3D_MIN_XVERSION  900
+#define CAL3D_MAX_XVERSION  1000
+
+// Versions where formats changed. Files with versions equal to or later than
+// these may make use of newer features.
+#define CAL3D_COMP_ANIM_VERSION   1200  // Compressed animation tracks
+#define CAL3D_NO_XHEADER_VERSION  1000  // XML files without <HEADER/> tags (version goes in top-level tag)
+
+// File magic number values
 #define CAL3D_MAGIC_SIZE      4
 #define CAL3D_MAGIC_MATERIAL  "CRF\0"
 #define CAL3D_MAGIC_MESH      "CMF\0"
 #define CAL3D_MAGIC_SKELETON  "CSF\0"
 #define CAL3D_MAGIC_ANIMATION "CAF\0"
 
+// FIXME centralize this
+template<typename T>
+class FunctionCaller
+{
+   public:
+      FunctionCaller( T * obj, void (T::*method)(void) ) { m_obj = obj; m_method = method; }
+      ~FunctionCaller() { (m_obj->*m_method)(); }
+   private:
+      T * m_obj;
+      void (T::*m_method)(void);
+};
 const Model::AnimationModeE MODE = Model::ANIMMODE_SKELETAL;
 
 static char * _skipSpace( char * str )
@@ -144,11 +198,13 @@ Cal3dFilter::Cal3dOptions::~Cal3dOptions()
 void Cal3dFilter::Cal3dOptions::setOptionsFromModel( Model * m )
 {
    char value[32];
-   if ( m->getMetaData( "cal3d_single_mesh_file", value, sizeof(value) ) ) {
+   if ( m->getMetaData( "cal3d_single_mesh_file", value, sizeof(value) ) )
+   {
       // Non-zero, single mesh
       m_singleMeshFile = atoi(value) != 0;
    }
-   if ( m->getMetaData( "cal3d_xml_material", value, sizeof(value) ) ) {
+   if ( m->getMetaData( "cal3d_xml_material", value, sizeof(value) ) )
+   {
       // Non-zero, use XML format for material
       m_xmlMatFile = atoi(value) != 0;
    }
@@ -158,6 +214,8 @@ Cal3dFilter::Cal3dFilter()
    : m_model( NULL ),
      m_options( NULL )
 {
+   m_formats.push_back( "cal" );
+   m_formats.push_back( "cfg" );
 }
 
 Cal3dFilter::~Cal3dFilter()
@@ -167,6 +225,10 @@ Cal3dFilter::~Cal3dFilter()
 Model::ModelErrorE Cal3dFilter::readFile( Model * model, const char * const filename )
 {
    Model::ModelErrorE err = Model::ERROR_NONE;
+
+   // Use these to determine what versions of files to write.
+   m_maxBinaryVersion = CAL3D_MIN_BVERSION;
+   m_maxXrfVersion = CAL3D_MIN_XVERSION;
 
    if ( (err = readFileToBuffer( filename, m_fileBuf, m_fileLength )) == Model::ERROR_NONE )
    {
@@ -226,6 +288,14 @@ Model::ModelErrorE Cal3dFilter::readFile( Model * model, const char * const file
       m_fileBuf = NULL;
       m_bufPos  = NULL;
    }
+
+   char version[32];
+
+   PORT_snprintf( version, sizeof(version), "%d", m_maxXrfVersion );
+   model->updateMetaData( "cal3d_xrf_version", version );
+
+   PORT_snprintf( version, sizeof(version), "%d", m_maxBinaryVersion );
+   model->updateMetaData( "cal3d_binary_version", version );
 
    return err;
 }
@@ -322,39 +392,41 @@ bool Cal3dFilter::canExport( const char * filename )
 bool Cal3dFilter::isSupported( const char * filename )
 {
    log_debug( "isSupported( %s )\n", filename );
-   unsigned len = strlen( filename );
-
-   if ( len >= 4 && strcasecmp( &filename[len-4], ".cal" ) == 0 )
+   unsigned len = strlen(filename);
+   for ( std::list<std::string>::const_iterator it = m_formats.begin();
+         it != m_formats.end(); ++it )
    {
-      log_debug( "  true\n" );
-      return true;
+      const std::string fmt = std::string(".") + *it;
+      unsigned fmtlen = fmt.size();
+      if ( len >= fmtlen && strcasecmp( &filename[len-fmtlen], fmt.c_str() ) == 0 )
+      {
+         log_debug( "  true\n" );
+         return true;
+      }
    }
-   else
-   {
-      log_debug( "  false\n" );
-      return false;
-   }
+   log_debug( "  false\n" );
+   return false;
 }
 
 list< string > Cal3dFilter::getReadTypes()
 {
    list<string> rval;
-   rval.push_back( "*.cal" );
-   rval.push_back( "*.csf" );
-   rval.push_back( "*.caf" );
-   rval.push_back( "*.cmf" );
-   rval.push_back( "*.crf" );
+   for ( std::list<std::string>::const_iterator it = m_formats.begin();
+         it != m_formats.end(); ++it )
+   {
+      rval.push_back( std::string("*.") + *it );
+   }
    return rval;
 }
 
 list< string > Cal3dFilter::getWriteTypes()
 {
    list<string> rval;
-   rval.push_back( "*.cal" );
-   rval.push_back( "*.csf" );
-   rval.push_back( "*.caf" );
-   rval.push_back( "*.cmf" );
-   rval.push_back( "*.crf" );
+   for ( std::list<std::string>::const_iterator it = m_formats.begin();
+         it != m_formats.end(); ++it )
+   {
+      rval.push_back( std::string("*.") + *it );
+   }
    return rval;
 }
 
@@ -394,7 +466,16 @@ std::string Cal3dFilter::addExtension( const std::string file, const std::string
 
 bool Cal3dFilter::versionIsValid( FileTypeE type, int version )
 {
-   if ( version == CAL3D_VERSION || version == CAL3D_VERSION2 )
+   if ( version >= CAL3D_MIN_BVERSION && version <= CAL3D_MAX_BVERSION )
+   {
+      return true;
+   }
+   return false;
+}
+
+bool Cal3dFilter::xversionIsValid( FileTypeE type, int version )
+{
+   if ( version >= CAL3D_MIN_XVERSION && version <= CAL3D_MAX_XVERSION )
    {
       return true;
    }
@@ -524,8 +605,8 @@ Model::ModelErrorE Cal3dFilter::readXSubFile( uint8_t * buf, size_t len )
    }
    else
    {
-      log_debug( "XML file does not have a header\n" );
-      log_warning( "XML file is an unsupported type\n" );
+      log_debug( "Could not determine XML file type\n" );
+      log_warning( "XML file is an unsupported type (unrecognized root tag)\n" );
    }
 
    m_fileBuf    = oldFileBuf;
@@ -566,6 +647,13 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
    std::list< std::string > matFiles;
    std::list< std::string > animFiles;
 
+   // If no usable data is found, the bracket count (ie, number of lines
+   // that start with '<') is used to determine if the file was in XML format
+   // so that we can give a more useful error message to the user.
+   int bracketCount = 0;
+
+   bool noData = true;
+
    while ( readBLine( line, len - (m_bufPos - m_fileBuf) ) )
    {
       if ( modelSection )
@@ -577,6 +665,7 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
          {
             if ( strncasecmp( str, "skeleton", 8 ) == 0 )
             {
+               noData = false;
                subfile = readLineFile( str );
                if ( !subfile.empty()  )
                {
@@ -586,6 +675,7 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
             }
             else if ( strncasecmp( str, "mesh", 4 ) == 0 )
             {
+               noData = false;
                subfile = readLineFile( str );
                if ( !subfile.empty()  )
                {
@@ -594,6 +684,7 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
             }
             else if ( strncasecmp( str, "animation", 9 ) == 0 )
             {
+               noData = false;
                std::string animLabel = readLineKey( str );
                subfile = readLineFile( str );
 
@@ -608,6 +699,7 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
             }
             else if ( strncasecmp( str, "material", 8 ) == 0 )
             {
+               noData = false;
                subfile = readLineFile( str );
                if ( !subfile.empty()  )
                {
@@ -616,16 +708,19 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
             }
             else if ( strncasecmp( str, "path", 4 ) == 0 )
             {
+               noData = false;
                string value = readLineFile( str );
                m_model->updateMetaData( "cal3d_path", value.c_str() );
             }
             else if ( strncasecmp( str, "scale", 5 ) == 0 )
             {
+               noData = false;
                string value = readLineFile( str );
                m_model->updateMetaData( "cal3d_scale", value.c_str() );
             }
             else if ( strncasecmp( str, "rotate", 6 ) == 0 )
             {
+               noData = false;
                string value = readLineFile( str );
                m_model->updateMetaData( "cal3d_rotate", value.c_str() );
             }
@@ -648,6 +743,10 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
                   log_debug( "skipping [%s section\n", str );
                   modelSection = false;
                }
+            }
+            else if ( str[0] == '<' )
+            {
+               ++bracketCount;
             }
          }
 
@@ -693,6 +792,18 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
 
    std::list< std::string >::iterator it;
 
+   // If we didn't find any usable data, return an error.
+   if ( noData )
+   {
+      if ( bracketCount > 2 )
+         m_model->setFilterSpecificError( "MM3D does not support CAL3D files in XML format" );
+      else
+         m_model->setFilterSpecificError( "The file does not contain any mesh or animation data" );
+
+      rval = Model::ERROR_FILTER_SPECIFIC;
+      goto bail_out;
+   }
+
    // Load materials first because meshes will reference them
    for ( it = matFiles.begin(); it != matFiles.end(); it++ )
    {
@@ -717,6 +828,7 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
       readSubFile( (*it).c_str() );
    }
 
+bail_out:;
    m_fileBuf    = oldFileBuf;
    m_bufPos     = oldBufPos;
    m_fileLength = oldLen;
@@ -742,6 +854,9 @@ Model::ModelErrorE Cal3dFilter::readSkeletonFile( uint8_t * buf, size_t len )
 
       int fileVersion = readBInt32();
       int numBones    = readBInt32();
+
+      if ( fileVersion > m_maxBinaryVersion )
+         m_maxBinaryVersion = fileVersion;
 
       log_debug( "skel version: %d (%x)\n", fileVersion, fileVersion );
 
@@ -790,6 +905,9 @@ Model::ModelErrorE Cal3dFilter::readMeshFile( uint8_t * buf, size_t len )
 
       int fileVersion  = readBInt32();
       int numSubMeshes = readBInt32();
+
+      if ( fileVersion > m_maxBinaryVersion )
+         m_maxBinaryVersion = fileVersion;
 
       log_debug( "mesh version: %d (%x)\n", fileVersion, fileVersion );
 
@@ -847,6 +965,9 @@ Model::ModelErrorE Cal3dFilter::readMaterialFile( uint8_t * buf, size_t len )
 
       int fileVersion = readBInt32();
 
+      if ( fileVersion > m_maxBinaryVersion )
+         m_maxBinaryVersion = fileVersion;
+
       log_debug( "mat version: %d (%x)\n", fileVersion, fileVersion );
 
       if ( versionIsValid( FT_Material, fileVersion ) )
@@ -880,7 +1001,7 @@ Model::ModelErrorE Cal3dFilter::readMaterialFile( uint8_t * buf, size_t len )
             readBString( filename );
 
             mat->m_type = Model::Material::MATTYPE_TEXTURE;
-            mat->m_filename = m_currentPath + std::string( "/" ) +  filename;
+            mat->m_filename = normalizePath(filename.c_str(), m_currentPath.c_str());
 
             // ignore everything else in the file
          }
@@ -959,6 +1080,11 @@ Model::ModelErrorE Cal3dFilter::readXMaterialFile( uint8_t * buf, size_t len )
       // don't worry about magic and version, just get to the material tag
       if ( findXElement( "MATERIAL" ) )
       {
+         std::string versionStr = readXAttribute( "VERSION" );
+         int xrfVersion = atoi( versionStr.c_str() );
+         if ( xrfVersion > m_maxXrfVersion )
+            m_maxXrfVersion = xrfVersion;
+
          Vector ambient( 0, 0, 0, 1 );
          Vector diffuse( 1, 1, 1, 1 );
          Vector specular( 0, 0, 0, 1 );
@@ -1002,7 +1128,7 @@ Model::ModelErrorE Cal3dFilter::readXMaterialFile( uint8_t * buf, size_t len )
          if ( !matFile.empty() )
          {
             mat->m_type = Model::Material::MATTYPE_TEXTURE;
-            mat->m_filename = m_currentPath + std::string( "/" ) +  matFile;
+            mat->m_filename = normalizePath(matFile.c_str(), m_currentPath.c_str());
          }
 
          log_debug( "Reading material %d\n", m_model->getTextureCount() );
@@ -1066,11 +1192,21 @@ Model::ModelErrorE Cal3dFilter::readAnimationFile( uint8_t * buf, size_t len )
       float duration   = readBFloat();
       int numTracks    = readBInt32();
 
+      if ( fileVersion > m_maxBinaryVersion )
+         m_maxBinaryVersion = fileVersion;
+
       log_debug( "anim version: %d (%x)\n", fileVersion, fileVersion );
 
       if ( versionIsValid( FT_Animation, fileVersion ) )
       {
          std::string name = m_modelPartName;
+
+         bool compressed = false;
+         if ( fileVersion >= CAL3D_COMP_ANIM_VERSION )
+         {
+            int flags = readBInt32();
+            compressed = ( flags & 1 != 0 );
+         }
          //name += ".";
          //name += m_modelPartExt;
 
@@ -1087,7 +1223,10 @@ Model::ModelErrorE Cal3dFilter::readAnimationFile( uint8_t * buf, size_t len )
          bool success = true;
          for ( int t = 0; success && t < numTracks; t++ )
          {
-            success = readBAnimTrack();
+            if ( compressed )
+               success = readBCompressedAnimTrack( duration );
+            else
+               success = readBAnimTrack();
          }
       }
       else
@@ -1114,26 +1253,18 @@ Model::ModelErrorE Cal3dFilter::readFileToBuffer( const char * filename, uint8_t
    buf = NULL;
    len = 0;
 
-   FILE * fp = fopen( filename, "rb" );
-   if ( fp )
-   {
-      file_closer fc(fp);
-      //log_debug( "file %s opened\n", filename );
-      fseek( fp, 0, SEEK_END );
-      len = ftell( fp );
-      fseek( fp, 0, SEEK_SET );
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   DataSource * src = openInput( filename, err );
+   FunctionCaller<DataSource> fc( src, &DataSource::close );
 
-      //log_debug( "creating %d byte buffer\n", len );
-      buf = new uint8_t[len];
+   if ( err != Model::ERROR_NONE )
+      return err;
 
-      //log_debug( "reading buffer into memory\n" );
-      fread( buf, len, 1, fp );
-      return Model::ERROR_NONE;
-   }
-   else
-   {
-      return errnoToModelError( errno );
-   }
+   len = src->getFileSize();
+   buf = new uint8_t[len];
+   src->readBytes( buf, len );
+
+   return err;
 }
 
 bool Cal3dFilter::readBBone()
@@ -1417,6 +1548,103 @@ bool Cal3dFilter::readBAnimTrack()
    return true;
 }
 
+bool Cal3dFilter::readBCompressedAnimTrack( double duration )
+{
+   log_debug( "Reading animation track (compressed)\n" );
+
+   int bone      = readBInt32();
+   int numFrames = readBInt32();
+
+   double scale[3] = { 1.0, 1.0, 1.0 };
+   double trans_min[3] = { 0.0, 0.0, 0.0 };
+   int comp_bits[3] = { 10, 11, 11 };
+
+   trans_min[0] = readBFloat();
+   trans_min[1] = readBFloat();
+   trans_min[2] = readBFloat();
+   scale[0] = readBFloat();
+   scale[1] = readBFloat();
+   scale[2] = readBFloat();
+
+   //log_debug( "  bone: %d\n", bone );
+   //log_debug( "  frames: %d\n", numFrames );
+
+   for ( int f = 0; f < numFrames; f++ )
+   {
+      uint16_t qsec = readBInt16();
+      float tsec = (qsec / 65535.0) * duration;
+
+      uint32_t trans_comp = readBInt32();
+      uint64_t rot_comp = readBUInt48();
+
+      log_debug( "compressed trans = %X  rot = %llX\n",
+         trans_comp, rot_comp );
+
+      Vector trans;
+      Vector rotVec;
+
+      for ( int i = 0; i < 3; ++i )
+      {
+         trans[i] = ((2 << comp_bits[i]) - 1) & trans_comp;
+         trans_comp = trans_comp >> comp_bits[i];
+         trans[i] /= (double) ((2 << comp_bits[i]) - 1);
+         trans[i] *= scale[i];
+      }
+
+      for ( int i = 0; i < 4; ++i )
+      {
+         rotVec[i] = ((2 << 12) - 1) & rot_comp;
+         rotVec[i] /= (double) ((2 << 12) - 1);
+         rotVec[i] *= 2.0 - 1.0;
+      }
+
+      log_debug( "uncompressed quat = %f, %f, %f, %f  \n",
+            (float) rotVec[0], (float) rotVec[1], (float) rotVec[2], (float) rotVec[3] );
+
+      Quaternion quat( rotVec );
+
+      quat = quat.swapHandedness();
+
+      Matrix m;
+
+      m.setRotationQuaternion( quat );
+      m.setTranslation( trans );
+
+      // Cal3D anims are relative to joint parent
+      // MM3D are relative to joint local position, convert
+      Matrix inv;
+      m_model->getBoneJointRelativeMatrix(  bone, inv );
+      inv = inv.getInverse();
+
+      m = m * inv;
+
+      double rot[3] = { 0, 0, 0 };
+      m.getRotation( rot );
+      m.getTranslation( trans );
+
+      int animFrame = timeToFrame( tsec, 30.0 );
+
+      log_debug( "rotation (%f,%f,%f)  translation (%f,%f,%f)\n",
+            rot[0], rot[1], rot[2], trans[0], trans[1], trans[2] );
+
+      m_model->setSkelAnimKeyframe( m_anim, animFrame, bone,
+            true, rot[0], rot[1], rot[2] );
+      m_model->setSkelAnimKeyframe( m_anim, animFrame, bone,
+            false, trans[0], trans[1], trans[2] );
+   }
+
+   return true;
+}
+
+
+uint64_t Cal3dFilter::readBUInt48()
+{
+   uint32_t rval32 = readBInt32();
+   uint16_t rval16 = readBInt16();
+   uint64_t rval = ((uint64_t) rval16 << 32) | ((uint64_t) rval32);
+   return rval;
+}
+
 int32_t Cal3dFilter::readBInt32()
 {
    int32_t rval = *((int32_t *) m_bufPos);
@@ -1452,10 +1680,13 @@ float Cal3dFilter::readBFloat()
 bool Cal3dFilter::readBString( std::string & str )
 {
    size_t len = readBInt32();
+   size_t advance = len;
 
+   while (len > 0 && m_bufPos[len-1] == '\0')
+      --len;
    str.assign( (char *) m_bufPos, len );
    //log_debug( "read string '%s' at %p\n", str.c_str(), m_bufPos );
-   m_bufPos += len;
+   m_bufPos += advance;
 
    return true;
 }
@@ -1762,484 +1993,471 @@ std::string Cal3dFilter::readXElement( const char * tag )
 
 Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * model, ModelFilter::Options * o )
 {
-   Model::ModelErrorE rval = Model::ERROR_NONE;
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   m_dst = openOutput( filename, err );
+   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
 
-   FILE * fp = fopen( filename, "w" );
-   if ( fp )
+   if ( err != Model::ERROR_NONE )
+      return err;
+
+   std::string base = m_modelPath + "/";
+
+   // Use dynamic cast to determine if the object is of the proper type
+   // If not, create new one that we will delete later.
+   //
+   // We need to create one to make sure that the default options we
+   // use in the filter match the default options presented to the
+   // user in the dialog box.
+   m_options = dynamic_cast< Cal3dOptions *>( o );
+   release_ptr<Cal3dOptions> freeOptions = NULL;
+   if ( !m_options )
    {
-      file_closer fc(fp);
+      freeOptions = static_cast<Cal3dOptions *>( getDefaultOptions() );
+      m_options = freeOptions.get();
+   }
 
-      std::string base = m_modelPath += "/";
-      m_fp = fp;
+   m_model->updateMetaData( "cal3d_single_mesh_file",
+         m_options->m_singleMeshFile ? "1" : "0" );
+   m_model->updateMetaData( "cal3d_xml_material",
+         m_options->m_xmlMatFile ? "1" : "0" );
 
-      // Use dynamic cast to determine if the object is of the proper type
-      // If not, create new one that we will delete later.
-      //
-      // We need to create one to make sure that the default options we
-      // use in the filter match the default options presented to the
-      // user in the dialog box.
-      m_options = dynamic_cast< Cal3dOptions *>( o );
-      release_ptr<Cal3dOptions> freeOptions = NULL;
-      if ( !m_options ) {
-         freeOptions = static_cast<Cal3dOptions *>( getDefaultOptions() );
-         m_options = freeOptions.get();
-      }
+   m_dst->writeString( "#\n# cal3d model configuration file\n#\n" );
 
-      m_model->updateMetaData( "cal3d_single_mesh_file",
-            m_options->m_singleMeshFile ? "1" : "0" );
-      m_model->updateMetaData( "cal3d_xml_material",
-            m_options->m_xmlMatFile ? "1" : "0" );
+   m_dst->writeString( "# File written by Misfit Model 3D\n" );
+   m_dst->writeString( "# http://www.misfitcode.com/misfitmodel3d/\n\n" );
 
-      fprintf( m_fp, "#\n# cal3d model configuration file\n#\n" );
+   m_dst->writeString( "[model]\n" );
 
-      fprintf( m_fp, "# File written by Misfit Model 3D\n" );
-      fprintf( m_fp, "# http://www.misfitcode.com/misfitmodel3d/\n\n" );
+   char value[64];
+   if ( m_model->getMetaData( "cal3d_path", value, sizeof(value) ) )
+   {
+      m_dst->writePrintf( "path=\"%s\"\n", value );
+   }
+   if ( m_model->getMetaData( "cal3d_scale", value, sizeof(value) ) )
+   {
+      m_dst->writePrintf( "scale=\"%s\"\n", value );
+   }
+   if ( m_model->getMetaData( "cal3d_rotate", value, sizeof(value) ) )
+   {
+      m_dst->writePrintf( "rotate=\"%s\"\n", value );
+   }
 
-      fprintf( m_fp, "[model]\n" );
+   m_dst->writeString( "\n# --- Skeleton ---\n" );
+   std::string skelFile = replaceExtension( m_modelBaseName.c_str(), "csf" );
+   m_dst->writePrintf( "skeleton = \"%s\"\n\n", skelFile.c_str() );
+   writeSkeletonFile( (base + skelFile).c_str(), model );
 
-      char value[64];
-      if ( m_model->getMetaData( "cal3d_path", value, sizeof(value) ) )
+   // To write animations:
+   //
+   // * Make a map of filenames written (case-sensitive)
+   // and map of animations written.
+   //
+   // * Run through meta data and write file if not already
+   // in map. 
+   //
+   // * Run through animations. If any not written, write them
+   // and create an animation line in the Cal3D file.
+
+   typedef std::map<std::string, bool> AnimFileMap;
+   AnimFileMap fileWritten;
+   std::vector<bool> animWritten;
+
+   animWritten.resize( model->getAnimCount( MODE ) );
+
+   m_dst->writePrintf( "# --- Animations ---\n" );
+   std::string animFile;
+
+   char keyStr[PATH_MAX];
+   char valueStr[PATH_MAX];
+   unsigned int mtcount = model->getMetaDataCount();
+   for ( unsigned int mt = 0; mt < mtcount; mt++ )
+   {
+      model->getMetaData( mt, keyStr, PATH_MAX, valueStr, PATH_MAX );
+      if ( strncmp(keyStr, "animation_", 10 ) == 0 )
       {
-         fprintf( m_fp, "path=\"%s\"\n", value );
-      }
-      if ( m_model->getMetaData( "cal3d_scale", value, sizeof(value) ) )
-      {
-         fprintf( m_fp, "scale=\"%s\"\n", value );
-      }
-      if ( m_model->getMetaData( "cal3d_rotate", value, sizeof(value) ) )
-      {
-         fprintf( m_fp, "rotate=\"%s\"\n", value );
-      }
-
-      fprintf( m_fp, "\n# --- Skeleton ---\n" );
-      std::string skelFile = replaceExtension( m_modelBaseName.c_str(), "csf" );
-      fprintf( m_fp, "skeleton = \"%s\"\n\n", skelFile.c_str() );
-      writeSkeletonFile( (base + skelFile).c_str(), model );
-
-      // To write animations:
-      //
-      // * Make a map of filenames written (case-sensitive)
-      // and map of animations written.
-      //
-      // * Run through meta data and write file if not already
-      // in map. 
-      //
-      // * Run through animations. If any not written, write them
-      // and create an animation line in the Cal3D file.
-
-      typedef std::map<std::string, bool> AnimFileMap;
-      AnimFileMap fileWritten;
-      std::vector<bool> animWritten;
-
-      animWritten.resize( model->getAnimCount( MODE ) );
-
-      fprintf( m_fp, "# --- Animations ---\n" );
-      std::string animFile;
-
-      char keyStr[PATH_MAX];
-      char valueStr[PATH_MAX];
-      unsigned int mtcount = model->getMetaDataCount();
-      for ( unsigned int mt = 0; mt < mtcount; mt++ )
-      {
-         model->getMetaData( mt, keyStr, PATH_MAX, valueStr, PATH_MAX );
-         if ( strncmp(keyStr, "animation_", 10 ) == 0 )
+         animFile = valueStr;
+         std::string animName = removeExtension( valueStr );
+         int a = findAnimation( animName );
+         if ( a >= 0 && fileWritten.find(animFile) == fileWritten.end() )
          {
-            animFile = valueStr;
-            std::string animName = removeExtension( valueStr );
-            int a = findAnimation( animName );
-            if ( a >= 0 && fileWritten.find(animFile) == fileWritten.end() )
-            {
-               writeAnimationFile( (base + animFile).c_str(), model, a );
-               animWritten[a] = true;
-               fileWritten[animFile] = true;
-            }
-            fprintf( m_fp, "%s = \"%s\"\n", keyStr, animFile.c_str() );
-         }
-      }
-
-      unsigned int acount = model->getAnimCount( MODE );
-      for ( unsigned int a = 0; a < acount; a++ )
-      {
-         if ( animWritten[a] == 0 )
-         {
-            const char * animName = model->getAnimName( MODE, a );
-            animFile = animName;
-            animFile = addExtension( animFile, "caf" );
-            fprintf( m_fp, "animation_%s = \"%s\"\n", animName, animFile.c_str() );
             writeAnimationFile( (base + animFile).c_str(), model, a );
-            animWritten[a] = 1;
+            animWritten[a] = true;
+            fileWritten[animFile] = true;
          }
+         m_dst->writePrintf( "%s = \"%s\"\n", keyStr, animFile.c_str() );
       }
-      fprintf( m_fp, "\n" );
+   }
 
-      // Create meshes split on groups, with UVs and 
-      // normals unique to each vertex
-      MeshList ml;
-      mesh_create_list( ml, model );
-
-      fprintf( m_fp, "# --- Meshes ---\n" );
-      if ( (m_options == NULL) || m_options->m_singleMeshFile )
+   unsigned int acount = model->getAnimCount( MODE );
+   for ( unsigned int a = 0; a < acount; a++ )
+   {
+      if ( animWritten[a] == 0 )
       {
-         std::string meshFile = replaceExtension( m_modelBaseName.c_str(), "cmf" );
-         fprintf( m_fp, "mesh_file = \"%s\"\n", meshFile.c_str() );
-         writeMeshListFile( (base + meshFile).c_str(), model, ml );
+         const char * animName = model->getAnimName( MODE, a );
+         animFile = animName;
+         animFile = addExtension( animFile, "caf" );
+         m_dst->writePrintf( "animation_%s = \"%s\"\n", animName, animFile.c_str() );
+         writeAnimationFile( (base + animFile).c_str(), model, a );
+         animWritten[a] = 1;
       }
-      else
-      {
-         std::string meshName;
-         std::string meshFile;
+   }
+   m_dst->writeString( "\n" );
 
-         unsigned int meshCount = ml.size();
-         unsigned int meshNum;
+   // Create meshes split on groups, with UVs and 
+   // normals unique to each vertex
+   MeshList ml;
+   mesh_create_list( ml, model );
 
-         typedef std::map<string, MeshList> FileMeshMap;
-         FileMeshMap fmm;
-
-         string groupName;
-         for ( meshNum = 0; meshNum < meshCount; meshNum++ )
-         {
-            groupName = m_model->getGroupName(ml[meshNum].group);
-            _strtolower( groupName );
-            fmm[ groupName ].push_back( ml[meshNum] );
-         }
-
-         // Write the meshes for each group
-         for ( FileMeshMap::const_iterator fmm_it = fmm.begin();
-               fmm_it != fmm.end(); fmm_it++ )
-         {
-            // Get a count of how many meshes make up this group
-            // (probably 1, but you never know)
-            string groupName = fmm_it->first;
-            const MeshList & groupMeshList = fmm_it->second;
-
-            // Create mesh name and filename strings
-            string meshName  = groupName;
-            string meshFile  = groupName + ".cmf";
-
-            _escapeCal3dName(meshName);
-            _escapeFileName(meshFile);
-
-            // Write mesh file
-            fprintf( m_fp, "mesh_%s = \"%s\"\n", meshName.c_str(), meshFile.c_str() );
-            writeMeshListFile( (base + meshFile).c_str(), model, groupMeshList );
-         }
-      }
-
-      fprintf( m_fp, "\n# --- Materials ---\n" );
-      std::string matFile;
-      unsigned int mcount = model->getTextureCount();
-      for ( unsigned int m = 0; m < mcount; m++ )
-      {
-         const char * matName = model->getTextureName( m );
-         matFile = matName;
-         if ( m_options && !m_options->m_xmlMatFile )
-         {
-            matFile += ".crf";
-            writeMaterialFile( (base + matFile).c_str(), model, m );
-         }
-         else 
-         {
-            matFile += ".xrf";
-            writeXMaterialFile( (base + matFile).c_str(), model, m );
-         }
-         fprintf( m_fp, "material_%s = \"%s\"\n", matName, matFile.c_str() );
-      }
-      fprintf( m_fp, "\n" );
-
-      rval = Model::ERROR_NONE;
-
-      m_options = NULL;
+   m_dst->writeString( "# --- Meshes ---\n" );
+   if ( (m_options == NULL) || m_options->m_singleMeshFile )
+   {
+      std::string meshFile = replaceExtension( m_modelBaseName.c_str(), "cmf" );
+      m_dst->writePrintf( "mesh_file = \"%s\"\n", meshFile.c_str() );
+      writeMeshListFile( (base + meshFile).c_str(), model, ml );
    }
    else
    {
-      rval = errnoToModelError( errno );
+      std::string meshName;
+      std::string meshFile;
+
+      unsigned int meshCount = ml.size();
+      unsigned int meshNum;
+
+      typedef std::map<string, MeshList> FileMeshMap;
+      FileMeshMap fmm;
+
+      string groupName;
+      for ( meshNum = 0; meshNum < meshCount; meshNum++ )
+      {
+         groupName = m_model->getGroupName(ml[meshNum].group);
+         _strtolower( groupName );
+         fmm[ groupName ].push_back( ml[meshNum] );
+      }
+
+      // Write the meshes for each group
+      for ( FileMeshMap::const_iterator fmm_it = fmm.begin();
+            fmm_it != fmm.end(); fmm_it++ )
+      {
+         // Get a count of how many meshes make up this group
+         // (probably 1, but you never know)
+         string groupName = fmm_it->first;
+         const MeshList & groupMeshList = fmm_it->second;
+
+         // Create mesh name and filename strings
+         string meshName  = groupName;
+         string meshFile  = groupName + ".cmf";
+
+         _escapeCal3dName(meshName);
+         _escapeFileName(meshFile);
+
+         // Write mesh file
+         m_dst->writePrintf( "mesh_%s = \"%s\"\n", meshName.c_str(), meshFile.c_str() );
+         writeMeshListFile( (base + meshFile).c_str(), model, groupMeshList );
+      }
    }
 
-   return rval;
+   m_dst->writeString( "\n# --- Materials ---\n" );
+   std::string matFile;
+   unsigned int mcount = model->getTextureCount();
+   for ( unsigned int m = 0; m < mcount; m++ )
+   {
+      const char * matName = model->getTextureName( m );
+      matFile = matName;
+      if ( m_options && !m_options->m_xmlMatFile )
+      {
+         matFile += ".crf";
+         writeMaterialFile( (base + matFile).c_str(), model, m );
+      }
+      else 
+      {
+         matFile += ".xrf";
+         writeXMaterialFile( (base + matFile).c_str(), model, m );
+      }
+      m_dst->writePrintf( "material_%s = \"%s\"\n", matName, matFile.c_str() );
+   }
+   m_dst->writeString( "\n" );
+
+   m_options = NULL;
+
+   return err;
 }
 
 Model::ModelErrorE Cal3dFilter::writeXMaterialFile( const char * filename, Model * model, unsigned int materialId )
 {
-   Model::ModelErrorE rval = Model::ERROR_NONE;
-   FILE * oldFp = m_fp;
+   DataDest * oldDst = m_dst;
 
-   FILE * fp = fopen( filename, "w" );
-   if ( fp )
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   m_dst = openOutput( filename, err );
+   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
+
+   if ( err != Model::ERROR_NONE )
+      return err;
+
+   // Header
+   // FIXME test header-less XML file
+   int version = CAL3D_MIN_XVERSION;
+   char versionStr[32];
+   if ( model->getMetaData( "cal3d_xrf_version", versionStr, sizeof(versionStr) ) )
    {
-      file_closer fc(fp);
-      m_fp = fp;
-
-      // Header
-      fprintf( m_fp, "<HEADER MAGIC=\"XRF\" VERSION=\"%d\" />\n", CAL3D_XVERSION );
-
-      Model::Material::MaterialTypeE type = model->getMaterialType( materialId );
-
-      // Start material element
-      fprintf( m_fp, "<MATERIAL NUMMAPS=\"%d\">\n", 
-            ( type == Model::Material::MATTYPE_TEXTURE ) ? 1 : 0 );
-
-      // Material lighting properties
-      float fval[4];
-
-      model->getTextureAmbient( materialId, fval );
-      writeXColor( "AMBIENT", fval );
-      model->getTextureDiffuse( materialId, fval );
-      writeXColor( "DIFFUSE", fval );
-      model->getTextureSpecular( materialId, fval );
-      writeXColor( "SPECULAR", fval );
-
-      model->getTextureShininess( materialId, fval[0] );
-      fprintf( m_fp, "    <SHININESS>%f</SHININESS>\n", fval[0] );
-
-      // Texture map
-      if ( type == Model::Material::MATTYPE_TEXTURE )
-      {
-         std::string textureFile = model->getTextureFilename( materialId );
-
-         std::string fullName;
-         std::string fullPath;
-         std::string baseName;
-         normalizePath( filename, fullName, fullPath, baseName );
-
-         std::string relativeFile = getRelativePath( 
-               fullPath.c_str(), textureFile.c_str() );
-
-         fprintf( m_fp, "    <MAP>%s</MAP>\n", relativeFile.c_str() );
-      }
-
-      // close material element
-      fprintf( m_fp, "</MATERIAL>\n" );
-
-      rval = Model::ERROR_NONE;
-   }
-   else
-   {
-      rval = errnoToModelError( errno );
+      version = atoi(versionStr);
    }
 
-   m_fp = oldFp;
-   return rval;
+   if ( version < CAL3D_NO_XHEADER_VERSION )
+      m_dst->writePrintf( "<HEADER MAGIC=\"XRF\" VERSION=\"%d\" />\n", version );
+
+   Model::Material::MaterialTypeE type = model->getMaterialType( materialId );
+
+   // Start material element
+   m_dst->writePrintf( "<MATERIAL NUMMAPS=\"%d\"", 
+         ( type == Model::Material::MATTYPE_TEXTURE ) ? 1 : 0 );
+   if ( version >= CAL3D_NO_XHEADER_VERSION )
+      m_dst->writePrintf( " VERSION=\"%d\"", version );
+   m_dst->writePrintf( ">\n" );
+
+   // Material lighting properties
+   float fval[4];
+
+   model->getTextureAmbient( materialId, fval );
+   writeXColor( "AMBIENT", fval );
+   model->getTextureDiffuse( materialId, fval );
+   writeXColor( "DIFFUSE", fval );
+   model->getTextureSpecular( materialId, fval );
+   writeXColor( "SPECULAR", fval );
+
+   model->getTextureShininess( materialId, fval[0] );
+   m_dst->writePrintf( "    <SHININESS>%f</SHININESS>\n", fval[0] );
+
+   // Texture map
+   if ( type == Model::Material::MATTYPE_TEXTURE )
+   {
+      std::string textureFile = model->getTextureFilename( materialId );
+
+      std::string fullName;
+      std::string fullPath;
+      std::string baseName;
+      normalizePath( filename, fullName, fullPath, baseName );
+
+      std::string relativeFile = getRelativePath( 
+            fullPath.c_str(), textureFile.c_str() );
+
+      m_dst->writePrintf( "    <MAP>%s</MAP>\n", relativeFile.c_str() );
+   }
+
+   // close material element
+   m_dst->writePrintf( "</MATERIAL>\n" );
+
+   m_dst = oldDst;
+   return err;
 }
 
 Model::ModelErrorE Cal3dFilter::writeSkeletonFile( const char * filename, Model * model )
 {
-   Model::ModelErrorE rval = Model::ERROR_NONE;
-   FILE * oldFp = m_fp;
+   DataDest * oldDst = m_dst;
 
-   FILE * fp = fopen( filename, "wb" );
-   if ( fp )
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   m_dst = openOutput( filename, err );
+   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
+
+   if ( err != Model::ERROR_NONE )
+      return err;
+
+   unsigned int bcount = model->getBoneJointCount();
+
+   int32_t version = CAL3D_MIN_BVERSION;
+   char versionStr[32];
+   if ( model->getMetaData( "cal3d_binary_version", versionStr, sizeof(versionStr) ) )
    {
-      file_closer fc(fp);
-      m_fp = fp;
-
-      unsigned int bcount = model->getBoneJointCount();
-
-      // Header
-      fwrite( CAL3D_MAGIC_SKELETON, CAL3D_MAGIC_SIZE, 1, fp );
-      writeBInt32( CAL3D_VERSION );
-      writeBInt32( bcount );
-
-      for ( unsigned int b = 0; b < bcount; b++ )
-      {
-         writeBBone( b );
-      }
-
-      rval = Model::ERROR_NONE;
-   }
-   else
-   {
-      rval = errnoToModelError( errno );
+      version = atoi(versionStr);
    }
 
-   m_fp = oldFp;
-   return rval;
+   // Header
+   m_dst->writeBytes( (uint8_t *) CAL3D_MAGIC_SKELETON, CAL3D_MAGIC_SIZE );
+   m_dst->write( version );
+   m_dst->write( (int32_t) bcount );
+
+   for ( unsigned int b = 0; b < bcount; b++ )
+   {
+      writeBBone( b );
+   }
+
+   m_dst = oldDst;
+   return err;
 }
 
 Model::ModelErrorE Cal3dFilter::writeMeshFile( const char * filename, Model * model )
 {
-   Model::ModelErrorE rval = Model::ERROR_NONE;
-   FILE * oldFp = m_fp;
+   // Create a list of all meshes
+   MeshList ml;
+   mesh_create_list( ml, model );
 
-   FILE * fp = fopen( filename, "wb" );
-   if ( fp )
-   {
-      file_closer fc(fp);
-      m_fp = fp;
-
-      // Create a list of all meshes
-      MeshList ml;
-      mesh_create_list( ml, model );
-
-      rval = writeMeshListFile( filename, model, ml );
-   }
-   else
-   {
-      rval = errnoToModelError( errno );
-   }
-
-   m_fp = oldFp;
-   return rval;
+   return writeMeshListFile( filename, model, ml );
 }
 
 Model::ModelErrorE Cal3dFilter::writeMeshListFile( const char * filename, Model * model, const MeshList & meshList )
 {
-   Model::ModelErrorE rval = Model::ERROR_NONE;
-   FILE * oldFp = m_fp;
+   DataDest * oldDst = m_dst;
 
-   FILE * fp = fopen( filename, "wb" );
-   if ( fp )
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   m_dst = openOutput( filename, err );
+   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
+
+   if ( err != Model::ERROR_NONE )
+      return err;
+
+   int32_t version = CAL3D_MIN_BVERSION;
+   char versionStr[32];
+   if ( model->getMetaData( "cal3d_binary_version", versionStr, sizeof(versionStr) ) )
    {
-      file_closer fc(fp);
-      m_fp = fp;
-
-      // Header
-      fwrite( CAL3D_MAGIC_MESH, CAL3D_MAGIC_SIZE, 1, fp );
-      writeBInt32( CAL3D_VERSION );
-      writeBInt32( meshList.size() );
-
-      // Save all meshes in one file
-      log_debug( "writing mesh file %s\n", filename );
-      MeshList::const_iterator mit;
-      for ( mit = meshList.begin(); mit != meshList.end(); mit++ )
-      {
-         log_debug( " writing a mesh\n" );
-         writeBMesh( *mit );
-      }
-
-      rval = Model::ERROR_NONE;
-   }
-   else
-   {
-      rval = errnoToModelError( errno );
+      version = atoi(versionStr);
    }
 
-   m_fp = oldFp;
-   return rval;
+   // Header
+   m_dst->writeBytes( (uint8_t *) CAL3D_MAGIC_MESH, CAL3D_MAGIC_SIZE );
+   m_dst->write( version );
+   m_dst->write( (int32_t) meshList.size() );
+
+   // Save mesh to file
+   log_debug( "writing mesh file %s\n", filename );
+   MeshList::const_iterator mit;
+   for ( mit = meshList.begin(); mit != meshList.end(); mit++ )
+   {
+      log_debug( " writing a mesh\n" );
+      writeBMesh( *mit );
+   }
+
+   m_dst = oldDst;
+   return err;
 }
 
 Model::ModelErrorE Cal3dFilter::writeMaterialFile( const char * filename, Model * model, unsigned int materialId )
 {
-   Model::ModelErrorE rval = Model::ERROR_NONE;
-   FILE * oldFp = m_fp;
+   DataDest * oldDst = m_dst;
 
-   FILE * fp = fopen( filename, "wb" );
-   if ( fp )
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   m_dst = openOutput( filename, err );
+   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
+
+   if ( err != Model::ERROR_NONE )
+      return err;
+
+   // Header
+   m_dst->writeBytes( (uint8_t *) CAL3D_MAGIC_MATERIAL, CAL3D_MAGIC_SIZE );
+
+   int32_t version = CAL3D_MIN_BVERSION;
+   char versionStr[32];
+   if ( model->getMetaData( "cal3d_binary_version", versionStr, sizeof(versionStr) ) )
    {
-      file_closer fc(fp);
-      m_fp = fp;
+      version = atoi(versionStr);
+   }
 
-      // Header
-      fwrite( CAL3D_MAGIC_MATERIAL, CAL3D_MAGIC_SIZE, 1, fp );
-      writeBInt32( CAL3D_VERSION );
+   m_dst->write( version );
 
-      // Material lighting properties
-      float fval[4];
+   // Material lighting properties
+   float fval[4];
 
-      model->getTextureAmbient( materialId, fval );
-      writeBColor( fval );
-      model->getTextureDiffuse( materialId, fval );
-      writeBColor( fval );
-      model->getTextureSpecular( materialId, fval );
-      writeBColor( fval );
-      model->getTextureShininess( materialId, fval[0] );
-      writeBFloat( fval[0] );
+   model->getTextureAmbient( materialId, fval );
+   writeBColor( fval );
+   model->getTextureDiffuse( materialId, fval );
+   writeBColor( fval );
+   model->getTextureSpecular( materialId, fval );
+   writeBColor( fval );
+   model->getTextureShininess( materialId, fval[0] );
+   m_dst->write( (float32_t) fval[0] );
 
-      // Texture map
-      if ( model->getMaterialType( materialId ) == Model::Material::MATTYPE_TEXTURE )
-      {
-         writeBInt32( 1 );
+   // Texture map
+   if ( model->getMaterialType( materialId ) == Model::Material::MATTYPE_TEXTURE )
+   {
+      m_dst->write( (int32_t) 1 );
 
-         std::string textureFile = model->getTextureFilename( materialId );
+      std::string textureFile = model->getTextureFilename( materialId );
 
-         std::string fullName;
-         std::string fullPath;
-         std::string baseName;
-         normalizePath( filename, fullName, fullPath, baseName );
+      std::string fullName;
+      std::string fullPath;
+      std::string baseName;
+      normalizePath( filename, fullName, fullPath, baseName );
 
-         std::string relativeFile = getRelativePath( 
-               fullPath.c_str(), textureFile.c_str() );
+      std::string relativeFile = getRelativePath( 
+            fullPath.c_str(), textureFile.c_str() );
 
-         writeBString( relativeFile );
-      }
-      else
-      {
-         writeBInt32( 0 );
-      }
-
-      rval = Model::ERROR_NONE;
+      writeBString( relativeFile );
    }
    else
    {
-      rval = errnoToModelError( errno );
+      m_dst->write( (int32_t) 0 );
    }
 
-   m_fp = oldFp;
-   return rval;
+   m_dst = oldDst;
+   return err;
 }
 
 Model::ModelErrorE Cal3dFilter::writeAnimationFile( const char * filename, Model * model, unsigned int animationId )
 {
-   Model::ModelErrorE rval = Model::ERROR_NONE;
-   FILE * oldFp = m_fp;
+   DataDest * oldDst = m_dst;
 
-   FILE * fp = fopen( filename, "wb" );
-   if ( fp )
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   m_dst = openOutput( filename, err );
+   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
+
+   if ( err != Model::ERROR_NONE )
+      return err;
+
+   // get anim header info
+   float fps = model->getAnimFPS( MODE, animationId );
+   unsigned int frameCount = model->getAnimFrameCount( MODE, animationId );
+   float32_t duration = (double) frameCount / fps;
+   if ( frameCount > 0 )
    {
-      file_closer fc(fp);
-      m_fp = fp;
+      duration = ((double) frameCount - 1) / fps;
+   }
 
-      // get anim header info
-      float fps = model->getAnimFPS( MODE, animationId );
-      unsigned int frameCount = model->getAnimFrameCount( MODE, animationId );
-      float duration = (double) frameCount / fps;
-      if ( frameCount > 0 )
+   // build track list
+   std::list<int> tracks;
+   bool found = false;
+
+   double kf[3];
+
+   unsigned int bcount = model->getBoneJointCount();
+   for ( unsigned int b = 0; b < bcount; b++ )
+   {
+      found = false;
+      for ( unsigned int f = 0; !found && f < frameCount; f++ )
       {
-         duration = ((double) frameCount - 1) / fps;
-      }
-
-      // build track list
-      std::list<int> tracks;
-      bool found = false;
-
-      double kf[3];
-
-      unsigned int bcount = model->getBoneJointCount();
-      for ( unsigned int b = 0; b < bcount; b++ )
-      {
-         found = false;
-         for ( unsigned int f = 0; !found && f < frameCount; f++ )
+         if ( model->getSkelAnimKeyframe( animationId, f, b, false, kf[0], kf[1], kf[2] )
+               || model->getSkelAnimKeyframe( animationId, f, b, true, kf[0], kf[1], kf[2] ) )
          {
-            if ( model->getSkelAnimKeyframe( animationId, f, b, false, kf[0], kf[1], kf[2] )
-                  || model->getSkelAnimKeyframe( animationId, f, b, true, kf[0], kf[1], kf[2] ) )
-            {
-               found = true;
-               tracks.push_back( b );
-            }
+            found = true;
+            tracks.push_back( b );
          }
       }
-
-      // write header
-      fwrite( CAL3D_MAGIC_ANIMATION, CAL3D_MAGIC_SIZE, 1, fp );
-      writeBInt32( CAL3D_VERSION );
-      writeBFloat( duration );
-      writeBInt32( tracks.size() );
-
-      // write tracks
-      std::list<int>::iterator it;
-      for ( it = tracks.begin(); it != tracks.end(); it++ )
-      {
-         writeBAnimTrack( animationId, *it );
-      }
-
-      rval = Model::ERROR_NONE;
    }
-   else
+
+   int32_t version = CAL3D_MIN_BVERSION;
+   char versionStr[32];
+   if ( model->getMetaData( "cal3d_binary_version", versionStr, sizeof(versionStr) ) )
    {
-      rval = errnoToModelError( errno );
+      version = atoi(versionStr);
    }
 
-   m_fp = oldFp;
-   return rval;
+   // write header
+   m_dst->writeBytes( (uint8_t *) CAL3D_MAGIC_ANIMATION, CAL3D_MAGIC_SIZE );
+   m_dst->write( version );
+   m_dst->write( duration );
+   m_dst->write( (int32_t) tracks.size() );
+   if ( version >= CAL3D_COMP_ANIM_VERSION )
+   {
+      // Flags, no compression
+      m_dst->write( (int32_t) 0 );
+   }
+
+   // write tracks
+   std::list<int>::iterator it;
+   for ( it = tracks.begin(); it != tracks.end(); it++ )
+   {
+      writeBAnimTrack( animationId, *it );
+   }
+
+   m_dst = oldDst;
+   return err;
 }
 
 void Cal3dFilter::writeBBone( unsigned int b )
@@ -2281,7 +2499,7 @@ void Cal3dFilter::writeBBone( unsigned int b )
    writeBQuaternion( rot );
 
    // write parent
-   writeBInt32( parent );
+   m_dst->write( (int32_t) parent );
 
    // find children
    std::list<int> children;
@@ -2297,11 +2515,11 @@ void Cal3dFilter::writeBBone( unsigned int b )
    }
 
    // write children
-   writeBInt32( children.size() );
+   m_dst->write( (int32_t) children.size() );
    std::list<int>::iterator it;
    for ( it = children.begin(); it != children.end(); it++ )
    {
-      writeBInt32( *it );
+      m_dst->write( (int32_t) *it );
    }
 }
 
@@ -2324,15 +2542,15 @@ void Cal3dFilter::writeBAnimTrack( unsigned int anim, unsigned int bone )
    }
 
    // write track info
-   writeBInt32( bone );
-   writeBInt32( frames.size() );
+   m_dst->write( (int32_t) bone );
+   m_dst->write( (int32_t) frames.size() );
 
    // write keyframe data
    std::list<int>::iterator it;
    for ( it = frames.begin(); it != frames.end(); it++ )
    {
       double frameTime = ((double) (*it)) / fps;
-      writeBFloat( frameTime );
+      m_dst->write( (float32_t) frameTime );
 
       // MM3D allows one type of keyframe without the other, Cal3D requires
       // both rotation and translation for each keyframe. If we have one
@@ -2366,18 +2584,18 @@ void Cal3dFilter::writeBMesh( const Mesh & mesh )
       materialId = m_model->getGroupTextureId( mesh.group );
    }
 
-   writeBInt32( materialId );
-   writeBInt32( mesh.vertices.size() );
-   writeBInt32( mesh.faces.size() );
-   writeBInt32( 0 );
-   writeBInt32( 0 );
+   m_dst->write( (int32_t) materialId );
+   m_dst->write( (int32_t) mesh.vertices.size() );
+   m_dst->write( (int32_t) mesh.faces.size() );
+   m_dst->write( (int32_t) 0 );
+   m_dst->write( (int32_t) 0 );
    if ( materialId >= 0 )
    {
-      writeBInt32( 1 );
+      m_dst->write( (int32_t) 1 );
    }
    else
    {
-      writeBInt32( 0 );
+      m_dst->write( (int32_t) 0 );
    }
 
    double coord[3];
@@ -2387,21 +2605,21 @@ void Cal3dFilter::writeBMesh( const Mesh & mesh )
       const Mesh::Vertex & mv = *vit;
 
       m_model->getVertexCoordsUnanimated( mv.v, coord );
-      writeBFloat( coord[0] );
-      writeBFloat( coord[1] );
-      writeBFloat( coord[2] );
+      m_dst->write( (float32_t) coord[0] );
+      m_dst->write( (float32_t) coord[1] );
+      m_dst->write( (float32_t) coord[2] );
 
-      writeBFloat( mv.norm[0] );
-      writeBFloat( mv.norm[1] );
-      writeBFloat( mv.norm[2] );
+      m_dst->write( (float32_t) mv.norm[0] );
+      m_dst->write( (float32_t) mv.norm[1] );
+      m_dst->write( (float32_t) mv.norm[2] );
 
-      writeBInt32( -1 );
-      writeBInt32( 0 );
+      m_dst->write( (int32_t) -1 );
+      m_dst->write( (int32_t) 0 );
 
       if ( materialId >= 0 )
       {
-         writeBFloat( mv.uv[0] );
-         writeBFloat( mv.uv[1] );
+         m_dst->write( (float32_t) mv.uv[0] );
+         m_dst->write( (float32_t) mv.uv[1] );
       }
 
       Model::InfluenceList il;
@@ -2422,12 +2640,12 @@ void Cal3dFilter::writeBMesh( const Mesh & mesh )
       }
 
       // Write out influence list
-      writeBInt32( il.size() ); // number of influences
+      m_dst->write( (int32_t) il.size() ); // number of influences
 
       for ( it = il.begin(); it != il.end(); it++ )
       {
-         writeBInt32( it->m_boneId );          // bone
-         writeBFloat( it->m_weight / total );  // normalized weight
+         m_dst->write( (int32_t) it->m_boneId );          // bone
+         m_dst->write( (float32_t) (it->m_weight / total) );  // normalized weight
       }
 
       // No springs, don't need to write weight
@@ -2441,60 +2659,36 @@ void Cal3dFilter::writeBMesh( const Mesh & mesh )
    {
       const Mesh::Face & mf = *fit;
 
-      writeBInt32( mf.v[0] );
-      writeBInt32( mf.v[1] );
-      writeBInt32( mf.v[2] );
+      m_dst->write( (int32_t) mf.v[0] );
+      m_dst->write( (int32_t) mf.v[1] );
+      m_dst->write( (int32_t) mf.v[2] );
    }
 }
 
 //------------------------------------------------------------------
 // Binary write functions
 
-void Cal3dFilter::writeBUInt8( uint8_t val )
-{
-   uint8_t writeVal = val;
-   fwrite( &writeVal, sizeof(writeVal), 1, m_fp );
-}
-
-void Cal3dFilter::writeBInt32( int32_t val )
-{
-   int32_t writeVal = htol_u32( val );
-   fwrite( &writeVal, sizeof(writeVal), 1, m_fp );
-}
-
-void Cal3dFilter::writeBInt16( int16_t val )
-{
-   int16_t writeVal = htol_u16( val );
-   fwrite( &writeVal, sizeof(writeVal), 1, m_fp );
-}
-
-void Cal3dFilter::writeBFloat( float val )
-{
-   float32_t writeVal = htol_float( val );
-   fwrite( &writeVal, sizeof(writeVal), 1, m_fp );
-}
-
 void Cal3dFilter::writeBVector3( const Vector & vec )
 {
-   writeBFloat( vec[0] );
-   writeBFloat( vec[1] );
-   writeBFloat( vec[2] );
+   m_dst->write( (float32_t) vec[0] );
+   m_dst->write( (float32_t) vec[1] );
+   m_dst->write( (float32_t) vec[2] );
 }
 
 void Cal3dFilter::writeBQuaternion( const Quaternion & quat )
 {
-   writeBFloat( quat[0] );
-   writeBFloat( quat[1] );
-   writeBFloat( quat[2] );
-   writeBFloat( quat[3] );
+   m_dst->write( (float32_t) quat[0] );
+   m_dst->write( (float32_t) quat[1] );
+   m_dst->write( (float32_t) quat[2] );
+   m_dst->write( (float32_t) quat[3] );
 }
 
 void Cal3dFilter::writeBString( const std::string & str )
 {
    // Include NULL byte in write
-   size_t len = str.size() + 1;
-   writeBInt32( (int16_t) len );
-   fwrite( str.c_str(), len, 1, m_fp );
+   uint32_t len = str.size() + 1;
+   m_dst->write( len );
+   m_dst->writeBytes( (uint8_t *) str.c_str(), len );
 }
 
 void Cal3dFilter::writeBColor( const float * fval )
@@ -2507,13 +2701,13 @@ void Cal3dFilter::writeBColor( const float * fval )
       {
          dval = 255;
       }
-      writeBUInt8( dval );
+      m_dst->write( (uint8_t) dval );
    }
 }
 
 void Cal3dFilter::writeXColor( const char * tag, const float * fval )
 {
-   fprintf( m_fp, "    <%s>", tag );
+   m_dst->writePrintf( "    <%s>", tag );
    uint32_t dval;
    for ( int i = 0; i < 4; i++ )
    {
@@ -2522,10 +2716,10 @@ void Cal3dFilter::writeXColor( const char * tag, const float * fval )
       {
          dval = 255;
       }
-      fprintf( m_fp, "%d%s", dval,
+      m_dst->writePrintf( "%d%s", dval,
             (i < 3) ? " " : "" );
    }
-   fprintf( m_fp, "</%s>\n", tag );
+   m_dst->writePrintf( "</%s>\n", tag );
 }
 
 int Cal3dFilter::timeToFrame( double tsec, double fps )

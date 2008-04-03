@@ -27,21 +27,27 @@ TESTS = \
 		  model_test.unit \
 		  new_mm3d_test.unit \
 		  filter_mm3d_test.unit \
+		  filter_ms3d_test.unit \
+		  filter_cal3d_test.unit \
 		  filter_cob_test.unit \
 		  filter_dxf_test.unit \
 		  filter_obj_test.unit \
 		  filter_md2_test.unit \
+		  filtermgr_test.unit \
 		  cmdlinemgr_test.unit \
 		  util_test.unit \
 		  misc_test.unit \
 		  translation_test.unit \
 		  msg_test.unit \
+		  #filter_md3_test.unit # FIXME move this up near md2 when ready
 
 # Add moc dependencies here
 
 all:
 
 cmdlinemgr_test.unit: cmdlinemgr_test.moc $(LIB)
+
+filtermgr_test.unit: filtermgr_test.moc $(LIB)
 
 big_endian_test.unit: big_endian_test.moc $(LIB)
 
@@ -87,6 +93,10 @@ new_mm3d_test.unit: new_mm3d_test.moc $(LIB)
 
 filter_mm3d_test.unit: filter_mm3d_test.moc $(LIB)
 
+filter_ms3d_test.unit: filter_ms3d_test.moc $(LIB)
+
+filter_cal3d_test.unit: filter_cal3d_test.moc $(LIB)
+
 filter_cob_test.unit: filter_cob_test.moc $(LIB)
 
 filter_dxf_test.unit: filter_dxf_test.moc $(LIB)
@@ -94,6 +104,8 @@ filter_dxf_test.unit: filter_dxf_test.moc $(LIB)
 filter_obj_test.unit: filter_obj_test.moc $(LIB)
 
 filter_md2_test.unit: filter_md2_test.moc $(LIB)
+
+#filter_md3_test.unit: filter_md3_test.moc $(LIB)
 
 util_test.unit: util_test.moc $(LIB)
 
@@ -132,12 +144,16 @@ check: test
 	./misc_test.unit -silent
 	./translation_test.unit -silent
 	./msg_test.unit -silent
+	./filtermgr_test.unit -silent
 	./cmdlinemgr_test.unit -silent
 
 filtercheck:
 	./new_mm3d_test.unit -silent
 	./filter_mm3d_test.unit -silent
+	./filter_ms3d_test.unit -silent
+	./filter_cal3d_test.unit -silent
 	./filter_md2_test.unit -silent
+	#./filter_md3_test.unit -silent # FIXME restore this when test works
 	./filter_obj_test.unit -silent
 	./filter_cob_test.unit -silent
 	./filter_dxf_test.unit -silent

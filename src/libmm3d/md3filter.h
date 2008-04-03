@@ -57,7 +57,7 @@ class Md3Filter : public ModelFilter
       virtual ~Md3Filter();
 
       Model::ModelErrorE readFile( Model * model, const char * const filename );
-      Model::ModelErrorE writeFile( Model * model, const char * const filename, ModelFilter::Options * );
+      Model::ModelErrorE writeFile( Model * model, const char * const filename, ModelFilter::Options * o = NULL );
 
       bool canRead( const char * filename );
       bool canWrite( const char * filename );

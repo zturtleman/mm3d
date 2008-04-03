@@ -21,7 +21,7 @@
  */
 
 
-// This file tests the COB model file filter.
+// This file tests the MS3D model file filter.
 
 #include <QtTest/QtTest>
 #include <unistd.h>
@@ -33,7 +33,7 @@
 #include "texture.h"
 #include "modelstatus.h"
 #include "log.h"
-#include "cobfilter.h"
+#include "ms3dfilter.h"
 #include "mm3dfilter.h"
 
 #include "local_array.h"
@@ -83,6 +83,7 @@ Model * loadModelOrDie( ModelFilter & filter, const char * filename )
 
    model->loadTextures();
    model->forceAddOrDelete( true );
+   model->calculateNormals();
    return model;
 }
 
@@ -94,21 +95,26 @@ Model * loadMm3dOrDie( const char * filename, FileFactory * factory = NULL )
    return loadModelOrDie( f, filename );
 }
 
-Model * loadCobOrDie( const char * filename, FileFactory * factory = NULL )
+Model * loadMs3dOrDie( const char * filename, FileFactory * factory = NULL )
 {
-   CobFilter f;
+   Ms3dFilter f;
    if ( factory )
       f.setFactory( factory );
    return loadModelOrDie( f, filename );
 }
 
-void saveCobOrDie( Model * model, const char * filename, FileFactory * factory = NULL )
+void saveMs3dOrDie( Model * model, const char * filename, FileFactory * factory = NULL )
 {
-   CobFilter filter;
+   Ms3dFilter filter;
    if ( factory )
       filter.setFactory( factory );
 
-   Model::ModelErrorE err = filter.writeFile( model, filename, NULL );
+   Ms3dFilter::Ms3dOptions * opts = new Ms3dFilter::Ms3dOptions;
+   opts->setOptionsFromModel( model );
+
+   Model::ModelErrorE err = filter.writeFile( model, filename, opts );
+
+   opts->release();
 
    if ( err != Model::ERROR_NONE )
    {
@@ -124,7 +130,7 @@ void saveCobOrDie( Model * model, const char * filename, FileFactory * factory =
 //}
 
 
-class FilterCobTest : public QObject
+class FilterMs3dTest : public QObject
 {
    Q_OBJECT
 private:
@@ -139,7 +145,8 @@ private:
       }
       else
       {
-         QVERIFY_TRUE( lhs->propEqual( rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs, Model::PartAll, ~(Model::PropInfluences | Model::PropWeights)) );
+         QVERIFY_TRUE( lhs->propEqual( rhs, Model::PartVertices, Model::PropInfluences, 0.02 ) );
       }
    }
 
@@ -147,12 +154,12 @@ private:
          const char * reffile )
    {
       TestFileFactory factory;
-      local_ptr<Model> m = loadCobOrDie( infile, &factory );
+      local_ptr<Model> m = loadMs3dOrDie( infile, &factory );
       testModelFile( reffile, m.get() );
 
-      saveCobOrDie( m.get(), outfile, &factory );
-      m = loadCobOrDie( outfile, &factory );
-      testModelFile( reffile, m.get(), true );
+      saveMs3dOrDie( m.get(), outfile, &factory );
+      m = loadMs3dOrDie( outfile, &factory );
+      testModelFile( reffile, m.get() );
    }
 
 private slots:
@@ -165,20 +172,20 @@ private slots:
       log_enable_error( false );
    }
 
-   void testCobModelA()
+   void testMs3dModelA()
    {
       testReadAndWrite(
-            "filtertest/cob/concreteblock.cob",
-            "filtertest/cob/test_out.cob",
-            "filtertest/cob/concreteblock.mm3d" );
+            "filtertest/ms3d/zombie02.ms3d",
+            "filtertest/ms3d/test_out.ms3d",
+            "filtertest/ms3d/zombie02.mm3d" );
    }
 
-   void testCobModelB()
+   void testMs3dModelB()
    {
       testReadAndWrite(
-            "filtertest/cob/brick.cob",
-            "filtertest/cob/test_out.cob",
-            "filtertest/cob/brick.mm3d" );
+            "filtertest/ms3d/weighted.ms3d",
+            "filtertest/ms3d/test_out.ms3d",
+            "filtertest/ms3d/weighted.mm3d" );
    }
 
    // FIXME add tests:
@@ -186,6 +193,6 @@ private slots:
    //   options
 };
 
-QTEST_MAIN(FilterCobTest)
-#include "filter_cob_test.moc"
+QTEST_MAIN(FilterMs3dTest)
+#include "filter_ms3d_test.moc"
 
