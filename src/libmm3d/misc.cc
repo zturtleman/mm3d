@@ -134,21 +134,29 @@ string normalizePath( const char * path, const char * pwd )
    string rval;
    string fullPath;
 
-   if ( pathIsAbsolute( path ) || pwd == NULL )
+   if ( pathIsAbsolute( path ) )
    {
       fullPath = path;
    }
    else
    {
-      char * tempPwd = NULL;
-      tempPwd = (char *) malloc( sizeof(char) * PATH_MAX );
-      getcwd( tempPwd, PATH_MAX );
+      if ( pwd )
+      {
+         fullPath  = pwd;
+         fullPath += DIR_SLASH;
+         fullPath += path;
+      }
+      else
+      {
+         char * tempPwd = new char[PATH_MAX];
+         getcwd( tempPwd, PATH_MAX );
 
-      fullPath  = tempPwd;
-      fullPath += DIR_SLASH;
-      fullPath += path;
+         fullPath  = tempPwd;
+         fullPath += DIR_SLASH;
+         fullPath += path;
 
-      free( tempPwd );
+         delete[] tempPwd;
+      }
    }
 
    char resolved[ PATH_MAX ];
