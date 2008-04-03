@@ -248,7 +248,11 @@ class Model
          }
 
          bool operator<( const struct _Influence_t & rhs ) const
-            { return m_weight < rhs.m_weight; }
+         {
+            if ( fabs( m_weight - rhs.m_weight ) < 0.00001 )
+               return m_boneId < rhs.m_boneId;
+            return m_weight < rhs.m_weight;
+         }
       };
       typedef struct _Influence_t InfluenceT;
       typedef std::list< InfluenceT > InfluenceList;
