@@ -24,10 +24,18 @@
 #include "model.h"
 #include "log.h"
 #include "texture.h"
+#include "mm3dport.h"
 
 void Model::sprint( std::string & dest )
 {
    // FIXME implement
+   std::string str;
+   int vcount = m_vertices.size();
+   for ( int v = 0; v < vcount; ++v )
+   {
+      m_vertices[v]->sprint( str );
+      log_warning( "vertex %-4d: %s\n", v, str.c_str() );
+   }
 }
 
 void Model::Vertex::sprint( std::string & dest )
@@ -135,8 +143,10 @@ void Model::Material::sprint( std::string & dest )
 
    if ( m_type == MATTYPE_TEXTURE )
    {
-      sprintf( tempstr, "  %s %d,%d,%d  ",
-            m_filename.c_str(),
+      PORT_snprintf( tempstr, sizeof(tempstr), "  %s", m_filename.c_str() );
+      dest += tempstr;
+
+      sprintf( tempstr, " %d,%d,%d",
             m_textureData->m_origWidth, m_textureData->m_origHeight,
             (m_textureData->m_format == Texture::FORMAT_RGB) ? 24 : 32);
       dest += tempstr;
