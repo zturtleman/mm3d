@@ -25,7 +25,10 @@
 #include "memdatadest.h"
 #include "memdatasource.h"
 
+#include "log.h" // FIXME debug
+
 TestFileFactory::TestFileFactory()
+   : m_filePath( "" )
 {
 }
 
@@ -39,10 +42,25 @@ TestFileFactory::~TestFileFactory()
    m_fileBuffers.clear();
 }
 
-DataDest * TestFileFactory::createDest( const char * filename )
+void TestFileFactory::setFilePath( const std::string & filePath )
 {
+   m_filePath = filePath;
+   if ( !m_filePath.empty() )
+   {
+      if ( m_filePath[ m_filePath.size() - 1 ] != '/' )
+      {
+         m_filePath += '/';
+      }
+   }
+}
+
+DataDest * TestFileFactory::createDest( const char * f )
+{
+   std::string filename = (f[0] == '/') ? f : m_filePath + f;
+
    // Create a new memory buffer fo this file if needed
    BufferMap::iterator it = m_fileBuffers.find( filename );
+   log_debug( "writing '%s'\n", filename.c_str() );
    if ( it == m_fileBuffers.end() )
    {
       const int MAX_SIZE = 2000000;
@@ -64,17 +82,22 @@ DataDest * TestFileFactory::createDest( const char * filename )
    return dest;
 }
 
-DataSource * TestFileFactory::createSource( const char * filename )
+DataSource * TestFileFactory::createSource( const char * f )
 {
+   std::string filename = (f[0] == '/') ? f : m_filePath + f;
+
    // If we have an in-memory buffer for this file, use it
    BufferMap::iterator it = m_fileBuffers.find( filename );
    if ( it != m_fileBuffers.end() )
    {
+      // FIXME debug
+      log_debug( "reading in-memory '%s'\n", filename.c_str() );
       it->second.bufLen = it->second.dest->getDataLength();
       return new MemDataSource( it->second.buf, it->second.bufLen );
    }
 
+   log_debug( "*** reading on-disk '%s'\n", filename.c_str() );
    // No in-memory buffer, use a real file as the source
-   return FileFactory::createSource( filename );
+   return FileFactory::createSource( filename.c_str() );
 }
 

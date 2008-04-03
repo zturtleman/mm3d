@@ -57,12 +57,15 @@ class TestFileFactory : public FileFactory
       TestFileFactory();
       virtual ~TestFileFactory();
 
-   protected:
+      void setFilePath( const std::string & filePath );
+
+   public:
       virtual DataDest * createDest( const char * filename );
       virtual DataSource * createSource( const char * filename );
 
    private:
       BufferMap m_fileBuffers;
+      std::string m_filePath;
 };
 
 #endif  // TESTFILEFACTORY_H_INC__
