@@ -2132,6 +2132,15 @@ void Model::setupJoints()
 //            joint->m_localRotation[0], joint->m_localRotation[1], joint->m_localRotation[2] );
 //      log_debug( "\n" );
    }
+   
+   for ( unsigned anim = 0; anim < m_skelAnims.size(); ++anim )
+   {
+      while ( m_joints.size() > m_skelAnims[anim]->m_jointKeyframes.size() )
+      {
+         KeyframeList kl;
+         m_skelAnims[anim]->m_jointKeyframes.push_back( kl );
+      }
+   }
 }
 
 unsigned Model::getAnimCount( AnimationModeE m ) const
