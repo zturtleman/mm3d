@@ -79,6 +79,7 @@ TextureWidget::TextureWidget( QWidget * parent )
      m_zoom( 1.0 ),
      m_xCenter( 0.5 ),
      m_yCenter( 0.5 ),
+     m_model( NULL ),
      m_materialId( -1 ),
      m_texture( NULL ),
      m_glTexture( 0 ),
@@ -721,8 +722,13 @@ void TextureWidget::setTexture( int materialId, Texture * texture )
    m_materialId = materialId;
    m_texture = texture;
 
-   m_sClamp = m_model->getTextureSClamp( materialId );
-   m_tClamp = m_model->getTextureTClamp( materialId );
+   m_sClamp = true;
+   m_tClamp = true;
+   if ( m_model )
+   {
+      m_sClamp = m_model->getTextureSClamp( materialId );
+      m_tClamp = m_model->getTextureTClamp( materialId );
+   }
 
    if ( m_texture )
    {
