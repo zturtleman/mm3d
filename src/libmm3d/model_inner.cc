@@ -26,6 +26,7 @@
 #include "log.h"
 
 #include <ext/hash_set>
+#include <map>
 
 using __gnu_cxx::hash_set;
 
@@ -64,6 +65,59 @@ bool floatCompareVector( T * lhs, T * rhs, size_t len, double tolerance = EQ_TOL
    for ( size_t index = 0; index < len; ++index )
       if ( fabs( lhs[index] - rhs[index] ) > tolerance )
          return false;
+   return true;
+}
+
+static bool influencesMatch( const Model::InfluenceList & lhs,
+      const Model::InfluenceList & rhs, int propBits, double tolerance )
+{
+   typedef std::map<int, Model::InfluenceT> InfluenceMap;
+   InfluenceMap lhsInfMap;
+
+   Model::InfluenceList::const_iterator it;
+
+   for ( it = lhs.begin(); it != lhs.end(); ++it )
+   {
+      lhsInfMap[ it->m_boneId ] = *it;
+   }
+
+   for ( it = rhs.begin(); it != rhs.end(); ++it )
+   {
+      InfluenceMap::const_iterator lhs_it = lhsInfMap.find( it->m_boneId );
+      if ( lhs_it == lhsInfMap.end() )
+      {
+         log_warning( "match failed on missing lhs bone %d\n", it->m_boneId );
+         return false;
+      }
+
+      // This doesn't matter if we only care about weights
+      if ( propBits & Model::PropInfluences )
+      {
+         if ( lhs_it->second.m_type != it->m_type )
+         {
+            log_warning( "match failed on influence type (%d vs %d) for bone %d\n",
+                  lhs_it->second.m_type, it->m_type, it->m_boneId );
+            return false;
+         }
+      }
+
+      if ( fabs( lhs_it->second.m_weight - it->m_weight ) > tolerance )
+      {
+         log_warning( "match failed on influence weight (%f vs %f) for bone %d\n",
+               (float) lhs_it->second.m_weight, (float) it->m_weight, it->m_boneId );
+         return false;
+      }
+
+      lhsInfMap.erase( it->m_boneId );
+   }
+
+   if ( !lhsInfMap.empty() )
+   {
+      log_warning( "match failed on missing rhs bone %d\n",
+            lhsInfMap.begin()->second.m_boneId );
+      return false;
+   }
+
    return true;
 }
 
@@ -158,27 +212,10 @@ bool Model::Vertex::propEqual(const Vertex & rhs, int propBits, double tolerance
       if ( m_free != rhs.m_free )
          return false;
 
+   // FIXME apply this to points also
    if ( (propBits & (PropInfluences | PropWeights)) != 0 )
    {
-      InfluenceList::const_iterator lhs_it = m_influences.begin();
-      InfluenceList::const_iterator rhs_it = rhs.m_influences.begin();
-
-      for ( ; lhs_it != m_influences.end() && rhs_it != rhs.m_influences.end();
-            ++lhs_it, ++rhs_it )
-      {
-         // This doesn't matter if we only care about weights
-         if ( propBits & PropInfluences )
-            if ( lhs_it->m_type != rhs_it->m_type )
-               return false;
-
-         // This matters if we're comparing influences or weights
-         if ( lhs_it->m_boneId != rhs_it->m_boneId )
-            return false;
-         if ( fabs( lhs_it->m_weight - rhs_it->m_weight ) > EQ_TOLERANCE )
-            return false;
-      }
-
-      if ( lhs_it != m_influences.end() || rhs_it != rhs.m_influences.end() )
+      if ( !influencesMatch( m_influences, rhs.m_influences, propBits, tolerance ) )
          return false;
    }
 
@@ -707,7 +744,7 @@ bool Model::Joint::propEqual(const Joint & rhs, int propBits, double tolerance )
    {
       for ( unsigned i = 0; i < 3; i++ )
       {
-         if ( fabs( m_localRotation[i] - rhs.m_localRotation[i]) > EQ_TOLERANCE )
+         if ( fabs( m_localRotation[i] - rhs.m_localRotation[i]) > tolerance )
             return false;
       }
    }
@@ -715,7 +752,7 @@ bool Model::Joint::propEqual(const Joint & rhs, int propBits, double tolerance )
    {
       for ( unsigned i = 0; i < 3; i++ )
       {
-         if ( fabs( m_localTranslation[i] - rhs.m_localTranslation[i]) > EQ_TOLERANCE )
+         if ( fabs( m_localTranslation[i] - rhs.m_localTranslation[i]) > tolerance )
             return false;
       }
    }
@@ -858,7 +895,7 @@ bool Model::Point::propEqual(const Point & rhs, int propBits, double tolerance )
          // This matters if we're comparing influences or weights
          if ( lhs_it->m_boneId != rhs_it->m_boneId )
             return false;
-         if ( fabs( lhs_it->m_weight - rhs_it->m_weight ) > EQ_TOLERANCE )
+         if ( fabs( lhs_it->m_weight - rhs_it->m_weight ) > tolerance )
             return false;
       }
 
@@ -1067,7 +1104,7 @@ bool Model::SkelAnim::propEqual(const SkelAnim & rhs, int propBits, double toler
          return false;
 
    if ( (propBits & PropTime) != 0 )
-      if ( fabs( m_fps - rhs.m_fps ) > EQ_TOLERANCE )
+      if ( fabs( m_fps - rhs.m_fps ) > tolerance )
          return false;
 
    if ( (propBits & PropDimensions) != 0 )
@@ -1206,7 +1243,7 @@ bool Model::FrameAnim::propEqual(const FrameAnim & rhs, int propBits, double tol
          return false;
 
    if ( (propBits & PropTime) != 0 )
-      if ( fabs( m_fps - rhs.m_fps ) > EQ_TOLERANCE )
+      if ( fabs( m_fps - rhs.m_fps ) > tolerance )
          return false;
 
    if ( (propBits & (PropCoords | PropRotation)) != 0 )
@@ -1450,7 +1487,7 @@ bool Model::BackgroundImage::propEqual(const BackgroundImage & rhs, int propBits
          return false;
 
    if ( (propBits & PropScale) != 0 )
-      if ( fabs( m_scale - rhs.m_scale ) > EQ_TOLERANCE )
+      if ( fabs( m_scale - rhs.m_scale ) > tolerance )
          return false;
 
    if ( (propBits & PropCoords) != 0 )
