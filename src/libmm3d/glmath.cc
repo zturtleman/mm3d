@@ -845,6 +845,14 @@ double Vector::dot3( const Vector & rhs )
            + m_val[2] * rhs.m_val[2] );
 }
 
+double Vector::dot4( const Vector & rhs )
+{
+   return(   m_val[0] * rhs.m_val[0]
+           + m_val[1] * rhs.m_val[1]
+           + m_val[2] * rhs.m_val[2]
+           + m_val[3] * rhs.m_val[3] );
+}
+
 Vector Vector::cross3( const Vector & rhs ) const
 {
    Vector rval;

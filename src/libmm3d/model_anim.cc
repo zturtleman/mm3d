@@ -2510,6 +2510,13 @@ bool Model::interpSkelAnimKeyframeTime( unsigned anim, double frameTime,
 
                double tm = (tempTime - sa->m_jointKeyframes[j][rot]->m_time) / diff;
 
+               // Negate if necessary to get shortest rotation path for
+               // interpolation
+               if ( va.dot4(vb) < -0.00001 )
+               {
+                  vb[0] = -vb[0]; vb[1] = -vb[1]; vb[2] = -vb[2]; vb[3] = -vb[3];
+               }
+
                va = va * (1.0 - tm) + (vb * tm);
                va = va * (1.0 / va.mag());
             }

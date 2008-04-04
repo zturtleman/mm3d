@@ -128,6 +128,7 @@ class Vector
       void normalize3();
 
       double dot3( const Vector & rhs );
+      double dot4( const Vector & rhs );
       Vector cross3( const Vector & rhs ) const;
 
       const double * getVector() const { return m_val; };
