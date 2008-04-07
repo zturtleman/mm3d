@@ -6,9 +6,13 @@ Changes for 1.3.7
    Read compressed animations in Cal3D
    Report error if saving MD2 or MD3 with faces that are not assigned
       to a group
+   Fix to dissallow primitives additions using subdivide or addPoint
+   Fix interpolation bug where rotation was not taking the shortest
+      path to the new orientation
+   Have a minimum animation redraw of 20 fps to show interpolation on slow
+      animations
    Performance fixes for normal calculation (about 40% speed improvement)
    Performance fixes for MD3 loading (about 8x speed improvement)
-   Fix to dissallow primitives additions using subdivide or addPoint
    Added --enable-profile to ./configure
    Added --language to override the system locale
    Prevent select connected from selecting hidden faces

@@ -50,6 +50,8 @@ class AnimWidget : public QWidget, public Ui::AnimWidgetBase
 
    signals:
       void animWindowClosed();
+      void animInvalid();
+      void animValid();
 
    public slots:
       void nameSelected(int);

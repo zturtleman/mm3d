@@ -1,15 +1,13 @@
 For 1.4:
    Bump mm3dfilter version
-
    Update plugin docs to point to User's 1.4 plugin directory
-   Profile 1.3.4 vs. 1.3.5 on unaccelerated config
+
+   Testing:
+      Compare frame animations (propEqual and equiv)
+      Implement MD3 filter test
 
    FIXMEs
-      Prevent editing model when invalid animation is active
-         (animwin open when no animation)
       Centralize the FunctionCaller
-      Make Cal3D errors translatable
-
 
 For 1.6:
    Resample animation

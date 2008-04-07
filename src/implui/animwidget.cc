@@ -232,6 +232,11 @@ void AnimWidget::nameSelected( int index )
    if( index < (int) m_animCount )
    {
       m_model->setCurrentAnimation( m_mode, m_currentAnim );
+      if ( m_playing )
+      {
+         // Re-initialize time interval based on new anim's FPS.
+         doPlay();
+      }
    }
    else
    {
@@ -535,6 +540,10 @@ void AnimWidget::doPlay()
 
    m_timeInterval = double (1.0 / m_model->getAnimFPS( m_mode, indexToAnim( m_animName->currentIndex() ) ));
 
+   const double shortInterval = 1.0 / 20.0;
+   if ( m_timeInterval > shortInterval )
+      m_timeInterval = shortInterval;
+
    PORT_gettimeofday( &m_startTime );
 
    m_animTimer->start( (int) (m_timeInterval * 1000) );
@@ -681,6 +690,8 @@ void AnimWidget::refreshPage()
          m_countSlider->update();
 
          setCurrentFrame( m_currentFrame + 1 );
+
+         emit animValid();
       }
       else
       {
@@ -700,6 +711,8 @@ void AnimWidget::refreshPage()
          m_countSlider->setMaximum( 0 );
          m_countSlider->setValue( 0 );
          setCurrentFrame( 0 );
+
+         emit animInvalid();
       }
    }
    else

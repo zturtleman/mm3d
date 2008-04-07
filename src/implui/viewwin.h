@@ -163,6 +163,9 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
 
       void contextPanelHidden();
 
+      void editDisableEvent();
+      void editEnableEvent();
+
       void undoRequest();
       void redoRequest();
 
@@ -339,6 +342,7 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       QAction ** m_toolButtons;
       QAction * m_last;
       ::Tool        * m_currentTool;
+      bool m_canEdit;
 
       QTimer      * m_savedTimer;
 };
