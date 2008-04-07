@@ -45,12 +45,7 @@
 
 // FIXME things to test:
 //
-// Write version based on meta data (TEST)
 // Read compressed tracks (TEST)
-// Allow user to specify binary version (TEST)
-//    Write '0' flags, don't bother writing compressed tracks (TEST)
-// Allow user to specify XML version (TEST)
-//    Omit header if >= 1000 (TEST)
 // Are .cal and .cfg different? Looks like mesh/animation keys
 //    don't have names (mesh= instead of mesh_foo=)
 
@@ -796,9 +791,11 @@ Model::ModelErrorE Cal3dFilter::readCal3dFile( uint8_t * buf, size_t len )
    if ( noData )
    {
       if ( bracketCount > 2 )
-         m_model->setFilterSpecificError( "MM3D does not support CAL3D files in XML format" );
+         m_model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel",
+                     "MM3D does not support CAL3D files in XML format" ) ).c_str() );
       else
-         m_model->setFilterSpecificError( "The file does not contain any mesh or animation data" );
+         m_model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel",
+                     "The file does not contain any mesh or animation data" ) ).c_str() );
 
       rval = Model::ERROR_FILTER_SPECIFIC;
       goto bail_out;
@@ -2194,7 +2191,6 @@ Model::ModelErrorE Cal3dFilter::writeXMaterialFile( const char * filename, Model
       return err;
 
    // Header
-   // FIXME test header-less XML file
    int version = CAL3D_MIN_XVERSION;
    char versionStr[32];
    if ( model->getMetaData( "cal3d_xrf_version", versionStr, sizeof(versionStr) ) )
