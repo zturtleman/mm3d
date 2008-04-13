@@ -48,10 +48,10 @@ LIB_OBJ= \
 	src/libmm3d/model_insert.o \
 	src/libmm3d/model_meta.o \
 	src/libmm3d/model_ops.o \
+	src/libmm3d/model_print.o \
 	src/libmm3d/model_proj.o \
 	src/libmm3d/model_select.o \
 	src/libmm3d/model_texture.o \
-	src/libmm3d/model_test.o \
 	src/libmm3d/modelfilter.o \
 	src/libmm3d/modelstatus.o \
 	src/libmm3d/modelundo.o \
@@ -315,7 +315,6 @@ MM3D_OBJ= \
 	src/implui/mapdirection.o \
 	src/implui/mergewin.o \
 	src/implui/metawin.o \
-	src/mm3dcore/modeltest.o \
 	src/tools/movetool.o \
 	src/implui/msgqt.o \
 	src/implui/mview.o \
