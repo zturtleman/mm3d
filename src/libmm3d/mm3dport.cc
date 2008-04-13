@@ -29,6 +29,7 @@
 #include <limits.h>
 
 #include "config.h"
+#include "log.h" // FIXME debugging
 
 #ifdef HAVE_GETTIMEOFDAY
 #include <sys/time.h>
@@ -56,14 +57,82 @@ int PORT_lstat( const char * filename, struct stat * buf )
 #endif // WIN32
 }
 
+// FIXME add thorough testing for the manual part of this (the case where
+// realpath fails because the directories don't exist).
 char * PORT_realpath( const char * path, char * resolved_path, size_t len )
 {
 #ifdef WIN32
-   _fullpath( resolved_path, path, len );
+   char * rval = _fullpath( resolved_path, path, len );
 #else
-   realpath( path, resolved_path );
+   char * rval = realpath( path, resolved_path );
 #endif // WIN32
-   return resolved_path;
+   if ( !rval )
+   {
+      if ( len > 0 )
+      {
+         if ( path[0] == '/' )
+         {
+            strncpy( resolved_path, path, len );
+         }
+         else
+         {
+            char pwd[1024];
+            getcwd(pwd, sizeof(pwd));
+            PORT_snprintf( resolved_path, len, "%s/%s", pwd, path );
+         }
+         resolved_path[ len - 1 ] = '\0';
+         rval = resolved_path;
+
+         // Remove "/./" and "//"
+         char * end = rval + strlen(rval);
+
+         char * s = rval;
+         while ( (s = strstr(s, "/./")) != NULL )
+         {
+            memmove( s, s + 2, end - (s + 2) );
+            end -= 2;
+            end[0] = '\0';
+         }
+
+         s = rval;
+         while ( (s = strstr(s, "//")) != NULL )
+         {
+            memmove( s, s + 1, end - (s + 1) );
+            --end;
+            end[0] = '\0';
+         }
+
+         // Remove "/../"
+         s = rval;
+         while ( (s = strstr(s, "/../")) != NULL )
+         {
+            char * lastSlash = s - 1;
+            while ( lastSlash >= rval )
+            {
+               if ( *lastSlash != '/' )
+                  --lastSlash;
+               else
+                  break;
+            }
+
+            if ( lastSlash >= rval )
+            {
+               int len = (end - s) - 3;
+               memmove( lastSlash, s+3, len );
+               end = lastSlash + len;
+               end[0] = '\0';
+               s = lastSlash;
+            }
+            else
+            {
+               return rval;
+            }
+         }
+
+         //log_warning( "normalized path = '%s'\n", rval );
+      }
+   }
+   return rval;
 }
 
 struct tm * PORT_localtime_r( const time_t * timep, struct tm * result )

@@ -39,29 +39,6 @@
 #include "release_ptr.h"
 
 
-void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... )
-{
-   // FIXME hack
-}
-
-Model * loadModelOrDie( const char * filename )
-{
-   MisfitFilter f;
-
-   Model * model = new Model;
-   Model::ModelErrorE err = f.readFile( model, filename );
-
-   if ( err != Model::ERROR_NONE )
-   {
-      fprintf( stderr, "fatal: %s: %s\n", filename, Model::errorToString( err ) );
-      delete model;
-      exit( -1 );
-   }
-
-   model->forceAddOrDelete( true );
-   return model;
-}
-
 class ModelEqualTest : public QObject
 {
    Q_OBJECT
@@ -479,63 +456,104 @@ private slots:
 
       int bits = 0;
 
-      bits = Model::CompareMeta;
+      bits = Model::PropVisibility;
 
       initCompareVertex( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_visible = false;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropSelection;
 
       initCompareVertex( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_selected = true;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropFree;
 
       initCompareVertex( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_free = false;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
-      bits = Model::CompareGeometry;
+      bits = Model::PropCoords;
 
       for ( int i = 0; i < 3; ++i )
       {
          initCompareVertex( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_coord[i] = lhs->m_coord[i] - 1.0;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
       }
 
-      bits = Model::CompareInfluences;
+      bits = Model::PropInfluences;
 
       initCompareVertex( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
+      rhs->m_influences.front().m_type = Model::IT_Remainder;
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~(Model::PropWeights | Model::PropInfluences) ) );
+
+      initCompareVertex( rhs );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_influences.front().m_weight = 0.5;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~(Model::PropWeights | Model::PropInfluences) ) );
 
       initCompareVertex( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_influences.push_back( rhs->m_influences.back() );
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~(Model::PropWeights | Model::PropInfluences) ) );
 
       initCompareVertex( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_influences.clear();
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~(Model::PropWeights | Model::PropInfluences) ) );
+
+      bits = Model::PropWeights;
+
+      initCompareVertex( rhs );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
+      rhs->m_influences.front().m_type = Model::IT_Remainder;
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~(Model::PropWeights | Model::PropInfluences) ) );
+
+      initCompareVertex( rhs );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
+      rhs->m_influences.front().m_weight = 0.5;
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~(Model::PropWeights | Model::PropInfluences) ) );
+
+      initCompareVertex( rhs );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
+      rhs->m_influences.push_back( rhs->m_influences.back() );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~(Model::PropWeights | Model::PropInfluences) ) );
+
+      initCompareVertex( rhs );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
+      rhs->m_influences.clear();
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~(Model::PropWeights | Model::PropInfluences) ) );
 
       lhs->release();
       rhs->release();
@@ -550,58 +568,62 @@ private slots:
 
       int bits = 0;
 
-      bits = Model::CompareMeta;
+      bits = Model::PropVisibility;
 
       initCompareTriangle( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_visible = false;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropSelection;
 
       initCompareTriangle( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_selected = true;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
-      bits = Model::CompareTextures;
+      bits = Model::PropProjections;
 
       initCompareTriangle( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_projection = 0;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropTexCoords;
 
       for ( int i = 0; i < 3; ++i )
       {
          initCompareTriangle( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_s[i] = rhs->m_s[i] + 1.0;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
          initCompareTriangle( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_t[i] = rhs->m_t[i] + 1.0;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
       }
 
-      bits = (Model::CompareFaces | Model::CompareGeometry);
+      bits = Model::PropVertices;
 
       for ( int i = 0; i < 3; ++i )
       {
          initCompareTriangle( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_vertexIndices[i] += 1;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
       }
 
       lhs->release();
@@ -617,129 +639,133 @@ private slots:
 
       int bits = 0;
 
-      bits = Model::CompareMeta;
+      bits = Model::PropName;
 
       initCompareGroup( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_name = "group";  // different case
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropVisibility;
 
       initCompareGroup( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_visible = false;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropSelection;
 
       initCompareGroup( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_selected = true;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
-      bits = Model::CompareMaterials;
+      bits = Model::PropMaterials;
 
       initCompareGroup( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_materialIndex = 2;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
-      bits = Model::CompareGeometry;
+      bits = Model::PropNormals;
 
       initCompareGroup( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_angle = 45;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropNormals;
 
       initCompareGroup( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_smooth = 128;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
-      bits = Model::CompareGeometry | Model::CompareGroups;
+      bits = Model::PropTriangles;
 
       initCompareGroup( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_triangleIndices.clear();
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       initCompareGroup( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_triangleIndices.clear();
       rhs->m_triangleIndices.push_back( 2 );
       rhs->m_triangleIndices.push_back( 4 );
       rhs->m_triangleIndices.push_back( 6 );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_triangleIndices.clear();
-      rhs->m_triangleIndices.push_back( 2 );
-      rhs->m_triangleIndices.push_back( 4 );
-      rhs->m_triangleIndices.push_back( 4 );
-      rhs->m_triangleIndices.push_back( 6 );
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      rhs->m_triangleIndices.insert( 2 );
+      rhs->m_triangleIndices.insert( 4 );
+      rhs->m_triangleIndices.insert( 4 );
+      rhs->m_triangleIndices.insert( 6 );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
 
       initCompareGroup( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_triangleIndices.clear();
       rhs->m_triangleIndices.push_back( 1 );
       rhs->m_triangleIndices.push_back( 2 );
       rhs->m_triangleIndices.push_back( 4 );
       rhs->m_triangleIndices.push_back( 6 );
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       initCompareGroup( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_triangleIndices.clear();
       rhs->m_triangleIndices.push_back( 2 );
       rhs->m_triangleIndices.push_back( 4 );
       rhs->m_triangleIndices.push_back( 6 );
       rhs->m_triangleIndices.push_back( 7 );
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       initCompareGroup( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_triangleIndices.clear();
       rhs->m_triangleIndices.push_back( 2 );
       rhs->m_triangleIndices.push_back( 6 );
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       initCompareGroup( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_triangleIndices.clear();
       rhs->m_triangleIndices.push_back( 2 );
       rhs->m_triangleIndices.push_back( 4 );
       rhs->m_triangleIndices.push_back( 5 );
       rhs->m_triangleIndices.push_back( 6 );
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
-      // Same triangles in a different order, this is legal for equal models
+      // Same triangles in a different order, this is legal for propEqual models
       initCompareGroup( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_triangleIndices.clear();
       rhs->m_triangleIndices.push_back( 6 );
       rhs->m_triangleIndices.push_back( 4 );
       rhs->m_triangleIndices.push_back( 2 );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
 
       lhs->release();
       rhs->release();
@@ -753,159 +779,165 @@ private slots:
       initCompareMaterial( lhs );
 
       initCompareMaterial( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_texture = 2;  // This only matters to OpenGL
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
 
       int bits = 0;
 
-      bits = Model::CompareMeta;
+      bits = Model::PropName;
 
       initCompareMaterial( lhs );
 
       initCompareMaterial( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_name = "material";  // different case
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropPaths;
 
       initCompareMaterial( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_filename = "filename.jpg";
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       initCompareMaterial( lhs );
       initCompareMaterial( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_alphaFilename = "alpha.gif";
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
-      bits = Model::CompareMaterials;
+      bits = Model::PropType;
 
       initCompareMaterial( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_type = Model::Material::MATTYPE_TEXTURE;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropLighting;
 
       for ( int i = 0; i < 4; i++ )
       {
          initCompareMaterial( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_ambient[i] = 1.0;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
          initCompareMaterial( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_diffuse[i] = 1.0;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
          initCompareMaterial( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_specular[i] = 1.0;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
          initCompareMaterial( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_emissive[i] = 1.0;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
       }
 
       initCompareMaterial( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_shininess = 1.0;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
-      bits = Model::CompareTextures;
+      bits = Model::PropClamp;
 
       initCompareMaterial( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_sClamp = true;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       initCompareMaterial( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_tClamp = true;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       // FIXME these checks really belong in the texture testing code. I do want to keep
-      // at least one check below to make sure that the equality test fails if the
+      // at least one check below to make sure that the propEquality test fails if the
       // texture compare fails.
       local_ptr<Texture> tex_lhs = new Texture();
       local_ptr<Texture> tex_rhs = new Texture();
 
+      bits = Model::PropPixels;
+
       initCompareMaterialAndTexture( lhs, tex_lhs.get(), false );
 
       initCompareMaterialAndTexture( rhs, tex_rhs.get(), false );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_textureData->m_format = Texture::FORMAT_RGBA;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       initCompareMaterialAndTexture( lhs, tex_lhs.get(), true );
 
       initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_textureData->m_format = Texture::FORMAT_RGB;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_textureData->m_width = 2;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_textureData->m_height = 2;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_textureData->m_origWidth = 2;  // Compare doesn't care
       rhs->m_textureData->m_origHeight = 2;
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
 
       initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_textureData->m_isBad = true;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       lhs->m_textureData->m_isBad = true;  // Even if both are bad, it's not a match
       rhs->m_textureData->m_isBad = true;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       initCompareMaterialAndTexture( lhs, tex_lhs.get(), true );
 
@@ -913,11 +945,11 @@ private slots:
       {
          initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
          local_array<uint8_t> buf = copyTextureData( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_textureData->m_data[i] = 0x48;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
          tex_rhs->m_data = NULL;
       }
 
@@ -927,9 +959,9 @@ private slots:
       {
          initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
          local_array<uint8_t> buf = copyTextureData( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_textureData->m_data[15 * 4 + i] = 0x48;
-         QVERIFY_TRUE( lhs->equal( *rhs ) );  // Clear, don't care
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );  // Clear, don't care
          tex_rhs->m_data = NULL;
       }
 
@@ -940,12 +972,12 @@ private slots:
          initCompareMaterialAndTexture( rhs, tex_rhs.get(), true );
          local_array<uint8_t> buf = copyTextureData( rhs );
          local_array<uint8_t> buf2 = copyTextureData( lhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_textureData->m_data[15 * 4 + i] = 0x48;
          rhs->m_textureData->m_data[15 * 4 + 3] = 0x01;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
          tex_rhs->m_data = NULL;
          tex_lhs->m_data = NULL;
       }
@@ -956,11 +988,11 @@ private slots:
       {
          initCompareMaterialAndTexture( rhs, tex_rhs.get(), false );
          local_array<uint8_t> buf = copyTextureData( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_textureData->m_data[i] = 0x48;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
          tex_rhs->m_data = NULL;
       }
 
@@ -970,13 +1002,13 @@ private slots:
          initCompareMaterialAndTexture( rhs, tex_rhs.get(), false );
          local_array<uint8_t> buf = copyTextureData( rhs );
          local_array<uint8_t> buf2 = copyTextureData( lhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_textureData->m_data[i] = 0x48;
          rhs->m_textureData->m_data[3] = 0x00;  // Not alpha, change above matters
          lhs->m_textureData->m_data[3] = 0x00;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
          tex_rhs->m_data = NULL;
          tex_lhs->m_data = NULL;
       }
@@ -998,53 +1030,61 @@ private slots:
 
       int bits = 0;
 
-      bits = Model::CompareMeta;
+      bits = Model::PropName;
 
       initCompareJoint( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_name = "joint";  // case
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropVisibility;
 
       initCompareJoint( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_visible = false;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropSelection;
 
       initCompareJoint( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_selected = true;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
-      bits = Model::CompareSkeleton;
+      bits = 0;
 
       initCompareJoint( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_parent = 1;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, ~bits ) );
 
       for ( int i = 0; i < 3; ++i )
       {
-         initCompareJoint( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
-         rhs->m_localRotation[i] = 11.0;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         bits = Model::PropRotation;
 
          initCompareJoint( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
+         rhs->m_localRotation[i] = 11.0;
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+         bits = Model::PropCoords;
+
+         initCompareJoint( rhs );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_localTranslation[i] = 1.0;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
       }
 
       lhs->release();
@@ -1060,78 +1100,123 @@ private slots:
 
       int bits = 0;
 
-      bits = Model::CompareMeta;
+      bits = Model::PropName;
 
       initComparePoint( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_name = "point";  // case
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropType;
 
       // Point m_type doesn't actually do anything, but check it anyway.
       initComparePoint( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_type = 2;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropVisibility;
 
       initComparePoint( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_visible = false;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropSelection;
 
       initComparePoint( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_selected = true;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
-
-      bits = Model::ComparePoints;
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       for ( int i = 0; i < 3; ++i )
       {
-         initComparePoint( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
-         rhs->m_rot[i] = 11.0;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         bits = Model::PropRotation;
 
          initComparePoint( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
+         rhs->m_rot[i] = 11.0;
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+         bits = Model::PropCoords;
+
+         initComparePoint( rhs );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_trans[i] = 1.0;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
       }
 
-      bits = Model::CompareInfluences;
+      bits = Model::PropInfluences;
 
       initComparePoint( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
+      rhs->m_influences.front().m_type = Model::IT_Remainder;
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~(Model::PropWeights | Model::PropInfluences) ) );
+
+      initComparePoint( rhs );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_influences.front().m_weight = 0.5;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~(Model::PropWeights | Model::PropInfluences) ) );
 
       initComparePoint( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_influences.push_back( rhs->m_influences.back() );
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~(Model::PropWeights | Model::PropInfluences) ) );
 
       initComparePoint( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_influences.clear();
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~(Model::PropWeights | Model::PropInfluences) ) );
+
+      bits = Model::PropWeights;
+
+      initComparePoint( rhs );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
+      rhs->m_influences.front().m_type = Model::IT_Remainder;
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~(Model::PropWeights | Model::PropInfluences) ) );
+
+      initComparePoint( rhs );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
+      rhs->m_influences.front().m_weight = 0.5;
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~(Model::PropWeights | Model::PropInfluences) ) );
+
+      initComparePoint( rhs );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
+      rhs->m_influences.push_back( rhs->m_influences.back() );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~(Model::PropWeights | Model::PropInfluences) ) );
+
+      initComparePoint( rhs );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
+      rhs->m_influences.clear();
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~(Model::PropWeights | Model::PropInfluences) ) );
 
       lhs->release();
       rhs->release();
@@ -1146,38 +1231,58 @@ private slots:
 
       int bits = 0;
 
-      bits = Model::CompareAnimData;
+      bits = 0;
 
       initCompareKeyframe( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_jointIndex = 2;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropTime;
 
       initCompareKeyframe( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_frame = 3;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       initCompareKeyframe( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_time = 2.0 / 30.0;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       for ( int i = 0; i < 3; i++ )
       {
+         bits = Model::PropRotation;
+
          initCompareKeyframe( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         lhs->m_isRotation = true;
+         rhs->m_isRotation = true;
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_parameter[i] = 1.0;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+         bits = Model::PropCoords;
+
+         initCompareKeyframe( rhs );
+         lhs->m_isRotation = false;
+         rhs->m_isRotation = false;
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
+         rhs->m_parameter[i] = 1.0;
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
       }
+
+      // Restore m_isRotation to proper state
+      initCompareKeyframe( lhs );
 
       lhs->release();
       rhs->release();
@@ -1192,62 +1297,68 @@ private slots:
 
       int bits = 0;
 
-      bits = Model::CompareAnimSets;
+      bits = Model::PropName;
 
       initCompareSkelAnim( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_name = "skeletal";  // case
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
-      bits = Model::CompareAnimData;
+      bits = Model::PropTime;
 
       initCompareSkelAnim( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_fps = 24.0;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropDimensions;
 
       initCompareSkelAnim( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_frameCount = 4;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropType;
 
       // Change keyframe
       initCompareSkelAnim( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_jointKeyframes[1][0]->m_isRotation = true;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       Model::Keyframe * kf;
 
+      bits = Model::PropCoords | Model::PropRotation | Model::PropType;
+
       // Add same keyframe for a different joint
       initCompareSkelAnim( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       kf = Model::Keyframe::get();
       initCompareKeyframe( kf );
       kf->m_jointIndex = 0;
       rhs->m_jointKeyframes[kf->m_jointIndex].insert_sorted( kf );
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       // Add identical keyframe as rotation for the same joint
       initCompareSkelAnim( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       kf = Model::Keyframe::get();
       initCompareKeyframe( kf );
       kf->m_isRotation = true;
       rhs->m_jointKeyframes[kf->m_jointIndex].insert_sorted( kf );
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       lhs->release();
       rhs->release();
@@ -1262,16 +1373,16 @@ private slots:
 
       int bits = 0;
 
-      bits = Model::CompareAnimData;
+      bits = Model::PropCoords;
 
       for ( int i = 0; i < 3; i++ )
       {
          initCompareFrameVertex( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_coord[i] = 0.0;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
       }
 
       lhs->release();
@@ -1287,23 +1398,25 @@ private slots:
 
       int bits = 0;
 
-      bits = Model::CompareAnimData;
-
       for ( int i = 0; i < 3; i++ )
       {
-         initCompareFramePoint( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
-         rhs->m_trans[i] = 0.0;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         bits = Model::PropCoords;
 
          initCompareFramePoint( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
+         rhs->m_trans[i] = 0.0;
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+         bits = Model::PropRotation;
+
+         initCompareFramePoint( rhs );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_rot[i] = 0.0;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
       }
 
       lhs->release();
@@ -1319,46 +1432,50 @@ private slots:
 
       int bits = 0;
 
-      bits = Model::CompareAnimData;
+      bits = Model::PropCoords;
 
       initCompareFrameData( &rhs );
-      QVERIFY_TRUE( lhs.equal( rhs ) );
+      QVERIFY_TRUE( lhs.propEqual( rhs ) );
       (*rhs.m_frameVertices)[0]->m_coord[0] = 0.0;
-      QVERIFY_FALSE( lhs.equal( rhs ) );
-      QVERIFY_FALSE( lhs.equal( rhs, bits ) );
-      QVERIFY_TRUE( lhs.equal( rhs, ~bits ) );
+      QVERIFY_FALSE( lhs.propEqual( rhs ) );
+      QVERIFY_FALSE( lhs.propEqual( rhs, bits ) );
+      QVERIFY_TRUE( lhs.propEqual( rhs, ~bits ) );
 
       initCompareFrameData( &rhs );
-      QVERIFY_TRUE( lhs.equal( rhs ) );
+      QVERIFY_TRUE( lhs.propEqual( rhs ) );
       (*rhs.m_framePoints)[0]->m_trans[0] = 0.0;
-      QVERIFY_FALSE( lhs.equal( rhs ) );
-      QVERIFY_FALSE( lhs.equal( rhs, bits ) );
-      QVERIFY_TRUE( lhs.equal( rhs, ~bits ) );
+      QVERIFY_FALSE( lhs.propEqual( rhs ) );
+      QVERIFY_FALSE( lhs.propEqual( rhs, bits ) );
+      QVERIFY_TRUE( lhs.propEqual( rhs, ~bits ) );
+
+      bits = Model::PropRotation;
 
       initCompareFrameData( &rhs );
-      QVERIFY_TRUE( lhs.equal( rhs ) );
+      QVERIFY_TRUE( lhs.propEqual( rhs ) );
       (*rhs.m_framePoints)[0]->m_rot[0] = 0.0;
-      QVERIFY_FALSE( lhs.equal( rhs ) );
-      QVERIFY_FALSE( lhs.equal( rhs, bits ) );
-      QVERIFY_TRUE( lhs.equal( rhs, ~bits ) );
+      QVERIFY_FALSE( lhs.propEqual( rhs ) );
+      QVERIFY_FALSE( lhs.propEqual( rhs, bits ) );
+      QVERIFY_TRUE( lhs.propEqual( rhs, ~bits ) );
+
+      bits = Model::PropCoords | Model::PropRotation;
 
       initCompareFrameData( &rhs );
-      QVERIFY_TRUE( lhs.equal( rhs ) );
+      QVERIFY_TRUE( lhs.propEqual( rhs ) );
       Model::FrameAnimVertex * fav = Model::FrameAnimVertex::get();
       initCompareFrameVertex( fav );
       rhs.m_frameVertices->push_back(fav);
-      QVERIFY_FALSE( lhs.equal( rhs ) );
-      QVERIFY_FALSE( lhs.equal( rhs, bits ) );
-      QVERIFY_TRUE( lhs.equal( rhs, ~bits ) );
+      QVERIFY_FALSE( lhs.propEqual( rhs ) );
+      QVERIFY_FALSE( lhs.propEqual( rhs, bits ) );
+      QVERIFY_TRUE( lhs.propEqual( rhs, ~bits ) );
 
       initCompareFrameData( &rhs );
-      QVERIFY_TRUE( lhs.equal( rhs ) );
+      QVERIFY_TRUE( lhs.propEqual( rhs ) );
       Model::FrameAnimPoint * fap = Model::FrameAnimPoint::get();
       initCompareFramePoint( fap );
       rhs.m_framePoints->push_back(fap);
-      QVERIFY_FALSE( lhs.equal( rhs ) );
-      QVERIFY_FALSE( lhs.equal( rhs, bits ) );
-      QVERIFY_TRUE( lhs.equal( rhs, ~bits ) );
+      QVERIFY_FALSE( lhs.propEqual( rhs ) );
+      QVERIFY_FALSE( lhs.propEqual( rhs, bits ) );
+      QVERIFY_TRUE( lhs.propEqual( rhs, ~bits ) );
    }
 
    void testFrameAnimCompare()
@@ -1370,32 +1487,34 @@ private slots:
 
       int bits = 0;
 
-      bits = Model::CompareAnimSets;
+      bits = Model::PropName;
 
       initCompareFrameAnim( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_name = "frame";  // case
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
-      bits = Model::CompareAnimData;
+      bits = Model::PropTime;
 
       initCompareFrameAnim( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_fps = 24.0;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropCoords | Model::PropRotation;
 
       initCompareFrameAnim( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       Model::FrameAnimData * fad = new Model::FrameAnimData;
       initCompareFrameData( fad );
       rhs->m_frameData.push_back( fad );
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       lhs->release();
       rhs->release();
@@ -1410,70 +1529,78 @@ private slots:
 
       int bits = 0;
 
-      bits = Model::CompareMeta;
+      bits = Model::PropName;
 
       initCompareProjection( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_name = "projection";  // case
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+      bits = Model::PropSelection;
 
       initCompareProjection( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_selected = true;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
-      bits = Model::CompareTextures;
+      bits = Model::PropType;
 
       initCompareProjection( rhs );
-      QVERIFY_TRUE( lhs->equal( *rhs ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_type = Model::TPT_Cylinder;
-      QVERIFY_FALSE( lhs->equal( *rhs ) );
-      QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-      QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+      QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
       for ( int i = 0; i < 3; i++ )
       {
+         bits = Model::PropCoords;
+
          initCompareProjection( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_pos[i] = 1.0;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+         bits = Model::PropRotation;
 
          initCompareProjection( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_upVec[i] = 0.5;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
 
          initCompareProjection( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_seamVec[i] = 0.5;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
       }
 
       for ( int i = 0; i < 2; i++ )
       {
-         initCompareProjection( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
-         rhs->m_range[0][i] = 0.5;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         bits = Model::PropDimensions;
 
          initCompareProjection( rhs );
-         QVERIFY_TRUE( lhs->equal( *rhs ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
+         rhs->m_range[0][i] = 0.5;
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
+
+         initCompareProjection( rhs );
+         QVERIFY_TRUE( lhs->propEqual( *rhs ) );
          rhs->m_range[1][i] = 0.5;
-         QVERIFY_FALSE( lhs->equal( *rhs ) );
-         QVERIFY_FALSE( lhs->equal( *rhs, bits ) );
-         QVERIFY_TRUE( lhs->equal( *rhs, ~bits ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs ) );
+         QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
+         QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
       }
 
       lhs->release();
@@ -1489,30 +1616,34 @@ private slots:
 
       int bits = 0;
 
-      bits = Model::CompareMeta;
+      bits = Model::PropPaths;
 
       initCompareBackground( &rhs );
-      QVERIFY_TRUE( lhs.equal( rhs ) );
+      QVERIFY_TRUE( lhs.propEqual( rhs ) );
       rhs.m_filename = "background.png";
-      QVERIFY_FALSE( lhs.equal( rhs ) );
-      QVERIFY_FALSE( lhs.equal( rhs, bits ) );
-      QVERIFY_TRUE( lhs.equal( rhs, ~bits ) );
+      QVERIFY_FALSE( lhs.propEqual( rhs ) );
+      QVERIFY_FALSE( lhs.propEqual( rhs, bits ) );
+      QVERIFY_TRUE( lhs.propEqual( rhs, ~bits ) );
+
+      bits = Model::PropScale;
 
       initCompareBackground( &rhs );
-      QVERIFY_TRUE( lhs.equal( rhs ) );
+      QVERIFY_TRUE( lhs.propEqual( rhs ) );
       rhs.m_scale = 0.5;
-      QVERIFY_FALSE( lhs.equal( rhs ) );
-      QVERIFY_FALSE( lhs.equal( rhs, bits ) );
-      QVERIFY_TRUE( lhs.equal( rhs, ~bits ) );
+      QVERIFY_FALSE( lhs.propEqual( rhs ) );
+      QVERIFY_FALSE( lhs.propEqual( rhs, bits ) );
+      QVERIFY_TRUE( lhs.propEqual( rhs, ~bits ) );
+
+      bits = Model::PropCoords;
 
       for ( int i = 0; i < 3; i++ )
       {
          initCompareBackground( &rhs );
-         QVERIFY_TRUE( lhs.equal( rhs ) );
+         QVERIFY_TRUE( lhs.propEqual( rhs ) );
          rhs.m_center[i] = 1.0;
-         QVERIFY_FALSE( lhs.equal( rhs ) );
-         QVERIFY_FALSE( lhs.equal( rhs, bits ) );
-         QVERIFY_TRUE( lhs.equal( rhs, ~bits ) );
+         QVERIFY_FALSE( lhs.propEqual( rhs ) );
+         QVERIFY_FALSE( lhs.propEqual( rhs, bits ) );
+         QVERIFY_TRUE( lhs.propEqual( rhs, ~bits ) );
       }
    }
 
@@ -1524,162 +1655,163 @@ private slots:
 
       local_ptr<Model> rhs;
 
-      int bits = Model::CompareAll;
+      int parts = Model::PartAll;
+      int props = Model::PropAll;
 
       // Vertices
       {
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->moveVertex( 1, 3, 4, 5 );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
 
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->setVertexFree( 3, true );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
 
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->addVertex( 3, 4, 5 );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
       }
 
       // Triangles
       {
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->setTriangleVertices( 0, 2, 4, 6 );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
 
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->selectTriangle( 3 );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
 
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->addTriangle( 3, 4, 5 );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
       }
 
       // Groups
       {
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->setGroupSmooth( 1, 160 );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
 
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->addGroup("new group");
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
       }
 
       // Materials
       {
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->setTextureShininess( 1, 55.0f );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
 
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->addColorMaterial("new material");
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
       }
 
       // Skeleton
       {
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->setBoneJointName( 1, "renamed joint" );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
 
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->addBoneJoint("new joint",
                0, 0, 0,  // position
                0, 0, 0,  // rotation
                0 );      // parent joint
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
       }
 
       // Meta data
       {
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->updateMetaData( "key_1", "new value" );
          QVERIFY_EQ( lhs->getMetaDataCount(), rhs->getMetaDataCount() );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
 
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->addMetaData( "key_3", "new value" );
          QVERIFY_EQ( lhs->getMetaDataCount() + 1, rhs->getMetaDataCount() );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
       }
 
       // Texture projections
       {
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          double seam[3] = { 0, 1, 0 };
          rhs->setProjectionSeam( 0, seam );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
 
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->addProjection( "New Projection", Model::TPT_Cylinder, 0.0, 0.0, 0.0 );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
       }
 
       // Background images
       {
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->setBackgroundScale( 0, 0.25f );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
 
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->setBackgroundImage( 1, "data/test_rgba_comp.tga" );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
       }
 
       // Skeletal animation
       {
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->setSkelAnimKeyframe( 0, 0, 0, false,
                1.0, 1.0, 1.0 );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
 
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->deleteSkelAnimKeyframe( 0, 0, 0, false );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
 
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->addAnimation( Model::ANIMMODE_SKELETAL, "new anin" );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
       }
 
       {
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->setFrameAnimVertexCoords( 0, 0, 0, 1.0, 1.0, 1.0 );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
 
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->setAnimFrameCount( Model::ANIMMODE_FRAME, 0, 25 );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
 
          rhs = loadModelOrDie( model_file );
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get(), parts, props ) );
          rhs->addAnimation( Model::ANIMMODE_FRAME, "new anin" );
-         QVERIFY_NE( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_FALSE( lhs->propEqual( rhs.get(), parts, props ) );
       }
    }
 };

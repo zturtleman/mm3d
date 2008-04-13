@@ -16,7 +16,6 @@ libmm3dcore_HFILES = \
 	luaif.h \
 	luascript.h \
 	menuconf.h \
-	modeltest.h \
 	mq3compat.h \
 	mq3macro.h \
 	pluginapi.h \
@@ -47,7 +46,6 @@ libmm3dcore_a_SOURCES = \
 	decalmgr.cc \
 	luaif.cc \
 	luascript.cc \
-	modeltest.cc \
 	pluginmgr.cc \
 	prefparse.cc \
 	prefs.cc \

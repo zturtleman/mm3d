@@ -1,8 +1,6 @@
 noinst_LIBRARIES = libmm3d.a
 
 libmm3d_HFILES = \
-	asciifilter.h \
-	binaryfilter.h \
 	binutil.h \
 	bsptree.h \
 	cal3dfilter.h \
@@ -39,7 +37,6 @@ libmm3d_HFILES = \
 	mm3dreg.h \
 	mm3dtypes.h \
 	model.h \
-	model_test.h \
 	modelfilter.h \
 	modelstatus.h \
 	modelundo.h \
@@ -64,8 +61,6 @@ libmm3d_HFILES = \
 	weld.h 
 
 libmm3d_a_SOURCES = \
-	asciifilter.cc \
-	binaryfilter.cc \
 	bsptree.cc \
 	cal3dfilter.cc \
 	cmdlinemgr.cc \
@@ -85,7 +80,7 @@ libmm3d_a_SOURCES = \
 	mesh.cc \
 	misc.cc \
 	mlocale.cc \
-	model.cc model_anim.cc model_bool.cc model_copy.cc model_draw.cc model_group.cc model_influence.cc model_inner.cc model_insert.cc model_meta.cc model_ops.cc model_proj.cc model_select.cc model_texture.cc model_test.cc \
+	model.cc model_anim.cc model_bool.cc model_copy.cc model_draw.cc model_group.cc model_influence.cc model_inner.cc model_insert.cc model_meta.cc model_ops.cc model_print.cc model_proj.cc model_select.cc model_texture.cc \
 	modelfilter.cc \
 	modelstatus.cc \
 	modelundo.cc \

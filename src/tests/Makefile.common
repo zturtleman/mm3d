@@ -1,12 +1,12 @@
 CXX = g++
-CXXFLAGS = -DMM3D_EDIT -I../../libmm3d -I.. -I../../../ -I/usr/include/qt4 -Wall -g
-LFLAGS = -lQtTest -lQtCore -Wall -g -lGL -lGLU
+CXXFLAGS = -coverage -DMM3D_EDIT -I../../libmm3d -I../../implui -I../common -I../../../ -I/usr/include/qt4 -Wall -g
+LFLAGS = -lQtTest -lQtCore -lQtGui -Wall -g -lGL -lGLU
 
 .cc.o:
 	g++ $(CXXFLAGS) -c $<
 
 .cc.unit:
-	g++ $(CXXFLAGS) $(LFLAGS) -o $*.unit $< $(LIB)
+	g++ $(CXXFLAGS) $(LFLAGS) -o $*.unit $< ../../implui/qttex.o $(LIB) -lgcov
 
 .cc.moc:
 	moc-qt4 $< > $*.moc

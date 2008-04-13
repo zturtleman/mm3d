@@ -169,6 +169,13 @@ class DataSource
       // Returns false if a read error occurred.
       bool readAsciiz( char * buf, size_t bufLen, bool * foundNull = NULL );
 
+      // Copy input data into buf until a newline is found (or bufLen is
+      // exhausted). The newline itself is also copied. This is the same as
+      // readTo() above with '\n' as the stopChar, except that buf is
+      // gauranteed to be null-terminated.
+      // Returns false if a read error occurred.
+      bool readLine( char * buf, size_t bufLen, bool * foundNewline = NULL );
+
       // Read an integer value of the specified size and store it in val.
       // Returns false if a read error occurred.
       bool read( int8_t & val );

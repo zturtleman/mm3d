@@ -218,7 +218,8 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
      m_toolList( NULL ),
      m_toolButtons( NULL ),
      m_last( NULL ),
-     m_currentTool( NULL )
+     m_currentTool( NULL ),
+     m_canEdit( true )
 {
    _winList.push_back( this );
 
@@ -255,6 +256,8 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    m_animWin->hide();
 
    connect( m_animWidget, SIGNAL(animWindowClosed()), this, SLOT(animationModeDone()) );
+   connect( m_animWidget, SIGNAL(animInvalid()), this, SLOT(editDisableEvent()) );
+   connect( m_animWidget, SIGNAL(animValid()), this, SLOT(editEnableEvent()) );
 
    m_contextPanel = new ContextPanel( this, m_viewPanel, this );
    m_contextPanel->setCaption( tr( "Properties" ) );
@@ -1558,6 +1561,13 @@ void ViewWindow::toolActivated( int id )
 
 void ViewWindow::primitiveCommandActivated( int id )
 {
+   if ( !m_canEdit )
+   {
+      model_status( m_model, StatusError, STATUSTIME_LONG,
+            tr("You are in animation mode, but there are no animations").utf8() );
+      return;
+   }
+
    CommandMenuItemList::iterator it;
    it = m_primitiveCommands.begin();
    while ( it != m_primitiveCommands.end() )
@@ -1654,6 +1664,17 @@ void ViewWindow::reloadTexturesEvent()
    }
 }
 
+void ViewWindow::editDisableEvent()
+{
+   m_canEdit = false;
+   m_viewPanel->setEnabled( m_canEdit );
+}
+
+void ViewWindow::editEnableEvent()
+{
+   m_canEdit = true;
+   m_viewPanel->setEnabled( m_canEdit );
+}
 
 void ViewWindow::undoRequest()
 {
@@ -1931,7 +1952,10 @@ void ViewWindow::animationModeDone()
    m_animMenu->setItemEnabled( m_animClearFrame,  false  );
    m_animMenu->setItemEnabled( m_animCopySelected,  false  );
    m_animMenu->setItemEnabled( m_animPasteSelected,  false  );
+
+   editEnableEvent();
 }
+
 
 void ViewWindow::contextPanelHidden()
 {

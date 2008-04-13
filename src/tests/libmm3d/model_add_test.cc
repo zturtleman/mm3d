@@ -38,38 +38,6 @@
 #include "release_ptr.h"
 
 
-void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... )
-{
-   // FIXME hack
-}
-
-Model * loadModelOrDie( const char * filename )
-{
-   MisfitFilter f;
-
-   Model * model = new Model;
-   Model::ModelErrorE err = f.readFile( model, filename );
-
-   if ( err != Model::ERROR_NONE )
-   {
-      fprintf( stderr, "fatal: %s: %s\n", filename, Model::errorToString( err ) );
-      delete model;
-      exit( -1 );
-   }
-
-   model->setUndoEnabled( true );
-   model->forceAddOrDelete( true );
-   return model;
-}
-
-Model * newTestModel()
-{
-   Model * model = new Model;
-   model->setUndoEnabled( true );
-   model->forceAddOrDelete( true );
-   return model;
-}
-
 class ModelAddTest : public QObject
 {
    Q_OBJECT
@@ -77,16 +45,15 @@ private:
 
    void undoRedo( Model * lhs, Model * rhs1, Model * rhs2 )
    {
-      int bits = Model::CompareAll;
-      QVERIFY_EQ( bits, lhs->equal( rhs2, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs2 ) );
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs1, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs1 ) );
       lhs->redo();
-      QVERIFY_EQ( bits, lhs->equal( rhs2, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs2 ) );
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs1, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs1 ) );
       lhs->redo();
-      QVERIFY_EQ( bits, lhs->equal( rhs2, bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs2 ) );
    }
 
    void addTriangleVertices( Model * m )
@@ -109,8 +76,6 @@ private slots:
 
    void testVertex()
    {
-      int bits = Model::CompareAll;
-
       local_ptr<Model> lhs = newTestModel();
 
       local_ptr<Model> rhs_empty = newTestModel();
@@ -121,7 +86,7 @@ private slots:
       local_ptr<Model> rhs_deleted_v2 = newTestModel();
       local_ptr<Model> rhs_deleted_v3 = newTestModel();
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_empty.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_empty.get() ) );
       QVERIFY_EQ( 0, (int) lhs->getVertexCount() );
 
       lhs->addVertex( 1, 1, 1 );
@@ -132,7 +97,7 @@ private slots:
       rhs_deleted_v3->addVertex( 1, 1, 1 );
       lhs->operationComplete( "Add Vertex 1" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_1v.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_1v.get() ) );
       QVERIFY_EQ( 1, (int) lhs->getVertexCount() );
       undoRedo( lhs.get(), rhs_empty.get(), rhs_1v.get() );
 
@@ -143,7 +108,7 @@ private slots:
       rhs_deleted_v3->addVertex( 2, 2, 2 );
       lhs->operationComplete( "Add Vertex 2" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_2v.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_2v.get() ) );
       QVERIFY_EQ( 2, (int) lhs->getVertexCount() );
       undoRedo( lhs.get(), rhs_1v.get(), rhs_2v.get() );
 
@@ -153,41 +118,41 @@ private slots:
       rhs_deleted_v2->addVertex( 3, 3, 3 );
       lhs->operationComplete( "Add Vertex 3" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_3v.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3v.get() ) );
       QVERIFY_EQ( 3, (int) lhs->getVertexCount() );
       undoRedo( lhs.get(), rhs_2v.get(), rhs_3v.get() );
 
       lhs->deleteVertex( 0 );
       lhs->operationComplete( "Delete Vertex 1" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_v1.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_v1.get() ) );
       QVERIFY_EQ( 2, (int) lhs->getVertexCount() );
       undoRedo( lhs.get(), rhs_3v.get(), rhs_deleted_v1.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3v.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3v.get() ) );
       QVERIFY_EQ( 3, (int) lhs->getVertexCount() );
 
       lhs->deleteVertex( 1 );
       lhs->operationComplete( "Delete Vertex 2" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_v2.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_v2.get() ) );
       QVERIFY_EQ( 2, (int) lhs->getVertexCount() );
       undoRedo( lhs.get(), rhs_3v.get(), rhs_deleted_v2.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3v.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3v.get() ) );
       QVERIFY_EQ( 3, (int) lhs->getVertexCount() );
 
       lhs->deleteVertex( 2 );
       lhs->operationComplete( "Delete Vertex 3" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_v3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_v3.get() ) );
       QVERIFY_EQ( 2, (int) lhs->getVertexCount() );
       undoRedo( lhs.get(), rhs_3v.get(), rhs_deleted_v3.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3v.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3v.get() ) );
       QVERIFY_EQ( 3, (int) lhs->getVertexCount() );
 
       undoRedo( lhs.get(), rhs_2v.get(), rhs_3v.get() );
@@ -201,8 +166,6 @@ private slots:
 
    void testTriangle()
    {
-      int bits = Model::CompareAll;
-
       local_ptr<Model> lhs = newTestModel();
 
       local_ptr<Model> rhs_empty = newTestModel();
@@ -222,7 +185,7 @@ private slots:
       addTriangleVertices( rhs_deleted_t2.get() );
       addTriangleVertices( rhs_deleted_t3.get() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_empty.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_empty.get() ) );
 
       lhs->addTriangle( 0, 1, 2 );
       rhs_1t->addTriangle( 0, 1, 2 );
@@ -232,7 +195,7 @@ private slots:
       rhs_deleted_t3->addTriangle( 0, 1, 2 );
       lhs->operationComplete( "Add Triangle 1" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_1t.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_1t.get() ) );
       QVERIFY_EQ( 1, (int) lhs->getTriangleCount() );
 
       lhs->addTriangle( 3, 4, 5 );
@@ -242,7 +205,7 @@ private slots:
       rhs_deleted_t3->addTriangle( 3, 4, 5 );
       lhs->operationComplete( "Add Triangle 2" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_2t.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_2t.get() ) );
       QVERIFY_EQ( 2, (int) lhs->getTriangleCount() );
 
       lhs->addTriangle( 1, 3, 5 );
@@ -251,38 +214,38 @@ private slots:
       rhs_deleted_t2->addTriangle( 1, 3, 5 );
       lhs->operationComplete( "Add Triangle 3" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_3t.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3t.get() ) );
       QVERIFY_EQ( 3, (int) lhs->getTriangleCount() );
 
       lhs->deleteTriangle( 0 );
       lhs->operationComplete( "Delete Triangle 1" );
       QVERIFY_EQ( 2, (int) lhs->getTriangleCount() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_t1.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_t1.get() ) );
       undoRedo( lhs.get(), rhs_3t.get(), rhs_deleted_t1.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3t.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3t.get() ) );
 
       lhs->deleteTriangle( 1 );
       lhs->operationComplete( "Delete Triangle 2" );
       QVERIFY_EQ( 2, (int) lhs->getTriangleCount() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_t2.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_t2.get() ) );
       undoRedo( lhs.get(), rhs_3t.get(), rhs_deleted_t2.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3t.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3t.get() ) );
 
       lhs->deleteTriangle( 2 );
       lhs->operationComplete( "Delete Triangle 3" );
       QVERIFY_EQ( 2, (int) lhs->getTriangleCount() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_t3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_t3.get() ) );
       undoRedo( lhs.get(), rhs_3t.get(), rhs_deleted_t3.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3t.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3t.get() ) );
 
       QVERIFY_EQ( 3, (int) lhs->getTriangleCount() );
       undoRedo( lhs.get(), rhs_2t.get(), rhs_3t.get() );
@@ -296,8 +259,6 @@ private slots:
 
    void testGroup()
    {
-      int bits = Model::CompareAll;
-
       local_ptr<Model> lhs = newTestModel();
 
       local_ptr<Model> rhs_empty = newTestModel();
@@ -308,7 +269,7 @@ private slots:
       local_ptr<Model> rhs_deleted_2 = newTestModel();
       local_ptr<Model> rhs_deleted_3 = newTestModel();
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_empty.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_empty.get() ) );
 
       lhs->addGroup( "Group 1" );
       rhs_1->addGroup( "Group 1" );
@@ -318,7 +279,7 @@ private slots:
       rhs_deleted_3->addGroup( "Group 1" );
       lhs->operationComplete( "Add Group 1" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_1.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_1.get() ) );
       QVERIFY_EQ( 1, (int) lhs->getGroupCount() );
 
       lhs->addGroup( "Group 2" );
@@ -328,7 +289,7 @@ private slots:
       rhs_deleted_3->addGroup( "Group 2" );
       lhs->operationComplete( "Add Group 2" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_2.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_2.get() ) );
       QVERIFY_EQ( 2, (int) lhs->getGroupCount() );
 
       lhs->addGroup( "Group 3" );
@@ -337,38 +298,38 @@ private slots:
       rhs_deleted_2->addGroup( "Group 3" );
       lhs->operationComplete( "Add Group 3" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
       QVERIFY_EQ( 3, (int) lhs->getGroupCount() );
 
       lhs->deleteGroup( 0 );
       lhs->operationComplete( "Delete Group 1" );
       QVERIFY_EQ( 2, (int) lhs->getGroupCount() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_1.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_1.get() ) );
       undoRedo( lhs.get(), rhs_3.get(), rhs_deleted_1.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
 
       lhs->deleteGroup( 1 );
       lhs->operationComplete( "Delete Group 2" );
       QVERIFY_EQ( 2, (int) lhs->getGroupCount() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_2.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_2.get() ) );
       undoRedo( lhs.get(), rhs_3.get(), rhs_deleted_2.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
 
       lhs->deleteGroup( 2 );
       lhs->operationComplete( "Delete Group 3" );
       QVERIFY_EQ( 2, (int) lhs->getGroupCount() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_3.get() ) );
       undoRedo( lhs.get(), rhs_3.get(), rhs_deleted_3.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
 
       QVERIFY_EQ( 3, (int) lhs->getGroupCount() );
       undoRedo( lhs.get(), rhs_2.get(), rhs_3.get() );
@@ -382,8 +343,6 @@ private slots:
 
    void testMaterial()
    {
-      int bits = Model::CompareAll;
-
       local_ptr<Model> lhs = newTestModel();
 
       local_ptr<Model> rhs_empty = newTestModel();
@@ -394,7 +353,7 @@ private slots:
       local_ptr<Model> rhs_deleted_2 = newTestModel();
       local_ptr<Model> rhs_deleted_3 = newTestModel();
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_empty.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_empty.get() ) );
 
       lhs->addColorMaterial( "Material 1" );
       rhs_1->addColorMaterial( "Material 1" );
@@ -404,7 +363,7 @@ private slots:
       rhs_deleted_3->addColorMaterial( "Material 1" );
       lhs->operationComplete( "Add Material 1" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_1.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_1.get() ) );
       QVERIFY_EQ( 1, (int) lhs->getTextureCount() );
 
       lhs->addColorMaterial( "Material 2" );
@@ -414,7 +373,7 @@ private slots:
       rhs_deleted_3->addColorMaterial( "Material 2" );
       lhs->operationComplete( "Add Material 2" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_2.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_2.get() ) );
       QVERIFY_EQ( 2, (int) lhs->getTextureCount() );
 
       lhs->addColorMaterial( "Material 3" );
@@ -423,38 +382,38 @@ private slots:
       rhs_deleted_2->addColorMaterial( "Material 3" );
       lhs->operationComplete( "Add Material 3" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
       QVERIFY_EQ( 3, (int) lhs->getTextureCount() );
 
       lhs->deleteTexture( 0 );
       lhs->operationComplete( "Delete Material 1" );
       QVERIFY_EQ( 2, (int) lhs->getTextureCount() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_1.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_1.get() ) );
       undoRedo( lhs.get(), rhs_3.get(), rhs_deleted_1.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
 
       lhs->deleteTexture( 1 );
       lhs->operationComplete( "Delete Material 2" );
       QVERIFY_EQ( 2, (int) lhs->getTextureCount() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_2.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_2.get() ) );
       undoRedo( lhs.get(), rhs_3.get(), rhs_deleted_2.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
 
       lhs->deleteTexture( 2 );
       lhs->operationComplete( "Delete Material 3" );
       QVERIFY_EQ( 2, (int) lhs->getTextureCount() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_3.get() ) );
       undoRedo( lhs.get(), rhs_3.get(), rhs_deleted_3.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
 
       QVERIFY_EQ( 3, (int) lhs->getTextureCount() );
       undoRedo( lhs.get(), rhs_2.get(), rhs_3.get() );
@@ -468,8 +427,6 @@ private slots:
 
    void testJoint()
    {
-      int bits = Model::CompareAll;
-
       local_ptr<Model> lhs = newTestModel();
 
       local_ptr<Model> rhs_empty = newTestModel();
@@ -479,7 +436,7 @@ private slots:
       local_ptr<Model> rhs_deleted_2 = newTestModel();
       local_ptr<Model> rhs_deleted_3 = newTestModel();
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_empty.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_empty.get() ) );
 
       lhs->addBoneJoint( "Joint 1", 1, 1, 1, 0, 0, 0, -1 );
       rhs_1->addBoneJoint( "Joint 1", 1, 1, 1, 0, 0, 0, -1 );
@@ -489,7 +446,7 @@ private slots:
       rhs_deleted_3->addBoneJoint( "Joint 1", 1, 1, 1, 0, 0, 0, -1 );
       lhs->operationComplete( "Add Joint 1" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_1.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_1.get() ) );
       QVERIFY_EQ( 1, (int) lhs->getBoneJointCount() );
 
       lhs->addBoneJoint( "Joint 2", 2, 2, 2, 0, 0, 0, 0 );
@@ -498,7 +455,7 @@ private slots:
       rhs_deleted_3->addBoneJoint( "Joint 2", 2, 2, 2, 0, 0, 0, 0 );
       lhs->operationComplete( "Add Joint 2" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_2.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_2.get() ) );
       QVERIFY_EQ( 2, (int) lhs->getBoneJointCount() );
 
       lhs->addBoneJoint( "Joint 3", 3, 3, 3, 0, 0, 0, 0 );
@@ -506,28 +463,28 @@ private slots:
       rhs_deleted_2->addBoneJoint( "Joint 3", 3, 3, 3, 0, 0, 0, 0 );
       lhs->operationComplete( "Add Joint 3" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
       QVERIFY_EQ( 3, (int) lhs->getBoneJointCount() );
 
       lhs->deleteBoneJoint( 1 );
       lhs->operationComplete( "Delete Joint 2" );
       QVERIFY_EQ( 2, (int) lhs->getBoneJointCount() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_2.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_2.get() ) );
       undoRedo( lhs.get(), rhs_3.get(), rhs_deleted_2.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
 
       lhs->deleteBoneJoint( 2 );
       lhs->operationComplete( "Delete Joint 3" );
       QVERIFY_EQ( 2, (int) lhs->getBoneJointCount() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_3.get() ) );
       undoRedo( lhs.get(), rhs_3.get(), rhs_deleted_3.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
 
       QVERIFY_EQ( 3, (int) lhs->getBoneJointCount() );
       undoRedo( lhs.get(), rhs_2.get(), rhs_3.get() );
@@ -541,8 +498,6 @@ private slots:
 
    void testPoint()
    {
-      int bits = Model::CompareAll;
-
       local_ptr<Model> lhs = newTestModel();
 
       local_ptr<Model> rhs_empty = newTestModel();
@@ -553,7 +508,7 @@ private slots:
       local_ptr<Model> rhs_deleted_2 = newTestModel();
       local_ptr<Model> rhs_deleted_3 = newTestModel();
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_empty.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_empty.get() ) );
 
       lhs->addPoint( "Point 1", 1, 1, 1, 0, 0, 0, -1 );
       rhs_1->addPoint( "Point 1", 1, 1, 1, 0, 0, 0, -1 );
@@ -563,7 +518,7 @@ private slots:
       rhs_deleted_3->addPoint( "Point 1", 1, 1, 1, 0, 0, 0, -1 );
       lhs->operationComplete( "Add Point 1" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_1.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_1.get() ) );
       QVERIFY_EQ( 1, (int) lhs->getPointCount() );
 
       lhs->addPoint( "Point 2", 2, 2, 2, 0, 0, 0, -1 );
@@ -573,7 +528,7 @@ private slots:
       rhs_deleted_3->addPoint( "Point 2", 2, 2, 2, 0, 0, 0, -1 );
       lhs->operationComplete( "Add Point 2" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_2.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_2.get() ) );
       QVERIFY_EQ( 2, (int) lhs->getPointCount() );
 
       lhs->addPoint( "Point 3", 3, 3, 3, 0, 0, 0, -1 );
@@ -582,38 +537,38 @@ private slots:
       rhs_deleted_2->addPoint( "Point 3", 3, 3, 3, 0, 0, 0, -1 );
       lhs->operationComplete( "Add Point 3" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
       QVERIFY_EQ( 3, (int) lhs->getPointCount() );
 
       lhs->deletePoint( 0 );
       lhs->operationComplete( "Delete Point 1" );
       QVERIFY_EQ( 2, (int) lhs->getPointCount() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_1.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_1.get() ) );
       undoRedo( lhs.get(), rhs_3.get(), rhs_deleted_1.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
 
       lhs->deletePoint( 1 );
       lhs->operationComplete( "Delete Point 2" );
       QVERIFY_EQ( 2, (int) lhs->getPointCount() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_2.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_2.get() ) );
       undoRedo( lhs.get(), rhs_3.get(), rhs_deleted_2.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
 
       lhs->deletePoint( 2 );
       lhs->operationComplete( "Delete Point 3" );
       QVERIFY_EQ( 2, (int) lhs->getPointCount() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_3.get() ) );
       undoRedo( lhs.get(), rhs_3.get(), rhs_deleted_3.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
 
       QVERIFY_EQ( 3, (int) lhs->getPointCount() );
       undoRedo( lhs.get(), rhs_2.get(), rhs_3.get() );
@@ -627,8 +582,6 @@ private slots:
 
    void testProjection()
    {
-      int bits = Model::CompareAll;
-
       local_ptr<Model> lhs = newTestModel();
 
       local_ptr<Model> rhs_empty = newTestModel();
@@ -639,7 +592,7 @@ private slots:
       local_ptr<Model> rhs_deleted_2 = newTestModel();
       local_ptr<Model> rhs_deleted_3 = newTestModel();
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_empty.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_empty.get() ) );
 
       lhs->addProjection( "Projection 1", Model::TPT_Cylinder, 1, 1, 1);
       rhs_1->addProjection( "Projection 1", Model::TPT_Cylinder, 1, 1, 1);
@@ -649,7 +602,7 @@ private slots:
       rhs_deleted_3->addProjection( "Projection 1", Model::TPT_Cylinder, 1, 1, 1);
       lhs->operationComplete( "Add Projection 1" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_1.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_1.get() ) );
       QVERIFY_EQ( 1, (int) lhs->getProjectionCount() );
 
       lhs->addProjection( "Projection 2", Model::TPT_Cylinder, 2, 2, 2);
@@ -659,7 +612,7 @@ private slots:
       rhs_deleted_3->addProjection( "Projection 2", Model::TPT_Cylinder, 2, 2, 2);
       lhs->operationComplete( "Add Projection 2" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_2.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_2.get() ) );
       QVERIFY_EQ( 2, (int) lhs->getProjectionCount() );
 
       lhs->addProjection( "Projection 3", Model::TPT_Cylinder, 3, 3, 3);
@@ -668,38 +621,38 @@ private slots:
       rhs_deleted_2->addProjection( "Projection 3", Model::TPT_Cylinder, 3, 3, 3);
       lhs->operationComplete( "Add Projection 3" );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
       QVERIFY_EQ( 3, (int) lhs->getProjectionCount() );
 
       lhs->deleteProjection( 0 );
       lhs->operationComplete( "Delete Projection 1" );
       QVERIFY_EQ( 2, (int) lhs->getProjectionCount() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_1.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_1.get() ) );
       undoRedo( lhs.get(), rhs_3.get(), rhs_deleted_1.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
 
       lhs->deleteProjection( 1 );
       lhs->operationComplete( "Delete Projection 2" );
       QVERIFY_EQ( 2, (int) lhs->getProjectionCount() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_2.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_2.get() ) );
       undoRedo( lhs.get(), rhs_3.get(), rhs_deleted_2.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
 
       lhs->deleteProjection( 2 );
       lhs->operationComplete( "Delete Projection 3" );
       QVERIFY_EQ( 2, (int) lhs->getProjectionCount() );
 
-      QVERIFY_EQ( bits, lhs->equal( rhs_deleted_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_deleted_3.get() ) );
       undoRedo( lhs.get(), rhs_3.get(), rhs_deleted_3.get() );
 
       lhs->undo();
-      QVERIFY_EQ( bits, lhs->equal( rhs_3.get(), bits ) );
+      QVERIFY_TRUE( lhs->propEqual( rhs_3.get() ) );
 
       QVERIFY_EQ( 3, (int) lhs->getProjectionCount() );
       undoRedo( lhs.get(), rhs_2.get(), rhs_3.get() );

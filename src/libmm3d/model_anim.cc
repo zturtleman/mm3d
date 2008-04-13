@@ -2132,37 +2132,15 @@ void Model::setupJoints()
 //            joint->m_localRotation[0], joint->m_localRotation[1], joint->m_localRotation[2] );
 //      log_debug( "\n" );
    }
-
-   /*
-   for ( unsigned p = 0; p < m_points.size(); p++ )
+   
+   for ( unsigned anim = 0; anim < m_skelAnims.size(); ++anim )
    {
-      Point * point = m_points[p];
-      double trans[4] = { point->m_trans[0], point->m_trans[1], point->m_trans[2], 1.0 };
-      double rot[3]   = { point->m_rot[0], point->m_rot[1], point->m_rot[2] };
-
-      if ( point->m_boneId >= 0 )
+      while ( m_joints.size() > m_skelAnims[anim]->m_jointKeyframes.size() )
       {
-         log_debug( "point absolute point position for %d is %f,%f,%f \n",
-                 p, trans[0], trans[1], trans[2] );
-         Matrix minv = m_joints[ point->m_boneId ]->m_final.getInverse();
-         minv.apply( trans );
-         log_debug( "point relative point position for %d is %f,%f,%f \n",
-                 p, trans[0], trans[1], trans[2] );
-         Matrix mr;
-         mr.setRotation( rot );
-         mr = mr * minv;
-         mr.getRotation( rot );
+         KeyframeList kl;
+         m_skelAnims[anim]->m_jointKeyframes.push_back( kl );
       }
-
-      for ( int t = 0; t < 3; t++ )
-      {
-         point->m_localTranslation[t] = trans[t];
-         point->m_localRotation[t]    = rot[t];
-      }
-      log_debug( "point final relative point position for %d is %f,%f,%f \n",
-              p, point->m_localTranslation[0], point->m_localTranslation[1], point->m_localTranslation[2] );
    }
-   */
 }
 
 unsigned Model::getAnimCount( AnimationModeE m ) const
@@ -2531,6 +2509,13 @@ bool Model::interpSkelAnimKeyframeTime( unsigned anim, double frameTime,
                vb.setEulerAngles( sa->m_jointKeyframes[j][stopRot]->m_parameter );
 
                double tm = (tempTime - sa->m_jointKeyframes[j][rot]->m_time) / diff;
+
+               // Negate if necessary to get shortest rotation path for
+               // interpolation
+               if ( va.dot4(vb) < -0.00001 )
+               {
+                  vb[0] = -vb[0]; vb[1] = -vb[1]; vb[2] = -vb[2]; vb[3] = -vb[3];
+               }
 
                va = va * (1.0 - tm) + (vb * tm);
                va = va * (1.0 / va.mag());

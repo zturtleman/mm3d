@@ -33,14 +33,10 @@
 #include "misc.h"
 #include "msg.h"
 #include "log.h"
-#include "modeltest.h"
 #include "translate.h"
 #include "mlocale.h"
 
 #include "texturetest.h"
-
-#include "modeltest.h"  // TODO call this model filter test
-#include "model_test.h"
 
 #include <string.h>
 #include <errno.h>
@@ -63,10 +59,8 @@ static std::string _convertFormat = "";
 
 static bool _doBatch = false;
 
-static bool _doScripts = true;
-static bool _doFilterTest = false;
+static bool _doScripts = false;
 static bool _doTextureTest = false;
-static bool _doModelTest = false;
 
 static StringList _scripts;
 static StringList _argList;
@@ -169,9 +163,7 @@ enum Mm3dOptionsE
    OptNoDebug,
    OptNoWarnings,
    OptNoErrors,
-   OptFilterTest,
    OptTestTextureCompare,
-   OptTestModel,
    OptMAX
 };
 
@@ -197,9 +189,7 @@ int init_cmdline( int & argc, char * argv[] )
    clm.addOption( OptNoWarnings, 0, "no-warnings" );
    clm.addOption( OptNoErrors, 0, "no-errors" );
 
-   clm.addOption( OptFilterTest, 0, "filtertest" );
    clm.addOption( OptTestTextureCompare, 0, "testtexcompare" );
-   clm.addOption( OptTestModel, 0, "testmodel" );
 
    if ( !clm.parse( argc, (const char **) argv ) )
    {
@@ -284,23 +274,9 @@ int init_cmdline( int & argc, char * argv[] )
    if ( clm.isSpecified( OptNoErrors ) )
       log_enable_error( false );
 
-   if ( clm.isSpecified( OptFilterTest ) )
-   {
-      _doFilterTest = true;
-
-      cmdline_runcommand = true;
-      cmdline_runui = false;
-   }
    if ( clm.isSpecified( OptTestTextureCompare ) )
    {
       _doTextureTest = true;
-
-      cmdline_runcommand = true;
-      cmdline_runui = false;
-   }
-   if ( clm.isSpecified( OptTestModel ) )
-   {
-      _doModelTest = true;
 
       cmdline_runcommand = true;
       cmdline_runui = false;
@@ -329,28 +305,6 @@ void shutdown_cmdline()
 int cmdline_command()
 {
    unsigned errors = 0;
-
-   if ( _doFilterTest )
-   {
-      int failed = 0;
-      StringList::iterator it = _argList.begin();
-      for ( ; it != _argList.end(); it++ )
-      {
-         failed += modelTestRun( it->c_str() );
-      }
-      return failed;
-   }
-
-   if ( _doModelTest )
-   {
-      int failed = 0;
-      StringList::iterator it = _argList.begin();
-      for ( ; it != _argList.end(); it++ )
-      {
-         failed += model_test( it->c_str() );
-      }
-      return failed;
-   }
 
    if ( _doTextureTest )
    {

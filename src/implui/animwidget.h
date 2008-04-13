@@ -51,6 +51,8 @@ class AnimWidget : public AnimWidgetBase
 
    signals:
       void animWindowClosed();
+      void animInvalid();
+      void animValid();
 
    public slots:
       void helpNowEvent( int );

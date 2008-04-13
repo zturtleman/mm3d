@@ -523,6 +523,155 @@ private slots:
       QVERIFY_EQ( std::string("custom"), std::string(clm.stringValue( 5 )) );
    }
 
+   void testShortArgOptionFunction()
+   {
+      const int kArgs = 4;
+      const char *argv[kArgs] = {
+         "./program",
+         "-f",
+         "opt_arg",
+         "something"
+      };
+
+      CommandLineManager clm;
+      addStandardOptions( &clm );
+      clm.addFunctionOption( 5, 'f', "func", true, ArgOptFunction );
+
+      ls_no_arg_called = false;
+      ls_arg_called = false;
+
+      QVERIFY_TRUE( clm.parse( kArgs, argv ) );
+
+      QVERIFY_FALSE( ls_no_arg_called );
+      QVERIFY_TRUE( ls_arg_called );
+
+      QVERIFY_EQ( 3, clm.firstArgument() );
+      QVERIFY_FALSE( clm.isSpecified( 1 ) );
+      QVERIFY_FALSE( clm.isSpecified( 2 ) );
+      QVERIFY_FALSE( clm.isSpecified( 3 ) );
+      QVERIFY_FALSE( clm.isSpecified( 4 ) );
+      QVERIFY_TRUE( clm.isSpecified( 5 ) );
+   }
+
+   void testEmptyShortArgOptionFunction()
+   {
+      const int kArgs = 4;
+      const char *argv[kArgs] = {
+         "./program",
+         "-f=",
+         "something"
+      };
+
+      CommandLineManager clm;
+      addStandardOptions( &clm );
+      // This function verifies that the option is empty, which is
+      // really what we want to know
+      clm.addFunctionOption( 5, 'f', "func", true, NoArgOptFunction );
+
+      ls_no_arg_called = false;
+      ls_arg_called = false;
+
+      QVERIFY_TRUE( clm.parse( kArgs, argv ) );
+
+      QVERIFY_TRUE( ls_no_arg_called );
+      QVERIFY_FALSE( ls_arg_called );
+
+      QVERIFY_EQ( 2, clm.firstArgument() );
+      QVERIFY_FALSE( clm.isSpecified( 1 ) );
+      QVERIFY_FALSE( clm.isSpecified( 2 ) );
+      QVERIFY_FALSE( clm.isSpecified( 3 ) );
+      QVERIFY_FALSE( clm.isSpecified( 4 ) );
+      QVERIFY_TRUE( clm.isSpecified( 5 ) );
+   }
+
+   void testEmptyShortArgCustom()
+   {
+      const int kArgs = 3;
+      const char *argv[kArgs] = {
+         "./program",
+         "-c=",
+         "something"
+      };
+
+      CustomOption * opt = new CustomOption( 'c', "cust", true, "" );
+      CommandLineManager clm;
+      addStandardOptions( &clm );
+      clm.addCustomOption( 5, opt );
+
+      QVERIFY_TRUE( clm.parse( kArgs, argv ) );
+
+      QVERIFY_TRUE( opt->called() );
+
+      QVERIFY_EQ( 2, clm.firstArgument() );
+      QVERIFY_FALSE( clm.isSpecified( 1 ) );
+      QVERIFY_FALSE( clm.isSpecified( 2 ) );
+      QVERIFY_FALSE( clm.isSpecified( 3 ) );
+      QVERIFY_FALSE( clm.isSpecified( 4 ) );
+      QVERIFY_TRUE( clm.isSpecified( 5 ) );
+
+      QVERIFY_EQ( 19, clm.intValue( 5 ) );
+      QVERIFY_EQ( std::string("custom"), std::string(clm.stringValue( 5 )) );
+   }
+
+   void testEqualShortArgCustom()
+   {
+      const int kArgs = 3;
+      const char *argv[kArgs] = {
+         "./program",
+         "-c=expected",
+         "something"
+      };
+
+      CustomOption * opt = new CustomOption( 'c', "cust", true, "expected" );
+      CommandLineManager clm;
+      addStandardOptions( &clm );
+      clm.addCustomOption( 5, opt );
+
+      QVERIFY_TRUE( clm.parse( kArgs, argv ) );
+
+      QVERIFY_TRUE( opt->called() );
+
+      QVERIFY_EQ( 2, clm.firstArgument() );
+      QVERIFY_FALSE( clm.isSpecified( 1 ) );
+      QVERIFY_FALSE( clm.isSpecified( 2 ) );
+      QVERIFY_FALSE( clm.isSpecified( 3 ) );
+      QVERIFY_FALSE( clm.isSpecified( 4 ) );
+      QVERIFY_TRUE( clm.isSpecified( 5 ) );
+
+      QVERIFY_EQ( 19, clm.intValue( 5 ) );
+      QVERIFY_EQ( std::string("custom"), std::string(clm.stringValue( 5 )) );
+   }
+
+   void testSpaceShortArgCustom()
+   {
+      const int kArgs = 4;
+      const char *argv[kArgs] = {
+         "./program",
+         "-c",
+         "expected",
+         "something"
+      };
+
+      CustomOption * opt = new CustomOption( 'c', "cust", true, "expected" );
+      CommandLineManager clm;
+      addStandardOptions( &clm );
+      clm.addCustomOption( 5, opt );
+
+      QVERIFY_TRUE( clm.parse( kArgs, argv ) );
+
+      QVERIFY_TRUE( opt->called() );
+
+      QVERIFY_EQ( 3, clm.firstArgument() );
+      QVERIFY_FALSE( clm.isSpecified( 1 ) );
+      QVERIFY_FALSE( clm.isSpecified( 2 ) );
+      QVERIFY_FALSE( clm.isSpecified( 3 ) );
+      QVERIFY_FALSE( clm.isSpecified( 4 ) );
+      QVERIFY_TRUE( clm.isSpecified( 5 ) );
+
+      QVERIFY_EQ( 19, clm.intValue( 5 ) );
+      QVERIFY_EQ( std::string("custom"), std::string(clm.stringValue( 5 )) );
+   }
+
    void testOptionMemory()
    {
       // If an option with the same ID number is added, that option should
@@ -587,6 +736,22 @@ private slots:
 
       QVERIFY_TRUE( CommandLineManager::UnknownOption == clm.error() );
       QVERIFY_EQ( 1, clm.errorArgument() );
+   }
+
+   void testOutOfRange()
+   {
+      const int kArgs = 1;
+      const char *argv[kArgs] = {
+         "./program",
+      };
+
+      CommandLineManager clm;
+      addStandardOptions( &clm );
+      QVERIFY_TRUE( clm.parse( kArgs, argv ) );
+      QVERIFY_EQ( kArgs, clm.firstArgument() );
+      QVERIFY_FALSE( clm.isSpecified( 5 ) );
+      QVERIFY_EQ( 0, clm.intValue( 5 ) );
+      QVERIFY_EQ( std::string(""), std::string(clm.stringValue( 5 )) );
    }
 
 };

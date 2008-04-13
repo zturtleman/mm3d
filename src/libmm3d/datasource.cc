@@ -25,8 +25,6 @@
 
 #include "endianconfig.h"
 
-#include <arpa/inet.h>
-
 DataSource::DataSource()
    : m_endian( LittleEndian ),
      m_buf( NULL ),
@@ -54,11 +52,18 @@ void DataSource::setEndianness( EndiannessE e )
    {
       m_endfunc16 = ltoh_u16;
       m_endfunc32 = ltoh_u32;
+      m_endfuncfl = ltoh_float;
    }
    else
    {
+#ifdef WIN32
+      m_endfunc16 = btoh_u16;
+      m_endfunc32 = btoh_u32;
+#else  // !WIN32
       m_endfunc16 = ntohs;
       m_endfunc32 = ntohl;
+#endif  // WIN32
+      m_endfuncfl = btoh_float;
    }
 }
 
@@ -245,6 +250,19 @@ bool DataSource::readAsciiz( char * buf, size_t bufLen, bool * foundNull )
    return rval;
 }
 
+bool DataSource::readLine( char * buf, size_t bufLen, bool * foundNewline )
+{
+   if ( bufLen < 1 )
+      return false;
+
+   bool rval = readTo( '\n', buf, bufLen, foundNewline );
+
+   // No matter what is in the buffer, the last char must be null
+   buf[ bufLen - 1] = '\0';
+
+   return rval;
+}
+
 bool DataSource::readTo( char stopChar, char * buf, size_t bufLen, bool * foundChar )
 {
    if ( foundChar != NULL )
@@ -269,6 +287,11 @@ bool DataSource::readTo( char stopChar, char * buf, size_t bufLen, bool * foundC
       {
          if ( foundChar != NULL )
             *foundChar = true;
+
+         if ( bufOff + 1 < bufLen )
+            buf[ bufOff + 1 ] = '\0';
+         else
+            buf[ bufOff ] = '\0';
 
          return true;
       }

@@ -26,6 +26,7 @@
 #include "log.h"
 
 #include <ext/hash_set>
+#include <map>
 
 using __gnu_cxx::hash_set;
 
@@ -59,11 +60,64 @@ list<Model::FrameAnimPoint *> Model::FrameAnimPoint::s_recycle;
 const double EQ_TOLERANCE = 0.00001;
 
 template<typename T>
-bool floatCompareVector( T * lhs, T * rhs, size_t len )
+bool floatCompareVector( T * lhs, T * rhs, size_t len, double tolerance = EQ_TOLERANCE )
 {
    for ( size_t index = 0; index < len; ++index )
-      if ( fabs( lhs[index] - rhs[index] ) > EQ_TOLERANCE )
+      if ( fabs( lhs[index] - rhs[index] ) > tolerance )
          return false;
+   return true;
+}
+
+static bool influencesMatch( const Model::InfluenceList & lhs,
+      const Model::InfluenceList & rhs, int propBits, double tolerance )
+{
+   typedef std::map<int, Model::InfluenceT> InfluenceMap;
+   InfluenceMap lhsInfMap;
+
+   Model::InfluenceList::const_iterator it;
+
+   for ( it = lhs.begin(); it != lhs.end(); ++it )
+   {
+      lhsInfMap[ it->m_boneId ] = *it;
+   }
+
+   for ( it = rhs.begin(); it != rhs.end(); ++it )
+   {
+      InfluenceMap::const_iterator lhs_it = lhsInfMap.find( it->m_boneId );
+      if ( lhs_it == lhsInfMap.end() )
+      {
+         log_warning( "match failed on missing lhs bone %d\n", it->m_boneId );
+         return false;
+      }
+
+      // This doesn't matter if we only care about weights
+      if ( propBits & Model::PropInfluences )
+      {
+         if ( lhs_it->second.m_type != it->m_type )
+         {
+            log_warning( "match failed on influence type (%d vs %d) for bone %d\n",
+                  lhs_it->second.m_type, it->m_type, it->m_boneId );
+            return false;
+         }
+      }
+
+      if ( fabs( lhs_it->second.m_weight - it->m_weight ) > tolerance )
+      {
+         log_warning( "match failed on influence weight (%f vs %f) for bone %d\n",
+               (float) lhs_it->second.m_weight, (float) it->m_weight, it->m_boneId );
+         return false;
+      }
+
+      lhsInfMap.erase( it->m_boneId );
+   }
+
+   if ( !lhsInfMap.empty() )
+   {
+      log_warning( "match failed on missing rhs bone %d\n",
+            lhsInfMap.begin()->second.m_boneId );
+      return false;
+   }
+
    return true;
 }
 
@@ -138,43 +192,30 @@ void Model::Vertex::release()
    }
 }
 
-bool Model::Vertex::equal(const Vertex & rhs, int compareBits ) const
+bool Model::Vertex::propEqual(const Vertex & rhs, int propBits, double tolerance ) const
 {
-   if ( (compareBits & CompareGeometry) != 0 )
+   if ( (propBits & PropCoords) != 0 )
    {
-      if ( !floatCompareVector( m_coord, rhs.m_coord, 3 ) )
+      if ( !floatCompareVector( m_coord, rhs.m_coord, 3, tolerance ) )
          return false;
    }
 
-   if ( (compareBits & CompareMeta) != 0 )
-   {
+   if ( (propBits & PropSelection) )
       if ( m_selected != rhs.m_selected )
          return false;
 
+   if ( (propBits & PropVisibility) )
       if ( m_visible != rhs.m_visible )
          return false;
 
+   if ( (propBits & PropFree) )
       if ( m_free != rhs.m_free )
          return false;
-   }
 
-   if ( (compareBits & CompareInfluences) != 0 )
+   // FIXME apply this to points also
+   if ( (propBits & (PropInfluences | PropWeights)) != 0 )
    {
-      InfluenceList::const_iterator lhs_it = m_influences.begin();
-      InfluenceList::const_iterator rhs_it = rhs.m_influences.begin();
-
-      for ( ; lhs_it != m_influences.end() && rhs_it != rhs.m_influences.end();
-            ++lhs_it, ++rhs_it )
-      {
-         if ( lhs_it->m_type != rhs_it->m_type )
-            return false;
-         if ( lhs_it->m_boneId != rhs_it->m_boneId )
-            return false;
-         if ( fabs( lhs_it->m_weight - rhs_it->m_weight ) > EQ_TOLERANCE )
-            return false;
-      }
-
-      if ( lhs_it != m_influences.end() || rhs_it != rhs.m_influences.end() )
+      if ( !influencesMatch( m_influences, rhs.m_influences, propBits, tolerance ) )
          return false;
    }
 
@@ -263,9 +304,9 @@ void Model::Triangle::release()
    }
 }
 
-bool Model::Triangle::equal(const Triangle & rhs, int compareBits ) const
+bool Model::Triangle::propEqual(const Triangle & rhs, int propBits, double tolerance ) const
 {
-   if ( (compareBits & (CompareGeometry | CompareFaces)) != 0 )
+   if ( (propBits & PropVertices) != 0 )
    {
       if ( m_vertexIndices[0] != rhs.m_vertexIndices[0]
             || m_vertexIndices[1] != rhs.m_vertexIndices[1]
@@ -275,27 +316,28 @@ bool Model::Triangle::equal(const Triangle & rhs, int compareBits ) const
       }
    }
 
-   if ( (compareBits & CompareTextures) != 0 )
-   {
+   if ( (propBits & PropProjections) != 0 )
       if ( m_projection != rhs.m_projection )
          return false;
 
+   if ( (propBits & PropTexCoords) != 0 )
+   {
       for ( int i = 0; i < 3; ++i )
       {
-         if ( fabs( m_s[i] - rhs.m_s[i] ) > EQ_TOLERANCE )
+         if ( fabs( m_s[i] - rhs.m_s[i] ) > tolerance )
             return false;
-         if ( fabs( m_t[i] - rhs.m_t[i] ) > EQ_TOLERANCE )
+         if ( fabs( m_t[i] - rhs.m_t[i] ) > tolerance )
             return false;
       }
    }
 
-   if ( (compareBits & CompareMeta) != 0 )
-   {
+   if ( (propBits & PropSelection) != 0 )
       if ( m_selected != rhs.m_selected )
          return false;
+
+   if ( (propBits & PropVisibility) != 0 )
       if ( m_visible != rhs.m_visible )
          return false;
-   }
 
    return true;
 }
@@ -372,48 +414,13 @@ void Model::Group::release()
    }
 }
 
-bool Model::Group::equal(const Group & rhs, int compareBits ) const
+bool Model::Group::propEqual(const Group & rhs, int propBits, double tolerance ) const
 {
-   if ( (compareBits & CompareGroups) != 0
-         || (compareBits & CompareGeometry) != 0 )
-   {
-      // Group triangles don't have to be in the same order, it just
-      // needs to be an identical set. In fact, I should have implemented
-      // it as a set.
-      // FIXME I'm an idiot (see comments re:set above)
-      if ( m_triangleIndices.size() != rhs.m_triangleIndices.size() )
+   if ( (propBits & PropTriangles) != 0 )
+      if ( m_triangleIndices != rhs.m_triangleIndices )
          return false;
 
-      hash_set<int> lhs_tris;
-
-      std::set<int>::const_iterator lhs_it;
-      std::set<int>::const_iterator rhs_it;
-
-      const std::set<int> & lh = m_triangleIndices;
-      const std::set<int> & rh = rhs.m_triangleIndices;
-
-      hash_set<int>::iterator it;
-      for ( lhs_it = lh.begin(); lhs_it != lh.end(); ++lhs_it )
-      {
-         // If dups are inserted it will be caught below (because the items
-         // are removed after matching, dups mean that either lhs_tris will
-         // be empty before rh is exhausted or the dup in rh will not find
-         // a match in lhs_tris since it was already removed).
-         lhs_tris.insert( *lhs_it );
-      }
-      for ( rhs_it = rh.begin(); rhs_it != rh.end(); ++rhs_it )
-      {
-         it = lhs_tris.find( *rhs_it );
-         if ( it == lhs_tris.end() )
-            return false;
-         lhs_tris.erase( it );
-      }
-
-      // TODO this should probably be an assert, it shouldn't be possible
-      if ( !lhs_tris.empty() )
-         return false;
-   }
-   if ( (compareBits & CompareGeometry) != 0 )
+   if ( (propBits & PropNormals) != 0 )
    {
       if ( m_smooth != rhs.m_smooth )
          return false;
@@ -421,21 +428,21 @@ bool Model::Group::equal(const Group & rhs, int compareBits ) const
          return false;
    }
 
-   if ( (compareBits & CompareMaterials) != 0 )
-   {
+   if ( (propBits & PropMaterials) != 0 )
       if ( m_materialIndex != rhs.m_materialIndex )
          return false;
-   }
 
-   if ( (compareBits & CompareMeta) != 0 )
-   {
+   if ( (propBits & PropName) != 0 )
       if ( m_name != rhs.m_name )
          return false;
+
+   if ( (propBits & PropSelection) != 0 )
       if ( m_selected != rhs.m_selected )
          return false;
+
+   if ( (propBits & PropVisibility) != 0 )
       if ( m_visible != rhs.m_visible )
          return false;
-   }
 
    return true;
 }
@@ -514,35 +521,38 @@ void Model::Material::release()
    }
 }
 
-bool Model::Material::equal(const Material & rhs, int compareBits ) const
+bool Model::Material::propEqual(const Material & rhs, int propBits, double tolerance ) const
 {
-   if ( (compareBits & CompareMaterials) != 0 )
-   {
+   if ( (propBits & PropType) != 0 )
       if ( m_type != rhs.m_type )
          return false;
 
-      // Compare lighting
-      if ( !floatCompareVector( m_ambient, rhs.m_ambient, 4 ) )
+   if ( (propBits & PropLighting) != 0 )
+   {
+      if ( !floatCompareVector( m_ambient, rhs.m_ambient, 4, tolerance ) )
          return false;
-      if ( !floatCompareVector( m_diffuse, rhs.m_diffuse, 4 ) )
+      if ( !floatCompareVector( m_diffuse, rhs.m_diffuse, 4, tolerance ) )
          return false;
-      if ( !floatCompareVector( m_specular, rhs.m_specular, 4 ) )
+      if ( !floatCompareVector( m_specular, rhs.m_specular, 4, tolerance ) )
          return false;
-      if ( !floatCompareVector( m_emissive, rhs.m_emissive, 4 ) )
+      if ( !floatCompareVector( m_emissive, rhs.m_emissive, 4, tolerance ) )
          return false;
-      if ( fabs(m_shininess - rhs.m_shininess) > EQ_TOLERANCE )
+      if ( fabs(m_shininess - rhs.m_shininess) > tolerance )
          return false;
    }
 
-   if ( (compareBits & CompareTextures) != 0 )
+   if ( (propBits & PropClamp) != 0 )
    {
       if ( m_sClamp != rhs.m_sClamp )
          return false;
       if ( m_tClamp != rhs.m_tClamp )
          return false;
+   }
 
-      // Color is unused
+   // Color is unused
 
+   if ( (propBits & PropPixels) != 0 )
+   {
       // If one is NULL, the other must be also
       if ( (m_textureData == NULL) != (rhs.m_textureData == NULL) )
          return false;
@@ -564,15 +574,17 @@ bool Model::Material::equal(const Material & rhs, int compareBits ) const
       }
    }
 
-   if ( (compareBits & CompareMeta) != 0 )
-   {
+   if ( (propBits & PropName) != 0 )
       if ( m_name != rhs.m_name )
          return false;
+
+   if ( (propBits & PropPaths) != 0 )
       if ( m_filename != rhs.m_filename )
          return false;
+
+   if ( (propBits & PropPaths) != 0 )
       if ( m_alphaFilename != rhs.m_alphaFilename )
          return false;
-   }
 
    return true;
 }
@@ -637,21 +649,27 @@ void Model::Keyframe::release()
    }
 }
 
-bool Model::Keyframe::equal(const Keyframe & rhs, int compareBits ) const
+bool Model::Keyframe::propEqual(const Keyframe & rhs, int propBits, double tolerance ) const
 {
-   if ( (compareBits & CompareAnimData) != 0 )
-   {
-      if ( m_jointIndex != rhs.m_jointIndex )
-         return false;
-      if ( m_frame != rhs.m_frame )
-         return false;
+   if ( m_jointIndex != rhs.m_jointIndex )
+      return false;
+
+   if ( (propBits & PropType) != 0 )
       if ( m_isRotation != rhs.m_isRotation )
          return false;
-      if ( fabs( m_time - rhs.m_time ) > EQ_TOLERANCE )
+
+   if ( (propBits & PropTime) != 0 )
+   {
+      if ( m_frame != rhs.m_frame )
          return false;
-      if ( !floatCompareVector( m_parameter, rhs.m_parameter, 3 ) )
+      if ( fabs( m_time - rhs.m_time ) > tolerance )
          return false;
    }
+
+   if ( (m_isRotation && (propBits & PropRotation) != 0)
+         || (!m_isRotation && (propBits & PropCoords) != 0) )
+      if ( !floatCompareVector( m_parameter, rhs.m_parameter, 3, tolerance ) )
+         return false;
 
    return true;
 }
@@ -720,32 +738,39 @@ void Model::Joint::stats()
    log_debug( "Joint: %d/%d\n", s_recycle.size(), s_allocated );
 }
 
-bool Model::Joint::equal(const Joint & rhs, int compareBits ) const
+bool Model::Joint::propEqual(const Joint & rhs, int propBits, double tolerance ) const
 {
-   if ( (compareBits & CompareSkeleton) != 0 )
+   if ( (propBits & PropRotation) != 0 )
    {
       for ( unsigned i = 0; i < 3; i++ )
       {
-         if ( fabs( m_localRotation[i] - rhs.m_localRotation[i]) > EQ_TOLERANCE )
+         if ( fabs( m_localRotation[i] - rhs.m_localRotation[i]) > tolerance )
             return false;
-         if ( fabs( m_localTranslation[i] - rhs.m_localTranslation[i]) > EQ_TOLERANCE )
-            return false;
-         if ( m_parent != rhs.m_parent )
+      }
+   }
+   if ( (propBits & PropCoords) != 0 )
+   {
+      for ( unsigned i = 0; i < 3; i++ )
+      {
+         if ( fabs( m_localTranslation[i] - rhs.m_localTranslation[i]) > tolerance )
             return false;
       }
    }
 
-   if ( (compareBits & CompareMeta) != 0 )
-   {
+   if ( m_parent != rhs.m_parent )
+      return false;
+
+   if ( (propBits & PropName) != 0 )
       if ( m_name != rhs.m_name )
          return false;
 
+   if ( (propBits & PropSelection) != 0 )
       if ( m_selected != rhs.m_selected )
          return false;
 
+   if ( (propBits & PropVisibility) != 0 )
       if ( m_visible != rhs.m_visible )
          return false;
-   }
 
    return true;
 }
@@ -828,35 +853,33 @@ void Model::Point::stats()
    log_debug( "Point: %d/%d\n", s_recycle.size(), s_allocated );
 }
 
-bool Model::Point::equal(const Point & rhs, int compareBits ) const
+bool Model::Point::propEqual(const Point & rhs, int propBits, double tolerance ) const
 {
-   if ( (compareBits & ComparePoints) != 0 )
-   {
-      for ( unsigned i = 0; i < 3; i++ )
-      {
-         if ( fabs( m_trans[i] - rhs.m_trans[i]) > EQ_TOLERANCE )
-            return false;
-         if ( fabs( m_rot[i] - rhs.m_rot[i]) > EQ_TOLERANCE )
-            return false;
-      }
-   }
+   if ( (propBits & PropCoords) != 0 )
+      if ( !floatCompareVector( m_trans, rhs.m_trans, 3, tolerance ) )
+         return false;
 
-   if ( (compareBits & CompareMeta) != 0 )
-   {
+   if ( (propBits & PropRotation) != 0 )
+      if ( !floatCompareVector( m_rot, rhs.m_rot, 3, tolerance ) )
+         return false;
+
+   if ( (propBits & PropName) != 0 )
       if ( m_name != rhs.m_name )
          return false;
 
+   if ( (propBits & PropType) != 0 )
       if ( m_type != rhs.m_type )
          return false;
 
+   if ( (propBits & PropSelection) != 0 )
       if ( m_selected != rhs.m_selected )
          return false;
 
+   if ( (propBits & PropVisibility) != 0 )
       if ( m_visible != rhs.m_visible )
          return false;
-   }
 
-   if ( (compareBits & CompareInfluences) != 0 )
+   if ( (propBits & (PropInfluences | PropWeights)) != 0 )
    {
       InfluenceList::const_iterator lhs_it = m_influences.begin();
       InfluenceList::const_iterator rhs_it = rhs.m_influences.begin();
@@ -864,7 +887,15 @@ bool Model::Point::equal(const Point & rhs, int compareBits ) const
       for ( ; lhs_it != m_influences.end() && rhs_it != rhs.m_influences.end();
             ++lhs_it, ++rhs_it )
       {
-         if ( *lhs_it != *rhs_it )
+         // This doesn't matter if we only care about weights
+         if ( propBits & PropInfluences )
+            if ( lhs_it->m_type != rhs_it->m_type )
+               return false;
+
+         // This matters if we're comparing influences or weights
+         if ( lhs_it->m_boneId != rhs_it->m_boneId )
+            return false;
+         if ( fabs( lhs_it->m_weight - rhs_it->m_weight ) > tolerance )
             return false;
       }
 
@@ -950,32 +981,39 @@ void Model::TextureProjection::stats()
    log_debug( "TextureProjection: %d/%d\n", 0, s_allocated );
 }
 
-bool Model::TextureProjection::equal(const TextureProjection & rhs, int compareBits ) const
+bool Model::TextureProjection::propEqual(const TextureProjection & rhs, int propBits, double tolerance ) const
 {
-   if ( (compareBits & CompareTextures) != 0 )
-   {
+   if ( (propBits & PropType) != 0 )
       if ( m_type != rhs.m_type )
          return false;
-      if ( !floatCompareVector( m_pos, rhs.m_pos, 3 ) )
+
+   if ( (propBits & PropCoords) != 0 )
+      if ( !floatCompareVector( m_pos, rhs.m_pos, 3, tolerance ) )
          return false;
-      if ( !floatCompareVector( m_upVec, rhs.m_upVec, 3 ) )
+
+   if ( (propBits & PropRotation) != 0 )
+   {
+      if ( !floatCompareVector( m_upVec, rhs.m_upVec, 3, tolerance ) )
          return false;
-      if ( !floatCompareVector( m_seamVec, rhs.m_seamVec, 3 ) )
-         return false;
-      if ( !floatCompareVector( m_range[0], rhs.m_range[0], 2 ) )
-         return false;
-      if ( !floatCompareVector( m_range[1], rhs.m_range[1], 2 ) )
+      if ( !floatCompareVector( m_seamVec, rhs.m_seamVec, 3, tolerance ) )
          return false;
    }
 
-   if ( (compareBits & CompareMeta) != 0 )
+   if ( (propBits & PropDimensions) != 0 )
    {
+      if ( !floatCompareVector( m_range[0], rhs.m_range[0], 2, tolerance ) )
+         return false;
+      if ( !floatCompareVector( m_range[1], rhs.m_range[1], 2, tolerance ) )
+         return false;
+   }
+
+   if ( (propBits & PropName) != 0 )
       if ( m_name != rhs.m_name )
          return false;
 
+   if ( (propBits & PropSelection) != 0 )
       if ( m_selected != rhs.m_selected )
          return false;
-   }
 
    return true;
 }
@@ -1059,22 +1097,22 @@ void Model::SkelAnim::stats()
    log_debug( "SkelAnim: %d/%d\n", s_recycle.size(), s_allocated );
 }
 
-bool Model::SkelAnim::equal(const SkelAnim & rhs, int compareBits ) const
+bool Model::SkelAnim::propEqual(const SkelAnim & rhs, int propBits, double tolerance ) const
 {
-   if ( (compareBits & CompareAnimSets) != 0 )
-   {
+   if ( (propBits & PropName) != 0 )
       if ( m_name != rhs.m_name )
          return false;
-   }
 
-   if ( (compareBits & CompareAnimData) != 0 )
-   {
-      if ( fabs( m_fps - rhs.m_fps ) > EQ_TOLERANCE )
+   if ( (propBits & PropTime) != 0 )
+      if ( fabs( m_fps - rhs.m_fps ) > tolerance )
          return false;
 
+   if ( (propBits & PropDimensions) != 0 )
       if ( m_frameCount != rhs.m_frameCount )
          return false;
 
+   if ( (propBits & (PropCoords | PropRotation | PropType)) != 0 )
+   {
       if ( m_jointKeyframes.size() != rhs.m_jointKeyframes.size() )
          return false;
 
@@ -1090,7 +1128,7 @@ bool Model::SkelAnim::equal(const SkelAnim & rhs, int compareBits ) const
          KeyframeList::const_iterator r = rhs_it->begin();
          for ( ; l != lhs_it->end() && r != rhs_it->end(); ++l, ++r )
          {
-            if ( !(*l)->equal( **r ) )
+            if ( !(*l)->propEqual( **r, propBits, tolerance ) )
                return false;
          }
       }
@@ -1198,19 +1236,18 @@ void Model::FrameAnim::stats()
    log_debug( "FrameAnim: %d/%d\n", s_recycle.size(), s_allocated );
 }
 
-bool Model::FrameAnim::equal(const FrameAnim & rhs, int compareBits ) const
+bool Model::FrameAnim::propEqual(const FrameAnim & rhs, int propBits, double tolerance ) const
 {
-   if ( (compareBits & CompareAnimSets) != 0 )
-   {
+   if ( (propBits & PropName) != 0 )
       if ( m_name != rhs.m_name )
          return false;
-   }
 
-   if ( (compareBits & CompareAnimData) != 0 )
-   {
-      if ( fabs( m_fps - rhs.m_fps ) > EQ_TOLERANCE )
+   if ( (propBits & PropTime) != 0 )
+      if ( fabs( m_fps - rhs.m_fps ) > tolerance )
          return false;
 
+   if ( (propBits & (PropCoords | PropRotation)) != 0 )
+   {
       if ( m_frameData.size() != rhs.m_frameData.size() )
          return false;
 
@@ -1219,7 +1256,7 @@ bool Model::FrameAnim::equal(const FrameAnim & rhs, int compareBits ) const
       for ( ; lhs_it != m_frameData.end() && rhs_it != m_frameData.end();
             ++lhs_it, ++rhs_it )
       {
-         if ( !(*lhs_it)->equal( **rhs_it ) )
+         if ( !(*lhs_it)->propEqual( **rhs_it, propBits, tolerance ) )
             return false;
       }
    }
@@ -1293,13 +1330,11 @@ void Model::FrameAnimVertex::stats()
    log_debug( "FrameAnimVertex: %d/%d\n", s_recycle.size(), s_allocated );
 }
 
-bool Model::FrameAnimVertex::equal(const FrameAnimVertex & rhs, int compareBits ) const
+bool Model::FrameAnimVertex::propEqual(const FrameAnimVertex & rhs, int propBits, double tolerance ) const
 {
-   if ( (compareBits & CompareAnimData) != 0 )
-   {
-      if ( !floatCompareVector( m_coord, rhs.m_coord, 3 ) )
+   if ( (propBits & PropCoords) != 0 )
+      if ( !floatCompareVector( m_coord, rhs.m_coord, 3, tolerance ) )
          return false;
-   }
 
    return true;
 }
@@ -1370,24 +1405,27 @@ void Model::FrameAnimPoint::stats()
    log_debug( "FrameAnimPoint: %d/%d\n", s_recycle.size(), s_allocated );
 }
 
-bool Model::FrameAnimPoint::equal(const FrameAnimPoint & rhs, int compareBits ) const
+bool Model::FrameAnimPoint::propEqual(const FrameAnimPoint & rhs, int propBits, double tolerance ) const
 {
-   if ( (compareBits & CompareAnimData) != 0 )
-   {
-      if ( !floatCompareVector( m_trans, rhs.m_trans, 3 ) )
+   if ( (propBits & PropCoords) != 0 )
+      if ( !floatCompareVector( m_trans, rhs.m_trans, 3, tolerance ) )
          return false;
-      if ( !floatCompareVector( m_rot, rhs.m_rot, 3 ) )
+
+   if ( (propBits & PropRotation) != 0 )
+      if ( !floatCompareVector( m_rot, rhs.m_rot, 3, tolerance ) )
          return false;
-   }
 
    return true;
 }
 
-bool Model::FrameAnimData::equal(const FrameAnimData & rhs, int compareBits ) const
+bool Model::FrameAnimData::propEqual(const FrameAnimData & rhs, int propBits, double tolerance ) const
 {
-   if ( (compareBits & CompareAnimData) != 0 )
+   if ( (propBits & (PropCoords | PropRotation)) != 0 )
    {
       if ( m_frameVertices->size() != rhs.m_frameVertices->size() )
+         return false;
+
+      if ( m_framePoints->size() != rhs.m_framePoints->size() )
          return false;
 
       FrameAnimVertexList::iterator lv = m_frameVertices->begin();
@@ -1395,7 +1433,7 @@ bool Model::FrameAnimData::equal(const FrameAnimData & rhs, int compareBits ) co
 
       for ( ; lv != m_frameVertices->end(), rv != rhs.m_frameVertices->end(); ++lv, ++rv )
       {
-         if ( !(*lv)->equal( **rv ) )
+         if ( !(*lv)->propEqual( **rv, propBits, tolerance ) )
             return false;
       }
 
@@ -1404,7 +1442,7 @@ bool Model::FrameAnimData::equal(const FrameAnimData & rhs, int compareBits ) co
 
       for ( ; lp != m_framePoints->end(), rp != rhs.m_framePoints->end(); ++lp, ++rp )
       {
-         if ( !(*lp)->equal( **rp ) )
+         if ( !(*lp)->propEqual( **rp, propBits, tolerance ) )
             return false;
       }
    }
@@ -1442,19 +1480,19 @@ Model::BackgroundImage::~BackgroundImage()
 {
 }
 
-bool Model::BackgroundImage::equal(const BackgroundImage & rhs, int compareBits ) const
+bool Model::BackgroundImage::propEqual(const BackgroundImage & rhs, int propBits, double tolerance ) const
 {
-   if ( (compareBits & CompareMeta) != 0 )
-   {
+   if ( (propBits & PropPaths) != 0 )
       if ( m_filename != rhs.m_filename )
          return false;
 
-      if ( fabs( m_scale - rhs.m_scale ) > EQ_TOLERANCE )
+   if ( (propBits & PropScale) != 0 )
+      if ( fabs( m_scale - rhs.m_scale ) > tolerance )
          return false;
 
-      if ( !floatCompareVector( m_center, rhs.m_center, 3 ) )
+   if ( (propBits & PropCoords) != 0 )
+      if ( !floatCompareVector( m_center, rhs.m_center, 3, tolerance ) )
          return false;
-   }
 
    return true;
 }

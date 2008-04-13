@@ -46,12 +46,15 @@ class MemDataDest : public DataDest
       virtual bool internalSeek( off_t offset );
       virtual bool internalWrite( const uint8_t * buf, size_t bufLen );
 
+      size_t getDataLength() { return m_dataLen; }
+
    protected:
 
    private:
       uint8_t * m_buf;
       size_t m_bufSize;
       size_t m_bufOffset;
+      size_t m_dataLen;
 };
 
 #endif // MEMDATADEST_INC_H__

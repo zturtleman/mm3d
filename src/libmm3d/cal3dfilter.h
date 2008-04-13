@@ -100,6 +100,7 @@ class Cal3dFilter : public ModelFilter
       static std::string addExtension( const std::string file,
             const std::string ext );
       static bool versionIsValid( FileTypeE type, int version );
+      static bool xversionIsValid( FileTypeE type, int version );
 
       // Sub file reads
       Model::ModelErrorE readSubFile( const char * filename );
@@ -119,6 +120,7 @@ class Cal3dFilter : public ModelFilter
       uint8_t readBUInt8();
       int16_t readBInt16();
       int32_t readBInt32();
+      uint64_t readBUInt48();
       float readBFloat();
       Vector readBVector3();
       Vector readBVector4();
@@ -138,6 +140,7 @@ class Cal3dFilter : public ModelFilter
       bool readBBone();
       bool readBSubMesh();
       bool readBAnimTrack();
+      bool readBCompressedAnimTrack( double duration );
 
       std::string readLineKey( const char * str );
       std::string readLineFile( const char * str );
@@ -154,10 +157,6 @@ class Cal3dFilter : public ModelFilter
       Model::ModelErrorE writeXMaterialFile( const char * filename, Model * model, unsigned int materialId );
 
       // Common binary write functions
-      void writeBUInt8( uint8_t );
-      void writeBInt16( int16_t );
-      void writeBInt32( int32_t );
-      void writeBFloat( float );
       void writeBVector3( const Vector & vec );
       void writeBQuaternion( const Quaternion & quat );
 
@@ -177,7 +176,7 @@ class Cal3dFilter : public ModelFilter
       Model         * m_model;
       Cal3dOptions  * m_options;
 
-      FILE       * m_fp;
+      DataDest   * m_dst;
       uint8_t    * m_bufPos;
       uint8_t    * m_fileBuf;
       size_t       m_fileLength;
@@ -186,6 +185,9 @@ class Cal3dFilter : public ModelFilter
       bool         m_isBinary;
       bool         m_isLittleEndian;
 
+      int          m_maxBinaryVersion;
+      int          m_maxXrfVersion;
+
       std::string  m_modelPath;
       std::string  m_modelBaseName;
       std::string  m_modelFullName;
@@ -193,6 +195,8 @@ class Cal3dFilter : public ModelFilter
       std::string  m_currentPath;
       std::string  m_modelPartName;
       std::string  m_modelPartExt;
+
+      std::list<std::string> m_formats;
 };
 
 #endif // __CAL3DFILTER_H

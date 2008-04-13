@@ -116,6 +116,7 @@ class Model
          ChangeAll          =  0xFFFFFFFF   // All of the above
       };
 
+      // FIXME remove this when new equal routines are ready
       enum CompareBits
       {
          CompareGeometry   =   0x01,  // Vertices and Faces match
@@ -130,6 +131,61 @@ class Model
          CompareInfluences =  0x200,  // Vertex and point influences match
          CompareTextures   =  0x400,  // Texture coordinates and texture data match
          CompareAll        = 0xFFFF   // All of the above
+      };
+
+      enum ComparePartsE
+      {
+         PartVertices    = 0x0001,  // 
+         PartFaces       = 0x0002,  // 
+         PartGroups      = 0x0004,  // 
+         PartMaterials   = 0x0008,  // 
+         PartTextures    = 0x0010,  // 
+         PartJoints      = 0x0020,  // 
+         PartPoints      = 0x0040,  // 
+         PartProjections = 0x0080,  // 
+         PartBackgrounds = 0x0100,  // 
+         PartMeta        = 0x0200,  // 
+         PartSkelAnims   = 0x0400,  // 
+         PartFrameAnims  = 0x0800,  // 
+         PartFormatData  = 0x1000,  // 
+         PartFilePaths   = 0x2000,  // 
+         PartAll         = 0xFFFF,  // 
+
+         // These are combinations of parts above, for convenience
+         PartGeometry    = PartVertices | PartFaces | PartGroups,  // 
+         PartTextureMap  = PartFaces | PartGroups | PartMaterials | PartTextures | PartProjections,  // 
+         PartAnimations  = PartSkelAnims | PartFrameAnims,  // 
+      };
+
+      enum PartPropertiesE
+      {
+         PropName        = 0x000001,  // 
+         PropType        = 0x000002,  // 
+         PropSelection   = 0x000004,  // 
+         PropVisibility  = 0x000008,  // 
+         PropFree        = 0x000010,  // 
+         PropCoords      = 0x000020,  // 
+         PropRotation    = 0x000040,  // 
+         PropScale       = 0x000080,  // 
+         PropInfluences  = 0x000100,  // 
+         PropWeights     = 0x000200,  // 
+         PropNormals     = 0x000400,  // 
+         PropTexCoords   = 0x000800,  // 
+         PropMaterials   = 0x001000,  // 
+         PropProjections = 0x002000,  // 
+         PropVertices    = 0x004000,  // 
+         PropPoints      = 0x008000,  // 
+         PropTriangles   = 0x010000,  // 
+         PropLighting    = 0x020000,  // 
+         PropClamp       = 0x040000,  // 
+         PropPaths       = 0x080000,  // 
+         PropDimensions  = 0x100000,  // 
+         PropPixels      = 0x200000,  // 
+         PropTime        = 0x400000,  // 
+         PropAll         = 0xFFFFFF,  // 
+
+         // These are combinations of parts above, for convenience
+         PropFlags       = PropSelection | PropVisibility | PropFree,
       };
 
       enum 
@@ -192,7 +248,11 @@ class Model
          }
 
          bool operator<( const struct _Influence_t & rhs ) const
-            { return m_weight < rhs.m_weight; }
+         {
+            if ( fabs( m_weight - rhs.m_weight ) < 0.00001 )
+               return m_boneId < rhs.m_boneId;
+            return m_weight < rhs.m_weight;
+         }
       };
       typedef struct _Influence_t InfluenceT;
       typedef std::list< InfluenceT > InfluenceList;
@@ -220,6 +280,7 @@ class Model
             static void stats();
             static Vertex * get();
             void release();
+            void sprint( std::string & dest );
 
             double m_coord[3];     // Absolute vertex location
             double m_kfCoord[3];   // Animated position
@@ -237,9 +298,9 @@ class Model
             // List of bone joints that move the vertex in skeletal animations.
             InfluenceList m_influences;
 
-            bool equal( const Vertex & rhs, int compareBits = CompareAll ) const;
+            bool propEqual( const Vertex & rhs, int propBits = PropAll, double tolerance = 0.00001 ) const;
             bool operator==( const Vertex & rhs ) const
-               { return equal( rhs ); }
+               { return propEqual( rhs ); }
 
          protected:
             Vertex();
@@ -261,6 +322,7 @@ class Model
             static void stats();
             static Triangle * get();
             void release();
+            void sprint( std::string & dest );
 
             unsigned m_vertexIndices[3];
 
@@ -283,9 +345,9 @@ class Model
             bool  m_userMarked;
             int   m_projection;  // Index of texture projection (-1 for none)
 
-            bool equal( const Triangle & rhs, int compareBits = CompareAll ) const;
+            bool propEqual( const Triangle & rhs, int propBits = PropAll, double tolerance = 0.00001 ) const;
             bool operator==( const Triangle & rhs ) const
-               { return equal( rhs ); }
+               { return propEqual( rhs ); }
 
          protected:
             Triangle();
@@ -309,6 +371,7 @@ class Model
             static void stats();
             static Group * get();
             void release();
+            void sprint( std::string & dest );
 
             std::string m_name;
             int         m_materialIndex;    // Material index (-1 for none)
@@ -327,9 +390,9 @@ class Model
             bool        m_visible;
             bool        m_marked;
 
-            bool equal( const Group & rhs, int compareBits = CompareAll ) const;
+            bool propEqual( const Group & rhs, int propBits = PropAll, double tolerance = 0.00001 ) const;
             bool operator==(const Group & rhs ) const
-               { return equal( rhs ); }
+               { return propEqual( rhs ); }
 
          protected:
             Group();
@@ -361,6 +424,7 @@ class Model
             static void stats();
             static Material * get();
             void release();
+            void sprint( std::string & dest );
 
             std::string   m_name;
             MaterialTypeE m_type;         // See MaterialTypeE above
@@ -391,9 +455,9 @@ class Model
             std::string   m_alphaFilename;  // Unused
             Texture     * m_textureData;    // Texture data (for MATTYPE_TEXTURE)
 
-            bool equal( const Material & rhs, int compareBits = CompareAll ) const;
+            bool propEqual( const Material & rhs, int propBits = PropAll, double tolerance = 0.00001 ) const;
             bool operator==(const Material & rhs ) const
-               { return equal( rhs ); }
+               { return propEqual( rhs ); }
 
          protected:
             Material();
@@ -416,6 +480,7 @@ class Model
             static Keyframe * get();
 
             void release();
+            void sprint( std::string & dest );
 
             int m_jointIndex;       // Joint that this keyframe affects
             unsigned m_frame;       // Frame number for this keyframe
@@ -431,7 +496,7 @@ class Model
             {
                return ( this->m_frame == rhs.m_frame && this->m_isRotation == rhs.m_isRotation );
             };
-            bool equal( const Keyframe & rhs, int compareBits = CompareAll ) const;
+            bool propEqual( const Keyframe & rhs, int propBits = PropAll, double tolerance = 0.00001 ) const;
 
          protected:
             Keyframe();
@@ -455,6 +520,7 @@ class Model
             static void stats();
             static Joint * get();
             void release();
+            void sprint( std::string & dest );
 
             std::string m_name;
             double m_localRotation[3];     // Rotation relative to parent joint (or origin if no parent)
@@ -473,9 +539,9 @@ class Model
             bool m_visible;
             bool m_marked;
 
-            bool equal( const Joint & rhs, int compareBits = CompareAll ) const;
+            bool propEqual( const Joint & rhs, int propBits = PropAll, double tolerance = 0.00001 ) const;
             bool operator==(const Joint & rhs ) const
-               { return equal( rhs ); }
+               { return propEqual( rhs ); }
 
          protected:
             Joint();
@@ -495,6 +561,7 @@ class Model
             static void stats();
             static Point * get();
             void release();
+            void sprint( std::string & dest );
 
             std::string m_name;
             int m_type;
@@ -515,9 +582,9 @@ class Model
             // List of bone joints that move the point in skeletal animations.
             InfluenceList m_influences;
 
-            bool equal( const Point & rhs, int compareBits = CompareAll ) const;
+            bool propEqual( const Point & rhs, int propBits = PropAll, double tolerance = 0.00001 ) const;
             bool operator==(const Point & rhs ) const
-               { return equal( rhs ); }
+               { return propEqual( rhs ); }
 
          protected:
             Point();
@@ -538,6 +605,7 @@ class Model
             static void stats();
             static TextureProjection * get();
             void release();
+            void sprint( std::string & dest );
 
             std::string m_name;
             int m_type;            // See TextureProjectionTypeE
@@ -549,9 +617,9 @@ class Model
             bool   m_selected;
             bool   m_marked;
 
-            bool equal( const TextureProjection & rhs, int compareBits = CompareAll ) const;
+            bool propEqual( const TextureProjection & rhs, int propBits = PropAll, double tolerance = 0.00001 ) const;
             bool operator==(const TextureProjection & rhs ) const
-               { return equal( rhs ); }
+               { return propEqual( rhs ); }
 
          protected:
             TextureProjection();
@@ -576,6 +644,7 @@ class Model
             static SkelAnim * get();
             void release();
             void releaseData();
+            void sprint( std::string & dest );
 
             std::string m_name;
             JointKeyframeList m_jointKeyframes;
@@ -584,9 +653,9 @@ class Model
             unsigned m_frameCount;    // Number of frames in the animation
             bool     m_validNormals;  // Whether or not the normals have been calculated for the current animation frame
 
-            bool equal( const SkelAnim & rhs, int compareBits = CompareAll ) const;
+            bool propEqual( const SkelAnim & rhs, int propBits = PropAll, double tolerance = 0.00001 ) const;
             bool operator==(const SkelAnim & rhs ) const
-               { return equal( rhs ); }
+               { return propEqual( rhs ); }
 
          protected:
             SkelAnim();
@@ -607,13 +676,14 @@ class Model
             static void stats();
             static FrameAnimVertex * get();
             void release();
+            void sprint( std::string & dest );
 
             double m_coord[3];
             double m_normal[3];
 
-            bool equal( const FrameAnimVertex & rhs, int compareBits = CompareAll ) const;
+            bool propEqual( const FrameAnimVertex & rhs, int propBits = PropAll, double tolerance = 0.00001 ) const;
             bool operator==(const FrameAnimVertex & rhs ) const
-               { return equal( rhs ); }
+               { return propEqual( rhs ); }
 
          protected:
             FrameAnimVertex();
@@ -636,13 +706,14 @@ class Model
             static void stats();
             static FrameAnimPoint * get();
             void release();
+            void sprint( std::string & dest );
 
             double m_trans[3];
             double m_rot[3];
 
-            bool equal( const FrameAnimPoint & rhs, int compareBits = CompareAll ) const;
+            bool propEqual( const FrameAnimPoint & rhs, int propBits = PropAll, double tolerance = 0.00001 ) const;
             bool operator==(const FrameAnimPoint & rhs ) const
-               { return equal( rhs ); }
+               { return propEqual( rhs ); }
 
          protected:
             FrameAnimPoint();
@@ -666,9 +737,9 @@ class Model
 
               void releaseData();
 
-              bool equal( const FrameAnimData & rhs, int compareBits = CompareAll ) const;
+              bool propEqual( const FrameAnimData & rhs, int propBits = PropAll, double tolerance = 0.00001 ) const;
               bool operator==(const FrameAnimData & rhs ) const
-               { return equal( rhs ); }
+               { return propEqual( rhs ); }
       };
 
       typedef vector< FrameAnimData *> FrameAnimDataList;
@@ -686,6 +757,7 @@ class Model
             static FrameAnim * get();
             void release();
             void releaseData();
+            void sprint( std::string & dest );
 
             std::string m_name;
             // Each element in m_frameData is one frame. The frames hold lists of
@@ -695,9 +767,9 @@ class Model
             double m_fps;  // Frames per second
             bool   m_validNormals;  // Whether or not the normals have been calculated
 
-            bool equal( const FrameAnim & rhs, int compareBits = CompareAll ) const;
+            bool propEqual( const FrameAnim & rhs, int propBits = PropAll, double tolerance = 0.00001 ) const;
             bool operator==(const FrameAnim & rhs ) const
-               { return equal( rhs ); }
+               { return propEqual( rhs ); }
 
          protected:
             FrameAnim();
@@ -731,13 +803,15 @@ class Model
             BackgroundImage();
             virtual ~BackgroundImage();
 
+            void sprint( std::string & dest );
+
             std::string m_filename;
             float m_scale;      // 1.0 means 1 GL unit from the center to the edges of the image
             float m_center[3];  // Point in the viewport where the image is centered
 
-            bool equal( const BackgroundImage & rhs, int compareBits = CompareAll ) const;
+            bool propEqual( const BackgroundImage & rhs, int propBits = PropAll, double tolerance = 0.00001 ) const;
             bool operator==(const BackgroundImage & rhs ) const
-               { return equal( rhs ); }
+               { return propEqual( rhs ); }
       };
 
       typedef Model::Vertex * VertexPtr;
@@ -907,12 +981,16 @@ class Model
       static const char * errorToString( Model::ModelErrorE, Model * model = NULL );
       static bool operationFailed( Model::ModelErrorE );
 
-      // Returns mask of successful compares (see enum CompareBits)
-      int equivalent( const Model * model, int compareMask = CompareGeometry, double tolerance = 0.00001 ) const;
+      // Returns if models are visually equivalent
+      bool equivalent( const Model * model, double tolerance = 0.00001 ) const;
 
-      // Compares if two models are equal. Returns maks of successful
-      // compares (see CompareBits). FIXME tolerance is ignored.
-      int equal( const Model * model, int compareMask = CompareGeometry, double tolerance = 0.00001 ) const;
+      // Compares if two models are equal. Returns true of all specified
+      // properties of all specified parts match. See ComparePartsE and
+      // PartPropertiesE.
+      bool propEqual( const Model * model, int partBits = PartAll, int propBits = PropAll,
+            double tolerance = 0.00001 ) const;
+
+      void sprint( std::string & dest );
 
       // ------------------------------------------------------------------
       // "Meta" data, model information that is not rendered in a viewport.

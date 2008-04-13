@@ -759,9 +759,11 @@ void ModelViewport::drawGridLines()
             log_error( "Unhandled view direction: %d\n", m_viewDirection );
             break;
       }
-      QString text;
-      text.sprintf( "%g", unitWidth );
-      renderText( 2, this->height() - 12, text, QFont( "Fixed", 10 ) );
+
+      // TODO: Broken with Qt4 + mesa GL
+      // QString text;
+      // text.sprintf( "%g", unitWidth );
+      // renderText( 2, this->height() - 12, text, QFont( "Sans", 10 ) );
    }
 }
 

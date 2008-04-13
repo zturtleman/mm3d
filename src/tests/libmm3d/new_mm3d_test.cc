@@ -42,11 +42,6 @@
 #include "release_ptr.h"
 
 
-void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... )
-{
-   // FIXME hack
-}
-
 Model * loadModelOrDie( const char * filename, bool useReference )
 {
    Model * model = new Model;
@@ -70,6 +65,12 @@ Model * loadModelOrDie( const char * filename, bool useReference )
    return model;
 }
 
+//void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... )
+//{
+//   // FIXME hack
+//}
+
+
 class NewMm3dTest : public QObject
 {
    Q_OBJECT
@@ -80,8 +81,7 @@ private:
          local_ptr<Model> lhs = loadModelOrDie( file, true );
          local_ptr<Model> rhs = loadModelOrDie( file, false );
 
-         int bits = Model::CompareAll;
-         QVERIFY_EQ( bits, lhs->equal( rhs.get(), bits ) );
+         QVERIFY_TRUE( lhs->propEqual( rhs.get() ) );
 
          // FIXME should really use a temp file based on something
          // unique (hostname-pid?) so that multiple tests could run in parallel.

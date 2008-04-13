@@ -410,67 +410,40 @@ bool Model::getPointInfluences( unsigned point, InfluenceList & l ) const
 
 int Model::getPrimaryPositionInfluence( const Position & pos ) const
 {
-   switch ( pos.type )
+   InfluenceList l;
+   getPositionInfluences( pos, l );
+
+   Model::InfluenceT inf;
+   inf.m_boneId = -1;
+   inf.m_weight = -1.0;
+
+   InfluenceList::iterator it;
+   for ( it = l.begin(); it != l.end(); it++ )
    {
-      case PT_Vertex:
-         return getPrimaryVertexInfluence( pos.index );
-
-      case PT_Point:
-         return getPrimaryPointInfluence( pos.index );
-
-      default:
-         break;
+      if ( inf < *it )
+      {
+         inf = *it;
+      }
    }
-
-   return -1;
+   return inf.m_boneId;
 }
 
 int Model::getPrimaryVertexInfluence( unsigned vertex ) const
 {
-   if ( vertex < m_vertices.size() )
-   {
-      InfluenceList & l = m_vertices[ vertex ]->m_influences;
+   Position pos;
+   pos.type = PT_Vertex;
+   pos.index = vertex;
 
-      int joint = -1;
-      double weight = 0.0;
-
-      InfluenceList::iterator it;
-      for ( it = l.begin(); it != l.end(); it++ )
-      {
-         if ( (*it).m_weight > weight )
-         {
-            joint  = (*it).m_boneId;
-            weight = (*it).m_weight;
-         }
-      }
-      return joint;
-   }
-
-   return -1;
+   return getPrimaryPositionInfluence( pos );
 }
 
 int Model::getPrimaryPointInfluence( unsigned point ) const
 {
-   if ( point < m_points.size() )
-   {
-      InfluenceList & l = m_points[ point ]->m_influences;
+   Position pos;
+   pos.type = PT_Point;
+   pos.index = point;
 
-      int joint = -1;
-      double weight = 0.0;
-
-      InfluenceList::iterator it;
-      for ( it = l.begin(); it != l.end(); it++ )
-      {
-         if ( (*it).m_weight > weight )
-         {
-            joint  = (*it).m_boneId;
-            weight = (*it).m_weight;
-         }
-      }
-      return joint;
-   }
-
-   return -1;
+   return getPrimaryPositionInfluence( pos );
 }
 
 bool Model::setPositionInfluenceType( const Position & pos, unsigned int joint, InfluenceTypeE type )

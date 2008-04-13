@@ -1,11 +1,11 @@
 For 1.4:
    Bump mm3dfilter version
-
    Test merge changes
       Groups
       Other stuff from diff
       Hide Material label in projectionwin
       Fix texturepaint segfault
+   Update plugin docs to point to User's 1.4 plugin directory
 
 After 1.4:
    There will be no new development on the Qt3 version of Misfit Model 3D. It will

@@ -86,26 +86,36 @@ bool FilterManager::registerFilter( ModelFilter * filter )
 
 Model::ModelErrorE FilterManager::readFile( Model * model, const char * filename )
 {
+   Model::ModelErrorE rval = Model::ERROR_UNKNOWN_TYPE;
    FilterList::iterator it;
    for ( it = m_filters.begin(); it != m_filters.end(); it++ )
    {
       ModelFilter * filter = *it;
 
-      if ( filter && filter->isSupported( filename ) && filter->canRead() )
+      if ( filter && filter->isSupported( filename ) )
       {
-         model->setUndoEnabled( false );
-         model->forceAddOrDelete( true );
-         Model::ModelErrorE rval = filter->readFile( model, filename );
-         model->forceAddOrDelete( false );
-         model->setUndoEnabled( true );
-         model->clearUndo();
-         m_factory.closeAll();
-         return rval;
-      }
+         if ( filter->canRead() )
+         {
+            model->setUndoEnabled( false );
+            model->forceAddOrDelete( true );
 
+            rval = filter->readFile( model, filename );
+
+            model->forceAddOrDelete( false );
+            model->setUndoEnabled( true );
+            model->clearUndo();
+            m_factory.closeAll();
+
+            return rval;
+         }
+         else
+         {
+            rval = Model::ERROR_UNSUPPORTED_OPERATION;
+         }
+      }
    }
 
-   return Model::ERROR_UNKNOWN_TYPE;
+   return rval;
 }
 
 Model::ModelErrorE FilterManager::writeFile( Model * model, const char * filename, bool exportModel, FilterManager::WriteOptionsE wo )

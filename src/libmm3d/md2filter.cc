@@ -32,8 +32,8 @@
 #include "modelstatus.h"
 
 #include "mm3dport.h"
-#include "binutil.h"
-#include "endianconfig.h"
+#include "datasource.h"
+#include "datadest.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,6 +41,18 @@
 #include <string.h>
 #include <stdint.h>
 #include <ctype.h>
+
+// FIXME this should be centralized
+template<typename T>
+class FunctionCaller
+{
+   public:
+      FunctionCaller( T * obj, void (T::*method)(void) ) { m_obj = obj; m_method = method; }
+      ~FunctionCaller() { (m_obj->*m_method)(); }
+   private:
+      T * m_obj;
+      void (T::*m_method)(void);
+};
 
 const unsigned MAX_QUAKE_NORMALS = 162;
 static float s_quakeNormals[ MAX_QUAKE_NORMALS ][3] = {
@@ -110,23 +122,12 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
 {
    if ( model && filename && filename[0] )
    {
-      FILE * fp = fopen( filename, "rb" );
-      if ( fp == NULL )
-      {
-         if ( errno == ENOENT )
-         {
-            log_error( "%s: file does not exist\n", filename );
-            return Model::ERROR_NO_FILE;
-         }
-         if ( errno == EPERM )
-         {
-            log_error( "%s: access denied\n", filename );
-            return Model::ERROR_NO_ACCESS;
-         }
+      Model::ModelErrorE err = Model::ERROR_NONE;
+      DataSource* src = openInput( filename, err );
+      FunctionCaller<DataSource> fc( src, &DataSource::close );
 
-         log_error( "%s: could not open file\n", filename );
-         return Model::ERROR_FILE_OPEN;
-      }
+      if ( err != Model::ERROR_NONE )
+         return err;
 
       string modelPath = "";
       string modelBaseName = "";
@@ -137,25 +138,7 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
       
       model->setFilename( modelFullName.c_str() );
 
-      fseek( fp, 0, SEEK_END );
-      unsigned fileLength = ftell( fp );
-      unsigned readLength = fileLength;
-      fseek( fp, 0, SEEK_SET );
-
-      // read whole file into memory
-      uint8_t *buffer = new uint8_t[fileLength];
-
-      if ( fread( buffer, fileLength, 1, fp ) != 1 )
-      {
-         delete[] buffer;
-         log_error( "%s: could not read file\n", filename );
-         fclose( fp );
-         return Model::ERROR_FILE_READ;
-      }
-
-      fclose( fp );
-
-      uint8_t *bufPtr = buffer;
+      unsigned fileLength = src->getFileSize();
 
       int32_t magic = 0;
       int32_t version = 0;
@@ -175,40 +158,23 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
       int32_t offsetGlCommands = 0;
       int32_t offsetEnd = 0;
 
-      bin_read( magic,            bufPtr, readLength );
-      magic = ltoh_32(magic);
-      bin_read( version,          bufPtr, readLength );
-      version = ltoh_32(version);
-      bin_read( skinWidth,        bufPtr, readLength );
-      skinWidth = ltoh_32(skinWidth);
-      bin_read( skinHeight,       bufPtr, readLength );
-      skinHeight = ltoh_32(skinHeight);
-      bin_read( frameSize,        bufPtr, readLength );
-      frameSize = ltoh_32(frameSize);
-      bin_read( numSkins,         bufPtr, readLength );
-      numSkins = ltoh_32(numSkins);
-      bin_read( numVertices,      bufPtr, readLength );
-      numVertices = ltoh_32(numVertices);
-      bin_read( numTexCoords,     bufPtr, readLength );
-      numTexCoords = ltoh_32(numTexCoords);
-      bin_read( numTriangles,     bufPtr, readLength );
-      numTriangles = ltoh_32(numTriangles);
-      bin_read( numGlCommands,    bufPtr, readLength );
-      numGlCommands = ltoh_32(numGlCommands);
-      bin_read( numFrames,        bufPtr, readLength );
-      numFrames = ltoh_32(numFrames);
-      bin_read( offsetSkins,      bufPtr, readLength );
-      offsetSkins = ltoh_32(offsetSkins);
-      bin_read( offsetTexCoords,  bufPtr, readLength );
-      offsetTexCoords = ltoh_32(offsetTexCoords);
-      bin_read( offsetTriangles,  bufPtr, readLength );
-      offsetTriangles = ltoh_32(offsetTriangles);
-      bin_read( offsetFrames,     bufPtr, readLength );
-      offsetFrames = ltoh_32(offsetFrames);
-      bin_read( offsetGlCommands, bufPtr, readLength );
-      offsetGlCommands = ltoh_32(offsetGlCommands);
-      bin_read( offsetEnd,        bufPtr, readLength );
-      offsetEnd = ltoh_32(offsetEnd);
+      src->read( magic );
+      src->read( version );
+      src->read( skinWidth );
+      src->read( skinHeight );
+      src->read( frameSize );
+      src->read( numSkins );
+      src->read( numVertices );
+      src->read( numTexCoords );
+      src->read( numTriangles );
+      src->read( numGlCommands );
+      src->read( numFrames );
+      src->read( offsetSkins );
+      src->read( offsetTexCoords );
+      src->read( offsetTriangles );
+      src->read( offsetFrames );
+      src->read( offsetGlCommands );
+      src->read( offsetEnd );
 
       Matrix loadMatrix;
       loadMatrix.setRotationInDegrees( -90, -90, 0 );
@@ -254,28 +220,20 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
       m_lastAnimFrame = "";
       
       // Read first frame to get vertices
-      bufPtr     = &buffer[ offsetFrames ];
-      readLength = fileLength - offsetFrames;
+      src->seek( offsetFrames );
       
       float scale[3];
       float translate[3];
-      const char * name = "";
+      char name[64];
       for ( t = 0; t < 3; t++ )
-      {
-         bin_read( scale[t], bufPtr, readLength );
-         scale[t] = ltoh_float(scale[t]);
-      }
+         src->read( scale[t] );
       for ( t = 0; t < 3; t++ )
-      {
-         bin_read( translate[t], bufPtr, readLength );
-         translate[t] = ltoh_float(translate[t]);
-      }
+         src->read( translate[t] );
 
       //loadMatrix.apply3( scale );
       //loadMatrix.apply3( translate );
 
-      name = (char *) bufPtr;
-      bufPtr += 16;
+      src->readBytes( (uint8_t *) name, 16 );
 
       for ( i = 0; i < numVertices; i++ )
       {
@@ -283,9 +241,9 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
          uint8_t normal;
          for ( t = 0; t < 3; t++ )
          {
-            bin_read( coord[t], bufPtr, readLength );
+            src->read( coord[t] );
          }
-         bin_read( normal, bufPtr, readLength );
+         src->read( normal );
 
          double vec[3];
          vec[0] = coord[0] * scale[0] + translate[0];
@@ -300,25 +258,18 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
       }
 
       // Now read all frames to get animation vertices
-      bufPtr     = &buffer[ offsetFrames ];
-      readLength = fileLength - offsetFrames;
+      src->seek( offsetFrames );
       
       if ( numFrames > 1 )
       {
          for ( int n = 0; n < numFrames; n++ )
          {
             for ( t = 0; t < 3; t++ )
-            {
-               bin_read( scale[t], bufPtr, readLength );
-               scale[t] = ltoh_float(scale[t]);
-            }
+               src->read( scale[t] );
             for ( t = 0; t < 3; t++ )
-            {
-               bin_read( translate[t], bufPtr, readLength );
-               translate[t] = ltoh_float(translate[t]);
-            }
-            name = (char *) bufPtr;
-            bufPtr += 16;
+               src->read( translate[t] );
+
+            src->readBytes( (uint8_t *) name, 16 );
 
             animIndex = addNeededAnimFrame( model, name );
 
@@ -327,10 +278,8 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
                uint8_t coord[3];
                uint8_t normal;
                for ( t = 0; t < 3; t++ )
-               {
-                  bin_read( coord[t], bufPtr, readLength );
-               }
-               bin_read( normal, bufPtr, readLength );
+                  src->read( coord[t] );
+               src->read( normal );
 
                double vec[3];
                vec[0] = coord[0] * scale[0] + translate[0];
@@ -348,17 +297,14 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
 
       // Read texture coords so that we have them for our triangles
       TexCoordT * texCoordsList = new TexCoordT[ numTexCoords ];
-      bufPtr     = &buffer[ offsetTexCoords ];
-      readLength = fileLength - offsetTexCoords;
+      src->seek( offsetTexCoords );
 
       for ( i = 0; i < numTexCoords; i++ )
       {
          int16_t s;
          int16_t t;
-         bin_read( s, bufPtr, readLength );
-         s = ltoh_16(s);
-         bin_read( t, bufPtr, readLength );
-         t = ltoh_16(t);
+         src->read( s );
+         src->read( t );
          texCoordsList[i].s = (float) s / skinWidth;
          texCoordsList[i].t = 1.0 - (float) t / skinHeight;
       }
@@ -367,8 +313,7 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
       model->addGroup( "Group" );
 
       // Now read triangles
-      bufPtr     = &buffer[ offsetTriangles ];
-      readLength = fileLength - offsetTriangles;
+      src->seek( offsetTriangles );
 
       for ( i = 0; i < numTriangles; i++ )
       {
@@ -376,18 +321,14 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
          uint16_t textureIndices[3];
 
          for ( t = 0; t < 3; t++ )
-         {
-            bin_read( vertexIndices[t], bufPtr, readLength );
-            vertexIndices[t] = ltoh_u16(vertexIndices[t]);
-         }
+            src->read( vertexIndices[t] );
 
          unsigned tri = model->addTriangle( vertexIndices[0], vertexIndices[1], vertexIndices[2] );
          model->addTriangleToGroup( 0, tri );
 
          for ( t = 0; t < 3; t++ )
          {
-            bin_read( textureIndices[t], bufPtr, readLength );
-            textureIndices[t] = ltoh_u16(textureIndices[t]);
+            src->read( textureIndices[t] );
             model->setTextureCoords( i, t, 
                   texCoordsList[ textureIndices[t] ].s, 
                   texCoordsList[ textureIndices[t] ].t );
@@ -395,8 +336,7 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
       }
 
       // Now read skins
-      bufPtr     = &buffer[ offsetSkins ];
-      readLength = fileLength - offsetSkins;
+      src->seek( offsetSkins );
 
       TextureManager * texmgr = TextureManager::getInstance();
       bool haveSkin = false;
@@ -406,16 +346,11 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
       log_debug( "Skin data:\n" );
       for ( i = 0; i < numSkins; i++ )
       {
-         log_debug( "Skin %d: %s\n", i, bufPtr );
+         src->readBytes( (uint8_t *) name, 64 );
+         log_debug( "Skin %d: %s\n", i, name );
 
-         string tempStr = (char *) bufPtr;
-         if ( tempStr.size() >= 64 )
-         {
-            tempStr.resize( 63 );
-         }
+         string tempStr = name;
          replaceBackslash( tempStr );
-
-         bufPtr += 64;
 
          char tempPath[ 64 ];
          if ( !model->getMetaData( "MD2_PATH", tempPath, sizeof(tempPath) ) )
@@ -554,8 +489,7 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
       }
 
       // Now read strips/fans
-      bufPtr     = &buffer[ offsetGlCommands ];
-      readLength = fileLength - offsetGlCommands;
+      src->seek( offsetGlCommands );
 
       unsigned numStrips = 0;
       unsigned numFans   = 0;
@@ -570,8 +504,7 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
          float u = 0.0;
          float v = 0.0;
 
-         bin_read( numVertices, bufPtr, readLength );
-         numVertices = ltoh_32(numVertices);
+         src->read( numVertices );
 
          if ( numVertices != 0 )
          {
@@ -591,12 +524,9 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
 
             for ( t = 0; t < (unsigned) numVertices; t++ )
             {
-               bin_read( u, bufPtr, readLength );
-               u = ltoh_float(u);
-               bin_read( v, bufPtr, readLength );
-               v = ltoh_float(v);
-               bin_read( vertexIndex, bufPtr, readLength );
-               vertexIndex = ltoh_u32(vertexIndex);
+               src->read( u );
+               src->read( v );
+               src->read( vertexIndex );
             }
          }
          else
@@ -611,8 +541,6 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
 
       delete[] texCoordsList;
 
-      delete[] buffer;
-
       _invertModelNormals( model );
 
       return Model::ERROR_NONE;
@@ -624,6 +552,7 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
    }
 }
 
+// FIXME test this!
 Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filename, ModelFilter::Options * o )
 {
    if ( model && filename && filename[0] )
@@ -657,25 +586,14 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
          }
       }
 
-      FILE * fp = fopen( filename, "wb" );
-      if ( fp == NULL )
-      {
-         if ( errno == ENOENT )
-         {
-            log_error( "%s: file does not exist\n", filename );
-            return Model::ERROR_NO_FILE;
-         }
-         if ( errno == EPERM )
-         {
-            log_error( "%s: access denied\n", filename );
-            return Model::ERROR_NO_ACCESS;
-         }
-
-         log_error( "%s: could not open file\n", filename );
-         return Model::ERROR_FILE_OPEN;
-      }
-
       _invertModelNormals( model );
+
+      Model::ModelErrorE err = Model::ERROR_NONE;
+      DataDest * dst = openOutput( filename, err );
+      FunctionCaller<DataDest> fc( dst, &DataDest::close );
+
+      if ( err != Model::ERROR_NONE )
+         return err;
 
       string modelPath = "";
       string modelBaseName = "";
@@ -776,45 +694,27 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
       }
 
       // Write header
-      int32_t temp32;
-      temp32 = htol_32(magic);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(version);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(skinWidth);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(skinHeight);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(frameSize);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(numSkins);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(numVertices);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(numTexCoords);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(numTriangles);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(numGlCommands);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(numFrames);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(offsetSkins);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(offsetTexCoords);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(offsetTriangles);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(offsetFrames);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(offsetGlCommands);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(offsetEnd);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
+      dst->write(magic);
+      dst->write(version);
+      dst->write(skinWidth);
+      dst->write(skinHeight);
+      dst->write(frameSize);
+      dst->write(numSkins);
+      dst->write(numVertices);
+      dst->write(numTexCoords);
+      dst->write(numTriangles);
+      dst->write(numGlCommands);
+      dst->write(numFrames);
+      dst->write(offsetSkins);
+      dst->write(offsetTexCoords);
+      dst->write(offsetTriangles);
+      dst->write(offsetFrames);
+      dst->write(offsetGlCommands);
+      dst->write(offsetEnd);
 
 
       // Write skins
-      offsetSkins = ftell( fp );
+      offsetSkins = dst->offset();
       for ( i = 0; i < (unsigned) numSkins; i++ )
       {
          int8_t skinpath[64]; // must be 64 bytes for skin writing to work
@@ -842,14 +742,14 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
          }
          log_debug( "writing skin %s as %s\n", baseName.c_str(), skinpath );
 
-         fwrite( skinpath, sizeof(skinpath), 1, fp );
+         dst->writeBytes( (uint8_t *) skinpath, sizeof(skinpath) );
 
          free( noext );
       }
 
       // Write texture coordinates
       // TODO might be able to optimize by finding shared texture coordinates
-      offsetTexCoords = ftell( fp );
+      offsetTexCoords = dst->offset();
 
       for ( i = 0; i < (unsigned) numTriangles; i++ )
       {
@@ -864,34 +764,30 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
             td = 1.0 - td;
 
             si = (int16_t) (sd * (double) skinWidth);
-            si = htol_16(si);
+            dst->write(si);
             ti = (int16_t) (td * (double) skinHeight);
-            ti = htol_16(ti);
-            fwrite( &si, sizeof(si), 1, fp );
-            fwrite( &ti, sizeof(ti), 1, fp );
+            dst->write(ti);
          }
       }
 
       // Write Triangles
-      offsetTriangles = ftell( fp );
+      offsetTriangles = dst->offset();
       for ( i = 0; i < (unsigned) numTriangles; i++ )
       {
          for ( unsigned v = 0; v < 3; v++ )
          {
             uint16_t vertex = (uint16_t) model->getTriangleVertex( i, v );
-            vertex = htol_u16(vertex);
-            fwrite( &vertex, sizeof(vertex), 1, fp );
+            dst->write(vertex);
          }
          for ( unsigned v = 0; v < 3; v++ )
          {
             uint16_t texindex = (uint16_t) i * 3 + v;
-            texindex = htol_u16(texindex);
-            fwrite( &texindex, sizeof(texindex), 1, fp );
+            dst->write(texindex);
          }
       }
 
       // Write Frames
-      offsetFrames = ftell( fp );
+      offsetFrames = dst->offset();
 
       for ( unsigned anim = 0; 
             (noAnim && anim == 0) || anim < model->getAnimCount( Model::ANIMMODE_FRAME );
@@ -964,25 +860,18 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
             saveMatrix.apply3( scale );
             saveMatrix.apply3( translate );
 
-            float tempfloat;
-            tempfloat = htol_float(scale[0]);
-            fwrite( &tempfloat, sizeof(scale[0]), 1, fp );
-            tempfloat = htol_float(scale[1]);
-            fwrite( &tempfloat, sizeof(scale[1]), 1, fp );
-            tempfloat = htol_float(scale[2]);
-            fwrite( &tempfloat, sizeof(scale[2]), 1, fp );
-            tempfloat = htol_float(translate[0]);
-            fwrite( &tempfloat, sizeof(translate[0]), 1, fp );
-            tempfloat = htol_float(translate[1]);
-            fwrite( &tempfloat, sizeof(translate[1]), 1, fp );
-            tempfloat = htol_float(translate[2]);
-            fwrite( &tempfloat, sizeof(translate[2]), 1, fp );
+            dst->write(scale[0]);
+            dst->write(scale[1]);
+            dst->write(scale[2]);
+            dst->write(translate[0]);
+            dst->write(translate[1]);
+            dst->write(translate[2]);
 
 
             char namestr[16];
             snprintf( namestr, 16, "%s%03d", animname.c_str(), i );
             namestr[15] = '\0';
-            fwrite( namestr, sizeof(namestr), 1, fp );
+            dst->writeBytes( (uint8_t *) namestr, sizeof(namestr) );
 
             double vertNormal[3] = {0,0,0};
             for ( v = 0; v < (unsigned) numVertices; v++ )
@@ -990,9 +879,9 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
                double vec[3] = {0, 0, 0};
                model->getFrameAnimVertexCoords( anim, i, v, vec[0], vec[1], vec[2] );
                saveMatrix.apply3( vec );
-               uint8_t xi = (uint8_t) ((vec[0] - translate[0]) / scale[0]);
-               uint8_t yi = (uint8_t) ((vec[1] - translate[1]) / scale[1]);
-               uint8_t zi = (uint8_t) ((vec[2] - translate[2]) / scale[2]);
+               uint8_t xi = (uint8_t) ((vec[0] - translate[0]) / scale[0] + 0.5);
+               uint8_t yi = (uint8_t) ((vec[1] - translate[1]) / scale[1] + 0.5);
+               uint8_t zi = (uint8_t) ((vec[2] - translate[2]) / scale[2] + 0.5);
                uint8_t normal = 0;
 
                model->getFrameAnimVertexNormal( anim, i, v, 
@@ -1006,16 +895,16 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
 
                normal = bestNormal( vertNormal );
 
-               fwrite( &xi, sizeof(xi), 1, fp );
-               fwrite( &yi, sizeof(yi), 1, fp );
-               fwrite( &zi, sizeof(zi), 1, fp );
-               fwrite( &normal, sizeof(normal), 1, fp );
+               dst->write( xi );
+               dst->write( yi );
+               dst->write( zi );
+               dst->write( normal );
             }
          }
       }
 
       // Write GL Commands
-      offsetGlCommands = ftell( fp );
+      offsetGlCommands = dst->offset();
 
       if ( numTriangles > 0 )
       {
@@ -1025,13 +914,7 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
             for ( t = 0; t < numStrips; t++ )
             {
                int32_t  count = stripList[t].size();
-               temp32 = htol_32(count);
-               fwrite( &temp32, sizeof(count), 1, fp );
-
-               /*
-               int v3 = -1;
-               int v2 = -1;
-               */
+               dst->write(count);
 
                for ( unsigned i = 0; i < (unsigned) count; i++ )
                {
@@ -1039,24 +922,10 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
                   float    s1 = stripList[t][i].s;
                   float    t1 = 1.0f - stripList[t][i].t;
 
-                  v1 = htol_u32(v1);
-                  s1 = htol_float(s1);
-                  t1 = htol_float(t1);
-
-
-                  fwrite( &s1, sizeof(s1), 1, fp );
-                  fwrite( &t1, sizeof(t1), 1, fp );
-                  fwrite( &v1, sizeof(v1), 1, fp );
-
-                  /*
-                  if ( v2 >= 0 && v3 >= 0 )
-                  {
-                     _getTriangleGlCommands( modelTriangles, v1, v2, v3 );
-                  }
-
-                  v3 = v2;
-                  v2 = v1;
-                  */
+                  // FIXME this is reversed from below. Is it correct?
+                  dst->write(t1);
+                  dst->write(s1);
+                  dst->write(v1);
                }
             }
 
@@ -1064,13 +933,7 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
             {
                int32_t  count = fanList[t].size();
 
-               temp32 = htol_32(-count);
-               fwrite( &temp32, sizeof(count), 1, fp );
-
-               /*
-               int v3 = -1;
-               int v2 = -1;
-               */
+               dst->write((int32_t) -count);
 
                for ( unsigned i = 0; i < (unsigned) count; i++ )
                {
@@ -1078,24 +941,10 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
                   float    s1 = fanList[t][i].s;
                   float    t1 = 1.0f - fanList[t][i].t;
 
-                  v1 = htol_u32(v1);
-                  s1 = htol_float(s1);
-                  t1 = htol_float(t1);
-
-
-                  fwrite( &s1, sizeof(s1), 1, fp );
-                  fwrite( &t1, sizeof(t1), 1, fp );
-                  fwrite( &v1, sizeof(v1), 1, fp );
-
-                  /*
-                  if ( v2 >= 0 && v3 >= 0 )
-                  {
-                     _getTriangleGlCommands( modelTriangles, v1, v2, v3 );
-                  }
-
-                  v3 = v2;
-                  v2 = v1;
-                  */
+                  // FIXME this is reversed from above. Is it correct?
+                  dst->write(v1);
+                  dst->write(s1);
+                  dst->write(t1);
                }
             }
          }
@@ -1103,52 +952,34 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
 
       // Write GL command end marker
       int32_t end = 0;
-      fwrite( &end, sizeof(end), 1, fp );
+      dst->write( end );
 
       // Get file length
-      offsetEnd = ftell( fp );
+      offsetEnd = dst->offset();
 
       // Re-write header
-      fseek( fp, 0, SEEK_SET );
-      temp32 = htol_32(magic);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(version);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(skinWidth);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(skinHeight);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(frameSize);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(numSkins);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(numVertices);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(numTexCoords);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(numTriangles);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(numGlCommands);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(numFrames);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(offsetSkins);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(offsetTexCoords);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(offsetTriangles);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(offsetFrames);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(offsetGlCommands);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
-      temp32 = htol_32(offsetEnd);
-      fwrite( &temp32, sizeof( int32_t ), 1, fp );
+      dst->seek( 0 );
+      dst->write(magic);
+      dst->write(version);
+      dst->write(skinWidth);
+      dst->write(skinHeight);
+      dst->write(frameSize);
+      dst->write(numSkins);
+      dst->write(numVertices);
+      dst->write(numTexCoords);
+      dst->write(numTriangles);
+      dst->write(numGlCommands);
+      dst->write(numFrames);
+      dst->write(offsetSkins);
+      dst->write(offsetTexCoords);
+      dst->write(offsetTriangles);
+      dst->write(offsetFrames);
+      dst->write(offsetGlCommands);
+      dst->write(offsetEnd);
 
       _invertModelNormals( model );
       model->operationComplete( "Invert normals for save" );
 
-      fclose( fp );
       return Model::ERROR_NONE;
    }
    else

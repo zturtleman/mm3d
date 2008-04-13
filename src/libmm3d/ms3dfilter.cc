@@ -30,7 +30,8 @@
 #include "file_closer.h"
 #include "mm3dport.h"
 #include "util.h"
-#include "endianconfig.h"
+#include "datadest.h"
+#include "datasource.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,6 +46,17 @@ using std::list;
 using std::string;
 
 char const Ms3dFilter::MAGIC_NUMBER[] = "MS3D000000";
+
+template<typename T>
+class FunctionCaller
+{
+   public:
+      FunctionCaller( T * obj, void (T::*method)(void) ) { m_obj = obj; m_method = method; }
+      ~FunctionCaller() { (m_obj->*m_method)(); }
+   private:
+      T * m_obj;
+      void (T::*m_method)(void);
+};
 
 /* 
 	MS3D STRUCTURES 
@@ -184,501 +196,468 @@ void Ms3dFilter::Ms3dOptions::setOptionsFromModel( Model * m )
 
 Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filename )
 {
-   LOG_PROFILE();
+   if ( !model || !filename )
+      return Model::ERROR_BAD_ARGUMENT;
 
-   if ( model && filename )
+   string modelPath = "";
+   string modelBaseName = "";
+   string modelFullName = "";
+
+   normalizePath( filename, modelFullName, modelPath, modelBaseName );
+
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   m_src = openInput( filename, err );
+   FunctionCaller<DataSource> fc( m_src, &DataSource::close );
+
+   if ( err != Model::ERROR_NONE )
+      return err;
+
+   model->setFilename( modelFullName.c_str() );
+
+   vector<Model::Vertex *>   & modelVertices  = getVertexList( model );
+   vector<Model::Triangle *> & modelTriangles = getTriangleList( model );
+   vector<Model::Group *>    & modelGroups    = getGroupList( model );
+   vector<Model::Material *> & modelMaterials = getMaterialList( model );
+   vector<Model::Joint *>    & modelJoints    = getJointList( model );
+
+   unsigned fileLength = m_src->getFileSize();
+
+   m_model  = model;
+
+   if ( fileLength < (sizeof( MS3DHeader ) + sizeof(uint16_t) ) )
    {
-      FILE * fp = fopen( filename, "rb" );
+      return Model::ERROR_UNEXPECTED_EOF;
+   }
 
-      if ( fp == NULL )
+   // Check header
+   MS3DHeader header;
+   m_src->readBytes( (uint8_t *) header.m_ID, sizeof(header.m_ID) );
+   m_src->read( header.m_version );
+
+   if ( strncmp( header.m_ID, MAGIC_NUMBER, 10 ) != 0 )
+   {
+      log_error( "bad magic number\n" );
+      return Model::ERROR_BAD_MAGIC;
+   }
+
+   int version = header.m_version;
+   if ( version < 3 || version > 4 )
+   {
+      log_error( "unsupported version\n" );
+      return Model::ERROR_UNSUPPORTED_VERSION;
+   }
+
+   uint16_t t; // MS Visual C++ is lame
+
+   uint16_t numVertices = 0;
+   m_src->read( numVertices );
+
+   // TODO verify file size vs. numVertices
+
+   std::vector< int > vertexJoints;
+   for ( t = 0; t < numVertices; t++ )
+   {
+      MS3DVertex vertex;
+      m_src->read( vertex.m_flags );
+      m_src->read( vertex.m_vertex[0] );
+      m_src->read( vertex.m_vertex[1] );
+      m_src->read( vertex.m_vertex[2] );
+      m_src->read( vertex.m_boneId );
+      m_src->read( vertex.m_refCount );
+
+      Model::Vertex * vert = Model::Vertex::get();
+      for ( int v = 0; v < 3; v++ )
       {
-         if ( errno == ENOENT )
+         vert->m_coord[v] = vertex.m_vertex[ v ];
+      }
+      modelVertices.push_back( vert );
+      vertexJoints.push_back( vertex.m_boneId );
+   }
+
+   uint16_t numTriangles = 0;
+   m_src->read( numTriangles );
+
+   if ( m_src->getRemaining() < (FILE_TRIANGLE_SIZE * numTriangles + sizeof( uint16_t )) )
+   {
+      return Model::ERROR_UNEXPECTED_EOF;
+   }
+
+   for ( t = 0; t < numTriangles; t++ )
+   {
+      Model::Triangle * curTriangle = Model::Triangle::get();
+      MS3DTriangle triangle;
+      m_src->read( triangle.m_flags );
+      m_src->read( triangle.m_vertexIndices[0] );
+      m_src->read( triangle.m_vertexIndices[1] );
+      m_src->read( triangle.m_vertexIndices[2] );
+      m_src->read( triangle.m_vertexNormals[0][0] );
+      m_src->read( triangle.m_vertexNormals[0][1] );
+      m_src->read( triangle.m_vertexNormals[0][2] );
+      m_src->read( triangle.m_vertexNormals[1][0] );
+      m_src->read( triangle.m_vertexNormals[1][1] );
+      m_src->read( triangle.m_vertexNormals[1][2] );
+      m_src->read( triangle.m_vertexNormals[2][0] );
+      m_src->read( triangle.m_vertexNormals[2][1] );
+      m_src->read( triangle.m_vertexNormals[2][2] );
+      m_src->read( triangle.m_s[0] );
+      m_src->read( triangle.m_s[1] );
+      m_src->read( triangle.m_s[2] );
+      m_src->read( triangle.m_t[0] );
+      m_src->read( triangle.m_t[1] );
+      m_src->read( triangle.m_t[2] );
+      m_src->read( triangle.m_smoothingGroup );
+      m_src->read( triangle.m_groupIndex );
+
+      curTriangle->m_vertexIndices[0] = triangle.m_vertexIndices[0];
+      curTriangle->m_vertexIndices[1] = triangle.m_vertexIndices[1];
+      curTriangle->m_vertexIndices[2] = triangle.m_vertexIndices[2];
+
+      for ( int i = 0; i < 3; i++ )
+      {
+         if ( curTriangle->m_vertexIndices[i] >= numVertices )
          {
-            log_error( "%s: file does not exist\n", filename );
-            return Model::ERROR_NO_FILE;
+            //log_debug( "vertex: %d/%d\n", curTriangle->m_vertexIndices[i],
+            //      modelVertices.size() );
+            return Model::ERROR_BAD_DATA;
          }
-         if ( errno == EPERM )
+      }
+
+      for ( int i = 0; i < 3; i++ )
+      {
+         // Need to invert the T coord, since milkshape seems to store it
+         // upside-down.
+         curTriangle->m_s[i] = triangle.m_s[i];
+         curTriangle->m_t[i] = 1.0 - triangle.m_t[i];
+      }
+
+      for ( int y = 0; y < 3; y++ )
+      {
+         for( int x = 0; x < 3; x++ )
          {
-            log_error( "%s: access denied\n", filename );
-            return Model::ERROR_NO_ACCESS;
+            curTriangle->m_vertexNormals[y][x] = triangle.m_vertexNormals[y][x];
          }
-
-         log_error( "%s: could not open file\n", filename );
-         return Model::ERROR_FILE_OPEN;
       }
 
-      file_closer fc(fp);
+      modelTriangles.push_back( curTriangle );
+   }
 
-      string modelPath = "";
-      string modelBaseName = "";
-      string modelFullName = "";
+   uint16_t numGroups = 0;
+   m_src->read( numGroups );
 
-      normalizePath( filename, modelFullName, modelPath, modelBaseName );
-      
-      model->setFilename( modelFullName.c_str() );
+   log_debug( "model says %d groups\n" );
 
-      vector<Model::Vertex *>   & modelVertices  = getVertexList( model );
-      vector<Model::Triangle *> & modelTriangles = getTriangleList( model );
-      vector<Model::Group *>    & modelGroups    = getGroupList( model );
-      vector<Model::Material *> & modelMaterials = getMaterialList( model );
-      vector<Model::Joint *>    & modelJoints    = getJointList( model );
+   for ( t = 0; t < numGroups; t++ )
+   {
+      Model::Group * group = Model::Group::get();
+      modelGroups.push_back( group );
 
-      fseek( fp, 0, SEEK_END );
-      unsigned fileLength = ftell( fp );
-      fseek( fp, 0, SEEK_SET );
+      uint8_t flags = 0;
+      m_src->read( flags );
 
-      // read whole file into memory
-      uint8_t *buffer = new uint8_t[fileLength];
-      local_array<uint8_t> freeBuffer( buffer );
+      char tempstr[32];
+      readString( tempstr, sizeof(tempstr) );
+      group->m_name = tempstr;
 
-      if ( fread( buffer, fileLength, 1, fp ) != 1 )
-      {
-         log_error( "%s: could not read file\n", filename );
-         return Model::ERROR_FILE_READ;
-      }
-
-      m_model  = model;
-      m_buffer = buffer;
-      m_bufPos = buffer;
-      m_bufEnd = buffer + fileLength;
-
-      if ( fileLength < (sizeof( MS3DHeader ) + sizeof(uint16_t) ) )
-      {
-         return Model::ERROR_UNEXPECTED_EOF;
-      }
-
-      // Check header
-      MS3DHeader header;
-      readBytes( header.m_ID, sizeof(header.m_ID) );
-      read( header.m_version );
-
-      if ( strncmp( header.m_ID, MAGIC_NUMBER, 10 ) != 0 )
-      {
-         log_error( "bad magic number\n" );
-         return Model::ERROR_BAD_MAGIC;
-      }
-
-      int version = header.m_version;
-      if ( version < 3 || version > 4 )
-      {
-         log_error( "unsupported version\n" );
-         return Model::ERROR_UNSUPPORTED_VERSION;
-      }
-
-      uint16_t t; // MS Visual C++ is lame
-
-      uint16_t numVertices = 0;
-      read( numVertices );
-
-      // TODO verify file size vs. numVertices
-
-      std::vector< int > vertexJoints;
-      for ( t = 0; t < numVertices; t++ )
-      {
-         MS3DVertex vertex;
-         read( vertex.m_flags );
-         read( vertex.m_vertex[0] );
-         read( vertex.m_vertex[1] );
-         read( vertex.m_vertex[2] );
-         read( vertex.m_boneId );
-         read( vertex.m_refCount );
-
-         Model::Vertex * vert = Model::Vertex::get();
-         for ( int v = 0; v < 3; v++ )
-         {
-            vert->m_coord[v] = vertex.m_vertex[ v ];
-         }
-         modelVertices.push_back( vert );
-         vertexJoints.push_back( vertex.m_boneId );
-      }
+      log_debug( "group name: %s\n", modelGroups[t]->m_name.c_str() );
 
       uint16_t numTriangles = 0;
-      read( numTriangles );
+      m_src->read( numTriangles );
 
-      if ( (fileLength - ( m_bufPos - buffer )) < (FILE_TRIANGLE_SIZE * numTriangles + sizeof( uint16_t )) )
+      uint16_t triIndex = 0;
+      for ( uint16_t n = 0; n < numTriangles; n++ )
       {
-         return Model::ERROR_UNEXPECTED_EOF;
-      }
-
-      for ( t = 0; t < numTriangles; t++ )
-      {
-         Model::Triangle * curTriangle = Model::Triangle::get();
-         MS3DTriangle triangle;
-         read( triangle.m_flags );
-         read( triangle.m_vertexIndices[0] );
-         read( triangle.m_vertexIndices[1] );
-         read( triangle.m_vertexIndices[2] );
-         read( triangle.m_vertexNormals[0][0] );
-         read( triangle.m_vertexNormals[0][1] );
-         read( triangle.m_vertexNormals[0][2] );
-         read( triangle.m_vertexNormals[1][0] );
-         read( triangle.m_vertexNormals[1][1] );
-         read( triangle.m_vertexNormals[1][2] );
-         read( triangle.m_vertexNormals[2][0] );
-         read( triangle.m_vertexNormals[2][1] );
-         read( triangle.m_vertexNormals[2][2] );
-         read( triangle.m_s[0] );
-         read( triangle.m_s[1] );
-         read( triangle.m_s[2] );
-         read( triangle.m_t[0] );
-         read( triangle.m_t[1] );
-         read( triangle.m_t[2] );
-         read( triangle.m_smoothingGroup );
-         read( triangle.m_groupIndex );
-
-         curTriangle->m_vertexIndices[0] = triangle.m_vertexIndices[0];
-         curTriangle->m_vertexIndices[1] = triangle.m_vertexIndices[1];
-         curTriangle->m_vertexIndices[2] = triangle.m_vertexIndices[2];
-
-         for ( int i = 0; i < 3; i++ )
+         m_src->read( triIndex );
+         if ( triIndex >= modelTriangles.size() )
          {
-            if ( curTriangle->m_vertexIndices[i] >= numVertices )
-            {
-               //log_debug( "vertex: %d/%d\n", curTriangle->m_vertexIndices[i],
-               //      modelVertices.size() );
-               return Model::ERROR_BAD_DATA;
-            }
-         }
-
-         for ( int i = 0; i < 3; i++ )
-         {
-            // Need to invert the T coord, since milkshape seems to store it
-            // upside-down.
-            curTriangle->m_s[i] = triangle.m_s[i];
-            curTriangle->m_t[i] = 1.0 - triangle.m_t[i];
-         }
-
-         for ( int y = 0; y < 3; y++ )
-         {
-            for( int x = 0; x < 3; x++ )
-            {
-               curTriangle->m_vertexNormals[y][x] = triangle.m_vertexNormals[y][x];
-            }
-         }
-
-         modelTriangles.push_back( curTriangle );
-      }
-
-      uint16_t numGroups = 0;
-      read( numGroups );
-
-      log_debug( "model says %d groups\n" );
-
-      for ( t = 0; t < numGroups; t++ )
-      {
-         Model::Group * group = Model::Group::get();
-         modelGroups.push_back( group );
-
-         uint8_t flags = 0;
-         read( flags );
-
-         char tempstr[32];
-         readString( tempstr, sizeof(tempstr) );
-         group->m_name = tempstr;
-
-         log_debug( "group name: %s\n", modelGroups[t]->m_name.c_str() );
-
-         uint16_t numTriangles = 0;
-         read( numTriangles );
-
-         uint16_t triIndex = 0;
-         for ( uint16_t n = 0; n < numTriangles; n++ )
-         {
-            read( triIndex );
-            if ( triIndex >= modelTriangles.size() )
-            {
-               log_error( "TRIANGLE OUT OF RANGE %d/%d\n",
-                     triIndex, modelTriangles.size() );
-               return Model::ERROR_BAD_DATA;
-            }
-            group->m_triangleIndices.insert( triIndex );
-         }
-
-         int8_t material = 0;
-         read( material );
-         group->m_materialIndex = material;
-
-         // Already added group to m_groups
-      }
-
-      uint16_t numMaterials = 0;
-      read( numMaterials );
-      log_debug( "model says %d materials\n", numMaterials );
-
-      for ( t = 0; t < numGroups; t++ )
-      {
-         if ( modelGroups[t]->m_materialIndex >= numMaterials )
+            log_error( "TRIANGLE OUT OF RANGE %d/%d\n",
+                  triIndex, modelTriangles.size() );
             return Model::ERROR_BAD_DATA;
+         }
+         group->m_triangleIndices.insert( triIndex );
       }
 
-      for ( t = 0; t < numMaterials; t++ )
+      int8_t material = 0;
+      m_src->read( material );
+      group->m_materialIndex = material;
+
+      // Already added group to m_groups
+   }
+
+   uint16_t numMaterials = 0;
+   m_src->read( numMaterials );
+   log_debug( "model says %d materials\n", numMaterials );
+
+   for ( t = 0; t < numGroups; t++ )
+   {
+      if ( modelGroups[t]->m_materialIndex >= numMaterials )
+         return Model::ERROR_BAD_DATA;
+   }
+
+   for ( t = 0; t < numMaterials; t++ )
+   {
+      Model::Material * mat = Model::Material::get();
+      MS3DMaterial material;
+
+      readString( material.m_name, sizeof(material.m_name) );
+      m_src->read( material.m_ambient[0] );
+      m_src->read( material.m_ambient[1] );
+      m_src->read( material.m_ambient[2] );
+      m_src->read( material.m_ambient[3] );
+      m_src->read( material.m_diffuse[0] );
+      m_src->read( material.m_diffuse[1] );
+      m_src->read( material.m_diffuse[2] );
+      m_src->read( material.m_diffuse[3] );
+      m_src->read( material.m_specular[0] );
+      m_src->read( material.m_specular[1] );
+      m_src->read( material.m_specular[2] );
+      m_src->read( material.m_specular[3] );
+      m_src->read( material.m_emissive[0] );
+      m_src->read( material.m_emissive[1] );
+      m_src->read( material.m_emissive[2] );
+      m_src->read( material.m_emissive[3] );
+      m_src->read( material.m_shininess );
+      m_src->read( material.m_transparency );
+      m_src->read( material.m_mode );
+      readString( material.m_texture, sizeof( material.m_texture ) );
+      readString( material.m_alphamap, sizeof( material.m_alphamap ) );
+
+      log_debug( "material name is %s\n", material.m_name );
+      mat->m_name = material.m_name;
+
+      mat->m_ambient[0]  = material.m_ambient[0];
+      mat->m_ambient[1]  = material.m_ambient[1];
+      mat->m_ambient[2]  = material.m_ambient[2];
+      mat->m_ambient[3]  = material.m_ambient[3];
+      mat->m_diffuse[0]  = material.m_diffuse[0];
+      mat->m_diffuse[1]  = material.m_diffuse[1];
+      mat->m_diffuse[2]  = material.m_diffuse[2];
+      mat->m_diffuse[3]  = material.m_diffuse[3];
+      mat->m_specular[0] = material.m_specular[0];
+      mat->m_specular[1] = material.m_specular[1];
+      mat->m_specular[2] = material.m_specular[2];
+      mat->m_specular[3] = material.m_specular[3];
+      mat->m_emissive[0] = material.m_emissive[0];
+      mat->m_emissive[1] = material.m_emissive[1];
+      mat->m_emissive[2] = material.m_emissive[2];
+      mat->m_emissive[3] = material.m_emissive[3];
+      mat->m_shininess   = material.m_shininess;
+
+      mat->m_type = Model::Material::MATTYPE_TEXTURE;
+      if ( material.m_texture[0] == '\0' )
       {
-         Model::Material * mat = Model::Material::get();
-         MS3DMaterial material;
+         mat->m_type = Model::Material::MATTYPE_BLANK;
+      }
 
-         readString( material.m_name, sizeof(material.m_name) );
-         read( material.m_ambient[0] );
-         read( material.m_ambient[1] );
-         read( material.m_ambient[2] );
-         read( material.m_ambient[3] );
-         read( material.m_diffuse[0] );
-         read( material.m_diffuse[1] );
-         read( material.m_diffuse[2] );
-         read( material.m_diffuse[3] );
-         read( material.m_specular[0] );
-         read( material.m_specular[1] );
-         read( material.m_specular[2] );
-         read( material.m_specular[3] );
-         read( material.m_emissive[0] );
-         read( material.m_emissive[1] );
-         read( material.m_emissive[2] );
-         read( material.m_emissive[3] );
-         read( material.m_shininess );
-         read( material.m_transparency );
-         read( material.m_mode );
-         readString( material.m_texture, sizeof( material.m_texture ) );
-         readString( material.m_alphamap, sizeof( material.m_alphamap ) );
+      replaceBackslash( material.m_texture );
+      replaceBackslash( material.m_alphamap );
 
-         log_debug( "material name is %s\n", material.m_name );
-         mat->m_name = material.m_name;
+      // Get absolute path for texture
+      string texturePath = material.m_texture;
 
-         mat->m_ambient[0]  = material.m_ambient[0];
-         mat->m_ambient[1]  = material.m_ambient[1];
-         mat->m_ambient[2]  = material.m_ambient[2];
-         mat->m_ambient[3]  = material.m_ambient[3];
-         mat->m_diffuse[0]  = material.m_diffuse[0];
-         mat->m_diffuse[1]  = material.m_diffuse[1];
-         mat->m_diffuse[2]  = material.m_diffuse[2];
-         mat->m_diffuse[3]  = material.m_diffuse[3];
-         mat->m_specular[0] = material.m_specular[0];
-         mat->m_specular[1] = material.m_specular[1];
-         mat->m_specular[2] = material.m_specular[2];
-         mat->m_specular[3] = material.m_specular[3];
-         mat->m_emissive[0] = material.m_emissive[0];
-         mat->m_emissive[1] = material.m_emissive[1];
-         mat->m_emissive[2] = material.m_emissive[2];
-         mat->m_emissive[3] = material.m_emissive[3];
-         mat->m_shininess   = material.m_shininess;
+      texturePath = fixAbsolutePath( modelPath.c_str(), texturePath.c_str() );
+      texturePath = getAbsolutePath( modelPath.c_str(), texturePath.c_str() );
 
-         mat->m_type = Model::Material::MATTYPE_TEXTURE;
-         if ( material.m_texture[0] == '\0' )
-         {
-            mat->m_type = Model::Material::MATTYPE_BLANK;
-         }
+      mat->m_filename  = texturePath;
 
-         replaceBackslash( material.m_texture );
-         replaceBackslash( material.m_alphamap );
+      // Get absolute path for alpha map
+      texturePath = material.m_alphamap;
 
-         // Get absolute path for texture
-         string texturePath = material.m_texture;
-
+      if ( texturePath.length() > 0 )
+      {
          texturePath = fixAbsolutePath( modelPath.c_str(), texturePath.c_str() );
          texturePath = getAbsolutePath( modelPath.c_str(), texturePath.c_str() );
+      }
 
-         mat->m_filename  = texturePath;
+      mat->m_alphaFilename = texturePath;
 
-         // Get absolute path for alpha map
-         texturePath = material.m_alphamap;
+      modelMaterials.push_back( mat );
+   }
 
-         if ( texturePath.length() > 0 )
+   setModelInitialized( model, true );
+
+   float32_t fps = 0;
+   m_src->read( fps );
+
+   // don't need this
+   float32_t currentTime = 0;
+   m_src->read( currentTime );
+
+   int32_t numFrames = 0;
+   m_src->read( numFrames );
+
+   setModelNumFrames( model, numFrames );
+
+   if ( numFrames > 0 )
+   {
+      model->addAnimation( Model::ANIMMODE_SKELETAL, "Keyframe" );
+      model->setAnimFPS( Model::ANIMMODE_SKELETAL, 0, fps );
+      model->setAnimFrameCount( Model::ANIMMODE_SKELETAL, 0, numFrames );
+   }
+
+   uint16_t numJoints = 0;
+   m_src->read( numJoints );
+
+   off_t tmpOffset = m_src->offset();
+   JointNameListRecT * nameList = new JointNameListRecT[ numJoints ];
+   local_array<JointNameListRecT> freeList( nameList );
+
+   for ( t = 0; t < numJoints; t++ )
+   {
+      MS3DJoint joint;
+
+      m_src->read( joint.m_flags );
+      readString( joint.m_name, sizeof( joint.m_name ) );
+      readString( joint.m_parentName, sizeof( joint.m_parentName ) );
+      m_src->read( joint.m_rotation[0] );
+      m_src->read( joint.m_rotation[1] );
+      m_src->read( joint.m_rotation[2] );
+      m_src->read( joint.m_translation[0] );
+      m_src->read( joint.m_translation[1] );
+      m_src->read( joint.m_translation[2] );
+      m_src->read( joint.m_numRotationKeyframes );
+      m_src->read( joint.m_numTranslationKeyframes );
+
+      m_src->seek( m_src->offset() + ( FILE_KEYFRAME_SIZE * (joint.m_numRotationKeyframes + joint.m_numTranslationKeyframes) ) );
+
+      nameList[t].m_jointIndex = t;
+      nameList[t].m_name = joint.m_name;
+   }
+
+   m_src->seek( tmpOffset );
+
+   for ( t = 0; t < numJoints; t++ )
+   {
+      log_debug( "Reading joint %d\n", t );
+      MS3DJoint joint;
+
+      m_src->read( joint.m_flags );
+      readString( joint.m_name, sizeof( joint.m_name ) );
+      readString( joint.m_parentName, sizeof( joint.m_parentName ) );
+      m_src->read( joint.m_rotation[0] );
+      m_src->read( joint.m_rotation[1] );
+      m_src->read( joint.m_rotation[2] );
+      m_src->read( joint.m_translation[0] );
+      m_src->read( joint.m_translation[1] );
+      m_src->read( joint.m_translation[2] );
+      m_src->read( joint.m_numRotationKeyframes );
+      m_src->read( joint.m_numTranslationKeyframes );
+
+      int parentIndex = -1;
+      if ( strlen(joint.m_parentName) > 0 )
+      {
+         for ( uint16_t j = 0; j < numJoints; j++ )
          {
-            texturePath = fixAbsolutePath( modelPath.c_str(), texturePath.c_str() );
-            texturePath = getAbsolutePath( modelPath.c_str(), texturePath.c_str() );
-         }
-
-         mat->m_alphaFilename = texturePath;
-
-         modelMaterials.push_back( mat );
-      }
-
-      setModelInitialized( model, true );
-
-      float32_t fps = 0;
-      read( fps );
-
-      // don't need this
-      float32_t currentTime = 0;
-      read( currentTime );
-
-      int32_t numFrames = 0;
-      read( numFrames );
-
-      setModelNumFrames( model, numFrames );
-
-      if ( numFrames > 0 )
-      {
-         model->addAnimation( Model::ANIMMODE_SKELETAL, "Keyframe" );
-         model->setAnimFPS( Model::ANIMMODE_SKELETAL, 0, fps );
-         model->setAnimFrameCount( Model::ANIMMODE_SKELETAL, 0, numFrames );
-      }
-
-      uint16_t numJoints = 0;
-      read( numJoints );
-
-      uint8_t * tempPtr = m_bufPos;
-      JointNameListRecT * nameList = new JointNameListRecT[ numJoints ];
-      local_array<JointNameListRecT> freeList( nameList );
-
-      for ( t = 0; t < numJoints; t++ )
-      {
-         MS3DJoint joint;
-
-         read( joint.m_flags );
-         readString( joint.m_name, sizeof( joint.m_name ) );
-         readString( joint.m_parentName, sizeof( joint.m_parentName ) );
-         read( joint.m_rotation[0] );
-         read( joint.m_rotation[1] );
-         read( joint.m_rotation[2] );
-         read( joint.m_translation[0] );
-         read( joint.m_translation[1] );
-         read( joint.m_translation[2] );
-         read( joint.m_numRotationKeyframes );
-         read( joint.m_numTranslationKeyframes );
-
-         skipBytes( FILE_KEYFRAME_SIZE * (joint.m_numRotationKeyframes + joint.m_numTranslationKeyframes) );
-
-         nameList[t].m_jointIndex = t;
-         nameList[t].m_name = joint.m_name;
-      }
-
-      m_bufPos = tempPtr;
-
-      for ( t = 0; t < numJoints; t++ )
-      {
-         MS3DJoint joint;
-
-         read( joint.m_flags );
-         readString( joint.m_name, sizeof( joint.m_name ) );
-         readString( joint.m_parentName, sizeof( joint.m_parentName ) );
-         read( joint.m_rotation[0] );
-         read( joint.m_rotation[1] );
-         read( joint.m_rotation[2] );
-         read( joint.m_translation[0] );
-         read( joint.m_translation[1] );
-         read( joint.m_translation[2] );
-         read( joint.m_numRotationKeyframes );
-         read( joint.m_numTranslationKeyframes );
-
-         int parentIndex = -1;
-         if ( strlen(joint.m_parentName) > 0 )
-         {
-            for ( uint16_t j = 0; j < numJoints; j++ )
+            if ( strcasecmp( nameList[j].m_name.c_str(), joint.m_parentName ) == 0 )
             {
-               if ( strcasecmp( nameList[j].m_name.c_str(), joint.m_parentName ) == 0 )
-               {
-                  parentIndex = nameList[j].m_jointIndex;
-                  break;
-               }
-            }
-
-            if ( parentIndex == -1 )
-            {
-               log_error( "No parent\n" );
-               return Model::ERROR_BAD_DATA; // no parent!
+               parentIndex = nameList[j].m_jointIndex;
+               break;
             }
          }
 
-         modelJoints.push_back( Model::Joint::get() );
+         if ( parentIndex == -1 )
+         {
+            log_error( "No parent\n" );
+            return Model::ERROR_BAD_DATA; // no parent!
+         }
+      }
+
+      modelJoints.push_back( Model::Joint::get() );
+
+      for ( int i = 0; i < 3; i++ )
+      {
+         modelJoints[t]->m_localRotation[i]    = joint.m_rotation[i];
+         modelJoints[t]->m_localTranslation[i] = joint.m_translation[i];
+      }
+      modelJoints[t]->m_parent = parentIndex;
+      modelJoints[t]->m_name   = joint.m_name;
+
+      uint16_t numRotationKeyframes    = joint.m_numRotationKeyframes;
+      uint16_t numTranslationKeyframes = joint.m_numTranslationKeyframes;
+
+      log_debug( "Joint %d keyframes: %d rot %d trans\n",
+            t, numRotationKeyframes, numTranslationKeyframes );
+
+      uint16_t j; // MS Visual C++ is lame
+      for ( j = 0; j < numRotationKeyframes; j++ )
+      {
+         Model::Keyframe * mkeyframe = Model::Keyframe::get();
+         MS3DKeyframe keyframe;
+
+         m_src->read( keyframe.m_time );
+         m_src->read( keyframe.m_parameter[0] );
+         m_src->read( keyframe.m_parameter[1] );
+         m_src->read( keyframe.m_parameter[2] );
+
+         mkeyframe->m_jointIndex = t;
+         mkeyframe->m_time = keyframe.m_time;
 
          for ( int i = 0; i < 3; i++ )
          {
-            modelJoints[t]->m_localRotation[i]    = joint.m_rotation[i];
-            modelJoints[t]->m_localTranslation[i] = joint.m_translation[i];
+            mkeyframe->m_parameter[i] = keyframe.m_parameter[i];
          }
-         modelJoints[t]->m_parent = parentIndex;
-         modelJoints[t]->m_name   = joint.m_name;
 
-         uint16_t numRotationKeyframes    = joint.m_numRotationKeyframes;
-         uint16_t numTranslationKeyframes = joint.m_numTranslationKeyframes;
+         unsigned frame = (unsigned) (keyframe.m_time / (1.0 / fps)) - 1;
 
-         uint16_t j; // MS Visual C++ is lame
-         for ( j = 0; j < numRotationKeyframes; j++ )
+         model->setSkelAnimKeyframe( 0, frame, t, true,
+               mkeyframe->m_parameter[0], mkeyframe->m_parameter[1], mkeyframe->m_parameter[2] );
+
+         mkeyframe->release();
+      }
+      for ( j = 0; j < numTranslationKeyframes; j++ )
+      {
+         Model::Keyframe * mkeyframe = Model::Keyframe::get();
+         MS3DKeyframe keyframe;
+
+         m_src->read( keyframe.m_time );
+         m_src->read( keyframe.m_parameter[0] );
+         m_src->read( keyframe.m_parameter[1] );
+         m_src->read( keyframe.m_parameter[2] );
+
+         mkeyframe->m_jointIndex = t;
+         mkeyframe->m_time = keyframe.m_time;
+
+         for ( int i = 0; i < 3; i++ )
          {
-            Model::Keyframe * mkeyframe = Model::Keyframe::get();
-            MS3DKeyframe keyframe;
-
-            read( keyframe.m_time );
-            read( keyframe.m_parameter[0] );
-            read( keyframe.m_parameter[1] );
-            read( keyframe.m_parameter[2] );
-
-            mkeyframe->m_jointIndex = t;
-            mkeyframe->m_time = keyframe.m_time;
-
-            for ( int i = 0; i < 3; i++ )
-            {
-               mkeyframe->m_parameter[i] = keyframe.m_parameter[i];
-            }
-
-            unsigned frame = (unsigned) (keyframe.m_time / (1.0 / fps)) - 1;
-
-            model->setSkelAnimKeyframe( 0, frame, t, true,
-                  mkeyframe->m_parameter[0], mkeyframe->m_parameter[1], mkeyframe->m_parameter[2] );
-
-            mkeyframe->release();
+            mkeyframe->m_parameter[i] = keyframe.m_parameter[i];
          }
-         for ( j = 0; j < numTranslationKeyframes; j++ )
-         {
-            Model::Keyframe * mkeyframe = Model::Keyframe::get();
-            MS3DKeyframe keyframe;
 
-            read( keyframe.m_time );
-            read( keyframe.m_parameter[0] );
-            read( keyframe.m_parameter[1] );
-            read( keyframe.m_parameter[2] );
+         unsigned frame = (unsigned) (keyframe.m_time / (1.0 / fps)) - 1;
 
-            mkeyframe->m_jointIndex = t;
-            mkeyframe->m_time = keyframe.m_time;
+         model->setSkelAnimKeyframe( 0, frame, t, false,
+               mkeyframe->m_parameter[0], mkeyframe->m_parameter[1], mkeyframe->m_parameter[2] );
 
-            for ( int i = 0; i < 3; i++ )
-            {
-               mkeyframe->m_parameter[i] = keyframe.m_parameter[i];
-            }
-
-            unsigned frame = (unsigned) (keyframe.m_time / (1.0 / fps)) - 1;
-
-            model->setSkelAnimKeyframe( 0, frame, t, false,
-                  mkeyframe->m_parameter[0], mkeyframe->m_parameter[1], mkeyframe->m_parameter[2] );
-
-            mkeyframe->release();
-         }
+         mkeyframe->release();
       }
-
-      for ( int i = 0; i < numVertices; i++ )
-      {
-         model->setVertexBoneJoint( i, vertexJoints[i] );
-      }
-
-      bool keepReading = true;
-      if ( m_bufPos < m_bufEnd )
-      {
-         keepReading = readCommentSection();
-      }
-      if ( keepReading && m_bufPos < m_bufEnd )
-      {
-         keepReading = readVertexWeightSection();
-      }
-
-      // TODO: May want to read joint extra data eventually
-
-      model->setupJoints();
-
-      log_debug( "model loaded\n" );
-      log_debug( "  vertices:  %d\n", numVertices );
-      log_debug( "  triangles: %d\n", numTriangles );
-      log_debug( "  groups:    %d\n", numGroups );
-      log_debug( "  materials: %d\n", numMaterials );
-      log_debug( "  joints:    %d\n", numJoints );
-      log_debug( "\n" );
-
-      m_bufPos = NULL;
-
-      return Model::ERROR_NONE;
    }
-   else
+
+   for ( int i = 0; i < numVertices; i++ )
    {
-      return Model::ERROR_BAD_ARGUMENT;
+      model->setVertexBoneJoint( i, vertexJoints[i] );
    }
+
+   bool keepReading = true;
+   if ( !m_src->eof() )
+   {
+      keepReading = readCommentSection();
+   }
+   if ( keepReading && !m_src->eof() )
+   {
+      keepReading = readVertexWeightSection();
+   }
+
+   // TODO: May want to read joint extra data eventually
+
+   model->setupJoints();
+
+   log_debug( "model loaded\n" );
+   log_debug( "  vertices:  %d\n", numVertices );
+   log_debug( "  triangles: %d\n", numTriangles );
+   log_debug( "  groups:    %d\n", numGroups );
+   log_debug( "  materials: %d\n", numMaterials );
+   log_debug( "  joints:    %d\n", numJoints );
+   log_debug( "\n" );
+
+   return Model::ERROR_NONE;
 }
 
 Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const filename, ModelFilter::Options * o )
@@ -722,519 +701,445 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
       m_options = freeOptions.get();
    }
    
-   m_fp = fopen( filename, "wb" );
+   string modelPath = "";
+   string modelBaseName = "";
+   string modelFullName = "";
 
-   if ( m_fp )
+   normalizePath( filename, modelFullName, modelPath, modelBaseName );
+
+   m_model = model;
+
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   m_dst = openOutput( filename, err );
+   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
+
+   if ( err != Model::ERROR_NONE )
+      return err;
+
+   // Groups don't share vertices with Milk Shape 3D. Create mesh list
+   // that has unique vertices for each group. UVs/normals are per-face
+   // vertex rather than per-vertex, so vertices do not have to have
+   // unique UVs or normals.
+
+   MeshList ml;
+   mesh_create_list( ml, model, Mesh::MO_Group | Mesh::MO_Material );
+
+   vector<Model::Vertex *>   & modelVertices  = getVertexList( model );
+   vector<Model::Triangle *> & modelTriangles = getTriangleList( model );
+   vector<Model::Group *>    & modelGroups    = getGroupList( model );
+   vector<Model::Material *> & modelMaterials = getMaterialList( model );
+   vector<Model::Joint *>    & modelJoints    = getJointList( model );
+
+   m_dst->writeBytes( (const uint8_t*) MAGIC_NUMBER, strlen(MAGIC_NUMBER) );
+   int32_t version = 4;
+   m_dst->write( version );
+
+   uint16_t t;
+
+   // write vertices
+   uint16_t numVertices = mesh_list_vertex_count( ml );
+   m_dst->write( numVertices );
+   log_debug( "writing %d vertices\n", numVertices );
+
+   MeshList::const_iterator it;
+
+   for ( it = ml.begin(); it != ml.end(); it++ )
    {
-      file_closer fc(m_fp);
-
-      string modelPath = "";
-      string modelBaseName = "";
-      string modelFullName = "";
-
-      normalizePath( filename, modelFullName, modelPath, modelBaseName );
-
-      m_model = model;
-
-      // Groups don't share vertices with Milk Shape 3D. Create mesh list
-      // that has unique vertices for each group. UVs/normals are per-face
-      // vertex rather than per-vertex, so vertices do not have to have
-      // unique UVs or normals.
-
-      MeshList ml;
-      mesh_create_list( ml, model, Mesh::MO_Group | Mesh::MO_Material );
-
-      vector<Model::Vertex *>   & modelVertices  = getVertexList( model );
-      vector<Model::Triangle *> & modelTriangles = getTriangleList( model );
-      vector<Model::Group *>    & modelGroups    = getGroupList( model );
-      vector<Model::Material *> & modelMaterials = getMaterialList( model );
-      vector<Model::Joint *>    & modelJoints    = getJointList( model );
-
-      writeBytes( MAGIC_NUMBER, strlen(MAGIC_NUMBER) );
-      int32_t version = 4;
-      write( version );
-
-      uint16_t t;
-
-      // write vertices
-      uint16_t numVertices = mesh_list_vertex_count( ml );
-      write( numVertices );
-      log_debug( "writing %d vertices\n", numVertices );
-
-      MeshList::const_iterator it;
-
-      for ( it = ml.begin(); it != ml.end(); it++ )
+      for ( t = 0; t < it->vertices.size(); t++ )
       {
-         for ( t = 0; t < it->vertices.size(); t++ )
-         {
-            int modelVert = it->vertices[t].v;
-            Model::Vertex * mvert = modelVertices[modelVert];
-            MS3DVertex vert;
-            uint8_t refcount = 0;
+         int modelVert = it->vertices[t].v;
+         Model::Vertex * mvert = modelVertices[modelVert];
+         MS3DVertex vert;
+         uint8_t refcount = 0;
 
-            vert.m_flags = 1;
+         vert.m_flags = 1;
+         for ( int n = 0; n < 3; n++ )
+         {
+            vert.m_vertex[n] = mvert->m_coord[n];
+         }
+         vert.m_boneId = model->getPrimaryVertexInfluence( modelVert );
+
+         unsigned modelTriangleCount = it->faces.size();
+         for ( unsigned tri = 0; tri < modelTriangleCount; tri++ )
+         {
+            for ( unsigned v = 0; v < 3; v++ )
+            {
+               if ( it->faces[tri].v[v] == t )
+               {
+                  refcount++;
+               }
+            }
+         }
+
+         vert.m_refCount = refcount;
+
+         m_dst->write( vert.m_flags );
+         m_dst->write( vert.m_vertex[0] );
+         m_dst->write( vert.m_vertex[1] );
+         m_dst->write( vert.m_vertex[2] );
+         m_dst->write( vert.m_boneId );
+         m_dst->write( vert.m_refCount );
+      }
+   }
+
+   // write triangles
+   uint16_t numTriangles = (uint16_t) mesh_list_face_count( ml );
+   m_dst->write( numTriangles );
+   log_debug( "writing %d triangles\n", numTriangles );
+
+   int vertBase = 0;
+   int meshNum = 0;
+   for ( it = ml.begin(); it != ml.end(); it++ )
+   {
+      for ( t = 0; t < it->faces.size(); t++ )
+      {
+         int modelTri = it->faces[t].modelTri;
+         Model::Triangle * mtri = modelTriangles[modelTri];
+         MS3DTriangle tri;
+
+         tri.m_flags = 1;
+         for ( int v = 0; v < 3; v++ )
+         {
+            tri.m_vertexIndices[v] = it->faces[t].v[v] + vertBase;
+            tri.m_s[v] = mtri->m_s[v];
+            tri.m_t[v] = 1.0 - mtri->m_t[v];
+
             for ( int n = 0; n < 3; n++ )
             {
-               vert.m_vertex[n] = mvert->m_coord[n];
-            }
-            vert.m_boneId = model->getPrimaryVertexInfluence( modelVert );
-
-            unsigned modelTriangleCount = it->faces.size();
-            for ( unsigned tri = 0; tri < modelTriangleCount; tri++ )
-            {
-               for ( unsigned v = 0; v < 3; v++ )
-               {
-                  if ( it->faces[tri].v[v] == t )
-                  {
-                     refcount++;
-                  }
-               }
-            }
-
-            vert.m_refCount = refcount;
-
-            write( vert.m_flags );
-            write( vert.m_vertex[0] );
-            write( vert.m_vertex[1] );
-            write( vert.m_vertex[2] );
-            write( vert.m_boneId );
-            write( vert.m_refCount );
-         }
-      }
-
-      // write triangles
-      uint16_t numTriangles = (uint16_t) mesh_list_face_count( ml );
-      write( numTriangles );
-      log_debug( "writing %d triangles\n", numTriangles );
-
-      int vertBase = 0;
-      int meshNum = 0;
-      for ( it = ml.begin(); it != ml.end(); it++ )
-      {
-         for ( t = 0; t < it->faces.size(); t++ )
-         {
-            int modelTri = it->faces[t].modelTri;
-            Model::Triangle * mtri = modelTriangles[modelTri];
-            MS3DTriangle tri;
-
-            tri.m_flags = 1;
-            for ( int v = 0; v < 3; v++ )
-            {
-               tri.m_vertexIndices[v] = it->faces[t].v[v] + vertBase;
-               tri.m_s[v] = mtri->m_s[v];
-               tri.m_t[v] = 1.0 - mtri->m_t[v];
-
-               for ( int n = 0; n < 3; n++ )
-               {
-                  tri.m_vertexNormals[v][n] = mtri->m_vertexNormals[v][n];
-               }
-            }
-
-            tri.m_groupIndex = meshNum;
-            tri.m_smoothingGroup = 0;
-
-            write( tri.m_flags );
-            write( tri.m_vertexIndices[0] );
-            write( tri.m_vertexIndices[1] );
-            write( tri.m_vertexIndices[2] );
-            write( tri.m_vertexNormals[0][0] );
-            write( tri.m_vertexNormals[0][1] );
-            write( tri.m_vertexNormals[0][2] );
-            write( tri.m_vertexNormals[1][0] );
-            write( tri.m_vertexNormals[1][1] );
-            write( tri.m_vertexNormals[1][2] );
-            write( tri.m_vertexNormals[2][0] );
-            write( tri.m_vertexNormals[2][1] );
-            write( tri.m_vertexNormals[2][2] );
-            write( tri.m_s[0] );
-            write( tri.m_s[1] );
-            write( tri.m_s[2] );
-            write( tri.m_t[0] );
-            write( tri.m_t[1] );
-            write( tri.m_t[2] );
-            write( tri.m_smoothingGroup );
-            write( tri.m_groupIndex );
-         }
-         vertBase += it->vertices.size();
-         meshNum++;
-      }
-
-      // write groups
-      uint16_t numGroups = ml.size();
-      write( numGroups );
-      log_debug( "writing %d groups\n", numGroups );
-
-      int triBase = 0;
-      for ( it = ml.begin(); it != ml.end(); it++ )
-      {
-         Model::Group * grp = NULL;
-         if ( it->group >= 0 )
-         {
-            grp = modelGroups[it->group];
-         }
-         uint8_t flags = 0;
-         write( flags );
-
-         char groupname[32];
-         if ( grp )
-            PORT_snprintf( groupname, sizeof(groupname),
-                  "%s", grp->m_name.c_str() );
-         else
-            strcpy( groupname, "Ungrouped" );
-
-         writeString( groupname, sizeof(groupname) );
-
-         uint16_t groupTriangles = it->faces.size();
-         write( groupTriangles );
-
-         for ( uint16_t n = 0; n < groupTriangles; n++ )
-         {
-            uint16_t index = n + triBase;
-            write( index );
-         }
-
-         uint8_t material = static_cast<uint8_t>(~0);
-         if ( grp )
-            material = grp->m_materialIndex;
-         write( material );
-
-         triBase += it->faces.size();
-      }
-
-      uint16_t numMaterials = modelMaterials.size();
-      write( numMaterials );
-      log_debug( "writing %d materials\n", numMaterials );
-
-      for ( t = 0; t < numMaterials; t++ )
-      {
-         Model::Material * mmat = modelMaterials[t];
-         MS3DMaterial mat;
-
-         PORT_snprintf( mat.m_name, sizeof( mat.m_name ),
-               "%s", mmat->m_name.c_str() );
-
-         string texturePath;
-         texturePath = getRelativePath( modelPath.c_str(), mmat->m_filename.c_str() );
-
-         PORT_snprintf( mat.m_texture, sizeof( mat.m_texture ),
-               "%s", texturePath.c_str() );
-
-         texturePath = getRelativePath( modelPath.c_str(), mmat->m_alphaFilename.c_str() );
-
-         PORT_snprintf( mat.m_alphamap, sizeof( mat.m_alphamap ),
-               "%s", texturePath.c_str() );
-
-         replaceSlash( mat.m_texture );
-         replaceSlash( mat.m_alphamap );
-
-         for ( int n = 0; n < 4; n++ )
-         {
-            mat.m_ambient[n]  = mmat->m_ambient[n];
-            mat.m_diffuse[n]  = mmat->m_diffuse[n];
-            mat.m_specular[n] = mmat->m_specular[n];
-            mat.m_emissive[n] = mmat->m_emissive[n];
-         }
-
-         mat.m_shininess    = mmat->m_shininess;
-         mat.m_transparency = 1.0;
-         mat.m_mode = 0;
-
-         writeString( mat.m_name, sizeof(mat.m_name) );
-         write( mat.m_ambient[0] );
-         write( mat.m_ambient[1] );
-         write( mat.m_ambient[2] );
-         write( mat.m_ambient[3] );
-         write( mat.m_diffuse[0] );
-         write( mat.m_diffuse[1] );
-         write( mat.m_diffuse[2] );
-         write( mat.m_diffuse[3] );
-         write( mat.m_specular[0] );
-         write( mat.m_specular[1] );
-         write( mat.m_specular[2] );
-         write( mat.m_specular[3] );
-         write( mat.m_emissive[0] );
-         write( mat.m_emissive[1] );
-         write( mat.m_emissive[2] );
-         write( mat.m_emissive[3] );
-         write( mat.m_shininess );
-         write( mat.m_transparency );
-         write( mat.m_mode );
-         writeString( mat.m_texture, sizeof(mat.m_texture) );
-         writeString( mat.m_alphamap, sizeof(mat.m_alphamap) );
-      }
-
-      float32_t fps = 30.0f;
-      if ( model->getAnimCount( Model::ANIMMODE_SKELETAL ) > 0 )
-      {
-         fps = model->getAnimFPS( Model::ANIMMODE_SKELETAL, 0 );
-      }
-      if ( fps <= 0.0 )
-      {
-         fps = 30.0f;
-      }
-
-      float32_t currentTime = 1.0;
-      int32_t numFrames = model->getNumFrames();
-
-      double spf = 1.0 / fps;
-
-      write( fps );
-      write( currentTime );
-      write( numFrames );
-
-      uint16_t numJoints = modelJoints.size();
-      write( numJoints );
-
-      for ( t = 0; t < numJoints; t++ )
-      {
-         Model::Joint * mjoint = modelJoints[t];
-         MS3DJoint joint;
-
-         PORT_snprintf( joint.m_name, sizeof(joint.m_name),
-               "%s", mjoint->m_name.c_str() );
-
-         if ( mjoint->m_parent >= 0 )
-         {
-            PORT_snprintf( joint.m_parentName, sizeof(joint.m_parentName),
-                  "%s", modelJoints[ mjoint->m_parent ]->m_name.c_str() );
-         }
-         else
-         {
-            joint.m_parentName[0] = '\0';
-         }
-
-         joint.m_flags = 8;
-
-         for ( int i = 0; i < 3; i++ )
-         {
-            joint.m_rotation[i] = mjoint->m_localRotation[i];
-            joint.m_translation[i] = mjoint->m_localTranslation[i];
-         }
-
-         unsigned animcount = model->getAnimCount( Model::ANIMMODE_SKELETAL );
-         unsigned framecount = 0;
-         unsigned prevcount = 0;
-
-         unsigned a = 0;
-         unsigned f = 0;
-
-         unsigned rotcount   = 0;
-         unsigned transcount = 0;
-
-         double x = 0;
-         double y = 0;
-         double z = 0;
-
-         for ( a = 0; a < animcount; a++ )
-         {
-            framecount = model->getAnimFrameCount( Model::ANIMMODE_SKELETAL, a );
-
-            for ( f = 0; f < framecount; f++ )
-            {
-               if ( model->getSkelAnimKeyframe( a, f, t, true, x, y, z ) )
-               {
-                  rotcount++;
-               }
-               if ( model->getSkelAnimKeyframe( a, f, t, false, x, y, z ) )
-               {
-                  transcount++;
-               }
+               tri.m_vertexNormals[v][n] = mtri->m_vertexNormals[v][n];
             }
          }
 
-         joint.m_numRotationKeyframes = rotcount;
-         joint.m_numTranslationKeyframes = transcount;
+         tri.m_groupIndex = meshNum;
+         tri.m_smoothingGroup = 0;
 
-         log_debug( "rotation: %d\n", rotcount );
-         log_debug( "translation: %d\n", transcount );
+         m_dst->write( tri.m_flags );
+         m_dst->write( tri.m_vertexIndices[0] );
+         m_dst->write( tri.m_vertexIndices[1] );
+         m_dst->write( tri.m_vertexIndices[2] );
+         m_dst->write( tri.m_vertexNormals[0][0] );
+         m_dst->write( tri.m_vertexNormals[0][1] );
+         m_dst->write( tri.m_vertexNormals[0][2] );
+         m_dst->write( tri.m_vertexNormals[1][0] );
+         m_dst->write( tri.m_vertexNormals[1][1] );
+         m_dst->write( tri.m_vertexNormals[1][2] );
+         m_dst->write( tri.m_vertexNormals[2][0] );
+         m_dst->write( tri.m_vertexNormals[2][1] );
+         m_dst->write( tri.m_vertexNormals[2][2] );
+         m_dst->write( tri.m_s[0] );
+         m_dst->write( tri.m_s[1] );
+         m_dst->write( tri.m_s[2] );
+         m_dst->write( tri.m_t[0] );
+         m_dst->write( tri.m_t[1] );
+         m_dst->write( tri.m_t[2] );
+         m_dst->write( tri.m_smoothingGroup );
+         m_dst->write( tri.m_groupIndex );
+      }
+      vertBase += it->vertices.size();
+      meshNum++;
+   }
 
-         write( joint.m_flags );
-         writeString( joint.m_name, sizeof(joint.m_name) );
-         writeString( joint.m_parentName, sizeof(joint.m_parentName) );
-         write( joint.m_rotation[0] );
-         write( joint.m_rotation[1] );
-         write( joint.m_rotation[2] );
-         write( joint.m_translation[0] );
-         write( joint.m_translation[1] );
-         write( joint.m_translation[2] );
-         write( joint.m_numRotationKeyframes );
-         write( joint.m_numTranslationKeyframes );
+   // write groups
+   uint16_t numGroups = ml.size();
+   m_dst->write( numGroups );
+   log_debug( "writing %d groups\n", numGroups );
 
-         // Rotation keyframes
-         prevcount = 0;
-         for ( a = 0; a < animcount; a++ )
+   int triBase = 0;
+   for ( it = ml.begin(); it != ml.end(); it++ )
+   {
+      Model::Group * grp = NULL;
+      if ( it->group >= 0 )
+      {
+         grp = modelGroups[it->group];
+      }
+      uint8_t flags = 0;
+      m_dst->write( flags );
+
+      char groupname[32];
+      if ( grp )
+         PORT_snprintf( groupname, sizeof(groupname),
+               "%s", grp->m_name.c_str() );
+      else
+         strcpy( groupname, "Ungrouped" );
+
+      m_dst->writeBytes( (const uint8_t*) groupname, sizeof(groupname) );
+
+      uint16_t groupTriangles = it->faces.size();
+      m_dst->write( groupTriangles );
+
+      for ( uint16_t n = 0; n < groupTriangles; n++ )
+      {
+         uint16_t index = n + triBase;
+         m_dst->write( index );
+      }
+
+      uint8_t material = static_cast<uint8_t>(~0);
+      if ( grp )
+         material = grp->m_materialIndex;
+      m_dst->write( material );
+
+      triBase += it->faces.size();
+   }
+
+   uint16_t numMaterials = modelMaterials.size();
+   m_dst->write( numMaterials );
+   log_debug( "writing %d materials\n", numMaterials );
+
+   for ( t = 0; t < numMaterials; t++ )
+   {
+      Model::Material * mmat = modelMaterials[t];
+      MS3DMaterial mat;
+
+      PORT_snprintf( mat.m_name, sizeof( mat.m_name ),
+            "%s", mmat->m_name.c_str() );
+
+      string texturePath;
+      texturePath = getRelativePath( modelPath.c_str(), mmat->m_filename.c_str() );
+
+      PORT_snprintf( mat.m_texture, sizeof( mat.m_texture ),
+            "%s", texturePath.c_str() );
+
+      texturePath = getRelativePath( modelPath.c_str(), mmat->m_alphaFilename.c_str() );
+
+      PORT_snprintf( mat.m_alphamap, sizeof( mat.m_alphamap ),
+            "%s", texturePath.c_str() );
+
+      replaceSlash( mat.m_texture );
+      replaceSlash( mat.m_alphamap );
+
+      for ( int n = 0; n < 4; n++ )
+      {
+         mat.m_ambient[n]  = mmat->m_ambient[n];
+         mat.m_diffuse[n]  = mmat->m_diffuse[n];
+         mat.m_specular[n] = mmat->m_specular[n];
+         mat.m_emissive[n] = mmat->m_emissive[n];
+      }
+
+      mat.m_shininess    = mmat->m_shininess;
+      mat.m_transparency = 1.0;
+      mat.m_mode = 0;
+
+      m_dst->writeBytes( (const uint8_t*) mat.m_name, sizeof(mat.m_name) );
+      m_dst->write( mat.m_ambient[0] );
+      m_dst->write( mat.m_ambient[1] );
+      m_dst->write( mat.m_ambient[2] );
+      m_dst->write( mat.m_ambient[3] );
+      m_dst->write( mat.m_diffuse[0] );
+      m_dst->write( mat.m_diffuse[1] );
+      m_dst->write( mat.m_diffuse[2] );
+      m_dst->write( mat.m_diffuse[3] );
+      m_dst->write( mat.m_specular[0] );
+      m_dst->write( mat.m_specular[1] );
+      m_dst->write( mat.m_specular[2] );
+      m_dst->write( mat.m_specular[3] );
+      m_dst->write( mat.m_emissive[0] );
+      m_dst->write( mat.m_emissive[1] );
+      m_dst->write( mat.m_emissive[2] );
+      m_dst->write( mat.m_emissive[3] );
+      m_dst->write( mat.m_shininess );
+      m_dst->write( mat.m_transparency );
+      m_dst->write( mat.m_mode );
+      m_dst->writeBytes( (const uint8_t*) mat.m_texture, sizeof(mat.m_texture) );
+      m_dst->writeBytes( (const uint8_t*) mat.m_alphamap, sizeof(mat.m_alphamap) );
+   }
+
+   float32_t fps = 30.0f;
+   if ( model->getAnimCount( Model::ANIMMODE_SKELETAL ) > 0 )
+   {
+      fps = model->getAnimFPS( Model::ANIMMODE_SKELETAL, 0 );
+   }
+   if ( fps <= 0.0 )
+   {
+      fps = 30.0f;
+   }
+
+   float32_t currentTime = 1.0;
+   int32_t numFrames = model->getNumFrames();
+
+   double spf = 1.0 / fps;
+
+   m_dst->write( fps );
+   m_dst->write( currentTime );
+   m_dst->write( numFrames );
+
+   uint16_t numJoints = modelJoints.size();
+   m_dst->write( numJoints );
+
+   for ( t = 0; t < numJoints; t++ )
+   {
+      Model::Joint * mjoint = modelJoints[t];
+      MS3DJoint joint;
+
+      PORT_snprintf( joint.m_name, sizeof(joint.m_name),
+            "%s", mjoint->m_name.c_str() );
+
+      if ( mjoint->m_parent >= 0 )
+      {
+         PORT_snprintf( joint.m_parentName, sizeof(joint.m_parentName),
+               "%s", modelJoints[ mjoint->m_parent ]->m_name.c_str() );
+      }
+      else
+      {
+         joint.m_parentName[0] = '\0';
+      }
+
+      joint.m_flags = 8;
+
+      for ( int i = 0; i < 3; i++ )
+      {
+         joint.m_rotation[i] = mjoint->m_localRotation[i];
+         joint.m_translation[i] = mjoint->m_localTranslation[i];
+      }
+
+      unsigned animcount = model->getAnimCount( Model::ANIMMODE_SKELETAL );
+      unsigned framecount = 0;
+      unsigned prevcount = 0;
+
+      unsigned a = 0;
+      unsigned f = 0;
+
+      unsigned rotcount   = 0;
+      unsigned transcount = 0;
+
+      double x = 0;
+      double y = 0;
+      double z = 0;
+
+      for ( a = 0; a < animcount; a++ )
+      {
+         framecount = model->getAnimFrameCount( Model::ANIMMODE_SKELETAL, a );
+
+         for ( f = 0; f < framecount; f++ )
          {
-            framecount = model->getAnimFrameCount( Model::ANIMMODE_SKELETAL, a );
-
-            for ( f = 0; f < framecount; f++ )
+            if ( model->getSkelAnimKeyframe( a, f, t, true, x, y, z ) )
             {
-               if ( model->getSkelAnimKeyframe( a, f, t, true, x, y, z ) )
-               {
-                  MS3DKeyframe keyframe;
-                  keyframe.m_time = ((double) (prevcount + f + 1)) * spf;
-                  log_debug( "keyframe time: %f\n", keyframe.m_time );
-
-                  keyframe.m_time = keyframe.m_time;
-                  keyframe.m_parameter[0] = x;
-                  keyframe.m_parameter[1] = y;
-                  keyframe.m_parameter[2] = z;
-
-                  write( keyframe.m_time );
-                  write( keyframe.m_parameter[0] );
-                  write( keyframe.m_parameter[1] );
-                  write( keyframe.m_parameter[2] );
-               }
+               rotcount++;
             }
-
-            prevcount += framecount;
-         }
-
-         // Translation keyframes
-         prevcount = 0;
-         for ( a = 0; a < animcount; a++ )
-         {
-            framecount = model->getAnimFrameCount( Model::ANIMMODE_SKELETAL, a );
-
-            for ( f = 0; f < framecount; f++ )
+            if ( model->getSkelAnimKeyframe( a, f, t, false, x, y, z ) )
             {
-               if ( model->getSkelAnimKeyframe( a, f, t, false, x, y, z ) )
-               {
-                  MS3DKeyframe keyframe;
-                  keyframe.m_time = ((double) (prevcount + f + 1)) * spf;
-                  log_debug( "keyframe time: %f\n", keyframe.m_time );
+               transcount++;
+            }
+         }
+      }
 
-                  keyframe.m_time = keyframe.m_time;
-                  keyframe.m_parameter[0] = x;
-                  keyframe.m_parameter[1] = y;
-                  keyframe.m_parameter[2] = z;
+      joint.m_numRotationKeyframes = rotcount;
+      joint.m_numTranslationKeyframes = transcount;
 
-                  write( keyframe.m_time );
-                  write( keyframe.m_parameter[0] );
-                  write( keyframe.m_parameter[1] );
-                  write( keyframe.m_parameter[2] );
-               }
+      log_debug( "rotation: %d\n", rotcount );
+      log_debug( "translation: %d\n", transcount );
+
+      m_dst->write( joint.m_flags );
+      m_dst->writeBytes( (const uint8_t*) joint.m_name, sizeof(joint.m_name) );
+      m_dst->writeBytes( (const uint8_t*) joint.m_parentName, sizeof(joint.m_parentName) );
+      m_dst->write( joint.m_rotation[0] );
+      m_dst->write( joint.m_rotation[1] );
+      m_dst->write( joint.m_rotation[2] );
+      m_dst->write( joint.m_translation[0] );
+      m_dst->write( joint.m_translation[1] );
+      m_dst->write( joint.m_translation[2] );
+      m_dst->write( joint.m_numRotationKeyframes );
+      m_dst->write( joint.m_numTranslationKeyframes );
+
+      // Rotation keyframes
+      prevcount = 0;
+      for ( a = 0; a < animcount; a++ )
+      {
+         framecount = model->getAnimFrameCount( Model::ANIMMODE_SKELETAL, a );
+
+         for ( f = 0; f < framecount; f++ )
+         {
+            if ( model->getSkelAnimKeyframe( a, f, t, true, x, y, z ) )
+            {
+               MS3DKeyframe keyframe;
+               keyframe.m_time = ((double) (prevcount + f + 1)) * spf;
+               log_debug( "keyframe time: %f\n", keyframe.m_time );
+
+               keyframe.m_time = keyframe.m_time;
+               keyframe.m_parameter[0] = x;
+               keyframe.m_parameter[1] = y;
+               keyframe.m_parameter[2] = z;
+
+               m_dst->write( keyframe.m_time );
+               m_dst->write( keyframe.m_parameter[0] );
+               m_dst->write( keyframe.m_parameter[1] );
+               m_dst->write( keyframe.m_parameter[2] );
             }
          }
 
          prevcount += framecount;
       }
 
-      int32_t subVersion = m_options->m_subVersion;
-      if ( subVersion == 1 || subVersion == 2 )
+      // Translation keyframes
+      prevcount = 0;
+      for ( a = 0; a < animcount; a++ )
       {
-         // Remember some values in meta data
-         char value[128];
-         sprintf( value, "%d", subVersion );
-         m_model->updateMetaData( "ms3d_sub_version", value );
+         framecount = model->getAnimFrameCount( Model::ANIMMODE_SKELETAL, a );
 
-         if ( subVersion == 2 )
+         for ( f = 0; f < framecount; f++ )
          {
-            sprintf( value, "%x", m_options->m_vertexExtra );
-            m_model->updateMetaData( "ms3d_vertex_extra", value );
+            if ( model->getSkelAnimKeyframe( a, f, t, false, x, y, z ) )
+            {
+               MS3DKeyframe keyframe;
+               keyframe.m_time = ((double) (prevcount + f + 1)) * spf;
+               log_debug( "keyframe time: %f\n", keyframe.m_time );
+
+               keyframe.m_time = keyframe.m_time;
+               keyframe.m_parameter[0] = x;
+               keyframe.m_parameter[1] = y;
+               keyframe.m_parameter[2] = z;
+
+               m_dst->write( keyframe.m_time );
+               m_dst->write( keyframe.m_parameter[0] );
+               m_dst->write( keyframe.m_parameter[1] );
+               m_dst->write( keyframe.m_parameter[2] );
+            }
          }
-
-         writeCommentSection();
-         writeVertexWeightSection( ml );
-
-         // TODO joint color
-         //writeJointColorSection();
       }
 
-      m_fp = NULL;
-
-      rval = Model::Model::ERROR_NONE;
+      prevcount += framecount;
    }
-   else
+
+   int32_t subVersion = m_options->m_subVersion;
+   if ( subVersion == 1 || subVersion == 2 )
    {
-      if ( errno == ENOENT )
+      // Remember some values in meta data
+      char value[128];
+      sprintf( value, "%d", subVersion );
+      m_model->updateMetaData( "ms3d_sub_version", value );
+
+      if ( subVersion == 2 )
       {
-         log_error( "%s: file does not exist\n", filename );
-         rval = Model::ERROR_NO_FILE;
+         sprintf( value, "%x", m_options->m_vertexExtra );
+         m_model->updateMetaData( "ms3d_vertex_extra", value );
       }
-      else if ( errno == EPERM )
-      {
-         log_error( "%s: access denied\n", filename );
-         rval = Model::ERROR_NO_ACCESS;
-      }
-      else
-      {
-         log_error( "%s: could not open file\n", filename );
-         rval = Model::ERROR_FILE_OPEN;
-      }
+
+      writeCommentSection();
+      writeVertexWeightSection( ml );
+
+      // TODO joint color
+      //writeJointColorSection();
    }
+
+   rval = Model::Model::ERROR_NONE;
 
    m_options = NULL;
 
    return rval;
 }
 
-void Ms3dFilter::write( uint32_t val )
-{
-   val = htol_u32( val );
-   fwrite( &val, sizeof(val), 1, m_fp );
-}
-
-void Ms3dFilter::write( uint16_t val )
-{
-   val = htol_u16( val );
-   fwrite( &val, sizeof(val), 1, m_fp );
-}
-
-void Ms3dFilter::write( uint8_t val )
-{
-   fwrite( &val, sizeof(val), 1, m_fp );
-}
-
-void Ms3dFilter::write( int32_t val )
-{
-   val = htol_32( val );
-   fwrite( &val, sizeof(val), 1, m_fp );
-}
-
-void Ms3dFilter::write( int16_t val )
-{
-   val = htol_16( val );
-   fwrite( &val, sizeof(val), 1, m_fp );
-}
-
-void Ms3dFilter::write( int8_t val )
-{
-   fwrite( &val, sizeof(val), 1, m_fp );
-}
-
-void Ms3dFilter::write( float32_t val )
-{
-   val = htol_float( val );
-   fwrite( &val, sizeof(val), 1, m_fp );
-}
-
-void Ms3dFilter::writeBytes( const void * buf, size_t len )
-{
-   fwrite( buf, len, 1, m_fp );
-}
-
-void Ms3dFilter::writeString( const char * buf, size_t len )
-{
-   fwrite( buf, len - 1, 1, m_fp );
-
-   // be polite, make sure our strings are null-terminated
-   uint8_t ch = 0;
-   fwrite( &ch, sizeof(ch), 1, m_fp );
-}
-
 void Ms3dFilter::writeCommentSection()
 {
    // This is always 1
    int32_t subVersion = 1;
-   write( subVersion );
+   m_dst->write( subVersion );
 
    log_debug( "writing comments subversion %d\n", subVersion );
 
    int32_t numComments = 0;
-   write( numComments ); // groups
-   write( numComments ); // materials
-   write( numComments ); // joints
-   write( numComments ); // model
+   m_dst->write( numComments ); // groups
+   m_dst->write( numComments ); // materials
+   m_dst->write( numComments ); // joints
+   m_dst->write( numComments ); // model
 }
 
 void Ms3dFilter::writeVertexWeightSection( const MeshList & ml )
@@ -1244,23 +1149,32 @@ void Ms3dFilter::writeVertexWeightSection( const MeshList & ml )
    {
       subVersion = 1;
    }
-   write( subVersion );
+   m_dst->write( subVersion );
 
    log_debug( "writing vertex weights subversion %d\n", subVersion );
 
    Model::InfluenceList ilist;
 
+   int vwritten = 0;
    MeshList::const_iterator it;
    for ( it = ml.begin(); it != ml.end(); it++ )
    {
+      // FIXME remove debug
+      //fprintf( stderr, "writing influences for mesh\n" );
       int vcount = it->vertices.size();
       for ( int v = 0; v < vcount; v++ )
       {
+         // FIXME remove debug
+         //fprintf( stderr, " mesh vertex %d (%d) is model vertex %d\n", v, vwritten, it->vertices[v].v );
+
          ilist.clear();
-         m_model->getVertexInfluences( it->vertices[v].v, ilist );
+         if (!m_model->getVertexInfluences( it->vertices[v].v, ilist ))
+            log_error( "get influences failed for vertex %d\n",
+                  it->vertices[v].v );
 
          ilist.sort();
          writeVertexWeight( subVersion, ilist );
+         ++vwritten;
       }
    }
 }
@@ -1268,7 +1182,7 @@ void Ms3dFilter::writeVertexWeightSection( const MeshList & ml )
 void Ms3dFilter::writeJointColorSection()
 {
    int32_t subVersion = m_options->m_subVersion;
-   write( subVersion );
+   m_dst->write( subVersion );
 
    log_debug( "writing joint color subversion %d\n", subVersion );
 
@@ -1279,7 +1193,7 @@ void Ms3dFilter::writeJointColorSection()
       {
          int ic = 0xff & (m_options->m_jointColor >> (t*8));
          float fc = static_cast<float>(ic) / 255.0;
-         write( fc );
+         m_dst->write( fc );
       }
    }
 }
@@ -1320,81 +1234,28 @@ void Ms3dFilter::writeVertexWeight( int subVersion,
 
    // Yes, this needs to start at 1 (one), boneId[0] is stored
    // earlier in the file
-   write( boneId[1] );
-   write( boneId[2] );
-   write( boneId[3] );
+   m_dst->write( boneId[1] );
+   m_dst->write( boneId[2] );
+   m_dst->write( boneId[3] );
 
    // Yes, this needs to start at 0 (zero), weight[3] is implicit
    log_debug( "write weights: %d, %d, %d\n", weight[0], weight[1], weight[2] );
-   write( weight[0] );
-   write( weight[1] );
-   write( weight[2] );
+   m_dst->write( weight[0] );
+   m_dst->write( weight[1] );
+   m_dst->write( weight[2] );
 
    if ( subVersion == 2 )
    {
       uint32_t extra = m_options->m_vertexExtra;
-      write( extra );
+      m_dst->write( extra );
    }
-}
-
-void Ms3dFilter::read( uint32_t & val )
-{
-   val = ltoh_u32( * (uint32_t*) m_bufPos );
-   m_bufPos += sizeof( uint32_t );
-}
-
-void Ms3dFilter::read( uint16_t & val )
-{
-   val = ltoh_u16( * (uint16_t*) m_bufPos );
-   m_bufPos += sizeof( uint16_t );
-}
-
-void Ms3dFilter::read( uint8_t & val )
-{
-   val = * (uint8_t*) m_bufPos;
-   m_bufPos += sizeof( uint8_t );
-}
-
-void Ms3dFilter::read( int32_t & val )
-{
-   val = ltoh_32( * (int32_t*) m_bufPos );
-   m_bufPos += sizeof( int32_t );
-}
-
-void Ms3dFilter::read( int16_t & val )
-{
-   val = ltoh_16( * (int16_t*) m_bufPos );
-   m_bufPos += sizeof( int16_t );
-}
-
-void Ms3dFilter::read( int8_t & val )
-{
-   val = * (int8_t*) m_bufPos;
-   m_bufPos += sizeof( int8_t );
-}
-
-void Ms3dFilter::read( float32_t & val )
-{
-   val = ltoh_float( * (float32_t*) m_bufPos );
-   m_bufPos += sizeof( float32_t );
-}
-
-void Ms3dFilter::readBytes( void * buf, size_t len )
-{
-   memcpy( buf, m_bufPos, len );
-   m_bufPos += len;
-}
-
-void Ms3dFilter::skipBytes( size_t len )
-{
-   m_bufPos += len;
 }
 
 void Ms3dFilter::readString( char * buf, size_t len )
 {
    if ( len > 0 )
    {
-      readBytes( buf, len );
+      m_src->readBytes( (uint8_t *) buf, len );
       buf[ len - 1 ] = '\0';
       log_debug( "read string: %s\n", buf );
    }
@@ -1406,7 +1267,7 @@ bool Ms3dFilter::readCommentSection()
    log_debug( "reading comments section\n");
 
    int32_t subVersion = 0;
-   read( subVersion );
+   m_src->read( subVersion );
 
    log_debug( "  sub version: %d\n", subVersion );
 
@@ -1414,7 +1275,7 @@ bool Ms3dFilter::readCommentSection()
 
    for ( int c = CT_GROUP; c < CT_MAX; c++ )
    {
-      read( numComments );
+      m_src->read( numComments );
       log_debug( "  comment type %d: %d comments\n", c, numComments );
 
       for ( int n = 0; n < numComments; n++ )
@@ -1422,20 +1283,23 @@ bool Ms3dFilter::readCommentSection()
          int32_t index = 0;
          int32_t length = 0;
 
-         read( index );
-         read( length );
+         m_src->read( index );
+         m_src->read( length );
 
          log_debug( "    index %d, %d bytes\n", index, length );
 
-         if (length > (m_bufEnd - m_bufPos))
+         if ( m_src->eof() )
          {
             return false;
          }
 
+         uint8_t * tmp = new uint8_t[length+1];
+         m_src->readBytes( tmp, length );
+         tmp[length] = '\0';
          std::string comment;
-         comment.assign( reinterpret_cast<char*>(m_bufPos), length );
+         comment.assign( reinterpret_cast<char*>(tmp), length );
          log_debug( "      comment = %s\n", comment.c_str() );
-         m_bufPos += length;
+         delete[] tmp;
       }
    }
 
@@ -1447,7 +1311,7 @@ bool Ms3dFilter::readVertexWeightSection()
    log_debug( "reading vertex weight section\n");
 
    int32_t subVersion = 0;
-   read( subVersion );
+   m_src->read( subVersion );
 
    subVersion = util_clamp( subVersion, 1, 2 );
 
@@ -1472,7 +1336,6 @@ bool Ms3dFilter::readVertexWeightSection()
          m_model->removeAllVertexInfluences( v );
          for ( it = weightList.begin(); it != weightList.end(); it++ )
          {
-            //log_debug( "       bone %d, weight %d\n", it->boneId, it->weight );
             m_model->addVertexInfluence( v, it->boneId,
                   Model::IT_Custom, ((double) it->weight) / 100.0 );
          }
@@ -1489,8 +1352,8 @@ bool Ms3dFilter::readVertexWeight( int subVersion,
    int8_t boneIds[4]  = { -1, -1, -1, -1 };
    uint8_t weights[4] = {  0,  0,  0,  0 };
 
-   int size = (subVersion == 2) ? 10 : 6;
-   if ( size > (m_bufEnd - m_bufPos) )
+   size_t size = (subVersion == 2) ? 10 : 6;
+   if ( size > m_src->getRemaining() )
    {
       return false;
    }
@@ -1500,12 +1363,12 @@ bool Ms3dFilter::readVertexWeight( int subVersion,
    int i = 0;
    for ( i = 0; i < 3; i++ )
    {
-      read( boneIds[i+1] );
+      m_src->read( boneIds[i+1] );
       //log_debug( "      read boneId %d\n", boneIds[i+1] );
    }
    for ( i = 0; i < 3; i++ )
    {
-      read( weights[i] );
+      m_src->read( weights[i] );
       if ( subVersion == 1 )
       {
          weights[i] = (uint8_t) ((int) weights[i] * 100 / 255);
@@ -1515,7 +1378,7 @@ bool Ms3dFilter::readVertexWeight( int subVersion,
    if ( subVersion == 2 )
    {
       int32_t extra = 0;
-      read( extra ); // don't do anything with this
+      m_src->read( extra ); // don't do anything with this
    }
 
    VertexWeightT vw;

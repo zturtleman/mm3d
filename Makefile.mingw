@@ -5,16 +5,17 @@ WINDRES=windres
 DEL=rm -f
 #CXXFLAGS=-Wall -g3
 CXXFLAGS=-O1
-DEFS=-DMM3D_EDIT -DQT3_SUPPORT -DWIN32 -I.. -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${QTDIR}/include  -I${QTDIR}/include/QtCore -I${QTDIR}/include/QtGui -I${QTDIR}/include/QtOpenGL -I${QTDIR}/include/QtNetwork -I${QTDIR}/include/Qt3Support 
+DEFS=-DMM3D_EDIT -DQT3_SUPPORT -DWIN32 -I.. -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${QTDIR}/include
 #DEFS=-DMM3D_EDIT -DQT3_SUPPORT -DCODE_DEBUG -DWIN32 -I.. -I. -I./src -I./src/libmm3d -I${QTDIR}/include -I${QTDIR}/QtCore -I${QTDIR}/QtGui -I${QTDIR}/QtOpenGL -I${QTDIR}/QtNetwork -I${QTDIR}/Qt3Support 
 UIC=${QTDIR}/bin/uic3.exe
 MOC=${QTDIR}/bin/moc.exe
-LINK=-L${QTDIR}/lib -mwindows -lQtCore4 -lQtGui4 -lQtOpenGL4 -lQtNetwork4 -lQt3Support4 -lopengl32 -lglu32 -lwsock32 
+LINK=-L${QTDIR}/lib -mwindows -lQtCore4 -lQtGui4 -lQtOpenGL4 -lQtNetwork4 -lopengl32 -lglu32 -lwsock32 
 #-lpsapi
 
 LIB_OBJ= \
 	src/libmm3d/bsptree.o \
 	src/libmm3d/cal3dfilter.o \
+	src/libmm3d/cmdlinemgr.o \
 	src/libmm3d/cobfilter.o \
 	src/libmm3d/dxffilter.o \
 	src/libmm3d/filtermgr.o \
@@ -25,12 +26,14 @@ LIB_OBJ= \
 	src/libmm3d/md3filter.o \
 	src/libmm3d/mesh.o \
 	src/libmm3d/misc.o \
+	src/libmm3d/mlocale.o \
 	src/libmm3d/mm3dfilter.o \
 	src/libmm3d/mm3dport.o \
 	src/libmm3d/mm3dreg.o \
 	src/libmm3d/model.o \
 	src/libmm3d/model_anim.o \
 	src/libmm3d/model_bool.o \
+	src/libmm3d/model_copy.o \
 	src/libmm3d/model_draw.o \
 	src/libmm3d/model_group.o \
 	src/libmm3d/model_influence.o \
@@ -152,6 +155,7 @@ MM3D_MOC= \
 	src/implui/animexportwin.moc.cc \
 	src/implui/animsetwin.moc.cc \
 	src/implui/animwidget.moc.cc \
+	src/implui/animwin.moc.cc \
 	src/implui/autoassignjointwin.moc.cc \
 	src/implui/backgroundselect.moc.cc \
 	src/implui/backgroundwin.moc.cc \
@@ -250,6 +254,7 @@ MM3D_MOC_OBJ= \
 	src/implui/animexportwin.moc.o \
 	src/implui/animsetwin.moc.o \
 	src/implui/animwidget.moc.o \
+	src/implui/animwin.moc.o \
 	src/implui/autoassignjointwin.moc.o \
 	src/implui/backgroundselect.moc.o \
 	src/implui/backgroundwin.moc.o \
@@ -265,6 +270,9 @@ MM3D_MOC_OBJ= \
 	src/tools/cubetoolwidget.moc.o \
 	src/tools/cylindertoolwidget.moc.o \
 	src/tools/ellipsetoolwidget.moc.o \
+	src/tools/rotatetoolwidget.moc.o \
+	src/tools/torustoolwidget.moc.o \
+	src/tools/toolwidget.moc.o \
 	src/depui/errorobj.moc.o \
 	src/implui/extrudewin.moc.o \
 	src/implui/groupwin.moc.o \
@@ -355,6 +363,7 @@ MM3D_OBJ= \
 	src/implui/animexportwin.o \
 	src/implui/animsetwin.o \
 	src/implui/animwidget.o \
+	src/implui/animwin.o \
 	src/tools/atrfartool.o \
 	src/tools/atrneartool.o \
 	src/commands/backgroundcmd.o \
@@ -481,8 +490,10 @@ MM3D_OBJ= \
 	src/mm3dcore/tool.o \
 	src/mm3dcore/toolbox.o \
 	src/mm3dcore/toolpoly.o \
+	src/tools/rotatetoolwidget.o \
 	src/tools/torustool.o \
 	src/tools/torustoolwidget.o \
+	src/tools/toolwidget.o \
 	src/commands/unweldcmd.o \
 	src/implui/valuewin.o \
 	src/tools/vertextool.o \

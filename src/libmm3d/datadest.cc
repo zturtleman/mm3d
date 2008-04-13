@@ -24,9 +24,9 @@
 #include "datadest.h"
 
 #include "endianconfig.h"
+#include "mm3dport.h"
 
 #include <stdarg.h>
-#include <arpa/inet.h>
 
 DataDest::DataDest()
    : m_endian( LittleEndian ),
@@ -55,11 +55,18 @@ void DataDest::setEndianness( EndiannessE e )
    {
       m_endfunc16 = htol_u16;
       m_endfunc32 = htol_u32;
+      m_endfuncfl = htol_float;
    }
    else
    {
+#ifdef WIN32
+      m_endfunc16 = htob_u16;
+      m_endfunc32 = htob_u32;
+#else  // !WIN32
       m_endfunc16 = htons;
       m_endfunc32 = htonl;
+#endif  // WIN32
+      m_endfuncfl = htob_float;
    }
 }
 
@@ -188,12 +195,18 @@ bool DataDest::writeBytes( const uint8_t * buf, size_t bufLen )
    return internalWrite( buf, bufLen );
 }
 
-ssize_t DataDest::printf( const char * fmt, ... )
+ssize_t DataDest::writePrintf( const char * fmt, ... )
 {
    va_list ap;
    va_start( ap, fmt );
-   ssize_t rval = vsnprintf( m_strbuf, MAX_PRINTF_SIZE, fmt, ap );
+   ssize_t rval = writeVPrintf( fmt, ap );
    va_end( ap );
+   return rval;
+}
+
+ssize_t DataDest::writeVPrintf( const char * fmt, va_list ap )
+{
+   ssize_t rval = PORT_vsnprintf( m_strbuf, MAX_PRINTF_SIZE, fmt, ap );
 
    if ( rval >= 0 )
    {
@@ -206,14 +219,14 @@ ssize_t DataDest::printf( const char * fmt, ... )
 
 ssize_t DataDest::writeAsciiz( const char * buf )
 {
-   size_t len = strlen( buf ) + 1;
+   ssize_t len = strlen( buf ) + 1;
 
    return writeBytes( (uint8_t *) buf, len ) ? len : -1;
 }
 
 ssize_t DataDest::writeString( const char * buf )
 {
-   size_t len = strlen( buf );
+   ssize_t len = strlen( buf );
 
    return writeBytes( (uint8_t *) buf, len ) ? len : -1;
 }
