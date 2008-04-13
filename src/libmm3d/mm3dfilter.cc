@@ -1049,7 +1049,7 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
          {
             uint32_t triIndex = 0;
             m_src->read( triIndex );
-            grp->m_triangleIndices.push_back( triIndex );
+            grp->m_triangleIndices.insert( triIndex );
          }
 
          m_src->read( smoothness );
@@ -2021,13 +2021,15 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
 
       for ( unsigned g = 0; g < gcount; g++ )
       {
-         unsigned count = modelGroups[g]->m_triangleIndices.size();
-         for ( unsigned i = 0; i < count; i++ )
+         for ( std::set<int>::const_iterator it
+               = modelGroups[g]->m_triangleIndices.begin();
+               it != modelGroups[g]->m_triangleIndices.end();
+               ++it )
          {
-            if ( modelGroups[g]->m_triangleIndices[i] >= (signed) tcount )
+            if ( *it >= (signed) tcount )
             {
                missingElements = true;
-               log_error( "Group %d uses missing triangle %d\n", g, modelGroups[g]->m_triangleIndices[i] );
+               log_error( "Group %d uses missing triangle %d\n", g, *it );
             }
          }
 
@@ -2382,9 +2384,11 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
          m_dst->writeBytes( (const uint8_t *) grp->m_name.c_str(), grp->m_name.length() + 1 );
          m_dst->write( triCount );
 
-         for ( unsigned t = 0; t < triCount; t++ )
+         for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+               it != grp->m_triangleIndices.end();
+               ++it )
          {
-            uint32_t triIndex = grp->m_triangleIndices[t];
+            uint32_t triIndex = *it;
             m_dst->write( triIndex );
          }
          uint8_t  smoothness = grp->m_smooth;

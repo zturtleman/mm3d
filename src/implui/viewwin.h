@@ -144,7 +144,6 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
 
       void toolActivated( int id );
       void primitiveCommandActivated( int id );
-      void groupCommandActivated( int id );
       void scriptActivated( int id );
 
       void animSetWindowEvent();

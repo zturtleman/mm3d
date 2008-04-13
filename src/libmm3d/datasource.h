@@ -29,6 +29,7 @@
 #include <stdint.h>
 #include <sys/types.h>
 
+#include "mm3dtypes.h"
 #include "model.h"
 
 //-----------------------------------------------------------------------------
@@ -176,7 +177,7 @@ class DataSource
       bool read( uint16_t & val );
       bool read( int32_t & val );
       bool read( uint32_t & val );
-      bool read( float & val );     // FIXME float32_t
+      bool read( float32_t & val );
 
       // For convinience, if you don't care about errors.
       // These are safe to use if you want to read a lot of unvalidated

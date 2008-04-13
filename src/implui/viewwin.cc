@@ -557,7 +557,6 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    initializeCommands();
 
    connect( m_geometryMenu, SIGNAL(activated(int)), this, SLOT(primitiveCommandActivated(int)) );
-   connect( m_materialsMenu,     SIGNAL(activated(int)), this, SLOT(groupCommandActivated(int))     );
 
    //m_scriptMenu = new QPopupMenu( this );
 
@@ -634,6 +633,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
 #endif // HAVE_QT4
 
    loadDockPositions();
+   m_model->clearUndo();
 }
 
 ViewWindow::~ViewWindow()
@@ -1285,7 +1285,7 @@ int ViewWindow::insertMenuItem( QPopupMenu * parentMenu,
 
       if ( !found )
       {
-         // FIXME deal with multi-level paths
+         // TODO deal with multi-level paths
          addMenu = new QPopupMenu( this );
 #ifndef HAVE_QT4
          // FIXME this is a hack, perhaps need a connect callback?
@@ -1299,7 +1299,8 @@ int ViewWindow::insertMenuItem( QPopupMenu * parentMenu,
             connect( addMenu, SIGNAL(activated(int)), this, SLOT(primitiveCommandActivated(int)));
          }
 #endif // HAVE_QT4
-         // FIXME this is also a hack
+         // This is a hack (comparing against menu to see which
+         // module we should translate from)
          QString module = "Tool";
          if ( parentMenu != m_toolMenu )
          {
@@ -1572,28 +1573,6 @@ void ViewWindow::primitiveCommandActivated( int id )
       }
       it++;
    }
-}
-
-// FIXME remove this
-void ViewWindow::groupCommandActivated( int id )
-{
-   /*
-   CommandMenuItemList::iterator it;
-   it = m_groupCommands.begin();
-   while ( it != m_groupCommands.end() )
-   {
-      if ( (*it)->id == id )
-      {
-         if ( ((*it)->command)->activated( (*it)->arg, m_model ) )
-         {
-            m_model->operationComplete( qApp->translate( "Command", ((*it)->command)->getName( (*it)->arg ) ) );
-            m_viewPanel->modelUpdatedEvent();
-         }
-         break;
-      }
-      it++;
-   }
-   */
 }
 
 void ViewWindow::scriptActivated( int id )
@@ -2101,6 +2080,7 @@ void ViewWindow::initializeToolbox()
                m_toolButtons[ m_toolCount ] = new QToolButton( m_toolBar );
                m_toolButtons[ m_toolCount ]->setToggleButton( true );
                m_toolButtons[ m_toolCount ]->setIconSet( set );
+
                if ( name && name[0] )
                {
                   QToolTip::add( m_toolButtons[ m_toolCount ], _makeToolTip( tool, t ) );
@@ -2149,9 +2129,11 @@ void ViewWindow::initializeToolbox()
             set.setPixmap( QPixmap( tool->getPixmap() ), SmallIconSize );
 #endif
             m_toolList[m_toolCount] = tool;
+
             m_toolButtons[ m_toolCount ] = new QToolButton( m_toolBar );
             m_toolButtons[ m_toolCount ]->setToggleButton( true );
             m_toolButtons[ m_toolCount ]->setIconSet( set );
+
             if ( name && name[0] )
             {
                QToolTip::add( m_toolButtons[ m_toolCount ], _makeToolTip( tool, 0 ) );

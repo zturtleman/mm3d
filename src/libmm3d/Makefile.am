@@ -37,6 +37,7 @@ libmm3d_HFILES = \
 	mm3dfilter_ref.h \
 	mm3dport.h \
 	mm3dreg.h \
+	mm3dtypes.h \
 	model.h \
 	model_test.h \
 	modelfilter.h \

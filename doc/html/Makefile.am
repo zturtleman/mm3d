@@ -31,6 +31,10 @@ SPAGES =  \
 	olh_mergewin.htm \
 	olh_metawin.htm \
 	olh_mm3dformat.htm \
+	olh_cal3dprompt.htm \
+	olh_ms3dprompt.htm \
+	olh_objprompt.htm \
+	olh_painttexturewin.htm \
 	olh_pointwin.htm \
 	olh_pluginwin.htm \
 	olh_projectionwin.htm \
@@ -43,6 +47,7 @@ SPAGES =  \
 	olh_texturewin.htm \
 	olh_tips.htm \
 	olh_tools.htm \
+	olh_transformwin.htm \
 	olh_tutorial_index.htm \
 	olh_use.htm \
 	olh_valuewin.htm \
@@ -81,6 +86,10 @@ PAGES =  \
 	olh_mergewin.html \
 	olh_metawin.html \
 	olh_mm3dformat.html \
+	olh_cal3dprompt.html \
+	olh_ms3dprompt.html \
+	olh_objprompt.html \
+	olh_painttexturewin.html \
 	olh_pointwin.html \
 	olh_pluginwin.html \
 	olh_projectionwin.html \
@@ -94,6 +103,7 @@ PAGES =  \
 	olh_tips.html \
 	olh_tools.html \
 	olh_tutorial_index.html \
+	olh_transformwin.html \
 	olh_use.html \
 	olh_valuewin.html \
 	olh_viewportsettings.html \

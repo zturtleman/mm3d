@@ -46,14 +46,6 @@ void ContextRotation::setModel( Model * m )
 
 void ContextRotation::modelChanged( int changeBits )
 {
-   // FIXME deal with animation
-   // FIXME only allow points in None and Frame
-   // FIXME only allow joints (for keyframe) in Skel
-   if ( m_model->getAnimationMode() == Model::ANIMMODE_SKELETAL )
-   {
-      //return;
-   }
-
    if ( !m_update )
    {
       m_change = true;
@@ -117,14 +109,6 @@ void ContextRotation::modelChanged( int changeBits )
 
 void ContextRotation::updateRotation()
 {
-   // FIXME deal with animation
-   // FIXME only allow points in None and Frame
-   // FIXME only allow joints (for keyframe) in Skel
-   if ( m_model->getAnimationMode() == Model::ANIMMODE_SKELETAL )
-   {
-      //return;
-   }
-
    if ( !m_change )
    {
       m_update = true;

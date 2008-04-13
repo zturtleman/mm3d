@@ -27,6 +27,7 @@
 #include "mq3compat.h"
 
 #include <qradiobutton.h>
+#include "helpwin.h"
 
 Cal3dPrompt::Cal3dPrompt()
    : Cal3dPromptBase( NULL, "", true ),
@@ -61,8 +62,8 @@ void Cal3dPrompt::getOptions( Cal3dFilter::Cal3dOptions * opts )
 
 void Cal3dPrompt::helpNowEvent( int id )
 {
-   //HelpWin * win = new HelpWin( "olh_pluginwin.html", true );
-   //win->show();
+   HelpWin * win = new HelpWin( "olh_cal3dprompt.html", true );
+   win->show();
 }
 
 // This function takes a ModelFilter::Options argument, downcasts it

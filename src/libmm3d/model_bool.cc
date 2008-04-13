@@ -47,16 +47,6 @@ static bool _coord_equiv( double * ac, double * bc )
    }
 }
 
-static void _calculateNormal( double * normal,
-      double * a, double * b, double * c )
-{
-   normal[0] = a[1] * (b[2] - c[2]) + b[1] * (c[2] - a[2]) + c[1] * (a[2] - b[2]);
-   normal[1] = a[2] * (b[0] - c[0]) + b[2] * (c[0] - a[0]) + c[2] * (a[0] - b[0]);
-   normal[2] = a[0] * (b[1] - c[1]) + b[0] * (c[1] - a[1]) + c[0] * (a[1] - b[1]);
-
-   normalize3( normal );
-}
-
 typedef struct _UnionTriangle_t
 {
    int tri;
@@ -255,7 +245,7 @@ static void _initUnionTriangle( Model * model, UnionTriangleT & ut, int triIndex
    {
       model->getVertexCoords( ut.v[i], ut.coord[i] );
    }
-   _calculateNormal( ut.norm,
+   calculate_normal( ut.norm,
          ut.coord[0], ut.coord[1], ut.coord[2] );
 
    // Find center point and tent point (for inside-triangle test)
@@ -270,11 +260,11 @@ static void _initUnionTriangle( Model * model, UnionTriangleT & ut, int triIndex
    }
 
    // Find normals for tent triangles (for inside-triangle test)
-   _calculateNormal( ut.tnorm[0], 
+   calculate_normal( ut.tnorm[0], 
          ut.tpoint, ut.coord[0], ut.coord[1] );
-   _calculateNormal( ut.tnorm[1], 
+   calculate_normal( ut.tnorm[1], 
          ut.tpoint, ut.coord[1], ut.coord[2] );
-   _calculateNormal( ut.tnorm[2], 
+   calculate_normal( ut.tnorm[2], 
          ut.tpoint, ut.coord[2], ut.coord[0] );
 }
 
@@ -420,7 +410,7 @@ static void _cutTriangle( Model * model, UnionTriangleList & utl,
    ntl.push_back( nt );
 
    double newnorm[3] = {1,0,0};
-   _calculateNormal( newnorm, ut.coord[2], nc2, nc1 );
+   calculate_normal( newnorm, ut.coord[2], nc2, nc1 );
    
    if ( dot3( norm, newnorm ) > 0.0 )
    {

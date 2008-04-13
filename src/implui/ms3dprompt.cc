@@ -26,6 +26,7 @@
 #include "model.h"
 #include "mq3compat.h"
 #include "mm3dport.h"
+#include "helpwin.h"
 
 #include <qradiobutton.h>
 #include <qlineedit.h>
@@ -88,8 +89,8 @@ void Ms3dPrompt::getOptions( Ms3dFilter::Ms3dOptions * opts )
 
 void Ms3dPrompt::helpNowEvent( int id )
 {
-   //HelpWin * win = new HelpWin( "olh_pluginwin.html", true );
-   //win->show();
+   HelpWin * win = new HelpWin( "olh_ms3dprompt.html", true );
+   win->show();
 }
 
 void Ms3dPrompt::subVersionChangedEvent( int id )

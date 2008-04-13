@@ -230,12 +230,24 @@ void PaintTextureWin::saveEvent()
 
          if ( save )
          {
-            int h = atoi( m_hSize->currentText().latin1() );
-            int v = atoi( m_vSize->currentText().latin1() );
-            QPixmap pixmap = m_textureWidget->renderPixmap( h, v);
+            int h = atoi( m_vSize->currentText().latin1() );
+            int w = atoi( m_hSize->currentText().latin1() );
 
-            QImage img = pixmap.convertToImage();
+            // This is a total hack. For some reason Qt refuses to repaint
+            // the widget here. To force an update I have to resize the
+            // OpenGL widget, repaint, and then resize it back to the
+            // original size. It's an ugly hack, but it makes this function
+            // work.
+            {
+               int hack_w = m_textureWidget->width();
+               int hack_h = m_textureWidget->height();
+               m_textureWidget->resize( 4, 4 );
+               m_textureWidget->updateGL();
+               m_textureWidget->resize( hack_w, hack_h );
+            }
 
+            QImage img = m_textureWidget->grabFrameBuffer( false );
+            img = img.smoothScale( w, h, QImage::ScaleMax );
             if ( !img.save( filename, "PNG", 100 ) )
             {
                QString msg = tr( "Could not write file: " ) + QString( "\n" );

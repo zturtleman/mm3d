@@ -116,7 +116,7 @@ QString ErrorObject::getTextureErrorString( Texture::ErrorE err )
       default:
          break;
    }
-   return QString("FIXME: Untranslated model error");
+   return QString("FIXME: Untranslated texture error");
 }
 
 QString modelErrStr( Model::ModelErrorE err, Model * model )

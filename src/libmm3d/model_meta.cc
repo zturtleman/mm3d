@@ -165,7 +165,7 @@ void Model::setBackgroundCenter( unsigned index, float x, float y, float z )
    }
 }
 
-const char * Model::getBackgroundImage( unsigned index )
+const char * Model::getBackgroundImage( unsigned index ) const
 {
    if ( index < MAX_BACKGROUND_IMAGES )
    {
@@ -174,7 +174,7 @@ const char * Model::getBackgroundImage( unsigned index )
    return "";
 }
 
-float Model::getBackgroundScale( unsigned index )
+float Model::getBackgroundScale( unsigned index ) const
 {
    if ( index < MAX_BACKGROUND_IMAGES )
    {
@@ -183,7 +183,7 @@ float Model::getBackgroundScale( unsigned index )
    return 0.0f;
 }
 
-void Model::getBackgroundCenter( unsigned index, float & x, float & y, float & z )
+void Model::getBackgroundCenter( unsigned index, float & x, float & y, float & z ) const
 {
    if ( index < MAX_BACKGROUND_IMAGES )
    {

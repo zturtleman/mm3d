@@ -33,7 +33,7 @@
 using __gnu_cxx::hash_map;
 
 
-Model * Model::copySelected()
+Model * Model::copySelected() const
 {
    Model * m = new Model;
 

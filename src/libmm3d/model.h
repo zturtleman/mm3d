@@ -39,6 +39,7 @@
 
 #include <list>
 #include <vector>
+#include <set>
 #include <string>
 
 using std::list;
@@ -88,10 +89,8 @@ class Texture;
 //    model_test.cc: Old tests for file format loading/saving, being replaced
 //    model_texture.cc: Material and texture code
 //
-// FIXME mark methods const
-// FIXME remove dumb const references in method arguments
-// FIXME rename Texture -> Material where appropriate
-// FIXME Make texture creation more consistent
+// TODO rename Texture -> Material where appropriate
+// TODO Make texture creation more consistent
 
 class Model
 {
@@ -313,7 +312,7 @@ class Model
 
             std::string m_name;
             int         m_materialIndex;    // Material index (-1 for none)
-            vector<int> m_triangleIndices;  // List of triangles in this group
+            std::set<int>  m_triangleIndices;  // List of triangles in this group
 
             // Percentage of blending between flat normals and smooth normals
             // 0 = 0%, 255 = 100%
@@ -909,11 +908,11 @@ class Model
       static bool operationFailed( Model::ModelErrorE );
 
       // Returns mask of successful compares (see enum CompareBits)
-      int equivalent( const Model * model, int compareMask = CompareGeometry, double tolerance = 0.00001 );
+      int equivalent( const Model * model, int compareMask = CompareGeometry, double tolerance = 0.00001 ) const;
 
       // Compares if two models are equal. Returns maks of successful
       // compares (see CompareBits). FIXME tolerance is ignored.
-      int equal( const Model * model, int compareMask = CompareGeometry, double tolerance = 0.00001 );
+      int equal( const Model * model, int compareMask = CompareGeometry, double tolerance = 0.00001 ) const;
 
       // ------------------------------------------------------------------
       // "Meta" data, model information that is not rendered in a viewport.
@@ -921,18 +920,18 @@ class Model
 
       // Indicates if the model has changed since the last time it was saved.
       void setSaved( bool o ) { if ( o ) { m_undoMgr->setSaved(); }; };
-      bool getSaved()         { return m_undoMgr->isSaved(); };
+      bool getSaved() const   { return m_undoMgr->isSaved(); };
 
-      const char * getFilename() { return m_filename.c_str(); };
+      const char * getFilename() const { return m_filename.c_str(); };
       void setFilename( const char * filename ) { 
             if ( filename && filename[0] ) { m_filename = filename; } };
 
-      const char * getExportFile() { return m_exportFile.c_str(); };
+      const char * getExportFile() const { return m_exportFile.c_str(); };
       void setExportFile( const char * filename ) { 
             if ( filename && filename[0] ) { m_exportFile = filename; } };
 
       void setFilterSpecificError( const char * str ) { s_lastFilterError = m_filterSpecificError = str; };
-      const char * getFilterSpecificError() { return m_filterSpecificError.c_str(); };
+      const char * getFilterSpecificError() const { return m_filterSpecificError.c_str(); };
       static const char * getLastFilterSpecificError() { return s_lastFilterError.c_str(); };
 
       // Observers are notified when the model changes. See the Observer class
@@ -958,23 +957,23 @@ class Model
       void setBackgroundScale( unsigned index, float scale );
       void setBackgroundCenter( unsigned index, float x, float y, float z );
 
-      const char * getBackgroundImage( unsigned index );
-      float getBackgroundScale( unsigned index );
-      void getBackgroundCenter( unsigned index, float & x, float & y, float & z );
+      const char * getBackgroundImage( unsigned index ) const;
+      float getBackgroundScale( unsigned index ) const;
+      void getBackgroundCenter( unsigned index, float & x, float & y, float & z ) const;
 
       // These are used to store status messages when the model does not have a status
       // bar. When a model is assigned to a viewport window, the messages will be
       // displayed in the status bar.
-      bool hasErrors() { return !m_loadErrors.empty(); }
+      bool hasErrors() const { return !m_loadErrors.empty(); }
       void pushError( const std::string & err );
       std::string popError();
 
       // Use these functions to preserve data that Misfit doesn't support natively
       int  addFormatData( FormatData * fd );
       bool deleteFormatData( unsigned index );
-      unsigned getFormatDataCount();
-      FormatData * getFormatData( unsigned index );
-      FormatData * getFormatDataByFormat( const char * format, unsigned index = 0 ); // not case sensitive
+      unsigned getFormatDataCount() const;
+      FormatData * getFormatData( unsigned index ) const;
+      FormatData * getFormatDataByFormat( const char * format, unsigned index = 0 ) const; // not case sensitive
 
       // ------------------------------------------------------------------
       // Rendering functions
@@ -989,13 +988,13 @@ class Model
       void drawJoints();
 
       void setCanvasDrawMode( int m ) { m_canvasDrawMode = m; };
-      int  getCanvasDrawMode() { return m_canvasDrawMode; };
+      int  getCanvasDrawMode() const { return m_canvasDrawMode; };
 
       void setDrawJoints( DrawJointModeE m ) { m_drawJoints = m; };
-      DrawJointModeE getDrawJoints() { return m_drawJoints; };
+      DrawJointModeE getDrawJoints() const { return m_drawJoints; };
 
       void setDrawProjections( bool o ) { m_drawProjections = o; };
-      bool getDrawProjections() { return m_drawProjections; };
+      bool getDrawProjections() const { return m_drawProjections; };
 
       // Open GL needs textures allocated for each viewport that renders the textures.
       // A ContextT associates a set of OpenGL textures with a viewport.
@@ -1019,99 +1018,99 @@ class Model
       // Animation functions
       // ------------------------------------------------------------------
 
-      bool setCurrentAnimation( const AnimationModeE & m, const char * name );
-      bool setCurrentAnimation( const AnimationModeE & m, unsigned index );
+      bool setCurrentAnimation( AnimationModeE m, const char * name );
+      bool setCurrentAnimation( AnimationModeE m, unsigned index );
       bool setCurrentAnimationFrame( unsigned frame );
       bool setCurrentAnimationTime( double time );
 
-      unsigned getCurrentAnimation();
-      unsigned getCurrentAnimationFrame();
-      double   getCurrentAnimationTime();
+      unsigned getCurrentAnimation() const;
+      unsigned getCurrentAnimationFrame() const;
+      double   getCurrentAnimationTime() const;
 
       void setAnimationLooping( bool o );
-      bool isAnimationLooping();
+      bool isAnimationLooping() const;
 
       // Stop animation mode, go back to standard pose editing.
       void setNoAnimation();
 
-      AnimationModeE getAnimationMode() { return m_animationMode; };
-      bool inSkeletalMode()  { return (m_animationMode == ANIMMODE_SKELETAL); };
+      AnimationModeE getAnimationMode() const { return m_animationMode; };
+      bool inSkeletalMode() const { return (m_animationMode == ANIMMODE_SKELETAL); };
 
       // Common animation properties
-      int addAnimation( const AnimationModeE & mode, const char * name );
-      void deleteAnimation( const AnimationModeE & mode, const unsigned & index );
+      int addAnimation( AnimationModeE mode, const char * name );
+      void deleteAnimation( AnimationModeE mode, unsigned index );
 
-      unsigned getAnimCount( const AnimationModeE & m ) const;
+      unsigned getAnimCount( AnimationModeE m ) const;
 
-      const char * getAnimName( const AnimationModeE & mode, const unsigned & anim );
-      bool setAnimName( const AnimationModeE & mode, const unsigned & anim, const char * name );
+      const char * getAnimName( AnimationModeE mode, unsigned anim ) const;
+      bool setAnimName( AnimationModeE mode, unsigned anim, const char * name );
 
-      double getAnimFPS( const AnimationModeE & mode, const unsigned & anim );
-      bool setAnimFPS( const AnimationModeE & mode, const unsigned & anim, const double & fps );
+      double getAnimFPS( AnimationModeE mode, unsigned anim ) const;
+      bool setAnimFPS( AnimationModeE mode, unsigned anim, double fps );
 
-      unsigned getAnimFrameCount( const AnimationModeE & mode, const unsigned & anim );
-      bool setAnimFrameCount( const AnimationModeE & mode, const unsigned & anim, const unsigned & count );
+      unsigned getAnimFrameCount( AnimationModeE mode, unsigned anim ) const;
+      bool setAnimFrameCount( AnimationModeE mode, unsigned anim, unsigned count );
 
-      bool clearAnimFrame( const AnimationModeE & mode, const unsigned & anim, const unsigned & frame );
+      bool clearAnimFrame( AnimationModeE mode, unsigned anim, unsigned frame );
 
       // Frame animation geometry
-      void setFrameAnimVertexCount( const unsigned & vertexCount );
-      void setFrameAnimPointCount( const unsigned & pointCount );
+      void setFrameAnimVertexCount( unsigned vertexCount );
+      void setFrameAnimPointCount( unsigned pointCount );
 
-      bool setFrameAnimVertexCoords( const unsigned & anim, const unsigned & frame, const unsigned & vertex, 
-            const double & x, const double & y, const double & z );
-      bool getFrameAnimVertexCoords( const unsigned & anim, const unsigned & frame, const unsigned & vertex, 
-            double & x, double & y, double & z );
-      bool getFrameAnimVertexNormal( const unsigned & anim, const unsigned & frame, const unsigned & vertex, 
-            double & x, double & y, double & z );
+      bool setFrameAnimVertexCoords( unsigned anim, unsigned frame, unsigned vertex, 
+            double x, double y, double z );
+      bool getFrameAnimVertexCoords( unsigned anim, unsigned frame, unsigned vertex, 
+            double & x, double & y, double & z ) const;
+      bool getFrameAnimVertexNormal( unsigned anim, unsigned frame, unsigned vertex, 
+            double & x, double & y, double & z ) const;
 
       // Not undo-able
-      bool setQuickFrameAnimVertexCoords( const unsigned & anim, const unsigned & frame, const unsigned & vertex, 
-            const double & x, const double & y, const double & z );
+      bool setQuickFrameAnimVertexCoords( unsigned anim, unsigned frame, unsigned vertex, 
+            double x, double y, double z );
 
-      bool setFrameAnimPointCoords( const unsigned & anim, const unsigned & frame, const unsigned & point, 
-            const double & x, const double & y, const double & z );
-      bool getFrameAnimPointCoords( const unsigned & anim, const unsigned & frame, const unsigned & point, 
-            double & x, double & y, double & z );
+      bool setFrameAnimPointCoords( unsigned anim, unsigned frame, unsigned point, 
+            double x, double y, double z );
+      bool getFrameAnimPointCoords( unsigned anim, unsigned frame, unsigned point, 
+            double & x, double & y, double & z ) const;
 
-      bool setFrameAnimPointRotation( const unsigned & anim, const unsigned & frame, const unsigned & point, 
-            const double & x, const double & y, const double & z );
-      bool getFrameAnimPointRotation( const unsigned & anim, const unsigned & frame, const unsigned & point, 
-            double & x, double & y, double & z );
+      bool setFrameAnimPointRotation( unsigned anim, unsigned frame, unsigned point, 
+            double x, double y, double z );
+      bool getFrameAnimPointRotation( unsigned anim, unsigned frame, unsigned point, 
+            double & x, double & y, double & z ) const;
 
       // Skeletal animation keyframs
-      int  setSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, const unsigned & joint, const bool & isRotation, 
-            const double & x, const double & y, const double & z );
+      int  setSkelAnimKeyframe( unsigned anim, unsigned frame, unsigned joint, bool isRotation, 
+            double x, double y, double z );
       bool getSkelAnimKeyframe( unsigned anim, unsigned frame,
             unsigned joint, bool isRotation,
-            double & x, double & y, double & z );
+            double & x, double & y, double & z ) const;
 
       bool hasSkelAnimKeyframe( unsigned anim, unsigned frame,
-            unsigned joint, bool isRotation );
+            unsigned joint, bool isRotation ) const;
 
-      bool deleteSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, const unsigned & joint, const bool & isRotation );
+      bool deleteSkelAnimKeyframe( unsigned anim, unsigned frame, unsigned joint, bool isRotation );
 
       // Interpolate what a keyframe for this joint would be at the specified frame.
       bool interpSkelAnimKeyframe( unsigned anim, unsigned frame,
             bool loop, unsigned joint, bool isRotation,
-            double & x, double & y, double & z );
+            double & x, double & y, double & z ) const;
       // Interpolate what a keyframe for this joint would be at the specified time.
       bool interpSkelAnimKeyframeTime( unsigned anim, double frameTime,
             bool loop, unsigned joint,
-            Matrix & relativeFinal );
+            Matrix & relativeFinal ) const;
 
       // Animation set operations
-      int  copyAnimation( const AnimationModeE & mode, const unsigned & anim, const char * newName );
-      int  splitAnimation( const AnimationModeE & mode, const unsigned & anim, const char * newName, const unsigned & frame );
-      bool joinAnimations( const AnimationModeE & mode, const unsigned & anim1, const unsigned & anim2 );
-      bool mergeAnimations( const AnimationModeE & mode, const unsigned & anim1, const unsigned & anim2 );
-      int  convertAnimToFrame( const AnimationModeE & mode, const unsigned & anim1, const char * newName, const unsigned & frameCount );
+      int  copyAnimation( AnimationModeE mode, unsigned anim, const char * newName );
+      int  splitAnimation( AnimationModeE mode, unsigned anim, const char * newName, unsigned frame );
+      bool joinAnimations( AnimationModeE mode, unsigned anim1, unsigned anim2 );
+      bool mergeAnimations( AnimationModeE mode, unsigned anim1, unsigned anim2 );
+      int  convertAnimToFrame( AnimationModeE mode, unsigned anim1, const char * newName, unsigned frameCount );
 
-      bool moveAnimation( const AnimationModeE & mode, const unsigned & oldIndex, const unsigned & newIndex );
+      bool moveAnimation( AnimationModeE mode, unsigned oldIndex, unsigned newIndex );
 
       // For undo, don't call these directly
-      bool insertSkelAnimKeyframe( const unsigned & anim, Keyframe * keyframe );
-      bool removeSkelAnimKeyframe( const unsigned & anim, const unsigned & frame, const unsigned & joint, const bool & isRotation, bool release = false );
+      bool insertSkelAnimKeyframe( unsigned anim, Keyframe * keyframe );
+      bool removeSkelAnimKeyframe( unsigned anim, unsigned frame, unsigned joint, bool isRotation, bool release = false );
 
       // Merge all animations from model into this model.
       // For skeletal, skeletons must match
@@ -1125,27 +1124,27 @@ class Model
       //
       // In other words, setting this to true is probably a really bad idea unless
       // you know what you're doing.
-      void forceAddOrDelete( bool o ) { m_forceAddOrDelete = o; };
+      void forceAddOrDelete( bool o );
 
-      bool canAddOrDelete() { return (m_frameAnims.size() == 0 || m_forceAddOrDelete); };
+      bool canAddOrDelete() const { return (m_frameAnims.size() == 0 || m_forceAddOrDelete); };
 
       // Show an error because the user tried to add or remove primitives while
       // the model has frame animations.
       void displayFrameAnimPrimitiveError();
 
-      int getNumFrames();  // Deprecated
+      int getNumFrames() const;  // Deprecated
 
       // ------------------------------------------------------------------
       // Normal functions
       // ------------------------------------------------------------------
 
-      bool getNormal( unsigned triangleNum, unsigned vertexIndex, float *normal );
-      bool getFlatNormal( unsigned triangleNum, float *normal );
-      float cosToPoint( unsigned triangleNum, double * point );
+      bool getNormal( unsigned triangleNum, unsigned vertexIndex, float *normal ) const;
+      bool getFlatNormal( unsigned triangleNum, float *normal ) const;
+      float cosToPoint( unsigned triangleNum, double * point ) const;
 
       void calculateNormals();
       void calculateSkelNormals();
-      void calculateFrameNormals( const unsigned & anim );
+      void calculateFrameNormals( unsigned anim );
       void invalidateNormals();
 
       void invertNormals( unsigned triangleNum );
@@ -1161,8 +1160,7 @@ class Model
       inline int getPointCount()      const { return m_points.size(); }
       inline int getProjectionCount() const { return m_projections.size(); }
 
-      bool getPositionCoords( const Position & pos, double * coord );
-      bool getPositionCoords( PositionTypeE ptype, unsigned pindex, double * coord );
+      bool getPositionCoords( const Position & pos, double * coord ) const;
 
       int addVertex( double x, double y, double z );
       int addTriangle( unsigned vert1, unsigned vert2, unsigned vert3 );
@@ -1172,7 +1170,7 @@ class Model
 
       // No undo on this one
       void setVertexFree( unsigned v, bool o );
-      bool isVertexFree( unsigned v );
+      bool isVertexFree( unsigned v ) const;
 
       // When all faces attached to a vertex are deleted, the vertex is considered
       // an "orphan" and deleted (unless it is a "free" vertex, see m_free in the
@@ -1184,7 +1182,7 @@ class Model
       // welded together).
       void deleteFlattenedTriangles();
 
-      bool isTriangleMarked( unsigned t );
+      bool isTriangleMarked( unsigned t ) const;
 
       void subdivideSelectedTriangles();
       void unsubdivideTriangles( unsigned t1, unsigned t2, unsigned t3, unsigned t4 );
@@ -1196,20 +1194,20 @@ class Model
       void simplifySelectedMesh();
 
       bool setTriangleVertices( unsigned triangleNum, unsigned vert1, unsigned vert2, unsigned vert3 );
-      bool getTriangleVertices( unsigned triangleNum, unsigned & vert1, unsigned & vert2, unsigned & vert3 );
+      bool getTriangleVertices( unsigned triangleNum, unsigned & vert1, unsigned & vert2, unsigned & vert3 ) const;
       void setTriangleMarked( unsigned triangleNum, bool marked );
       void clearMarkedTriangles();
 
-      bool getVertexCoordsUnanimated( const unsigned & vertexNumber, double *coord );
-      bool getVertexCoords( const unsigned & vertexNumber, double *coord );
-      bool getVertexCoords2d( const unsigned & vertexNumber, const ProjectionDirectionE & dir, double *coord );
+      bool getVertexCoordsUnanimated( unsigned vertexNumber, double *coord ) const;
+      bool getVertexCoords( unsigned vertexNumber, double *coord ) const;
+      bool getVertexCoords2d( unsigned vertexNumber, ProjectionDirectionE dir, double *coord ) const;
 
-      int getTriangleVertex( unsigned triangleNumber, unsigned vertexIndex );
+      int getTriangleVertex( unsigned triangleNumber, unsigned vertexIndex ) const;
 
       void booleanOperation( BooleanOpE op, 
             std::list<int> & listA, std::list<int> & listB );
 
-      Model * copySelected();
+      Model * copySelected() const;
 
       // A BSP tree is calculated for triangles that have textures with an alpha
       // channel (transparency). It is used to determine in what order triangles
@@ -1219,6 +1217,8 @@ class Model
       void calculateBspTree();
       void invalidateBspTree();
 
+      // The model argument should be const, but it calls setupJoints.
+      // TODO: Calling setupJoints in here should not be necessary.
       bool mergeModels( Model * model, bool textures, AnimationMergeE mergeMode, bool emptyGroups,
             double * trans = NULL, double * rot = NULL );
 
@@ -1235,7 +1235,7 @@ class Model
       // ------------------------------------------------------------------
 
       // TODO: Misnamed, should be getMaterialCount()
-      inline int getTextureCount() { return m_materials.size(); };
+      inline int getTextureCount() const { return m_materials.size(); };
 
       int addGroup( const char * name );
 
@@ -1248,54 +1248,55 @@ class Model
       void deleteGroup( unsigned group );
       void deleteTexture( unsigned texture );
 
-      const char * getGroupName( unsigned groupNum );
+      const char * getGroupName( unsigned groupNum ) const;
       bool setGroupName( unsigned groupNum, const char * groupName );
 
       inline int getGroupCount() const { return m_groups.size(); };
-      int getGroupByName( const char * groupName, bool ignoreCase = false );
-      int getMaterialByName( const char * materialName, bool ignoreCase = false );
-      Material::MaterialTypeE getMaterialType( unsigned materialIndex );
-      int getMaterialColor( unsigned materialIndex, unsigned c, unsigned v = 0 );
+      int getGroupByName( const char * groupName, bool ignoreCase = false ) const;
+      int getMaterialByName( const char * materialName, bool ignoreCase = false ) const;
+      Material::MaterialTypeE getMaterialType( unsigned materialIndex ) const;
+      int getMaterialColor( unsigned materialIndex, unsigned c, unsigned v = 0 ) const;
 
       // These implicitly change the material type.
       void setMaterialTexture( unsigned textureId, Texture * tex );
       void removeMaterialTexture( unsigned textureId );
 
-      uint8_t getGroupSmooth( const unsigned & groupNum );
-      bool setGroupSmooth( const unsigned & groupNum, const uint8_t & smooth );
-      uint8_t getGroupAngle( const unsigned & groupNum );
-      bool setGroupAngle( const unsigned & groupNum, const uint8_t & angle );
+      uint8_t getGroupSmooth( unsigned groupNum ) const;
+      bool setGroupSmooth( unsigned groupNum, uint8_t smooth );
+      uint8_t getGroupAngle( unsigned groupNum ) const;
+      bool setGroupAngle( unsigned groupNum, uint8_t angle );
 
       void setTextureName( unsigned textureId, const char * name );
-      const char * getTextureName( unsigned textureId );
+      const char * getTextureName( unsigned textureId ) const;
 
-      const char * getTextureFilename( unsigned textureId );
+      const char * getTextureFilename( unsigned textureId ) const;
       Texture * getTextureData( unsigned textureId );
+      const Texture * getTextureData( unsigned textureId ) const { return getTextureData( textureId ); }
 
       // Lighting accessors
-      bool getTextureAmbient(   unsigned textureId,       float * ambient   );
-      bool getTextureDiffuse(   unsigned textureId,       float * diffuse   );
-      bool getTextureEmissive(  unsigned textureId,       float * emissive  );
-      bool getTextureSpecular(  unsigned textureId,       float * specular  );
-      bool getTextureShininess( unsigned textureId,       float & shininess );
+      bool getTextureAmbient(   unsigned textureId,       float * ambient   ) const;
+      bool getTextureDiffuse(   unsigned textureId,       float * diffuse   ) const;
+      bool getTextureEmissive(  unsigned textureId,       float * emissive  ) const;
+      bool getTextureSpecular(  unsigned textureId,       float * specular  ) const;
+      bool getTextureShininess( unsigned textureId,       float & shininess ) const;
 
       bool setTextureAmbient(   unsigned textureId, const float * ambient   );
       bool setTextureDiffuse(   unsigned textureId, const float * diffuse   );
       bool setTextureEmissive(  unsigned textureId, const float * emissive  );
       bool setTextureSpecular(  unsigned textureId, const float * specular  );
-      bool setTextureShininess( unsigned textureId, const float & shininess );
+      bool setTextureShininess( unsigned textureId, float shininess );
 
       // See the clamp property in the Material class.
-      bool getTextureSClamp( unsigned textureId );
-      bool getTextureTClamp( unsigned textureId );
+      bool getTextureSClamp( unsigned textureId ) const;
+      bool getTextureTClamp( unsigned textureId ) const;
       bool setTextureSClamp( unsigned textureId, bool clamp );
       bool setTextureTClamp( unsigned textureId, bool clamp );
 
-      list<int> getUngroupedTriangles();
+      list<int> getUngroupedTriangles() const;
       list<int> getGroupTriangles( unsigned groupNumber ) const;
-      int       getGroupTextureId( unsigned groupNumber );
+      int       getGroupTextureId( unsigned groupNumber ) const;
 
-      int getTriangleGroup( unsigned triangleNumber );
+      int getTriangleGroup( unsigned triangleNumber ) const;
 
       void addTriangleToGroup( unsigned groupNum, unsigned triangleNum );
       void removeTriangleFromGroup( unsigned groupNum, unsigned triangleNum );
@@ -1303,31 +1304,31 @@ class Model
       void setSelectedAsGroup( unsigned groupNum );
       void addSelectedToGroup( unsigned groupNum );
 
-      bool getTextureCoords( const unsigned & triangleNumber, const unsigned & vertexIndex, float & s, float & t );
-      bool setTextureCoords( const unsigned & triangleNumber, const unsigned & vertexIndex, const float & s, const float & t );
+      bool getTextureCoords( unsigned triangleNumber, unsigned vertexIndex, float & s, float & t ) const;
+      bool setTextureCoords( unsigned triangleNumber, unsigned vertexIndex, float s, float t );
 
       // ------------------------------------------------------------------
       // Skeletal structure and influence functions
       // ------------------------------------------------------------------
 
-      int addBoneJoint( const char * name, const double & x, const double & y, const double & z, 
-            const double & xrot, const double & yrot, const double & zrot,
-            const int & parent = -1 );
+      int addBoneJoint( const char * name, double x, double y, double z, 
+            double xrot, double yrot, double zrot,
+            int parent = -1 );
 
       void deleteBoneJoint( unsigned joint );
 
-      const char * getBoneJointName( const unsigned & joint );
-      int getBoneJointParent( const unsigned & joint );
-      bool getBoneJointCoords( const unsigned & jointNumber, double * coord );
+      const char * getBoneJointName( unsigned joint ) const;
+      int getBoneJointParent( unsigned joint ) const;
+      bool getBoneJointCoords( unsigned jointNumber, double * coord ) const;
 
-      bool getBoneJointFinalMatrix( const unsigned & jointNumber, Matrix & m );
-      bool getBoneJointAbsoluteMatrix( const unsigned & jointNumber, Matrix & m );
-      bool getBoneJointRelativeMatrix( const unsigned & jointNumber, Matrix & m );
-      bool getPointFinalMatrix( const unsigned & jointNumber, Matrix & m );
+      bool getBoneJointFinalMatrix( unsigned jointNumber, Matrix & m ) const;
+      bool getBoneJointAbsoluteMatrix( unsigned jointNumber, Matrix & m ) const;
+      bool getBoneJointRelativeMatrix( unsigned jointNumber, Matrix & m ) const;
+      bool getPointFinalMatrix( unsigned jointNumber, Matrix & m ) const;
 
-      list<int> getBoneJointVertices( const int & joint );
-      int getVertexBoneJoint( const unsigned & vertexNumber );
-      int getPointBoneJoint( const unsigned & point );
+      list<int> getBoneJointVertices( int joint ) const;
+      int getVertexBoneJoint( unsigned vertexNumber ) const;
+      int getPointBoneJoint( unsigned point ) const;
 
       bool setPositionBoneJoint( const Position & pos, int joint );
       bool setVertexBoneJoint( unsigned vertex, int joint );
@@ -1345,13 +1346,13 @@ class Model
       bool removeAllVertexInfluences( unsigned vertex );
       bool removeAllPointInfluences( unsigned point );
 
-      bool getPositionInfluences( const Position & pos, InfluenceList & l );
-      bool getVertexInfluences( unsigned vertex, InfluenceList & l );
-      bool getPointInfluences( unsigned point, InfluenceList & l );
+      bool getPositionInfluences( const Position & pos, InfluenceList & l ) const;
+      bool getVertexInfluences( unsigned vertex, InfluenceList & l ) const;
+      bool getPointInfluences( unsigned point, InfluenceList & l ) const;
 
-      int getPrimaryPositionInfluence( const Position & pos );
-      int getPrimaryVertexInfluence( unsigned vertex );
-      int getPrimaryPointInfluence( unsigned point );
+      int getPrimaryPositionInfluence( const Position & pos ) const;
+      int getPrimaryVertexInfluence( unsigned vertex ) const;
+      int getPrimaryPointInfluence( unsigned point ) const;
 
       bool setPositionInfluenceType( const Position & pos, unsigned joint, InfluenceTypeE type );
       bool setVertexInfluenceType( unsigned vertex, unsigned joint, InfluenceTypeE type );
@@ -1366,19 +1367,19 @@ class Model
       bool autoSetPointInfluences( unsigned point, double sensitivity, bool selected );
       bool autoSetCoordInfluences( double * coord, double sensitivity, bool selected, std::list<int> & infList );
 
-      bool setBoneJointName( const unsigned & joint, const char * name );
-      bool setBoneJointParent( const unsigned & joint, const int & parent = -1 );
-      bool setBoneJointRotation( const unsigned & j, const double * rot );
-      bool setBoneJointTranslation( const unsigned & j, const double * trans );
+      bool setBoneJointName( unsigned joint, const char * name );
+      bool setBoneJointParent( unsigned joint, int parent = -1 );
+      bool setBoneJointRotation( unsigned j, const double * rot );
+      bool setBoneJointTranslation( unsigned j, const double * trans );
 
-      double calculatePositionInfluenceWeight( const Position & pos, unsigned joint );
-      double calculateVertexInfluenceWeight( unsigned vertex, unsigned joint );
-      double calculatePointInfluenceWeight( unsigned point, unsigned joint );
-      double calculateCoordInfluenceWeight( double * coord, unsigned joint );
+      double calculatePositionInfluenceWeight( const Position & pos, unsigned joint ) const;
+      double calculateVertexInfluenceWeight( unsigned vertex, unsigned joint ) const;
+      double calculatePointInfluenceWeight( unsigned point, unsigned joint ) const;
+      double calculateCoordInfluenceWeight( const double * coord, unsigned joint ) const;
 
-      void calculateRemainderWeight( InfluenceList & list );
+      void calculateRemainderWeight( InfluenceList & list ) const;
 
-      bool getBoneVector( unsigned joint, double * vec, double * coord );
+      bool getBoneVector( unsigned joint, double * vec, const double * coord ) const;
 
       // No undo on this one
       bool relocateBoneJoint( unsigned j, double x, double y, double z );
@@ -1391,27 +1392,26 @@ class Model
       // Point functions
       // ------------------------------------------------------------------
 
-      int addPoint( const char * name, const double & x, const double & y, const double & z, 
-            const double & xrot, const double & yrot, const double & zrot,
-            const int & boneId = -1 );
+      int addPoint( const char * name, double x, double y, double z, 
+            double xrot, double yrot, double zrot,
+            int boneId = -1 );
 
       void deletePoint( unsigned point );
 
-      int getPointByName( const char * name );
+      int getPointByName( const char * name ) const;
 
-      const char * getPointName( const unsigned & point );
-      bool setPointName( const unsigned & point, const char * name );
+      const char * getPointName( unsigned point ) const;
+      bool setPointName( unsigned point, const char * name );
 
-      int getPointType( const unsigned & point );
-      bool setPointType( const unsigned & point, int type );
+      int getPointType( unsigned point ) const;
+      bool setPointType( unsigned point, int type );
 
-      // FIXME is there a difference between these?
-      // Looks like coords/orientation should be removed (to keep rotation/translation
-      // naming consistent).
-      bool getPointCoords( const unsigned & pointNumber, double * coord );
-      bool getPointOrientation( const unsigned & pointNumber, double * rot );
-      bool getPointRotation( const unsigned & point, double * rot );
-      bool getPointTranslation( const unsigned & point, double * trans );
+      // TODO: Orientation and Rotation are used for different purposes.
+      // If it's safe to remove one in favor of the other, that should be done.
+      bool getPointCoords( unsigned pointNumber, double * coord ) const;
+      bool getPointOrientation( unsigned pointNumber, double * rot ) const;
+      bool getPointRotation( unsigned point, double * rot ) const;
+      bool getPointTranslation( unsigned point, double * trans ) const;
 
       bool setPointRotation( unsigned point, const double * rot );
       bool setPointTranslation( unsigned point, const double * trans );
@@ -1423,30 +1423,30 @@ class Model
       int addProjection( const char * name, int type, double x, double y, double z );
       void deleteProjection( unsigned proj );
 
-      const char * getProjectionName( const unsigned & proj );
+      const char * getProjectionName( unsigned proj ) const;
 
       void   setProjectionScale( unsigned p, double scale );
-      double getProjectionScale( unsigned p );
+      double getProjectionScale( unsigned p ) const;
 
-      bool setProjectionName( const unsigned & proj, const char * name );
-      bool setProjectionType( const unsigned & proj, int type );
-      int  getProjectionType( const unsigned & proj );
-      bool setProjectionRotation( const unsigned & proj, int type );
-      int  getProjectionRotation( const unsigned & proj );
-      bool getProjectionCoords( unsigned projNumber, double *coord );
+      bool setProjectionName( unsigned proj, const char * name );
+      bool setProjectionType( unsigned proj, int type );
+      int  getProjectionType( unsigned proj ) const;
+      bool setProjectionRotation( unsigned proj, int type );
+      int  getProjectionRotation( unsigned proj ) const;
+      bool getProjectionCoords( unsigned projNumber, double *coord ) const;
 
       bool setProjectionUp( unsigned projNumber, const double *coord );
       bool setProjectionSeam( unsigned projNumber, const double *coord );
       bool setProjectionRange( unsigned projNumber, 
             double xmin, double ymin, double xmax, double ymax );
 
-      bool getProjectionUp( unsigned projNumber, double *coord );
-      bool getProjectionSeam( unsigned projNumber, double *coord );
+      bool getProjectionUp( unsigned projNumber, double *coord ) const;
+      bool getProjectionSeam( unsigned projNumber, double *coord ) const;
       bool getProjectionRange( unsigned projNumber, 
-            double & xmin, double & ymin, double & xmax, double & ymax );
+            double & xmin, double & ymin, double & xmax, double & ymax ) const;
 
       void setTriangleProjection( unsigned triangleNum, int proj );
-      int  getTriangleProjection( unsigned triangleNum );
+      int  getTriangleProjection( unsigned triangleNum ) const;
 
       void applyProjection( unsigned int proj );
 
@@ -1454,15 +1454,18 @@ class Model
       // Undo/Redo functions
       // ------------------------------------------------------------------
 
-      bool setUndoEnabled( bool o ) { bool old = m_undoEnabled; m_undoEnabled = o; return old; };
+      bool setUndoEnabled( bool o );
 
       // Indicates that a user-specified operation is complete. A single
       // "operation" may span many function calls and different types of
       // manipulations.
       void operationComplete( const char * opname = NULL );
 
-      bool canUndo();
-      bool canRedo();
+      // Clear undo list
+      void clearUndo();
+
+      bool canUndo() const;
+      bool canRedo() const;
       void undo();
       void redo();
 
@@ -1471,8 +1474,8 @@ class Model
       // a "Cancel" button to discard "unapplied" changes).
       void undoCurrent();
 
-      const char * getUndoOpName();
-      const char * getRedoOpName();
+      const char * getUndoOpName() const;
+      const char * getRedoOpName() const;
 
       // The limits at which undo operations are removed from memory.
       void setUndoSizeLimit( unsigned sizeLimit );
@@ -1504,15 +1507,15 @@ class Model
       void insertTexture( unsigned index, Material * material );
       void removeTexture( unsigned index );
 
-      void insertFrameAnim( const unsigned & index, FrameAnim * anim );
-      void removeFrameAnim( const unsigned & index );
+      void insertFrameAnim( unsigned index, FrameAnim * anim );
+      void removeFrameAnim( unsigned index );
 
-      void insertSkelAnim( const unsigned & anim, SkelAnim * fa );
-      void removeSkelAnim( const unsigned & anim );
+      void insertSkelAnim( unsigned anim, SkelAnim * fa );
+      void removeSkelAnim( unsigned anim );
 
-      void insertFrameAnimFrame( const unsigned & anim, const unsigned & frame,
+      void insertFrameAnimFrame( unsigned anim, unsigned frame,
             FrameAnimData * data );
-      void removeFrameAnimFrame( const unsigned & anim, const unsigned & frame );
+      void removeFrameAnimFrame( unsigned anim, unsigned frame );
 
       // ------------------------------------------------------------------
       // Selection functions
@@ -1521,19 +1524,19 @@ class Model
       void setSelectionMode( SelectionModeE m );
       inline SelectionModeE getSelectionMode() { return m_selectionMode; };
 
-      unsigned getSelectedVertexCount();
-      unsigned getSelectedTriangleCount();
-      unsigned getSelectedBoneJointCount();
-      unsigned getSelectedPointCount();
-      unsigned getSelectedProjectionCount();
+      unsigned getSelectedVertexCount() const;
+      unsigned getSelectedTriangleCount() const;
+      unsigned getSelectedBoneJointCount() const;
+      unsigned getSelectedPointCount() const;
+      unsigned getSelectedProjectionCount() const;
 
-      void getSelectedPositions( list<Position> & l );
-      void getSelectedVertices( list<int> & l );
-      void getSelectedTriangles( list<int> & l );
-      void getSelectedGroups( list<int> & l );
-      void getSelectedBoneJoints( list<int> & l );
-      void getSelectedPoints( list<int> & l );
-      void getSelectedProjections( list<int> & l );
+      void getSelectedPositions( list<Position> & l ) const;
+      void getSelectedVertices( list<int> & l ) const;
+      void getSelectedTriangles( list<int> & l ) const;
+      void getSelectedGroups( list<int> & l ) const;
+      void getSelectedBoneJoints( list<int> & l ) const;
+      void getSelectedPoints( list<int> & l ) const;
+      void getSelectedProjections( list<int> & l ) const;
 
       bool unselectAll();
 
@@ -1560,8 +1563,8 @@ class Model
       bool selectInVolumeMatrix( const Matrix & viewMat, double x1, double y1, double x2, double y2, SelectionTest * test = NULL );
       bool unselectInVolumeMatrix( const Matrix & viewMat, double x1, double y1, double x2, double y2, SelectionTest * test = NULL );
 
-      bool getBoundingRegion( double *x1, double *y1, double *z1, double *x2, double *y2, double *z2 );
-      bool getSelectedBoundingRegion( double *x1, double *y1, double *z1, double *x2, double *y2, double *z2 );
+      bool getBoundingRegion( double *x1, double *y1, double *z1, double *x2, double *y2, double *z2 ) const;
+      bool getSelectedBoundingRegion( double *x1, double *y1, double *z1, double *x2, double *y2, double *z2 ) const;
 
       void deleteSelected();
 
@@ -1574,27 +1577,27 @@ class Model
 
       bool selectVertex( unsigned v );
       bool unselectVertex( unsigned v );
-      bool isVertexSelected( unsigned v );
+      bool isVertexSelected( unsigned v ) const;
 
       bool selectTriangle( unsigned t );
       bool unselectTriangle( unsigned t );
-      bool isTriangleSelected( unsigned t );
+      bool isTriangleSelected( unsigned t ) const;
 
       bool selectGroup( unsigned g );
       bool unselectGroup( unsigned g );
-      bool isGroupSelected( unsigned g );
+      bool isGroupSelected( unsigned g ) const;
 
       bool selectBoneJoint( unsigned j );
       bool unselectBoneJoint( unsigned j );
-      bool isBoneJointSelected( unsigned j );
+      bool isBoneJointSelected( unsigned j ) const;
 
       bool selectPoint( unsigned p );
       bool unselectPoint( unsigned p );
-      bool isPointSelected( unsigned p );
+      bool isPointSelected( unsigned p ) const;
 
       bool selectProjection( unsigned p );
       bool unselectProjection( unsigned p );
-      bool isProjectionSelected( unsigned p );
+      bool isProjectionSelected( unsigned p ) const;
 
       // The behavior of this function changes based on the selection mode.
       bool invertSelection();
@@ -1612,11 +1615,11 @@ class Model
       bool hideUnselected();
       bool unhideAll();
 
-      bool isVertexVisible( unsigned v );
-      bool isTriangleVisible( unsigned t );
-      bool isGroupVisible( unsigned g );
-      bool isBoneJointVisible( unsigned j );
-      bool isPointVisible( unsigned p );
+      bool isVertexVisible( unsigned v ) const;
+      bool isTriangleVisible( unsigned t ) const;
+      bool isGroupVisible( unsigned g ) const;
+      bool isBoneJointVisible( unsigned j ) const;
+      bool isPointVisible( unsigned p ) const;
 
       // Don't call these directly... use selection/hide selection
       bool hideVertex( unsigned );
@@ -1713,8 +1716,8 @@ class Model
       void selectTrianglesFromVertices( bool all = true );
       void selectGroupsFromTriangles( bool all = true );
 
-      bool parentJointSelected( int joint );
-      bool directParentJointSelected( int joint );
+      bool parentJointSelected( int joint ) const;
+      bool directParentJointSelected( int joint ) const;
 
       // ------------------------------------------------------------------
       // Undo

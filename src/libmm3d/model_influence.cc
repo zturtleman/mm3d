@@ -72,7 +72,7 @@ bool Model::setPointBoneJoint( unsigned point, int joint )
    return false;
 }
 
-list<int> Model::getBoneJointVertices( const int & joint )
+list<int> Model::getBoneJointVertices( int joint ) const
 {
    list<int> rval;
 
@@ -369,7 +369,7 @@ bool Model::removeAllPointInfluences( unsigned point )
    return false;
 }
 
-bool Model::getPositionInfluences( const Position & pos, InfluenceList & l )
+bool Model::getPositionInfluences( const Position & pos, InfluenceList & l ) const
 {
    switch ( pos.type )
    {
@@ -386,7 +386,7 @@ bool Model::getPositionInfluences( const Position & pos, InfluenceList & l )
    return false;
 }
 
-bool Model::getVertexInfluences( unsigned vertex, InfluenceList & l )
+bool Model::getVertexInfluences( unsigned vertex, InfluenceList & l ) const
 {
    if ( vertex < m_vertices.size() )
    {
@@ -397,7 +397,7 @@ bool Model::getVertexInfluences( unsigned vertex, InfluenceList & l )
    return false;
 }
 
-bool Model::getPointInfluences( unsigned point, InfluenceList & l )
+bool Model::getPointInfluences( unsigned point, InfluenceList & l ) const
 {
    if ( point < m_points.size() )
    {
@@ -408,7 +408,7 @@ bool Model::getPointInfluences( unsigned point, InfluenceList & l )
    return false;
 }
 
-int Model::getPrimaryPositionInfluence( const Position & pos )
+int Model::getPrimaryPositionInfluence( const Position & pos ) const
 {
    switch ( pos.type )
    {
@@ -425,7 +425,7 @@ int Model::getPrimaryPositionInfluence( const Position & pos )
    return -1;
 }
 
-int Model::getPrimaryVertexInfluence( unsigned vertex )
+int Model::getPrimaryVertexInfluence( unsigned vertex ) const
 {
    if ( vertex < m_vertices.size() )
    {
@@ -449,7 +449,7 @@ int Model::getPrimaryVertexInfluence( unsigned vertex )
    return -1;
 }
 
-int Model::getPrimaryPointInfluence( unsigned point )
+int Model::getPrimaryPointInfluence( unsigned point ) const
 {
    if ( point < m_points.size() )
    {
@@ -645,7 +645,7 @@ bool Model::setPointInfluenceWeight( unsigned point, unsigned int joint, double 
    return false;
 }
 
-double Model::calculatePositionInfluenceWeight( const Position & pos, unsigned joint )
+double Model::calculatePositionInfluenceWeight( const Position & pos, unsigned joint ) const
 {
    switch ( pos.type )
    {
@@ -661,21 +661,21 @@ double Model::calculatePositionInfluenceWeight( const Position & pos, unsigned j
    return 0.0;
 }
 
-double Model::calculateVertexInfluenceWeight( unsigned vertex, unsigned joint )
+double Model::calculateVertexInfluenceWeight( unsigned vertex, unsigned joint ) const
 {
    double coord[3] = { 0, 0, 0 };
    getVertexCoords( vertex, coord );
    return calculateCoordInfluenceWeight( coord, joint );
 }
 
-double Model::calculatePointInfluenceWeight( unsigned point, unsigned joint )
+double Model::calculatePointInfluenceWeight( unsigned point, unsigned joint ) const
 {
    double coord[3] = { 0, 0, 0 };
    getPointCoords( point, coord );
    return calculateCoordInfluenceWeight( coord, joint );
 }
 
-double Model::calculateCoordInfluenceWeight( double * coord, unsigned joint )
+double Model::calculateCoordInfluenceWeight( const double * coord, unsigned joint ) const
 {
    if ( joint >= m_joints.size() )
    {
@@ -902,7 +902,7 @@ bool Model::autoSetCoordInfluences( double * coord, double sensitivity, bool sel
 }
 
 
-void Model::calculateRemainderWeight( Model::InfluenceList & list )
+void Model::calculateRemainderWeight( Model::InfluenceList & list ) const
 {
    int    remainders = 0;
    double remaining = 1.0;

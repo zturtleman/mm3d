@@ -157,7 +157,7 @@ void ContextGroup::groupChanged()
          bool addSelected = true;
          if ( g >= m_model->getGroupCount() )
          {
-            // FIXME pick unique name?
+            // TODO pick unique name?
             QString groupName = QInputDialog::getText( tr("New Group", "Name of new group, window title" ), tr("Enter new group name:"), QLineEdit::Normal, QString::null, &addSelected );
             if ( groupName.length() == 0 )
             {

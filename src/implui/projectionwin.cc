@@ -58,6 +58,12 @@ ProjectionWin::ProjectionWin( Model * model, QWidget * parent, ViewPanel * viewP
      m_inUndo( false ),
      m_ignoreChange( false )
 {
+   //m_material->hide();
+   //m_materialLabel->hide();
+
+   //m_material->hide();
+   //m_materialLabel->hide();
+
    m_textureWidget = m_textureFrame->getTextureWidget();
    m_textureWidget->setInteractive( true );
    m_textureWidget->setMouseOperation( TextureWidget::MouseRange );
@@ -125,7 +131,7 @@ void ProjectionWin::modelChanged( int changeBits )
          m_redoCount = 0;
       }
 
-      // FIXME need some way to re-select the projection we were looking at
+      // TODO need some way to re-select the projection we were looking at
       if ( isVisible() )
       {
          int projCount = m_model->getProjectionCount();

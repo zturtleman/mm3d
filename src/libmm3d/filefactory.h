@@ -24,6 +24,12 @@
 #ifndef FILEFACTORY_H_INC__
 #define FILEFACTORY_H_INC__
 
+// The FileFactory creates DataSource and DataDest objects. It is used by
+// the ModelFilter class so that file I/O can be replaced with memory I/O.
+//
+// To implement a different FileFactory type, override createDest and
+// createSource to create the DataDest and DataSource types of your choice.
+
 #include <map>
 #include <string>
 

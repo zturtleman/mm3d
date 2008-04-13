@@ -36,8 +36,7 @@
 #include "model.h"
 #include "filefactory.h"
 
-typedef float float32_t;
-
+#include "mm3dtypes.h"
 
 class ModelFilter
 {
@@ -180,7 +179,10 @@ class ModelFilter
       // to the Options class.
       virtual OptionsFuncF getOptionsPrompt() { return m_optionsFunc; };
 
-      // FIXME document
+      // Overrides the default FileFactory with a custom version.
+      // This can be used to change how files are read and written by
+      // any file filters that use the ModelFilter's openInput and
+      // openOutput functions.
       void setFactory( FileFactory * factory ) { m_factory = factory; }
 
       static Model::ModelErrorE errnoToModelError( int err );

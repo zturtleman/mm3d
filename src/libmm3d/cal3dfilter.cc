@@ -72,8 +72,6 @@ static Cal3dFilter * s_filter = NULL;
 
 const Model::AnimationModeE MODE = Model::ANIMMODE_SKELETAL;
 
-typedef float float32_t; // TODO standardize this
-
 static char * _skipSpace( char * str )
 {
    while ( isspace( str[0] ) )

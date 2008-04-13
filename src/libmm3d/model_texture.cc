@@ -266,7 +266,7 @@ bool Model::setGroupTextureId( unsigned groupNumber, int textureId )
    }
 }
 
-bool Model::setTextureCoords( const unsigned & triangleNumber, const unsigned & vertexIndex, const float & s, const float & t )
+bool Model::setTextureCoords( unsigned triangleNumber, unsigned vertexIndex, float s, float t )
 {
    if ( m_animationMode )
    {
@@ -404,7 +404,7 @@ bool Model::setTextureEmissive( unsigned textureId, const float * emissive )
    }
 }
 
-bool Model::setTextureShininess( unsigned textureId, const float & shininess )
+bool Model::setTextureShininess( unsigned textureId, float shininess )
 {
    if ( m_animationMode )
    {
@@ -535,7 +535,7 @@ void Model::noTexture( unsigned id )
 
 #endif // MM3D_EDIT
 
-int Model::getGroupTextureId( unsigned groupNumber )
+int Model::getGroupTextureId( unsigned groupNumber ) const
 {
    if ( groupNumber >= 0 && groupNumber < m_groups.size() )
    {
@@ -547,7 +547,7 @@ int Model::getGroupTextureId( unsigned groupNumber )
    }
 }
 
-bool Model::getTextureCoords( const unsigned & triangleNumber, const unsigned & vertexIndex, float & s, float & t )
+bool Model::getTextureCoords( unsigned triangleNumber, unsigned vertexIndex, float & s, float & t ) const
 {
    if ( triangleNumber < m_triangles.size() && vertexIndex < 3 )
    {
@@ -573,7 +573,7 @@ Texture * Model::getTextureData( unsigned textureId )
    }
 }
 
-bool Model::getTextureAmbient( unsigned textureId, float * ambient )
+bool Model::getTextureAmbient( unsigned textureId, float * ambient ) const
 {
    if ( ambient && textureId < m_materials.size() )
    {
@@ -589,7 +589,7 @@ bool Model::getTextureAmbient( unsigned textureId, float * ambient )
    }
 }
 
-bool Model::getTextureDiffuse( unsigned textureId, float * diffuse )
+bool Model::getTextureDiffuse( unsigned textureId, float * diffuse ) const
 {
    if ( diffuse && textureId < m_materials.size() )
    {
@@ -605,7 +605,7 @@ bool Model::getTextureDiffuse( unsigned textureId, float * diffuse )
    }
 }
 
-bool Model::getTextureSpecular( unsigned textureId, float * specular )
+bool Model::getTextureSpecular( unsigned textureId, float * specular ) const
 {
    if ( specular && textureId < m_materials.size() )
    {
@@ -621,7 +621,7 @@ bool Model::getTextureSpecular( unsigned textureId, float * specular )
    }
 }
 
-bool Model::getTextureEmissive( unsigned textureId, float * emissive )
+bool Model::getTextureEmissive( unsigned textureId, float * emissive ) const
 {
    if ( emissive && textureId < m_materials.size() )
    {
@@ -637,7 +637,7 @@ bool Model::getTextureEmissive( unsigned textureId, float * emissive )
    }
 }
 
-bool Model::getTextureShininess( unsigned textureId, float & shininess )
+bool Model::getTextureShininess( unsigned textureId, float & shininess ) const
 {
    if ( textureId < m_materials.size() )
    {
@@ -650,7 +650,7 @@ bool Model::getTextureShininess( unsigned textureId, float & shininess )
    }
 }
 
-bool Model::getTextureSClamp( unsigned textureId )
+bool Model::getTextureSClamp( unsigned textureId ) const
 {
    if ( textureId < m_materials.size() )
    {
@@ -659,7 +659,7 @@ bool Model::getTextureSClamp( unsigned textureId )
    return false;
 }
 
-bool Model::getTextureTClamp( unsigned textureId )
+bool Model::getTextureTClamp( unsigned textureId ) const
 {
    if ( textureId < m_materials.size() )
    {
@@ -669,7 +669,7 @@ bool Model::getTextureTClamp( unsigned textureId )
 }
 
 
-const char * Model::getTextureName( unsigned textureId )
+const char * Model::getTextureName( unsigned textureId ) const
 {
    if ( textureId >= 0 && textureId < m_materials.size() )
    {
@@ -681,7 +681,7 @@ const char * Model::getTextureName( unsigned textureId )
    }
 }
 
-const char * Model::getTextureFilename( unsigned textureId )
+const char * Model::getTextureFilename( unsigned textureId ) const
 {
    if ( textureId >= 0 && textureId < m_materials.size() )
    {
@@ -693,7 +693,7 @@ const char * Model::getTextureFilename( unsigned textureId )
    }
 }
 
-int Model::getMaterialColor( unsigned materialIndex, unsigned c, unsigned v )
+int Model::getMaterialColor( unsigned materialIndex, unsigned c, unsigned v ) const
 {
    if ( materialIndex < m_materials.size() && c < 4 && v < 4 )
    {
@@ -705,7 +705,7 @@ int Model::getMaterialColor( unsigned materialIndex, unsigned c, unsigned v )
    }
 }
 
-Model::Material::MaterialTypeE Model::getMaterialType( unsigned materialIndex )
+Model::Material::MaterialTypeE Model::getMaterialType( unsigned materialIndex ) const
 {
    if ( materialIndex < m_materials.size() )
    {
@@ -717,7 +717,7 @@ Model::Material::MaterialTypeE Model::getMaterialType( unsigned materialIndex )
    }
 }
 
-int Model::getMaterialByName( const char * const materialName, bool ignoreCase )
+int Model::getMaterialByName( const char * const materialName, bool ignoreCase ) const
 {
    int (*compare)(const char *, const char *);
    compare = ignoreCase ? strcasecmp : strcmp;

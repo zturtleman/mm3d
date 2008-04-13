@@ -55,7 +55,7 @@ TextureCoord::TextureCoord( Model * model, QWidget * parent, const char * name )
      m_currentDirection( 0 ),
      m_currentMapScheme( 2 ) // if you change this, change the setChecked line below also
 {
-   // FIXME handle undo of select/unselect?
+   // TODO handle undo of select/unselect?
    // Can't do this until after constructor is done because of observer interface
    //setModel( m_model );
    m_textureFrame->setModel( model );

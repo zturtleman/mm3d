@@ -20,18 +20,9 @@
  *  See the COPYING file for full license text.
  */
 
+#ifndef MM3DTYPES_H_INC__
+#define MM3DTYPES_H_INC__
 
-#ifndef __VERSION_H
-#define __VERSION_H
+typedef float float32_t;
 
-#include "config.h"
-
-#define VERSION_MAJOR 1  // If you change version, change ../configure.in also
-#define VERSION_MINOR 3
-#define VERSION_PATCH 7
-
-#define MM3D_DEVEL_VERSION 1
-
-#define VERSION_STRING VERSION
-
-#endif // __VERSION_H
+#endif  // MM3DTYPES_H_INC__

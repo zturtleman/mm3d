@@ -29,6 +29,8 @@
 #include <qspinbox.h>
 #include <qcheckbox.h>
 
+#include "helpwin.h"
+
 ObjPrompt::ObjPrompt()
    : ObjPromptBase( NULL, "", true ),
      m_accel( new QAccel(this) )
@@ -59,8 +61,8 @@ void ObjPrompt::getOptions( ObjFilter::ObjOptions * opts )
 
 void ObjPrompt::helpNowEvent( int id )
 {
-   //HelpWin * win = new HelpWin( "olh_pluginwin.html", true );
-   //win->show();
+   HelpWin * win = new HelpWin( "olh_pluginwin.html", true );
+   win->show();
 }
 
 // This function takes a ModelFilter::Options argument, downcasts it

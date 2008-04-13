@@ -24,6 +24,7 @@
 #include "menuconf.h"
 #include "config.h"
 #include "selectbonetool.h"
+#include "3dmprefs.h"
 #include "bounding.h"
 #include "decalmgr.h"
 #include "log.h"
@@ -59,7 +60,13 @@ void SelectBoneTool::mouseButtonDown( Parent * parent, int buttonState, int x, i
    }
 
    parent->getModel()->setSelectionMode( Model::SelectJoints );
-   parent->getModel()->setDrawJoints( Model::JOINTMODE_BONES );
+
+   Model::DrawJointModeE mode = 
+      static_cast<Model::DrawJointModeE>(
+            g_prefs( "ui_draw_joints" ).intValue() );
+   if ( mode == Model::JOINTMODE_NONE )
+      mode = Model::JOINTMODE_BONES;
+   parent->getModel()->setDrawJoints( mode );
 
    m_boundingBox = new BoundingBox();
    DecalManager::getInstance()->addDecalToParent( m_boundingBox, parent );

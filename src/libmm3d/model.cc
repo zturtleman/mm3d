@@ -96,16 +96,6 @@ static int _allocated = 0;
 const double TOLERANCE = 0.00005;
 const double ATOLERANCE = 0.00000001;
 
-static void _calculateNormal( double * normal,
-      double * a, double * b, double * c )
-{
-   normal[0] = a[1] * (b[2] - c[2]) + b[1] * (c[2] - a[2]) + c[1] * (a[2] - b[2]);
-   normal[1] = a[2] * (b[0] - c[0]) + b[2] * (c[0] - a[0]) + c[2] * (a[0] - b[0]);
-   normal[2] = a[0] * (b[1] - c[1]) + b[0] * (c[1] - a[1]) + c[0] * (a[1] - b[1]);
-
-   normalize3( normal );
-}
-
 // returns:
 //    1 = in front
 //    0 = on plane
@@ -153,7 +143,7 @@ static int _pointInTriangle( double * coord,
       avg[i] = (p1[i] + p2[i] + p3[i]) / 3.0;
    }
 
-   _calculateNormal( normal,
+   calculate_normal( normal,
          p1, p2, p3 );
 
    for ( i = 0; i < 3; i++ )
@@ -161,13 +151,13 @@ static int _pointInTriangle( double * coord,
       avg[i] += normal[i];
    }
 
-   _calculateNormal( normal,
+   calculate_normal( normal,
          p1, p2, avg );
    vside[0] = _pointInPlane( coord, avg, normal );
-   _calculateNormal( normal,
+   calculate_normal( normal,
          p2, p3, avg );
    vside[1] = _pointInPlane( coord, avg, normal );
-   _calculateNormal( normal,
+   calculate_normal( normal,
          p3, p1, avg );
    vside[2] = _pointInPlane( coord, avg, normal );
 
@@ -490,7 +480,7 @@ void Model::setUndoCountLimit( unsigned countLimit )
    m_undoMgr->setCountLimit( countLimit );
 }
 
-bool Model::isVertexVisible( unsigned v )
+bool Model::isVertexVisible( unsigned v ) const
 {
    LOG_PROFILE();
 
@@ -504,7 +494,7 @@ bool Model::isVertexVisible( unsigned v )
    }
 }
 
-bool Model::isTriangleVisible( unsigned v )
+bool Model::isTriangleVisible( unsigned v ) const
 {
    LOG_PROFILE();
 
@@ -518,7 +508,7 @@ bool Model::isTriangleVisible( unsigned v )
    }
 }
 
-bool Model::isGroupVisible( unsigned v )
+bool Model::isGroupVisible( unsigned v ) const
 {
    LOG_PROFILE();
 
@@ -532,7 +522,7 @@ bool Model::isGroupVisible( unsigned v )
    }
 }
 
-bool Model::isBoneJointVisible( unsigned j )
+bool Model::isBoneJointVisible( unsigned j ) const
 {
    LOG_PROFILE();
 
@@ -546,7 +536,7 @@ bool Model::isBoneJointVisible( unsigned j )
    }
 }
 
-bool Model::isPointVisible( unsigned p )
+bool Model::isPointVisible( unsigned p ) const
 {
    LOG_PROFILE();
 
@@ -599,7 +589,7 @@ void Model::setVertexFree( unsigned v, bool o )
    }
 }
 
-bool Model::isVertexFree( unsigned v )
+bool Model::isVertexFree( unsigned v ) const
 {
    if (v < m_vertices.size() )
    {
@@ -648,8 +638,8 @@ int Model::addTriangle( unsigned v1, unsigned v2, unsigned v3 )
    }
 }
 
-int Model::addBoneJoint( const char * name, const double & x, const double & y, const double & z, 
-      const double & xrot, const double & yrot, const double & zrot, const int & parent )
+int Model::addBoneJoint( const char * name, double x, double y, double z, 
+      double xrot, double yrot, double zrot, int parent )
 {
    if ( m_animationMode || name == NULL || parent >= (int) m_joints.size() )
    {
@@ -707,8 +697,8 @@ int Model::addBoneJoint( const char * name, const double & x, const double & y, 
    return num;
 }
 
-int Model::addPoint( const char * name, const double & x, const double & y, const double & z, 
-      const double & xrot, const double & yrot, const double & zrot, const int & boneId )
+int Model::addPoint( const char * name, double x, double y, double z, 
+      double xrot, double yrot, double zrot, int boneId )
 {
    if ( m_animationMode || name == NULL || boneId >= (int) m_joints.size())
    {
@@ -827,7 +817,7 @@ bool Model::setTriangleVertices( unsigned triangleNum, unsigned vert1, unsigned 
    }
 }
 
-bool Model::getTriangleVertices( unsigned triangleNum, unsigned & vert1, unsigned & vert2, unsigned & vert3 )
+bool Model::getTriangleVertices( unsigned triangleNum, unsigned & vert1, unsigned & vert2, unsigned & vert3 ) const
 {
    if ( triangleNum < m_triangles.size() )
    {
@@ -2005,7 +1995,7 @@ void Model::applyMatrix( const Matrix & m, OperationScopeE scope, bool animation
    }
    else
    {
-      m_undoMgr->clear();
+      clearUndo();
    }
 }
 
@@ -2066,7 +2056,7 @@ void Model::subdivideSelectedTriangles()
                getVertexCoords( a, pa );
                getVertexCoords( b, pb );
 
-               // FIXME this should really use addVertex()
+               // TODO this should really use addVertex()
                Vertex * vertex = Vertex::get();
 
                vertex->m_coord[0] = (pa[0] + pb[0]) / 2;
@@ -2162,7 +2152,7 @@ void Model::unsubdivideTriangles( unsigned t1, unsigned t2, unsigned t3, unsigne
    invalidateNormals();
 }
 
-bool Model::setPointName( const unsigned & point, const char * name )
+bool Model::setPointName( unsigned point, const char * name )
 {
    if ( point < m_points.size() && name && name[0] )
    {
@@ -2179,7 +2169,7 @@ bool Model::setPointName( const unsigned & point, const char * name )
    }
 }
 
-bool Model::setPointType( const unsigned & point, int type )
+bool Model::setPointType( unsigned point, int type )
 {
    if ( point < m_points.size() )
    {
@@ -2198,7 +2188,7 @@ bool Model::setPointType( const unsigned & point, int type )
    }
 }
 
-bool Model::setBoneJointName( const unsigned & joint, const char * name )
+bool Model::setBoneJointName( unsigned joint, const char * name )
 {
    if ( joint < m_joints.size() && name && name[0] )
    {
@@ -2215,7 +2205,7 @@ bool Model::setBoneJointName( const unsigned & joint, const char * name )
    }
 }
 
-bool Model::setBoneJointParent( const unsigned & joint, const int & parent )
+bool Model::setBoneJointParent( unsigned joint, int parent )
 {
    if ( joint < m_joints.size() && parent >= -1 )
    {
@@ -2232,7 +2222,7 @@ bool Model::setBoneJointParent( const unsigned & joint, const int & parent )
    }
 }
 
-bool Model::setBoneJointRotation( const unsigned & j, const double * rot )
+bool Model::setBoneJointRotation( unsigned j, const double * rot )
 {
    if ( j < m_joints.size() && rot )
    {
@@ -2249,7 +2239,7 @@ bool Model::setBoneJointRotation( const unsigned & j, const double * rot )
    return false;
 }
 
-bool Model::setBoneJointTranslation( const unsigned & j, const double * trans )
+bool Model::setBoneJointTranslation( unsigned j, const double * trans )
 {
    if ( j < m_joints.size() && trans )
    {
@@ -2277,7 +2267,27 @@ void Model::operationComplete( const char * opname )
    updateObservers();
 }
 
-bool Model::canUndo()
+void Model::forceAddOrDelete( bool o )
+{
+   if ( !o && m_forceAddOrDelete )
+      clearUndo();
+
+   m_forceAddOrDelete = o;
+}
+
+bool Model::setUndoEnabled( bool o )
+{
+   bool old = m_undoEnabled;
+   m_undoEnabled = o;
+   return old;
+}
+
+void Model::clearUndo()
+{
+   m_undoMgr->clear();
+}
+
+bool Model::canUndo() const
 {
    //if ( m_animationMode )
    //{
@@ -2289,7 +2299,7 @@ bool Model::canUndo()
    }
 }
 
-bool Model::canRedo()
+bool Model::canRedo() const
 {
    //if ( m_animationMode )
    //{
@@ -2301,7 +2311,7 @@ bool Model::canRedo()
    }
 }
 
-const char * Model::getUndoOpName()
+const char * Model::getUndoOpName() const
 {
    //if ( m_animationMode )
    //{
@@ -2313,7 +2323,7 @@ const char * Model::getUndoOpName()
    }
 }
 
-const char * Model::getRedoOpName()
+const char * Model::getRedoOpName() const
 {
    //if ( m_animationMode )
    //{
@@ -2930,7 +2940,7 @@ void Model::unhideVerticesFromTriangles()
    }
 }
 
-bool Model::getBoundingRegion( double *x1, double *y1, double *z1, double *x2, double *y2, double *z2 )
+bool Model::getBoundingRegion( double *x1, double *y1, double *z1, double *x2, double *y2, double *z2 ) const
 {
    if ( x1 && y1 && z1 && x2 && y2 && z2 )
    {
@@ -3347,12 +3357,12 @@ bool Model::deleteFormatData( unsigned index )
    return false;
 }
 
-unsigned Model::getFormatDataCount()
+unsigned Model::getFormatDataCount() const
 {
    return m_formatData.size();
 }
 
-Model::FormatData * Model::getFormatData( unsigned index )
+Model::FormatData * Model::getFormatData( unsigned index ) const
 {
    if ( index < m_formatData.size() )
    {
@@ -3361,7 +3371,7 @@ Model::FormatData * Model::getFormatData( unsigned index )
    return NULL;
 }
 
-Model::FormatData * Model::getFormatDataByFormat( const char * format, unsigned index )
+Model::FormatData * Model::getFormatDataByFormat( const char * format, unsigned index ) const
 {
    unsigned count = m_formatData.size();
    for ( unsigned n = 0; n < count; n++ )
@@ -3377,7 +3387,7 @@ Model::FormatData * Model::getFormatDataByFormat( const char * format, unsigned 
    return NULL;
 }
 
-int Model::getNumFrames()
+int Model::getNumFrames() const
 {
    int count = 0;
    for ( unsigned anim = 0; anim < m_skelAnims.size(); anim++ )
@@ -3388,7 +3398,7 @@ int Model::getNumFrames()
    return count;
 }
 
-int Model::getBoneJointParent( const unsigned & j )
+int Model::getBoneJointParent( unsigned j ) const
 {
    if ( j < m_joints.size() )
    {
@@ -3400,7 +3410,7 @@ int Model::getBoneJointParent( const unsigned & j )
    }
 }
 
-const char * Model::getBoneJointName( const unsigned & joint )
+const char * Model::getBoneJointName( unsigned joint ) const
 {
    if ( joint < m_joints.size() )
    {
@@ -3412,7 +3422,7 @@ const char * Model::getBoneJointName( const unsigned & joint )
    }
 }
 
-const char * Model::getPointName( const unsigned & point )
+const char * Model::getPointName( unsigned point ) const
 {
    if ( point < m_points.size() )
    {
@@ -3424,7 +3434,7 @@ const char * Model::getPointName( const unsigned & point )
    }
 }
 
-int Model::getPointByName( const char * name )
+int Model::getPointByName( const char * name ) const
 {
    for ( unsigned int point = 0; point < m_points.size(); point++ )
    {
@@ -3436,7 +3446,7 @@ int Model::getPointByName( const char * name )
    return -1;
 }
 
-int Model::getPointType( const unsigned & point )
+int Model::getPointType( unsigned point ) const
 {
    if ( point < m_points.size() )
    {
@@ -3448,12 +3458,12 @@ int Model::getPointType( const unsigned & point )
    }
 }
 
-int Model::getPointBoneJoint( const unsigned & p )
+int Model::getPointBoneJoint( unsigned p ) const
 {
    return getPrimaryPointInfluence( p );
 }
 
-bool Model::getPositionCoords( const Position & pos, double *coord )
+bool Model::getPositionCoords( const Position & pos, double *coord ) const
 {
    switch ( pos.type )
    {
@@ -3472,7 +3482,7 @@ bool Model::getPositionCoords( const Position & pos, double *coord )
    return false;
 }
 
-bool Model::getVertexCoords( const unsigned & vertexNumber, double *coord )
+bool Model::getVertexCoords( unsigned vertexNumber, double *coord ) const
 {
    switch ( m_animationMode )
    {
@@ -3513,7 +3523,7 @@ bool Model::getVertexCoords( const unsigned & vertexNumber, double *coord )
    return false;
 }
 
-bool Model::getVertexCoordsUnanimated( const unsigned & vertexNumber, double *coord )
+bool Model::getVertexCoordsUnanimated( unsigned vertexNumber, double *coord ) const
 {
    if ( coord && vertexNumber < m_vertices.size() )
    {
@@ -3526,7 +3536,7 @@ bool Model::getVertexCoordsUnanimated( const unsigned & vertexNumber, double *co
    return false;
 }
 
-bool Model::getVertexCoords2d( const unsigned & vertexNumber, const ProjectionDirectionE & dir, double *coord )
+bool Model::getVertexCoords2d( unsigned vertexNumber, ProjectionDirectionE dir, double *coord ) const
 {
    if ( coord && vertexNumber >= 0 && (unsigned) vertexNumber < m_vertices.size() )
    {
@@ -3571,12 +3581,12 @@ bool Model::getVertexCoords2d( const unsigned & vertexNumber, const ProjectionDi
    }
 }
 
-int Model::getVertexBoneJoint( const unsigned & vertexNumber )
+int Model::getVertexBoneJoint( unsigned vertexNumber ) const
 {
    return getPrimaryVertexInfluence( vertexNumber );
 }
 
-bool Model::getPointCoords( const unsigned & pointNumber, double *coord )
+bool Model::getPointCoords( unsigned pointNumber, double *coord ) const
 {
    if ( coord && pointNumber < m_points.size() )
    {
@@ -3629,7 +3639,7 @@ bool Model::getPointCoords( const unsigned & pointNumber, double *coord )
    }
 }
 
-bool Model::getPointOrientation( const unsigned & pointNumber, double * rot )
+bool Model::getPointOrientation( unsigned pointNumber, double * rot ) const
 {
    if ( rot && pointNumber < m_points.size() )
    {
@@ -3683,7 +3693,7 @@ bool Model::getPointOrientation( const unsigned & pointNumber, double * rot )
    }
 }
 
-bool Model::getPointRotation( const unsigned & pointNumber, double * rot )
+bool Model::getPointRotation( unsigned pointNumber, double * rot ) const
 {
    if ( rot && pointNumber < m_points.size() )
    {
@@ -3707,7 +3717,7 @@ bool Model::getPointRotation( const unsigned & pointNumber, double * rot )
    return false;
 }
 
-bool Model::getPointTranslation( const unsigned & pointNumber, double * trans )
+bool Model::getPointTranslation( unsigned pointNumber, double * trans ) const
 {
    if ( trans && pointNumber < m_points.size() )
    {
@@ -3778,7 +3788,7 @@ bool Model::setPointTranslation( unsigned pointNumber, const double * trans )
    }
 }
 
-bool Model::getBoneJointCoords( const unsigned & jointNumber, double * coord )
+bool Model::getBoneJointCoords( unsigned jointNumber, double * coord ) const
 {
    if ( coord && jointNumber < m_joints.size() )
    {
@@ -3804,7 +3814,7 @@ bool Model::getBoneJointCoords( const unsigned & jointNumber, double * coord )
    }
 }
 
-bool Model::getBoneJointFinalMatrix( const unsigned & jointNumber, Matrix & m )
+bool Model::getBoneJointFinalMatrix( unsigned jointNumber, Matrix & m ) const
 {
    if ( jointNumber < m_joints.size() )
    {
@@ -3817,7 +3827,7 @@ bool Model::getBoneJointFinalMatrix( const unsigned & jointNumber, Matrix & m )
    }
 }
 
-bool Model::getBoneJointAbsoluteMatrix( const unsigned & jointNumber, Matrix & m )
+bool Model::getBoneJointAbsoluteMatrix( unsigned jointNumber, Matrix & m ) const
 {
    if ( jointNumber < m_joints.size() )
    {
@@ -3830,7 +3840,7 @@ bool Model::getBoneJointAbsoluteMatrix( const unsigned & jointNumber, Matrix & m
    }
 }
 
-bool Model::getBoneJointRelativeMatrix( const unsigned & jointNumber, Matrix & m )
+bool Model::getBoneJointRelativeMatrix( unsigned jointNumber, Matrix & m ) const
 {
    if ( jointNumber < m_joints.size() )
    {
@@ -3843,7 +3853,7 @@ bool Model::getBoneJointRelativeMatrix( const unsigned & jointNumber, Matrix & m
    }
 }
 
-bool Model::getPointFinalMatrix( const unsigned & pointNumber, Matrix & m )
+bool Model::getPointFinalMatrix( unsigned pointNumber, Matrix & m ) const
 {
    if ( pointNumber < m_points.size() )
    {
@@ -3884,7 +3894,7 @@ bool Model::getPointFinalMatrix( const unsigned & pointNumber, Matrix & m )
    return false;
 }
 
-int Model::getTriangleVertex( unsigned triangleNumber, unsigned vertexIndex )
+int Model::getTriangleVertex( unsigned triangleNumber, unsigned vertexIndex ) const
 {
    if ( triangleNumber < m_triangles.size() && vertexIndex < 3 )
    {
@@ -3896,7 +3906,7 @@ int Model::getTriangleVertex( unsigned triangleNumber, unsigned vertexIndex )
    }
 }
 
-bool Model::getNormal( unsigned triangleNum, unsigned vertexIndex, float *normal )
+bool Model::getNormal( unsigned triangleNum, unsigned vertexIndex, float *normal ) const
 {
    if ( triangleNum < m_triangles.size() && vertexIndex < 3 )
    {
@@ -3912,7 +3922,7 @@ bool Model::getNormal( unsigned triangleNum, unsigned vertexIndex, float *normal
    }
 }
 
-bool Model::getFlatNormal( unsigned t, float *normal )
+bool Model::getFlatNormal( unsigned t, float *normal ) const
 {
    if ( t < m_triangles.size() )
    {
@@ -3949,7 +3959,7 @@ bool Model::getFlatNormal( unsigned t, float *normal )
    }
 }
 
-float Model::cosToPoint( unsigned t, double * point )
+float Model::cosToPoint( unsigned t, double * point ) const
 {
    if ( t < m_triangles.size() )
    {
@@ -4001,7 +4011,7 @@ float Model::cosToPoint( unsigned t, double * point )
    }
 }
 
-bool Model::getBoneVector( unsigned joint, double * vec, double * coord )
+bool Model::getBoneVector( unsigned joint, double * vec, const double * coord ) const
 {
    if ( joint >= m_joints.size() )
    {
@@ -4159,22 +4169,23 @@ void Model::calculateNormals()
    }
 
    // Apply accumulated normals to triangles
-   unsigned t;
 
    for ( unsigned g = 0; g < m_groups.size(); g++ )
    {
-      float maxAngle = m_groups[g]->m_angle;
+      Group * grp = m_groups[g];
+
+      float maxAngle = grp->m_angle;
       if ( maxAngle < 0.50f )
       {
          maxAngle = 0.50f;
       }
       maxAngle *= PIOVER180;
 
-      for ( unsigned t2 = 0; t2 < m_groups[g]->m_triangleIndices.size(); t2++ )
+      for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+            it != grp->m_triangleIndices.end();
+            ++it )
       {
-         t = m_groups[g]->m_triangleIndices[t2];
-
-         Triangle * tri = m_triangles[t];
+         Triangle * tri = m_triangles[*it];
          tri->m_marked = true;
          for ( int vert = 0; vert < 3; vert++ )
          {
@@ -4290,14 +4301,18 @@ void Model::calculateNormals()
 
    for ( unsigned m = 0; m < m_groups.size(); m++ )
    {
-      double percent = (double) m_groups[m]->m_smooth / 255.0;
-      for ( unsigned t = 0; t < m_groups[m]->m_triangleIndices.size(); t++ )
+      Group * grp = m_groups[m];
+
+      double percent = (double) grp->m_smooth / 255.0;
+      for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+            it != grp->m_triangleIndices.end();
+            ++it )
       {
-         Triangle * tri = m_triangles[ m_groups[m]->m_triangleIndices[t] ];
+         Triangle * tri = m_triangles[ *it ];
 
          for ( int v = 0; v < 3; v++ )
          {
-            if ( m_groups[m]->m_smooth > 0 )
+            if ( grp->m_smooth > 0 )
             {
                for ( unsigned i = 0; i < 3; i++ )
                {
@@ -4331,7 +4346,7 @@ void Model::calculateSkelNormals()
    }
 }
 
-void Model::calculateFrameNormals( const unsigned & anim )
+void Model::calculateFrameNormals( unsigned anim )
 {
    LOG_PROFILE();
 
@@ -4428,16 +4443,19 @@ void Model::calculateBspTree()
 
    for ( unsigned m = 0; m < m_groups.size(); m++ )
    {
-      if ( m_groups[ m ]->m_materialIndex >= 0 )
+      Group * grp = m_groups[m];
+      if ( grp->m_materialIndex >= 0 )
       {
-         int index = m_groups[m]->m_materialIndex;
+         int index = grp->m_materialIndex;
 
          Texture * tex = m_materials[index]->m_textureData;
          if ( tex && tex->m_format == Texture::FORMAT_RGBA )
          {
-            for ( unsigned t = 0; t < m_groups[m]->m_triangleIndices.size(); t++ )
+            for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+                  it != grp->m_triangleIndices.end();
+                  ++it )
             {
-               Triangle * triangle = m_triangles[ m_groups[m]->m_triangleIndices[t] ];
+               Triangle * triangle = m_triangles[ *it ];
                triangle->m_marked = true;
 
                if ( triangle->m_visible )
@@ -4476,7 +4494,7 @@ void Model::invalidateBspTree()
    m_validBspTree = false;
 }
 
-bool Model::isTriangleMarked( unsigned int t )
+bool Model::isTriangleMarked( unsigned int t ) const
 {
    if ( t < m_triangles.size() )
    {

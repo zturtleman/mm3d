@@ -73,15 +73,6 @@ Model::Vertex::Vertex()
      m_free( false ),
      m_drawSource( m_coord )
 {
-   // FIXME these settings are probably unnecessary
-   m_coord[0] = 0.0;
-   m_coord[1] = 0.0;
-   m_coord[2] = 0.0;
-
-   m_kfCoord[0] = 0.0;
-   m_kfCoord[1] = 0.0;
-   m_kfCoord[2] = 0.0;
-
    s_allocated++;
 }
 
@@ -395,11 +386,11 @@ bool Model::Group::equal(const Group & rhs, int compareBits ) const
 
       hash_set<int> lhs_tris;
 
-      std::vector<int>::const_iterator lhs_it;
-      std::vector<int>::const_iterator rhs_it;
+      std::set<int>::const_iterator lhs_it;
+      std::set<int>::const_iterator rhs_it;
 
-      const std::vector<int> & lh = m_triangleIndices;
-      const std::vector<int> & rh = rhs.m_triangleIndices;
+      const std::set<int> & lh = m_triangleIndices;
+      const std::set<int> & rh = rhs.m_triangleIndices;
 
       hash_set<int>::iterator it;
       for ( lhs_it = lh.begin(); lhs_it != lh.end(); ++lhs_it )
@@ -418,7 +409,7 @@ bool Model::Group::equal(const Group & rhs, int compareBits ) const
          lhs_tris.erase( it );
       }
 
-      // FIXME this should probably be an assert, it shouldn't be possible
+      // TODO this should probably be an assert, it shouldn't be possible
       if ( !lhs_tris.empty() )
          return false;
    }

@@ -50,7 +50,7 @@ static bool _float_equiv( double lhs, double rhs, double tolerance )
    return ( fabs( lhs - rhs ) < tolerance );
 }
 
-int Model::equivalent( const Model * model, int compareMask, double tolerance )
+int Model::equivalent( const Model * model, int compareMask, double tolerance ) const
 {
    int matchVal = 0;
 
@@ -442,21 +442,10 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance )
                match = false;
             }
 
-            unsigned numGroupTriangles = m_groups[g]->m_triangleIndices.size();
-            if ( numGroupTriangles == model->m_groups[g]->m_triangleIndices.size() )
+            if ( m_groups[g]->m_triangleIndices
+                  != model->m_groups[g]->m_triangleIndices )
             {
-               for ( t = 0; match && t < numGroupTriangles; t++ )
-               {
-                  if ( m_groups[g]->m_triangleIndices[t] != model->m_groups[g]->m_triangleIndices[t] )
-                  {
-                     log_debug( "match failed at group triangle assignments for group %d triangle %d\n", g, t );
-                     match = false;
-                  }
-               }
-            }
-            else
-            {
-               log_debug( "match failed at group triangle count for group %d\n", g );
+               log_debug( "match failed at group triangle set for group %d\n", g );
                match = false;
             }
          }
@@ -694,7 +683,7 @@ int Model::equivalent( const Model * model, int compareMask, double tolerance )
    return matchVal;
 }
 
-int Model::equal( const Model * model, int compareMask, double tolerance )
+int Model::equal( const Model * model, int compareMask, double tolerance ) const
 {
    int matchVal = compareMask;
 
@@ -989,7 +978,7 @@ bool Model::mergeAnimations( Model * model )
 
    invalidateNormals();
 
-   forceAddOrDelete( canAdd );
+   forceAddOrDelete( canAdd && m_frameAnims.empty() );
 
    return true;
 }
@@ -1497,7 +1486,7 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
    invalidateNormals();
    setupJoints();
 
-   forceAddOrDelete( canAdd );
+   forceAddOrDelete( canAdd && m_frameAnims.empty() );
 
    return true;
 }

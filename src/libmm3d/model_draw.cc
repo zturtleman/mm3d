@@ -117,16 +117,6 @@ static void _drawPointOrientation( bool selected, float scale,
     _drawPointOrientation( selected, scale, m );
 }
 
-static void _calculateNormal( double * normal,
-      double * a, double * b, double * c )
-{
-   normal[0] = a[1] * (b[2] - c[2]) + b[1] * (c[2] - a[2]) + c[1] * (a[2] - b[2]);
-   normal[1] = a[2] * (b[0] - c[0]) + b[2] * (c[0] - a[0]) + c[2] * (a[0] - b[0]);
-   normal[2] = a[0] * (b[1] - c[1]) + b[0] * (c[1] - a[1]) + c[0] * (a[1] - b[1]);
-
-   normalize3( normal );
-}
-
 static const int CYL_VERT_COUNT = 8;
 static const int CYL_SEAM_VERT  = 2;
 
@@ -155,7 +145,7 @@ static void _drawProjectionCylinder( bool selected, float scale,
 
     double left[3] = {0,0,0};
     double orig[3] = {0,0,0};
-    _calculateNormal( left, orig, (double *) up.getVector(), (double *) seam.getVector() );
+    calculate_normal( left, orig, (double *) up.getVector(), (double *) seam.getVector() );
 
     double len = mag3( up.getVector() );
 
@@ -295,7 +285,7 @@ static void _drawProjectionSphere( bool selected, float scale,
 
     double left[3] = {0,0,0};
     double orig[3] = {0,0,0};
-    _calculateNormal( left, orig, (double *) up.getVector(), (double *) seam.getVector() );
+    calculate_normal( left, orig, (double *) up.getVector(), (double *) seam.getVector() );
 
     Vector seamVec = seam;
 
@@ -417,7 +407,7 @@ static void _drawProjectionPlane( bool selected, float scale,
 
     double left[3] = {0,0,0};
     double orig[3] = {0,0,0};
-    _calculateNormal( left, orig, (double *) up.getVector(), (double *) seam.getVector() );
+    calculate_normal( left, orig, (double *) up.getVector(), (double *) seam.getVector() );
 
     Vector seamVec = seam;
 
@@ -547,12 +537,14 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
          {
             for ( unsigned m = 0; m < m_groups.size(); m++ )
             {
+               Group * grp = m_groups[m];
+
                if ( drawOptions & DO_TEXTURE )
                {
                   glColor3f( 1.0f, 1.0f, 1.0f );
-                  if ( m_groups[ m ]->m_materialIndex >= 0 )
+                  if ( grp->m_materialIndex >= 0 )
                   {
-                     int index = m_groups[m]->m_materialIndex;
+                     int index = grp->m_materialIndex;
 
                      glMaterialfv( GL_FRONT, GL_AMBIENT,
                            m_materials[ index ]->m_ambient );
@@ -571,18 +563,18 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                         if ( drawContext )
                         {
                            glBindTexture( GL_TEXTURE_2D,
-                                 drawContext->m_textures[ m_groups[m]->m_materialIndex ] );
+                                 drawContext->m_textures[ grp->m_materialIndex ] );
                         }
                         else
                         {
                            glBindTexture( GL_TEXTURE_2D,
-                                 m_materials[ m_groups[m]->m_materialIndex ]->m_texture );
+                                 m_materials[ grp->m_materialIndex ]->m_texture );
                         }
 
                         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
-                              (m_materials[ m_groups[m]->m_materialIndex ]->m_sClamp ? GL_CLAMP : GL_REPEAT) );
+                              (m_materials[ grp->m_materialIndex ]->m_sClamp ? GL_CLAMP : GL_REPEAT) );
                         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 
-                              (m_materials[ m_groups[m]->m_materialIndex ]->m_tClamp ? GL_CLAMP : GL_REPEAT) );
+                              (m_materials[ grp->m_materialIndex ]->m_tClamp ? GL_CLAMP : GL_REPEAT) );
 
                         glEnable( GL_TEXTURE_2D );
                      }
@@ -607,9 +599,11 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                colorSelected = false;
 
                glBegin( GL_TRIANGLES );
-               for ( unsigned t = 0; t < m_groups[m]->m_triangleIndices.size(); t++ )
+               for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+                     it != grp->m_triangleIndices.end();
+                     ++it )
                {
-                  unsigned triIndex = m_groups[m]->m_triangleIndices[t];
+                  unsigned triIndex = *it;
                   Triangle * triangle = m_triangles[ triIndex ];
                   triangle->m_marked = true;
 
@@ -722,13 +716,14 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
             {
                for ( unsigned m = 0; m < m_groups.size(); m++ )
                {
+                  Group * grp = m_groups[m];
                   if ( drawOptions & DO_TEXTURE )
                   {
                      glColor3f( 1.0, 1.0, 1.0 );
 
-                     if ( m_groups[ m ]->m_materialIndex >= 0 )
+                     if ( grp->m_materialIndex >= 0 )
                      {
-                        int index = m_groups[m]->m_materialIndex;
+                        int index = grp->m_materialIndex;
 
                         glMaterialfv( GL_FRONT, GL_AMBIENT,
                               m_materials[ index ]->m_ambient );
@@ -747,18 +742,18 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                            if ( drawContext )
                            {
                               glBindTexture( GL_TEXTURE_2D,
-                                    drawContext->m_textures[ m_groups[m]->m_materialIndex ] );
+                                    drawContext->m_textures[ grp->m_materialIndex ] );
                            }
                            else
                            {
                               glBindTexture( GL_TEXTURE_2D,
-                                    m_materials[ m_groups[m]->m_materialIndex ]->m_texture );
+                                    m_materials[ grp->m_materialIndex ]->m_texture );
                            }
 
                            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
-                                 (m_materials[ m_groups[m]->m_materialIndex ]->m_sClamp ? GL_CLAMP : GL_REPEAT) );
+                                 (m_materials[ grp->m_materialIndex ]->m_sClamp ? GL_CLAMP : GL_REPEAT) );
                            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 
-                                 (m_materials[ m_groups[m]->m_materialIndex ]->m_tClamp ? GL_CLAMP : GL_REPEAT) );
+                                 (m_materials[ grp->m_materialIndex ]->m_tClamp ? GL_CLAMP : GL_REPEAT) );
 
                            glEnable( GL_TEXTURE_2D );
                         }
@@ -783,9 +778,11 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                   colorSelected = false;
 
                   glBegin( GL_TRIANGLES );
-                  for ( unsigned t = 0; t < m_groups[m]->m_triangleIndices.size(); t++ )
+                  for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+                        it != grp->m_triangleIndices.end();
+                        ++it )
                   {
-                     Triangle * triangle = m_triangles[ m_groups[m]->m_triangleIndices[t] ];
+                     Triangle * triangle = m_triangles[ *it ];
                      triangle->m_marked = true;
 
                      if ( triangle->m_visible )
@@ -895,14 +892,15 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
          bool skipAlphaGroup = false;
          for ( unsigned m = 0; m < m_groups.size(); m++ )
          {
+            Group * grp = m_groups[m];
             skipAlphaGroup = false;
 
             if ( drawOptions & DO_TEXTURE )
             {
                glColor3f( 1.0, 1.0, 1.0 );
-               if ( m_groups[ m ]->m_materialIndex >= 0 )
+               if ( grp->m_materialIndex >= 0 )
                {
-                  int index = m_groups[m]->m_materialIndex;
+                  int index = grp->m_materialIndex;
 
                   if ( (drawOptions & DO_ALPHA) 
                         && m_materials[ index ]->m_type == Model::Material::MATTYPE_TEXTURE
@@ -928,18 +926,18 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                      if ( drawContext )
                      {
                         glBindTexture( GL_TEXTURE_2D,
-                              drawContext->m_textures[ m_groups[m]->m_materialIndex ] );
+                              drawContext->m_textures[ grp->m_materialIndex ] );
                      }
                      else
                      {
                         glBindTexture( GL_TEXTURE_2D,
-                              m_materials[ m_groups[m]->m_materialIndex ]->m_texture );
+                              m_materials[ grp->m_materialIndex ]->m_texture );
                      }
 
                      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
-                           (m_materials[ m_groups[m]->m_materialIndex ]->m_sClamp ? GL_CLAMP : GL_REPEAT) );
+                           (m_materials[ grp->m_materialIndex ]->m_sClamp ? GL_CLAMP : GL_REPEAT) );
                      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 
-                           (m_materials[ m_groups[m]->m_materialIndex ]->m_tClamp ? GL_CLAMP : GL_REPEAT) );
+                           (m_materials[ grp->m_materialIndex ]->m_tClamp ? GL_CLAMP : GL_REPEAT) );
 
                      glEnable( GL_TEXTURE_2D );
                   }
@@ -966,9 +964,11 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
             if ( skipAlphaGroup == false )
             {
                glBegin( GL_TRIANGLES );
-               for ( unsigned t = 0; t < m_groups[m]->m_triangleIndices.size(); t++ )
+               for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+                     it != grp->m_triangleIndices.end();
+                     ++it )
                {
-                  Triangle * triangle = m_triangles[ m_groups[m]->m_triangleIndices[t] ];
+                  Triangle * triangle = m_triangles[ *it ];
                   triangle->m_marked = true;
 
                   if ( triangle->m_visible )
@@ -1025,9 +1025,11 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
             }
             else
             {
-               for ( unsigned t = 0; t < m_groups[m]->m_triangleIndices.size(); t++ )
+               for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+                     it != grp->m_triangleIndices.end();
+                     ++it )
                {
-                  m_triangles[ m_groups[m]->m_triangleIndices[t] ]->m_marked = true;
+                  m_triangles[ *it ]->m_marked = true;
                }
             }
          }
