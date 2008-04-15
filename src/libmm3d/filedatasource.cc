@@ -61,7 +61,7 @@ FileDataSource::FileDataSource( FILE * fp )
 FileDataSource::FileDataSource( const char * filename )
    : m_mustClose( false )
 {
-   m_fp = fopen( filename, "r" );
+   m_fp = fopen( filename, "rb" );
    if ( m_fp == NULL )
    {
       setErrno( errno );
