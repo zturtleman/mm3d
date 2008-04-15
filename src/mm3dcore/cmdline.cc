@@ -70,7 +70,7 @@ static ModelList _models;
 
 static void _print_version( const char * progname )
 {
-   printf( "\nMisfit Model 3D, version %s\n\n", VERSION_STRING );
+   printf( "\nMisfit Model 3D (Qt3), version %s\n\n", VERSION_STRING );
 }
 
 static void _print_help( const char * progname )

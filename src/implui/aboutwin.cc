@@ -29,7 +29,7 @@
 
 #define ABOUT_TEXT "<html><head><title>Misfit Model 3D - About</title></head> " \
    "<body><center><br>" \
-   "<h1>Misfit Model 3D</h1>" \
+   "<h1>Misfit Model 3D (Qt3)</h1>" \
    "<h2>" VERSION_STRING "</h2> <br>" \
    "http://www.misfitcode.com/misfitmodel3d/<br><br>" \
    "Copyright &copy; 2004-2007, Kevin Worcester<br>" \
