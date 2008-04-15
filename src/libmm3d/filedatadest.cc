@@ -54,7 +54,7 @@ FileDataDest::FileDataDest( const char * filename )
    : m_startOffset( 0 ),
      m_mustClose( false )
 {
-   m_fp = fopen( filename, "w" );
+   m_fp = fopen( filename, "wb" );
    if ( m_fp == NULL )
    {
       sendErrno( errno );
