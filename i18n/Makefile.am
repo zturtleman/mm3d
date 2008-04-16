@@ -39,7 +39,7 @@ BUILT_SOURCES = $(QMFILES)
 all:
 
 tsfiles:
-	lupdate ../src/*.cc ../src/*/*.cc ../src/*.h ../src/*/*.h -ts $(TSFILES)
+	lupdate ../src/*.cc ../src/*/*.cc ../src/*.h ../src/*/*.h ../src/qtui/*.ui -ts $(TSFILES)
 
 qmfiles: $(QMFILES)
 
