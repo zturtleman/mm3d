@@ -436,11 +436,6 @@
 <context>
     <name>AnimWidget</name>
     <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;New Animation&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -555,6 +550,13 @@
     </message>
 </context>
 <context>
+    <name>AnimWindow</name>
+    <message>
+        <source>Animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>AutoAssignJointWin</name>
     <message>
         <source>F1</source>
@@ -601,10 +603,6 @@
     </message>
     <message>
         <source>Open background image</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>All Files (*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -867,10 +865,6 @@
     </message>
     <message>
         <source>You must have at least 1 face, joint, or point selected to Copy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copy complete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1327,6 +1321,14 @@ Do you wish to continue?</source>
     <name>ContextNameBase</name>
     <message>
         <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ContextPanel</name>
+    <message>
+        <source>Properties</source>
+        <comment>Window title</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2139,6 +2141,14 @@ Do you want to load all sections?</source>
         <source>Texture filename is too long.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>MM3D does not support CAL3D files in XML format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file does not contain any mesh or animation data</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MapDirectionBase</name>
@@ -2734,7 +2744,17 @@ Do you want to load all sections?</source>
 <context>
     <name>PolyToolWidget</name>
     <message>
+        <source>Poly Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Strip</source>
+        <comment>Triangle strip option</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Fan</source>
+        <comment>Triangle fan option</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2765,16 +2785,6 @@ Do you want to load all sections?</source>
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+Z</source>
-        <comment>Undo</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+Y</source>
-        <comment>Redo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2809,6 +2819,16 @@ Do you want to load all sections?</source>
     <message>
         <source>Rename Projection</source>
         <comment>operation complete</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CTRL+Z</source>
+        <comment>Undo shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CTRL+Y</source>
+        <comment>Redo shortcut</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2923,6 +2943,21 @@ Do you want to load all sections?</source>
     </message>
     <message>
         <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>RotateToolWidget</name>
+    <message>
+        <source>X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Z</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3071,6 +3106,21 @@ Do you want to load all sections?</source>
         <source>Move texture coordinates</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CTRL+Z</source>
+        <comment>Undo shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CTRL+Y</source>
+        <comment>Redo shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TextureCoordBase</name>
@@ -3159,10 +3209,6 @@ Do you want to load all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Could not open file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3204,6 +3250,11 @@ Do you want to load all sections?</source>
     <message>
         <source>Set texture...</source>
         <comment>Add texture file to material</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3682,6 +3733,11 @@ Do you want to load all sections?</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TransformWindowBase</name>
@@ -3758,15 +3814,27 @@ Do you want to load all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Entire Model and Animations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Press F1 for help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selected (including animations)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Entire Model (including animations)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ValueWin</name>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3801,10 +3869,6 @@ Do you want to load all sections?</source>
     </message>
     <message>
         <source>Press F1 for help using any window</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Animations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4226,10 +4290,6 @@ Do you want to load all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>File exists.  Overwrite?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Open model file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4261,11 +4321,6 @@ Do you want to save before closing?</source>
     </message>
     <message>
         <source>Unknown response: %1, Canceling close request</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Hide Properties</source>
-        <comment>View|Hide Properties</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4484,6 +4539,32 @@ Use the &apos;Select Faces&apos; tool.</source>
     </message>
     <message>
         <source>All Supported Formats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export Selected...</source>
+        <comment>File|Export Selected</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You must have at least 1 face, joint, or point selected to Export Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You are in animation mode, but there are no animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ViewportSettings</name>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
