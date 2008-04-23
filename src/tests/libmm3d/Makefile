@@ -33,13 +33,13 @@ TESTS = \
 		  filter_dxf_test.unit \
 		  filter_obj_test.unit \
 		  filter_md2_test.unit \
+		  filter_md3_test.unit \
 		  filtermgr_test.unit \
 		  cmdlinemgr_test.unit \
 		  util_test.unit \
 		  misc_test.unit \
 		  translation_test.unit \
-		  msg_test.unit \
-		  #filter_md3_test.unit # FIXME move this up near md2 when ready
+		  msg_test.unit
 
 # Add moc dependencies here
 
@@ -105,7 +105,7 @@ filter_obj_test.unit: filter_obj_test.moc $(LIB)
 
 filter_md2_test.unit: filter_md2_test.moc $(LIB)
 
-#filter_md3_test.unit: filter_md3_test.moc $(LIB)
+filter_md3_test.unit: filter_md3_test.moc $(LIB)
 
 util_test.unit: util_test.moc $(LIB)
 
@@ -153,7 +153,7 @@ filtercheck:
 	./filter_ms3d_test.unit -silent
 	./filter_cal3d_test.unit -silent
 	./filter_md2_test.unit -silent
-	#./filter_md3_test.unit -silent # FIXME restore this when test works
+	./filter_md3_test.unit -silent
 	./filter_obj_test.unit -silent
 	./filter_cob_test.unit -silent
 	./filter_dxf_test.unit -silent

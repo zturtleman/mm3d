@@ -2369,9 +2369,9 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                      }
                      saveMatrix.apply( meshVec );
                      saveMatrix.apply( meshNor );
-                     write( (int16_t) ( meshVec[0] / MD3_XYZ_SCALE ) );
-                     write( (int16_t) ( meshVec[1] / MD3_XYZ_SCALE ) );
-                     write( (int16_t) ( meshVec[2] / MD3_XYZ_SCALE ) );
+                     write( (int16_t) ( meshVec[0] / MD3_XYZ_SCALE + 0.5 ) );
+                     write( (int16_t) ( meshVec[1] / MD3_XYZ_SCALE + 0.5 ) );
+                     write( (int16_t) ( meshVec[2] / MD3_XYZ_SCALE + 0.5 ) );
                      int16_t lng;
                      int16_t lat;
                      if ( meshNor[0] == 0 && meshNor[1] == 0 )
