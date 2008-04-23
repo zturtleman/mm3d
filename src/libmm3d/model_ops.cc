@@ -202,6 +202,14 @@ static bool influencesMatch( const Model::InfluenceList & lhs,
    return true;
 }
 
+struct _TriMatch_t
+{
+   int rtri;
+   int indexOffset;
+};
+typedef struct _TriMatch_t TriMatchT;
+typedef std::map<int, TriMatchT> TriMatchMap;
+
 bool Model::equivalent( const Model * model, double tolerance ) const
 {
    int lhsTCount    = m_triangles.size();
@@ -315,6 +323,8 @@ bool Model::equivalent( const Model * model, double tolerance ) const
       }
    }
 
+   TriMatchMap triMap;
+
    BoolList triMatched;
    triMatched.resize( rhsTCount, false );
 
@@ -351,7 +361,7 @@ bool Model::equivalent( const Model * model, double tolerance ) const
          rgtris = model->getUngroupedTriangles();
       }
 
-      // Don't compare group sizes.  This causes a failure if the lhs has two
+      // Don't fail on group sizes.  This causes a failure if the lhs has two
       // equal groups that are combined into one on the rhs.
 
       if ( gtris.size() != rgtris.size() )
@@ -386,6 +396,7 @@ bool Model::equivalent( const Model * model, double tolerance ) const
             for ( int i = 0; !match && i < 3; i++ )
             {
                match = true;
+               int matchOffset = 0;
                for ( int j = 0; match && j < 3; ++j )
                {
                   double coords[3];
@@ -441,11 +452,21 @@ bool Model::equivalent( const Model * model, double tolerance ) const
                         log_warning( " texture coords match fail\n" );
                      }
                   }
+
+                  if ( match )
+                  {
+                     matchOffset = i;
+                  }
                }
 
                if ( match )
                {
                   triMatched[ *rit ] = true;
+
+                  TriMatchT tm;
+                  tm.rtri = *rit;
+                  tm.indexOffset = matchOffset;
+                  triMap[ *it ] = tm;
                }
             }
          }
@@ -454,7 +475,7 @@ bool Model::equivalent( const Model * model, double tolerance ) const
          {
             std::string dstr;
             m_triangles[ *it ]->sprint( dstr );
-            log_warning( "no match for lhs triangle %d: %s\n", *it, dstr.c_str() );
+            log_warning( "no match for lhs triangle %d in group %d: %s\n", *it, g, dstr.c_str() );
             return false;
          }
       }
@@ -467,6 +488,8 @@ bool Model::equivalent( const Model * model, double tolerance ) const
 
    double trans[3] = { 0, 0, 0 };
    double rot[3] = { 0, 0, 0 };
+
+   IntMap pointMap;
 
    for ( p = 0; p < lhsPCount; ++p )
    {
@@ -488,11 +511,7 @@ bool Model::equivalent( const Model * model, double tolerance ) const
             rMat.setRotation( rot );
             rMat.setTranslation( trans );
 
-            if ( matrixEquiv( lMat, rMat ) )
-            {
-               match = true;
-               pointMatched[ rp ] = true;
-            }
+            match = matrixEquiv( lMat, rMat );
 
             if ( match )
             {
@@ -503,6 +522,12 @@ bool Model::equivalent( const Model * model, double tolerance ) const
                model->getPointInfluences( rp, irhs );
 
                match = influencesMatch( ilhs, irhs, jointMap );
+
+               if ( match )
+               {
+                  pointMatched[ rp ] = true;
+                  pointMap[ p ] = rp;
+               }
             }
          }
       }
@@ -519,8 +544,8 @@ bool Model::equivalent( const Model * model, double tolerance ) const
    // Don't need to check texture contents, already did that in the group
    // and material check above.
 
-   // Compare animations. This assumes animations are in the same order.
-   // FIXME test
+   // Compare skeletal animations. This assumes animations are in the
+   // same order.
    Model::AnimationModeE mode = Model::ANIMMODE_SKELETAL;
    int acount = getAnimCount( mode );
    if ( acount != (int) model->getAnimCount( mode ) )
@@ -627,6 +652,101 @@ bool Model::equivalent( const Model * model, double tolerance ) const
                         f, a, b );
                   return false;
                }
+            }
+         }
+      }
+   }
+
+   // Compare frame animations. This assumes animations are in the
+   // same order.
+   mode = Model::ANIMMODE_FRAME;
+   acount = getAnimCount( mode );
+   if ( acount != (int) model->getAnimCount( mode ) )
+   {
+      log_warning( "frame animation count mismatch, lhs = %d, rhs = %d\n",
+            acount, model->getAnimCount( mode ) );
+      return false;
+   }
+
+   for ( int a = 0; a < acount; ++a )
+   {
+      if ( std::string( getAnimName( mode, a ) )
+            != std::string( model->getAnimName( mode, a ) ) )
+      {
+         log_warning( "anim name mismatch on %d, lhs = %s, rhs = %s\n",
+               a, getAnimName( mode, a ), model->getAnimName( mode, a ) );
+         return false;
+      }
+      if ( getAnimFrameCount( mode, a ) != model->getAnimFrameCount( mode, a ) )
+      {
+         log_warning( "animation frame count mismatch on %d, lhs = %d, rhs = %d\n",
+               a, getAnimFrameCount( mode, a ), model->getAnimFrameCount( mode, a ) );
+         return false;
+      }
+      if ( fabs( getAnimFPS( mode, a ) - model->getAnimFPS( mode, a ) )
+            > tolerance )
+      {
+         log_warning( "animation fps mismatch on %d, lhs = %d, rhs = %d\n",
+               a, model->getAnimFPS( mode, a ), model->getAnimFPS( mode, a ) );
+         return false;
+      }
+
+      int fcount = getAnimFrameCount( mode, a );
+
+      for ( int f = 0; f < fcount; ++f )
+      {
+         TriMatchMap::const_iterator it;
+         for ( it = triMap.begin(); it != triMap.end(); ++it )
+         {
+            double coords[3];
+            double rcoords[3];
+            for ( int i = 0; i < 3; i++ )
+            {
+               int lv = getTriangleVertex( it->first, i );
+               int rv = model->getTriangleVertex( it->second.rtri,
+                     (i + it->second.indexOffset) % 3 );
+               getFrameAnimVertexCoords( a, f, lv,
+                     coords[0], coords[1], coords[2] );
+               model->getFrameAnimVertexCoords( a, f, rv,
+                     rcoords[0], rcoords[1], rcoords[2] );
+
+               if ( !floatCompareVector( coords, rcoords, 3, tolerance ) )
+               {
+                  log_warning( "anim frame triangle %d mismatch on anim %d for frame %d\n",
+                        it->first, a, f );
+                  return false;
+               }
+            }
+         }
+
+         IntMap::const_iterator pit;
+         for ( pit = pointMap.begin(); pit != pointMap.end(); ++pit )
+         {
+            double vec[3];
+            double rvec[3];
+
+            getFrameAnimPointCoords( a, f, pit->first,
+                  vec[0], vec[1], vec[2] );
+            model->getFrameAnimPointCoords( a, f, pit->second,
+                  rvec[0], rvec[1], rvec[2] );
+
+            if ( !floatCompareVector( vec, rvec, 3, tolerance ) )
+            {
+               log_warning( "anim frame point %d coord mismatch on anim %d for frame %d\n",
+                     pit->first, a, f );
+               return false;
+            }
+
+            getFrameAnimPointRotation( a, f, pit->first,
+                  vec[0], vec[1], vec[2] );
+            model->getFrameAnimPointRotation( a, f, pit->second,
+                  rvec[0], rvec[1], rvec[2] );
+
+            if ( !floatCompareVector( vec, rvec, 3, tolerance ) )
+            {
+               log_warning( "anim frame point %d rot mismatch on anim %d for frame %d\n",
+                     pit->first, a, f );
+               return false;
             }
          }
       }
