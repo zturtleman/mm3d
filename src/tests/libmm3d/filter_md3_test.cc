@@ -33,6 +33,7 @@
 #include "texture.h"
 #include "modelstatus.h"
 #include "log.h"
+#include "msg.h"
 #include "md3filter.h"
 #include "mm3dfilter.h"
 
@@ -118,10 +119,10 @@ void saveMd3OrDie( Model * model, const char * filename, FileFactory * factory =
    }
 }
 
-//void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... )
-//{
-//   // FIXME hack
-//}
+char prompt_no( const char * str, const char * opts )
+{
+   return 'N';
+}
 
 
 class FilterMd3Test : public QObject
@@ -165,27 +166,43 @@ private slots:
       log_enable_error( true );
    }
 
+   // Load a player model
    void testMd3ModelA()
    {
-      // FIXME  make equiv work here (see if 0.2 equiv works)
+      msg_register_prompt( NULL, NULL, NULL );
       testReadAndWrite(
             "filtertest/md3/cloud/head.md3",
             "filtertest/md3/cloud_out/head.md3",
             "filtertest/md3/cloud/cloud.mm3d" );
    }
 
+   // Load just the head
+   void testMd3ModelAHead()
+   {
+      msg_register_prompt( prompt_no, prompt_no, prompt_no );
+      testReadAndWrite(
+            "filtertest/md3/cloud/head.md3",
+            "filtertest/md3/cloud_out/head.md3",
+            "filtertest/md3/cloud/head.mm3d" );
+      msg_register_prompt( NULL, NULL, NULL );
+   }
+
+   // Load just the lower body
+   void testMd3ModelALower()
+   {
+      msg_register_prompt( prompt_no, prompt_no, prompt_no );
+      testReadAndWrite(
+            "filtertest/md3/cloud/lower.md3",
+            "filtertest/md3/cloud_out/lower.md3",
+            "filtertest/md3/cloud/lower.mm3d" );
+      msg_register_prompt( NULL, NULL, NULL );
+   }
+
    // FIXME add tests:
-   //   read
-   //   write
-   //   Player model files
-   //     Single file
-   //     Head, torso, lower
    //   MD3_PATH handling:
    //      common path
    //      unique paths
-   //   Animation
-   //     Unanimated
-   //     Animated (Implement frame animation equiv)
+   //   Make sure that single frame MD3 does not have any animations
    //   error handling
 };
 
