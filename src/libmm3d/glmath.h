@@ -199,9 +199,7 @@ bool floatCompareVector( const T * lhs, const T * rhs, size_t len, double tolera
    return true;
 }
 
-template<typename T> T distance( 
-      const T & x1, const T & y1, const T z1, 
-      const T & x2, const T & y2, const T z2 )
+template<typename T> T distance( T x1, T y1, T z1, T x2, T y2, T z2 )
 {
    T xDiff = x1 - x2;
    T yDiff = y1 - y2;
@@ -210,9 +208,7 @@ template<typename T> T distance(
    return sqrt( xDiff*xDiff + yDiff*yDiff + zDiff*zDiff );
 }
 
-template<typename T> T distance( 
-      const T & x1, const T & y1, 
-      const T & x2, const T & y2 )
+template<typename T> T distance( T x1, T y1, T x2, T y2 )
 {
    T xDiff = x1 - x2;
    T yDiff = y1 - y2;
@@ -220,7 +216,7 @@ template<typename T> T distance(
    return sqrt( xDiff*xDiff + yDiff*yDiff );
 }
 
-template<typename T> T mag3( T * vec )
+template<typename T> T mag3( const T * vec )
 {
    return sqrt(vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2] );
 }
@@ -240,14 +236,14 @@ extern double distance ( const Vector & v1, const Vector & v2 );
 
 extern double distance ( const double * v1, const double * v2 );
 
-template<typename T> T dot3( T * lhs, T * rhs )
+template<typename T> T dot3( const T * lhs, const T * rhs )
 {
    return(   lhs[0] * rhs[0]
            + lhs[1] * rhs[1]
            + lhs[2] * rhs[2] );
 }
 
-template<typename T> bool equiv3( T * lhs, T * rhs )
+template<typename T> bool equiv3( const T * lhs, const T * rhs )
 {
    return(   fabs(lhs[0] - rhs[0]) < 0.0001
          &&  fabs(lhs[1] - rhs[1]) < 0.0001
@@ -256,7 +252,7 @@ template<typename T> bool equiv3( T * lhs, T * rhs )
 
 template<typename T>
 static void calculate_normal( T * normal,
-      T * a, T * b, T * c )
+      const T * a, const T * b, const T * c )
 {
    normal[0] = a[1] * (b[2] - c[2]) + b[1] * (c[2] - a[2]) + c[1] * (a[2] - b[2]);
    normal[1] = a[2] * (b[0] - c[0]) + b[2] * (c[0] - a[0]) + c[2] * (a[0] - b[0]);

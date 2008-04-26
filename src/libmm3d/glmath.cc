@@ -98,11 +98,11 @@ bool Matrix::equiv( const Matrix & rhs, double tolerance ) const
    rhs.apply( rup );
    rhs.apply( rfront );
 
-   if ( (lright - rright).mag3() > tolerance )
+   if ( (lright - rright).mag() > tolerance )
       return false;
-   if ( (lup - rup).mag3() > tolerance )
+   if ( (lup - rup).mag() > tolerance )
       return false;
-   if ( (lfront - rfront).mag3() > tolerance )
+   if ( (lfront - rfront).mag() > tolerance )
       return false;
 
    return true;
