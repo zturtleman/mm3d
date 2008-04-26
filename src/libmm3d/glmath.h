@@ -42,9 +42,14 @@ class Matrix
       ~Matrix() {};
 
       void loadIdentity();
+      bool isIdentity() const;
+
       void show() const;
       void set( int r, int c, double val ) { m_val[ (r<<2) + c ] = val; }
       double get( int r, int c ) const { return m_val[ (r<<2) + c ]; }
+
+      bool operator==( const Matrix & rhs ) const;
+      bool equiv( const Matrix & rhs, double tolerance = 0.00001 ) const;
 
       void setTranslation( const Vector & vector );
       void setTranslation( const double * vector );
@@ -67,7 +72,7 @@ class Matrix
 
       void setRotationOnAxis( const double * pVect, double radians );
       void setRotationQuaternion( const Quaternion & quat );
-      void getRotationQuaternion( Quaternion & quat );
+      void getRotationQuaternion( Quaternion & quat ) const;
 
       void inverseTranslateVector( double * pVect ) const;
       void inverseRotateVector( double * pVect ) const;
@@ -121,14 +126,14 @@ class Vector
       void scale( double val );
       void scale3( double val );
 
-      double mag();
-      double mag3();
+      double mag() const;
+      double mag3() const;
 
       void normalize();
       void normalize3();
 
-      double dot3( const Vector & rhs );
-      double dot4( const Vector & rhs );
+      double dot3( const Vector & rhs ) const;
+      double dot4( const Vector & rhs ) const;
       Vector cross3( const Vector & rhs ) const;
 
       const double * getVector() const { return m_val; };
@@ -138,6 +143,7 @@ class Vector
       const double & operator[]( int index ) const;
       Vector operator+=( const Vector & rhs );
       Vector operator-=( const Vector & rhs );
+      bool operator==( const Vector & rhs ) const;
 
       friend Vector operator*( const Vector & lhs, const Matrix & rhs );
       friend Vector operator*( const Vector & lhs, const double & rhs );
@@ -162,7 +168,7 @@ class Quaternion : public Vector
       void setRotationToPoint( const double & faceX, const double & faceY, const double & faceZ,
             const double & pointX, const double & pointY, const double & pointZ );
       void setRotationToPoint( const Vector & face, const Vector & point );
-      void getRotationOnAxis( double * axis, double & radians );
+      void getRotationOnAxis( double * axis, double & radians ) const;
       void set( int c, double val );
       double get( int c ) const { return m_val[c]; };
 
@@ -177,6 +183,21 @@ class Quaternion : public Vector
    protected:
       //double m_val[4];
 };
+
+template<typename T>
+bool float_equiv( T lhs, T rhs, double tolerance = 0.00001 )
+{
+   return ( fabs( lhs - rhs ) < tolerance );
+}
+
+template<typename T>
+bool floatCompareVector( const T * lhs, const T * rhs, size_t len, double tolerance = 0.00001 )
+{
+   for ( size_t index = 0; index < len; ++index )
+      if ( !float_equiv( lhs[index], rhs[index], tolerance ) )
+         return false;
+   return true;
+}
 
 template<typename T> T distance( 
       const T & x1, const T & y1, const T z1, 

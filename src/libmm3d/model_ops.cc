@@ -22,6 +22,7 @@
 
 
 #include "model.h"
+#include "glmath.h"
 #include "log.h"
 #include "msg.h"
 #include "texmgr.h"
@@ -45,23 +46,8 @@ static void _calculateNormal( float * normal,
    normalize3( normal );
 }
 
-static bool _float_equiv( double lhs, double rhs, double tolerance )
-{
-   return ( fabs( lhs - rhs ) < tolerance );
-}
-
 // FIXME centralize this
 const double EQ_TOLERANCE = 0.00001;
-
-// FIXME centralize this
-template<typename T>
-bool floatCompareVector( T * lhs, T * rhs, size_t len, double tolerance = EQ_TOLERANCE )
-{
-   for ( size_t index = 0; index < len; ++index )
-      if ( fabs( lhs[index] - rhs[index] ) > tolerance )
-         return false;
-   return true;
-}
 
 // FIXME centralize this
 static bool matrixEquiv( const Matrix & lhs, const Matrix & rhs, double tolerance = EQ_TOLERANCE )
