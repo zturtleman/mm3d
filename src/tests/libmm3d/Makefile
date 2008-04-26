@@ -6,6 +6,7 @@ LIB = ../common/libtest_common.a ../../libmm3d/libmm3d.a
 
 TESTS = \
 		  memutil_test.unit \
+		  glmath_test.unit \
 		  big_endian_test.unit \
 		  datasource_test.unit \
 		  datadest_test.unit \
@@ -60,6 +61,8 @@ filedatasource_test.unit: filedatasource_test.moc $(LIB)
 undomgr_test.unit: undomgr_test.moc $(LIB)
 
 memutil_test.unit: memutil_test.moc $(LIB)
+
+glmath_test.unit: glmath_test.moc $(LIB)
 
 texcompare_test.unit: texcompare_test.moc $(LIB)
 
@@ -121,6 +124,7 @@ test: $(TESTS)
 
 check: test
 	./memutil_test.unit -silent
+	./glmath_test.unit -silent
 	./big_endian_test.unit -silent
 	./datasource_test.unit -silent
 	./filedatasource_test.unit -silent
