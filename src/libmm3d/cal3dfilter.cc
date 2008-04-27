@@ -72,6 +72,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <ctype.h>
+#include <limits.h>
 
 #ifdef WIN32
 #include <winsock2.h>

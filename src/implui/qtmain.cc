@@ -35,6 +35,7 @@
 #include <list>
 #include <string>
 #include <unistd.h>
+#include <limits.h>
 
 #include "log.h"
 #include "mm3dport.h"

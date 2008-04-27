@@ -50,6 +50,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include <string.h>
+#include <limits.h>
 #include <vector>
 
 #ifdef PLUGIN
