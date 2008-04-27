@@ -64,9 +64,9 @@ KSW_HAVE_GETTIMEOFDAY
 dnl AC_C_BIGENDIAN_CROSS( AC_DEFINE( MM3D_BIGENDIAN ), AC_DEFINE( MM3D_LITTLEENDIAN ), AC_DEFINE(MM3D_UNKNOWNENDIAN) )
 
 if test x"$prefix" != xNONE; then
-AC_DEFINE_UNQUOTED( PREFIX, "$prefix" )
+AC_DEFINE_UNQUOTED( [PREFIX], ["$prefix"], [Define installation prefix] )
 else
-AC_DEFINE_UNQUOTED( PREFIX, "$ac_default_prefix" )
+AC_DEFINE_UNQUOTED( [PREFIX], ["$ac_default_prefix"], [Define installation prefix] )
 fi
 
 AC_SUBST(QT_LIBS)

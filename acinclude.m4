@@ -21,8 +21,8 @@ AC_DEFUN([KSW_IS_PROFILE],
      is_profile="yes (core)"
   fi
 
-  AC_DEFINE( PROFILE )
-  AC_DEFINE( CORE_PROFILE )
+  AC_DEFINE( [PROFILE], [], [Define to include profilling information] )
+  AC_DEFINE( [CORE_PROFILE], [], [Define to include core profilling information] )
 
   AC_MSG_RESULT($is_profile)
 ])
@@ -71,7 +71,7 @@ AC_DEFUN([KSW_IS_DEBUG],
    AC_TRY_LINK([#include <stdio.h>], , [
 dnl Yay! 
     if test x"$enable_debug" = xyes; then
-      AC_DEFINE( CODE_DEBUG )
+      AC_DEFINE( [CODE_DEBUG], [], [Define to include debugging information] )
       is_debug=yes
     fi
    ], [
@@ -82,7 +82,7 @@ dnl Boo!
       CFLAGS="${enable_debug_save_CFLAGS}"
       CXXFLAGS="${enable_debug_save_CXXFLAGS}"
       LDFLAGS="${enable_debug_save_LDFLAGS}"
-      AC_DEFINE( CODE_DEBUG )
+      AC_DEFINE( [CODE_DEBUG], [], [Define to include debugging information] )
       is_debug=yes
     else
       COVFLAGS="${enable_debug_save_COVFLAGS}"
@@ -198,7 +198,7 @@ AC_DEFUN([KSW_HAVE_LUA],
     LUA_DIR="$ksw_lua_dir"
     LUA_LIBS="$ksw_lua_LIBS"
     # All variables are defined, report the result
-    AC_DEFINE( HAVE_LUA )
+    AC_DEFINE( [HAVE_LUA], [], [Define when you have Lua installed] )
     AC_MSG_RESULT([$have_lua:
     LUA_CCFLAGS=$LUA_CCFLAGS
     LUA_DIR=$LUA_DIR
@@ -367,7 +367,7 @@ AC_DEFUN([KSW_HAVE_LUALIB],
     LUALIB_DIR="$ksw_lualib_dir"
     LUALIB_LIBS="-lm -ldl $LUA_LIBS $ksw_lualib_LIBS"
     # All variables are defined, report the result
-    AC_DEFINE( HAVE_LUALIB )
+    AC_DEFINE( [HAVE_LUALIB], [], [Define when you have Lua libs installed] )
     AC_MSG_RESULT([$have_lualib:
     LUALIB_CCFLAGS=$LUALIB_CCFLAGS
     LUALIB_DIR=$LUALIB_DIR
@@ -644,7 +644,7 @@ AC_DEFUN([BNV_HAVE_QT],
   if test x"$bnv_is_qt4" = xyes; then
     HAVE_QT4=1
     AC_SUBST(HAVE_QT4)
-    AC_DEFINE( HAVE_QT4 )
+    AC_DEFINE( [HAVE_QT4], [], [Define when you have QT4 installed] )
   fi
   AC_SUBST(QT_CXXFLAGS)
   AC_SUBST(QT_DIR)
@@ -1038,7 +1038,7 @@ dnl endof bugfix -ainan
 AC_DEFUN([KSW_HAVE_DLOPEN],
 [
   AC_REQUIRE([AC_PROG_CC])
-
+  
   AC_CACHE_CHECK([for dlopen], ksw_cv_have_dlopen,
   [
     DLOPEN_save_LIBS="$LIBS"
@@ -1082,7 +1082,7 @@ EOF
   have_dlopen="$ksw_cv_have_dlopen"
   AC_SUBST( DLOPEN_LIBS )
   if test x"$have_dlopen" = "xyes"; then
-    AC_DEFINE( HAVE_DLOPEN )
+    AC_DEFINE( [HAVE_DLOPEN], [], [Define when you have dlopen function] )
   fi
 ])
 
@@ -1298,7 +1298,7 @@ EOF
   ])
   have_x11font="$ksw_cv_have_x11font"
   if test x"$have_x11font" = "xyes"; then
-    AC_DEFINE( HAVE_XFONT )
+    AC_DEFINE( [HAVE_XFONT], [], [Define when you have xfont] )
   fi
 ])
 
@@ -1332,7 +1332,7 @@ EOF
   ])
   have_gettimeofday="$ksw_cv_have_gettimeofday"
   if test x"$have_gettimeofday" = "xyes"; then
-    AC_DEFINE( HAVE_GETTIMEOFDAY )
+    AC_DEFINE( [HAVE_GETTIMEOFDAY], [], [Define when you have gettimeofday function] )
   fi
 ])
 
@@ -1355,7 +1355,7 @@ AC_DEFUN([KSW_IS_OSX],
   ])
   is_osx="$ksw_cv_is_osx"
   if test x"$is_osx" = "xyes"; then
-    AC_DEFINE( IS_OSX )
+    AC_DEFINE( [IS_OSX], [], [Define when you run on OSX] )
   fi
 ])
 

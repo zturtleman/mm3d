@@ -32,7 +32,9 @@
 #define SHARED_PLUGINS        "\\plugins"
 #define HOME_PLUGINS          "\\plugins"
 #else
+#if !defined(SHARED_PLUGINS)
 #define SHARED_PLUGINS        PREFIX "/share/mm3d/plugins"
+#endif
 #define HOME_PLUGINS          "/plugins"
 #endif // WIN32
 
@@ -42,7 +44,9 @@
 #define DOC_ROOT              "\\doc\\html"
 #define I18N_ROOT             "\\i18n"
 #else
+#if !defined(DOC_ROOT)
 #define DOC_ROOT              PREFIX "/share/doc/mm3d/html"
+#endif
 #define I18N_ROOT             PREFIX "/share/mm3d/i18n"
 #endif // WIN32
 
