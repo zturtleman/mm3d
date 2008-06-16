@@ -115,7 +115,7 @@ void CompareArrayEqual<double>(const double * lhs, int lhs_len,
 
    for ( int i = 0; eq && i < lhs_len; ++i )
    {
-      if ( eq && fabs(lhs_len - rhs_len) > 0.00001 )
+      if ( eq && fabs(lhs[i] - rhs[i]) > 0.00001 )
       {
          msg = QString("'") + QString(lhs_text) + QString("[") + QString::number(i);
          msg += "] == " + QString(rhs_text) + "[" + QString::number(i);
@@ -165,7 +165,7 @@ void CompareArrayEqual<float>(const float * lhs, int lhs_len,
 
    for ( int i = 0; eq && i < lhs_len; ++i )
    {
-      if ( eq && fabs(lhs_len - rhs_len) > 0.00001 )
+      if ( eq && fabs(lhs[i] - rhs[i]) > 0.00001 )
       {
          msg = QString("'") + QString(lhs_text) + QString("[") + QString::number(i);
          msg += "] == " + QString(rhs_text) + "[" + QString::number(i);
@@ -262,15 +262,23 @@ void checkUndoRedo( int operations, Model * lhs, const ModelList & rhs_list )
       for ( int i = operations - 1; i >= 0; --i )
       {
          //printf( "undo operation %d\n", i );
+         const char * opName = lhs->getUndoOpName();
          lhs->undo();
-         QVERIFY_TRUE( lhs->propEqual( rhs_list[i] ) );
+         bool pass = lhs->propEqual( rhs_list[i] );
+         QVERIFY_TRUE( pass );
+         if (!pass)
+            fprintf( stderr, "Undo operation: %s\n", opName );
       }
 
       for ( int i = 1; i <= operations; ++i )
       {
          //printf( "redo operation %d\n", i );
+         const char * opName = lhs->getRedoOpName();
          lhs->redo();
-         QVERIFY_TRUE( lhs->propEqual( rhs_list[i] ) );
+         bool pass = lhs->propEqual( rhs_list[i] );
+         QVERIFY_TRUE( pass );
+         if (!pass)
+            fprintf( stderr, "Undo operation: %s\n", opName );
       }
    }
 }
