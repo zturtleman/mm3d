@@ -25,6 +25,7 @@ TESTS = \
 		  model_joint_test.unit \
 		  model_select_test.unit \
 		  model_weld_test.unit \
+		  model_anim_test.unit \
 		  model_test.unit \
 		  new_mm3d_test.unit \
 		  filter_mm3d_test.unit \
@@ -90,6 +91,8 @@ model_select_test.unit: model_select_test.moc $(LIB)
 
 model_weld_test.unit: model_weld_test.moc $(LIB)
 
+model_anim_test.unit: model_anim_test.moc $(LIB)
+
 model_test.unit: model_test.moc $(LIB)
 
 new_mm3d_test.unit: new_mm3d_test.moc $(LIB)
@@ -143,6 +146,7 @@ check: test
 	./model_joint_test.unit -silent
 	./model_select_test.unit -silent
 	./model_weld_test.unit -silent
+	./model_anim_test.unit -silent
 	./model_test.unit -silent
 	./util_test.unit -silent
 	./misc_test.unit -silent
