@@ -1100,21 +1100,43 @@ void Model::SkelAnim::stats()
 bool Model::SkelAnim::propEqual(const SkelAnim & rhs, int propBits, double tolerance ) const
 {
    if ( (propBits & PropName) != 0 )
+   {
       if ( m_name != rhs.m_name )
+      {
+         log_warning( "match failed at anim name, lhs = '%s', rhs = '%s'\n",
+               m_name.c_str(), rhs.m_name.c_str() );
          return false;
+      }
+   }
 
    if ( (propBits & PropTime) != 0 )
+   {
       if ( fabs( m_fps - rhs.m_fps ) > tolerance )
+      {
+         log_warning( "match failed at anim fps, lhs = %f, rhs = %f\n",
+               (float) m_fps, (float) rhs.m_fps );
          return false;
+      }
+   }
 
    if ( (propBits & PropDimensions) != 0 )
+   {
       if ( m_frameCount != rhs.m_frameCount )
+      {
+         log_warning( "match failed at anim frame count, lhs = %d, rhs = %d\n",
+               m_frameCount, rhs.m_frameCount );
          return false;
+      }
+   }
 
    if ( (propBits & (PropCoords | PropRotation | PropType)) != 0 )
    {
       if ( m_jointKeyframes.size() != rhs.m_jointKeyframes.size() )
+      {
+         log_warning( "match failed at anim keyframe size, lhs = %d, rhs = %d\n",
+               m_jointKeyframes.size(), rhs.m_jointKeyframes.size() );
          return false;
+      }
 
       JointKeyframeList::const_iterator lhs_it = m_jointKeyframes.begin();
       JointKeyframeList::const_iterator rhs_it = rhs.m_jointKeyframes.begin();
