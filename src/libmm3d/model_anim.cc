@@ -129,7 +129,7 @@ bool Model::setAnimName( AnimationModeE m, unsigned anim, const char * name )
          if ( anim < m_skelAnims.size() )
          {
             MU_SetAnimName * undo = new MU_SetAnimName();
-            undo->setName( m_animationMode, anim, name, m_skelAnims[anim]->m_name.c_str() );
+            undo->setName( m, anim, name, m_skelAnims[anim]->m_name.c_str() );
             sendUndo( undo );
 
             m_skelAnims[ anim ]->m_name = name;
@@ -140,7 +140,7 @@ bool Model::setAnimName( AnimationModeE m, unsigned anim, const char * name )
          if ( anim < m_frameAnims.size() )
          {
             MU_SetAnimName * undo = new MU_SetAnimName();
-            undo->setName( m_animationMode, anim, name, m_frameAnims[anim]->m_name.c_str() );
+            undo->setName( m, anim, name, m_frameAnims[anim]->m_name.c_str() );
             sendUndo( undo );
 
             m_frameAnims[ anim ]->m_name = name;
