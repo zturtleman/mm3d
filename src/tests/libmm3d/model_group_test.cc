@@ -21,7 +21,7 @@
  */
 
 
-// This file tests material methods in the Model class.
+// This file tests group methods in the Model class.
 
 #include <QtTest/QtTest>
 
