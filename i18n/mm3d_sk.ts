@@ -1,4 +1,5 @@
 <!DOCTYPE TS><TS>
+<defaultcodec></defaultcodec>
 <context>
     <name>AboutWin</name>
     <message>
@@ -637,7 +638,7 @@ počet rámcov sa líši.</translation>
     </message>
     <message>
         <source>Animations</source>
-        <translation type="unfinished">Animácie</translation>
+        <translation>Animácie</translation>
     </message>
 </context>
 <context>
@@ -1431,7 +1432,7 @@ Chcete pokračovať?</translation>
     <message>
         <source>Properties</source>
         <comment>Window title</comment>
-        <translation type="unfinished">Vlastnosti</translation>
+        <translation>Vlastnosti</translation>
     </message>
 </context>
 <context>
@@ -2227,59 +2228,59 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>MD2 requires all groups to have the same material.</source>
-        <translation type="unfinished"></translation>
+        <translation>MD2 vyžaduje aby všetky skupiny mali rovnaký materiál.</translation>
     </message>
     <message>
         <source>MD2 export requires all faces to be grouped.</source>
-        <translation type="unfinished"></translation>
+        <translation>MD2 export vyžaduje aby všetky plochy boli v jednej skupine.</translation>
     </message>
     <message>
         <source>MD3 export requires all faces to be grouped.</source>
-        <translation type="unfinished"></translation>
+        <translation>MD3 export  vyžaduje aby všetky plochy boli v nejakej skupine.</translation>
     </message>
     <message>
         <source>MD3_PATH+filename is to long.</source>
-        <translation type="unfinished"></translation>
+        <translation>MD3_PATH+meno súboru je príliž dlhé.</translation>
     </message>
     <message>
         <source>Too many animation frames for MD3 export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Príliš veľa animácií pre MD3 export.</translation>
     </message>
     <message>
         <source>Too many points for MD3 export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Príliš veľa bodov pre MD3 export.</translation>
     </message>
     <message>
         <source>Too many groups for MD3 export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Príliš veľa skupín pre MD3 export.</translation>
     </message>
     <message>
         <source>Too many faces in a single group for MD3 export</source>
-        <translation type="unfinished"></translation>
+        <translation>Príliš veľa plôch v jednej skupine pre MD3 export</translation>
     </message>
     <message>
         <source>Too many vertices in a single group for MD3 export</source>
-        <translation type="unfinished"></translation>
+        <translation>Príliš veľa vrcholov v jednej skupine pre MD3 export</translation>
     </message>
     <message>
         <source>Point name is too large for MD3 export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Meno bodu je príliš dlhé pre MD3 export.</translation>
     </message>
     <message>
         <source>Group name is too large for MD3 export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Meno skupiny je príliš dlhé pre MD3 export.</translation>
     </message>
     <message>
         <source>Texture filename is too long.</source>
-        <translation type="unfinished"></translation>
+        <translation>Meno textúry je príliš dlhé.</translation>
     </message>
     <message>
         <source>MM3D does not support CAL3D files in XML format</source>
-        <translation type="unfinished"></translation>
+        <translation>MM3D nepodporuje CAL3D v XML formáte</translation>
     </message>
     <message>
         <source>The file does not contain any mesh or animation data</source>
-        <translation type="unfinished"></translation>
+        <translation>Súbor neobsahuje žiadnu mriežku ani aimáciu</translation>
     </message>
 </context>
 <context>
@@ -2881,17 +2882,17 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>Poly Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ poly</translation>
     </message>
     <message>
         <source>Strip</source>
         <comment>Triangle strip option</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pruh</translation>
     </message>
     <message>
         <source>Fan</source>
         <comment>Triangle fan option</comment>
-        <translation type="unfinished">Vejár</translation>
+        <translation>Vejár</translation>
     </message>
 </context>
 <context>
@@ -3967,11 +3968,11 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>Selected (including animations)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolené (vrátanie animácií)</translation>
     </message>
     <message>
         <source>Entire Model (including animations)</source>
-        <translation type="unfinished"></translation>
+        <translation>Celý model (vrátane animácií)</translation>
     </message>
 </context>
 <context>
@@ -4773,15 +4774,15 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
     <message>
         <source>Export Selected...</source>
         <comment>File|Export Selected</comment>
-        <translation type="unfinished"></translation>
+        <translation>Exportovať zvolené...</translation>
     </message>
     <message>
         <source>You must have at least 1 face, joint, or point selected to Export Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Musíte zvoliť aspoň 1 plochu alebo bod na Exportovanie zvoleného</translation>
     </message>
     <message>
         <source>You are in animation mode, but there are no animations</source>
-        <translation type="unfinished"></translation>
+        <translation>Ste v režime animácie, ale nie sú tu žiadne animácie</translation>
     </message>
 </context>
 <context>
