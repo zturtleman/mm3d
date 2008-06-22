@@ -231,7 +231,7 @@ void AnimExportWindow::accept()
    double duration = 0.0;
    double tm = 0.0;
 
-   double outfps = atof( m_frameRateValue->text().toLatin1() );
+   double outfps = atof( m_frameRateValue->text().toUtf8() );
    if ( outfps < 0.0001 )
    {
       msg_warning( (const char *) tr("Must have more than 0 frames per second").toUtf8() );
@@ -241,12 +241,12 @@ void AnimExportWindow::accept()
 
    if ( m_timeButton->isChecked() )
    {
-      duration = atof( m_secondsValue->text().toLatin1() );
+      duration = atof( m_secondsValue->text().toUtf8() );
    }
    else
    {
       duration = spf 
-         * atoi( m_iterationsValue->text().toLatin1() ) 
+         * atoi( m_iterationsValue->text().toUtf8() ) 
          * m_model->getAnimFrameCount( mode, a );
    }
 
@@ -258,13 +258,13 @@ void AnimExportWindow::accept()
 
    QString path = m_directoryLabel->text();
 
-   if ( is_directory( path.toLatin1() ) )
+   if ( is_directory( path.toUtf8() ) )
    {
-      g_prefs( "ui_animexport_dir" ) = (const char *) path.toLatin1();
+      g_prefs( "ui_animexport_dir" ) = (const char *) path.toUtf8();
       g_prefs( "ui_animexport_format" ) = m_formatValue->currentIndex();
-      g_prefs( "ui_animexport_framerate" ) = atof( m_frameRateValue->text().toLatin1() );
-      g_prefs( "ui_animexport_seconds" ) = atoi( m_secondsValue->text().toLatin1() );
-      g_prefs( "ui_animexport_iterations" ) = atoi( m_iterationsValue->text().toLatin1() );
+      g_prefs( "ui_animexport_framerate" ) = atof( m_frameRateValue->text().toUtf8() );
+      g_prefs( "ui_animexport_seconds" ) = atoi( m_secondsValue->text().toUtf8() );
+      g_prefs( "ui_animexport_iterations" ) = atoi( m_iterationsValue->text().toUtf8() );
 
       bool enable = m_model->setUndoEnabled( false );
 
@@ -307,11 +307,11 @@ void AnimExportWindow::accept()
          frameNum++;
 
          QString file;
-         file.sprintf( formatStr, (const char *) path.toLatin1(), frameNum );
+         file.sprintf( formatStr, (const char *) path.toUtf8(), frameNum );
 
          QImage img = v->grabFrameBuffer( false );
 
-         if ( !img.save( file, saveFormat.toLatin1(), 100 ) && prompt )
+         if ( !img.save( file, saveFormat.toUtf8(), 100 ) && prompt )
          {
             QString msg = tr( "Could not write file: " ) + QString("\n");
             msg += file;
