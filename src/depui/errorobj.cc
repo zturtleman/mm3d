@@ -69,11 +69,11 @@ QString ErrorObject::getModelErrorString( Model::ModelErrorE err, Model * model 
       case Model::ERROR_FILTER_SPECIFIC:
          if ( model )
          {
-            return model->getFilterSpecificError();
+            return QString::fromUtf8( model->getFilterSpecificError() );
          }
          else
          {
-            return Model::getLastFilterSpecificError();
+            return QString::fromUtf8( Model::getLastFilterSpecificError() );
          }
       case Model::ERROR_UNKNOWN:
          return tr("Unknown error");
