@@ -446,7 +446,7 @@
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="obsolete">Bork!</translation>
+        <translation type="unfinished">Bork!</translation>
     </message>
     <message>
         <source>&lt;New Animation&gt;</source>
@@ -654,7 +654,7 @@
     </message>
     <message>
         <source>Animations</source>
-        <translation type="unfinished">Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
 </context>
 <context>
@@ -708,7 +708,7 @@
     </message>
     <message>
         <source>All Files (*)</source>
-        <translation type="obsolete">All Bork! (*)</translation>
+        <translation type="unfinished">All Bork! (*)</translation>
     </message>
     <message>
         <source>Could not open file</source>
@@ -1446,7 +1446,7 @@ Do you wish to continue?</source>
     <message>
         <source>Properties</source>
         <comment>Window title</comment>
-        <translation type="unfinished">Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
 </context>
 <context>
@@ -2938,12 +2938,12 @@ Do you want to load all sections?</source>
     <message>
         <source>Ctrl+Z</source>
         <comment>Undo</comment>
-        <translation type="obsolete">Ctrl+Z</translation>
+        <translation type="unfinished">Ctrl+Z</translation>
     </message>
     <message>
         <source>Ctrl+Y</source>
         <comment>Redo</comment>
-        <translation type="obsolete">Ctrl+Y</translation>
+        <translation type="unfinished">Ctrl+Y</translation>
     </message>
     <message>
         <source>Set Projection Type</source>
@@ -2978,16 +2978,6 @@ Do you want to load all sections?</source>
         <source>Rename Projection</source>
         <comment>operation complete</comment>
         <translation>Bork!</translation>
-    </message>
-    <message>
-        <source>CTRL+Z</source>
-        <comment>Undo shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CTRL+Y</source>
-        <comment>Redo shortcut</comment>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3275,17 +3265,7 @@ Do you want to load all sections?</source>
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished">Bork!</translation>
-    </message>
-    <message>
-        <source>CTRL+Z</source>
-        <comment>Undo shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CTRL+Y</source>
-        <comment>Redo shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
 </context>
 <context>
@@ -3376,7 +3356,7 @@ Do you want to load all sections?</source>
     </message>
     <message>
         <source>All Files (*)</source>
-        <translation type="obsolete">All Bork! (*)</translation>
+        <translation type="unfinished">All Bork! (*)</translation>
     </message>
     <message>
         <source>Could not open file</source>
@@ -3425,7 +3405,7 @@ Do you want to load all sections?</source>
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished">Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
 </context>
 <context>
@@ -3906,7 +3886,7 @@ Do you want to load all sections?</source>
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished">Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
 </context>
 <context>
@@ -3985,7 +3965,7 @@ Do you want to load all sections?</source>
     </message>
     <message>
         <source>Entire Model and Animations</source>
-        <translation type="obsolete">Bork!</translation>
+        <translation type="unfinished">Bork!</translation>
     </message>
     <message>
         <source>Press F1 for help</source>
@@ -3995,21 +3975,13 @@ Do you want to load all sections?</source>
         <source>Close</source>
         <translation>Bork!</translation>
     </message>
-    <message>
-        <source>Selected (including animations)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Entire Model (including animations)</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ValueWin</name>
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished">Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
 </context>
 <context>
@@ -4047,7 +4019,7 @@ Do you want to load all sections?</source>
     </message>
     <message>
         <source>Animations</source>
-        <translation type="obsolete">Bork!</translation>
+        <translation type="unfinished">Bork!</translation>
     </message>
     <message>
         <source>Properties</source>
@@ -4532,7 +4504,7 @@ Do you want to load all sections?</source>
     </message>
     <message>
         <source>File exists.  Overwrite?</source>
-        <translation type="obsolete">Bork!</translation>
+        <translation type="unfinished">Bork!</translation>
     </message>
     <message>
         <source>All Supported Formats (</source>
@@ -4576,7 +4548,7 @@ Do you want to save before closing?</source>
     <message>
         <source>Hide Properties</source>
         <comment>View|Hide Properties</comment>
-        <translation type="obsolete">Bork!</translation>
+        <translation type="unfinished">Bork!</translation>
     </message>
     <message>
         <source>Cannot hide with selected projections.  Unselect projections now?</source>
@@ -4799,7 +4771,7 @@ Use the &apos;Select Faces&apos; tool.</source>
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished">Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
     <message>
         <source>Export Selected...</source>
@@ -4820,7 +4792,7 @@ Use the &apos;Select Faces&apos; tool.</source>
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished">Bork!</translation>
+        <translation type="obsolete">Bork!</translation>
     </message>
 </context>
 <context>

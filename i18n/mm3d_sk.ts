@@ -514,6 +514,11 @@ počet rámcov sa líši.</translation>
         <source>No skeletal animation data to paste</source>
         <translation>V schránke nie sú dáta kostrovej animácie</translation>
     </message>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AnimWidgetBase</name>
@@ -637,7 +642,7 @@ počet rámcov sa líši.</translation>
     </message>
     <message>
         <source>Animations</source>
-        <translation type="unfinished">Animácie</translation>
+        <translation type="obsolete">Animácie</translation>
     </message>
 </context>
 <context>
@@ -691,7 +696,7 @@ počet rámcov sa líši.</translation>
     </message>
     <message>
         <source>All Files (*)</source>
-        <translation type="obsolete">Všetky súbory (*)</translation>
+        <translation type="unfinished">Všetky súbory (*)</translation>
     </message>
     <message>
         <source>Could not open file</source>
@@ -1431,7 +1436,7 @@ Chcete pokračovať?</translation>
     <message>
         <source>Properties</source>
         <comment>Window title</comment>
-        <translation type="unfinished">Vlastnosti</translation>
+        <translation type="obsolete">Vlastnosti</translation>
     </message>
 </context>
 <context>
@@ -2958,13 +2963,13 @@ Chcete načítať všetky sekcie?</translation>
         <translation>Premenovať premietanie</translation>
     </message>
     <message>
-        <source>CTRL+Z</source>
-        <comment>Undo shortcut</comment>
+        <source>Ctrl+Z</source>
+        <comment>Undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>CTRL+Y</source>
-        <comment>Redo shortcut</comment>
+        <source>Ctrl+Y</source>
+        <comment>Redo</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3242,21 +3247,6 @@ Chcete načítať všetky sekcie?</translation>
         <source>Move texture coordinates</source>
         <translation>Presunúť súradnice textúry</translation>
     </message>
-    <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CTRL+Z</source>
-        <comment>Undo shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CTRL+Y</source>
-        <comment>Redo shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>TextureCoordBase</name>
@@ -3346,7 +3336,7 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>All Files (*)</source>
-        <translation type="obsolete">Všetky súbory (*)</translation>
+        <translation type="unfinished">Všetky súbory (*)</translation>
     </message>
     <message>
         <source>Could not open file</source>
@@ -3391,11 +3381,6 @@ Chcete načítať všetky sekcie?</translation>
         <source>Set texture...</source>
         <comment>Add texture file to material</comment>
         <translation>Nastaviť textúru...</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3873,11 +3858,6 @@ Chcete načítať všetky sekcie?</translation>
         <comment>button</comment>
         <translation>Zrušiť transformáciu</translation>
     </message>
-    <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>TransformWindowBase</name>
@@ -3955,7 +3935,7 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>Entire Model and Animations</source>
-        <translation type="obsolete">Celý model a animácie</translation>
+        <translation type="unfinished">Celý model a animácie</translation>
     </message>
     <message>
         <source>Press F1 for help</source>
@@ -3965,22 +3945,9 @@ Chcete načítať všetky sekcie?</translation>
         <source>Close</source>
         <translation>Zatvoriť</translation>
     </message>
-    <message>
-        <source>Selected (including animations)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Entire Model (including animations)</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ValueWin</name>
-    <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ValueWinBase</name>
@@ -4017,7 +3984,7 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>Animations</source>
-        <translation type="obsolete">Animácie</translation>
+        <translation type="unfinished">Animácie</translation>
     </message>
     <message>
         <source>Properties</source>
@@ -4502,7 +4469,7 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>File exists.  Overwrite?</source>
-        <translation type="obsolete">Súbor existuje. Prepísať?</translation>
+        <translation type="unfinished">Súbor existuje. Prepísať?</translation>
     </message>
     <message>
         <source>All Supported Formats (</source>
@@ -4548,7 +4515,7 @@ Chcete ho uložiť pred zatvorením?</translation>
     <message>
         <source>Hide Properties</source>
         <comment>View|Hide Properties</comment>
-        <translation type="obsolete">Schovať vlastnosti</translation>
+        <translation type="unfinished">Schovať vlastnosti</translation>
     </message>
     <message>
         <source>Cannot hide with selected projections.  Unselect projections now?</source>
@@ -4766,11 +4733,6 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
         <translation>Všetky podporované formáty</translation>
     </message>
     <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Export Selected...</source>
         <comment>File|Export Selected</comment>
         <translation type="unfinished"></translation>
@@ -4786,11 +4748,6 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
 </context>
 <context>
     <name>ViewportSettings</name>
-    <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ViewportSettingsBase</name>

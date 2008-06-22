@@ -509,6 +509,11 @@
         <source>No skeletal animation data to paste</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AnimWidgetBase</name>
@@ -551,10 +556,6 @@
 </context>
 <context>
     <name>AnimWindow</name>
-    <message>
-        <source>Animations</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>AutoAssignJointWin</name>
@@ -607,6 +608,10 @@
     </message>
     <message>
         <source>Could not open file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All Files (*)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1326,11 +1331,6 @@ Do you wish to continue?</source>
 </context>
 <context>
     <name>ContextPanel</name>
-    <message>
-        <source>Properties</source>
-        <comment>Window title</comment>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ContextPosition</name>
@@ -2822,13 +2822,13 @@ Do you want to load all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>CTRL+Z</source>
-        <comment>Undo shortcut</comment>
+        <source>Ctrl+Z</source>
+        <comment>Undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>CTRL+Y</source>
-        <comment>Redo shortcut</comment>
+        <source>Ctrl+Y</source>
+        <comment>Redo</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3106,21 +3106,6 @@ Do you want to load all sections?</source>
         <source>Move texture coordinates</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CTRL+Z</source>
-        <comment>Undo shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CTRL+Y</source>
-        <comment>Redo shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>TextureCoordBase</name>
@@ -3253,8 +3238,7 @@ Do you want to load all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
+        <source>All Files (*)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3733,11 +3717,6 @@ Do you want to load all sections?</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>TransformWindowBase</name>
@@ -3822,21 +3801,12 @@ Do you want to load all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selected (including animations)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Entire Model (including animations)</source>
+        <source>Entire Model and Animations</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>ValueWin</name>
-    <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ValueWinBase</name>
@@ -4542,11 +4512,6 @@ Use the &apos;Select Faces&apos; tool.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Export Selected...</source>
         <comment>File|Export Selected</comment>
         <translation type="unfinished"></translation>
@@ -4559,14 +4524,22 @@ Use the &apos;Select Faces&apos; tool.</source>
         <source>You are in animation mode, but there are no animations</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File exists.  Overwrite?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide Properties</source>
+        <comment>View|Hide Properties</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ViewportSettings</name>
-    <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ViewportSettingsBase</name>
