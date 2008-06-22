@@ -1,4 +1,5 @@
 <!DOCTYPE TS><TS>
+<defaultcodec></defaultcodec>
 <context>
     <name>AboutWin</name>
     <message>
@@ -514,11 +515,6 @@ počet rámcov sa líši.</translation>
         <source>No skeletal animation data to paste</source>
         <translation>V schránke nie sú dáta kostrovej animácie</translation>
     </message>
-    <message>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>AnimWidgetBase</name>
@@ -642,7 +638,7 @@ počet rámcov sa líši.</translation>
     </message>
     <message>
         <source>Animations</source>
-        <translation type="obsolete">Animácie</translation>
+        <translation>Animácie</translation>
     </message>
 </context>
 <context>
@@ -696,7 +692,7 @@ počet rámcov sa líši.</translation>
     </message>
     <message>
         <source>All Files (*)</source>
-        <translation type="unfinished">Všetky súbory (*)</translation>
+        <translation type="obsolete">Všetky súbory (*)</translation>
     </message>
     <message>
         <source>Could not open file</source>
@@ -1436,7 +1432,7 @@ Chcete pokračovať?</translation>
     <message>
         <source>Properties</source>
         <comment>Window title</comment>
-        <translation type="obsolete">Vlastnosti</translation>
+        <translation>Vlastnosti</translation>
     </message>
 </context>
 <context>
@@ -2232,59 +2228,59 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>MD2 requires all groups to have the same material.</source>
-        <translation type="unfinished"></translation>
+        <translation>MD2 vyžaduje aby všetky skupiny mali rovnaký materiál.</translation>
     </message>
     <message>
         <source>MD2 export requires all faces to be grouped.</source>
-        <translation type="unfinished"></translation>
+        <translation>MD2 export vyžaduje aby všetky plochy boli v jednej skupine.</translation>
     </message>
     <message>
         <source>MD3 export requires all faces to be grouped.</source>
-        <translation type="unfinished"></translation>
+        <translation>MD3 export  vyžaduje aby všetky plochy boli v nejakej skupine.</translation>
     </message>
     <message>
         <source>MD3_PATH+filename is to long.</source>
-        <translation type="unfinished"></translation>
+        <translation>MD3_PATH+meno súboru je príliž dlhé.</translation>
     </message>
     <message>
         <source>Too many animation frames for MD3 export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Príliš veľa animácií pre MD3 export.</translation>
     </message>
     <message>
         <source>Too many points for MD3 export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Príliš veľa bodov pre MD3 export.</translation>
     </message>
     <message>
         <source>Too many groups for MD3 export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Príliš veľa skupín pre MD3 export.</translation>
     </message>
     <message>
         <source>Too many faces in a single group for MD3 export</source>
-        <translation type="unfinished"></translation>
+        <translation>Príliš veľa plôch v jednej skupine pre MD3 export</translation>
     </message>
     <message>
         <source>Too many vertices in a single group for MD3 export</source>
-        <translation type="unfinished"></translation>
+        <translation>Príliš veľa vrcholov v jednej skupine pre MD3 export</translation>
     </message>
     <message>
         <source>Point name is too large for MD3 export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Meno bodu je príliš dlhé pre MD3 export.</translation>
     </message>
     <message>
         <source>Group name is too large for MD3 export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Meno skupiny je príliš dlhé pre MD3 export.</translation>
     </message>
     <message>
         <source>Texture filename is too long.</source>
-        <translation type="unfinished"></translation>
+        <translation>Meno textúry je príliš dlhé.</translation>
     </message>
     <message>
         <source>MM3D does not support CAL3D files in XML format</source>
-        <translation type="unfinished"></translation>
+        <translation>MM3D nepodporuje CAL3D v XML formáte</translation>
     </message>
     <message>
         <source>The file does not contain any mesh or animation data</source>
-        <translation type="unfinished"></translation>
+        <translation>Súbor neobsahuje žiadnu mriežku ani aimáciu</translation>
     </message>
 </context>
 <context>
@@ -2886,17 +2882,17 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>Poly Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ poly</translation>
     </message>
     <message>
         <source>Strip</source>
         <comment>Triangle strip option</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pruh</translation>
     </message>
     <message>
         <source>Fan</source>
         <comment>Triangle fan option</comment>
-        <translation type="unfinished">Vejár</translation>
+        <translation>Vejár</translation>
     </message>
 </context>
 <context>
@@ -2963,13 +2959,13 @@ Chcete načítať všetky sekcie?</translation>
         <translation>Premenovať premietanie</translation>
     </message>
     <message>
-        <source>Ctrl+Z</source>
-        <comment>Undo</comment>
+        <source>CTRL+Z</source>
+        <comment>Undo shortcut</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ctrl+Y</source>
-        <comment>Redo</comment>
+        <source>CTRL+Y</source>
+        <comment>Redo shortcut</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3247,6 +3243,21 @@ Chcete načítať všetky sekcie?</translation>
         <source>Move texture coordinates</source>
         <translation>Presunúť súradnice textúry</translation>
     </message>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CTRL+Z</source>
+        <comment>Undo shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CTRL+Y</source>
+        <comment>Redo shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TextureCoordBase</name>
@@ -3336,7 +3347,7 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>All Files (*)</source>
-        <translation type="unfinished">Všetky súbory (*)</translation>
+        <translation type="obsolete">Všetky súbory (*)</translation>
     </message>
     <message>
         <source>Could not open file</source>
@@ -3381,6 +3392,11 @@ Chcete načítať všetky sekcie?</translation>
         <source>Set texture...</source>
         <comment>Add texture file to material</comment>
         <translation>Nastaviť textúru...</translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3858,6 +3874,11 @@ Chcete načítať všetky sekcie?</translation>
         <comment>button</comment>
         <translation>Zrušiť transformáciu</translation>
     </message>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TransformWindowBase</name>
@@ -3935,7 +3956,7 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>Entire Model and Animations</source>
-        <translation type="unfinished">Celý model a animácie</translation>
+        <translation type="obsolete">Celý model a animácie</translation>
     </message>
     <message>
         <source>Press F1 for help</source>
@@ -3945,9 +3966,22 @@ Chcete načítať všetky sekcie?</translation>
         <source>Close</source>
         <translation>Zatvoriť</translation>
     </message>
+    <message>
+        <source>Selected (including animations)</source>
+        <translation>Zvolené (vrátanie animácií)</translation>
+    </message>
+    <message>
+        <source>Entire Model (including animations)</source>
+        <translation>Celý model (vrátane animácií)</translation>
+    </message>
 </context>
 <context>
     <name>ValueWin</name>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ValueWinBase</name>
@@ -3984,7 +4018,7 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>Animations</source>
-        <translation type="unfinished">Animácie</translation>
+        <translation type="obsolete">Animácie</translation>
     </message>
     <message>
         <source>Properties</source>
@@ -4469,7 +4503,7 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>File exists.  Overwrite?</source>
-        <translation type="unfinished">Súbor existuje. Prepísať?</translation>
+        <translation type="obsolete">Súbor existuje. Prepísať?</translation>
     </message>
     <message>
         <source>All Supported Formats (</source>
@@ -4515,7 +4549,7 @@ Chcete ho uložiť pred zatvorením?</translation>
     <message>
         <source>Hide Properties</source>
         <comment>View|Hide Properties</comment>
-        <translation type="unfinished">Schovať vlastnosti</translation>
+        <translation type="obsolete">Schovať vlastnosti</translation>
     </message>
     <message>
         <source>Cannot hide with selected projections.  Unselect projections now?</source>
@@ -4733,21 +4767,31 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
         <translation>Všetky podporované formáty</translation>
     </message>
     <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Export Selected...</source>
         <comment>File|Export Selected</comment>
-        <translation type="unfinished"></translation>
+        <translation>Exportovať zvolené...</translation>
     </message>
     <message>
         <source>You must have at least 1 face, joint, or point selected to Export Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Musíte zvoliť aspoň 1 plochu alebo bod na Exportovanie zvoleného</translation>
     </message>
     <message>
         <source>You are in animation mode, but there are no animations</source>
-        <translation type="unfinished"></translation>
+        <translation>Ste v režime animácie, ale nie sú tu žiadne animácie</translation>
     </message>
 </context>
 <context>
     <name>ViewportSettings</name>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ViewportSettingsBase</name>
