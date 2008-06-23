@@ -36,7 +36,8 @@ HelpWin::HelpWin( const char * document, bool modal, QWidget * parent )
    setupUi( this );
 #ifdef WIN32
    QString source = 
-        QString( getDocDirectory().c_str() )
+        QString( "file:///")
+      + QString( getDocDirectory().c_str() )
       + QString( "\\olh_index.html" );
 #else
    QString source = QString( "file://" ) 
@@ -49,7 +50,8 @@ HelpWin::HelpWin( const char * document, bool modal, QWidget * parent )
    {
 #ifdef WIN32
       QString source = 
-           QString( getDocDirectory().c_str() )
+           QString( "file:///")
+         + QString( getDocDirectory().c_str() )
          + QString( "\\" )
          + QString( document );
 #else

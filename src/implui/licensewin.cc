@@ -38,7 +38,8 @@ LicenseWin::LicenseWin( QWidget * parent )
    setWindowTitle( tr("GNU General Public License") );
 #ifdef WIN32
    QString source = 
-        QString( getDocDirectory().c_str() )
+        QString( "file:///")
+      + QString( getDocDirectory().c_str() )
       + QString( "/olh_license.html" );
 #else
    QString source = QString( "file://" ) 
