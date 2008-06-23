@@ -402,6 +402,12 @@ mm3d: ${MM3D_MOC_OBJ} ${LIB_OBJ} ${MM3D_OBJ}
 	${WINDRES} src/icon.rc src/icon.o
 	${CXX} ${CXXFLAGS} ${DEFS} -o mm3d.exe ${MM3D_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} src/icon.o ${LINK}
 
+installer: mm3d
+	cp -r ../dll .
+	cp -r ../imageformats .
+	strip mm3d.exe
+	makensis mm3d-win32-installer.nsi
+
 %.o : %.cc
 	${CXX} ${DEFS} -c $< -o $@ ${CXXFLAGS}
 
