@@ -1280,7 +1280,6 @@ QAction * ViewWindow::insertMenuItem( QMenu * parentMenu, bool isTool,
          else
          {
             module = "Command";
-            connect( addMenu, SIGNAL(triggered(QAction*)), this, SLOT(primitiveCommandActivated(QAction*)) );
          }
          addMenu->setTitle( qApp->translate( module.toUtf8(), path.toUtf8() ) );
          parentMenu->addMenu( addMenu );
@@ -2104,7 +2103,6 @@ void ViewWindow::initializeCommands()
             item->arg = 0;
 
             m_primitiveCommands.push_back( item );
-            connect( menu, SIGNAL(triggered(QAction*)), this, SLOT(primitiveCommandActivated(QAction*)) );
          }
          else
          {
