@@ -4,75 +4,190 @@
    This page describes some short tips that can help you use Misfit Model 3D
    more effectively.
    </p>
+   <!-- FIXME proof-read this -->
 
    <h2> General Modeling Tips </h2>
 
    <ul>
-      <li> <!-- FIXME --> Use the properties panel </li>
-      <li> <!-- FIXME --> Background images </li>
-      <li> <!-- FIXME --> Snap to grid/vertex </li>
-      <li> <!-- FIXME --> Drag vertex on edge</li>
-      <li> <!-- FIXME --> Edge turn </li>
-      <li> <!-- FIXME --> Edge divide </li>
-      <li> <!-- FIXME --> Extrude </li>
-      <li> <!-- FIXME --> Holding shift tips </li>
-      <li> <!-- FIXME --> Normals face out </li>
-      <li> <!-- FIXME --> Snap together / weld / unweld </li>
+      <li> Some parts of a 3D model will have modifiable properties
+      that can be changed through dialog boxes or the Properties Panel.
+      The Properties Panel is a context-sensitive dockable window that
+      displays modifiable properties for the selected portion of the 3D
+      model. Using the Properties Panel may be more convenient than
+      using tools, commands, or dialog boxes to accomplish some task.
+      Select "View&nbsp;|&nbsp;Show&nbsp;Properties" to use the Properties
+      Panel. </li>
+      <li> When creating a model, it is sometimes helpful to have a 2D image
+      for reference to help with getting the shape or scale of some object
+      correct. You can project a 2D image into any viewport using
+      <a href="olh_setbackgroundwin.html">Model&nbsp;|&nbsp;Set&nbsp;Background&nbsp;Image</a>. </li>
+      <li> Use "Tools&nbsp;|&nbsp;Snap&nbsp;To&nbsp;|&nbsp;Grid"
+      and Use "Tools&nbsp;|&nbsp;Snap&nbsp;To&nbsp;|&nbsp;Vertex"
+      <!-- FIXME need link for these -->
+      to help align the current tool with the grid lines and existing
+      vertices.  </li>
+      <li> Use <a href="olh_tools.html#dragvertex">Drag vertex on edge</a>
+      to move a vertex along one of the triangle edges it is connected to.
+      The tool will attempt to follow the edge that is closest to the mouse.</li>
+      <li> If two triangle form a concave angle when you want a convex angle
+      (or vice-versa), use <a href="olhd_commands.html">Edge turn</a>. See
+      the link for an example of when this is useful. </li>
+      <li> Use "Extrude" to take a set of faces and extend it out from
+      the object it is connected to. There is a 
+      <a href="olh_commands.html#extrude">geometry command version</a> and a
+      <a href="olh_commands.html#extrude">tool version</a>.</li>
+      <li> Some tools modify their behavior if you hold the shift key
+      while using them. For example, the move tool will operate only in one
+      dimension and the rotate tool will rotate in 15 degree increments.
+      Often these behaviors are noted in the status bar when you change tools.
+      Any special behavior of the shift key for a tool will be described
+      in the <a href="olh_tools.html">tool documentation</a> </li>
+      <li> Triangles/faces only reflect light off of one side. If the dark
+      side of a triangle is facing out toward the camera, you need to invert
+      the normal of the triangle to reverse the direction it faces. If some
+      enclosed 3D shape has some triangles facing in and some facing out, 
+      you can select the entire shape and use
+      <a href="olh_commands.html#faceout">Geometry&nbsp;|&nbsp;Normals&nbsp;face&nbsp;out</a>
+      to correct any faces that are wrong. Note that this only works if the
+      faces are part of a complete, enclosed 3D shape.</li>
+      <li> You can use <a href="olh_commands.html">Snap&nbsp;Together</a>
+      to make nearby vertices align themselves. Optionally you can have
+      them weld into a single vertex. This operation can work on all selected
+      vertcies, or pairs of nearby vertices.</li>
    </ul>
 
    <h2> Viewports </h2>
 
    <ul>
-      <li> <!-- FIXME --> Toggle ortho/persp viewport </li>
-      <li> <!-- FIXME --> Middle mouse pan </li>
-      <li> <!-- FIXME --> Scroll wheel zoom </li>
-      <li> <!-- FIXME --> Ctrl-Rotate with wheel and pan buttons </li>
-      <li> <!-- FIXME --> Ctrl-Rotate ortho </li>
-      <li> <!-- FIXME --> Viewport bookmarks </li>
-      <li> <!-- FIXME --> Frame selected/all </li>
+      <li> You may only use selection and modification tools in orthographic
+      projections. If you see something in a 3D perspective projection that
+      looks wrong and you are not sure which faces or vertices to select
+      from an orthographic viewport, you can switch the perspective viewport
+      into an orthographic viewport from the same angle and scale by pressing
+      the the left quote/backtick key (`).</li>
+      <li> The Backslash key (\) will rotate the viewport 180 degrees so that
+      you are looking at the opposite side of the object in your viewport.</li>
+      <li> Click and drag the middle mouse button in a viewport to
+      pan. You can also use the arrow keys to pan any viewport that is
+      highlighted with mouse focus.</li>
+      <li> Use the vertical scroll wheel or the plus/minus keys to zoom in or
+      out. </li>
+      <li> Use Ctrl + scroll wheel or Ctrl + plus/minus keys to rotate
+      the viewport. </li>
+      <li> Pressing Ctrl + &lt;Number Key 1-9&gt; will save the current
+      position and rotation of the highlighted viewport. Pressing the number
+      key alone will recall the saved position and rotation. Pressing 0 will
+      center the viewport on the origin. </li>
+      <li> Use "View&nbsp;|&nbsp;Frame&nbsp;Selected" or
+      "View&nbsp;|&nbsp;Frame&nbsp;All" to and zoom your viewport on the
+      object of interest (note that this changes all viewports).</li>
    </ul>
 
    <h3> Texturing </h3>
 
    <ul>
-      <li> <!-- FIXME --> Remember must have group for texture, all triangles share </li>
-      <li> <!-- FIXME --> Middle mouse pan </li>
-      <li> <!-- FIXME --> Scroll wheel zoom </li>
-      <li> <!-- FIXME --> Texture projections </li>
-      <li> <!-- FIXME --> Paint Texture </li>
-      <li> <!-- FIXME --> Reload Textures </li>
-   </ul>
+      <li> To apply textures to geometry, the faces/triangles must be part
+      of a group. The texture is then applied to the group. </li>
+      <li> Texture unwrapping is not supported, but using cylinder and 
+      sphere <a href="olh_projectiondetails.html">texture projections</a>
+      in addition to <a href="olh_painttexturewin.html">paint texture</a> may
+      give you a good starting point for applying textures. </li>
+      <li> If you are modifying your textures in a paint program, you can
+      reload the model textures without restarting by selecting the
+      &quot;Reload&nbsp;Textures&quit; option in the Materials menu.
 
-   <h3> Importing and Exporting </h3>
-
-   <ul>
-      <li> <!-- FIXME --> File | Export </li>
-      <li> <!-- FIXME --> Importing Animations </li>
-      <li> <!-- FIXME --> Merging </li>
-      <li> <!-- FIXME --> Quake MD2 </li>
-      <li> <!-- FIXME --> Quake MD3 </li>
+      </li>
    </ul>
 
    <h3> Animations </h3>
 
    <ul>
-      <li> <!-- FIXME --> Use rotate instead of translate </li>
-      <li> <!-- FIXME --> Set keyframe in first and last frames </li>
-      <li> <!-- FIXME --> Use Set Rotation/Translation Keyframe for default starting point </li>
-      <li> <!-- FIXME --> Converting skeletal to frame </li>
+      <li> Skeletal animations tend to be easier to work with than frame
+      animations. For model formats that require
+      frame (mesh deformation) animations--such as the quake formats--it is
+      best to create skeletal animations and then convert those animations
+      to frame animations before exporting to the desired format.
+      </li>
+      <li> Beginners sometimes try to move the joints instead of rotating.
+      Use rotation on the bone joints to animate your model instead of
+      translation (think about how you move your own arms and legs).
+      </li>
+      <li> It is a good idea to set a keyframe in the first and last frame
+      of an animation for every joint that will be animated during the
+      animation. This will give you more predictable results regardless of
+      whether the animation is looping or not. </li>
+      <li> Keyframes are automatically created when you move or rotate a joint.
+      If you want to create a keyframe without rotating or moving,
+      use the &quot;Set Rotation/Translation Keyframe&quot; options.
+      </li>
    </ul>
 
    <h3> Alpha Blending </h3>
 
    <ul>
-      <li> <!-- FIXME --> Disable back-facing polygons</li>
-      <li> <!-- FIXME --> Eliminate co-planar triangles (separate)</li>
+      <li> When working with transparent textures on a model, keep in mind
+      that back-facing polygons are often not rendered by various rendering
+      engines. Typically you will want to render back-facing polygons when
+      you are modeling. However if you can disable back-facing polygons from
+      the View menu if you want to see what your model will look like in these
+      circumstances.</li>
+      <li> Since triangles only render facing one direction, transparent
+      triangles are sometimes doubled, with one triangle facing one direction
+      and the other facing the opposite direction. If these triangles are
+      exactly co-planar you may see rendering artifacts that cause part of
+      the triangle that should be rendered to be obscured. To prevent this, put
+      a slight gap between the co-planar triangles.</li>
+   </ul>
+
+   <h3> Importing and Exporting </h3>
+
+   <ul>
+      <li> Some supported file formats do not mix well with the way MM3D
+      stores data internally. When working with 3D models on a regular
+      basis it is often a good idea to save in MM3D format and then use
+      &quot;File&nbsp;|&nbsp;Export&quot; to save in your desired format
+      when you have something completed. There are many more exportable
+      formats than save formats.</li>
+      <li> You can use &quot;Model&nbsp;|&nbsp;Import&nbsp;Animations&quot;
+      to load animations from another model with an identical skeletal
+      structure. The skeleton will be checked to make sure that the
+      parent/child joint relationships are correct. The position and rotation
+      of the joints will not be checked, but if they are not identical the
+      results of the import will probably not be what you expect.
+      </li>
+      <li> You can use &quot;Model&nbsp;|&nbsp;Merge&quot;
+      to import another model into the current one. There are options for
+      scaling and rotating as well as how to deal with animations.
+      The merge feature can be useful if you have frame animations in your
+      model, since adding and deleting geometry in general is not allowed
+      in that case.
+      </li>
+      <li> Some model export formats have special considerations that you must
+      keep in mind when you are working with them. See the links below for
+      details.
+      <ul>
+         <li> <a href="olh_quakemd2.html">Quake MD2</a> </li>
+         <li> <a href="olh_quakemd3.html">Quake MD3</a> </li>
+         <li> <!-- FIXME write doc --> Cal3D </li>
+      </ul>
    </ul>
 
    <h3> Advanced </h3>
 
    <ul>
-      <li> <!-- FIXME --> Custom keyboard shortcuts </li>
-      <li> <!-- FIXME --> Boolean operations </li>
+      <li> Use <a href="olh_boolwin.htm">Boolean&nbsp;operations</a>
+      to modify one 3D object based on the shape of another 3D object. 
+      Boolean operations can combine two shapes into one, subtract
+      the volume of one shape from another, or find the common volume
+      between two shapes.</li>
+      <li> It is possible to customize most menu shortcuts. There is not
+      a graphical user interface to do this, but you can edit a file
+      called keycfg.in in the $(HOME)/.mm3d subdirectory (on Win32 this
+      is userhome in the Misfit Model 3D Program Files directory).
+      Simply specify the name of the function you want to bind
+      and then the key combination you want to bind it to.
+      See keycfg.out in the same directory for the current bindings.
+      Anythhing you do not specify in your keycfg.in will use the
+      default setting.</li>
    </ul>
 

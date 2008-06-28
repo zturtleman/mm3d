@@ -4,9 +4,15 @@ TODO:
    Update table of contents
    Add "tell me more..." links to window-specific documentation
    Screenshot for Persp/Ortho comparison
-   Remove all scripting references
+      images taken, crop and include
+   Remove scripting help files
 
-   Write up details for tips doc
+   Screenshots:
+    - Boolean operations
+    - Edge turn command
+    - Simplify mesh command
+    - Normals face out command
+      Drag vertex tool
 
    Tutorial
       UI Tour (main window documentation)
@@ -27,7 +33,7 @@ TODO:
          Bone Joints
          Influences
       Animations
-      MD2/MD3 guides
+      MD2/MD3/Cal3d guides
       Links to other modeling tutorials
 
 Docs:
