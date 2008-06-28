@@ -530,6 +530,11 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
          m_triangles[t]->m_marked = false;
       }
 
+      glEnable( GL_LIGHT0 );
+      glDisable( GL_LIGHT1 );
+      _defaultMaterial();
+      glColor3f( 0.9f, 0.9f, 0.9f );
+
       if ( m_animationMode )
       {
          glDisable( GL_BLEND ); // TODO: alpha blending on animations is not implemented
