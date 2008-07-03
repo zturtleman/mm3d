@@ -1969,7 +1969,8 @@ void ViewWindow::initializeToolbox()
 
                m_toolList[m_toolCount] = tool;
                // Text below
-               m_toolButtons[ m_toolCount ] = m_toolBar->addAction( set, "Text" );
+               m_toolButtons[ m_toolCount ] = m_toolBar->addAction( set,
+                     qApp->translate( "Tool", tool->getName(t) ) );
                m_toolButtons[ m_toolCount ]->setCheckable( true );
                if ( name && name[0] )
                {
@@ -2018,7 +2019,8 @@ void ViewWindow::initializeToolbox()
 
             m_toolList[m_toolCount] = tool;
             // Text below
-            m_toolButtons[ m_toolCount ] = m_toolBar->addAction( set, "Text" );
+            m_toolButtons[ m_toolCount ] = m_toolBar->addAction( set,
+                     qApp->translate( "Tool", tool->getName(0) ) );
             m_toolButtons[ m_toolCount ]->setCheckable( true );
             if ( name && name[0] )
             {
