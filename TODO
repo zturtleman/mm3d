@@ -1,10 +1,8 @@
 For 1.4:
-   Bump mm3dfilter version
-   Update plugin docs to point to User's 1.4 plugin directory
+   Add subversion and ./configure options to website.
 
-   Testing:
-      Compare frame animations (propEqual and equiv)
-      Implement MD3 filter test
+   Investigate Win32 helpwin issue
+   Update plugin docs to point to User's 1.4 plugin directory
 
    FIXMEs
       Centralize the FunctionCaller
