@@ -36,31 +36,29 @@ HelpWin::HelpWin( const char * document, bool modal, QWidget * parent )
    setupUi( this );
 #ifdef WIN32
    QString source = 
-        QString( "file:///")
-      + QString( getDocDirectory().c_str() )
+        QString( getDocDirectory().c_str() )
       + QString( "\\olh_index.html" );
 #else
-   QString source = QString( "file://" ) 
-      + QString( getDocDirectory().c_str() )
+   QString source =
+        QString( getDocDirectory().c_str() )
       + QString( "/olh_index.html" );
 #endif
-   m_text->setSource( source );
+   m_text->setSource( QUrl::fromLocalFile( source ) );
 
    if ( document )
    {
 #ifdef WIN32
       QString source = 
-           QString( "file:///")
-         + QString( getDocDirectory().c_str() )
+           QString( getDocDirectory().c_str() )
          + QString( "\\" )
          + QString( document );
 #else
-      QString source = QString( "file://" ) 
-         + QString( getDocDirectory().c_str() )
+      QString source =
+           QString( getDocDirectory().c_str() )
          + QString( "/" )
          + QString( document );
 #endif
-      m_text->setSource( source );
+      m_text->setSource( QUrl::fromLocalFile( source ) );
    }
    //m_text->home();
    m_forwardButton->setEnabled( false );
