@@ -1,7 +1,6 @@
 For 1.4:
    Add subversion and ./configure options to website.
 
-   Investigate Win32 helpwin issue
    Update plugin docs to point to User's 1.4 plugin directory
 
    FIXMEs
