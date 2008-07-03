@@ -1,10 +1,5 @@
       <h1>Command Line</h1>
 
-      <!--
-         FIXME update command line docs
-         lang option
-         anything else?
-      -->
       <a name="overview">
       <h2>Overview</h2>
       <p>
@@ -32,21 +27,6 @@
       The version option prints the version information for Misfit Model 3D.
       </p>
 
-      <h3>-b --batch</h3>
-
-      <p>
-      The batch option runs all commands specified
-      on the command line and then exits.  Often this is used along with
-      <code>--save</code> or <code>--convert</code>.
-      </p>
-
-      <h3>-s --save</h3>
-
-      <p>
-      The save option saves models after command line processing is complete.
-      Often this is used along with <code>--batch</code>.
-      </p>
-
       <h3>--convert</h3>
 
       <p>
@@ -65,8 +45,17 @@
       format will be used.
       </p>
 
+      <h3>--language</h3>
+
       <p>
-      Often this is used with the <code>--batch</code> option.
+      The language option specifies the language in which the UI will
+      be displayed. If you do not specify this option, the system's
+      default locale will be used to determine the appropriate language.
+      </p>
+
+      <p>
+      See the <a href="http://www.misfitcode.com/misfitmodel3d/">Misfit Model
+      3D website</a> for a list of supported languages.
       </p>
 
       <h3>--no-plugins</h3>
@@ -99,35 +88,33 @@
 
       <p>
       The debug option prints debug log messages to standard error output.
-      This the by default in debug builds.
+      This is on by default in debug builds and off in release builds.
       </p>
 
       <h3>--warning</h3>
 
       <p>
       The warning option prints warning log messages to standard error output.
-      This is the default in debug builds.
+      This is on by default in debug builds and off in release builds.
       </p>
 
       <h3>--error</h3>
 
       <p>
       The error option prints error log messages to standard error output.
-      This is the default in all build configurations.
+      This is on by default in all build configurations.
       </p>
 
       <h3>--no-debug</h3>
 
       <p>
       The no-debug option disables debug log messages.
-      This is the default in release builds.
       </p>
 
       <h3>--no-warning</h3>
 
       <p>
       The no-warning option desiables warning log messages.
-      This is the default in release builds.
       </p>
 
       <h3>--no-error</h3>

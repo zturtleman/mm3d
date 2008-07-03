@@ -42,8 +42,6 @@ SPAGES =  \
 	olh_projectionwin.htm \
 	olh_properties.htm \
 	olh_rgbawin.htm \
-	olh_scriptguide.htm \
-	olh_scriptref.htm \
 	olh_spherifywin.htm \
 	olh_texturecoordwin.htm \
 	olh_texturewin.htm \
@@ -99,8 +97,6 @@ PAGES =  \
 	olh_projectionwin.html \
 	olh_properties.html \
 	olh_rgbawin.html \
-	olh_scriptguide.html \
-	olh_scriptref.html \
 	olh_spherifywin.html \
 	olh_texturecoordwin.html \
 	olh_texturewin.html \
