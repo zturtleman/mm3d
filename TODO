@@ -1,10 +1,6 @@
 For 1.4:
    Add subversion and ./configure options to website.
-
    Update plugin docs to point to User's 1.4 plugin directory
-
-   FIXMEs
-      Centralize the FunctionCaller
 
 For 1.6:
    Resample animation

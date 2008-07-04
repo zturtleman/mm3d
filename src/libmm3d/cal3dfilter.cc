@@ -109,17 +109,6 @@ static Cal3dFilter * s_filter = NULL;
 #define CAL3D_MAGIC_SKELETON  "CSF\0"
 #define CAL3D_MAGIC_ANIMATION "CAF\0"
 
-// FIXME centralize this
-template<typename T>
-class FunctionCaller
-{
-   public:
-      FunctionCaller( T * obj, void (T::*method)(void) ) { m_obj = obj; m_method = method; }
-      ~FunctionCaller() { (m_obj->*m_method)(); }
-   private:
-      T * m_obj;
-      void (T::*m_method)(void);
-};
 const Model::AnimationModeE MODE = Model::ANIMMODE_SKELETAL;
 
 static char * _skipSpace( char * str )
@@ -1253,7 +1242,7 @@ Model::ModelErrorE Cal3dFilter::readFileToBuffer( const char * filename, uint8_t
 
    Model::ModelErrorE err = Model::ERROR_NONE;
    DataSource * src = openInput( filename, err );
-   FunctionCaller<DataSource> fc( src, &DataSource::close );
+   SourceCloser fc( src );
 
    if ( err != Model::ERROR_NONE )
       return err;
@@ -1993,7 +1982,7 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
 {
    Model::ModelErrorE err = Model::ERROR_NONE;
    m_dst = openOutput( filename, err );
-   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
+   DestCloser fc( m_dst );
 
    if ( err != Model::ERROR_NONE )
       return err;
@@ -2186,7 +2175,7 @@ Model::ModelErrorE Cal3dFilter::writeXMaterialFile( const char * filename, Model
 
    Model::ModelErrorE err = Model::ERROR_NONE;
    m_dst = openOutput( filename, err );
-   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
+   DestCloser fc( m_dst );
 
    if ( err != Model::ERROR_NONE )
       return err;
@@ -2253,7 +2242,7 @@ Model::ModelErrorE Cal3dFilter::writeSkeletonFile( const char * filename, Model 
 
    Model::ModelErrorE err = Model::ERROR_NONE;
    m_dst = openOutput( filename, err );
-   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
+   DestCloser fc( m_dst );
 
    if ( err != Model::ERROR_NONE )
       return err;
@@ -2296,7 +2285,7 @@ Model::ModelErrorE Cal3dFilter::writeMeshListFile( const char * filename, Model 
 
    Model::ModelErrorE err = Model::ERROR_NONE;
    m_dst = openOutput( filename, err );
-   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
+   DestCloser fc( m_dst );
 
    if ( err != Model::ERROR_NONE )
       return err;
@@ -2332,7 +2321,7 @@ Model::ModelErrorE Cal3dFilter::writeMaterialFile( const char * filename, Model 
 
    Model::ModelErrorE err = Model::ERROR_NONE;
    m_dst = openOutput( filename, err );
-   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
+   DestCloser fc( m_dst );
 
    if ( err != Model::ERROR_NONE )
       return err;
@@ -2393,7 +2382,7 @@ Model::ModelErrorE Cal3dFilter::writeAnimationFile( const char * filename, Model
 
    Model::ModelErrorE err = Model::ERROR_NONE;
    m_dst = openOutput( filename, err );
-   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
+   DestCloser fc( m_dst );
 
    if ( err != Model::ERROR_NONE )
       return err;

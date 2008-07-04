@@ -60,18 +60,6 @@
 static Md3Filter * s_filter = NULL;
 #endif // PLUGIN
 
-// FIXME this should be centralized
-template<typename T>
-class FunctionCaller
-{
-   public:
-      FunctionCaller( T * obj, void (T::*method)(void) ) { m_obj = obj; m_method = method; }
-      ~FunctionCaller() { (m_obj->*m_method)(); }
-   private:
-      T * m_obj;
-      void (T::*m_method)(void);
-};
-
 const int MD3_ANIMATIONS = 25;
 
 const int HEADER_SIZE = (11 * 4) + MAX_QPATH;
@@ -1893,7 +1881,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    // Open file for writing
    Model::ModelErrorE err = Model::ERROR_NONE;
    m_dst = openOutput( filename, err );
-   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
+   DestCloser fc( m_dst );
 
    if ( err != Model::ERROR_NONE )
       return err;

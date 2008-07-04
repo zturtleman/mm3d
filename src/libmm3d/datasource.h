@@ -31,6 +31,7 @@
 
 #include "mm3dtypes.h"
 #include "model.h"
+#include "raii.h"
 
 //-----------------------------------------------------------------------------
 // About DataSource
@@ -234,6 +235,16 @@ class DataSource
       EndianFunction16T m_endfunc16;
       EndianFunction32T m_endfunc32;
       EndianFunctionFlT m_endfuncfl;
+};
+
+class SourceCloser
+{
+   public:
+      SourceCloser(DataSource * src);
+      virtual ~SourceCloser();
+
+   private:
+      DataSource * m_src;
 };
 
 #endif // DATASOURCE_INC_H__
