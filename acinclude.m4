@@ -1080,7 +1080,7 @@ EOF
   ])
   DLOPEN_LIBS="$ksw_cv_DLOPEN_LIBS"
   have_dlopen="$ksw_cv_have_dlopen"
-  AC_SUBST( DLOPEN_LIBS )
+  AC_SUBST(DLOPEN_LIBS)
   if test x"$have_dlopen" = "xyes"; then
     AC_DEFINE( [HAVE_DLOPEN], [], [Define when you have dlopen function] )
   fi
