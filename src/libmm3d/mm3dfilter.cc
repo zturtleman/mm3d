@@ -38,28 +38,17 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 #include <errno.h>
 #include <vector>
 
 using std::list;
 using std::string;
 
-template<typename T>
-class FunctionCaller
-{
-   public:
-      FunctionCaller( T * obj, void (T::*method)(void) ) { m_obj = obj; m_method = method; }
-      ~FunctionCaller() { (m_obj->*m_method)(); }
-   private:
-      T * m_obj;
-      void (T::*m_method)(void);
-};
-
-
 const char     MisfitFilter::MAGIC[] = "MISFIT3D";
 
 const uint8_t  MisfitFilter::WRITE_VERSION_MAJOR = 0x01;
-const uint8_t  MisfitFilter::WRITE_VERSION_MINOR = 0x05;  // FIXME bump version
+const uint8_t  MisfitFilter::WRITE_VERSION_MINOR = 0x06;
 
 const uint16_t MisfitFilter::OFFSET_TYPE_MASK  = 0x3fff;
 const uint16_t MisfitFilter::OFFSET_UNI_MASK   = 0x8000;
@@ -687,7 +676,7 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
 
    Model::ModelErrorE err = Model::ERROR_NONE;
    m_src = openInput( filename, err );
-   FunctionCaller<DataSource> fc( m_src, &DataSource::close );
+   SourceCloser fc( m_src );
 
    if ( err != Model::ERROR_NONE )
       return err;
@@ -2090,7 +2079,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
 
    Model::ModelErrorE err = Model::ERROR_NONE;
    m_dst = openOutput( filename, err );
-   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
+   DestCloser fc( m_dst );
 
    if ( err != Model::ERROR_NONE )
       return err;

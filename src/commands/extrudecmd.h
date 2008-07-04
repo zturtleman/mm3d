@@ -26,7 +26,7 @@
 
 #include "command.h"
 
-#include <qnamespace.h>
+#include <QtGui/QKeySequence>
 
 class ExtrudeCommand : public Command
 {

@@ -28,22 +28,19 @@
 
 #include "align.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-
-//#include <list>
-//#include <map>
+#include <QtGui/QDialog>
 
 class Model;
 
-class AlignWin : public AlignWinBase
+class AlignWin : public QDialog, public Ui::AlignWinBase
 {
    Q_OBJECT
 
    public:
-      AlignWin( Model *, QWidget * parent = NULL, const char * name = "" );
+      AlignWin( Model *, QWidget * parent = NULL );
       virtual ~AlignWin();
 
+   public slots:
       void alignX();
       void alignY();
       void alignZ();
@@ -63,11 +60,9 @@ class AlignWin : public AlignWinBase
       void accept();
       void reject();
 
-   public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
    protected:
-      QAccel * m_accel;
       Model * m_model;
 
       double m_xMin;

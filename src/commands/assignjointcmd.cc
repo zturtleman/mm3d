@@ -29,8 +29,8 @@
 #include "log.h"
 
 #include <list>
-#include <qobject.h>
-#include <qapplication.h>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 AssignJointCommand::AssignJointCommand()
 {
@@ -64,7 +64,7 @@ bool AssignJointCommand::activated( int arg, Model * model )
          .arg(pointList.size())
          .arg(joint);
       model_status( model, StatusNormal, STATUSTIME_SHORT, "%s",
-            (const char *) str.utf8() );
+            (const char *) str.toUtf8() );
 
       for ( it = vertList.begin(); it != vertList.end(); it++ )
       {
@@ -78,7 +78,7 @@ bool AssignJointCommand::activated( int arg, Model * model )
    }
    else
    {
-      model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have exactly 1 bone joint selected." ).utf8() );
+      model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have exactly 1 bone joint selected." ).toUtf8() );
       JointWin * win = new JointWin( model );  
       win->show();
    }

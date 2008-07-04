@@ -32,6 +32,7 @@
 
 #include "mm3dtypes.h"
 #include "model.h"
+#include "raii.h"
 
 //-----------------------------------------------------------------------------
 // About DataDest
@@ -196,6 +197,16 @@ class DataDest
       EndianFunction16T m_endfunc16;
       EndianFunction32T m_endfunc32;
       EndianFunctionFlT m_endfuncfl;
+};
+
+class DestCloser
+{
+   public:
+      DestCloser(DataDest * src);
+      virtual ~DestCloser();
+
+   private:
+      DataDest * m_src;
 };
 
 #endif // DATADEST_INC_H__

@@ -31,36 +31,15 @@
 #include "modelviewport.h"
 #include "3dmprefs.h"
 
-#include <qlayout.h>
+#include <QtGui/QLayout>
+#include <QtGui/QGridLayout>
 
-ViewPanel::ViewPanel( Toolbox * toolbox, QWidget * parent, const char * name )
-   : QWidget( parent, name ),
+ViewPanel::ViewPanel( Toolbox * toolbox, QWidget * parent )
+   : QWidget( parent ),
      m_model( NULL ),
      m_viewCount( 4 ),
      m_tall( false ),
      m_toolbox( toolbox )
-{
-   showInternal();
-
-   show();
-}
-
-ViewPanel::~ViewPanel()
-{
-   log_debug( "deleting view panel\n" );
-}
-
-void ViewPanel::reshow()
-{
-   hide();
-   deleteViews();
-
-   showInternal();
-
-   show();
-}
-
-void ViewPanel::showInternal()
 {
    if ( g_prefs.exists( "ui_viewport_count" ) )
    {
@@ -82,6 +61,13 @@ void ViewPanel::showInternal()
    {
       m_viewState[s].rotation[0] = -1000.0;
    }
+
+   show();
+}
+
+ViewPanel::~ViewPanel()
+{
+   log_debug( "deleting view panel\n" );
 }
 
 void ViewPanel::freeTextures()
@@ -195,7 +181,9 @@ void ViewPanel::makeViews()
    int width  = 3;
    int height = 3;
 
-   m_gridLayout = new QGridLayout( this, 1, 1, 0, 0 );
+   m_gridLayout = new QGridLayout( this );
+   m_gridLayout->setSpacing(0);
+   m_gridLayout->setMargin(0);
 
    switch ( m_viewCount )
    {
@@ -239,7 +227,7 @@ void ViewPanel::makeViews()
 
    for ( unsigned t = 0; t < m_viewCount; t++ )
    {
-      m_modelView[t] = new ModelView( m_toolbox, this, "" );
+      m_modelView[t] = new ModelView( m_toolbox, this );
       connect( m_modelView[t]->getModelViewport(), SIGNAL(viewportSaveState(int, const ModelViewport::ViewStateT & )), 
             this, SLOT(viewportSaveStateEvent(int, const ModelViewport::ViewStateT &)) );
       connect( m_modelView[t]->getModelViewport(), SIGNAL(viewportRecallState(int)), 

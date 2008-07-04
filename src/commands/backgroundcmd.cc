@@ -25,8 +25,8 @@
 
 #include "backgroundwin.h"
 #include "log.h"
-#include <qobject.h>
-#include <qapplication.h>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 BackgroundCommand::BackgroundCommand()
 {

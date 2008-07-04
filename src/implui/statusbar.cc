@@ -26,10 +26,10 @@
 #include "model.h"
 #include "misc.h"
 
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <qtooltip.h>
-#include <qtimer.h>
+#include <QtCore/QTimer>
+#include <QtGui/QLabel>
+#include <QtGui/QPixmap>
+#include <QtGui/QToolTip>
 
 #include <stdarg.h>
 
@@ -37,11 +37,17 @@ using std::map;
 
 map<Model *, StatusBar *> StatusBar::s_modelMap;
 
-StatusBar::StatusBar( Model * model, QWidget * parent, const char * name )
-   : StatusBarBase( parent, name ),
+StatusBar::StatusBar( Model * model, QWidget * parent )
+   : QWidget( parent ),
      m_model( model ),
      m_queueDisplay( false )
 {
+   setupUi( this );
+
+   m_palette = this->palette();
+   this->setAutoFillBackground( true );
+   m_statusLabel->setAutoFillBackground( true );
+   m_labelFrame->setAutoFillBackground( true );
    s_modelMap[ m_model ] = this;
 }
 
@@ -71,11 +77,11 @@ void StatusBar::setModel( Model * model )
 
 void StatusBar::setText( const char * str )
 {
-   QToolTip::remove( this );
+   setToolTip("");
    if ( utf8len( str ) > 72 )
    {
       char * temp = strdup( str );
-      QToolTip::add( this, QString::fromUtf8(temp) );
+      setToolTip( QString::fromUtf8(temp) );
       utf8strtrunc( temp, 69 );
       strcat( temp, "..." );
       m_statusLabel->setText( QString::fromUtf8(temp) );
@@ -91,8 +97,10 @@ void StatusBar::addText( StatusTypeE type, unsigned ms, const char * str )
 {
    if ( m_queueDisplay )
    {
+      // Clear non-errors first
       bool removing = true;
-      while ( removing && m_queue.size() > 2 )
+      size_t max_queue_size = 2;
+      while ( removing && m_queue.size() > max_queue_size )
       {
          removing = false;
          std::list< TextQueueItemT >::iterator it;
@@ -107,6 +115,17 @@ void StatusBar::addText( StatusTypeE type, unsigned ms, const char * str )
             }
          }
       }
+
+      // If we still have more than max_queue_size in the queue, and the
+      // new message is an error, start removing the oldest errors.
+      if ( m_queue.size() > max_queue_size )
+      {
+         if ( type != StatusError )
+            return;
+         while ( m_queue.size() > max_queue_size )
+            m_queue.pop_front();
+      }
+
       TextQueueItemT tqi;
       tqi.str  = QString::fromUtf8( str );
       tqi.ms   = ms;
@@ -119,8 +138,10 @@ void StatusBar::addText( StatusTypeE type, unsigned ms, const char * str )
       QTimer::singleShot( ms, this, SLOT(timerExpired()));
       if ( type == StatusError ) 
       {
-         m_statusLabel->setPaletteForegroundColor( QColor( 255, 255, 255 ) );
-         m_statusLabel->setPaletteBackgroundColor( QColor( 255, 0, 0 ) );
+         QPalette p = m_palette;
+         p.setColor( QPalette::WindowText, QColor( 255, 255, 255 ) );
+         p.setColor( QPalette::Window, QColor( 255, 0, 0 ) );
+         m_labelFrame->setPalette( p );
       }
       m_queueDisplay = true;
    }
@@ -128,19 +149,21 @@ void StatusBar::addText( StatusTypeE type, unsigned ms, const char * str )
 
 void StatusBar::timerExpired()
 {
-   m_statusLabel->unsetPalette();
+   m_labelFrame->setPalette( m_palette );
    if ( !m_queue.empty() )
    {
       TextQueueItemT tqi = m_queue.front();
       m_queue.pop_front();
 
-      setText( tqi.str.utf8() );
+      setText( tqi.str.toUtf8() );
 
       m_queueDisplay = true;
       if ( tqi.type == StatusError ) 
       {
-         m_statusLabel->setPaletteForegroundColor( QColor( 255, 255, 255 ) );
-         m_statusLabel->setPaletteBackgroundColor( QColor( 255, 0, 0 ) );
+         QPalette p = m_palette;
+         p.setColor( QPalette::WindowText, QColor( 255, 255, 255 ) );
+         p.setColor( QPalette::Window, QColor( 255, 0, 0 ) );
+         m_labelFrame->setPalette( p );
       }
 
       if ( tqi.ms > 0 )
@@ -164,11 +187,11 @@ void StatusBar::setVertices( unsigned v, unsigned sv )
    QString str;
    if ( sv )
    {
-      str.sprintf( "%s%d/%d", (const char *) statChar.utf8(), sv, v );
+      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sv, v );
    }
    else
    {
-      str.sprintf( "%s%d", (const char *) statChar.utf8(), v );
+      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), v );
    }
 
    m_vertexLabel->setText( QString(str) );
@@ -180,11 +203,11 @@ void StatusBar::setFaces( unsigned f, unsigned sf )
    QString str;
    if ( sf )
    {
-      str.sprintf( "%s%d/%d", (const char *) statChar.utf8(), sf, f );
+      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sf, f );
    }
    else
    {
-      str.sprintf( "%s%d", (const char *) statChar.utf8(), f );
+      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), f );
    }
 
    m_faceLabel->setText( QString(str) );
@@ -196,11 +219,11 @@ void StatusBar::setGroups( unsigned g, unsigned sg )
    QString str;
    if ( sg )
    {
-      str.sprintf( "%s%d/%d", (const char *) statChar.utf8(), sg, g );
+      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sg, g );
    }
    else
    {
-      str.sprintf( "%s%d", (const char *) statChar.utf8(), g );
+      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), g );
    }
 
    m_groupLabel->setText( QString(str) );
@@ -212,11 +235,11 @@ void StatusBar::setBoneJoints( unsigned b, unsigned sb )
    QString str;
    if ( sb )
    {
-      str.sprintf( "%s%d/%d", (const char *) statChar.utf8(), sb, b );
+      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sb, b );
    }
    else
    {
-      str.sprintf( "%s%d", (const char *) statChar.utf8(), b );
+      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), b );
    }
 
    m_boneLabel->setText( QString(str) );
@@ -228,11 +251,11 @@ void StatusBar::setPoints( unsigned b, unsigned sb )
    QString str;
    if ( sb )
    {
-      str.sprintf( "%s%d/%d", (const char *) statChar.utf8(), sb, b );
+      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sb, b );
    }
    else
    {
-      str.sprintf( "%s%d", (const char *) statChar.utf8(), b );
+      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), b );
    }
 
    m_pointLabel->setText( QString(str) );
@@ -244,11 +267,11 @@ void StatusBar::setTextures( unsigned t, unsigned st )
    QString str;
    if ( st )
    {
-      str.sprintf( "%s%d/%d", (const char *) statChar.utf8(), st, t );
+      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), st, t );
    }
    else
    {
-      str.sprintf( "%s%d", (const char *) statChar.utf8(), t );
+      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), t );
    }
 
    m_textureLabel->setText( QString(str) );

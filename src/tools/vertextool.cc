@@ -30,8 +30,8 @@
 
 #include "pixmap/vertextool.xpm"
 
-#include <qobject.h>
-#include <qapplication.h>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 VertexTool::VertexTool()
 {
@@ -60,7 +60,7 @@ void VertexTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y
 
    parent->updateAllViews();
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Vertex created" ).utf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Vertex created" ).toUtf8() );
 }
 
 void VertexTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )

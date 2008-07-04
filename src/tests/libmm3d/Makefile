@@ -6,6 +6,7 @@ LIB = ../common/libtest_common.a ../../libmm3d/libmm3d.a
 
 TESTS = \
 		  memutil_test.unit \
+		  glmath_test.unit \
 		  big_endian_test.unit \
 		  datasource_test.unit \
 		  datadest_test.unit \
@@ -24,6 +25,7 @@ TESTS = \
 		  model_joint_test.unit \
 		  model_select_test.unit \
 		  model_weld_test.unit \
+		  model_anim_test.unit \
 		  model_test.unit \
 		  new_mm3d_test.unit \
 		  filter_mm3d_test.unit \
@@ -33,12 +35,13 @@ TESTS = \
 		  filter_dxf_test.unit \
 		  filter_obj_test.unit \
 		  filter_md2_test.unit \
+		  filter_md3_test.unit \
 		  filtermgr_test.unit \
 		  cmdlinemgr_test.unit \
 		  util_test.unit \
+		  misc_test.unit \
 		  translation_test.unit \
-		  msg_test.unit \
-		  #filter_md3_test.unit # FIXME move this up near md2 when ready
+		  msg_test.unit
 
 # Add moc dependencies here
 
@@ -59,6 +62,8 @@ filedatasource_test.unit: filedatasource_test.moc $(LIB)
 undomgr_test.unit: undomgr_test.moc $(LIB)
 
 memutil_test.unit: memutil_test.moc $(LIB)
+
+glmath_test.unit: glmath_test.moc $(LIB)
 
 texcompare_test.unit: texcompare_test.moc $(LIB)
 
@@ -86,6 +91,8 @@ model_select_test.unit: model_select_test.moc $(LIB)
 
 model_weld_test.unit: model_weld_test.moc $(LIB)
 
+model_anim_test.unit: model_anim_test.moc $(LIB)
+
 model_test.unit: model_test.moc $(LIB)
 
 new_mm3d_test.unit: new_mm3d_test.moc $(LIB)
@@ -104,9 +111,11 @@ filter_obj_test.unit: filter_obj_test.moc $(LIB)
 
 filter_md2_test.unit: filter_md2_test.moc $(LIB)
 
-#filter_md3_test.unit: filter_md3_test.moc $(LIB)
+filter_md3_test.unit: filter_md3_test.moc $(LIB)
 
 util_test.unit: util_test.moc $(LIB)
+
+misc_test.unit: misc_test.moc $(LIB)
 
 msg_test.unit: msg_test.moc $(LIB)
 
@@ -118,6 +127,7 @@ test: $(TESTS)
 
 check: test
 	./memutil_test.unit -silent
+	./glmath_test.unit -silent
 	./big_endian_test.unit -silent
 	./datasource_test.unit -silent
 	./filedatasource_test.unit -silent
@@ -136,8 +146,10 @@ check: test
 	./model_joint_test.unit -silent
 	./model_select_test.unit -silent
 	./model_weld_test.unit -silent
+	./model_anim_test.unit -silent
 	./model_test.unit -silent
 	./util_test.unit -silent
+	./misc_test.unit -silent
 	./translation_test.unit -silent
 	./msg_test.unit -silent
 	./filtermgr_test.unit -silent
@@ -149,7 +161,7 @@ filtercheck:
 	./filter_ms3d_test.unit -silent
 	./filter_cal3d_test.unit -silent
 	./filter_md2_test.unit -silent
-	#./filter_md3_test.unit -silent # FIXME restore this when test works
+	./filter_md3_test.unit -silent
 	./filter_obj_test.unit -silent
 	./filter_cob_test.unit -silent
 	./filter_dxf_test.unit -silent

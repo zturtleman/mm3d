@@ -33,24 +33,28 @@
 #include "msg.h"
 
 #include "mm3dport.h"
-#include "mq3compat.h"
 
 #include <unistd.h>
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qspinbox.h>
-#include <qlineedit.h>
-#include <qradiobutton.h>
-#include <qcombobox.h>
-#include <qimage.h>
+#include <QtGui/QFileDialog>
+#include <QtGui/QPushButton>
+#include <QtGui/QLabel>
+#include <QtGui/QShortcut>
+#include <QtGui/QSpinBox>
+#include <QtGui/QLineEdit>
+#include <QtGui/QRadioButton>
+#include <QtGui/QComboBox>
+#include <QtGui/QImage>
+#include <QtGui/QShortcut>
 
 AnimExportWindow::AnimExportWindow( Model * model, ViewPanel * viewPanel, QWidget * parent )
-   : AnimExportWinBase( parent, "", true ),
-     m_accel( new QAccel(this) ),
+   : QDialog( parent ),
      m_model( model ),
      m_viewPanel( viewPanel )
 {
+   setModal( true );
+   setupUi( this );
+
    QString path = QString::fromUtf8( g_prefs( "ui_animexport_dir" ).stringValue().c_str() );
 
    if ( g_prefs.exists( "ui_animexport_format" ) )
@@ -59,7 +63,7 @@ AnimExportWindow::AnimExportWindow( Model * model, ViewPanel * viewPanel, QWidge
 
       if ( f >= 0 && f < m_formatValue->count() )
       {
-         m_formatValue->setCurrentItem( f );
+         m_formatValue->setCurrentIndex( f );
       }
    }
 
@@ -116,7 +120,7 @@ AnimExportWindow::AnimExportWindow( Model * model, ViewPanel * viewPanel, QWidge
          QString name = labelAnims ? tr( "Skeletal - ", "Skeletal Animation prefix" ) : QString("");
 
          name += m_model->getAnimName( Model::ANIMMODE_SKELETAL, a );
-         m_animValue->insertItem( name );
+         m_animValue->insertItem( a, name );
       }
 
       for ( a = 0; a < fcount; a++ )
@@ -124,7 +128,7 @@ AnimExportWindow::AnimExportWindow( Model * model, ViewPanel * viewPanel, QWidge
          QString name = labelAnims ? tr( "Frame - ", "Frame Animation prefix" )    : QString("");
 
          name += m_model->getAnimName( Model::ANIMMODE_FRAME, a );
-         m_animValue->insertItem( name );
+         m_animValue->insertItem( scount + a, name );
       }
 
       const char * filename = m_model->getFilename();
@@ -155,7 +159,7 @@ AnimExportWindow::AnimExportWindow( Model * model, ViewPanel * viewPanel, QWidge
       path = cwd;
    }
 
-   m_directoryLabel->setText( QString::fromUtf8( path ) );
+   m_directoryLabel->setText( path );
 
    if ( m_viewPanel )
    {
@@ -177,24 +181,24 @@ AnimExportWindow::AnimExportWindow( Model * model, ViewPanel * viewPanel, QWidge
             }
          }
 
-         m_viewportValue->insertItem( name );
+         m_viewportValue->insertItem( m, name );
       }
 
       if ( index >= 0 )
       {
-         m_viewportValue->setCurrentItem( index );
+         m_viewportValue->setCurrentIndex( index );
       }
    }
 
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
 AnimExportWindow::~AnimExportWindow()
 {
 }
 
-void AnimExportWindow::helpNowEvent( int id )
+void AnimExportWindow::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_animexportwin.html", true );
    win->show();
@@ -207,7 +211,7 @@ void AnimExportWindow::accept()
       return;
    }
 
-   ModelView * v = m_viewPanel->getModelView( m_viewportValue->currentItem() );
+   ModelView * v = m_viewPanel->getModelView( m_viewportValue->currentIndex() );
 
    if ( v == NULL )
    {
@@ -215,7 +219,7 @@ void AnimExportWindow::accept()
    }
 
    Model::AnimationModeE mode = Model::ANIMMODE_SKELETAL;
-   unsigned a = m_animValue->currentItem();
+   unsigned a = m_animValue->currentIndex();
    if ( a >= m_model->getAnimCount( mode ) )
    {
       a -= m_model->getAnimCount( mode );
@@ -227,40 +231,40 @@ void AnimExportWindow::accept()
    double duration = 0.0;
    double tm = 0.0;
 
-   double outfps = atof( m_frameRateValue->text().latin1() );
+   double outfps = atof( m_frameRateValue->text().toUtf8() );
    if ( outfps < 0.0001 )
    {
-      msg_warning( (const char *) tr("Must have more than 0 frames per second").utf8() );
+      msg_warning( (const char *) tr("Must have more than 0 frames per second").toUtf8() );
       return;
    }
    double interval = (1.0 / outfps);
 
    if ( m_timeButton->isChecked() )
    {
-      duration = atof( m_secondsValue->text().latin1() );
+      duration = atof( m_secondsValue->text().toUtf8() );
    }
    else
    {
       duration = spf 
-         * atoi( m_iterationsValue->text().latin1() ) 
+         * atoi( m_iterationsValue->text().toUtf8() ) 
          * m_model->getAnimFrameCount( mode, a );
    }
 
    if ( duration <= 0.0 )
    {
-      msg_warning( (const char *) tr("Must have more than 0 seconds of animation").utf8() );
+      msg_warning( (const char *) tr("Must have more than 0 seconds of animation").toUtf8() );
       return;
    }
 
    QString path = m_directoryLabel->text();
 
-   if ( is_directory( path.latin1() ) )
+   if ( is_directory( path.toUtf8() ) )
    {
-      g_prefs( "ui_animexport_dir" ) = path.latin1();
-      g_prefs( "ui_animexport_format" ) = m_formatValue->currentItem();
-      g_prefs( "ui_animexport_framerate" ) = atof( m_frameRateValue->text().latin1() );
-      g_prefs( "ui_animexport_seconds" ) = atoi( m_secondsValue->text().latin1() );
-      g_prefs( "ui_animexport_iterations" ) = atoi( m_iterationsValue->text().latin1() );
+      g_prefs( "ui_animexport_dir" ) = (const char *) path.toUtf8();
+      g_prefs( "ui_animexport_format" ) = m_formatValue->currentIndex();
+      g_prefs( "ui_animexport_framerate" ) = atof( m_frameRateValue->text().toUtf8() );
+      g_prefs( "ui_animexport_seconds" ) = atoi( m_secondsValue->text().toUtf8() );
+      g_prefs( "ui_animexport_iterations" ) = atoi( m_iterationsValue->text().toUtf8() );
 
       bool enable = m_model->setUndoEnabled( false );
 
@@ -271,7 +275,7 @@ void AnimExportWindow::accept()
 
       char formatStr[20] = "";
       QString saveFormat = QString( "JPEG" );
-      switch ( m_formatValue->currentItem() )
+      switch ( m_formatValue->currentIndex() )
       {
          case 0:
             strcpy( formatStr, "%s/anim_%04d.jpg" );
@@ -303,16 +307,16 @@ void AnimExportWindow::accept()
          frameNum++;
 
          QString file;
-         file.sprintf( formatStr, path.latin1(), frameNum );
+         file.sprintf( formatStr, (const char *) path.toUtf8(), frameNum );
 
          QImage img = v->grabFrameBuffer( false );
 
-         if ( !img.save( file, saveFormat, 100 ) && prompt )
+         if ( !img.save( file, saveFormat.toUtf8(), 100 ) && prompt )
          {
             QString msg = tr( "Could not write file: " ) + QString("\n");
             msg += file;
 
-            msg_error( (const char *) msg.utf8() );
+            msg_error( (const char *) msg.toUtf8() );
 
             keepGoing = false;
          }
@@ -324,24 +328,24 @@ void AnimExportWindow::accept()
       m_model->setUndoEnabled( enable );
       v->updateView();
 
-      AnimExportWinBase::accept();
+      QDialog::accept();
    }
    else
    {
-      msg_warning( (const char *) tr("Output directory does not exist.").utf8() );
+      msg_warning( (const char *) tr("Output directory does not exist.").toUtf8() );
    }
 }
 
 void AnimExportWindow::reject()
 {
-   AnimExportWinBase::reject();
+   QDialog::reject();
 }
 
 void AnimExportWindow::directoryButtonClicked()
 {
-   QString dir = QFileDialog::getExistingDirectory( m_directoryLabel->text() );
+   QString dir = QFileDialog::getExistingDirectory( this, "Select an output directory", m_directoryLabel->text() );
    if ( ! dir.isNull() && ! dir.isEmpty() )
    {
-      m_directoryLabel->setText( QString::fromUtf8( dir ) );
+      m_directoryLabel->setText( dir );
    }
 }

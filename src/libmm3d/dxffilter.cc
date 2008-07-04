@@ -48,18 +48,6 @@ using std::string;
 static DxfFilter * s_filter = NULL;
 #endif // PLUGIN
 
-// FIXME centralize this
-template<typename T>
-class FunctionCaller
-{
-   public:
-      FunctionCaller( T * obj, void (T::*method)(void) ) { m_obj = obj; m_method = method; }
-      ~FunctionCaller() { (m_obj->*m_method)(); }
-   private:
-      T * m_obj;
-      void (T::*m_method)(void);
-};
-
 static bool _float_equiv( float rhs, float lhs )
 {
    if ( fabs( rhs - lhs ) < 0.0001f )
@@ -369,7 +357,7 @@ Model::ModelErrorE DxfFilter::readFile( Model * model, const char * const filena
 {
    Model::ModelErrorE err = Model::ERROR_NONE;
    m_src = openInput( filename, err );
-   FunctionCaller<DataSource> fc( m_src, &DataSource::close );
+   SourceCloser fc( m_src );
 
    if ( err != Model::ERROR_NONE )
       return err;
@@ -425,7 +413,7 @@ Model::ModelErrorE DxfFilter::writeFile( Model * model, const char * const filen
 
    Model::ModelErrorE err = Model::ERROR_NONE;
    m_dst = openOutput( filename, err );
-   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
+   DestCloser fc( m_dst );
 
    if ( err != Model::ERROR_NONE )
       return err;

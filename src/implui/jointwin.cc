@@ -25,11 +25,11 @@
 #include "decalmgr.h"
 #include "helpwin.h"
 
-#include "mq3compat.h"
+#include <QtGui/QInputDialog>
+#include <QtGui/QPushButton>
+#include <QtGui/QComboBox>
+#include <QtGui/QShortcut>
 
-#include <qinputdialog.h>
-#include <qpushbutton.h>
-#include <qcombobox.h>
 #include <list>
 
 using std::list;
@@ -41,29 +41,32 @@ using std::list;
 #include "modelstatus.h"
 
 
-JointWin::JointWin( Model * model, QWidget * parent, const char * name )
-   : JointWinBase( parent, name, true, Qt::WDestructiveClose ),
-     m_accel( new QAccel(this) ),
+JointWin::JointWin( Model * model, QWidget * parent )
+   : QDialog( parent ),
      m_model( model )
 {
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   setAttribute( Qt::WA_DeleteOnClose );
+   setupUi( this );
+   setModal( true );
+
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 
    for ( int t = 0; t < m_model->getBoneJointCount(); t++ )
    {
-      m_jointName->insertItem( QString::fromUtf8( m_model->getBoneJointName(t) ), t );
+      m_jointName->insertItem( t, QString::fromUtf8( m_model->getBoneJointName(t) ) );
    }
 
    list<int> joints;
    m_model->getSelectedBoneJoints( joints );
    if ( ! joints.empty() )
    {
-      m_jointName->setCurrentItem( joints.front() );
+      m_jointName->setCurrentIndex( joints.front() );
       jointNameSelected( joints.front() );
    }
    else
    {
-      m_jointName->setCurrentItem( 0 );
+      m_jointName->setCurrentIndex( 0 );
       jointNameSelected( 0 );
    }
 }
@@ -72,7 +75,7 @@ JointWin::~JointWin()
 {
 }
 
-void JointWin::helpNowEvent( int id )
+void JointWin::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_jointwin.html", true );
    win->show();
@@ -104,7 +107,7 @@ void JointWin::deleteClicked()
 {
    if ( m_jointName->count() )
    {
-      m_model->deleteBoneJoint( m_jointName->currentItem() );
+      m_model->deleteBoneJoint( m_jointName->currentIndex() );
    }
 }
 
@@ -113,12 +116,12 @@ void JointWin::renameClicked()
    if ( m_jointName->count() )
    {
       bool ok = false;
-      int jointNum = m_jointName->currentItem();
-      QString jointName = QInputDialog::getText( tr("Rename joint", "window title"), tr("Enter new joint name:"), QLineEdit::Normal, QString::fromUtf8( m_model->getBoneJointName( jointNum ) ), &ok );
+      int jointNum = m_jointName->currentIndex();
+      QString jointName = QInputDialog::getText( this, tr("Rename joint", "window title"), tr("Enter new joint name:"), QLineEdit::Normal, QString::fromUtf8( m_model->getBoneJointName( jointNum ) ), &ok );
       if ( ok )
       {
-         m_model->setBoneJointName( jointNum, jointName.utf8() );
-         m_jointName->changeItem( jointName, jointNum );
+         m_model->setBoneJointName( jointNum, jointName.toUtf8() );
+         m_jointName->setItemText( jointNum, jointName );
       }
    }
 }
@@ -127,7 +130,7 @@ void JointWin::selectVerticesClicked()
 {
    if ( m_jointName->count() )
    {
-      int joint = m_jointName->currentItem();
+      int joint = m_jointName->currentIndex();
 
       m_model->unselectAllVertices();
 
@@ -201,7 +204,7 @@ void JointWin::assignVerticesClicked()
    log_debug( "assignVerticesClicked()\n" );
    if ( m_jointName->count() )
    {
-      unsigned joint = m_jointName->currentItem();
+      unsigned joint = m_jointName->currentIndex();
       list<Model::Position> posList;
       m_model->getSelectedPositions( posList );
       list<Model::Position>::iterator it;
@@ -218,7 +221,7 @@ void JointWin::addVerticesClicked()
    log_debug( "addVerticesClicked()\n" );
    if ( m_jointName->count() )
    {
-      unsigned joint = m_jointName->currentItem();
+      unsigned joint = m_jointName->currentIndex();
       list<Model::Position> posList;
       m_model->getSelectedPositions( posList );
       list<Model::Position>::iterator it;
@@ -233,8 +236,8 @@ void JointWin::addVerticesClicked()
 void JointWin::accept()
 {
    log_debug( "Joint changes complete\n" );
-   m_model->operationComplete( tr( "Joint changes", "operation complete" ).utf8() );
-   JointWinBase::accept();
+   m_model->operationComplete( tr( "Joint changes", "operation complete" ).toUtf8() );
+   QDialog::accept();
 }
 
 void JointWin::reject()
@@ -242,6 +245,6 @@ void JointWin::reject()
    log_debug( "Joint changes canceled\n" );
    m_model->undoCurrent();
    DecalManager::getInstance()->modelUpdated( m_model );
-   JointWinBase::reject();
+   QDialog::reject();
 }
 

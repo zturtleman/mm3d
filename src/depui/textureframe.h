@@ -24,7 +24,8 @@
 #ifndef __TEXFRAME_H
 #define __TEXFRAME_H
 
-#include <qframe.h>
+#include <QtGui/QFrame>
+#include <QtGui/QResizeEvent>
 
 class Model;
 class TextureWidget;
@@ -35,7 +36,7 @@ class TextureFrame : public QFrame
    Q_OBJECT
 
    public:
-      TextureFrame( QWidget * parent = NULL, const char * name = "" );
+      TextureFrame( QWidget * parent = NULL );
       virtual ~TextureFrame();
 
       void setModel( Model * model );

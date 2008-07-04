@@ -243,7 +243,6 @@ bool UndoManager::combineWithList( Undo * u )
          }
       }
    }
-   log_debug( "could not combine undo operations\n" );
    return false;
 }
 

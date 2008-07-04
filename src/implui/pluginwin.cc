@@ -26,14 +26,21 @@
 
 #include "helpwin.h"
 
-#include "mq3compat.h"
+#include <QtGui/QHeaderView>
+#include <QtGui/QShortcut>
 
 PluginWindow::PluginWindow()
-   : PluginWinBase( NULL, "", false, WDestructiveClose ),
-     m_accel( new QAccel(this) )
+   : QDialog( NULL )
 {
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   setAttribute( Qt::WA_DeleteOnClose );
+   setupUi( this );
+   setModal( false );
+
+   m_pluginList->header()->setClickable( false );
+   m_pluginList->header()->setMovable( false );
+
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 
    refreshPluginData();
 }
@@ -42,7 +49,7 @@ PluginWindow::~PluginWindow()
 {
 }
 
-void PluginWindow::helpNowEvent( int id )
+void PluginWindow::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_pluginwin.html", true );
    win->show();
@@ -57,7 +64,7 @@ void PluginWindow::refreshPluginData()
 
    for ( it = plist.begin(); it != plist.end(); it++ )
    {
-      QListViewItem * item = new QListViewItem( m_pluginList );
+      QTreeWidgetItem * item = new QTreeWidgetItem( m_pluginList );
       item->setText( 0, QString( pmgr->getPluginName( *it ) ) + " " );
       item->setText( 1, QString( pmgr->getPluginVersion( *it ) ) + " " );
       item->setText( 2, QString( pmgr->getPluginDescription( *it ) ) + " " );

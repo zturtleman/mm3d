@@ -34,6 +34,7 @@ libtools_HFILES = \
 	selectgrouptool.h \
 	selectvertextool.h \
 	sheartool.h \
+	toolwidget.h \
 	torustool.h \
 	torustoolwidget.h \
 	vertextool.h 
@@ -46,6 +47,7 @@ libtools_MOC = \
 	projtoolwidget.moc.cc \
 	rotatetoolwidget.moc.cc \
 	scaletoolwidget.moc.cc \
+	toolwidget.moc.cc \
 	torustoolwidget.moc.cc \
 	selectfacetoolwidget.moc.cc 
 
@@ -87,13 +89,14 @@ libtools_a_SOURCES = \
 	selectprojtool.cc \
 	sheartool.cc \
 	rectangletool.cc \
+	toolwidget.cc \
 	torustool.cc \
 	$(libtools_MOC) \
 	$(libtools_HFILES) 
 
-AM_CPPFLAGS = $(CORE_PROFILE) -DQT_COMPAT -Wall -I../libmm3d -I../mm3dcore -I../depui -I../qtui -I../implui -I../ -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
+AM_CPPFLAGS = $(CORE_PROFILE) $(COVFLAGS) -Wall -I../libmm3d -I../mm3dcore -I../depui -I../qtui -I../implui -I../ -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
 
 %.moc.cc: %.h
 		$(QT_MOC) -o $@ $<
 
-CLEANFILES = $(libtools_MOC)
+CLEANFILES = $(libtools_MOC) *.gcno *.gcda

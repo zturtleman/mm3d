@@ -25,23 +25,27 @@
 
 #include "sysconf.h"
 
-#include <qtextbrowser.h>
+#include <QtGui/QTextBrowser>
 
-LicenseWin::LicenseWin( QWidget * parent, const char * name )
-   : TextWinBase( parent, name, false, Qt::WDestructiveClose )
+LicenseWin::LicenseWin( QWidget * parent )
+   : QDialog( parent )
 {
+   setAttribute( Qt::WA_DeleteOnClose );
+   setModal( false );
+   setupUi( this );
+
    resize( 600, 400 );
-   setCaption( tr("GNU General Public License") );
+   setWindowTitle( tr("GNU General Public License") );
 #ifdef WIN32
    QString source = 
         QString( getDocDirectory().c_str() )
       + QString( "/olh_license.html" );
 #else
-   QString source = QString( "file://" ) 
-      + QString( getDocDirectory().c_str() )
+   QString source =
+        QString( getDocDirectory().c_str() )
       + QString( "/olh_license.html" );
 #endif
-   m_text->setSource( source );
+   m_text->setSource( QUrl::fromLocalFile( source ) );
 }
 
 LicenseWin::~LicenseWin()

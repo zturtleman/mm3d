@@ -27,18 +27,20 @@
 #include "groupwin.h"
 #include "texwin.h"
 
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
+#include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
+#include <QtGui/QComboBox>
+
 #include <stdlib.h>
 
 ContextProjection::ContextProjection( QWidget * parent, ContextPanelObserver * ob )
-   : ContextProjectionBase( parent ),
+   : QWidget( parent ),
      m_model( NULL ),
      m_observer( ob ),
      m_change( false ),
      m_update( false )
 {
+   setupUi( this );
 }
 
 ContextProjection::~ContextProjection()
@@ -67,7 +69,7 @@ void ContextProjection::modelChanged( int changeBits )
          {
             if ( m_model->isProjectionSelected( p ) )
             {
-               m_typeValue->setCurrentItem( m_model->getProjectionType( p ) );
+               m_typeValue->setCurrentIndex( m_model->getProjectionType( p ) );
                break;
             }
          }
@@ -83,7 +85,7 @@ void ContextProjection::typeChanged()
    {
       m_update = true;
 
-      int type = m_typeValue->currentItem();
+      int type = m_typeValue->currentIndex();
 
       unsigned pcount = m_model->getProjectionCount();
       for ( unsigned p = 0; p < pcount; p++ )
@@ -93,7 +95,7 @@ void ContextProjection::typeChanged()
             m_model->setProjectionType( p, type );
          }
       }
-      m_model->operationComplete( tr( "Set Projection Type", "operation complete" ).utf8() );
+      m_model->operationComplete( tr( "Set Projection Type", "operation complete" ).toUtf8() );
 
       emit panelChange();
 

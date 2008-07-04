@@ -27,8 +27,8 @@
 #include "spherifywin.h"
 #include "log.h"
 
-#include <qobject.h>
-#include <qapplication.h>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 SpherifyCommand::SpherifyCommand()
 {
@@ -40,7 +40,7 @@ SpherifyCommand::~SpherifyCommand()
 
 bool SpherifyCommand::activated( int arg, Model * model )
 {
-   SpherifyWin * win = new SpherifyWin( model, NULL, "" );  
+   SpherifyWin * win = new SpherifyWin( model, NULL );  
    win->show();
    return true;
 }

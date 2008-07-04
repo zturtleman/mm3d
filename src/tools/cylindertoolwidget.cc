@@ -25,16 +25,15 @@
 
 #include "3dmprefs.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
+#include <QtGui/QLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QSpinBox>
+#include <QtGui/QSlider>
+#include <QtGui/QLabel>
 
-#include <qlayout.h>
-#include <qspinbox.h>
-#include <qlabel.h>
-#include <qslider.h>
-
-CylinderToolWidget::CylinderToolWidget( Observer * observer, QWidget * parent )
-   : QDockWindow ( QDockWindow::InDock, parent, "", WDestructiveClose ),
+CylinderToolWidget::CylinderToolWidget( Observer * observer, QMainWindow * parent )
+   : ToolWidget ( parent ),
      m_observer( observer )
 {
    const int DEFAULT_SEGMENTS = 4;
@@ -45,14 +44,14 @@ CylinderToolWidget::CylinderToolWidget( Observer * observer, QWidget * parent )
 
    m_layout = boxLayout();
 
-   m_segmentsLabel = new QLabel( tr("Segments"), this, "" );
+   m_segmentsLabel = new QLabel( tr("Segments"), mainWidget() );
    m_layout->addWidget( m_segmentsLabel );
 
-   m_segmentsValue = new QSpinBox( this, "" );
+   m_segmentsValue = new QSpinBox( mainWidget() );
    m_layout->addWidget( m_segmentsValue );
 
-   m_segmentsValue->setMinValue( 1 );
-   m_segmentsValue->setMaxValue( 100 );
+   m_segmentsValue->setMinimum( 1 );
+   m_segmentsValue->setMaximum( 100 );
    
    int segmentsVal = DEFAULT_SEGMENTS;
    if ( g_prefs.exists( "ui_cylindertool_segments" ) )
@@ -65,14 +64,14 @@ CylinderToolWidget::CylinderToolWidget( Observer * observer, QWidget * parent )
    }
    m_segmentsValue->setValue( segmentsVal );
 
-   m_sidesLabel = new QLabel( tr("Sides"), this, "" );
+   m_sidesLabel = new QLabel( tr("Sides"), mainWidget() );
    m_layout->addWidget( m_sidesLabel );
 
-   m_sidesValue = new QSpinBox( this, "" );
+   m_sidesValue = new QSpinBox( mainWidget() );
    m_layout->addWidget( m_sidesValue );
 
-   m_sidesValue->setMinValue( 3 );
-   m_sidesValue->setMaxValue( 100 );
+   m_sidesValue->setMinimum( 3 );
+   m_sidesValue->setMaximum( 100 );
    
    int sidesVal = DEFAULT_SIDES;
    if ( g_prefs.exists( "ui_cylindertool_sides" ) )
@@ -86,14 +85,14 @@ CylinderToolWidget::CylinderToolWidget( Observer * observer, QWidget * parent )
    m_sidesValue->setValue( sidesVal );
  
 
-   m_widthLabel = new QLabel( tr("Width"), this, "" );
+   m_widthLabel = new QLabel( tr("Width"), mainWidget() );
    m_layout->addWidget( m_widthLabel );
 
-   m_widthValue = new QSpinBox( this, "" );
+   m_widthValue = new QSpinBox( mainWidget() );
    m_layout->addWidget( m_widthValue );
 
-   m_widthValue->setMinValue( 0 );
-   m_widthValue->setMaxValue( 100 );
+   m_widthValue->setMinimum( 0 );
+   m_widthValue->setMaximum( 100 );
    int widthVal = DEFAULT_WIDTH;
    if ( g_prefs.exists( "ui_cylindertool_width" ) )
    {
@@ -105,14 +104,14 @@ CylinderToolWidget::CylinderToolWidget( Observer * observer, QWidget * parent )
    }
    m_widthValue->setValue( widthVal );
 
-   m_scaleLabel = new QLabel( tr("Scale"), this, "" );
+   m_scaleLabel = new QLabel( tr("Scale"), mainWidget() );
    m_layout->addWidget( m_scaleLabel );
 
-   m_scaleValue = new QSpinBox( this, "" );
+   m_scaleValue = new QSpinBox( mainWidget() );
    m_layout->addWidget( m_scaleValue );
 
-   m_scaleValue->setMinValue( 0 );
-   m_scaleValue->setMaxValue( 100 );
+   m_scaleValue->setMinimum( 0 );
+   m_scaleValue->setMaximum( 100 );
    int scaleVal = DEFAULT_SCALE;
    if ( g_prefs.exists( "ui_cylindertool_scale" ) )
    {
@@ -125,19 +124,21 @@ CylinderToolWidget::CylinderToolWidget( Observer * observer, QWidget * parent )
    m_scaleValue->setValue( scaleVal );
 
    /*
-   m_shapeLabel = new QLabel( "Shape", this, "" );
+   m_shapeLabel = new QLabel( "Shape", mainWidget() );
    m_layout->addWidget( m_shapeLabel );
 
-   m_shapeValue = new QSlider( Qt::Horizontal, this, "" );
+   m_shapeValue = new QSlider( Qt::Horizontal, mainWidget() );
    m_layout->addWidget( m_shapeValue );
 
    m_shapeValue->setMinimumWidth( 64 );
-   m_shapeValue->setMinValue( 0 );
-   m_shapeValue->setMaxValue( DEFAULT_SHAPE * 2 );
+   m_shapeValue->setMinimum( 0 );
+   m_shapeValue->setMaximum( DEFAULT_SHAPE * 2 );
    m_shapeValue->setValue( DEFAULT_SHAPE );
    m_shapeValue->setTickInterval( DEFAULT_SHAPE / 2);
    m_shapeValue->setTickmarks( QSlider::Below );
    */
+
+   m_layout->addStretch();
 
    connect( m_segmentsValue, SIGNAL(valueChanged(int)), this, SLOT(segmentsValueChanged(int)) );
    connect( m_sidesValue, SIGNAL(valueChanged(int)), this, SLOT(sidesValueChanged(int)) );

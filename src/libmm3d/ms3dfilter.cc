@@ -47,17 +47,6 @@ using std::string;
 
 char const Ms3dFilter::MAGIC_NUMBER[] = "MS3D000000";
 
-template<typename T>
-class FunctionCaller
-{
-   public:
-      FunctionCaller( T * obj, void (T::*method)(void) ) { m_obj = obj; m_method = method; }
-      ~FunctionCaller() { (m_obj->*m_method)(); }
-   private:
-      T * m_obj;
-      void (T::*m_method)(void);
-};
-
 /* 
 	MS3D STRUCTURES 
 */
@@ -207,7 +196,7 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
 
    Model::ModelErrorE err = Model::ERROR_NONE;
    m_src = openInput( filename, err );
-   FunctionCaller<DataSource> fc( m_src, &DataSource::close );
+   SourceCloser fc( m_src );
 
    if ( err != Model::ERROR_NONE )
       return err;
@@ -711,7 +700,7 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
 
    Model::ModelErrorE err = Model::ERROR_NONE;
    m_dst = openOutput( filename, err );
-   FunctionCaller<DataDest> fc( m_dst, &DataDest::close );
+   DestCloser fc( m_dst );
 
    if ( err != Model::ERROR_NONE )
       return err;

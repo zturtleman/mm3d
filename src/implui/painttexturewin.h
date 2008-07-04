@@ -24,7 +24,7 @@
 #ifndef __PAINTTEXTUREWIN_H
 #define __PAINTTEXTUREWIN_H
 
-#include "qpixmap.h"
+#include <QtGui/QPixmap>
 #include "painttexturewin.base.h"
 
 #include <list>
@@ -33,21 +33,20 @@
 using std::list;
 using std::map;
 
-#include "mq3macro.h"
+#include <QtGui/QDialog>
 
-class QAccel;
 class Model;
 class TextureWidget;
 
-class PaintTextureWin : public PaintTextureWinBase
+class PaintTextureWin : public QDialog, public Ui::PaintTextureWinBase
 {
    Q_OBJECT
    public:
-      PaintTextureWin( Model * model, QWidget * parent = NULL, const char * name = "" );
+      PaintTextureWin( Model * model, QWidget * parent = NULL );
       ~PaintTextureWin();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
       virtual void textureSizeChangeEvent();
       virtual void displayChangedEvent();
       virtual void clearEvent();
@@ -59,7 +58,6 @@ class PaintTextureWin : public PaintTextureWinBase
       void updateDisplay();
       void addTriangles();
 
-      QAccel  * m_accel;
       TextureWidget * m_textureWidget;
       Model * m_model;
       bool    m_saved;

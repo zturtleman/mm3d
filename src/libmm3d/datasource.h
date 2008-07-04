@@ -31,6 +31,7 @@
 
 #include "mm3dtypes.h"
 #include "model.h"
+#include "raii.h"
 
 //-----------------------------------------------------------------------------
 // About DataSource
@@ -196,6 +197,7 @@ class DataSource
       uint16_t readU16() { uint16_t rval; read(rval); return rval; }
       int32_t  readI32() { int32_t rval;  read(rval); return rval; }
       uint32_t readU32() { uint32_t rval; read(rval); return rval; }
+      float32_t readF32() { float32_t rval; read(rval); return rval; }
 
       // An error occured, either unexpectedEof is true, or getErrno()
       // is not 0.
@@ -233,6 +235,16 @@ class DataSource
       EndianFunction16T m_endfunc16;
       EndianFunction32T m_endfunc32;
       EndianFunctionFlT m_endfuncfl;
+};
+
+class SourceCloser
+{
+   public:
+      SourceCloser(DataSource * src);
+      virtual ~SourceCloser();
+
+   private:
+      DataSource * m_src;
 };
 
 #endif // DATASOURCE_INC_H__

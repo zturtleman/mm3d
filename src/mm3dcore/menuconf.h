@@ -24,7 +24,7 @@
 #ifndef __MENUCONF_H
 #define __MENUCONF_H
 
-#include <qapplication.h>
+#include <QtGui/QApplication>
 
 #include "config.h"
 
@@ -37,20 +37,6 @@
 #define ANIMATION_MENU  "&Animations" "|"
 #define HELP_MENU       "&Help" "|"
 
-#ifdef HAVE_QT4 // Qt 4.x
-
-#define TOOLS_SELECT_MENU      ""
-#define TOOLS_ATTRACT_MENU     ""
-#define TOOLS_BACKGROUND_MENU  QT_TRANSLATE_NOOP( "Tool", "Background Image" );
-#define TOOLS_CREATE_MENU      QT_TRANSLATE_NOOP( "Tool", "Create Other" );
-
-#define GEOM_VERTICES_MENU  ""
-#define GEOM_FACES_MENU     ""
-#define GEOM_MESHES_MENU    QT_TRANSLATE_NOOP( "Command", "Meshes" );
-#define GEOM_NORMALS_MENU   QT_TRANSLATE_NOOP( "Command", "Normals" );
-
-#else   // Qt 3.x
-
 #define TOOLS_SELECT_MENU      QT_TRANSLATE_NOOP( "Tool", "Select" );
 #define TOOLS_ATTRACT_MENU     QT_TRANSLATE_NOOP( "Tool", "Attract" );
 #define TOOLS_BACKGROUND_MENU  QT_TRANSLATE_NOOP( "Tool", "Background Image" );
@@ -60,7 +46,5 @@
 #define GEOM_FACES_MENU     QT_TRANSLATE_NOOP( "Command", "Faces" );
 #define GEOM_MESHES_MENU    QT_TRANSLATE_NOOP( "Command", "Meshes" );
 #define GEOM_NORMALS_MENU   QT_TRANSLATE_NOOP( "Command", "Normals" );
-
-#endif // HAVE_QT4
 
 #endif // __MENUCONF_H

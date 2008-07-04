@@ -26,12 +26,14 @@
 
 #include "textwin.base.h"
 
-class LicenseWin : public TextWinBase
+#include <QtGui/QDialog>
+
+class LicenseWin : public QDialog, public Ui::TextWinBase
 {
    Q_OBJECT
 
    public:
-      LicenseWin( QWidget * parent = NULL, const char * name = "" );
+      LicenseWin( QWidget * parent = NULL );
       virtual ~LicenseWin();
 
    protected:

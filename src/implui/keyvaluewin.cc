@@ -25,19 +25,23 @@
 
 #include "model.h"
 #include "glmath.h"
-#include "helpwin.h"
 
-#include "mq3compat.h"
+#include <QtGui/QCheckBox>
+#include <QtGui/QRadioButton>
+#include <QtGui/QPushButton>
+#include <QtGui/QLineEdit>
+#include <QtGui/QTreeWidgetItem>
 
-#include <qpushbutton.h>
-#include <qlineedit.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-KeyValueWindow::KeyValueWindow( QListViewItem * item, QWidget * parent, const char * name )
-   : KeyValueWindowBase( parent, name, true ),
+KeyValueWindow::KeyValueWindow( QTreeWidgetItem * item, QWidget * parent )
+   : QDialog( parent ),
      m_item( item )
 {
+   setupUi( this );
+   setModal( true );
+
    m_nameEdit->setText( item->text(0) );
    m_valueEdit->setText( item->text(1) );
 }
@@ -50,12 +54,12 @@ void KeyValueWindow::accept()
 {
    m_item->setText( 0, m_nameEdit->text() );
    m_item->setText( 1, m_valueEdit->text() );
-   KeyValueWindowBase::accept();
+   QDialog::accept();
 }
 
 void KeyValueWindow::reject()
 {
-   KeyValueWindowBase::reject();
+   QDialog::reject();
 }
 
 

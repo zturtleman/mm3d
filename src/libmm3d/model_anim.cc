@@ -129,7 +129,7 @@ bool Model::setAnimName( AnimationModeE m, unsigned anim, const char * name )
          if ( anim < m_skelAnims.size() )
          {
             MU_SetAnimName * undo = new MU_SetAnimName();
-            undo->setName( m_animationMode, anim, name, m_skelAnims[anim]->m_name.c_str() );
+            undo->setName( m, anim, name, m_skelAnims[anim]->m_name.c_str() );
             sendUndo( undo );
 
             m_skelAnims[ anim ]->m_name = name;
@@ -140,7 +140,7 @@ bool Model::setAnimName( AnimationModeE m, unsigned anim, const char * name )
          if ( anim < m_frameAnims.size() )
          {
             MU_SetAnimName * undo = new MU_SetAnimName();
-            undo->setName( m_animationMode, anim, name, m_frameAnims[anim]->m_name.c_str() );
+            undo->setName( m, anim, name, m_frameAnims[anim]->m_name.c_str() );
             sendUndo( undo );
 
             m_frameAnims[ anim ]->m_name = name;
@@ -2074,12 +2074,12 @@ void Model::setNoAnimation()
       m_vertices[ v ]->m_drawSource = m_vertices[v]->m_coord;
    }
 
-      unsigned pcount = m_points.size();
-      for ( unsigned p = 0; p < pcount; p++ )
-      {
-         m_points[ p ]->m_drawSource = m_points[p]->m_trans;
-         m_points[ p ]->m_rotSource  = m_points[p]->m_rot;
-      }
+   unsigned pcount = m_points.size();
+   for ( unsigned p = 0; p < pcount; p++ )
+   {
+      m_points[ p ]->m_drawSource = m_points[p]->m_trans;
+      m_points[ p ]->m_rotSource  = m_points[p]->m_rot;
+   }
 
    unsigned tcount = m_triangles.size();
    for ( unsigned t = 0; t < tcount; t++ )

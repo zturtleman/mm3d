@@ -28,13 +28,13 @@ class ContextPanelObserver;
 
 #include "contextgroup.base.h"
 
-#include "mq3macro.h"
-
 #include "contextwidget.h"
+
+#include <QtGui/QWidget>
 
 class Model;
 
-class ContextGroup : public ContextGroupBase, public ContextWidget
+class ContextGroup : public QWidget, public Ui::ContextGroupBase, public ContextWidget
 {
    Q_OBJECT
    public:

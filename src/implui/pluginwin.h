@@ -26,11 +26,9 @@
 
 #include "pluginwin.base.h"
 
-#include "mq3macro.h"
+#include <QtGui/QDialog>
 
-class QAccel;
-
-class PluginWindow : public PluginWinBase
+class PluginWindow : public QDialog, public Ui::PluginWinBase
 {
    Q_OBJECT
 
@@ -39,12 +37,11 @@ class PluginWindow : public PluginWinBase
       virtual ~PluginWindow();
 
    public slots:
-      void helpNowEvent( int id );
+      void helpNowEvent();
 
    protected:
       void refreshPluginData();
 
-      QAccel * m_accel;
 };
 
 #endif // __PLUGINWIN_H

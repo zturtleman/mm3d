@@ -1,5 +1,5 @@
 /* XPM */
-static char * pointtool_xpm[] = {
+static const char * pointtool_xpm[] = {
 "22 22 5 1",
 " 	c None",
 ".	c #FF0000",

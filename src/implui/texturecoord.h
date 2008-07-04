@@ -24,8 +24,11 @@
 #ifndef __TEXTURECOORD_H
 #define __TEXTURECOORD_H
 
-#include "qpixmap.h"
 #include "texturecoord.base.h"
+
+#include "model.h"
+
+#include <QtGui/QDialog>
 
 #include <list>
 #include <map>
@@ -33,18 +36,14 @@
 using std::list;
 using std::map;
 
-#include "mq3macro.h"
-#include "model.h"
-
-class QAccel;
 class TextureWidget;
 
-class TextureCoord : public TextureCoordBase, public Model::Observer
+class TextureCoord : public QDialog, public Ui::TextureCoordBase, public Model::Observer
 {
    Q_OBJECT
    public:
-      TextureCoord( Model * model, QWidget * parent = NULL, const char * name = "" );
-      ~TextureCoord();
+      TextureCoord( Model * model, QWidget * parent = NULL );
+      virtual ~TextureCoord();
 
       enum MapSchemeTypes
       {
@@ -60,26 +59,17 @@ class TextureCoord : public TextureCoordBase, public Model::Observer
          ToolScale  = 2
       };
 
-      enum
-      {
-         HELP_ID = 0,
-         UNDO_ID = 1,
-         REDO_ID = 2,
-         TOOL_SELECT_ID = 3,
-         TOOL_MOVE_ID = 4,
-         TOOL_ROTATE_ID = 5,
-         TOOL_SCALE_ID = 6,
-      };
-
       // Model::Observer methods
       void modelChanged( int changeBits );
 
    public slots:
       void show();
-      void accelEvent( int );
+      void helpNowEvent();
+      void toolSelectEvent();
+      void toolMoveEvent();
+      void toolRotateEvent();
+      void toolScaleEvent();
       void setModel( Model * m );
-      virtual void mapSchemeChangedEvent(int);
-      virtual void mouseToolChangedEvent(int);
       virtual void resetClickedEvent();
       virtual void zoomLevelChangedEvent(QString);
       virtual void zoomChangeEvent();
@@ -92,6 +82,11 @@ class TextureCoord : public TextureCoordBase, public Model::Observer
       void zoomOut();
       void undoEvent();
       void redoEvent();
+
+      void mapTriangle();
+      void mapQuad();
+      void mapGroupEvent();
+      void mapGroup( int direction );
 
       void close();
 
@@ -107,9 +102,6 @@ class TextureCoord : public TextureCoordBase, public Model::Observer
       void initWindow();
       void operationComplete( const char * opname );
 
-      void mapTriangle();
-      void mapQuad();
-      void mapGroup( int direction );
       void clearTriangles();
 
       void useGroupCoordinates();
@@ -118,7 +110,6 @@ class TextureCoord : public TextureCoordBase, public Model::Observer
 
       void cancelMapChange();
 
-      QAccel  * m_accel;
       TextureWidget * m_textureWidget;
       Model * m_model;
       int     m_undoCount;

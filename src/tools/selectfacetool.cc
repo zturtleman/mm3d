@@ -32,9 +32,10 @@
 #include "pixmap/selectfacetool.xpm"
 
 #include <stdio.h>
-#include <qobject.h>
-#include <qapplication.h>
-#include <qnamespace.h>
+
+#include <QtGui/QMainWindow>
+#include <QtGui/QApplication>
+#include <QtGui/QKeySequence>
 
 class NormalTest : public Model::SelectionTest
 {
@@ -117,7 +118,7 @@ SelectFaceTool::~SelectFaceTool()
 
 void SelectFaceTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
-   m_widget = new SelectFaceToolWidget( (SelectFaceToolWidget::Observer *) this, (QWidget *) mainwin );
+   m_widget = new SelectFaceToolWidget( this, mainwin );
    m_widget->show();
 }
 
@@ -163,7 +164,7 @@ void SelectFaceTool::mouseButtonDown( Parent * parent, int buttonState, int x, i
    }
 
    parent->updateAllViews();
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Starting selection" ).utf8() );
+   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Starting selection" ).toUtf8() );
 }
 
 void SelectFaceTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
@@ -215,7 +216,7 @@ void SelectFaceTool::mouseButtonUp( Parent * parent, int buttonState, int x, int
       m_boundingBox = NULL;
 
       parent->updateAllViews();
-      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Selection complete" ).utf8() );
+      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Selection complete" ).toUtf8() );
    }
 }
 
@@ -241,11 +242,7 @@ const char ** SelectFaceTool::getPixmap()
 
 const char * SelectFaceTool::getPath()
 {
-#ifdef HAVE_QT4
-   return "";
-#else
    return TOOLS_SELECT_MENU;
-#endif
 }
 
 const char * SelectFaceTool::getName( int arg )

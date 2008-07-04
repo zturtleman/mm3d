@@ -26,8 +26,8 @@
 #include "jointwin.h"
 #include "log.h"
 
-#include <qobject.h>
-#include <qapplication.h>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 JointCommand::JointCommand()
 {

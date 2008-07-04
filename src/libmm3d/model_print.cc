@@ -131,7 +131,7 @@ void Model::Group::sprint( std::string & dest )
          (m_selected ? 'S' : 'U') );
    dest += tempstr;
 
-   sprintf( tempstr, "Faces:%d", m_triangleIndices.size() );
+   sprintf( tempstr, "Faces:%d", (int) m_triangleIndices.size() );
    dest += tempstr;
 }
 

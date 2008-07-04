@@ -28,12 +28,15 @@
 
 #include "modelstatus.h"
 
+#include <QtGui/QPalette>
+#include <QtGui/QWidget>
+
 #include <map>
 #include <list>
 
 class Model;
 
-class StatusBar : public StatusBarBase, public StatusObject
+class StatusBar : public QWidget, public Ui::StatusBarBase, public StatusObject
 {
    Q_OBJECT
 
@@ -41,7 +44,7 @@ class StatusBar : public StatusBarBase, public StatusObject
 
       static StatusObject * getStatusBarFromModel( Model * model );
 
-      StatusBar( Model * model, QWidget * parent, const char * name = "" );
+      StatusBar( Model * model, QWidget * parent );
       virtual ~StatusBar();
 
       Model * getModel() { return m_model; };
@@ -72,6 +75,7 @@ class StatusBar : public StatusBarBase, public StatusObject
       typedef struct _TextQueueItem_t TextQueueItemT;
 
       Model * m_model;
+      QPalette m_palette;
 
       std::list<TextQueueItemT> m_queue;
       bool m_queueDisplay;

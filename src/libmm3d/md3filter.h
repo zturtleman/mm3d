@@ -50,6 +50,9 @@
 using std::list;
 using std::string;
 
+class DataDest;
+class DataSource;
+
 class Md3Filter : public ModelFilter
 {
    public:
@@ -102,7 +105,7 @@ class Md3Filter : public ModelFilter
          string modelFile;
          string tag;
          int32_t tagPoint;
-         uint8_t * fileBuf;
+         DataSource * src;
          int32_t offsetMeshes;
          int32_t numMeshes;
          int32_t offsetTags;
@@ -120,11 +123,6 @@ class Md3Filter : public ModelFilter
       } Md3PathT;
       typedef std::vector< Md3PathT > Md3PathList;
 
-      uint8_t  readU1();
-      int32_t  readI4();
-      int16_t  readI2();
-      int8_t   readI1();
-      float    readF4();
       unsigned readString( char * dest, size_t len );
 
       bool     readAnimations( bool create );
@@ -154,8 +152,7 @@ class Md3Filter : public ModelFilter
       std::string defaultPath();
 
       Model      * m_model;
-      uint8_t    * m_fileBuf;
-      uint8_t    * m_bufPos;
+      DataSource * m_src;
       //      int32_t   ** meshVecIds;
       MeshVectorInfoT   ** m_meshVecInfos;
       string    m_modelPath;
@@ -172,13 +169,8 @@ class Md3Filter : public ModelFilter
       //writes
       Model::ModelErrorE writeSectionFile( const char * filename, MeshSectionE section, MeshList & meshes );
       bool     writeAnimations();
-      size_t   write(int8_t val);
-      size_t   write(int16_t val);
-      size_t   write(int32_t val);
-      size_t   write(float val);
-      size_t   writeS(char * val, size_t len);
       size_t   writeIdentity();
-      FILE * m_fpOut;
+      DataDest * m_dst;
 
       //writes util
       bool     getVertexNormal(Model * model, int groupId, int vertexId, float *normal);

@@ -29,21 +29,20 @@
 #include <list>
 #include <map>
 
-#include "mq3macro.h"
+#include <QtGui/QDialog>
 
 class Model;
-class QAccel;
 
-class ExtrudeWin : public ExtrudeWinBase
+class ExtrudeWin : public QDialog, public Ui::ExtrudeWinBase
 {
    Q_OBJECT
 
    public:
-      ExtrudeWin( Model *, QWidget * parent = NULL, const char * name = "" );
+      ExtrudeWin( Model *, QWidget * parent = NULL );
       virtual ~ExtrudeWin();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
       void absoluteExtrudeEvent();
       void normalExtrudeEvent();
@@ -72,7 +71,6 @@ class ExtrudeWin : public ExtrudeWinBase
       void addSide( unsigned a, unsigned b );
       bool sideIsEdge( unsigned a, unsigned b );
 
-      QAccel * m_accel;
       Model * m_model;
 
       SideList          m_sides;

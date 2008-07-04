@@ -24,20 +24,20 @@
 #ifndef __SELECTFACETOOLWIDGET_H
 #define __SELECTFACETOOLWIDGET_H
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-
 class QMainWindow;
 
 class QVBoxLayout;
 class QHBoxLayout;
+class QBoxLayout;
 
 class QGroupBox;
 class QSpinBox;
 class QCheckBox;
 class QLabel;
 
-class SelectFaceToolWidget : public QDockWindow
+#include "toolwidget.h"
+
+class SelectFaceToolWidget : public ToolWidget
 {
    Q_OBJECT
 
@@ -49,7 +49,7 @@ class SelectFaceToolWidget : public QDockWindow
             virtual void setBackfacingValue( bool newValue )  = 0;
       };
 
-      SelectFaceToolWidget( Observer * observer, QWidget * parent );
+      SelectFaceToolWidget( Observer * observer, QMainWindow * parent );
       virtual ~SelectFaceToolWidget();
 
    public slots:
@@ -58,7 +58,7 @@ class SelectFaceToolWidget : public QDockWindow
    protected:
       Observer    * m_observer;
 
-      QBoxLayout * m_layout;
+      QBoxLayout  * m_layout;
 
       QGroupBox   * m_groupBox;
       QLabel      * m_backfacingLabel;

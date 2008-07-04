@@ -1,4 +1,5 @@
 Changes for 1.3.7
+   Added "Apply to selected" for Transform Model
    Export Selected (geometry, joints, points, and textures)
    Set exact position of rotate point for rotate tool
    More complete version support for Cal3D (700 through 1200)
@@ -11,6 +12,7 @@ Changes for 1.3.7
    Have a minimum animation redraw of 20 fps to show interpolation on slow
       animations
    Performance fixes for normal calculation (about 40% speed improvement)
+   Performance fixes for MD3 loading (about 8x speed improvement)
    Added --enable-profile to ./configure
    Added --language to override the system locale
    Prevent select connected from selecting hidden faces

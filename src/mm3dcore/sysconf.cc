@@ -24,12 +24,10 @@
 
 #include <windows.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <cstring>
 #if 0 // Disabled for Win98
 #include <psapi.h>
 #endif // 0
-#include <string.h>
 #include <string>
 #include "mm3dreg.h"
 #include "version.h"
@@ -43,6 +41,8 @@ using namespace Mm3dReg;
 #include "mm3dport.h"
 #include "log.h"
 
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 static std::string s_mm3dHomeDir;

@@ -1,6 +1,6 @@
 /*  Misfit Model 3D
  * 
- *  Copyright (c) 2004-2007 Kevin Worcester
+ *  Copyright (c) 2008 Kevin Worcester
  * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,28 +21,31 @@
  */
 
 
-#ifndef __MQ3MACRO_H
-#define __MQ3MACRO_H
+#include "animwin.h"
 
-#include "config.h"
+#include "log.h"
 
-#ifdef HAVE_QT4
+#include <QtGui/QCloseEvent>
 
-#define QAccel Q3Accel
-#define QDockWindow Q3DockWindow
-#define QDragObject Q3DragObject
-//#define QGroupBox Q3GroupBox
-#define QListBox Q3ListBox
-#define QListView Q3ListView
-#define QListViewItem Q3ListViewItem
-#define QMainWindow Q3MainWindow
-#define QPopupMenu Q3PopupMenu
-//#define setCaption setWindowTitle
+AnimWindow::AnimWindow( Model * model, bool isUndo, QWidget * parent )
+   : QDockWidget( tr("Animations"), parent ),
+     m_animWidget( new AnimWidget( model, isUndo, this ) )
+{
+   setWidget( m_animWidget );
+}
 
-#else
+AnimWindow::~AnimWindow()
+{
+   log_debug( "Destroying AnimWindow()\n" );
+}
 
-#define SmallIconSize QIconSet::Small
+void AnimWindow::close()
+{
+   QDockWidget::hide();
+}
 
-#endif // HAVE_QT4
+void AnimWindow::closeEvent( QCloseEvent * e )
+{
+   emit animWindowClosed();
+}
 
-#endif // __MQ3MACRO_H

@@ -25,47 +25,49 @@
 
 #include "3dmprefs.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
+#include <QtGui/QLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QGroupBox>
+#include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
 
-#include <qlayout.h>
-#include <qlineedit.h>
-#include <qlabel.h>
-
-RotateToolWidget::RotateToolWidget( Observer * observer, QWidget * parent,
+RotateToolWidget::RotateToolWidget( Observer * observer, QMainWindow * parent,
       double x, double y, double z )
-   : QDockWindow ( QDockWindow::InDock, parent, "", WDestructiveClose ),
+   : ToolWidget ( parent ),
      m_observer( observer ),
      m_ignore( false )
 {
    m_layout = boxLayout();
 
-   m_xLabel = new QLabel( tr("X"), this, "" );
+   m_xLabel = new QLabel( tr("X"), mainWidget() );
    m_layout->addWidget( m_xLabel );
 
-   m_xValue = new QLineEdit( this, "" );
+   m_xValue = new QLineEdit( mainWidget() );
    m_xValue->setMinimumWidth( 100 );
    m_layout->addWidget( m_xValue );
 
    m_xValue->setText( QString::number( x, 'f' ) );
 
-   m_yLabel = new QLabel( tr("Y"), this, "" );
+   m_yLabel = new QLabel( tr("Y"), mainWidget() );
    m_layout->addWidget( m_yLabel );
 
-   m_yValue = new QLineEdit( this, "" );
+   m_yValue = new QLineEdit( mainWidget() );
    m_yValue->setMinimumWidth( 100 );
    m_layout->addWidget( m_yValue );
 
    m_yValue->setText( QString::number( y, 'f' ) );
 
-   m_zLabel = new QLabel( tr("Z"), this, "" );
+   m_zLabel = new QLabel( tr("Z"), mainWidget() );
    m_layout->addWidget( m_zLabel );
 
-   m_zValue = new QLineEdit( this, "" );
+   m_zValue = new QLineEdit( mainWidget() );
    m_zValue->setMinimumWidth( 100 );
    m_layout->addWidget( m_zValue );
 
    m_zValue->setText( QString::number( z, 'f' ) );
+
+   m_layout->addStretch();
 
    connect( m_xValue, SIGNAL(textChanged(const QString &)), this, SLOT(xValueChanged(const QString &)) );
    connect( m_yValue, SIGNAL(textChanged(const QString &)), this, SLOT(yValueChanged(const QString &)) );

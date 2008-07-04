@@ -25,16 +25,20 @@
 #include "helpwin.h"
 #include "3dmprefs.h"
 
-#include <qlineedit.h>
-#include <qcheckbox.h>
+#include <QtGui/QLineEdit>
+#include <QtGui/QCheckBox>
+#include <QtGui/QShortcut>
 
 
-ViewportSettings::ViewportSettings( QWidget * parent, const char * name )
-   : ViewportSettingsBase( parent, name, true, Qt::WDestructiveClose ),
-     m_accel( new QAccel(this) )
+ViewportSettings::ViewportSettings( QWidget * parent )
+   : QDialog( parent )
 {
-   m_accel->insertItem( Qt::Key_F1, 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   setAttribute( Qt::WA_DeleteOnClose );
+   setupUi( this );
+   setModal( true );
+
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 
    QString temp;
 
@@ -53,18 +57,18 @@ ViewportSettings::~ViewportSettings()
 
 void ViewportSettings::accept()
 {
-   g_prefs( "ui_grid_inc" )     = m_gridUnit->text().latin1();
-   g_prefs( "ui_3dgrid_inc" )   = m_3dGridUnit->text().latin1();
-   g_prefs( "ui_3dgrid_count" ) = m_3dGridLines->text().latin1();
+   g_prefs( "ui_grid_inc" )     = (const char *) m_gridUnit->text().toLatin1();
+   g_prefs( "ui_3dgrid_inc" )   = (const char *) m_3dGridUnit->text().toLatin1();
+   g_prefs( "ui_3dgrid_count" ) = (const char *) m_3dGridLines->text().toLatin1();
 
    g_prefs( "ui_3dgrid_xy" ) = m_3dXY->isChecked() ? 1 : 0;
    g_prefs( "ui_3dgrid_xz" ) = m_3dXZ->isChecked() ? 1 : 0;
    g_prefs( "ui_3dgrid_yz" ) = m_3dYZ->isChecked() ? 1 : 0;
 
-   ViewportSettingsBase::accept();
+   QDialog::accept();
 }
 
-void ViewportSettings::helpNowEvent( int id )
+void ViewportSettings::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_viewportsettings.html", true );
    win->show();

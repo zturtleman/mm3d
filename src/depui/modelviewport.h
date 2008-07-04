@@ -24,12 +24,17 @@
 #ifndef __MVIEWPORT_H
 #define __MVIEWPORT_H
 
-#include <qgl.h>
+#include <QtOpenGL/QGLWidget>
+#include <QtGui/QWheelEvent>
+#include <QtGui/QFocusEvent>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QImage>
+
 #include "tool.h"
 #include "decal.h"
 #include "texture.h"
 
-#include <qimage.h>
 #include <list>
 #include <string>
 
@@ -94,7 +99,7 @@ class ModelViewport : public QGLWidget, public Tool::Parent
       typedef struct _ViewState_t ViewStateT;
 
 
-      ModelViewport( QWidget * parent = NULL, const char * name = "" );
+      ModelViewport( QWidget * parent = NULL );
       virtual ~ModelViewport();
 
       void freeTextures();

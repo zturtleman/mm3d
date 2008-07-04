@@ -24,7 +24,8 @@
 #ifndef __VIEWPANEL_H
 #define __VIEWPANEL_H
 
-#include <qwidget.h>
+#include <QtGui/QWidget>
+#include <QtGui/QGridLayout>
 
 #include "modelviewport.h"
 
@@ -43,7 +44,7 @@ class ViewPanel : public QWidget
          VIEWPORT_STATE_MAX = 9
       };
 
-      ViewPanel( Toolbox * toolbox, QWidget * parent = NULL, const char * name = "" );
+      ViewPanel( Toolbox * toolbox, QWidget * parent = NULL );
       virtual ~ViewPanel();
 
       void freeTextures();
@@ -54,7 +55,6 @@ class ViewPanel : public QWidget
       ModelView * getModelView( unsigned index ) { return (index < m_viewCount) ? m_modelView[index] : NULL; };
 
    public slots:
-      void reshow();
 
       void modelUpdatedEvent();
 
@@ -84,8 +84,6 @@ class ViewPanel : public QWidget
       void viewportRecallStateEvent(int);
 
    protected:
-
-      void showInternal();
 
       void deleteViews();
       void makeViews();

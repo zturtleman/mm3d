@@ -663,7 +663,7 @@ float CobFilter::readAFloat()
 {
     skipASpace();
     float rval = 0.0f;
-    size_t len = 0;
+    int len = 0;
     if ( sscanf( (char*) m_bufPos, "%f%n", &rval, &len ) > 0 )
     {
         m_bufPos += len;
@@ -675,7 +675,7 @@ double CobFilter::readADouble()
 {
     skipASpace();
     float rval = 0.0;
-    size_t len = 0;
+    int len = 0;
     if ( sscanf( (char*) m_bufPos, "%f%n", &rval, &len ) > 0 )
     {
         m_bufPos += len;

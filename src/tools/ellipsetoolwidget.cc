@@ -23,19 +23,19 @@
 
 #include "ellipsetoolwidget.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-
-#include <qlayout.h>
-#include <qspinbox.h>
-#include <qlabel.h>
-#include <qcheckbox.h>
+#include <QtGui/QLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QGroupBox>
+#include <QtGui/QLabel>
+#include <QtGui/QSpinBox>
+#include <QtGui/QCheckBox>
 #include <math.h>
 
 #include "3dmprefs.h"
 
-EllipsoidToolWidget::EllipsoidToolWidget( Observer * observer, QWidget * parent )
-   : QDockWindow ( QDockWindow::InDock, parent, "", WDestructiveClose ),
+EllipsoidToolWidget::EllipsoidToolWidget( Observer * observer, QMainWindow * parent )
+   : ToolWidget ( parent ),
      m_observer( observer )
 {
    const int  DEFAULT_SMOOTHNESS = 2;
@@ -44,21 +44,21 @@ EllipsoidToolWidget::EllipsoidToolWidget( Observer * observer, QWidget * parent 
 
    m_layout = boxLayout();
 
-   m_smoothLabel = new QLabel( tr("Smoothness:"), this, "" );
+   m_smoothLabel = new QLabel( tr("Smoothness:"), mainWidget() );
    m_layout->addWidget( m_smoothLabel );
-   m_smoothValue = new QSpinBox( this, "" );
+   m_smoothValue = new QSpinBox( mainWidget() );
    m_layout->addWidget( m_smoothValue );
 
-   m_smoothValue->setMinValue( 0 );
-   m_smoothValue->setMaxValue( 5 );
+   m_smoothValue->setMinimum( 0 );
+   m_smoothValue->setMaximum( 5 );
 
-   m_facesLabel = new QLabel( tr("Faces: ") + QString("320"), this, "" );
+   m_facesLabel = new QLabel( tr("Faces: ") + QString("320"), mainWidget() );
    m_layout->addWidget( m_facesLabel );
 
-   m_sphereCheckBox = new QCheckBox( tr("Sphere"), this, "" );
+   m_sphereCheckBox = new QCheckBox( tr("Sphere"), mainWidget() );
    m_layout->addWidget( m_sphereCheckBox );
 
-   m_centerCheckBox = new QCheckBox( tr("From Center", "Checkbox that indicates if ellipsoid is created from center or far corner"), this, "" );
+   m_centerCheckBox = new QCheckBox( tr("From Center", "Checkbox that indicates if ellipsoid is created from center or far corner"), mainWidget() );
    m_layout->addWidget( m_centerCheckBox );
 
    int smoothVal = DEFAULT_SMOOTHNESS;
@@ -82,6 +82,8 @@ EllipsoidToolWidget::EllipsoidToolWidget( Observer * observer, QWidget * parent 
    fromCenter = (g_prefs( "ui_ellipsetool_fromcenter" ).intValue() != 0) ? true : false;
 
    m_centerCheckBox->setChecked( fromCenter );
+
+   m_layout->addStretch();
 
    connect( m_smoothValue,    SIGNAL(valueChanged(int)), this, SLOT(smoothnessValueChanged(int))      );
    connect( m_sphereCheckBox, SIGNAL(toggled(bool)),     this, SLOT(sphereCheckBoxValueChanged(bool)) );

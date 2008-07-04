@@ -27,8 +27,8 @@
 #include "model.h"
 #include "log.h"
 #include "modelstatus.h"
-#include <qobject.h>
-#include <qapplication.h>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 EdgeDivideCommand::EdgeDivideCommand()
 {
@@ -122,12 +122,12 @@ bool EdgeDivideCommand::activated( int arg, Model * model )
 
    if ( split > 0 )
    {
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Edge Divide complete" ).utf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Edge Divide complete" ).toUtf8() );
       return true;
    }
    else
    {
-      model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have at 2 adjacent vertices to Edge Divide" ).utf8() );
+      model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have at 2 adjacent vertices to Edge Divide" ).toUtf8() );
    }
    return false;
 }

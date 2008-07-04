@@ -34,8 +34,8 @@
 
 #include <list>
 #include <map>
-#include <qobject.h>
-#include <qapplication.h>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 using std::list;
 using std::map;
@@ -64,7 +64,7 @@ bool PasteCommand::activated( int arg, Model * model )
 
       model->mergeModels( m, true, Model::AM_NONE, false );
 
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Paste complete" ).utf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Paste complete" ).toUtf8() );
 
       return true;
    }

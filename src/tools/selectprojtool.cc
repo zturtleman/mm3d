@@ -31,9 +31,9 @@
 #include "pixmap/selectprojtool.xpm"
 
 #include <stdio.h>
-#include <qobject.h>
-#include <qapplication.h>
-#include <qnamespace.h>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
+#include <QtGui/QKeySequence>
 
 SelectProjectionTool::SelectProjectionTool()
    : m_boundingBox( NULL),
@@ -91,7 +91,7 @@ void SelectProjectionTool::mouseButtonDown( Parent * parent, int buttonState, in
 
    parent->updateAllViews();
 
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Starting selection" ).utf8() );
+   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Starting selection" ).toUtf8() );
 }
 
 void SelectProjectionTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
@@ -137,7 +137,7 @@ void SelectProjectionTool::mouseButtonUp( Parent * parent, int buttonState, int 
       m_boundingBox = NULL;
 
       parent->updateAllViews();
-      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Selection complete" ).utf8() );
+      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Selection complete" ).toUtf8() );
    }
 }
 
@@ -163,11 +163,7 @@ const char ** SelectProjectionTool::getPixmap()
 
 const char * SelectProjectionTool::getPath()
 {
-#ifdef HAVE_QT4
-   return "";
-#else
    return TOOLS_SELECT_MENU;
-#endif
 }
 
 const char * SelectProjectionTool::getName( int arg )

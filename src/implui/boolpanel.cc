@@ -27,29 +27,15 @@
 
 #include "log.h"
 
-#include <qlayout.h>
-
-#ifdef HAVE_QT4
-#include <QContextMenuEvent>
-#endif // HAVE_QT4
+#include <QtGui/QLayout>
+#include <QtGui/QContextMenuEvent>
 
 BoolPanel::BoolPanel( Model * model, QWidget * parent, ViewPanel * panel )
-   : QDockWindow( QDockWindow::InDock, parent ),
+   : QDockWidget( tr("Boolean Operation"), parent ),
      m_panel( panel ),
      m_boolWidget( new BoolWin( model, panel, this ) )
 {
-   setCaption( tr("Boolean Operation") );
-
-   QBoxLayout * layout = boxLayout();
-
-   layout->addWidget( m_boolWidget );
-   m_boolWidget->show();
-
-   setHorizontallyStretchable( true );
-   setVerticallyStretchable( true );
-   setResizeEnabled( true );
-
-   setCloseMode( QDockWindow::Always );
+   setWidget( m_boolWidget );
 }
 
 BoolPanel::~BoolPanel()
@@ -70,7 +56,7 @@ void BoolPanel::modelChanged( int changeBits )
 
 void BoolPanel::show()
 {
-   QDockWindow::show();
+   QDockWidget::show();
 
    // this is causing a segfault on dock/undock because the widgets
    // are being destroyed and re-created. The solution is to call setModel
@@ -86,7 +72,7 @@ void BoolPanel::close()
 void BoolPanel::hide()
 {
    log_debug( "BoolPanel::hide()\n" );
-   QDockWindow::hide();
+   QDockWidget::hide();
 }
 
 void BoolPanel::contextMenuEvent( QContextMenuEvent * e )

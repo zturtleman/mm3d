@@ -25,6 +25,16 @@
 
 #include "endianconfig.h"
 
+SourceCloser::SourceCloser( DataSource * src )
+   : m_src( src )
+{
+}
+
+SourceCloser::~SourceCloser()
+{
+   m_src->close();
+}
+
 DataSource::DataSource()
    : m_endian( LittleEndian ),
      m_buf( NULL ),

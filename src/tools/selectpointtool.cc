@@ -31,9 +31,9 @@
 #include "pixmap/selectpointtool.xpm"
 
 #include <stdio.h>
-#include <qobject.h>
-#include <qapplication.h>
-#include <qnamespace.h>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
+#include <QtGui/QKeySequence>
 
 SelectPointTool::SelectPointTool()
    : m_boundingBox( NULL),
@@ -89,7 +89,7 @@ void SelectPointTool::mouseButtonDown( Parent * parent, int buttonState, int x, 
 
    parent->updateAllViews();
 
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Starting selection" ).utf8() );
+   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Starting selection" ).toUtf8() );
 }
 
 void SelectPointTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
@@ -135,7 +135,7 @@ void SelectPointTool::mouseButtonUp( Parent * parent, int buttonState, int x, in
       m_boundingBox = NULL;
 
       parent->updateAllViews();
-      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Selection complete" ).utf8() );
+      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Selection complete" ).toUtf8() );
    }
 }
 
@@ -161,11 +161,7 @@ const char ** SelectPointTool::getPixmap()
 
 const char * SelectPointTool::getPath()
 {
-#ifdef HAVE_QT4
-   return "";
-#else
    return TOOLS_SELECT_MENU;
-#endif
 }
 
 const char * SelectPointTool::getName( int arg )

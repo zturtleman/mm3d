@@ -25,19 +25,16 @@
 
 #include "keyvaluewin.base.h"
 
-#include <qcheckbox.h>
-#include <qradiobutton.h>
+#include <QtGui/QDialog>
 
-#include "mq3macro.h"
+class QTreeWidgetItem;
 
-class QListViewItem;
-class QAccel;
-
-class KeyValueWindow : public KeyValueWindowBase
+class KeyValueWindow : public QDialog, public Ui::KeyValueWindowBase
 {
       Q_OBJECT
+
    public:
-      KeyValueWindow( QListViewItem * item, QWidget * parent = NULL, const char * name = "" );
+      KeyValueWindow( QTreeWidgetItem * item, QWidget * parent = NULL );
       virtual ~KeyValueWindow();
 
    public slots:
@@ -45,7 +42,7 @@ class KeyValueWindow : public KeyValueWindowBase
       void reject();
 
    protected:
-      QListViewItem * m_item;
+      QTreeWidgetItem * m_item;
 };
 
 #endif // __KEYVALUEWIN_H

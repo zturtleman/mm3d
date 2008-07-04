@@ -24,23 +24,21 @@
 #ifndef __POLYTOOLWIDGET_H
 #define __POLYTOOLWIDGET_H
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-
 class QMainWindow;
 
+class QLabel;
 class QVBoxLayout;
 class QHBoxLayout;
+class QBoxLayout;
 
-#ifdef HAVE_QT4
-#define QGroupBox Q3GroupBox
-#endif
 class QGroupBox;
 class QSpinBox;
 class QComboBox;
 class QLabel;
 
-class PolyToolWidget : public QDockWindow
+#include "toolwidget.h"
+
+class PolyToolWidget : public ToolWidget
 {
    Q_OBJECT
 
@@ -52,7 +50,7 @@ class PolyToolWidget : public QDockWindow
             virtual void setTypeValue( int type )  = 0;
       };
 
-      PolyToolWidget( Observer * observer, QWidget * parent );
+      PolyToolWidget( Observer * observer, QMainWindow * parent );
       virtual ~PolyToolWidget();
 
    public slots:

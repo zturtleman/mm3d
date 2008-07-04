@@ -28,27 +28,31 @@
 #include "decalmgr.h"
 #include "helpwin.h"
 
-#include "mq3compat.h"
+#include <QtGui/QCheckBox>
+#include <QtGui/QRadioButton>
+#include <QtGui/QPushButton>
+#include <QtGui/QLineEdit>
+#include <QtGui/QShortcut>
 
-#include <qpushbutton.h>
-#include <qlineedit.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-MergeWindow::MergeWindow( Model * model, QWidget * parent, const char * name )
-   : MergeWinBase( parent, name, true ),
-     m_accel( new QAccel(this) ),
+MergeWindow::MergeWindow( Model * model, QWidget * parent )
+   : QDialog( parent ),
      m_model( model )
 {
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   setupUi( this );
+   setModal( true );
+
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
 MergeWindow::~MergeWindow()
 {
 }
 
-void MergeWindow::helpNowEvent( int id )
+void MergeWindow::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_mergewin.html", true );
    win->show();
@@ -58,9 +62,9 @@ void MergeWindow::getRotation( double * vec )
 {
    if ( vec )
    {
-      vec[0] = atof( m_rotX->text().latin1() ) * PIOVER180;
-      vec[1] = atof( m_rotY->text().latin1() ) * PIOVER180;
-      vec[2] = atof( m_rotZ->text().latin1() ) * PIOVER180;
+      vec[0] = atof( m_rotX->text().toLatin1() ) * PIOVER180;
+      vec[1] = atof( m_rotY->text().toLatin1() ) * PIOVER180;
+      vec[2] = atof( m_rotZ->text().toLatin1() ) * PIOVER180;
    }
 }
 
@@ -68,9 +72,9 @@ void MergeWindow::getTranslation( double * vec )
 {
    if ( vec )
    {
-      vec[0] = atof( m_transX->text().latin1() );
-      vec[1] = atof( m_transY->text().latin1() );
-      vec[2] = atof( m_transZ->text().latin1() );
+      vec[0] = atof( m_transX->text().toLatin1() );
+      vec[1] = atof( m_transY->text().toLatin1() );
+      vec[2] = atof( m_transZ->text().toLatin1() );
    }
 }
 
@@ -82,14 +86,14 @@ void MergeWindow::includeAnimEvent( bool o )
 
 void MergeWindow::accept()
 {
-   m_model->operationComplete( tr( "Merge models", "operation complete" ).utf8() );
-   MergeWinBase::accept();
+   m_model->operationComplete( tr( "Merge models", "operation complete" ).toUtf8() );
+   QDialog::accept();
 }
 
 void MergeWindow::reject()
 {
    m_model->undoCurrent();
    DecalManager::getInstance()->modelUpdated( m_model );
-   MergeWinBase::reject();
+   QDialog::reject();
 }
 

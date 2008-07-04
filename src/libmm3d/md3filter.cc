@@ -39,7 +39,8 @@
 #include "filtermgr.h"
 
 #include "mm3dport.h"
-#include "endianconfig.h"
+#include "datadest.h"
+#include "datasource.h"
 #include "msg.h"
 
 #include "translate.h"
@@ -49,6 +50,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include <string.h>
+#include <limits.h>
 #include <vector>
 
 #ifdef PLUGIN
@@ -236,7 +238,7 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
          fd.modelFile = lowerFile;
          fd.tag = "";
          fd.tagPoint = -1;
-         fd.fileBuf = NULL;
+         fd.src = NULL;
          fd.offsetMeshes = 0;
          fd.numMeshes = 0;
          fd.offsetTags = 0;
@@ -265,7 +267,7 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
          fd.modelFile = filename;
          fd.tag = "";
          fd.tagPoint = -1;
-         fd.fileBuf = NULL;
+         fd.src = NULL;
          fd.offsetMeshes = 0;
          fd.numMeshes = 0;
          fd.offsetTags = 0;
@@ -285,22 +287,16 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
       for ( it = fileList.begin(); it != fileList.end(); it++ )
       {
          m_modelBaseName = (*it).modelBaseName;
-         FILE * fp = fopen( (*it).modelFile.c_str(), "rb" );
-         if ( fp == NULL )
-         {
-            if ( errno == ENOENT )
-            {
-               log_error( "%s: file does not exist\n", filename );
-               return Model::ERROR_NO_FILE;
-            }
-            if ( errno == EPERM )
-            {
-               log_error( "%s: access denied\n", filename );
-               return Model::ERROR_NO_ACCESS;
-            }
 
-            log_error( "%s: could not open file\n", filename );
-            return Model::ERROR_FILE_OPEN;
+         // FIXME just return this below on error (and make sure to
+         // explicitly close it)
+         Model::ModelErrorE err = Model::ERROR_NONE;
+         m_src = openInput( (*it).modelFile.c_str(), err );
+
+         if ( err != Model::ERROR_NONE )
+         {
+            m_src->close();
+            return err;
          }
 
          log_debug( "loading model file %s\n", (*it).modelFile.c_str() );
@@ -309,46 +305,25 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
 
          m_model = model;
 
-         fseek( fp, 0, SEEK_END );
-         unsigned fileLength = ftell( fp );
-         fseek( fp, 0, SEEK_SET );
-
-         // read whole file into memory
-         m_fileBuf = new uint8_t[fileLength];
-         m_bufPos = m_fileBuf;
-
-         if ( fread( m_fileBuf, fileLength, 1, fp ) != 1 )
-         {
-            delete[] m_fileBuf;
-            fclose( fp );
-            log_error( "%s: could not read file\n", filename );
-            return Model::ERROR_FILE_READ;
-         }
-
-         fclose( fp );
-
          Matrix loadMatrix;
          loadMatrix.setRotationInDegrees( -90, -90, 0 );
 
          int8_t magic[4];
-         for ( int t = 0; t < 4; t++ )
-         {
-            magic[t] = readI1();
-         }
-         int32_t version = readI4();
+         m_src->readBytes( (uint8_t *) magic, sizeof(magic) );
+         int32_t version = m_src->readI32();
          char pk3Name[MAX_QPATH];
          readString( pk3Name, sizeof( pk3Name ) );
          replaceBackslash( pk3Name );
 
-         int32_t flags = readI4();
-         int32_t numFrames = readI4();
-         int32_t numTags = readI4();
-         int32_t numMeshes = readI4();
-         int32_t numSkins = readI4();
-         int32_t offsetFrames = readI4();
-         int32_t offsetTags = readI4();
-         int32_t offsetMeshes = readI4();
-         int32_t offsetEnd = readI4();
+         int32_t flags = m_src->readI32();
+         int32_t numFrames = m_src->readI32();
+         int32_t numTags = m_src->readI32();
+         int32_t numMeshes = m_src->readI32();
+         int32_t numSkins = m_src->readI32();
+         int32_t offsetFrames = m_src->readI32();
+         int32_t offsetTags = m_src->readI32();
+         int32_t offsetMeshes = m_src->readI32();
+         int32_t offsetEnd = m_src->readI32();
 
          log_debug( "Magic: %c%c%c%c\n", magic[0], magic[1], magic[2], magic[3] );
          log_debug( "Version: %d\n",     version );
@@ -362,7 +337,7 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
          log_debug( "Offset Tags: %d\n",  offsetTags );
          log_debug( "Offset Meshes: %d\n",  offsetMeshes );
          log_debug( "Offset End: %d\n",        offsetEnd );
-         log_debug( "File Length: %d\n",       fileLength );
+         log_debug( "File Length: %d\n",       m_src->getFileSize() );
 
          if ( magic[0] != 'I' && magic[1] != 'D' && magic[2] != 'P' && magic[3] != '3' )
          {
@@ -389,28 +364,28 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
          // mm3d doesn't need this, but nice to have if you ever need to debug
 
 #if 0
-         m_bufPos     = &m_fileBuf[ offsetFrames ];
+         m_src->seek( offsetFrames );
          for ( int i = 0; i < numFrames; i++ )
          {
             float minBound[3];
             for ( int t = 0; t < 3; t++ )
             {
-               minBound[t] = readF4();
+               minBound[t] = m_src->readF32();
             }
 
             float maxBound[3];
             for ( int t = 0; t < 3; t++ )
             {
-               maxBound[t] = readF4();
+               maxBound[t] = m_src->readF32();
             }
 
             float localOrigin[3];
             for ( int t = 0; t < 3; t++ )
             {
-               localOrigin[t] = readF4();
+               localOrigin[t] = m_src->readF32();
             }
 
-            //float radius = readF4();
+            //float radius = m_src->readF32();
 
             char frameName[16];
             readString( frameName, sizeof(frameName) );
@@ -434,7 +409,7 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
          setMeshes( (*it).section, offsetMeshes, numMeshes, (*it).tagPoint, -1 );
 
          (*it).meshVecInfos = m_meshVecInfos;
-         (*it).fileBuf = m_fileBuf;
+         (*it).src = m_src;
          (*it).offsetMeshes = offsetMeshes;
          (*it).numMeshes = numMeshes;
          (*it).offsetTags = offsetTags;
@@ -459,7 +434,7 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
       for ( it = fileList.begin(); it != fileList.end(); it++ )
       {
          m_meshVecInfos = (*it).meshVecInfos;
-         m_fileBuf = (*it).fileBuf;
+         m_src = (*it).src;
 
          //Animations
          int32_t animIndex = 0;
@@ -530,7 +505,8 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
          }
          delete[] (*it).meshVecInfos;
 
-         delete[] (*it).fileBuf;
+         (*it).src->close();
+         (*it).src = NULL;
       }
 
       return Model::ERROR_NONE;
@@ -542,63 +518,10 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
    }
 }
 
-uint8_t Md3Filter::readU1()
-{
-   uint8_t val = 0;
-   memcpy( &val, m_bufPos, sizeof(val) );
-   m_bufPos += sizeof( val );
-
-   return val;
-}
-
-int32_t Md3Filter::readI4()
-{
-   int32_t val = 0;
-   memcpy( &val, m_bufPos, sizeof( val ) );
-   m_bufPos += sizeof( val );
-
-   val = ltoh_32( val );
-
-   return val;
-}
-
-int16_t Md3Filter::readI2()
-{
-   int16_t val = 0;
-   memcpy( &val, m_bufPos, sizeof( val ) );
-   m_bufPos += sizeof( val );
-
-   val = ltoh_16( val );
-
-   return val;
-}
-
-int8_t Md3Filter::readI1()
-{
-   int8_t val = 0;
-   memcpy( &val, m_bufPos, sizeof( val ) );
-   m_bufPos += sizeof( val );
-
-   return val;
-}
-
-float Md3Filter::readF4()
-{
-   float val = 0;
-   memcpy( &val, m_bufPos, sizeof( val ) );
-   m_bufPos += sizeof( val );
-
-   val = ltoh_float( val );
-
-   return val;
-}
-
 unsigned Md3Filter::readString( char * dest, size_t len )
 {
-   strncpy( dest, (char *) m_bufPos, len );
+   m_src->readBytes( (uint8_t *) dest, len );
    dest[ len - 1 ]= '\0';
-
-   m_bufPos += len;
    return len;
 }
 
@@ -675,7 +598,7 @@ bool Md3Filter::readAnimations( bool create )
                      //m_animMap.push_back( m_model->getAnimCount( Model::ANIMMODE_FRAME ) );
                      m_animStartFrame.push_back( first );
 
-                     char * name = NULL;
+                     const char * name = NULL;
                      if ( animCount < MD3_ANIMATIONS )
                      {
                         // I won't change it, I promise
@@ -683,25 +606,26 @@ bool Md3Filter::readAnimations( bool create )
                      }
                      else
                      {
-                        name = strrchr( line, '/' );
-                        if ( name )
+                        char * tempname = strrchr( line, '/' );
+                        if ( tempname )
                         {
-                           name++;
-                           while ( isspace(name[0]) )
+                           tempname++;
+                           while ( isspace(tempname[0]) )
                            {
-                              name++;
+                              tempname++;
                            }
                            int end = 0;
-                           while ( name[end] && !isspace(name[end]) )
+                           while ( tempname[end] && !isspace(tempname[end]) )
                            {
                               end++;
                            }
-                           name[end] = '\0';
+                           tempname[end] = '\0';
 
                            for ( end = 0; line[end]; end++ )
                            {
-                              name[end] = tolower( line[end] );
+                              tempname[end] = tolower( line[end] );
                            }
+                           name = tempname;
                         }
                         else
                         {
@@ -820,30 +744,27 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
    }
 
    // Meshes
-   m_bufPos = &m_fileBuf [ offsetMeshes ];
+   m_src->seek( offsetMeshes );
    int32_t meshPos = offsetMeshes;
    for ( int mesh = 0; mesh < numMeshes; mesh++ )
    {
       //Mesh header
       int8_t meshMagic[4];
-      for ( int t = 0; t < 4; t++ )
-      {
-         meshMagic[t] = readI1();
-      }
+      m_src->readBytes( (uint8_t*) meshMagic, sizeof(meshMagic) );
 
       char meshName[MAX_QPATH];
       readString( meshName, sizeof( meshName ) );
 
-      int32_t meshFlags = readI4();
-      int32_t meshFrameCount = readI4();
-      int32_t meshShaderCount = readI4();
-      int32_t meshVertexCount = readI4();
-      int32_t meshTriangleCount = readI4();
-      int32_t meshTriangleOffset = readI4();
-      int32_t meshShaderOffset = readI4();
-      int32_t meshSTOffset = readI4();
-      int32_t meshXYZOffset = readI4();
-      int32_t meshEndOffset = readI4();
+      int32_t meshFlags = m_src->readI32();
+      int32_t meshFrameCount = m_src->readI32();
+      int32_t meshShaderCount = m_src->readI32();
+      int32_t meshVertexCount = m_src->readI32();
+      int32_t meshTriangleCount = m_src->readI32();
+      int32_t meshTriangleOffset = m_src->readI32();
+      int32_t meshShaderOffset = m_src->readI32();
+      int32_t meshSTOffset = m_src->readI32();
+      int32_t meshXYZOffset = m_src->readI32();
+      int32_t meshEndOffset = m_src->readI32();
 
       log_debug( "Mesh %d magic: %c%c%c%c\n", mesh, meshMagic[0], meshMagic[1], meshMagic[2], meshMagic[3] );
       log_debug( "Mesh %d name: %s\n", mesh, meshName );
@@ -862,7 +783,7 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
 
       //Load first frame
       // Vertex
-      m_bufPos = &m_fileBuf [ meshPos + meshXYZOffset ];
+      m_src->seek( meshPos + meshXYZOffset );
       float meshVec[4] = { 0, 0, 0, 1 };
       if ( animIndex < 0 )
       {
@@ -873,7 +794,7 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
             log_error( "mesh %s appears to be missing frame %d for anim %d, using frame %d instead\n", meshName, fileFrame, animIndex, 0 );
             fileFrame = 0;
          }
-         m_bufPos = &m_fileBuf [ meshPos + meshXYZOffset + fileFrame * frameSize ];
+         m_src->seek( meshPos + meshXYZOffset + fileFrame * frameSize );
 
          m_meshVecInfos[mesh] = new MeshVectorInfoT[meshVertexCount];
 
@@ -881,11 +802,11 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
          {
             for ( int n = 0; n < 3; n ++ )
             {
-               meshVec[n] = readI2() * MD3_XYZ_SCALE;
+               meshVec[n] = m_src->readI16() * MD3_XYZ_SCALE;
             }
             meshVec[3] = 1;
-            m_meshVecInfos[mesh][vert].lng = readI1();
-            m_meshVecInfos[mesh][vert].lat = readI1();
+            m_meshVecInfos[mesh][vert].lng = m_src->readI8();
+            m_meshVecInfos[mesh][vert].lat = m_src->readI8();
             //log_debug("normals lat, lng: %d, %d\n", m_meshVecInfos[mesh][vert].lat, m_meshVecInfos[mesh][vert].lng);
 
             loadMatrix.apply( meshVec );
@@ -907,7 +828,7 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
                   log_error( "mesh %s appears to be missing frame %d for anim %d, using frame %d instead\n", meshName, fileFrame, animIndex, meshFrameCount - 1 );
                   fileFrame = meshFrameCount - 1;
                }
-               m_bufPos = &m_fileBuf [ meshPos + meshXYZOffset + fileFrame * frameSize ];
+               m_src->seek( meshPos + meshXYZOffset + fileFrame * frameSize );
                if ( parentTag >= 0 )
                {
                   m_model->getFrameAnimPointCoords( animIndex, frame, parentTag, pos[0], pos[1], pos[2] );
@@ -940,10 +861,10 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
                   {
                      for ( int n = 0; n < 3; n ++ )
                      {
-                        meshVec[n] = readI2() * MD3_XYZ_SCALE;
+                        meshVec[n] = m_src->readI16() * MD3_XYZ_SCALE;
                      }
-                     m_meshVecInfos[mesh][vert].lng = readI1();
-                     m_meshVecInfos[mesh][vert].lat = readI1();
+                     m_meshVecInfos[mesh][vert].lng = m_src->readI8();
+                     m_meshVecInfos[mesh][vert].lat = m_src->readI8();
                      //log_debug("normals lat, lng: %d, %d\n", m_meshVecInfos[mesh][vert].lat, m_meshVecInfos[mesh][vert].lng);
                   }
                   else
@@ -969,7 +890,7 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
       if ( animIndex < 0 )
       {
          // Triangle
-         m_bufPos = &m_fileBuf [ meshPos + meshTriangleOffset ];
+         m_src->seek( meshPos + meshTriangleOffset );
          int32_t triang[meshTriangleCount][3];
          unsigned tri[meshTriangleCount];
          int32_t groupId = m_model->addGroup( meshName );
@@ -977,27 +898,27 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
          {
             for ( int n = 0; n < 3; n++ )
             {
-               triang[t][n] = readI4();
+               triang[t][n] = m_src->readI32();
             }
             tri[t]= m_model->addTriangle( m_meshVecInfos[mesh][triang[t][2]].id, m_meshVecInfos[mesh][triang[t][1]].id, m_meshVecInfos[mesh][triang[t][0]].id );
             m_model->addTriangleToGroup( groupId, tri[t] );
          }
 
          //Vertex Texture Coords
-         m_bufPos = &m_fileBuf [ meshPos + meshSTOffset ];
+         m_src->seek( meshPos + meshSTOffset );
          for (int v = 0; v < meshVertexCount; v++ )
          {
-            m_meshVecInfos[mesh][v].s = readF4();
-            m_meshVecInfos[mesh][v].t = readF4();
+            m_meshVecInfos[mesh][v].s = m_src->readF32();
+            m_meshVecInfos[mesh][v].t = m_src->readF32();
          }
 
          //Textures/Shaders
          vector<Model::Material *> & modelMaterials = getMaterialList( m_model );
 
-         m_bufPos = &m_fileBuf [ meshPos + meshShaderOffset ];
+         m_src->seek( meshPos + meshShaderOffset );
          char shaderName[MAX_QPATH];
          readString(shaderName, sizeof( shaderName ));
-         int32_t shaderIndex = readI4();
+         int32_t shaderIndex = m_src->readI32();
 
          replaceBackslash( shaderName );
          string shaderFileName = string( shaderName );
@@ -1095,7 +1016,7 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
       //Goto end
       meshPos = meshPos + meshEndOffset;
       log_debug( "mesh position is %d\n", meshPos );
-      m_bufPos = &m_fileBuf [ meshPos ];
+      m_src->seek( meshPos );
    }
    return;
 }
@@ -1391,7 +1312,7 @@ void Md3Filter::setPoints( MeshSectionE section, int32_t offsetTags, int32_t num
          log_debug( "section %d anim %d frame %d is file frame %d\n",
                section, animIndex, f, fileFrame );
          */
-         m_bufPos = &m_fileBuf [ offsetTags + (fileFrame * frameSize) ];
+         m_src->seek( offsetTags + (fileFrame * frameSize) );
          if ( animIndex >= 0 && parentTag >= 0 )
          {
             m_model->getFrameAnimPointCoords( animIndex, f, parentTag, pos[0], pos[1], pos[2] );
@@ -1408,7 +1329,7 @@ void Md3Filter::setPoints( MeshSectionE section, int32_t offsetTags, int32_t num
             double posVector[3];
             for ( int t = 0; t < 3; t++ )
             {
-               posVector[t] = readF4();
+               posVector[t] = m_src->readF32();
             }
 
             Matrix curMatrix;
@@ -1418,7 +1339,7 @@ void Md3Filter::setPoints( MeshSectionE section, int32_t offsetTags, int32_t num
             {
                for ( int s = 0; s < 3; s++ )
                {
-                  curMatrix.set( t, s, readF4() );
+                  curMatrix.set( t, s, m_src->readF32() );
                }
             }
             curMatrix = curMatrix * loadMatrix;
@@ -1958,42 +1879,31 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    }
 
    // Open file for writing
-   m_fpOut = fopen ( filename, "wb" );
-   if ( m_fpOut == NULL )
-   {
-      if ( errno == ENOENT )
-      {
-         log_error( "%s: file could not be created\n", filename );
-         return Model::ERROR_NO_FILE;
-      }
-      if ( errno == EPERM )
-      {
-         log_error( "%s: access denied\n", filename );
-         return Model::ERROR_NO_ACCESS;
-      }
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   m_dst = openOutput( filename, err );
+   DestCloser fc( m_dst );
 
-      log_error( "%s: could not open file\n", filename );
-      return Model::ERROR_FILE_OPEN;
-   }
+   if ( err != Model::ERROR_NONE )
+      return err;
 
    // write file header
-   write( magic[0] );
-   write( magic[1] );
-   write( magic[2] );
-   write( magic[3] );
-   write( version );
-   writeS( pk3Name, MAX_QPATH );
-   write( flags );
-   write( numFrames );
-   write( numTags );
-   write( numMeshes );
-   write( numSkins );
-   write( offsetFrames );
-   write( offsetTags );
-   write( offsetMeshes );
+   m_dst->write( magic[0] );
+   m_dst->write( magic[1] );
+   m_dst->write( magic[2] );
+   m_dst->write( magic[3] );
+   m_dst->write( version );
+   m_dst->writeBytes( (uint8_t*) pk3Name, MAX_QPATH );
+   m_dst->write( flags );
+   m_dst->write( numFrames );
+   m_dst->write( numTags );
+   m_dst->write( numMeshes );
+   m_dst->write( numSkins );
+   m_dst->write( offsetFrames );
+   m_dst->write( offsetTags );
+   m_dst->write( offsetMeshes );
 
-   size_t endPos = ftell( m_fpOut );
-   write( offsetEnd );
+   uint32_t endPos = m_dst->offset();
+   m_dst->write( offsetEnd );
 
    int rootTag = -1;
    // Change save matrix if needed
@@ -2008,7 +1918,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    }
 
    // FRAMES
-   log_debug( "writing frames at %d/%d\n", offsetFrames, ftell( m_fpOut ) );
+   log_debug( "writing frames at %d/%d\n", offsetFrames, m_dst->offset() );
    unsigned a;
 
    for ( a = 0; a < animCount; a++ )
@@ -2058,18 +1968,18 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
             //min_bounds
             for ( int v = 0; v < 3; v++ )
             {
-               write( (float) min[v] );
+               m_dst->write( (float) min[v] );
             }
             //max_bounds
             for ( int v = 0; v < 3; v++ )
             {
-               write( (float) max[v] );
+               m_dst->write( (float) max[v] );
             }
             //local_origin
             float temp = 0;
             for ( int v = 0; v < 3; v++ )
             {
-               write( temp );
+               m_dst->write( temp );
             }
             //radius
             double radiusm = sqrt( min[0] * min[0] + min[1] * min[1] + min[2] * min[2] );
@@ -2079,15 +1989,15 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                radius = radiusm;
             }
             //log_debug( "Frame radius: %f\n", ( (float) radius ) );
-            write( (float) radius );
+            m_dst->write( (float) radius );
             char name[16] = "Misfit Model 3D"; // this is what other exporters do
-            writeS( name, 16 );
+            m_dst->writeBytes( (uint8_t*) name, 16 );
          }
       }
    }
 
    //TAGS
-   log_debug( "writing tags at %d/%d\n", offsetTags, ftell( m_fpOut ) );
+   log_debug( "writing tags at %d/%d\n", offsetTags, m_dst->offset() );
 
    for ( a = 0; a < animCount; a++ )
    {
@@ -2111,12 +2021,11 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                   memset( tName, 0, MAX_QPATH );
                   if ( PORT_snprintf( tName, sizeof( tName ), "%s", m_model->getPointName( j ) ) >= MAX_QPATH )
                   {
-                     fclose( m_fpOut );
                      log_error( "Point name is too large\n" );
                      m_model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Point name is too large for MD3 export." ) ).c_str() );
                      return Model::ERROR_FILTER_SPECIFIC;
                   }
-                  writeS( tName, MAX_QPATH );
+                  m_dst->writeBytes( (uint8_t*) tName, MAX_QPATH );
 
                   // origin
                   double origin[4] = { 0, 0, 0, 1 };
@@ -2124,9 +2033,9 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
 
                   saveMatrix.apply( origin );
 
-                  write( (float) origin[0] );
-                  write( (float) origin[1] );
-                  write( (float) origin[2] );
+                  m_dst->write( (float) origin[0] );
+                  m_dst->write( (float) origin[1] );
+                  m_dst->write( (float) origin[2] );
 
                   Matrix rotMatrix;
                   double rotVector[3];
@@ -2146,7 +2055,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                   {
                      for ( int n = 0; n < 3; n++ )
                      {
-                        write( (float) rotMatrix.get( m, n ) );
+                        m_dst->write( (float) rotMatrix.get( m, n ) );
                      }
                   }
                }
@@ -2158,7 +2067,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    vector<Model::Material *> & modelMaterials = getMaterialList( m_model );
 
    // MESHES
-   log_debug( "writing meshes at %d/%d\n", offsetMeshes, ftell( m_fpOut ) );
+   log_debug( "writing meshes at %d/%d\n", offsetMeshes, m_dst->offset() );
 
    for ( mlit = meshes.begin(); mlit != meshes.end(); mlit++ )
    {
@@ -2174,7 +2083,6 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
          memset( mName, 0, MAX_QPATH );
          if ( PORT_snprintf( mName, sizeof( mName ), "%s", m_model->getGroupName( (*mlit).group ) ) > MAX_QPATH )
          {
-            fclose( m_fpOut );
             log_error( "group name is too large\n" );
             m_model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Group name is too large for MD3 export." ) ).c_str() );
             return Model::ERROR_FILTER_SPECIFIC;
@@ -2197,21 +2105,21 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
          int32_t mOffEnd      = mOffVerts + mNumFrames * mNumVerts * VERT_SIZE;
 
          // write header
-         write( mMagic[0] );
-         write( mMagic[1] );
-         write( mMagic[2] );
-         write( mMagic[3] );
-         writeS( mName, MAX_QPATH );
-         write( mFlags );
-         write( mNumFrames );
-         write( mNumShaders );
-         write( mNumVerts );
-         write( mNumTris );
-         write( mOffTris );
-         write( mOffShaders );
-         write( mOffST );
-         write( mOffVerts );
-         write( mOffEnd );
+         m_dst->write( mMagic[0] );
+         m_dst->write( mMagic[1] );
+         m_dst->write( mMagic[2] );
+         m_dst->write( mMagic[3] );
+         m_dst->writeBytes( (uint8_t*) mName, MAX_QPATH );
+         m_dst->write( mFlags );
+         m_dst->write( mNumFrames );
+         m_dst->write( mNumShaders );
+         m_dst->write( mNumVerts );
+         m_dst->write( mNumTris );
+         m_dst->write( mOffTris );
+         m_dst->write( mOffShaders );
+         m_dst->write( mOffST );
+         m_dst->write( mOffVerts );
+         m_dst->write( mOffEnd );
 
          // TRIANGLES
          Mesh::FaceList::iterator fit;
@@ -2219,7 +2127,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
          {
             for ( int j = 2; j >= 0; j-- )
             {
-               write( (*fit).v[j] );
+               m_dst->write( (*fit).v[j] );
             }
          }
 
@@ -2269,7 +2177,6 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                if ( PORT_snprintf( sName, sizeof( sName ), "%s%s",
                         spk3Path.c_str(), matBaseName.c_str() ) >= MAX_QPATH )
                {
-                  fclose( m_fpOut );
                   log_error( "MD3_PATH+texture_filename is to long.\n" );
                   m_model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Texture filename is too long." ) ).c_str() );
                   return Model::ERROR_FILTER_SPECIFIC;
@@ -2296,8 +2203,8 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
             }
             log_debug( "writing texture path: %s\n", sName );
 
-            writeS( sName, MAX_QPATH );
-            write( t );
+            m_dst->writeBytes( (uint8_t*) sName, MAX_QPATH );
+            m_dst->write( t );
          }
 
          // TEXT COORDS
@@ -2305,8 +2212,8 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
 
          for ( vit = (*mlit).vertices.begin(); vit != (*mlit).vertices.end(); vit++ )
          {
-            write( (*vit).uv[0] );
-            write( (float) (1.0f - (*vit).uv[1]) );
+            m_dst->write( (*vit).uv[0] );
+            m_dst->write( (float) (1.0f - (*vit).uv[1]) );
          }
 
          // VERTEX
@@ -2369,9 +2276,9 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                      }
                      saveMatrix.apply( meshVec );
                      saveMatrix.apply( meshNor );
-                     write( (int16_t) ( meshVec[0] / MD3_XYZ_SCALE ) );
-                     write( (int16_t) ( meshVec[1] / MD3_XYZ_SCALE ) );
-                     write( (int16_t) ( meshVec[2] / MD3_XYZ_SCALE ) );
+                     m_dst->write( (int16_t) ( meshVec[0] / MD3_XYZ_SCALE + 0.5 ) );
+                     m_dst->write( (int16_t) ( meshVec[1] / MD3_XYZ_SCALE + 0.5 ) );
+                     m_dst->write( (int16_t) ( meshVec[2] / MD3_XYZ_SCALE + 0.5 ) );
                      int16_t lng;
                      int16_t lat;
                      if ( meshNor[0] == 0 && meshNor[1] == 0 )
@@ -2394,8 +2301,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                      }
                      // log_debug("%f, %f, %f lat %d lng %d\n", meshNor[0], meshNor[1], meshNor[2], lat, lng);
                      uint16_t normal = ( ( lat & 255 ) * 256 ) | ( lng & 255 );
-                     normal = htol_u16( normal );
-                     write( (int16_t) normal );
+                     m_dst->write( normal );
                   }
                }
             }
@@ -2403,11 +2309,10 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
       }
    }
 
-   offsetEnd = ftell( m_fpOut );
-   fseek( m_fpOut, endPos, SEEK_SET );
-   write( offsetEnd );
+   offsetEnd = m_dst->offset();
+   m_dst->seek( endPos );
+   m_dst->write( offsetEnd );
 
-   fclose( m_fpOut );
    return Model::ERROR_NONE;
 }
 
@@ -2566,35 +2471,6 @@ void Md3Filter::getExportAnimData( int fileAnim, int & modelAnim,
    modelAnim = -1;
 }
 
-size_t Md3Filter::write( int8_t val )
-{
-   int8_t temp8 = val;
-   return fwrite( &temp8, sizeof( int8_t ), 1, m_fpOut );
-}
-
-size_t Md3Filter::write( int16_t val )
-{
-   int16_t temp16 = htol_16( val );
-   return fwrite( &temp16, sizeof( int16_t ), 1, m_fpOut );
-}
-
-size_t Md3Filter::write( int32_t val )
-{
-   int32_t temp32 = htol_32( val );
-   return fwrite( &temp32, sizeof( int32_t ), 1, m_fpOut );
-}
-
-size_t Md3Filter::write( float val )
-{
-   float temp32 = htol_float( val );
-   return fwrite( &temp32, sizeof( float ), 1, m_fpOut );
-}
-
-size_t Md3Filter::writeS( char *val, size_t len )
-{
-   return fwrite( val, len, 1, m_fpOut );
-}
-
 size_t Md3Filter::writeIdentity()
 {
    size_t count = 0;
@@ -2606,11 +2482,11 @@ size_t Md3Filter::writeIdentity()
       {
          if ( i == j )
          {
-            count += write( o );
+            count += m_dst->write( o );
          }
          else
          {
-            count += write( z );
+            count += m_dst->write( z );
          }
       }
    }

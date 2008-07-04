@@ -34,8 +34,8 @@
 
 #include <list>
 #include <map>
-#include <qobject.h>
-#include <qapplication.h>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 using std::list;
 using std::map;
@@ -57,7 +57,7 @@ bool CopyCommand::activated( int arg, Model * model )
          && model->getSelectedPointCount() == 0
          && model->getSelectedProjectionCount() == 0 )
    {
-      model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have at least 1 face, joint, or point selected to Copy" ).utf8() );
+      model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have at least 1 face, joint, or point selected to Copy" ).toUtf8() );
       return false;
    }
 
@@ -66,7 +66,7 @@ bool CopyCommand::activated( int arg, Model * model )
    if ( !m ) 
       return false;
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Selected primitives copied" ).utf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Selected primitives copied" ).toUtf8() );
    std::string clipfile = getMm3dHomeDirectory();
 
    clipfile += "/clipboard";

@@ -26,13 +26,12 @@
 
 #include "newanim.base.h"
 
-#include "mq3macro.h"
-
 #include "mm3dport.h"
 
-#include <qstring.h>
+#include <QtGui/QDialog>
+#include <QtCore/QString>
 
-class NewAnim : public NewAnimBase
+class NewAnim : public QDialog, public Ui::NewAnimBase
 {
     Q_OBJECT
 
@@ -44,6 +43,7 @@ class NewAnim : public NewAnimBase
       bool    isSkeletal();
       void    setSkeletal( bool o );
 
+   public slots:
       void nameChangedEvent();
 };
 

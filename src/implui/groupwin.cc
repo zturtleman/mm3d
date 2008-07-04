@@ -28,37 +28,39 @@
 #include "decalmgr.h"
 #include "helpwin.h"
 
-#include "mq3compat.h"
-
-#include <qcombobox.h>
-#include <qinputdialog.h>
-#include <qmessagebox.h>
-#include <qpushbutton.h>
-#include <qcheckbox.h>
-#include <qslider.h>
-#include <qlabel.h>
-#include <qstring.h>
+#include <QtCore/QString>
+#include <QtGui/QComboBox>
+#include <QtGui/QInputDialog>
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QCheckBox>
+#include <QtGui/QSlider>
+#include <QtGui/QLabel>
+#include <QtGui/QShortcut>
 
 #include <list>
 
-GroupWindow::GroupWindow( Model * model, QWidget * parent, const char * name )
-   : GroupWinBase( parent, name, true, Qt::WDestructiveClose ),
-     m_accel( new QAccel(this) ),
+GroupWindow::GroupWindow( Model * model, QWidget * parent )
+   : QDialog( parent ),
      m_model( model )
 {
+   setAttribute( Qt::WA_DeleteOnClose );
+   setupUi( this );
+   setModal( true );
+
    m_textureFrame->setModel( model );
 
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 
    for ( int t = 0; t < m_model->getTextureCount(); t++ )
    {
-      m_textureComboBox->insertItem( QString::fromUtf8( m_model->getTextureName( t ) ), t+1 );
+      m_textureComboBox->insertItem( t+1, QString::fromUtf8( m_model->getTextureName( t ) ) );
    }
 
    for ( int t = 0; t < m_model->getGroupCount(); t++ )
    {
-      m_groupComboBox->insertItem( QString::fromUtf8( m_model->getGroupName( t ) ), t+1 );
+      m_groupComboBox->insertItem( t+1, QString::fromUtf8( m_model->getGroupName( t ) ) );
    }
 
    list<int> triangles;
@@ -70,13 +72,13 @@ GroupWindow::GroupWindow( Model * model, QWidget * parent, const char * name )
       int g = m_model->getTriangleGroup( *it );
       if ( g >= 0 )
       {
-         m_groupComboBox->setCurrentItem( g + 1 );
-         m_textureComboBox->setCurrentItem( m_model->getGroupTextureId( g ) + 1 );
+         m_groupComboBox->setCurrentIndex( g + 1 );
+         m_textureComboBox->setCurrentIndex( m_model->getGroupTextureId( g ) + 1 );
          break;
       }
    }
 
-   groupSelectedEvent( m_groupComboBox->currentItem() );
+   groupSelectedEvent( m_groupComboBox->currentIndex() );
 
    updateTexture();
 }
@@ -85,7 +87,7 @@ GroupWindow::~GroupWindow()
 {
 }
 
-void GroupWindow::helpNowEvent( int id )
+void GroupWindow::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_groupwin.html", true );
    win->show();
@@ -98,15 +100,15 @@ void GroupWindow::newClickedEvent()
 
    while ( !valid )
    {
-      QString groupName = QInputDialog::getText( tr("New group", "window title"), tr("Enter new group name:"), QLineEdit::Normal, QString::null, &ok );
+      QString groupName = QInputDialog::getText( this, tr("New group", "window title"), tr("Enter new group name:"), QLineEdit::Normal, QString::null, &ok );
 
       if ( ok == true )
       {
          if ( groupName.length() > 0 && groupName.length() < Model::MAX_GROUP_NAME_LEN )
          {
-            int groupNum = m_model->addGroup( groupName.utf8() );
-            m_groupComboBox->insertItem( groupName, groupNum + 1 );
-            m_groupComboBox->setCurrentItem( groupNum + 1 );
+            int groupNum = m_model->addGroup( groupName.toUtf8() );
+            m_groupComboBox->insertItem( groupNum + 1, groupName );
+            m_groupComboBox->setCurrentIndex( groupNum + 1 );
             groupSelectedEvent( groupNum + 1 );
             valid = true;
          }
@@ -128,7 +130,7 @@ void GroupWindow::renameClickedEvent()
    bool ok = true;
    bool valid = false;
 
-   int groupNum = m_groupComboBox->currentItem();
+   int groupNum = m_groupComboBox->currentIndex();
 
    if ( groupNum == 0 )
    {
@@ -140,14 +142,14 @@ void GroupWindow::renameClickedEvent()
 
    while ( !valid )
    {
-      QString groupName = QInputDialog::getText(tr("New group", "window title"), tr("Enter new group name:"), QLineEdit::Normal, QString::fromUtf8( m_model->getGroupName( groupNum ) ), &ok );
+      QString groupName = QInputDialog::getText( this, tr("New group", "window title"), tr("Enter new group name:"), QLineEdit::Normal, QString::fromUtf8( m_model->getGroupName( groupNum ) ), &ok );
 
       if ( ok == true )
       {
          if ( groupName.length() > 0 && groupName.length() < Model::MAX_GROUP_NAME_LEN )
          {
-            m_model->setGroupName( groupNum, groupName.utf8() );
-            m_groupComboBox->changeItem( groupName, groupNum + 1 );
+            m_model->setGroupName( groupNum, groupName.toUtf8() );
+            m_groupComboBox->setItemText( groupNum + 1, groupName );
             valid = true;
          }
          else
@@ -166,42 +168,42 @@ void GroupWindow::renameClickedEvent()
 
 void GroupWindow::deleteClickedEvent()
 {
-   int groupNum = m_groupComboBox->currentItem();
+   int groupNum = m_groupComboBox->currentIndex();
    m_groupComboBox->removeItem( groupNum );
    m_model->deleteGroup( groupNum - 1 );
 
-   m_groupComboBox->setCurrentItem( 0 );
+   m_groupComboBox->setCurrentIndex( 0 );
    groupSelectedEvent( 0 );
 }
 
 void GroupWindow::selectFacesClickedEvent()
 {
    m_model->unselectAll();
-   m_model->selectGroup( m_groupComboBox->currentItem() - 1 );
+   m_model->selectGroup( m_groupComboBox->currentIndex() - 1 );
    DecalManager::getInstance()->modelUpdated( m_model );
 }
 
 void GroupWindow::unselectFacesClickedEvent()
 {
-   m_model->unselectGroup( m_groupComboBox->currentItem() - 1 );
+   m_model->unselectGroup( m_groupComboBox->currentIndex() - 1 );
    DecalManager::getInstance()->modelUpdated( m_model );
 }
 
 void GroupWindow::assignAsGroupClickedEvent()
 {
-   m_model->setSelectedAsGroup( m_groupComboBox->currentItem() - 1 );
+   m_model->setSelectedAsGroup( m_groupComboBox->currentIndex() - 1 );
    DecalManager::getInstance()->modelAnimate( m_model );
 }
 
 void GroupWindow::addToGroupClickedEvent()
 {
-   m_model->addSelectedToGroup( m_groupComboBox->currentItem() - 1 );
+   m_model->addSelectedToGroup( m_groupComboBox->currentIndex() - 1 );
    DecalManager::getInstance()->modelAnimate( m_model );
 }
 
 void GroupWindow::smoothChangedEvent( int val )
 {
-   m_model->setGroupSmooth( m_groupComboBox->currentItem() - 1, val );
+   m_model->setGroupSmooth( m_groupComboBox->currentIndex() - 1, val );
    QString text = tr( "Smoothness: " );
    QString valStr;
    valStr.sprintf( "%03d", (int) ((val / 255.0) * 100.0 ) );
@@ -212,7 +214,7 @@ void GroupWindow::smoothChangedEvent( int val )
 
 void GroupWindow::angleChangedEvent( int val )
 {
-   m_model->setGroupAngle( m_groupComboBox->currentItem() - 1, val );
+   m_model->setGroupAngle( m_groupComboBox->currentIndex() - 1, val );
    QString text = tr( "Max Angle: " );
    QString valStr;
    valStr.sprintf( "%03d", val );
@@ -239,7 +241,7 @@ void GroupWindow::groupSelectedEvent( int id )
       m_textureComboBox->setEnabled( true );
 
       int texId = m_model->getGroupTextureId( id - 1 );
-      m_textureComboBox->setCurrentItem( texId + 1 );
+      m_textureComboBox->setCurrentIndex( texId + 1 );
       updateTexture();
    }
    else
@@ -257,7 +259,7 @@ void GroupWindow::groupSelectedEvent( int id )
 
 void GroupWindow::textureSelectedEvent( int id )
 {
-   int groupId = m_groupComboBox->currentItem() - 1;
+   int groupId = m_groupComboBox->currentIndex() - 1;
    if ( groupId >= 0 )
    {
       m_model->setGroupTextureId( groupId, id - 1 );
@@ -268,13 +270,13 @@ void GroupWindow::textureSelectedEvent( int id )
 
 void GroupWindow::updateTexture()
 {
-   m_textureFrame->textureChangedEvent( m_textureComboBox->currentItem() );
+   m_textureFrame->textureChangedEvent( m_textureComboBox->currentIndex() );
 }
 
 void GroupWindow::accept()
 {
-   m_model->operationComplete( tr( "Group changes", "operation complete" ).utf8() );
-   GroupWinBase::accept();
+   m_model->operationComplete( tr( "Group changes", "operation complete" ).toUtf8() );
+   QDialog::accept();
    DecalManager::getInstance()->modelUpdated( m_model );
 }
 
@@ -282,5 +284,5 @@ void GroupWindow::reject()
 {
    m_model->undoCurrent();
    DecalManager::getInstance()->modelUpdated( m_model );
-   GroupWinBase::reject();
+   QDialog::reject();
 }

@@ -25,33 +25,35 @@
 
 #include "3dmprefs.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
+#include <QtGui/QLabel>
+#include <QtGui/QLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QGroupBox>
+#include <QtGui/QSpinBox>
+#include <QtGui/QComboBox>
 
-#include <qlayout.h>
-#include <qspinbox.h>
-#include <qlabel.h>
-#include <qcombobox.h>
-
-PolyToolWidget::PolyToolWidget( Observer * observer, QWidget * parent )
-   : QDockWindow ( QDockWindow::InDock, parent, "", WDestructiveClose ),
+PolyToolWidget::PolyToolWidget( Observer * observer, QMainWindow * parent )
+   : ToolWidget ( parent ),
      m_observer( observer )
 {
    const int DEFAULT_FAN  = 0;
 
    m_layout = boxLayout();
 
-   m_typeLabel = new QLabel( tr("Poly Type"), this, "" );
+   m_typeLabel = new QLabel( tr("Poly Type"), mainWidget() );
    m_layout->addWidget( m_typeLabel );
 
-   m_typeValue = new QComboBox( this, "" );
-   m_typeValue->insertItem( tr("Strip", "Triangle strip option"), 0 );
-   m_typeValue->insertItem( tr("Fan", "Triangle fan option"), 1 );
+   m_typeValue = new QComboBox( mainWidget() );
+   m_typeValue->insertItem( 0, tr("Strip", "Triangle strip option") );
+   m_typeValue->insertItem( 1, tr("Fan", "Triangle fan option") );
    m_layout->addWidget( m_typeValue );
 
    g_prefs.setDefault( "ui_polytool_is_fan", DEFAULT_FAN );
    int index = g_prefs( "ui_polytool_isfan" ).intValue();
-   m_typeValue->setCurrentItem( (index == 0) ? 0 : 1 );
+   m_typeValue->setCurrentIndex( (index == 0) ? 0 : 1 );
+
+   m_layout->addStretch();
 
    connect( m_typeValue,  SIGNAL(activated(int)), this, SLOT(typeValueChanged(int))  );
 

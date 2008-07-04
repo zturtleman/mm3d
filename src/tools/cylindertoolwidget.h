@@ -24,23 +24,20 @@
 #ifndef __CYLINDERTOOLWIDGET_H
 #define __CYLINDERTOOLWIDGET_H
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-
 class QMainWindow;
 
 class QVBoxLayout;
 class QHBoxLayout;
+class QBoxLayout;
 
-#ifdef HAVE_QT4
-#define QGroupBox Q3GroupBox
-#endif
 class QGroupBox;
 class QSpinBox;
 class QSlider;
 class QLabel;
 
-class CylinderToolWidget : public QDockWindow
+#include "toolwidget.h"
+
+class CylinderToolWidget : public ToolWidget
 {
    Q_OBJECT
 
@@ -57,7 +54,7 @@ class CylinderToolWidget : public QDockWindow
             virtual void setShapeValue( int newValue )    = 0;
       };
 
-      CylinderToolWidget( Observer * observer, QWidget * parent );
+      CylinderToolWidget( Observer * observer, QMainWindow * parent );
       virtual ~CylinderToolWidget();
 
    public slots:

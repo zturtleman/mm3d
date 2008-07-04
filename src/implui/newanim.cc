@@ -22,13 +22,16 @@
 
 #include "newanim.h"
 
-#include <qlineedit.h>
-#include <qradiobutton.h>
-#include <qpushbutton.h>
+#include <QtGui/QLineEdit>
+#include <QtGui/QRadioButton>
+#include <QtGui/QPushButton>
 
 NewAnim::NewAnim( QWidget * parent )
-   : NewAnimBase( parent, "", true )
+   : QDialog( parent )
 {
+   setModal( true );
+   setupUi( this );
+
    m_name->setText( QString("") );
    m_okButton->setEnabled( false );
 }

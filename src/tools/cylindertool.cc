@@ -29,13 +29,11 @@
 #include "glmath.h"
 #include "log.h"
 #include "modelstatus.h"
-#include "mq3compat.h"
 
 #include <math.h>
 
-#include <qobject.h>
-#include <qapplication.h>
-#include <qwidget.h>
+#include <QtGui/QMainWindow>
+#include <QtGui/QApplication>
 
 using std::vector;
 using std::list;
@@ -55,9 +53,6 @@ void CylinderTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    log_debug( "cylinder activated\n" );
    m_widget = new CylinderToolWidget( this, mainwin );
-#ifdef HAVE_QT4
-   //mainwin->addDockWindow( m_widget, DockBottom );
-#endif
    m_widget->show();
 }
 
@@ -234,7 +229,7 @@ void CylinderTool::mouseButtonDown( Parent * parent, int buttonState, int x, int
 
    parent->updateAllViews();
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Cylinder created" ).utf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Cylinder created" ).toUtf8() );
 }
 
 void CylinderTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )

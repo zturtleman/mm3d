@@ -46,6 +46,7 @@
 #include "aboutwin.h"
 #include "animsetwin.h"
 #include "animexportwin.h"
+#include "animwin.h"
 #include "animwidget.h"
 #include "metawin.h"
 #include "3dmprefs.h"
@@ -65,6 +66,29 @@
 #include "keycfg.h"
 
 #include "qtmain.h"
+
+#include <QtCore/QDataStream>
+#include <QtCore/QFile>
+#include <QtCore/QTimer>
+#include <QtGui/QActionGroup>
+#include <QtGui/QApplication>
+#include <QtGui/QCloseEvent>
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QDockWidget>
+#include <QtGui/QFileDialog>
+#include <QtGui/QIcon>
+#include <QtGui/QLayout>
+#include <QtGui/QMenu>
+#include <QtGui/QMenuBar>
+#include <QtGui/QMessageBox>
+#include <QtGui/QPixmap>
+#include <QtGui/QResizeEvent>
+#include <QtGui/QShortcut>
+#include <QtGui/QToolBar>
+#include <QtGui/QToolButton>
+#include <QtGui/QToolTip>
+#include <QtGui/QVBoxLayout>
+
 #include "errorobj.h"
 
 #include "luascript.h"
@@ -72,45 +96,20 @@
 
 #include "pixmap/mm3dlogo-32x32.xpm"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
 
-#include <qapplication.h>
-#include <qlayout.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
 #include <stdio.h>
-#include <qtoolbutton.h>
-#include <qtooltip.h>
-#include <qtimer.h>
-#include <qtextstream.h>
-#ifdef HAVE_QT4
-#include <q3toolbar.h>
-#include <QMenu>
-#include <QResizeEvent>
-#else
-#include <qtoolbar.h>
-#endif
-
-#ifdef HAVE_QT4
-#include <QCloseEvent>
-#endif // HAVE_QT4
-
 #include <list>
 #include <string>
 
 using std::list;
 using std::string;
 
-#ifdef HAVE_QT4
-#define setSelectedFilter selectFilter
-#endif
-
-const char DOCK_FILENAME[] = "dock.cfg";
+const char DOCK_FILENAME[] = "dock.dat";
+const int DOCK_VERSION = 1;
 
 //using namespace QIconSet;
 
-typedef QToolButton * QToolButtonPtr;
+typedef QAction * QActionPtr;
 typedef ::Tool * ToolPtr;
 
 typedef std::list< ViewWindow *> ViewWindowList;
@@ -133,7 +132,7 @@ bool ViewWindow::closeAllWindows()
 #ifndef CODE_DEBUG
    if ( noPrompt == false )
    {
-       char response = msg_warning_prompt( (const char *) tr("Some models are unsaved.  Save before exiting?").utf8() );
+       char response = msg_warning_prompt( (const char *) tr("Some models are unsaved.  Save before exiting?").toUtf8() );
 
        if ( response == 'C' )
        {
@@ -188,7 +187,7 @@ bool ViewWindow::closeAllWindows()
 class MainWidget : public QWidget
 {
    public:
-      MainWidget( QWidget * parent = NULL, const char * name = "" );
+      MainWidget( QWidget * parent = NULL );
       virtual ~MainWidget() {};
 
       void addWidgetToLayout( QWidget * w );
@@ -198,10 +197,12 @@ class MainWidget : public QWidget
       QVBoxLayout * m_layout;
 };
 
-MainWidget::MainWidget( QWidget * parent, const char * name )
-   : QWidget( parent, name )
+MainWidget::MainWidget( QWidget * parent )
+   : QWidget( parent )
 {
    m_layout = new QVBoxLayout( this );
+   m_layout->setMargin(2);
+   m_layout->setSpacing(2);
 }
 
 void MainWidget::addWidgetToLayout( QWidget * w )
@@ -209,9 +210,8 @@ void MainWidget::addWidgetToLayout( QWidget * w )
    m_layout->addWidget( w );
 }
 
-ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
-   : QMainWindow( parent, name, WDestructiveClose ),
-     m_accel( new QAccel(this) ),
+ViewWindow::ViewWindow( Model * model, QWidget * parent )
+   : QMainWindow( parent ),
      m_model( model ),
      m_animWin( NULL ),
      m_toolbox( NULL ),
@@ -221,13 +221,16 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
      m_currentTool( NULL ),
      m_canEdit( true )
 {
+   m_model->setUndoEnabled( false );
+   setAttribute( Qt::WA_DeleteOnClose );
    _winList.push_back( this );
 
-   setIcon( (const char **) mm3dlogo_32x32_xpm );
-   setIconText( QString("Misfit Model 3D") );
 
-   m_accel->insertItem( Key_F1, 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   setWindowIcon( QPixmap((const char **) mm3dlogo_32x32_xpm) );
+   setWindowIconText( QString("Misfit Model 3D") );
+
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 
    updateCaption();
 
@@ -235,39 +238,33 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
 
    MainWidget * mainWidget = new MainWidget( this );
 
-   m_viewPanel = new ViewPanel( m_toolbox, mainWidget, "" );
+   m_viewPanel = new ViewPanel( m_toolbox, mainWidget );
    mainWidget->addWidgetToLayout( m_viewPanel );
 
-   m_statusBar = new StatusBar( m_model, mainWidget, "" );
+   m_statusBar = new StatusBar( m_model, mainWidget );
    mainWidget->addWidgetToLayout( m_statusBar );
-   m_statusBar->setText( tr( "Press F1 for help using any window" ).utf8() );
+   m_statusBar->setText( tr( "Press F1 for help using any window" ).toUtf8() );
    m_statusBar->setMaximumHeight( 30 );
 
-   m_animWin = new QDockWindow( QDockWindow::InDock, this );
-   m_animWin->setCaption( tr( "Animations" ) );
-   m_animWin->setHorizontallyStretchable( true );
-   m_animWin->setVerticallyStretchable( true );
-   m_animWidget = new AnimWidget( m_model, false, m_animWin );
-   QBoxLayout * animWinLayout = m_animWin->boxLayout();
-   animWinLayout->addWidget( m_animWidget );
-   moveDockWindow( m_animWin, Qt::DockBottom );
-   // Use Q3MainWindow::getLocation to find out where a window is
-   // Use << and >> to save and restore locations
-   m_animWin->hide();
+   m_animWin = new AnimWindow( m_model, false, this );
+   m_animWin->setObjectName( "mainwin_animwin" );
+   m_animWidget = m_animWin->getAnimWidget();
+   addDockWidget( Qt::BottomDockWidgetArea, m_animWin );
 
-   connect( m_animWidget, SIGNAL(animWindowClosed()), this, SLOT(animationModeDone()) );
+   connect( m_animWin, SIGNAL(animWindowClosed()), this, SLOT(animationModeOff()) );
+   connect( m_animWidget, SIGNAL(animWindowClosed()), this, SLOT(animationModeOff()) );
    connect( m_animWidget, SIGNAL(animInvalid()), this, SLOT(editDisableEvent()) );
    connect( m_animWidget, SIGNAL(animValid()), this, SLOT(editEnableEvent()) );
 
    m_contextPanel = new ContextPanel( this, m_viewPanel, this );
-   m_contextPanel->setCaption( tr( "Properties" ) );
+   m_contextPanel->setObjectName( "mainwin_properties" );
+   m_contextPanel->setWindowTitle( tr( "Properties" ) );
 
    connect( this, SIGNAL(modelChanged(Model*)), m_contextPanel, SLOT(setModel(Model*)));
-
-   moveDockWindow( m_contextPanel, Qt::DockRight );
-   m_contextPanel->hide();
+   addDockWidget( Qt::RightDockWidgetArea, m_contextPanel );
 
    m_boolPanel = new BoolPanel( m_model, this, m_viewPanel );
+   m_boolPanel->setObjectName( "mainwin_boolwin" );
    connect( this, SIGNAL(modelChanged(Model*)), m_boolPanel, SLOT(setModel(Model*)));
 
    m_projectionWin = new ProjectionWin( m_model, this, m_viewPanel );
@@ -279,39 +276,41 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    m_transformWin = new TransformWindow( m_model, this );
    connect( this, SIGNAL(modelChanged(Model*)), m_transformWin, SLOT(setModel(Model*)));
 
+   addDockWidget( Qt::RightDockWidgetArea, m_boolPanel );
    setModel( m_model );
-   moveDockWindow( m_boolPanel, Qt::DockRight );
-   m_boolPanel->hide();
+
+   tabifyDockWidget( m_contextPanel, m_boolPanel );
 
    setCentralWidget( mainWidget );
 
-   m_mruMenu = new QPopupMenu( this, "" );
-   m_scriptMruMenu = new QPopupMenu( this, "" );
+   m_mruMenu = new QMenu( this );
+   m_scriptMruMenu = new QMenu( this );
    connect( m_mruMenu, SIGNAL(aboutToShow()), this, SLOT(fillMruMenu()) );
-   connect( m_mruMenu, SIGNAL(activated(int)), this, SLOT(openMru(int)) );
+   connect( m_mruMenu, SIGNAL(triggered(QAction*)), this, SLOT(openMru(QAction*)) );
    connect( m_scriptMruMenu, SIGNAL(aboutToShow()), this, SLOT(fillScriptMruMenu()) );
-   connect( m_scriptMruMenu, SIGNAL(activated(int)), this, SLOT(openScriptMru(int)) );
+   connect( m_scriptMruMenu, SIGNAL(triggered(QAction*)), this, SLOT(openScriptMru(QAction*)) );
 
-   m_fileMenu = new QPopupMenu( this );
-   m_fileMenu->insertItem( tr("New", "File|New"), this, SLOT(newModelEvent()), g_keyConfig.getKey( "viewwin_file_new" ) );
-   m_fileMenu->insertItem( tr("Open...", "File|Open"), this, SLOT(openModelEvent()), g_keyConfig.getKey( "viewwin_file_open" ) );
-   m_fileMenu->insertItem( tr("Save", "File|Save"), this, SLOT(saveModelEvent()), g_keyConfig.getKey( "viewwin_file_save" ) );
-   m_fileMenu->insertItem( tr("Save As...", "File|Save As"), this, SLOT(saveModelAsEvent()), g_keyConfig.getKey( "viewwin_file_save_as" ) );
-   m_fileMenu->insertItem( tr("Export...", "File|Export"), this, SLOT(exportModelEvent()), g_keyConfig.getKey( "viewwin_file_export" ) );
-   m_fileMenu->insertItem( tr("Export Selected...", "File|Export Selected"), this, SLOT(exportSelectedEvent()), g_keyConfig.getKey( "viewwin_file_export_selected" ) );
+   m_fileMenu = new QMenu( this );
+   m_fileMenu->addAction( tr("New", "File|New"), this, SLOT(newModelEvent()), g_keyConfig.getKey( "viewwin_file_new" ) );
+   m_fileMenu->addAction( tr("Open...", "File|Open"), this, SLOT(openModelEvent()), g_keyConfig.getKey( "viewwin_file_open" ) );
+   m_fileMenu->addAction( tr("Save", "File|Save"), this, SLOT(saveModelEvent()), g_keyConfig.getKey( "viewwin_file_save" ) );
+   m_fileMenu->addAction( tr("Save As...", "File|Save As"), this, SLOT(saveModelAsEvent()), g_keyConfig.getKey( "viewwin_file_save_as" ) );
+   m_fileMenu->addAction( tr("Export...", "File|Export"), this, SLOT(exportModelEvent()), g_keyConfig.getKey( "viewwin_file_export" ) );
+   m_fileMenu->addAction( tr("Export Selected...", "File|Export Selected"), this, SLOT(exportSelectedEvent()), g_keyConfig.getKey( "viewwin_file_export_selected" ) );
 #ifdef HAVE_LUALIB
-   m_fileMenu->insertItem( tr("Run Script...", "File|Run Script"), this, SLOT(scriptEvent()), g_keyConfig.getKey( "viewwin_file_run_script" ) );
-   m_fileMenu->insertItem( tr("Recent Scripts", "File|Recent Script"), m_scriptMruMenu );
+   m_fileMenu->addAction( tr("Run Script...", "File|Run Script"), this, SLOT(scriptEvent()), g_keyConfig.getKey( "viewwin_file_run_script" ) );
+   m_scriptMruMenu->setTitle( tr("Recent Scripts", "File|Recent Script") );
+   m_fileMenu->addMenu( m_scriptMruMenu );
 #endif // HAVE_LUALIB
-   m_fileMenu->insertSeparator();
-   m_fileMenu->insertItem( tr("Recent Models", "File|Recent Models"), m_mruMenu );
-   m_fileMenu->insertSeparator();
-   m_fileMenu->insertItem( tr("Plugins...", "File|Plugins"), this, SLOT(pluginWindowEvent()), g_keyConfig.getKey( "viewwin_file_plugins" ) );
-   m_fileMenu->insertSeparator();
-   m_fileMenu->insertItem( tr("Close", "File|Close"), this, SLOT(close()), g_keyConfig.getKey( "viewwin_file_close" ) );
-   m_fileMenu->insertItem( tr("Quit", "File|Quit"), this, SLOT(quitEvent()), g_keyConfig.getKey( "viewwin_file_quit" ) );
+   m_fileMenu->addSeparator();
+   m_mruMenu->setTitle( tr("Recent Models", "File|Recent Models") );
+   m_fileMenu->addMenu( m_mruMenu );
+   m_fileMenu->addSeparator();
+   m_fileMenu->addAction( tr("Plugins...", "File|Plugins"), this, SLOT(pluginWindowEvent()), g_keyConfig.getKey( "viewwin_file_plugins" ) );
+   m_fileMenu->addSeparator();
+   m_fileMenu->addAction( tr("Close", "File|Close"), this, SLOT(close()), g_keyConfig.getKey( "viewwin_file_close" ) );
+   m_fileMenu->addAction( tr("Quit", "File|Quit"), this, SLOT(quitEvent()), g_keyConfig.getKey( "viewwin_file_quit" ) );
    
-#ifdef HAVE_QT4
    m_renderMenu = new QMenu( this );
    QActionGroup * group;
 
@@ -334,7 +333,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    else
       m_drawJointBonesItem->setChecked( true );
 
-   m_renderMenu->insertSeparator();
+   m_renderMenu->addSeparator();
 
    // Projection group
    group = new QActionGroup( this );
@@ -348,7 +347,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
 
    m_renderProjections->setChecked( true );
 
-   m_renderMenu->insertSeparator();
+   m_renderMenu->addSeparator();
 
    // Bad texture group
    group = new QActionGroup( this );
@@ -366,7 +365,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    else
       m_noRenderBadItem->setChecked( true );
 
-   m_renderMenu->insertSeparator();
+   m_renderMenu->addSeparator();
 
    // 3D Lines group
    group = new QActionGroup( this );
@@ -384,7 +383,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    else
       m_noRenderSelectionItem->setChecked( true );
 
-   m_renderMenu->insertSeparator();
+   m_renderMenu->addSeparator();
 
    // Backfacing poly group
    group = new QActionGroup( this );
@@ -401,214 +400,243 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
       m_renderBackface->setChecked( true );
    else
       m_noRenderBackface->setChecked( true );
-#else
-   // Qt 3.x
-   m_renderMenu = new QPopupMenu( this );
-   m_renderMenu->setCheckable( true );
-   m_hideJointsItem     = m_renderMenu->insertItem( tr("Hide Joints", "View|Hide Joints"),      this, SLOT(boneJointHide()), g_keyConfig.getKey( "viewwin_view_render_joints_hide" ) );
-   m_drawJointLinesItem = m_renderMenu->insertItem( tr("Draw Joint Lines", "View|Draw Joint Lines"), this, SLOT(boneJointLines()), g_keyConfig.getKey( "viewwin_view_render_joints_lines" ) );
-   m_drawJointBonesItem = m_renderMenu->insertItem( tr("Draw Joint Bones", "View|Draw Joint Bones"), this, SLOT(boneJointBones()), g_keyConfig.getKey( "viewwin_view_render_joints_bones" ) );
-   g_prefs.setDefault( "ui_draw_joints", (int) Model::JOINTMODE_BONES );
-   if ( g_prefs( "ui_draw_joints" ).intValue() == (int) Model::JOINTMODE_BONES ) 
-      m_renderMenu->setItemChecked( m_drawJointBonesItem, true );
-   else
-      m_renderMenu->setItemChecked( m_drawJointLinesItem, true );
 
-   m_renderMenu->insertSeparator();
-
-   m_renderProjections   = m_renderMenu->insertItem( tr("Draw Texture Projections", "View|Draw Texture Projections"),   this, SLOT(renderProjections()), g_keyConfig.getKey( "viewwin_view_render_projections_show" ) );
-   m_noRenderProjections = m_renderMenu->insertItem( tr("Hide Texture Projections", "View|Hide Texture Projections"),   this, SLOT(noRenderProjections()), g_keyConfig.getKey( "viewwin_view_render_projections_hide" ) );
-   m_renderMenu->setItemChecked( m_renderProjections, true );
-
-   m_renderMenu->insertSeparator();
-
-   m_renderBadItem   = m_renderMenu->insertItem( tr("Use Red Error Texture", "View|Use Red Error Texture"),     this, SLOT(renderBadEvent()), g_keyConfig.getKey( "viewwin_view_render_badtex_red" ) );
-   m_noRenderBadItem = m_renderMenu->insertItem( tr("Use Blank Error Texture", "View|Use Blank Error Texture"),   this, SLOT(noRenderBadEvent()), g_keyConfig.getKey( "viewwin_view_render_badtex_blank" ) );
-   m_renderMenu->insertSeparator();
-
-   g_prefs.setDefault( "ui_render_bad_textures", 1 );
-   if ( g_prefs( "ui_render_bad_textures" ).intValue() != 0 )
-      m_renderMenu->setItemChecked( m_renderBadItem, true );
-   else
-      m_renderMenu->setItemChecked( m_noRenderBadItem, true );
-
-   m_renderSelectionItem   = m_renderMenu->insertItem( tr("Render 3D Lines", "View|Render 3D Lines"),   this, SLOT(renderSelectionEvent()), g_keyConfig.getKey( "viewwin_view_render_3d_lines_show" ) );
-   m_noRenderSelectionItem = m_renderMenu->insertItem( tr("Hide 3D Lines", "View|Hide 3D Lines"),   this, SLOT(noRenderSelectionEvent()), g_keyConfig.getKey( "viewwin_view_render_3d_lines_hide" ) );
-   g_prefs.setDefault( "ui_render_3d_selections", 0 );
-   if ( g_prefs( "ui_render_3d_selections" ).intValue() != 0 )
-      m_renderMenu->setItemChecked( m_renderSelectionItem, true );
-   else
-      m_renderMenu->setItemChecked( m_noRenderSelectionItem, true );
-   m_renderMenu->insertSeparator();
-
-   m_renderBackface   = m_renderMenu->insertItem( tr("Draw Back-facing Triangles", "View|Draw Back-facing Triangles"),   this, SLOT(renderBackface()), g_keyConfig.getKey( "viewwin_view_render_backface_show" ) );
-   m_noRenderBackface = m_renderMenu->insertItem( tr("Hide Back-facing Triangles", "View|Hide Back-facing Triangles"),   this, SLOT(noRenderBackface()), g_keyConfig.getKey( "viewwin_view_render_backface_hide" ) );
-   g_prefs.setDefault( "ui_render_backface_cull", 0 );
-   if ( g_prefs( "ui_render_backface_cull" ).intValue() == 0 )
-      m_renderMenu->setItemChecked( m_renderBackface, true );
-   else
-      m_renderMenu->setItemChecked( m_noRenderBackface, true );
-#endif // HAVE_QT4
-
-   m_viewMenu = new QPopupMenu( this );
-   m_viewMenu->insertItem( tr( "Frame All", "View|Frame"), this, SLOT(frameAllEvent()), g_keyConfig.getKey( "viewwin_view_frame_all" ) );
-   m_viewMenu->insertItem( tr( "Frame Selected", "View|Frame"), this, SLOT(frameSelectedEvent()), g_keyConfig.getKey( "viewwin_view_frame_selected" ) );
-   m_viewMenu->insertSeparator();
-   m_showContext = m_viewMenu->insertItem( tr("Show Properties", "View|Show Properties"), this, SLOT(showContextEvent()), g_keyConfig.getKey( "viewwin_view_show_properties" ) );
+   m_viewMenu = new QMenu( this );
+   m_viewMenu->addAction( tr( "Frame All", "View|Frame"), this, SLOT(frameAllEvent()), g_keyConfig.getKey( "viewwin_view_frame_all" ) );
+   m_viewMenu->addAction( tr( "Frame Selected", "View|Frame"), this, SLOT(frameSelectedEvent()), g_keyConfig.getKey( "viewwin_view_frame_selected" ) );
+   m_viewMenu->addSeparator();
+   m_showContext = m_viewMenu->addAction( tr("Show Properties", "View|Show Properties"), this, SLOT(showContextEvent()), g_keyConfig.getKey( "viewwin_view_show_properties" ) );
    connect( m_contextPanel, SIGNAL(panelHidden()), this, SLOT(contextPanelHidden()) );
-   m_viewMenu->insertItem( tr( "Render Options", "View|Render Options"), m_renderMenu );
-   m_viewMenu->insertSeparator();
-   m_viewMenu->insertItem( tr( "3D Wireframe", "View|3D"),   m_viewPanel, SLOT(wireframeEvent()), g_keyConfig.getKey( "viewwin_view_3d_wireframe" ) );
-   m_viewMenu->insertItem( tr( "3D Flat", "View|3D"),        m_viewPanel, SLOT(flatEvent()), g_keyConfig.getKey( "viewwin_view_3d_flat" ) );
-   m_viewMenu->insertItem( tr( "3D Smooth", "View|3D"),      m_viewPanel, SLOT(smoothEvent()), g_keyConfig.getKey( "viewwin_view_3d_smooth" ) );
-   m_viewMenu->insertItem( tr( "3D Texture", "View|3D"),     m_viewPanel, SLOT(textureEvent()), g_keyConfig.getKey( "viewwin_view_3d_textured" ) );
-   m_viewMenu->insertItem( tr( "3D Alpha Blend", "View|3D"), m_viewPanel, SLOT(alphaEvent()), g_keyConfig.getKey( "viewwin_view_3d_alpha" ) );
-   m_viewMenu->insertSeparator();
-   m_viewMenu->insertItem( tr( "Canvas Wireframe", "View|Canvas"),   m_viewPanel, SLOT(canvasWireframeEvent()), g_keyConfig.getKey( "viewwin_view_ortho_wireframe" ) );
-   m_viewMenu->insertItem( tr( "Canvas Flat", "View|Canvas"),        m_viewPanel, SLOT(canvasFlatEvent()), g_keyConfig.getKey( "viewwin_view_ortho_flat" ) );
-   m_viewMenu->insertItem( tr( "Canvas Smooth", "View|Canvas"),      m_viewPanel, SLOT(canvasSmoothEvent()), g_keyConfig.getKey( "viewwin_view_ortho_smooth" ) );
-   m_viewMenu->insertItem( tr( "Canvas Texture", "View|Canvas"),     m_viewPanel, SLOT(canvasTextureEvent()), g_keyConfig.getKey( "viewwin_view_ortho_textured" ) );
-   m_viewMenu->insertItem( tr( "Canvas Alpha Blend", "View|Canvas"), m_viewPanel, SLOT(canvasAlphaEvent()), g_keyConfig.getKey( "viewwin_view_ortho_alpha" ) );
-   m_viewMenu->insertSeparator();
+   m_renderMenu->setTitle( tr( "Render Options", "View|Render Options") );
+   m_viewMenu->addMenu( m_renderMenu );
+   m_viewMenu->addSeparator();
 
-   m_viewMenu->insertItem( tr( "1 View", "View|Viewports"),   m_viewPanel, SLOT(view1()), g_keyConfig.getKey( "viewwin_view_1" )   );
-   m_viewMenu->insertItem( tr( "1x2 View", "View|Viewports"), m_viewPanel, SLOT(view1x2()), g_keyConfig.getKey( "viewwin_view_1x2" ) );
-   m_viewMenu->insertItem( tr( "2x1 View", "View|Viewports"), m_viewPanel, SLOT(view2x1()), g_keyConfig.getKey( "viewwin_view_2x1" ) );
-   m_viewMenu->insertItem( tr( "2x2 View", "View|Viewports"), m_viewPanel, SLOT(view2x2()), g_keyConfig.getKey( "viewwin_view_2x2" ) );
-   m_viewMenu->insertItem( tr( "2x3 View", "View|Viewports"), m_viewPanel, SLOT(view2x3()), g_keyConfig.getKey( "viewwin_view_2x3" ) );
-   m_viewMenu->insertItem( tr( "3x2 View", "View|Viewports"), m_viewPanel, SLOT(view3x2()), g_keyConfig.getKey( "viewwin_view_3x2" ) );
-   m_viewMenu->insertItem( tr( "3x3 View", "View|Viewports"), m_viewPanel, SLOT(view3x3()), g_keyConfig.getKey( "viewwin_view_3x3" ) );
+   // 3D View group
+   group = new QActionGroup(this);
+   m_3dWire = group->addAction( m_viewMenu->addAction( tr( "3D Wireframe", "View|3D"),   m_viewPanel, SLOT(wireframeEvent()), g_keyConfig.getKey( "viewwin_view_3d_wireframe" ) ) );
+   m_3dFlat = group->addAction( m_viewMenu->addAction( tr( "3D Flat", "View|3D"),        m_viewPanel, SLOT(flatEvent()), g_keyConfig.getKey( "viewwin_view_3d_flat" ) ) );
+   m_3dSmooth = group->addAction( m_viewMenu->addAction( tr( "3D Smooth", "View|3D"),      m_viewPanel, SLOT(smoothEvent()), g_keyConfig.getKey( "viewwin_view_3d_smooth" ) ) );
+   m_3dTexture = group->addAction( m_viewMenu->addAction( tr( "3D Texture", "View|3D"),     m_viewPanel, SLOT(textureEvent()), g_keyConfig.getKey( "viewwin_view_3d_textured" ) ) );
+   m_3dAlpha = group->addAction( m_viewMenu->addAction( tr( "3D Alpha Blend", "View|3D"), m_viewPanel, SLOT(alphaEvent()), g_keyConfig.getKey( "viewwin_view_3d_alpha" ) ) );
+   m_viewMenu->addSeparator();
+
+   // Canvas Group
+   group = new QActionGroup(this);
+   m_canvasWire = group->addAction( m_viewMenu->addAction( tr( "Canvas Wireframe", "View|Canvas"),   m_viewPanel, SLOT(canvasWireframeEvent()), g_keyConfig.getKey( "viewwin_view_ortho_wireframe" ) ) );
+   m_canvasFlat = group->addAction( m_viewMenu->addAction( tr( "Canvas Flat", "View|Canvas"),        m_viewPanel, SLOT(canvasFlatEvent()), g_keyConfig.getKey( "viewwin_view_ortho_flat" ) ) );
+   m_canvasSmooth = group->addAction( m_viewMenu->addAction( tr( "Canvas Smooth", "View|Canvas"),      m_viewPanel, SLOT(canvasSmoothEvent()), g_keyConfig.getKey( "viewwin_view_ortho_smooth" ) ) );
+   m_canvasTexture = group->addAction( m_viewMenu->addAction( tr( "Canvas Texture", "View|Canvas"),     m_viewPanel, SLOT(canvasTextureEvent()), g_keyConfig.getKey( "viewwin_view_ortho_textured" ) ) );
+   m_canvasAlpha = group->addAction( m_viewMenu->addAction( tr( "Canvas Alpha Blend", "View|Canvas"), m_viewPanel, SLOT(canvasAlphaEvent()), g_keyConfig.getKey( "viewwin_view_ortho_alpha" ) ) );
+   m_viewMenu->addSeparator();
+
+   // Num viewports group
+   group = new QActionGroup(this);
+   m_view1 = group->addAction( m_viewMenu->addAction( tr( "1 View", "View|Viewports"),   m_viewPanel, SLOT(view1()), g_keyConfig.getKey( "viewwin_view_1" )   ) );
+   m_view1x2 = group->addAction( m_viewMenu->addAction( tr( "1x2 View", "View|Viewports"), m_viewPanel, SLOT(view1x2()), g_keyConfig.getKey( "viewwin_view_1x2" ) ) );
+   m_view2x1 = group->addAction( m_viewMenu->addAction( tr( "2x1 View", "View|Viewports"), m_viewPanel, SLOT(view2x1()), g_keyConfig.getKey( "viewwin_view_2x1" ) ) );
+   m_view2x2 = group->addAction( m_viewMenu->addAction( tr( "2x2 View", "View|Viewports"), m_viewPanel, SLOT(view2x2()), g_keyConfig.getKey( "viewwin_view_2x2" ) ) );
+   m_view2x3 = group->addAction( m_viewMenu->addAction( tr( "2x3 View", "View|Viewports"), m_viewPanel, SLOT(view2x3()), g_keyConfig.getKey( "viewwin_view_2x3" ) ) );
+   m_view3x2 = group->addAction( m_viewMenu->addAction( tr( "3x2 View", "View|Viewports"), m_viewPanel, SLOT(view3x2()), g_keyConfig.getKey( "viewwin_view_3x2" ) ) );
+   m_view3x3 = group->addAction( m_viewMenu->addAction( tr( "3x3 View", "View|Viewports"), m_viewPanel, SLOT(view3x3()), g_keyConfig.getKey( "viewwin_view_3x3" ) ) );
+
+   m_3dWire->setCheckable( true );
+   m_3dFlat->setCheckable( true );
+   m_3dSmooth->setCheckable( true );
+   m_3dTexture->setCheckable( true );
+   m_3dAlpha->setCheckable( true );
+
+   m_3dTexture->setChecked( true );
+
+   m_canvasWire->setCheckable( true );
+   m_canvasFlat->setCheckable( true );
+   m_canvasSmooth->setCheckable( true );
+   m_canvasTexture->setCheckable( true );
+   m_canvasAlpha->setCheckable( true );
+
+   m_canvasWire->setChecked( true );
+
+   m_view1->setCheckable( true );
+   m_view1x2->setCheckable( true );
+   m_view2x1->setCheckable( true );
+   m_view2x2->setCheckable( true );
+   m_view2x3->setCheckable( true );
+   m_view3x2->setCheckable( true );
+   m_view3x3->setCheckable( true );
+
+   int count = 4;
+   bool tall = false;
+
+   if ( g_prefs.exists( "ui_viewport_count" ) )
+      count = g_prefs( "ui_viewport_count" ).intValue();
+   if ( g_prefs.exists( "ui_viewport_tall" ) )
+      tall = (g_prefs( "ui_viewport_tall" ).intValue() != 0);
+
+   switch ( count )
+   {
+      case 1:
+         m_view1->setChecked( true );
+         break;
+
+      case 2:
+         if ( tall )
+            m_view1x2->setChecked( true );
+         else
+            m_view2x1->setChecked( true );
+         break;
+
+      default:
+      case 4:
+         m_view2x2->setChecked( true );
+         break;
+
+      case 6:
+         if ( tall )
+            m_view2x3->setChecked( true );
+         else
+            m_view3x2->setChecked( true );
+         break;
+
+      case 9:
+         m_view3x3->setChecked( true );
+         break;
+   }
+
    
-   m_viewMenu->insertSeparator();
-   m_viewMenu->insertItem( tr( "Viewport Settings...", "View|Viewport Settings" ), this, SLOT(viewportSettingsEvent()), g_keyConfig.getKey( "viewwin_view_viewport_settings" ) );
+   m_viewMenu->addSeparator();
+   m_viewMenu->addAction( tr( "Viewport Settings...", "View|Viewport Settings" ), this, SLOT(viewportSettingsEvent()), g_keyConfig.getKey( "viewwin_view_viewport_settings" ) );
 
-   m_snapMenu = new QPopupMenu( this );
-   connect( m_snapMenu, SIGNAL(activated(int)), this, SLOT(snapToSelectedEvent(int)) );
-   m_snapMenu->setCheckable( true );
-   int id;
-   id = m_snapMenu->insertItem( tr("Grid", "Tools|Snap to Grid"), 0 );
-   m_snapMenu->setAccel( g_keyConfig.getKey( "tool_snap_to_grid" ), id );
-   id = m_snapMenu->insertItem( tr("Vertex", "Tools|Snap to Vertex"), 1 );
-   m_snapMenu->setAccel( g_keyConfig.getKey( "tool_snap_to_vertex" ), id );
+   m_snapMenu = new QMenu( this );
+   connect( m_snapMenu, SIGNAL(triggered(QAction*)), this, SLOT(snapToSelectedEvent(QAction*)) );
+   m_snapToGrid = m_snapMenu->addAction( tr("Grid", "Tools|Snap to Grid") );
+   m_snapToGrid->setShortcut( g_keyConfig.getKey( "tool_snap_to_grid" ) );
+   m_snapToGrid->setCheckable( true );
+   m_snapToVertex = m_snapMenu->addAction( tr("Vertex", "Tools|Snap to Vertex") );
+   m_snapToVertex->setShortcut( g_keyConfig.getKey( "tool_snap_to_vertex" ) );
+   m_snapToVertex->setCheckable( true );
 
    if ( g_prefs.exists( "ui_snap_grid" ) 
          &&  g_prefs( "ui_snap_grid" ).intValue() != 0 )
    {
-      m_snapMenu->setItemChecked( 0, true );
+      m_snapToGrid->setChecked( true );
    }
    if ( g_prefs.exists( "ui_snap_vertex" ) 
          &&  g_prefs( "ui_snap_vertex" ).intValue() != 0 )
    {
-      m_snapMenu->setItemChecked( 1, true );
+      m_snapToVertex->setChecked( true );
    }
 
-   m_toolMenu = new QPopupMenu( this );
-   m_toolMenu->insertItem( tr("Snap To"), m_snapMenu );
-   m_toolMenu->insertSeparator();
+   m_toolMenu = new QMenu( this );
+   m_snapMenu->setTitle(  tr("Snap To") );
+   m_toolMenu->addMenu( m_snapMenu );
+   m_toolMenu->addSeparator();
 
-#ifdef HAVE_QT4
-   m_toolBar = new Q3ToolBar( this );
-   addToolBar( m_toolBar );
-#else
    m_toolBar = new QToolBar( this );
-#endif 
-   m_toolBar->setCaption( tr( "Tools" ) );
+   m_toolBar->setObjectName( "mainwin_toolbar" );
+   addToolBar( m_toolBar );
+
+   m_toolBar->setWindowTitle( tr( "Tools" ) );
    //m_toolBar->setHorizontallyStretchable( true );
    //m_toolBar->setVerticallyStretchable( true );
 
    initializeToolbox();
 
-   m_modelMenu = new QPopupMenu( this );
-   m_modelMenu->insertItem( tr("Undo"), this, SLOT(undoRequest()), QKeySequence( tr("Ctrl+Z", "Undo shortcut" ) ) );
-   m_modelMenu->insertItem( tr("Redo"), this, SLOT(redoRequest()), QKeySequence( tr("Ctrl+Y", "Redo shortcut" ) ) );
-   m_modelMenu->insertSeparator();
-   m_modelMenu->insertItem( tr("Edit Model Meta Data...", "Model|Edit Model Meta Data"), this, SLOT(metaWindowEvent()), g_keyConfig.getKey( "viewwin_model_edit_meta_data" ) );
-   m_modelMenu->insertItem( tr("Transform Model...", "Model|Transform Model"), this, SLOT(transformWindowEvent()), g_keyConfig.getKey( "viewwin_model_transform" ) );
-   m_modelMenu->insertItem( tr("Boolean Operation...", "Model|Boolean Operation"), this, SLOT(boolWindowEvent()), g_keyConfig.getKey( "viewwin_model_boolean_operation" ) );
-   m_modelMenu->insertSeparator();
-   m_modelMenu->insertItem( tr("Set Background Image...", "Model|Set Background Image"), this, SLOT(backgroundWindowEvent()), g_keyConfig.getKey( "viewwin_model_set_background_image" ) );
-   m_modelMenu->insertItem( tr("Merge...", "Model|Merge"), this, SLOT(mergeModelsEvent()), g_keyConfig.getKey( "viewwin_model_merge" ) );
-   m_modelMenu->insertItem( tr("Import Animations...", "Model|Import Animations"), this, SLOT(mergeAnimationsEvent()), g_keyConfig.getKey( "viewwin_model_import_animations" ) );
+   m_modelMenu = new QMenu( this );
+   m_modelMenu->addAction( tr("Undo"), this, SLOT(undoRequest()), QKeySequence( tr("Ctrl+Z", "Undo shortcut" ) ) );
+   m_modelMenu->addAction( tr("Redo"), this, SLOT(redoRequest()), QKeySequence( tr("Ctrl+Y", "Redo shortcut" ) ) );
+   m_modelMenu->addSeparator();
+   m_modelMenu->addAction( tr("Edit Model Meta Data...", "Model|Edit Model Meta Data"), this, SLOT(metaWindowEvent()), g_keyConfig.getKey( "viewwin_model_edit_meta_data" ) );
+   m_modelMenu->addAction( tr("Transform Model...", "Model|Transform Model"), this, SLOT(transformWindowEvent()), g_keyConfig.getKey( "viewwin_model_transform" ) );
+   m_modelMenu->addAction( tr("Boolean Operation...", "Model|Boolean Operation"), this, SLOT(boolWindowEvent()), g_keyConfig.getKey( "viewwin_model_boolean_operation" ) );
+   m_modelMenu->addSeparator();
+   m_modelMenu->addAction( tr("Set Background Image...", "Model|Set Background Image"), this, SLOT(backgroundWindowEvent()), g_keyConfig.getKey( "viewwin_model_set_background_image" ) );
+   m_modelMenu->addAction( tr("Merge...", "Model|Merge"), this, SLOT(mergeModelsEvent()), g_keyConfig.getKey( "viewwin_model_merge" ) );
+   m_modelMenu->addAction( tr("Import Animations...", "Model|Import Animations"), this, SLOT(mergeAnimationsEvent()), g_keyConfig.getKey( "viewwin_model_import_animations" ) );
 
-   m_geometryMenu = new QPopupMenu( this );
-   m_materialsMenu  = new QPopupMenu( this );
+   m_geometryMenu = new QMenu( this );
+   m_materialsMenu  = new QMenu( this );
 
-   m_materialsMenu->insertItem( tr("Edit Groups...", "Groups|Edit Groups"), this, SLOT(groupWindowEvent()), g_keyConfig.getKey( "viewwin_groups_edit_groups" ) );
-   m_materialsMenu->insertItem( tr("Edit Materials...", "Groups|Edit Materials"), this, SLOT(textureWindowEvent()), g_keyConfig.getKey( "viewwin_groups_edit_materials" ) );
-   m_materialsMenu->insertItem( tr("Reload Textures", "Groups|Reload Textures"), this, SLOT(reloadTexturesEvent()), g_keyConfig.getKey( "viewwin_groups_reload_textures" ) );
-   m_materialsMenu->insertSeparator();
-   m_materialsMenu->insertItem( tr("Edit Projection...", "Groups|Edit Projection"), this, SLOT(projectionWindowEvent()), g_keyConfig.getKey( "viewwin_groups_edit_projection" ) );
-   m_materialsMenu->insertItem( tr("Edit Texture Coordinates...", "Groups|Edit Texture Coordinates"), this, SLOT(textureCoordEvent()), g_keyConfig.getKey( "viewwin_groups_edit_texture_coordinates" ) );
-   m_materialsMenu->insertItem( tr("Paint Texture...", "Groups|Paint Texture"), this, SLOT(paintTextureEvent()), g_keyConfig.getKey( "viewwin_groups_paint_texture" ) );
+   m_materialsMenu->addAction( tr("Edit Groups...", "Groups|Edit Groups"), this, SLOT(groupWindowEvent()), g_keyConfig.getKey( "viewwin_groups_edit_groups" ) );
+   m_materialsMenu->addAction( tr("Edit Materials...", "Groups|Edit Materials"), this, SLOT(textureWindowEvent()), g_keyConfig.getKey( "viewwin_groups_edit_materials" ) );
+   m_materialsMenu->addAction( tr("Reload Textures", "Groups|Reload Textures"), this, SLOT(reloadTexturesEvent()), g_keyConfig.getKey( "viewwin_groups_reload_textures" ) );
+   m_materialsMenu->addSeparator();
+   m_materialsMenu->addAction( tr("Edit Projection...", "Groups|Edit Projection"), this, SLOT(projectionWindowEvent()), g_keyConfig.getKey( "viewwin_groups_edit_projection" ) );
+   m_materialsMenu->addAction( tr("Edit Texture Coordinates...", "Groups|Edit Texture Coordinates"), this, SLOT(textureCoordEvent()), g_keyConfig.getKey( "viewwin_groups_edit_texture_coordinates" ) );
+   m_materialsMenu->addAction( tr("Paint Texture...", "Groups|Paint Texture"), this, SLOT(paintTextureEvent()), g_keyConfig.getKey( "viewwin_groups_paint_texture" ) );
 
-   m_jointsMenu     = new QPopupMenu( this );
+   m_jointsMenu     = new QMenu( this );
 
-   m_jointsMenu->insertItem( tr( "Edit Joints...", "Joints|Edit Joints"), this, SLOT(jointWinEvent()), g_keyConfig.getKey( "viewwin_joints_edit_joints" ) );
-   m_jointsMenu->insertItem( tr( "Assign Selected to Joint", "Joints|Assign Selected to Joint"), this, SLOT(jointAssignSelectedToJoint()), g_keyConfig.getKey( "viewwin_joints_assign_selected" ) );
-   m_jointsMenu->insertItem( tr( "Auto-Assign Selected...", "Joints|Auto-Assign Selected"), this, SLOT(jointAutoAssignSelected()), g_keyConfig.getKey( "viewwin_joints_auto_assign_selected" ) );
-   m_jointsMenu->insertItem( tr( "Remove All Influences from Selected", "Joints|Remove All Influences from Selected"), this, SLOT(jointRemoveInfluencesFromSelected()), g_keyConfig.getKey( "viewwin_joints_remove_influences" ) );
-   m_jointsMenu->insertItem( tr( "Remove Selected Joint from Influencing", "Joints|Remove Selected Joint from Influencing"), this, SLOT(jointRemoveInfluenceJoint()), g_keyConfig.getKey( "viewwin_joints_remove_joint" ) );
-   m_jointsMenu->insertSeparator();
-   m_jointsMenu->insertItem( tr( "Convert Multiple Influences to Single", "Joints|Convert Multiple Influences to Single"), this, SLOT(jointMakeSingleInfluence()), g_keyConfig.getKey( "viewwin_joints_make_single_influence" ) );
-   m_jointsMenu->insertSeparator();
-   m_jointsMenu->insertItem( tr( "Select Joint Influences", "Joints|Select Joint Influences"), this, SLOT(jointSelectInfluenceJoints()), g_keyConfig.getKey( "viewwin_joints_select_joint_influences" ) );
-   m_jointsMenu->insertItem( tr( "Select Influenced Vertices", "Joints|Select Influenced Vertices"), this, SLOT(jointSelectInfluencedVertices()), g_keyConfig.getKey( "viewwin_joints_select_influenced_vertices" ) );
-   m_jointsMenu->insertItem( tr( "Select Influenced Points", "Joints|Select Influenced Points"), this, SLOT(jointSelectInfluencedPoints()), g_keyConfig.getKey( "viewwin_joints_select_influenced_points" ) );
-   m_jointsMenu->insertItem( tr( "Select Unassigned Vertices", "Joints|Select Unassigned Vertices"), this, SLOT(jointSelectUnassignedVertices()), g_keyConfig.getKey( "viewwin_joints_select_unassigned_vertices" ) );
-   m_jointsMenu->insertItem( tr( "Select Unassigned Points", "Joints|Select Unassigned Points"), this, SLOT(jointSelectUnassignedPoints()), g_keyConfig.getKey( "viewwin_joints_select_unassigned_points" ) );
+   m_jointsMenu->addAction( tr( "Edit Joints...", "Joints|Edit Joints"), this, SLOT(jointWinEvent()), g_keyConfig.getKey( "viewwin_joints_edit_joints" ) );
+   m_jointsMenu->addAction( tr( "Assign Selected to Joint", "Joints|Assign Selected to Joint"), this, SLOT(jointAssignSelectedToJoint()), g_keyConfig.getKey( "viewwin_joints_assign_selected" ) );
+   m_jointsMenu->addAction( tr( "Auto-Assign Selected...", "Joints|Auto-Assign Selected"), this, SLOT(jointAutoAssignSelected()), g_keyConfig.getKey( "viewwin_joints_auto_assign_selected" ) );
+   m_jointsMenu->addAction( tr( "Remove All Influences from Selected", "Joints|Remove All Influences from Selected"), this, SLOT(jointRemoveInfluencesFromSelected()), g_keyConfig.getKey( "viewwin_joints_remove_influences" ) );
+   m_jointsMenu->addAction( tr( "Remove Selected Joint from Influencing", "Joints|Remove Selected Joint from Influencing"), this, SLOT(jointRemoveInfluenceJoint()), g_keyConfig.getKey( "viewwin_joints_remove_joint" ) );
+   m_jointsMenu->addSeparator();
+   m_jointsMenu->addAction( tr( "Convert Multiple Influences to Single", "Joints|Convert Multiple Influences to Single"), this, SLOT(jointMakeSingleInfluence()), g_keyConfig.getKey( "viewwin_joints_make_single_influence" ) );
+   m_jointsMenu->addSeparator();
+   m_jointsMenu->addAction( tr( "Select Joint Influences", "Joints|Select Joint Influences"), this, SLOT(jointSelectInfluenceJoints()), g_keyConfig.getKey( "viewwin_joints_select_joint_influences" ) );
+   m_jointsMenu->addAction( tr( "Select Influenced Vertices", "Joints|Select Influenced Vertices"), this, SLOT(jointSelectInfluencedVertices()), g_keyConfig.getKey( "viewwin_joints_select_influenced_vertices" ) );
+   m_jointsMenu->addAction( tr( "Select Influenced Points", "Joints|Select Influenced Points"), this, SLOT(jointSelectInfluencedPoints()), g_keyConfig.getKey( "viewwin_joints_select_influenced_points" ) );
+   m_jointsMenu->addAction( tr( "Select Unassigned Vertices", "Joints|Select Unassigned Vertices"), this, SLOT(jointSelectUnassignedVertices()), g_keyConfig.getKey( "viewwin_joints_select_unassigned_vertices" ) );
+   m_jointsMenu->addAction( tr( "Select Unassigned Points", "Joints|Select Unassigned Points"), this, SLOT(jointSelectUnassignedPoints()), g_keyConfig.getKey( "viewwin_joints_select_unassigned_points" ) );
 
    initializeCommands();
 
-   connect( m_geometryMenu, SIGNAL(activated(int)), this, SLOT(primitiveCommandActivated(int)) );
+   connect( m_geometryMenu, SIGNAL(triggered(QAction*)), this, SLOT(primitiveCommandActivated(QAction*)) );
 
    //m_scriptMenu = new QPopupMenu( this );
 
-   m_animMenu = new QPopupMenu( this );
-   m_startAnimItem     = m_animMenu->insertItem( tr("Start Animation Mode...", "Animation|Start Animation Mode"), this, SLOT(startAnimationMode()), g_keyConfig.getKey( "viewwin_anim_start_mode" ) );
-   m_stopAnimItem      = m_animMenu->insertItem( tr("Stop Animation Mode", "Animation|Stop Animation Mode"),     this, SLOT(stopAnimationMode()), g_keyConfig.getKey( "viewwin_anim_stop_mode" ) );
-   m_animMenu->insertSeparator();
-   m_animSetsItem      = m_animMenu->insertItem( tr("Animation Sets...", "Animation|Animation Sets"), this, SLOT(animSetWindowEvent()), g_keyConfig.getKey( "viewwin_anim_animation_sets" ) );
-   m_animExportItem    = m_animMenu->insertItem( tr("Save Animation Images...", "Animation|Save Animation Images"), this, SLOT(animExportWindowEvent()), g_keyConfig.getKey( "viewwin_anim_save_images" ) );
-   m_animMenu->insertSeparator();
-   m_animCopyFrame   = m_animMenu->insertItem( tr("Copy Animation Frame", "Animation|Copy Animation Frame"), this, SLOT(animCopyFrameEvent()), g_keyConfig.getKey( "viewwin_anim_frame_copy" ) );
-   m_animPasteFrame  = m_animMenu->insertItem( tr("Paste Animation Frame", "Animation|Paste Animation Frame"), this, SLOT(animPasteFrameEvent()), g_keyConfig.getKey( "viewwin_anim_frame_paste" ) );
-   m_animClearFrame  = m_animMenu->insertItem( tr("Clear Animation Frame", "Animation|Clear Animation Frame"), this, SLOT(animClearFrameEvent()), g_keyConfig.getKey( "viewwin_anim_frame_clear" ) );
-   m_animMenu->insertSeparator();
-   m_animCopySelected   = m_animMenu->insertItem( tr("Copy Selected Keyframes", "Animation|Copy Animation Frame"), this, SLOT(animCopySelectedEvent()), g_keyConfig.getKey( "viewwin_anim_selected_copy" ) );
-   m_animPasteSelected  = m_animMenu->insertItem( tr("Paste Selected Keyframes", "Animation|Paste Animation Frame"), this, SLOT(animPasteSelectedEvent()), g_keyConfig.getKey( "viewwin_anim_selected_paste" ) );
-   m_animMenu->insertSeparator();
-   m_animSetRotItem    = m_animMenu->insertItem( tr("Set Rotation Keyframe", "Animation|Set Rotation Keyframe"), this, SLOT(animSetRotEvent()), g_keyConfig.getKey( "viewwin_anim_set_rotation" ) );
-   m_animSetTransItem  = m_animMenu->insertItem( tr("Set Translation Keyframe", "Animation|Set Translation Keyframe"), this, SLOT(animSetTransEvent()), g_keyConfig.getKey( "viewwin_anim_set_translation" ) );
+   m_animMenu = new QMenu( this );
+   m_startAnimItem     = m_animMenu->addAction( tr("Start Animation Mode...", "Animation|Start Animation Mode"), this, SLOT(startAnimationMode()), g_keyConfig.getKey( "viewwin_anim_start_mode" ) );
+   m_stopAnimItem      = m_animMenu->addAction( tr("Stop Animation Mode", "Animation|Stop Animation Mode"),     this, SLOT(stopAnimationMode()), g_keyConfig.getKey( "viewwin_anim_stop_mode" ) );
+   m_animMenu->addSeparator();
+   m_animSetsItem      = m_animMenu->addAction( tr("Animation Sets...", "Animation|Animation Sets"), this, SLOT(animSetWindowEvent()), g_keyConfig.getKey( "viewwin_anim_animation_sets" ) );
+   m_animExportItem    = m_animMenu->addAction( tr("Save Animation Images...", "Animation|Save Animation Images"), this, SLOT(animExportWindowEvent()), g_keyConfig.getKey( "viewwin_anim_save_images" ) );
+   m_animMenu->addSeparator();
+   m_animCopyFrame   = m_animMenu->addAction( tr("Copy Animation Frame", "Animation|Copy Animation Frame"), this, SLOT(animCopyFrameEvent()), g_keyConfig.getKey( "viewwin_anim_frame_copy" ) );
+   m_animPasteFrame  = m_animMenu->addAction( tr("Paste Animation Frame", "Animation|Paste Animation Frame"), this, SLOT(animPasteFrameEvent()), g_keyConfig.getKey( "viewwin_anim_frame_paste" ) );
+   m_animClearFrame  = m_animMenu->addAction( tr("Clear Animation Frame", "Animation|Clear Animation Frame"), this, SLOT(animClearFrameEvent()), g_keyConfig.getKey( "viewwin_anim_frame_clear" ) );
+   m_animMenu->addSeparator();
+   m_animCopySelected   = m_animMenu->addAction( tr("Copy Selected Keyframes", "Animation|Copy Animation Frame"), this, SLOT(animCopySelectedEvent()), g_keyConfig.getKey( "viewwin_anim_selected_copy" ) );
+   m_animPasteSelected  = m_animMenu->addAction( tr("Paste Selected Keyframes", "Animation|Paste Animation Frame"), this, SLOT(animPasteSelectedEvent()), g_keyConfig.getKey( "viewwin_anim_selected_paste" ) );
+   m_animMenu->addSeparator();
+   m_animSetRotItem    = m_animMenu->addAction( tr("Set Rotation Keyframe", "Animation|Set Rotation Keyframe"), this, SLOT(animSetRotEvent()), g_keyConfig.getKey( "viewwin_anim_set_rotation" ) );
+   m_animSetTransItem  = m_animMenu->addAction( tr("Set Translation Keyframe", "Animation|Set Translation Keyframe"), this, SLOT(animSetTransEvent()), g_keyConfig.getKey( "viewwin_anim_set_translation" ) );
 
-   m_animMenu->setItemEnabled( m_stopAnimItem, false );
-   m_animMenu->setItemEnabled( m_animSetRotItem, false );
-   m_animMenu->setItemEnabled( m_animSetTransItem, false );
+   m_stopAnimItem->setEnabled( false );
+   m_animSetRotItem->setEnabled( false );
+   m_animSetTransItem->setEnabled( false );
 
-   m_animMenu->setItemEnabled( m_animCopyFrame,  false  );
-   m_animMenu->setItemEnabled( m_animPasteFrame,  false  );
-   m_animMenu->setItemEnabled( m_animClearFrame,  false  );
-   m_animMenu->setItemEnabled( m_animCopySelected,  false  );
-   m_animMenu->setItemEnabled( m_animPasteSelected,  false  );
+   m_animCopyFrame->setEnabled( false );
+   m_animPasteFrame->setEnabled( false );
+   m_animClearFrame->setEnabled( false );
+   m_animCopySelected->setEnabled( false );
+   m_animPasteSelected->setEnabled( false );
 
-   m_helpMenu = new QPopupMenu( this );
-   m_helpMenu->insertItem( tr("Contents...", "Help|Contents"), this, SLOT(helpWindowEvent()), g_keyConfig.getKey( "viewwin_help_contents" ) );
-   m_helpMenu->insertItem( tr("License...", "Help|License"),  this, SLOT(licenseWindowEvent()), g_keyConfig.getKey( "viewwin_help_license" ) );
-   m_helpMenu->insertItem( tr("About...", "Help|About"),    this, SLOT(aboutWindowEvent()), g_keyConfig.getKey( "viewwin_help_about" ) );
+   m_helpMenu = new QMenu( this );
+   m_helpMenu->addAction( tr("Contents...", "Help|Contents"), this, SLOT(helpWindowEvent()), g_keyConfig.getKey( "viewwin_help_contents" ) );
+   m_helpMenu->addAction( tr("License...", "Help|License"),  this, SLOT(licenseWindowEvent()), g_keyConfig.getKey( "viewwin_help_license" ) );
+   m_helpMenu->addAction( tr("About...", "Help|About"),    this, SLOT(aboutWindowEvent()), g_keyConfig.getKey( "viewwin_help_about" ) );
 
    m_menuBar = menuBar();
-   m_menuBar->insertItem( tr("&File", "menu bar"), m_fileMenu );
-   m_menuBar->insertItem( tr("&View", "menu bar"), m_viewMenu );
-   m_menuBar->insertItem( tr("&Tools", "menu bar"), m_toolMenu );
-   m_menuBar->insertItem( tr("&Model", "menu bar"), m_modelMenu );
-   m_menuBar->insertItem( tr("&Geometry", "menu bar"), m_geometryMenu );
-   m_menuBar->insertItem( tr("Mate&rials", "menu bar"), m_materialsMenu );
-   m_menuBar->insertItem( tr("&Influences", "menu bar"), m_jointsMenu );
-   m_menuBar->insertItem( tr("&Animation", "menu bar"), m_animMenu );
-   m_menuBar->insertItem( tr("&Help", "menu bar"), m_helpMenu );
+   m_fileMenu->setTitle( tr("&File", "menu bar") );
+   m_menuBar->addMenu( m_fileMenu );
+   m_viewMenu->setTitle( tr("&View", "menu bar") );
+   m_menuBar->addMenu( m_viewMenu );
+   m_toolMenu->setTitle( tr("&Tools", "menu bar") );
+   m_menuBar->addMenu( m_toolMenu );
+   m_modelMenu->setTitle( tr("&Model", "menu bar") );
+   m_menuBar->addMenu( m_modelMenu );
+   m_geometryMenu->setTitle( tr("&Geometry", "menu bar") );
+   m_menuBar->addMenu( m_geometryMenu );
+   m_materialsMenu->setTitle( tr("Mate&rials", "menu bar") );
+   m_menuBar->addMenu( m_materialsMenu );
+   m_jointsMenu->setTitle( tr("&Influences", "menu bar") );
+   m_menuBar->addMenu( m_jointsMenu );
+   m_animMenu->setTitle( tr("&Animation", "menu bar") );
+   m_menuBar->addMenu( m_animMenu );
+   m_helpMenu->setTitle( tr("&Help", "menu bar") );
+   m_menuBar->addMenu( m_helpMenu );
 
-   // this is probably unnecessary now
-   m_model->setUndoEnabled( true );
-   
    resize( 
          g_prefs.exists( "ui_viewwin_width")  ? g_prefs( "ui_viewwin_width" )  : 900,
          g_prefs.exists( "ui_viewwin_height") ? g_prefs( "ui_viewwin_height" ) : 700 );
@@ -620,23 +648,24 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent, const char * name )
    m_viewPanel->modelUpdatedEvent();
    show();
 
-#ifdef HAVE_QT4
-   QTimer::singleShot( 50, m_viewPanel, SLOT(reshow()) );
-#endif // HAVE_QT4
-
    QTimer * m_savedTimer = new QTimer();
    connect( m_savedTimer, SIGNAL(timeout()), this, SLOT(savedTimeoutCheck()) );
    m_savedTimer->start( 1000 );
 
    QString windowPos;
-#ifdef HAVE_QT4
-   QTextStream ts( &windowPos, QIODevice::ReadWrite  );
-#else
-   QTextStream ts( &windowPos, IO_ReadWrite  );
-#endif // HAVE_QT4
 
    loadDockPositions();
+   stopAnimationMode();
+   m_model->setUndoEnabled( true );
    m_model->clearUndo();
+
+   // This is a hack to prevent a minimized bool panel from blocking the left
+   // side of the menu bar.
+   if ( !m_boolPanel->isVisible() )
+   {
+      m_boolPanel->show();
+      m_boolPanel->hide();
+   }
 }
 
 ViewWindow::~ViewWindow()
@@ -761,7 +790,7 @@ void ViewWindow::resizeEvent ( QResizeEvent * e )
 }
 */
 
-void ViewWindow::helpNowEvent( int id )
+void ViewWindow::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_mainwin.html", false );
    win->show();
@@ -792,7 +821,7 @@ void ViewWindow::saveModelEvent()
          {
             QString reason = modelErrStr( err, m_model );
             reason = QString(filename) + QString(":\n") + reason;
-            msg_error( (const char *) reason.utf8() );
+            msg_error( (const char *) reason.toUtf8() );
          }
       }
    }
@@ -818,7 +847,7 @@ void ViewWindow::exportSelectedEvent()
          && m_model->getSelectedPointCount() == 0
          && m_model->getSelectedProjectionCount() == 0 )
    {
-      model_status( m_model, StatusError, STATUSTIME_LONG, tr( "You must have at least 1 face, joint, or point selected to Export Selected" ).utf8() );
+      model_status( m_model, StatusError, STATUSTIME_LONG, tr( "You must have at least 1 face, joint, or point selected to Export Selected" ).toUtf8() );
       return;
    }
 
@@ -879,29 +908,20 @@ void ViewWindow::saveModelInternal( Model * model, bool exportModel )
       dir = QString( "." );
    }
 
-#ifdef HAVE_QT4
    QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; ") + tr( "All Files (*)" ) );
    d.setAcceptMode( QFileDialog::AcceptSave );
    if ( exportModel )
    {
       d.selectFile( QString( model->getExportFile() ) );
    }
-#else
-   QFileDialog d(dir, formatsStr, NULL, QString(""), true );
-   d.addFilter( tr("All Files (*)") );
-   if ( exportModel )
-   {
-      d.setSelection( QString( model->getExportFile() ) );
-   }
-#endif
 
-   d.setCaption( tr( "Save model file as" ) );
+   d.setWindowTitle( tr( "Save model file as" ) );
    if ( exportModel )
    {
-      d.setCaption( tr( "Export model" ) );
+      d.setWindowTitle( tr( "Export model" ) );
    }
-   d.setSelectedFilter( formatsStr );
-   d.setMode( QFileDialog::AnyFile );
+   d.selectFilter( formatsStr );
+   d.setFileMode( QFileDialog::AnyFile );
 
    m_abortQuit = true;
 
@@ -912,30 +932,12 @@ void ViewWindow::saveModelInternal( Model * model, bool exportModel )
       if ( QDialog::Accepted == d.exec() )
       {
          bool save = true;
-#ifndef HAVE_QT4
-         if ( file_exists(d.selectedFile().utf8()) )
+
+         QStringList files = d.selectedFiles();
+
+         if ( save && !files.empty() )
          {
-            char val = msg_warning_prompt( (const char *) tr("File exists.  Overwrite?").utf8(), "yNc" );
-            switch ( val )
-            {
-               case 'N':
-                  again = true;
-
-                  // We want to fall through here
-
-               case 'C':
-                  save = false;
-                  break;
-
-               default:
-                  break;
-            }
-         }
-#endif // HAVE_QT4
-
-         if ( save )
-         {
-            std::string filename = (const char *) d.selectedFile().utf8();
+            std::string filename = (const char *) files[0].toUtf8();
             if ( !strchr(filename.c_str(), '.' ) )
             {
                filename += ".mm3d";
@@ -948,22 +950,14 @@ void ViewWindow::saveModelInternal( Model * model, bool exportModel )
                m_abortQuit = false;
                if ( exportModel )
                {
-#ifdef HAVE_QT4
-                  g_prefs( "ui_export_dir" ) = (const char *) d.directory().absolutePath().utf8();
-#else
-                  g_prefs( "ui_export_dir" ) = (const char *) d.dir()->absPath().utf8();
-#endif 
+                  g_prefs( "ui_export_dir" ) = (const char *) d.directory().absolutePath().toUtf8();
                   model->setExportFile( filename.c_str() );
                }
                else
                {
                   model->setSaved( true );
                   model->setFilename( filename.c_str() );
-#ifdef HAVE_QT4
-                  g_prefs( "ui_model_dir" ) = (const char *) d.directory().absolutePath().utf8();
-#else
-                  g_prefs( "ui_model_dir" ) = (const char *) d.dir()->absPath().utf8();
-#endif 
+                  g_prefs( "ui_model_dir" ) = (const char *) d.directory().absolutePath().toUtf8();
                }
                prefs_recent_model( (const char *) filename.c_str() );
 
@@ -973,7 +967,7 @@ void ViewWindow::saveModelInternal( Model * model, bool exportModel )
             {
                if ( Model::operationFailed( err ) )
                {
-                  msg_error( modelErrStr( err, model ).utf8() );
+                  msg_error( modelErrStr( err, model ).toUtf8() );
                }
             }
          }
@@ -1008,23 +1002,23 @@ void ViewWindow::mergeModelsEvent()
       dir = ".";
    }
 
-#ifdef HAVE_QT4
    QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; ") + tr( "All Files (*)" ) );
-#else
-   QFileDialog d(dir, formatsStr, NULL, QString(""), true );
-   d.addFilter( tr("All Files (*)") );
-#endif
 
-   d.setCaption( tr( "Open model file" ) );
-   d.setSelectedFilter( formatsStr );
+   d.setWindowTitle( tr( "Open model file" ) );
+   d.selectFilter( formatsStr );
 
    if ( QDialog::Accepted == d.exec() )
    {
-      char * filename = strdup( d.selectedFile().utf8() );
+      QStringList files = d.selectedFiles();
+
+      if ( files.empty() )
+         return;
+
+      std::string filename = (const char *) files[0].toUtf8();
 
       Model::ModelErrorE err;
       Model * model = new Model();
-      if ( (err = FilterManager::getInstance()->readFile( model, filename )) == Model::ERROR_NONE)
+      if ( (err = FilterManager::getInstance()->readFile( model, filename.c_str() )) == Model::ERROR_NONE)
       {
          model_show_alloc_stats();
 
@@ -1048,17 +1042,13 @@ void ViewWindow::mergeModelsEvent()
             mw.getRotation( rot );
             mw.getTranslation( trans );
             m_model->mergeModels( model, mw.getIncludeTexture(), mode, true, trans, rot );
-            m_model->operationComplete( tr("Merge models").utf8() );
-#ifdef HAVE_QT4
-            g_prefs( "ui_model_dir" ) = (const char *) d.directory().absolutePath().utf8();
-#else
-            g_prefs( "ui_model_dir" ) = (const char *) d.dir()->absPath().utf8();
-#endif 
+            m_model->operationComplete( tr("Merge models").toUtf8() );
+            g_prefs( "ui_model_dir" ) = (const char *) d.directory().absolutePath().toUtf8();
 
             m_viewPanel->modelUpdatedEvent();
          }
 
-         prefs_recent_model( filename );
+         prefs_recent_model( filename.c_str() );
          delete model;
       }
       else
@@ -1066,13 +1056,11 @@ void ViewWindow::mergeModelsEvent()
          if ( Model::operationFailed( err ) )
          {
             QString reason = modelErrStr( err, model );
-            reason = tr(filename) + tr(":\n") + reason;
-            msg_error( (const char *) reason.utf8() );
+            reason = tr(filename.c_str()) + tr(":\n") + reason;
+            msg_error( (const char *) reason.toUtf8() );
          }
          delete model;
       }
-
-      free( filename );
    }
 }
 
@@ -1103,29 +1091,29 @@ void ViewWindow::mergeAnimationsEvent()
       dir = ".";
    }
 
-#ifdef HAVE_QT4
    QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; ") + tr( "All Files (*)" ) );
-#else
-   QFileDialog d(dir, formatsStr, NULL, QString(""), true );
-   d.addFilter( tr("All Files (*)") );
-#endif
 
-   d.setCaption( tr( "Open model file" ) );
-   d.setSelectedFilter( formatsStr );
+   d.setWindowTitle( tr( "Open model file" ) );
+   d.selectFilter( formatsStr );
 
    if ( QDialog::Accepted == d.exec() )
    {
-      char * filename = strdup( d.selectedFile().utf8() );
+      QStringList files = d.selectedFiles();
+
+      if ( files.empty() )
+         return;
+
+      std::string filename = (const char *) files[0].toUtf8();
 
       Model::ModelErrorE err;
       Model * model = new Model();
-      if ( (err = FilterManager::getInstance()->readFile( model, filename )) == Model::ERROR_NONE)
+      if ( (err = FilterManager::getInstance()->readFile( model, filename.c_str() )) == Model::ERROR_NONE)
       {
          model_show_alloc_stats();
 
          m_model->mergeAnimations( model );
 
-         prefs_recent_model( filename );
+         prefs_recent_model( filename.c_str() );
          delete model;
       }
       else
@@ -1133,13 +1121,11 @@ void ViewWindow::mergeAnimationsEvent()
          if ( Model::operationFailed( err ) )
          {
             QString reason = modelErrStr( err, model );
-            reason = tr(filename) + tr(":\n") + reason;
-            msg_error( (const char *) reason.utf8() );
+            reason = tr(filename.c_str()) + tr(":\n") + reason;
+            msg_error( (const char *) reason.toUtf8() );
          }
          delete model;
       }
-
-      free( filename );
    }
 }
 
@@ -1153,28 +1139,22 @@ void ViewWindow::scriptEvent()
    }
 
    QString formatsStr = QString( "Lua scripts (*.lua)" );
-#ifdef HAVE_QT4
    QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; ") + tr( "All Files (*)" ) );
-#else
-   QFileDialog d(dir, formatsStr, NULL, QString(""), true );
-   d.addFilter( tr("All Files (*)") );
-#endif
 
-   d.setCaption( tr( "Open model file" ) );
-   d.setSelectedFilter( formatsStr );
+   d.setWindowTitle( tr( "Open model file" ) );
+   d.selectFilter( formatsStr );
 
    if ( QDialog::Accepted == d.exec() )
    {
-#ifdef HAVE_QT4
-      g_prefs( "ui_script_dir" ) = (const char *) d.directory().absolutePath().utf8();
-#else
-      g_prefs( "ui_script_dir" ) = (const char *) d.dir()->absPath().utf8();
-#endif 
+      QStringList files = d.selectedFiles();
 
-      char * filename = strdup( d.selectedFile().utf8() );
-      runScript( filename );
+      if ( files.empty() )
+         return;
 
-      free( filename );
+      g_prefs( "ui_script_dir" ) = (const char *) d.directory().absolutePath().toUtf8();
+
+      std::string filename = (const char *) files[0].toUtf8();
+      runScript( filename.c_str() );
    }
 #endif // HAVE_LUALIB
 }
@@ -1205,7 +1185,7 @@ void ViewWindow::runScript( const char * filename )
       {
          log_debug( "script complete, exited normally\n" );
          QString str = tr("Script %1 complete").arg(basename.c_str());
-         model_status( m_model, StatusNormal, STATUSTIME_SHORT, "%s", (const char *) str.utf8() );
+         model_status( m_model, StatusNormal, STATUSTIME_SHORT, "%s", (const char *) str.toUtf8() );
       }
       else
       {
@@ -1213,7 +1193,7 @@ void ViewWindow::runScript( const char * filename )
          QString str = tr("Script %1 error %2")
             .arg(basename.c_str())
             .arg(lua.error());
-         model_status( m_model, StatusError, STATUSTIME_LONG, "%s", (const char *) str.utf8() );
+         model_status( m_model, StatusError, STATUSTIME_LONG, "%s", (const char *) str.toUtf8() );
       }
 
       m_model->setNoAnimation();
@@ -1254,7 +1234,7 @@ void ViewWindow::closeEvent( QCloseEvent * e )
             {
                QString str = tr( "Unknown response: %1, Canceling close request" )
                   .arg( val );
-               msg_error( (const char *) str.utf8() );
+               msg_error( (const char *) str.toUtf8() );
             }
             e->ignore();
             break;
@@ -1267,10 +1247,10 @@ void ViewWindow::closeEvent( QCloseEvent * e )
 #endif // CODE_DEBUG
 }
 
-int ViewWindow::insertMenuItem( QPopupMenu * parentMenu,
-      const QString & path, const QString & name, QPopupMenu * subMenu )
+QAction * ViewWindow::insertMenuItem( QMenu * parentMenu, bool isTool,
+      const QString & path, const QString & name, QMenu * subMenu )
 {
-   QPopupMenu * addMenu = parentMenu;
+   QMenu * addMenu = parentMenu;
 
    if ( path.length() != 0 )
    {
@@ -1289,27 +1269,20 @@ int ViewWindow::insertMenuItem( QPopupMenu * parentMenu,
       if ( !found )
       {
          // TODO deal with multi-level paths
-         addMenu = new QPopupMenu( this );
-#ifndef HAVE_QT4
-         // FIXME this is a hack, perhaps need a connect callback?
-         // Or just wait until Qt4 only to fix it?
-         if ( parentMenu == m_toolMenu )
+         addMenu = new QMenu( this );
+
+         QString module;
+         if ( isTool )
          {
-            connect( addMenu, SIGNAL(activated(int)), this, SLOT(toolActivated(int)));
+            module = "Tool";
+            connect( addMenu, SIGNAL(triggered(QAction*)), this, SLOT(toolActivated(QAction*)));
          }
-         else if ( parentMenu == m_geometryMenu )
-         {
-            connect( addMenu, SIGNAL(activated(int)), this, SLOT(primitiveCommandActivated(int)));
-         }
-#endif // HAVE_QT4
-         // This is a hack (comparing against menu to see which
-         // module we should translate from)
-         QString module = "Tool";
-         if ( parentMenu != m_toolMenu )
+         else
          {
             module = "Command";
          }
-         parentMenu->insertItem( qApp->translate( module, path ), addMenu );
+         addMenu->setTitle( qApp->translate( module.toUtf8(), path.toUtf8() ) );
+         parentMenu->addMenu( addMenu );
 
          MenuItemT mi;
          mi.text = path;
@@ -1319,16 +1292,17 @@ int ViewWindow::insertMenuItem( QPopupMenu * parentMenu,
       }
    }
 
-   int id;
+   QAction * id;
    if ( subMenu )
    {
-      id = addMenu->insertItem( name, subMenu );
+      subMenu->setTitle( name );
+      id = addMenu->addMenu( subMenu );
    }
    else
    {
-      id = addMenu->insertItem( name );
+      id = addMenu->addAction( name );
    }
-   log_debug( "added %s as id %d\n", name.latin1(), id );
+   log_debug( "added %s as id %d\n", (const char *) name.toUtf8(), id );
    return id;
 }
 
@@ -1352,68 +1326,44 @@ void ViewWindow::frameSelectedEvent()
 
 void ViewWindow::showContextEvent()
 {
-   bool showContext = m_contextPanel->isVisible() ? false : true;
-   m_viewMenu->changeItem( m_showContext, showContext ? tr( "Hide Properties", "View|Hide Properties") : tr("Show Properties", "View|Show Properties") );
    m_viewPanel->modelUpdatedEvent();
 
-   if ( showContext )
-   {
-      m_contextPanel->show();
-      m_contextPanel->setModel( m_model );
-   }
-   else
-   {
-      m_contextPanel->hide();
-   }
+   // Set model so that it is properly initialized before display
+   m_contextPanel->setModel( m_model );
+   m_contextPanel->show();
+   m_contextPanel->raise();
+
+   // Set model again so that it actually displays properties
+   m_contextPanel->setModel( m_model );
 }
 
 void ViewWindow::renderBadEvent()
 {
    g_prefs( "ui_render_bad_textures" ) = 1;
-#ifndef HAVE_QT4
-   m_renderMenu->setItemChecked( m_renderBadItem, true );
-   m_renderMenu->setItemChecked( m_noRenderBadItem, false );
-#endif
    m_viewPanel->modelUpdatedEvent();
 }
 
 void ViewWindow::noRenderBadEvent()
 {
    g_prefs( "ui_render_bad_textures" ) = 0;
-#ifndef HAVE_QT4
-   m_renderMenu->setItemChecked( m_renderBadItem, false );
-   m_renderMenu->setItemChecked( m_noRenderBadItem, true );
-#endif
    m_viewPanel->modelUpdatedEvent();
 }
 
 void ViewWindow::renderBackface()
 {
    g_prefs( "ui_render_backface_cull" ) = 0;
-#ifndef HAVE_QT4
-   m_renderMenu->setItemChecked( m_renderBackface, true );
-   m_renderMenu->setItemChecked( m_noRenderBackface, false );
-#endif
    m_viewPanel->modelUpdatedEvent();
 }
 
 void ViewWindow::noRenderBackface()
 {
    g_prefs( "ui_render_backface_cull" ) = 1;
-#ifndef HAVE_QT4
-   m_renderMenu->setItemChecked( m_renderBackface, false );
-   m_renderMenu->setItemChecked( m_noRenderBackface, true );
-#endif
    m_viewPanel->modelUpdatedEvent();
 }
 
 void ViewWindow::renderProjections()
 {
    g_prefs( "ui_render_projections" ) = 0;
-#ifndef HAVE_QT4
-   m_renderMenu->setItemChecked( m_renderProjections, true );
-   m_renderMenu->setItemChecked( m_noRenderProjections, false );
-#endif
    m_model->setDrawProjections( true );
    m_viewPanel->modelUpdatedEvent();
 }
@@ -1426,23 +1376,19 @@ void ViewWindow::noRenderProjections()
    {
       doHide = false;
 
-      char ch = msg_info_prompt( (const char *) tr("Cannot hide with selected projections.  Unselect projections now?").utf8(), "yN" );
+      char ch = msg_info_prompt( (const char *) tr("Cannot hide with selected projections.  Unselect projections now?").toUtf8(), "yN" );
 
       if ( toupper(ch) == 'Y' )
       {
          doHide = true;
          m_model->unselectAll();
-         m_model->operationComplete( tr("Hide projections").utf8() );
+         m_model->operationComplete( tr("Hide projections").toUtf8() );
       }
    }
 
    if ( doHide )
    {
       g_prefs( "ui_render_projections" ) = 1;
-#ifndef HAVE_QT4
-      m_renderMenu->setItemChecked( m_renderProjections, false );
-      m_renderMenu->setItemChecked( m_noRenderProjections, true );
-#endif
       m_model->setDrawProjections( false );
       m_viewPanel->modelUpdatedEvent();
    }
@@ -1451,20 +1397,12 @@ void ViewWindow::noRenderProjections()
 void ViewWindow::renderSelectionEvent()
 {
    g_prefs( "ui_render_3d_selections" ) = 1;
-#ifndef HAVE_QT4
-   m_viewMenu->setItemChecked( m_renderSelectionItem, true );
-   m_viewMenu->setItemChecked( m_noRenderSelectionItem, false );
-#endif
    m_viewPanel->modelUpdatedEvent();
 }
 
 void ViewWindow::noRenderSelectionEvent()
 {
    g_prefs( "ui_render_3d_selections" ) = 0;
-#ifndef HAVE_QT4
-   m_viewMenu->setItemChecked( m_renderSelectionItem, false );
-   m_viewMenu->setItemChecked( m_noRenderSelectionItem, true );
-#endif
    m_viewPanel->modelUpdatedEvent();
 }
 
@@ -1476,13 +1414,13 @@ void ViewWindow::boneJointHide()
    {
       doHide = false;
 
-      char ch = msg_info_prompt( (const char *) tr("Cannot hide with selected joints.  Unselect joints now?").utf8(), "yN" );
+      char ch = msg_info_prompt( (const char *) tr("Cannot hide with selected joints.  Unselect joints now?").toUtf8(), "yN" );
 
       if ( toupper(ch) == 'Y' )
       {
          doHide = true;
          m_model->unselectAll();
-         m_model->operationComplete( tr("Hide bone joints").utf8() );
+         m_model->operationComplete( tr("Hide bone joints").toUtf8() );
       }
    }
 
@@ -1490,12 +1428,6 @@ void ViewWindow::boneJointHide()
    {
       m_model->setDrawJoints( Model::JOINTMODE_NONE );
       m_viewPanel->modelUpdatedEvent();
-
-#ifndef HAVE_QT4
-      m_renderMenu->setItemChecked( m_hideJointsItem, true );
-      m_renderMenu->setItemChecked( m_drawJointLinesItem, false );
-      m_renderMenu->setItemChecked( m_drawJointBonesItem, false );
-#endif
    }
 }
 
@@ -1505,12 +1437,6 @@ void ViewWindow::boneJointLines()
    g_prefs( "ui_draw_joints" ) = (int) m;
    m_model->setDrawJoints( m );
    m_viewPanel->modelUpdatedEvent();
-
-#ifndef HAVE_QT4
-   m_renderMenu->setItemChecked( m_hideJointsItem, false );
-   m_renderMenu->setItemChecked( m_drawJointLinesItem, true );
-   m_renderMenu->setItemChecked( m_drawJointBonesItem, false );
-#endif
 }
 
 void ViewWindow::boneJointBones()
@@ -1519,12 +1445,6 @@ void ViewWindow::boneJointBones()
    g_prefs( "ui_draw_joints" ) = (int) m;
    m_model->setDrawJoints( m );
    m_viewPanel->modelUpdatedEvent();
-
-#ifndef HAVE_QT4
-   m_renderMenu->setItemChecked( m_hideJointsItem, false );
-   m_renderMenu->setItemChecked( m_drawJointLinesItem, false );
-   m_renderMenu->setItemChecked( m_drawJointBonesItem, true );
-#endif
 }
 
 void ViewWindow::viewportSettingsEvent()
@@ -1533,11 +1453,11 @@ void ViewWindow::viewportSettingsEvent()
    win->show();
 }
 
-void ViewWindow::toolActivated( int id )
+void ViewWindow::toolActivated( QAction * id )
 {
-   ToolMenuItemList::iterator it;
-   it = m_tools.begin();
-   while ( it != m_tools.end() )
+   log_debug( "toolActivated(%p)\n", id );
+   for ( ToolMenuItemList::iterator it = m_tools.begin();
+         it != m_tools.end(); ++it )
    {
       if ( (*it)->id == id )
       {
@@ -1546,25 +1466,24 @@ void ViewWindow::toolActivated( int id )
          {
             if ( m_toolList[t] == tool )
             {
-               if ( !m_toolButtons[t]->isOn() )
+               if ( !m_toolButtons[t]->isChecked() )
                {
-                  m_toolButtons[t]->setOn( true );
+                  m_toolButtons[t]->setChecked( true );
                }
                m_currentTool = m_toolList[ t ];
             }
          }
          return;
       }
-      it++;
    }
 }
 
-void ViewWindow::primitiveCommandActivated( int id )
+void ViewWindow::primitiveCommandActivated( QAction * id )
 {
    if ( !m_canEdit )
    {
       model_status( m_model, StatusError, STATUSTIME_LONG,
-            tr("You are in animation mode, but there are no animations").utf8() );
+            tr("You are in animation mode, but there are no animations").toUtf8() );
       return;
    }
 
@@ -1576,7 +1495,7 @@ void ViewWindow::primitiveCommandActivated( int id )
       {
          if ( ((*it)->command)->activated( (*it)->arg, m_model ) )
          {
-            m_model->operationComplete( qApp->translate( "Command", ((*it)->command)->getName( (*it)->arg ) ) );
+            m_model->operationComplete( qApp->translate( "Command", ((*it)->command)->getName( (*it)->arg ) ).toUtf8() );
             m_viewPanel->modelUpdatedEvent();
          }
          break;
@@ -1585,7 +1504,7 @@ void ViewWindow::primitiveCommandActivated( int id )
    }
 }
 
-void ViewWindow::scriptActivated( int id )
+void ViewWindow::scriptActivated( QAction * id )
 {
 }
 
@@ -1610,7 +1529,7 @@ void ViewWindow::textureCoordEvent()
    }
    else
    {
-      msg_info( (const char *) tr("You must select faces first.\nUse the 'Select Faces' tool.", "Notice that user must have faces selected to open 'edit texture coordinates' window" ).utf8());
+      msg_info( (const char *) tr("You must select faces first.\nUse the 'Select Faces' tool.", "Notice that user must have faces selected to open 'edit texture coordinates' window" ).toUtf8());
    }
 }
 
@@ -1623,7 +1542,7 @@ void ViewWindow::paintTextureEvent()
    }
    else
    {
-      msg_info( (const char *) tr("You must select faces first.\nUse the 'Select Faces' tool.", "Notice that user must have faces selected to open 'paint texture' window").utf8() );
+      msg_info( (const char *) tr("You must select faces first.\nUse the 'Select Faces' tool.", "Notice that user must have faces selected to open 'paint texture' window").toUtf8() );
    }
 }
 
@@ -1654,6 +1573,7 @@ void ViewWindow::metaWindowEvent()
 void ViewWindow::boolWindowEvent()
 {
    m_boolPanel->show();
+   m_boolPanel->raise();
 }
 
 void ViewWindow::reloadTexturesEvent()
@@ -1694,20 +1614,8 @@ void ViewWindow::undoRequest()
 
          if ( m_model->getAnimationMode() )
          {
-            //m_animWin = new AnimWindow( m_model, true, this );
-            //connect( m_animWin, SIGNAL(animWindowClosed()), this, SLOT(animationModeDone()) );
-            m_animMenu->setItemEnabled( m_animExportItem, false );
-            //m_animMenu->setItemEnabled( m_animSetsItem, false );
-            m_animMenu->setItemEnabled( m_startAnimItem, false );
-            m_animMenu->setItemEnabled( m_stopAnimItem,  true  );
-            m_animMenu->setItemEnabled( m_animSetRotItem,  true  );
-            m_animMenu->setItemEnabled( m_animSetTransItem,  true  );
-            m_animMenu->setItemEnabled( m_animCopyFrame,  true  );
-            m_animMenu->setItemEnabled( m_animPasteFrame,  false  ); // Disabled until copy occurs
-            m_animMenu->setItemEnabled( m_animClearFrame,  true  );
-            m_animMenu->setItemEnabled( m_animCopySelected,  true  );
-            m_animMenu->setItemEnabled( m_animPasteSelected,  false  ); // Disabled until copy occurs
             m_animWidget->initialize( m_model, true );
+            animationModeOn();
             m_animWin->show();
          }
          else
@@ -1718,7 +1626,7 @@ void ViewWindow::undoRequest()
       
       QString str = tr( "Undo %1" ).arg( (opname && opname[0]) ? opname : "" );
       model_status ( m_model, StatusNormal, STATUSTIME_SHORT, "%s", 
-            (const char *) str.utf8() );
+            (const char *) str.toUtf8() );
 
       if ( m_model->getSelectedBoneJointCount() > 0 )
       {
@@ -1729,7 +1637,7 @@ void ViewWindow::undoRequest()
    }
    else
    {
-      model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Nothing to undo").utf8() );
+      model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Nothing to undo").toUtf8() );
    }
 }
 
@@ -1751,20 +1659,8 @@ void ViewWindow::redoRequest()
 
          if ( m_model->getAnimationMode() )
          {
-            //m_animWin = new AnimWindow( m_model, true, this );
-            //connect( m_animWin, SIGNAL(animWindowClosed()), this, SLOT(animationModeDone()) );
-            m_animMenu->setItemEnabled( m_animExportItem, false );
-            //m_animMenu->setItemEnabled( m_animSetsItem, false );
-            m_animMenu->setItemEnabled( m_startAnimItem, false );
-            m_animMenu->setItemEnabled( m_stopAnimItem,  true  );
-            m_animMenu->setItemEnabled( m_animSetRotItem,  true  );
-            m_animMenu->setItemEnabled( m_animSetTransItem,  true  );
-            m_animMenu->setItemEnabled( m_animCopyFrame,  true  );
-            m_animMenu->setItemEnabled( m_animPasteFrame,  false  ); // Disabled until copy occurs
-            m_animMenu->setItemEnabled( m_animClearFrame,  true  );
-            m_animMenu->setItemEnabled( m_animCopySelected,  true  );
-            m_animMenu->setItemEnabled( m_animPasteSelected,  false  ); // Disabled until copy occurs
             m_animWidget->initialize( m_model, true );
+            animationModeOn();
             m_animWin->show();
          }
          else
@@ -1782,20 +1678,19 @@ void ViewWindow::redoRequest()
       
       QString str = tr( "Redo %1" ).arg( (opname && opname[0]) ? opname : "" );
       model_status ( m_model, StatusNormal, STATUSTIME_SHORT, "%s", 
-            (const char *) str.utf8() );
+            (const char *) str.toUtf8() );
    }
    else
    {
-      model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Nothing to redo").utf8() );
+      model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Nothing to redo").toUtf8() );
    }
 }
 
-void ViewWindow::snapToSelectedEvent( int snapTo )
+void ViewWindow::snapToSelectedEvent( QAction * snapTo )
 {
    log_debug( "snapToSelectedEvent( %d )\n", snapTo );
-   m_snapMenu->setItemChecked( snapTo, !m_snapMenu->isItemChecked( snapTo ) );
-   g_prefs( "ui_snap_grid" )   = ( m_snapMenu->isItemChecked( 0 ) ) ? 1 : 0;
-   g_prefs( "ui_snap_vertex" ) = ( m_snapMenu->isItemChecked( 1 ) ) ? 1 : 0;
+   g_prefs( "ui_snap_grid" )   = ( m_snapToGrid->isChecked() ) ? 1 : 0;
+   g_prefs( "ui_snap_vertex" ) = ( m_snapToVertex->isChecked() ) ? 1 : 0;
 }
 
 void ViewWindow::helpWindowEvent()
@@ -1837,7 +1732,7 @@ void ViewWindow::animExportWindowEvent()
    }
    else
    {
-      msg_error( (const char *) tr("This model does not have any animations").utf8() );
+      msg_error( (const char *) tr("This model does not have any animations").toUtf8() );
    }
 }
 
@@ -1847,7 +1742,7 @@ void ViewWindow::animSetRotEvent()
    Matrix m;
    m.loadIdentity();
    m_model->rotateSelected( m, point );
-   m_model->operationComplete( tr("Set rotation keframe").utf8() );
+   m_model->operationComplete( tr("Set rotation keframe").toUtf8() );
 }
 
 void ViewWindow::animSetTransEvent()
@@ -1855,19 +1750,19 @@ void ViewWindow::animSetTransEvent()
    Matrix m;
    m.loadIdentity();
    m_model->translateSelected( m );
-   m_model->operationComplete( tr("Set translation keframe").utf8() );
+   m_model->operationComplete( tr("Set translation keframe").toUtf8() );
 }
 
 void ViewWindow::animCopyFrameEvent()
 {
    if ( m_animWin->isVisible() )
    {
-      m_animMenu->setItemEnabled( m_animPasteFrame, false );
-      m_animMenu->setItemEnabled( m_animPasteSelected, false );
+      m_animPasteFrame->setEnabled( false );
+      m_animPasteSelected->setEnabled( false );
 
       if ( m_animWidget->copyFrame( false ) )
       {
-         m_animMenu->setItemEnabled( m_animPasteFrame, true );
+         m_animPasteFrame->setEnabled( true );
       }
    }
 }
@@ -1884,12 +1779,12 @@ void ViewWindow::animCopySelectedEvent()
 {
    if ( m_animWin->isVisible() )
    {
-      m_animMenu->setItemEnabled( m_animPasteFrame, false );
-      m_animMenu->setItemEnabled( m_animPasteSelected, false );
+      m_animPasteFrame->setEnabled( false );
+      m_animPasteSelected->setEnabled( false );
 
       if ( m_animWidget->copyFrame( true ) )
       {
-         m_animMenu->setItemEnabled( m_animPasteSelected, true );
+         m_animPasteSelected->setEnabled( true );
       }
    }
 }
@@ -1909,111 +1804,82 @@ void ViewWindow::animClearFrameEvent()
 
 void ViewWindow::startAnimationMode()
 {
-   // FIXME centralize this logic (see undo/redo)
-   //m_animWin = new AnimWindow( m_model, false, this );
-   //connect( m_animWin, SIGNAL(animWindowClosed()), this, SLOT(animationModeDone()) );
-   m_animMenu->setItemEnabled( m_animExportItem, false );
-   //m_animMenu->setItemEnabled( m_animSetsItem, false );
-   m_animMenu->setItemEnabled( m_startAnimItem, false );
-   m_animMenu->setItemEnabled( m_stopAnimItem,  true  );
-   m_animMenu->setItemEnabled( m_animSetRotItem,  true  );
-   m_animMenu->setItemEnabled( m_animSetTransItem,  true  );
-   m_animMenu->setItemEnabled( m_animCopyFrame,  true  );
-   m_animMenu->setItemEnabled( m_animPasteFrame,  false  ); // Disabled until copy occurs
-   m_animMenu->setItemEnabled( m_animClearFrame,  true  );
-   m_animMenu->setItemEnabled( m_animCopySelected,  true  );
-   m_animMenu->setItemEnabled( m_animPasteSelected,  false  ); // Disabled until copy occurs
    m_animWidget->initialize( m_model, false );
+   animationModeOn();
    m_animWin->show();
 }
 
 void ViewWindow::stopAnimationMode()
 {
-   if ( m_animWin->isVisible() )
-   {
-      //m_animWin->close();
-      m_animWidget->stopAnimationMode();
-      animationModeDone();
-   }
+   m_animWin->close();
+   m_animWidget->stopAnimationMode();
+   animationModeOff();
 }
 
-void ViewWindow::animationModeDone()
+void ViewWindow::animationModeOn()
 {
-   // FIXME centralize this logic (see undo/redo)
-   m_animWin->hide();
-   m_animMenu->setItemEnabled( m_animExportItem, true );
-   //m_animMenu->setItemEnabled( m_animSetsItem, true );
-   m_animMenu->setItemEnabled( m_startAnimItem, true );
-   m_animMenu->setItemEnabled( m_stopAnimItem,  false  );
-   m_animMenu->setItemEnabled( m_animSetRotItem,  false  );
-   m_animMenu->setItemEnabled( m_animSetTransItem,  false  );
-   m_animMenu->setItemEnabled( m_animCopyFrame,  false  );
-   m_animMenu->setItemEnabled( m_animPasteFrame,  false  );
-   m_animMenu->setItemEnabled( m_animClearFrame,  false  );
-   m_animMenu->setItemEnabled( m_animCopySelected,  false  );
-   m_animMenu->setItemEnabled( m_animPasteSelected,  false  );
+   m_animExportItem->setEnabled( false );
+   m_startAnimItem->setEnabled( false );
+   m_stopAnimItem->setEnabled(  true  );
+   m_animSetRotItem->setEnabled(  true  );
+   m_animSetTransItem->setEnabled(  true  );
+   m_animCopyFrame->setEnabled(  true  );
+   m_animPasteFrame->setEnabled(  false  ); // Disabled until copy occurs
+   m_animClearFrame->setEnabled(  true  );
+   m_animCopySelected->setEnabled(  true  );
+   m_animPasteSelected->setEnabled(  false  ); // Disabled until copy occurs
+}
+
+void ViewWindow::animationModeOff()
+{
+   m_model->setNoAnimation();
+   m_viewPanel->modelUpdatedEvent();
+   m_animWin->close();
+   m_animExportItem->setEnabled( true );
+   m_startAnimItem->setEnabled( true );
+   m_stopAnimItem->setEnabled(  false  );
+   m_animSetRotItem->setEnabled(  false  );
+   m_animSetTransItem->setEnabled(  false  );
+   m_animCopyFrame->setEnabled(  false  );
+   m_animPasteFrame->setEnabled(  false  );
+   m_animClearFrame->setEnabled(  false  );
+   m_animCopySelected->setEnabled(  false  );
+   m_animPasteSelected->setEnabled(  false  );
 
    editEnableEvent();
 }
 
-
 void ViewWindow::contextPanelHidden()
 {
-   m_viewMenu->changeItem( m_showContext, tr( "Show Properties", "View|Show Properties") );
+   m_showContext->setText( tr( "Show Properties", "View|Show Properties") );
    //m_viewPanel->modelUpdatedEvent();
 }
 
 void ViewWindow::buttonToggled( bool on )
 {
-   QToolButton * newDown = NULL;
-   int newDownIndex = 0;
-
-   int downCount = 0;
-
-   for ( int t = 0; t < m_toolCount; t++ )
+   if ( on )
    {
-      if ( m_toolButtons[t]->isOn() )
+      if ( m_currentTool )
+         m_currentTool->deactivated();
+
+      for ( int t = 0; t < m_toolCount; t++ )
       {
-         downCount++;
-         if ( m_last != m_toolButtons[t] )
+         if ( m_toolButtons[t]->isChecked() )
          {
-            newDown = m_toolButtons[t];
-            newDownIndex = t;
+            if ( m_last != m_toolButtons[t] )
+            {
+               m_currentTool = m_toolList[ t ];
+               m_currentTool->activated( 0, m_model, this );
+               m_toolbox->setCurrentTool( m_currentTool );
+               break;
+            }
          }
-      }
-   }
-
-   if ( m_last && downCount > 1 )
-   {
-      m_last->setOn( false );
-   }
-
-   if ( newDown )
-   {
-      if ( on )
-      {
-         if ( m_currentTool )
-         {
-            m_currentTool->deactivated();
-         }
-         m_currentTool = m_toolList[ newDownIndex ];
-         m_currentTool->activated( 0, m_model, this );
-
-         m_last = newDown;
-         m_toolbox->setCurrentTool( m_currentTool );
-      }
-   }
-   else
-   {
-      if ( m_last )
-      {
-         m_last->setOn( true );
       }
    }
 }
 
 static void _registerKeyBinding( ::Tool * tool, int index,
-      QPopupMenu * menu, int id )
+      QMenu * menu, QAction * id )
 {
    QString name = QString( "tool_" ) + QString::fromUtf8( tool->getName( 0 ) );
 
@@ -2024,13 +1890,13 @@ static void _registerKeyBinding( ::Tool * tool, int index,
 
    name = name.replace( QString("."), QString("") );
    name = name.replace( QString(" "), QString("_") );
-   name = name.lower();
+   name = name.toLower();
 
-   QKeySequence key = g_keyConfig.getKey( name.latin1() );
+   QKeySequence key = g_keyConfig.getKey( (const char *) name.toUtf8() );
 
    if ( !key.isEmpty() )
    {
-      menu->setAccel( key, id );
+      id->setShortcut( key );
    }
 }
 
@@ -2045,9 +1911,9 @@ static QString _makeToolTip( ::Tool * tool, int index )
 
    lookupStr = lookupStr.replace( QString("."), QString("") );
    lookupStr = lookupStr.replace( QString(" "), QString("_") );
-   lookupStr = lookupStr.lower();
+   lookupStr = lookupStr.toLower();
 
-   QKeySequence key = g_keyConfig.getKey( lookupStr.latin1() );
+   QKeySequence key = g_keyConfig.getKey( (const char *) lookupStr.toUtf8() );
 
    QString name = qApp->translate( "Tool", tool->getName( index ) );
 
@@ -2062,9 +1928,12 @@ static QString _makeToolTip( ::Tool * tool, int index )
 
 void ViewWindow::initializeToolbox()
 {
+   connect( m_toolMenu, SIGNAL(triggered(QAction*)), this, SLOT(toolActivated(QAction*)));
    m_toolbox->registerAllTools();
 
-   m_toolButtons = new QToolButtonPtr[ m_toolbox->getToolCount() ];
+   QActionGroup * grp = new QActionGroup( this );
+
+   m_toolButtons = new QActionPtr[ m_toolbox->getToolCount() ];
    m_toolList    = new ToolPtr[ m_toolbox->getToolCount() ];
    m_toolCount = 0;
 
@@ -2074,15 +1943,16 @@ void ViewWindow::initializeToolbox()
       if ( !tool->isSeparator() )
       {
          ToolMenuItemT * item;
-         int id;
+         QAction * id;
          int count = tool->getToolCount();
          if ( count > 1 )
          {
-            QPopupMenu * menu = new QPopupMenu( this );
+            QMenu * menu = new QMenu( this );
+            connect( menu, SIGNAL(triggered(QAction*)), this, SLOT(toolActivated(QAction*)));
             for ( int t = 1; t < count; t++ )
             {
                const char * name = tool->getName( t );
-               id = menu->insertItem( qApp->translate( "Tool", name ) );
+               id = menu->addAction( qApp->translate( "Tool", name ) );
 
                _registerKeyBinding( tool, t, menu, id );
 
@@ -2094,29 +1964,28 @@ void ViewWindow::initializeToolbox()
                m_tools.push_back( item );
 
                // Create tool button
-               QIconSet set;
-#ifdef HAVE_QT4
-               set.setPixmap( QPixmap( tool->getPixmap() ), QIconSet::Small );
-#else
-               set.setPixmap( QPixmap( tool->getPixmap() ), SmallIconSize );
-#endif
-               m_toolList[m_toolCount] = tool;
-               m_toolButtons[ m_toolCount ] = new QToolButton( m_toolBar );
-               m_toolButtons[ m_toolCount ]->setToggleButton( true );
-               m_toolButtons[ m_toolCount ]->setIconSet( set );
+               QIcon set;
+               set.addPixmap( QPixmap( tool->getPixmap() ) );
 
+               m_toolList[m_toolCount] = tool;
+               // Text below
+               m_toolButtons[ m_toolCount ] = m_toolBar->addAction( set,
+                     qApp->translate( "Tool", tool->getName(t) ) );
+               m_toolButtons[ m_toolCount ]->setCheckable( true );
                if ( name && name[0] )
                {
-                  QToolTip::add( m_toolButtons[ m_toolCount ], _makeToolTip( tool, t ) );
+                  m_toolButtons[ m_toolCount ]->setToolTip( _makeToolTip( tool, t ) );
                }
 
                connect( m_toolButtons[m_toolCount], SIGNAL(toggled(bool)), this, SLOT(buttonToggled(bool)));
 
+               grp->addAction( m_toolButtons[ m_toolCount ] );
+
                m_toolCount++;
             }
 
-            //id = m_toolMenu->insertItem( qApp->translate( "Tool", tool->getName(0)), menu );
-            id = insertMenuItem( m_toolMenu, tool->getPath(), 
+            //id = m_toolMenu->addAction( qApp->translate( "Tool", tool->getName(0)), menu );
+            id = insertMenuItem( m_toolMenu, true, tool->getPath(),
                   qApp->translate( "Tool", tool->getName(0)), menu );
 
             _registerKeyBinding( tool, 0, m_toolMenu, id );
@@ -2127,13 +1996,12 @@ void ViewWindow::initializeToolbox()
             item->arg = 0;
 
             m_tools.push_back( item );
-            connect( menu, SIGNAL(activated(int)), this, SLOT(toolActivated(int)));
          }
          else
          {
             const char * name = tool->getName( 0 );
-            //id = m_toolMenu->insertItem( qApp->translate( "Tool", name ) );
-            id = insertMenuItem( m_toolMenu, tool->getPath(), 
+            //id = m_toolMenu->addAction( qApp->translate( "Tool", name ) );
+            id = insertMenuItem( m_toolMenu, true, tool->getPath(),
                   qApp->translate( "Tool", tool->getName(0)), NULL );
 
             _registerKeyBinding( tool, 0, m_toolMenu, id );
@@ -2146,40 +2014,36 @@ void ViewWindow::initializeToolbox()
             m_tools.push_back( item );
 
             // Create tool button
-            QIconSet set;
-#ifdef HAVE_QT4
-            set.setPixmap( QPixmap( tool->getPixmap() ), QIconSet::Small );
-#else
-            set.setPixmap( QPixmap( tool->getPixmap() ), SmallIconSize );
-#endif
+            QIcon set;
+            set.addPixmap( QPixmap( tool->getPixmap() ) );
+
             m_toolList[m_toolCount] = tool;
-
-            m_toolButtons[ m_toolCount ] = new QToolButton( m_toolBar );
-            m_toolButtons[ m_toolCount ]->setToggleButton( true );
-            m_toolButtons[ m_toolCount ]->setIconSet( set );
-
+            // Text below
+            m_toolButtons[ m_toolCount ] = m_toolBar->addAction( set,
+                     qApp->translate( "Tool", tool->getName(0) ) );
+            m_toolButtons[ m_toolCount ]->setCheckable( true );
             if ( name && name[0] )
             {
-               QToolTip::add( m_toolButtons[ m_toolCount ], _makeToolTip( tool, 0 ) );
+               m_toolButtons[ m_toolCount ]->setToolTip( _makeToolTip( tool, 0 ) );
             }
 
             connect( m_toolButtons[m_toolCount], SIGNAL(toggled(bool)), this, SLOT(buttonToggled(bool)));
+
+            grp->addAction( m_toolButtons[ m_toolCount ] );
 
             m_toolCount++;
          }
       }
       else
       {
-         m_toolMenu->insertSeparator();
+         m_toolMenu->addSeparator();
       }
       tool = m_toolbox->getNextTool();
    }
-   connect( m_toolMenu, SIGNAL(activated(int)), this, SLOT(toolActivated(int)));
-
 }
 
 static void _registerKeyBinding( Command * cmd, int index,
-      QPopupMenu * menu, int id )
+      QMenu * menu, QAction * id )
 {
    QString name = QString( "cmd_" ) + QString( cmd->getName( 0 ) );
 
@@ -2190,13 +2054,13 @@ static void _registerKeyBinding( Command * cmd, int index,
 
    name = name.replace( QString("."), QString("") );
    name = name.replace( QString(" "), QString("_") );
-   name = name.lower();
+   name = name.toLower();
 
-   QKeySequence key = g_keyConfig.getKey( name.latin1() );
+   QKeySequence key = g_keyConfig.getKey( (const char *) name.toUtf8() );
 
    if ( !key.isEmpty() )
    {
-      menu->setAccel( key, id );
+      id->setShortcut( key );
    }
 }
 
@@ -2211,14 +2075,14 @@ void ViewWindow::initializeCommands()
       if ( !cmd->isSeparator() )
       {
          CommandMenuItemT * item;
-         int id;
+         QAction * id;
          int count = cmd->getCommandCount();
          if ( count > 1 )
          {
-            QPopupMenu * menu = new QPopupMenu( this );
+            QMenu * menu = new QMenu( this );
             for ( int t = 1; t < count; t++ )
             {
-               id = menu->insertItem(  qApp->translate( "Command", cmd->getName(t) ) );
+               id = menu->addAction(  qApp->translate( "Command", cmd->getName(t) ) );
 
                item = new CommandMenuItemT;
                item->id = id;
@@ -2230,13 +2094,10 @@ void ViewWindow::initializeCommands()
             }
 
             log_debug( "adding command '%s' to menus\n", cmd->getName(0) );
-            id = insertMenuItem( m_geometryMenu, cmd->getPath(), 
+            id = insertMenuItem( m_geometryMenu, false, cmd->getPath(),
                   qApp->translate( "Command", cmd->getName(0) ), menu );
-            //id = m_geometryMenu->insertItem( qApp->translate( "Command", cmd->getName(0) ), menu );
+            //id = m_geometryMenu->addAction( qApp->translate( "Command", cmd->getName(0) ), menu );
             _registerKeyBinding( cmd, 0, m_geometryMenu, id );
-#ifndef HAVE_QT4
-            connect( menu, SIGNAL(activated(int)), this, SLOT(primitiveCommandActivated(int)));
-#endif 
 
             item = new CommandMenuItemT;
             item->id = id;
@@ -2247,10 +2108,10 @@ void ViewWindow::initializeCommands()
          }
          else
          {
-            QPopupMenu * curMenu = m_geometryMenu;
-            id = insertMenuItem( m_geometryMenu, cmd->getPath(), 
+            QMenu * curMenu = m_geometryMenu;
+            id = insertMenuItem( m_geometryMenu, false, cmd->getPath(),
                    qApp->translate( "Command", cmd->getName(0)), NULL );
-            //id = curMenu->insertItem( qApp->translate( "Command", cmd->getName(0)) );
+            //id = curMenu->addAction( qApp->translate( "Command", cmd->getName(0)) );
             item = new CommandMenuItemT;
             item->id = id;
             item->command = cmd;
@@ -2264,7 +2125,7 @@ void ViewWindow::initializeCommands()
       }
       else
       {
-         m_geometryMenu->insertSeparator();
+         m_geometryMenu->addSeparator();
       }
       cmd = m_cmdMgr->getNextCommand();
    }
@@ -2275,13 +2136,13 @@ void ViewWindow::fillMruMenu()
    m_mruMenu->clear();
    for ( unsigned i = 0; i < g_prefs("mru").count(); i++ )
    {
-      m_mruMenu->insertItem( QString::fromUtf8( g_prefs("mru")[i].stringValue().c_str() ) );
+      m_mruMenu->addAction( QString::fromUtf8( g_prefs("mru")[i].stringValue().c_str() ) );
    }
 }
 
-void ViewWindow::openMru( int id )
+void ViewWindow::openMru( QAction * id )
 {
-   openModelInWindow( m_mruMenu->text(id).utf8() );
+   openModelInWindow( id->text().toUtf8() );
 }
 
 void ViewWindow::fillScriptMruMenu()
@@ -2289,13 +2150,13 @@ void ViewWindow::fillScriptMruMenu()
    m_scriptMruMenu->clear();
    for ( unsigned i = 0; i < g_prefs("script_mru").count(); i++ )
    {
-      m_scriptMruMenu->insertItem( QString::fromUtf8( g_prefs("script_mru")[i].stringValue().c_str() ) );
+      m_scriptMruMenu->addAction( QString::fromUtf8( g_prefs("script_mru")[i].stringValue().c_str() ) );
    }
 }
 
-void ViewWindow::openScriptMru( int id )
+void ViewWindow::openScriptMru( QAction * id )
 {
-   runScript( m_scriptMruMenu->text(id).utf8() );
+   runScript( id->text().toUtf8() );
 }
 
 void ViewWindow::openModelEvent()
@@ -2318,7 +2179,7 @@ bool ViewWindow::openModel( const char * filename )
       model_show_alloc_stats();
 
       model->setSaved( true );
-      ViewWindow * win = new ViewWindow( model, NULL, "" );
+      ViewWindow * win = new ViewWindow( model, NULL );
       win->getSaved(); // Just so I don't have a warning
 
       prefs_recent_model( filename );
@@ -2329,7 +2190,7 @@ bool ViewWindow::openModel( const char * filename )
       {
          QString reason = modelErrStr( err, model );
          reason = QString(filename) + QString(":\n") + reason;
-         msg_error( (const char *) reason.utf8() );
+         msg_error( (const char *) reason.toUtf8() );
       }
       delete model;
    }
@@ -2371,26 +2232,22 @@ bool ViewWindow::openModelDialog( const char * openDirectory )
       dir = QString::fromUtf8( openDirectory );
    }
 
-#ifdef HAVE_QT4
    QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; ") + tr( "All Files (*)" ) );
-#else
-   QFileDialog d(dir, formatsStr, NULL, QString(""), true );
-   d.addFilter( tr("All Files (*)") );
-#endif
 
-   d.setCaption( tr( "Open model file" ) );
-   d.setSelectedFilter( formatsStr );
+   d.setWindowTitle( tr( "Open model file" ) );
+   d.selectFilter( formatsStr );
 
    if ( QDialog::Accepted == d.exec() )
    {
-      if ( openModel( d.selectedFile().utf8() ) )
+      QStringList files = d.selectedFiles();
+
+      if ( files.empty() )
+         return false;
+
+      if ( openModel( files[0].toUtf8() ) )
       {
          opened = true;
-#ifdef HAVE_QT4
-         g_prefs( "ui_model_dir" ) = (const char *) d.directory().absolutePath().utf8();
-#else
-         g_prefs( "ui_model_dir" ) = (const char *) d.dir()->absPath().utf8();
-#endif 
+         g_prefs( "ui_model_dir" ) = (const char *) d.directory().absolutePath().toUtf8();
       }
    }
 
@@ -2424,7 +2281,7 @@ bool ViewWindow::openModelInWindow( const char * filename )
             break;
          default:
             {
-               msg_error( (const char *) tr("Unknown response: Canceling operation").utf8() );
+               msg_error( (const char *) tr("Unknown response: Canceling operation").toUtf8() );
             }
             return false;
       }
@@ -2453,7 +2310,7 @@ bool ViewWindow::openModelInWindow( const char * filename )
       {
          QString reason = modelErrStr( err, model );
          reason = QString(filename) + QString(":\n") + reason;
-         msg_error( (const char *) reason.utf8() );
+         msg_error( (const char *) reason.toUtf8() );
       }
       delete model;
    }
@@ -2495,26 +2352,22 @@ bool ViewWindow::openModelDialogInWindow( const char * openDirectory )
       dir = openDirectory;
    }
 
-#ifdef HAVE_QT4
    QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; ") + tr( "All Files (*)" ) );
-#else
-   QFileDialog d(dir, formatsStr, NULL, QString(""), true );
-   d.addFilter( tr("All Files (*)") );
-#endif
 
-   d.setCaption( tr( "Open model file" ) );
-   d.setSelectedFilter( formatsStr );
+   d.setWindowTitle( tr( "Open model file" ) );
+   d.selectFilter( formatsStr );
 
    if ( QDialog::Accepted == d.exec() )
    {
-      if ( openModelInWindow( d.selectedFile().utf8() ) )
+      QStringList files = d.selectedFiles();
+
+      if ( files.empty() )
+         return false;
+
+      if ( openModelInWindow( files[0].toUtf8() ) )
       {
          opened = true;
-#ifdef HAVE_QT4
-         g_prefs( "ui_model_dir" ) = (const char *) d.directory().absolutePath().utf8();
-#else
-         g_prefs( "ui_model_dir" ) = (const char *) d.dir()->absPath().utf8();
-#endif 
+         g_prefs( "ui_model_dir" ) = (const char *) d.directory().absolutePath().toUtf8();
       }
    }
 
@@ -2562,7 +2415,7 @@ void ViewWindow::backgroundWindowEvent()
 
 void ViewWindow::newModelEvent()
 {
-   ViewWindow * win = new ViewWindow( new Model, NULL, "" );
+   ViewWindow * win = new ViewWindow( new Model, NULL );
    win->getSaved(); // Just so I don't have a warning
 }
 
@@ -2573,53 +2426,39 @@ void ViewWindow::savedTimeoutCheck()
 
 void ViewWindow::saveDockPositions()
 {
-   std::string dockFile = getMm3dHomeDirectory();
+   QString dockFile( getMm3dHomeDirectory().c_str() );
    dockFile += "/";
    dockFile += DOCK_FILENAME;
 
-   FILE * fp = fopen( dockFile.c_str(), "w" );
-   if ( fp )
+   QFile fp( dockFile );
+   if ( fp.open( QIODevice::WriteOnly ) )
    {
       {
-         // ts must go out of scope before fp is closed
-         QTextStream ts( fp, IO_WriteOnly );
-         ts << *this;
+         // Must go out of scope before fp is closed.
+         QDataStream stream(&fp);
+         stream << this->saveState( DOCK_VERSION );
       }
-      fclose( fp );
+      fp.close();
    }
 }
 
 void ViewWindow::loadDockPositions()
 {
-   std::string dockFile = getMm3dHomeDirectory();
+   QString dockFile( getMm3dHomeDirectory().c_str() );
    dockFile += "/";
    dockFile += DOCK_FILENAME;
 
-   FILE * fp = fopen( dockFile.c_str(), "r" );
-   if ( fp )
+   QFile fp( dockFile );
+   if ( fp.open( QIODevice::ReadOnly ) )
    {
       {
-         // ts must go out of scope before fp is closed
-         QTextStream ts( fp, IO_ReadOnly );
-         ts >> *this;
+         // Must go out of scope before fp is closed.
+         QDataStream stream(&fp);
+         QByteArray state;
+         stream >> state;
+         this->restoreState( state, DOCK_VERSION );
       }
-      fclose( fp );
-
-      // Update menu entry for context panel
-      if ( m_contextPanel->isVisible() )
-      {
-         m_viewMenu->changeItem( m_showContext, tr( "Hide Properties", "View|Hide Properties" ) );
-         m_contextPanel->setModel( m_model );
-      }
-      else
-      {
-         m_viewMenu->changeItem( m_showContext, tr("Show Properties", "View|Show Properties") );
-      }
-
-      // If the anim toolbar was visible on shutdown, it will be visible again.
-      // Hide it, and take the model out of animation mode.
-      m_model->setNoAnimation();
-      animationModeDone();
+      fp.close();
    }
 }
 
@@ -2646,6 +2485,6 @@ void ViewWindow::updateCaption()
       }
    }
 
-   setCaption( QString::fromUtf8( caption ) );
+   setWindowTitle( caption );
 }
 

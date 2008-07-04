@@ -24,24 +24,21 @@
 #ifndef __TORUSTOOLWIDGET_H
 #define __TORUSTOOLWIDGET_H
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-
 class QMainWindow;
 
 class QVBoxLayout;
 class QHBoxLayout;
+class QBoxLayout;
 
-#ifdef HAVE_QT4
-#define QGroupBox Q3GroupBox
-#endif
 class QGroupBox;
 class QSpinBox;
 class QCheckBox;
 class QSlider;
 class QLabel;
 
-class TorusToolWidget : public QDockWindow
+#include "toolwidget.h"
+
+class TorusToolWidget : public ToolWidget
 {
    Q_OBJECT
 
@@ -58,7 +55,7 @@ class TorusToolWidget : public QDockWindow
             virtual void setCenterValue( bool newValue )  = 0;
       };
 
-      TorusToolWidget( Observer * observer, QWidget * parent );
+      TorusToolWidget( Observer * observer, QMainWindow * parent );
       virtual ~TorusToolWidget();
 
    public slots:
@@ -71,7 +68,7 @@ class TorusToolWidget : public QDockWindow
    protected:
       Observer    * m_observer;
 
-      QBoxLayout * m_layout;
+      QBoxLayout  * m_layout;
 
       QGroupBox   * m_groupBox;
       QLabel      * m_segmentsLabel;

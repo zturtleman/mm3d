@@ -29,8 +29,8 @@
 #include "cmdmgr.h"
 #include "log.h"
 
-#include <qobject.h>
-#include <qapplication.h>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 RotateTextureCommand::RotateTextureCommand()
 {
@@ -97,12 +97,12 @@ bool RotateTextureCommand::activated( int arg, Model * model )
                model->setTextureCoords( *it, 0, oldS, oldT );
             }
 
-            model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Texture coordinates rotated" ).utf8() );
+            model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Texture coordinates rotated" ).toUtf8() );
             return true;
          }
          else
          {
-            model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "Must select faces" ).utf8() );
+            model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "Must select faces" ).toUtf8() );
          }
       }
    }
@@ -142,12 +142,12 @@ bool RotateTextureCommand::activated( int arg, Model * model )
 
             }
 
-            model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Texture coordinates rotated" ).utf8() );
+            model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Texture coordinates rotated" ).toUtf8() );
             return true;
          }
          else
          {
-            model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "Must select faces" ).utf8() );
+            model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "Must select faces" ).toUtf8() );
          }
       }
    }

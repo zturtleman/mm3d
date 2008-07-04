@@ -1,0 +1,13 @@
+Overall:
+   Test on various distros
+    X Feisty auto-detect
+    X Gutsy auto-detect
+    X Fedora auto-detect
+    X Slackware auto-detect (but weird viewport window sizes)
+    X Mandriva auto-detect (xmu-devel)
+   Feedback
+      Gentoo
+      SUSE
+      Debian
+   Problem: extremely slow on non-accelerated setup
+

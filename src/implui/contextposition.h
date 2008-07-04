@@ -26,13 +26,13 @@
 
 #include "contextposition.base.h"
 
-#include "mq3macro.h"
+#include <QtGui/QWidget>
 
 #include "contextwidget.h"
 
 class Model;
 
-class ContextPosition : public ContextPositionBase, public ContextWidget
+class ContextPosition : public QWidget, public Ui::ContextPositionBase, public ContextWidget
 {
    Q_OBJECT
    public:

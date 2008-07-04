@@ -11,8 +11,12 @@ EXTRA_DIST = \
 	cubetool.png \
 	cylindertool.jpg \
 	cylindertool.png \
+	dragvertextool.jpg \
+	dragvertextool.png \
 	ellipsetool.jpg \
 	ellipsetool.png \
+	extrudetool.jpg \
+	extrudetool.png \
 	image.png \
 	jointtool.jpg \
 	jointtool.png \

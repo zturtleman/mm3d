@@ -24,14 +24,16 @@
 
 #include "model.h"
 
-#include <qlineedit.h>
+#include <QtGui/QLineEdit>
+
 #include <stdlib.h>
 
 ContextName::ContextName( QWidget * parent )
-   : ContextNameBase( parent ),
+   : QWidget( parent ),
      m_change( false ),
      m_update( false )
 {
+   setupUi( this );
 }
 
 ContextName::~ContextName()
@@ -86,7 +88,7 @@ void ContextName::textChangedEvent( const QString & nameStr )
       {
          if ( m_model->isBoneJointSelected( b ) )
          {
-            m_model->setBoneJointName( b, (const char*) nameStr.utf8() );
+            m_model->setBoneJointName( b, (const char*) nameStr.toUtf8() );
             break;
          }
       }
@@ -96,12 +98,12 @@ void ContextName::textChangedEvent( const QString & nameStr )
       {
          if ( m_model->isPointSelected( p ) )
          {
-            m_model->setPointName( p, (const char*) nameStr.utf8() );
+            m_model->setPointName( p, (const char*) nameStr.toUtf8() );
             break;
          }
       }
 
-      m_model->operationComplete( tr( "Rename", "operation complete" ).utf8() );
+      m_model->operationComplete( tr( "Rename", "operation complete" ).toUtf8() );
 
       emit panelChange();
 

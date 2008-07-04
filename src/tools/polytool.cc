@@ -30,8 +30,8 @@
 
 #include "pixmap/polytool.xpm"
 
-#include <qobject.h>
-#include <qapplication.h>
+#include <QtGui/QMainWindow>
+#include <QtGui/QApplication>
 
 PolyTool::PolyTool()
    : m_model( NULL ),
@@ -49,10 +49,7 @@ PolyTool::~PolyTool()
 void PolyTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    m_model = model;
-   m_widget = new PolyToolWidget( (PolyToolWidget::Observer *) this, (QWidget *) mainwin );
-#ifdef HAVE_QT4
-   //mainwin->addDockWindow( m_widget, DockBottom );
-#endif
+   m_widget = new PolyToolWidget( this, mainwin );
    m_widget->show();
 }
 

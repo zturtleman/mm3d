@@ -31,8 +31,8 @@
 
 #include "pixmap/jointtool.xpm"
 
-#include <qobject.h>
-#include <qapplication.h>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 JointTool::JointTool()
 {
@@ -108,11 +108,11 @@ void JointTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y 
 
    if ( p >= 0 )
    {
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Joint created" ).utf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Joint created" ).toUtf8() );
    }
    else
    {
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Root joint created" ).utf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Root joint created" ).toUtf8() );
    }
 }
 

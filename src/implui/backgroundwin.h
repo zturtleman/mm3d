@@ -26,30 +26,27 @@
 
 #include "backgroundwin.base.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
+#include <QtGui/QDialog>
 
 class Model;
 class BackgroundSelect;
-class QAccel;
 
-class BackgroundWin : public BackgroundWinBase
+class BackgroundWin : public QDialog, public Ui::BackgroundWinBase
 {
    Q_OBJECT
 
    public:
-      BackgroundWin( Model *, QWidget * parent = NULL, const char * name = "" );
+      BackgroundWin( Model *, QWidget * parent = NULL );
       virtual ~BackgroundWin();
 
+   public slots:
       void selectedPageEvent( const QString & str );
       void accept();
       void reject();
 
-   public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
    protected:
-      QAccel * m_accel;
       Model * m_model;
       BackgroundSelect * m_bgSelect[6];
 };

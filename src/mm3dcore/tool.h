@@ -27,7 +27,6 @@
 #include "glmath.h"
 #include "model.h"
 
-#include <mq3macro.h>
 #include <vector>
 #include <stdlib.h> // for NULL
 

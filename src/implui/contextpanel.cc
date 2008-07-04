@@ -32,26 +32,22 @@
 
 #include "log.h"
 
-#include <qlayout.h>
+#include <QtGui/QLayout>
+#include <QtGui/QSpacerItem>
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QCloseEvent>
 
-#ifdef HAVE_QT4
-#include <QContextMenuEvent>
-#endif // HAVE_QT4
-
-ContextPanel::ContextPanel( QWidget * parent,
+ContextPanel::ContextPanel( QMainWindow * parent,
       ViewPanel * panel, ContextPanelObserver * ob )
-   : QDockWindow( QDockWindow::InDock, parent ),
+   : QDockWidget( tr( "Properties", "Window title" ), parent ),
      m_model( NULL ),
      m_observer( ob ),
-     m_panel( panel )
+     m_panel( panel ),
+     m_mainWidget( new QWidget( parent ) ),
+     m_spacer( NULL )
 {
-   m_layout = boxLayout();
-
-   setHorizontallyStretchable( true );
-   setVerticallyStretchable( true );
-   setResizeEnabled( true );
-
-   setCloseMode( QDockWindow::Always );
+   setWidget( m_mainWidget );
+   m_layout = new QBoxLayout( QBoxLayout::TopToBottom, m_mainWidget );
 }
 
 ContextPanel::~ContextPanel()
@@ -66,6 +62,12 @@ void ContextPanel::setModel( Model * model )
       delete *it;
    }
    m_widgets.clear();
+
+   if ( m_spacer )
+   {
+      delete m_spacer;
+      m_spacer = NULL;
+   }
 
    if ( m_model != model )
    {
@@ -130,7 +132,7 @@ void ContextPanel::modelChanged( int changeBits )
                && (m_model->getSelectedBoneJointCount() 
                    + m_model->getSelectedPointCount()) == 1 )
          {
-            ContextName * name = new ContextName( this );
+            ContextName * name = new ContextName( m_mainWidget );
             name->setModel( m_model );
             m_layout->addWidget( name );
             name->show();
@@ -142,7 +144,7 @@ void ContextPanel::modelChanged( int changeBits )
       }
 
       // Position should always be visible
-      ContextPosition * pos = new ContextPosition( this );
+      ContextPosition * pos = new ContextPosition( m_mainWidget );
       pos->setModel( m_model );
       m_layout->addWidget( pos );
       pos->show();
@@ -159,7 +161,7 @@ void ContextPanel::modelChanged( int changeBits )
          if ( ((pcount == 1) && (jcount == 0) && m_model->getAnimationMode() != Model::ANIMMODE_SKELETAL )
                || ((jcount == 1) && (pcount == 0) && m_model->getAnimationMode() == Model::ANIMMODE_SKELETAL ) )
          {
-            ContextRotation * rot = new ContextRotation( this );
+            ContextRotation * rot = new ContextRotation( m_mainWidget );
             rot->setModel( m_model );
             m_layout->addWidget( rot );
             rot->show();
@@ -175,7 +177,7 @@ void ContextPanel::modelChanged( int changeBits )
       {
          if ( m_model->isTriangleSelected( t ) )
          {
-            ContextGroup * grp = new ContextGroup( this, m_observer );
+            ContextGroup * grp = new ContextGroup( m_mainWidget, m_observer );
             grp->setModel( m_model );
             m_layout->addWidget( grp );
             grp->show();
@@ -192,7 +194,7 @@ void ContextPanel::modelChanged( int changeBits )
       {
          if ( m_model->isProjectionSelected( p ) )
          {
-            ContextProjection * prj = new ContextProjection( this, m_observer );
+            ContextProjection * prj = new ContextProjection( m_mainWidget, m_observer );
             prj->setModel( m_model );
             m_layout->addWidget( prj );
             prj->show();
@@ -229,7 +231,7 @@ void ContextPanel::modelChanged( int changeBits )
 
          if ( showInfluences )
          {
-            ContextInfluences * prj = new ContextInfluences( this );
+            ContextInfluences * prj = new ContextInfluences( m_mainWidget );
             prj->setModel( m_model );
             m_layout->addWidget( prj );
             prj->show();
@@ -239,13 +241,14 @@ void ContextPanel::modelChanged( int changeBits )
             m_widgets.push_back( prj );
          }
       }
+      m_spacer = new QSpacerItem( 0, 0, QSizePolicy::Preferred, QSizePolicy::MinimumExpanding );
       setUpdatesEnabled( true );
    }
 }
 
 void ContextPanel::show()
 {
-   QDockWindow::show();
+   QDockWidget::show();
 
    // this is causing a segfault on dock/undock because the widgets
    // are being destroyed and re-created. The solution is to call setModel
@@ -261,11 +264,16 @@ void ContextPanel::close()
 void ContextPanel::hide()
 {
    log_debug( "ContextPanel::hide()\n" );
-   emit panelHidden();
-   QDockWindow::hide();
+   QDockWidget::hide();
 }
 
 void ContextPanel::contextMenuEvent( QContextMenuEvent * e )
 {
    e->ignore();
 }
+
+void ContextPanel::closeEvent( QCloseEvent * e )
+{
+   emit panelHidden();
+}
+

@@ -26,24 +26,16 @@
 
 #include "config.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-
 #include "contextpanelobserver.h"
 
 #include <list>
-
 
 using std::list;
 
 class QVBoxLayout;
 class QMenuBar;
-class QPopupMenu;
-#ifdef HAVE_QT4
-class Q3ToolBar;
-#else 
+class QMenu;
 class QToolBar;
-#endif 
 
 class QTimer;
 class ViewPanel;
@@ -60,18 +52,24 @@ class Tool;
 class Script;
 
 class AnimWidget;
+class AnimWindow;
 class QToolButton;
 
 class Toolbox;
 class CommandManager;
-class QAccel;
+
+class QContextMenuEvent;
+class QCloseEvent;
+class QResizeEvent;
+
+#include <QtGui/QMainWindow>
 
 class ViewWindow : public QMainWindow, public ContextPanelObserver
 {
    Q_OBJECT
 
    public:
-      ViewWindow( Model * model, QWidget * parent = NULL, const char * name = "" );
+      ViewWindow( Model * model, QWidget * parent = NULL );
       virtual ~ViewWindow();
 
       static bool closeAllWindows();
@@ -99,7 +97,7 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       void modelChanged( Model * m );
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
       void saveModelEvent();
       void saveModelAsEvent();
@@ -142,9 +140,9 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
 
       void buttonToggled( bool on );
 
-      void toolActivated( int id );
-      void primitiveCommandActivated( int id );
-      void scriptActivated( int id );
+      void toolActivated( QAction * id );
+      void primitiveCommandActivated( QAction * id );
+      void scriptActivated( QAction * id );
 
       void animSetWindowEvent();
       void animExportWindowEvent();
@@ -159,7 +157,9 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
 
       void startAnimationMode();
       void stopAnimationMode();
-      void animationModeDone();
+
+      void animationModeOn();
+      void animationModeOff();
 
       void contextPanelHidden();
 
@@ -169,13 +169,13 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       void undoRequest();
       void redoRequest();
 
-      void snapToSelectedEvent( int snapTo );
+      void snapToSelectedEvent( QAction * snapTo );
 
       void fillMruMenu();
-      void openMru( int id );
+      void openMru( QAction * id );
 
       void fillScriptMruMenu();
-      void openScriptMru( int id );
+      void openScriptMru( QAction * id );
 
       void openModelEvent();
       void newModelEvent();
@@ -218,12 +218,12 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       void resizeEvent( QResizeEvent * );
 
       // returns id in menu
-      int insertMenuItem( QPopupMenu * parentMenu,
-            const QString & path, const QString & name, QPopupMenu * subMenu );
+      QAction * insertMenuItem( QMenu * parentMenu, bool isTool,
+            const QString & path, const QString & name, QMenu * subMenu );
 
       struct _ToolMenuItem_t
       {
-         int id;
+         QAction * id;
          ::Tool * tool;
          int arg;
       };
@@ -233,7 +233,7 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
 
       typedef struct _CommandMenuItem_t
       {
-         int id;
+         QAction * id;
          Command * command;
          int arg;
       } CommandMenuItemT;
@@ -243,36 +243,29 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       typedef struct _MenuItem_t
       {
          QString      text;
-         QPopupMenu * menu;
+         QMenu * menu;
       } MenuItemT;
 
       typedef list< MenuItemT > MenuItemList;
 
-      QAccel      * m_accel;
       QMenuBar    * m_menuBar;
-      QPopupMenu  * m_fileMenu;
-      QPopupMenu  * m_viewMenu;
-#ifdef HAVE_QT4
-      QMenu       * m_renderMenu;
-#else
-      QPopupMenu  * m_renderMenu;
-#endif // HAVE_QT4
-      QPopupMenu  * m_toolMenu;
-      QPopupMenu  * m_modelMenu;
-      QPopupMenu  * m_geometryMenu;
-      QPopupMenu  * m_materialsMenu;
-      QPopupMenu  * m_jointsMenu;
-      QPopupMenu  * m_animMenu;
-      QPopupMenu  * m_scriptMenu;
-      QPopupMenu  * m_helpMenu;
-      QPopupMenu  * m_mruMenu;
-      QPopupMenu  * m_scriptMruMenu;
-      QPopupMenu  * m_snapMenu;
-#ifdef HAVE_QT4
-      Q3ToolBar    * m_toolBar;
-#else
-      QToolBar   * m_toolBar;
-#endif
+      QMenu  * m_fileMenu;
+      QMenu  * m_viewMenu;
+      QMenu  * m_renderMenu;
+      QMenu  * m_toolMenu;
+      QMenu  * m_modelMenu;
+      QMenu  * m_geometryMenu;
+      QMenu  * m_materialsMenu;
+      QMenu  * m_jointsMenu;
+      QMenu  * m_animMenu;
+      QMenu  * m_scriptMenu;
+      QMenu  * m_helpMenu;
+      QMenu  * m_mruMenu;
+      QMenu  * m_scriptMruMenu;
+      QMenu  * m_snapMenu;
+
+      QToolBar    * m_toolBar;
+
       ViewPanel    * m_viewPanel;
       ContextPanel * m_contextPanel;
       BoolPanel    * m_boolPanel;
@@ -281,23 +274,45 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       TransformWindow * m_transformWin;
       StatusBar   * m_statusBar;
       Model       * m_model;
-      QDockWindow * m_animWin;
+      AnimWindow  * m_animWin;
       AnimWidget  * m_animWidget;
 
-      int           m_animSetsItem;
-      int           m_animExportItem;
-      int           m_animSetRotItem;
-      int           m_animSetTransItem;
-      int           m_animCopyFrame;
-      int           m_animPasteFrame;
-      int           m_animCopySelected;
-      int           m_animPasteSelected;
-      int           m_animClearFrame;
-      int           m_startAnimItem;
-      int           m_stopAnimItem;
-      int           m_showContext;
+      QAction *     m_snapToGrid;
+      QAction *     m_snapToVertex;
 
-#ifdef HAVE_QT4
+      QAction *     m_animSetsItem;
+      QAction *     m_animExportItem;
+      QAction *     m_animSetRotItem;
+      QAction *     m_animSetTransItem;
+      QAction *     m_animCopyFrame;
+      QAction *     m_animPasteFrame;
+      QAction *     m_animCopySelected;
+      QAction *     m_animPasteSelected;
+      QAction *     m_animClearFrame;
+      QAction *     m_startAnimItem;
+      QAction *     m_stopAnimItem;
+      QAction *     m_showContext;
+
+      QAction *     m_3dWire;
+      QAction *     m_3dFlat;
+      QAction *     m_3dSmooth;
+      QAction *     m_3dTexture;
+      QAction *     m_3dAlpha;
+
+      QAction *     m_canvasWire;
+      QAction *     m_canvasFlat;
+      QAction *     m_canvasSmooth;
+      QAction *     m_canvasTexture;
+      QAction *     m_canvasAlpha;
+
+      QAction *     m_view1;
+      QAction *     m_view1x2;
+      QAction *     m_view2x1;
+      QAction *     m_view2x2;
+      QAction *     m_view2x3;
+      QAction *     m_view3x2;
+      QAction *     m_view3x3;
+
       QAction *     m_renderBadItem;
       QAction *     m_noRenderBadItem;
       QAction *     m_renderSelectionItem;
@@ -309,19 +324,6 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       QAction *     m_noRenderBackface;
       QAction *     m_renderProjections;
       QAction *     m_noRenderProjections;
-#else // Qt 3.x
-      int           m_renderBadItem;
-      int           m_noRenderBadItem;
-      int           m_renderSelectionItem;
-      int           m_noRenderSelectionItem;
-      int           m_hideJointsItem;
-      int           m_drawJointLinesItem;
-      int           m_drawJointBonesItem;
-      int           m_renderBackface;
-      int           m_noRenderBackface;
-      int           m_renderProjections;
-      int           m_noRenderProjections;
-#endif // HAVE_QT4
 
       bool          m_abortQuit;
 
@@ -337,8 +339,8 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       int m_toolCount;
       Toolbox     * m_toolbox;
       ::Tool        ** m_toolList;
-      QToolButton ** m_toolButtons;
-      QToolButton * m_last;
+      QAction ** m_toolButtons;
+      QAction * m_last;
       ::Tool        * m_currentTool;
       bool m_canEdit;
 

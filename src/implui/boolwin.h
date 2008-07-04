@@ -28,17 +28,16 @@
 
 #include "model.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
+#include <QtGui/QWidget>
 
 class ViewPanel;
 
-class BoolWin : public BoolWinBase
+class BoolWin : public QWidget, public Ui::BoolWinBase
 {
    Q_OBJECT
 
    public:
-      BoolWin( Model *, ViewPanel * panel, QWidget * parent = NULL, const char * name = "" );
+      BoolWin( Model *, ViewPanel * panel, QWidget * parent = NULL );
       virtual ~BoolWin();
 
       void setModel( Model * );

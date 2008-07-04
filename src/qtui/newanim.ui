@@ -1,167 +1,146 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>NewAnimBase</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>NewAnimBase</cstring>
+<ui version="4.0" stdsetdef="1" >
+  <author></author>
+  <comment></comment>
+  <exportmacro></exportmacro>
+  <class>NewAnimBase</class>
+  <widget class="QDialog" name="NewAnimBase" >
+    <property name="geometry" >
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>417</width>
+        <height>187</height>
+      </rect>
     </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>417</width>
-            <height>187</height>
-        </rect>
+    <property name="windowTitle" >
+      <string>New Animation</string>
     </property>
-    <property name="caption">
-        <string>New Animation</string>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout1</cstring>
+    <layout class="QVBoxLayout" >
+      <item>
+        <layout class="QHBoxLayout" >
+          <property name="margin" >
+            <number>0</number>
+          </property>
+          <item>
+            <widget class="QLabel" name="textLabel1" >
+              <property name="text" >
+                <string>&amp;Name</string>
+              </property>
+              <property name="buddy" stdset="0" >
+                <cstring>m_name</cstring>
+              </property>
+              <property name="wordWrap" >
+                <bool>false</bool>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QLineEdit" name="m_name" />
+          </item>
+        </layout>
+      </item>
+      <item>
+        <widget class="QGroupBox" name="buttonGroup1" >
+          <property name="title" >
+            <string>Animation Type</string>
+          </property>
+          <layout class="QVBoxLayout" >
+            <property name="margin" >
+              <number>6</number>
             </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
+            <item>
+              <widget class="QRadioButton" name="m_skeletal" >
+                <property name="text" >
+                  <string>&amp;Skeletal</string>
                 </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Name</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>m_name</cstring>
-                    </property>
-                </widget>
-                <widget class="QLineEdit">
-                    <property name="name">
-                        <cstring>m_name</cstring>
-                    </property>
-                </widget>
-            </hbox>
+                <property name="shortcut" >
+                  <string>Alt+S</string>
+                </property>
+                <property name="checked" >
+                  <bool>true</bool>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <widget class="QRadioButton" name="m_frame" >
+                <property name="text" >
+                  <string>&amp;Frame</string>
+                </property>
+                <property name="shortcut" >
+                  <string>Alt+F</string>
+                </property>
+              </widget>
+            </item>
+          </layout>
         </widget>
-        <widget class="QButtonGroup">
-            <property name="name">
-                <cstring>buttonGroup1</cstring>
-            </property>
-            <property name="title">
-                <string>Animation Type</string>
-            </property>
-            <property name="exclusive">
+      </item>
+      <item>
+        <layout class="QHBoxLayout" >
+          <property name="margin" >
+            <number>0</number>
+          </property>
+          <item>
+            <spacer name="spacer1" >
+              <property name="sizeHint" >
+                <size>
+                  <width>91</width>
+                  <height>21</height>
+                </size>
+              </property>
+              <property name="sizeType" >
+                <enum>Expanding</enum>
+              </property>
+              <property name="orientation" >
+                <enum>Horizontal</enum>
+              </property>
+            </spacer>
+          </item>
+          <item>
+            <widget class="QPushButton" name="m_okButton" >
+              <property name="text" >
+                <string>&amp;Ok</string>
+              </property>
+              <property name="shortcut" >
+                <string>Alt+O</string>
+              </property>
+              <property name="default" >
                 <bool>true</bool>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QRadioButton">
-                    <property name="name">
-                        <cstring>m_skeletal</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Skeletal</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+S</string>
-                    </property>
-                    <property name="checked">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QRadioButton">
-                    <property name="name">
-                        <cstring>m_frame</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Frame</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+F</string>
-                    </property>
-                </widget>
-            </vbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout2</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer1</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>91</width>
-                            <height>21</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>m_okButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Ok</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+O</string>
-                    </property>
-                    <property name="default">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>m_cancelButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Cancel</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+C</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-    </vbox>
-</widget>
-<connections>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QPushButton" name="m_cancelButton" >
+              <property name="text" >
+                <string>&amp;Cancel</string>
+              </property>
+              <property name="shortcut" >
+                <string>Alt+C</string>
+              </property>
+            </widget>
+          </item>
+        </layout>
+      </item>
+    </layout>
+  </widget>
+  <layoutdefault spacing="6" margin="11" />
+  <connections>
     <connection>
-        <sender>m_okButton</sender>
-        <signal>clicked()</signal>
-        <receiver>NewAnimBase</receiver>
-        <slot>accept()</slot>
+      <sender>m_okButton</sender>
+      <signal>clicked()</signal>
+      <receiver>NewAnimBase</receiver>
+      <slot>accept()</slot>
     </connection>
     <connection>
-        <sender>m_cancelButton</sender>
-        <signal>clicked()</signal>
-        <receiver>NewAnimBase</receiver>
-        <slot>reject()</slot>
+      <sender>m_cancelButton</sender>
+      <signal>clicked()</signal>
+      <receiver>NewAnimBase</receiver>
+      <slot>reject()</slot>
     </connection>
     <connection>
-        <sender>m_name</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>NewAnimBase</receiver>
-        <slot>nameChangedEvent()</slot>
+      <sender>m_name</sender>
+      <signal>textChanged(QString)</signal>
+      <receiver>NewAnimBase</receiver>
+      <slot>nameChangedEvent()</slot>
     </connection>
-</connections>
-<slots>
-    <slot>nameChangedEvent()</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+  </connections>
+</ui>

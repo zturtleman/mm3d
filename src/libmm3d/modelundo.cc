@@ -37,7 +37,6 @@ bool MU_NoOp::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with NoOp\n" );
       return false;
    }
 }
@@ -375,7 +374,6 @@ bool MU_Select::combine( Undo * u )
    else
    */
    {
-      log_debug( "couldn't combine with select\n" );
       return false;
    }
 }
@@ -533,7 +531,6 @@ bool MU_Hide::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with hide\n" );
       return false;
    }
 }
@@ -608,7 +605,6 @@ bool MU_InvertNormal::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with invert normal\n" );
       return false;
    }
 }
@@ -718,7 +714,6 @@ bool MU_MovePrimitive::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with move vertex\n" );
       return false;
    }
 }
@@ -805,7 +800,6 @@ bool MU_SetPointRotation::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with point rotation\n" );
       return false;
    }
 }
@@ -941,7 +935,6 @@ bool MU_SetTexture::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with set texture\n" );
       return false;
    }
 }
@@ -1014,7 +1007,6 @@ bool MU_AddVertex::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with add vertex\n" );
       return false;
    }
 }
@@ -1087,7 +1079,6 @@ bool MU_AddTriangle::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with add triangle\n" );
       return false;
    }
 }
@@ -1159,7 +1150,6 @@ bool MU_AddGroup::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with add group\n" );
       return false;
    }
 }
@@ -1231,7 +1221,6 @@ bool MU_AddTexture::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with add texture\n" );
       return false;
    }
 }
@@ -1304,7 +1293,6 @@ bool MU_SetTextureCoords::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with set texture coords\n" );
       return false;
    }
 }
@@ -1378,7 +1366,6 @@ bool MU_AddToGroup::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with add to group\n" );
       return false;
    }
 }
@@ -1448,7 +1435,6 @@ bool MU_RemoveFromGroup::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with remove from group\n" );
       return false;
    }
 }
@@ -1523,7 +1509,6 @@ bool MU_DeleteTriangle::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with delete triangle\n" );
       return false;
    }
 }
@@ -1597,7 +1582,6 @@ bool MU_DeleteVertex::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with delete vertex\n" );
       return false;
    }
 }
@@ -1671,7 +1655,6 @@ bool MU_DeleteGroup::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with delete group\n" );
       return false;
    }
 }
@@ -1745,7 +1728,6 @@ bool MU_DeleteTexture::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with delete texture\n" );
       return false;
    }
 }
@@ -1855,7 +1837,6 @@ bool MU_SetLightProperties::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with set light properties\n" );
       return false;
    }
 }
@@ -1956,7 +1937,6 @@ bool MU_SetShininess::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with set shininess\n" );
       return false;
    }
 }
@@ -2092,7 +2072,6 @@ bool MU_SetTriangleVertices::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with set triangle vertices\n" );
       return false;
    }
 }
@@ -2153,7 +2132,6 @@ void MU_SubdivideSelected::redo( Model * model )
 
 bool MU_SubdivideSelected::combine( Undo * u )
 {
-   log_debug( "couldn't combine with subdivide selected\n" );
    return false;
 }
 
@@ -2212,7 +2190,6 @@ bool MU_SubdivideTriangle::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with subdivide triangles\n" );
       return false;
    }
 }
@@ -2413,7 +2390,6 @@ bool MU_SetAnimFPS::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with set anim fps\n" );
       return false;
    }
 }
@@ -2499,7 +2475,6 @@ bool MU_SetAnimKeyframe::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with set anim keyframe\n" );
       return false;
    }
 }
@@ -2610,7 +2585,6 @@ bool MU_DeleteKeyframe::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with delete keyframe\n" );
       return false;
    }
 }
@@ -2839,7 +2813,6 @@ bool MU_MoveFrameVertex::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with move frame vertex\n" );
       return false;
    }
 }
@@ -2939,7 +2912,6 @@ bool MU_MoveFramePoint::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with move frame point\n" );
       return false;
    }
 }
@@ -3039,7 +3011,6 @@ bool MU_RotateFramePoint::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with rotate frame point\n" );
       return false;
    }
 }
@@ -3136,7 +3107,6 @@ bool MU_AddFrameAnimFrame::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with add frame anim frame\n" );
       return false;
    }
 }
@@ -3244,7 +3214,6 @@ bool MU_DeleteFrameAnimFrame::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with delete frame\n" );
       return false;
    }
 }
@@ -3435,7 +3404,6 @@ bool MU_SetVertexBoneJoint::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with set vertex bone joint\n" );
       return false;
    }
 }
@@ -3512,7 +3480,6 @@ bool MU_SetPointBoneJoint::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with set point bone joint\n" );
       return false;
    }
 }
@@ -3589,7 +3556,6 @@ bool MU_SetTriangleProjection::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with set triangle projection\n" );
       return false;
    }
 }
@@ -3678,7 +3644,6 @@ void MU_AddAnimation::redo( Model * model )
 
 bool MU_AddAnimation::combine( Undo * u )
 {
-   log_debug( "couldn't combine with add animation\n" );
    return false;
 }
 
@@ -3796,7 +3761,6 @@ void MU_DeleteAnimation::redo( Model * model )
 
 bool MU_DeleteAnimation::combine( Undo * u )
 {
-   log_debug( "couldn't combine with delete animation\n" );
    return false;
 }
 
@@ -4094,7 +4058,6 @@ void MU_AddBoneJoint::redo( Model * model )
 
 bool MU_AddBoneJoint::combine( Undo * u )
 {
-   log_debug( "couldn't combine with add bone joint\n" );
    return false;
 }
 
@@ -4134,7 +4097,6 @@ void MU_AddPoint::redo( Model * model )
 
 bool MU_AddPoint::combine( Undo * u )
 {
-   log_debug( "couldn't combine with add point\n" );
    return false;
 }
 
@@ -4174,7 +4136,6 @@ void MU_AddProjection::redo( Model * model )
 
 bool MU_AddProjection::combine( Undo * u )
 {
-   log_debug( "couldn't combine with add projection\n" );
    return false;
 }
 
@@ -4216,7 +4177,6 @@ void MU_DeleteBoneJoint::redo( Model * model )
 
 bool MU_DeleteBoneJoint::combine( Undo * u )
 {
-   log_debug( "couldn't combine with delete bone joint\n" );
    return false;
 }
 
@@ -4258,7 +4218,6 @@ void MU_DeletePoint::redo( Model * model )
 
 bool MU_DeletePoint::combine( Undo * u )
 {
-   log_debug( "couldn't combine with delete point\n" );
    return false;
 }
 
@@ -4300,7 +4259,6 @@ void MU_DeleteProjection::redo( Model * model )
 
 bool MU_DeleteProjection::combine( Undo * u )
 {
-   log_debug( "couldn't combine with delete projection\n" );
    return false;
 }
 
@@ -4365,7 +4323,6 @@ bool MU_SetGroupSmooth::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with set smooth\n" );
       return false;
    }
 }
@@ -4441,7 +4398,6 @@ bool MU_SetGroupAngle::combine( Undo * u )
    }
    else
    {
-      log_debug( "couldn't combine with set smooth\n" );
       return false;
    }
 }
@@ -4645,7 +4601,6 @@ void MU_SetMaterialClamp::redo( Model * model )
 
 bool MU_SetMaterialClamp::combine( Undo * u )
 {
-   log_debug( "couldn't combine with set material clamp\n" );
    return false;
 }
 
@@ -4697,7 +4652,6 @@ void MU_SetMaterialTexture::redo( Model * model )
 
 bool MU_SetMaterialTexture::combine( Undo * u )
 {
-   log_debug( "couldn't combine with set material texture\n" );
    return false;
 }
 

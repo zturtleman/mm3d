@@ -26,24 +26,25 @@
 
 #include "transformwin.base.h"
 
-#include "mq3macro.h"
 #include "glmath.h"
 
+#include <QtGui/QDialog>
+
 class Model;
-class QAccel;
 class RgbaWin;
 
-class TransformWindow : public TransformWindowBase
+class TransformWindow : public QDialog, public Ui::TransformWindowBase
 {
    Q_OBJECT
 
    public:
-      TransformWindow( Model * model, QWidget * parent = NULL, const char * name = "" );
+      TransformWindow( Model * model, QWidget * parent = NULL );
       virtual ~TransformWindow();
 
       bool matrixIsUndoable( const Matrix & m );
       bool warnNoUndo( bool undoable );
 
+   public slots:
       // Transform window events
       void translateEvent();
       void rotateEulerEvent();
@@ -51,17 +52,16 @@ class TransformWindow : public TransformWindowBase
       void scaleEvent();
       void matrixEvent();
 
-   public slots:
       void setModel( Model * m );
-      void helpNowEvent( int );
+      void helpNowEvent();
 
       void close();
 
    protected:
 
-      QAccel * m_accel;
+      void applyMatrix( const Matrix & m, const QString & action );
+
       Model  * m_model;
-      bool     m_undoable;
 };
 
 #endif // __TRANSFORMWIN_H

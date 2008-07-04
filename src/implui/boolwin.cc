@@ -31,21 +31,24 @@
 #include "viewpanel.h"
 #include "modelstatus.h"
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qradiobutton.h>
+#include <QtGui/QPushButton>
+#include <QtGui/QLabel>
+#include <QtGui/QRadioButton>
+
 #include <stdlib.h>
 
 #include <list>
 
 using std::list;
 
-BoolWin::BoolWin( Model * model, ViewPanel * panel, QWidget * parent, const char * name )
-   : BoolWinBase( parent, name ),
+BoolWin::BoolWin( Model * model, ViewPanel * panel, QWidget * parent )
+   : QWidget( parent ),
      m_model( model ),
      m_panel( panel ),
      m_operation( Model::BO_Union )
 {
+   setupUi( this );
+
    m_unionButton->setChecked( true );
    updateOperationButton();
    clearObject();
@@ -130,7 +133,7 @@ void BoolWin::doOperationEvent()
          break;
       }
 
-      m_model->operationComplete( opStr.utf8() );
+      m_model->operationComplete( opStr.toUtf8() );
       clearObject();
       m_panel->modelUpdatedEvent();
    }
@@ -138,11 +141,11 @@ void BoolWin::doOperationEvent()
    {
       if ( bl.empty() )
       {
-         model_status( m_model, StatusError, STATUSTIME_LONG, tr("You must have at least once face selected").utf8() );
+         model_status( m_model, StatusError, STATUSTIME_LONG, tr("You must have at least once face selected").toUtf8() );
       }
       else
       {
-         model_status( m_model, StatusError, STATUSTIME_LONG, tr("Object A triangles are still selected").utf8() );
+         model_status( m_model, StatusError, STATUSTIME_LONG, tr("Object A triangles are still selected").toUtf8() );
       }
    }
 }
@@ -158,7 +161,7 @@ void BoolWin::setObjectEvent()
       m_opButton->setEnabled( true );
 
       QString labelStr;
-      labelStr.sprintf( "Object: %d Faces", tris.size() );
+      labelStr.sprintf( "Object: %d Faces", (int) tris.size() );
       m_setLabel->setText( labelStr );
 
       m_model->clearMarkedTriangles();

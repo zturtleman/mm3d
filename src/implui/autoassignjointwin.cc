@@ -28,32 +28,34 @@
 #include "modelstatus.h"
 #include "helpwin.h"
 
-#include <qslider.h>
-#include <qcheckbox.h>
+#include <QtGui/QSlider>
+#include <QtGui/QCheckBox>
+#include <QtGui/QShortcut>
 
 using std::list;
 using std::map;
 
-AutoAssignJointWin::AutoAssignJointWin( Model * model, QWidget * parent, const char * name )
-   : AutoAssignJointWinBase( parent, name, true ),
-     m_accel( new QAccel(this) ),
+AutoAssignJointWin::AutoAssignJointWin( Model * model, QWidget * parent )
+   : QDialog( parent ),
      m_model( model )
 {
+   setModal( true );
+   setupUi( this );
    if ( m_model->getSelectedBoneJointCount() == 0 )
    {
       m_selected->setChecked( false );
       m_selected->setEnabled( false );
    }
 
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
 AutoAssignJointWin::~AutoAssignJointWin()
 {
 }
 
-void AutoAssignJointWin::helpNowEvent( int id )
+void AutoAssignJointWin::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_autoassignjointwin.html", true );
    win->show();

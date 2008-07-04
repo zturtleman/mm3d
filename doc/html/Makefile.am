@@ -1,6 +1,7 @@
 SUBDIRS=olh_images
 
 SPAGES =  \
+	olh_detailsindex.htm \
 	olh_vertexdetails.htm \
 	olh_facedetails.htm \
 	olh_meshdetails.htm \
@@ -12,6 +13,7 @@ SPAGES =  \
 	olh_jointdetails.htm \
 	olh_pointdetails.htm \
 	olh_animationdetails.htm \
+	olh_backgroundimagedetails.htm \
 	olh_alignwin.htm \
 	olh_animconvertwin.htm \
 	olh_animexportwin.htm \
@@ -40,8 +42,6 @@ SPAGES =  \
 	olh_projectionwin.htm \
 	olh_properties.htm \
 	olh_rgbawin.htm \
-	olh_scriptguide.htm \
-	olh_scriptref.htm \
 	olh_spherifywin.htm \
 	olh_texturecoordwin.htm \
 	olh_texturewin.htm \
@@ -56,6 +56,7 @@ SPAGES =  \
 	olh_mainwin.htm
 
 PAGES =  \
+	olh_detailsindex.html \
 	olh_vertexdetails.html \
 	olh_facedetails.html \
 	olh_meshdetails.html \
@@ -66,7 +67,8 @@ PAGES =  \
 	olh_projectiondetails.html \
 	olh_jointdetails.html \
 	olh_pointdetails.html \
-	olh_animationdetails.html \
+	olh_backgroundimagedetails.htm \
+	olh_backgroundimagedetails.html \
 	olh_alignwin.html \
 	olh_animconvertwin.html \
 	olh_animexportwin.html \
@@ -95,8 +97,6 @@ PAGES =  \
 	olh_projectionwin.html \
 	olh_properties.html \
 	olh_rgbawin.html \
-	olh_scriptguide.html \
-	olh_scriptref.html \
 	olh_spherifywin.html \
 	olh_texturecoordwin.html \
 	olh_texturewin.html \

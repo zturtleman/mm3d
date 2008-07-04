@@ -27,8 +27,8 @@
 #include "model.h"
 #include "log.h"
 #include "modelstatus.h"
-#include <qobject.h>
-#include <qapplication.h>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 EdgeTurnCommand::EdgeTurnCommand()
 {
@@ -102,14 +102,14 @@ bool EdgeTurnCommand::activated( int arg, Model * model )
                model->setTriangleVertices( 
                      *it2, verts2[0], verts2[1], verts2[2] );
 
-               model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Edge Turn complete" ).utf8() );
+               model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Edge Turn complete" ).toUtf8() );
                return true;
             }
          }
       }
    }
 
-   model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have at least 2 adjacent faces to Edge Turn" ).utf8() );
+   model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have at least 2 adjacent faces to Edge Turn" ).toUtf8() );
    return false;
 }
 

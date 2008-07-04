@@ -25,7 +25,8 @@
 #define __ROTATETOOL_H
 
 #include "tool.h"
-#include "qnamespace.h"
+#include <QtGui/QKeySequence>
+#include <QtGui/QMainWindow>
 #include "rotatetoolwidget.h"
 
 class Model;

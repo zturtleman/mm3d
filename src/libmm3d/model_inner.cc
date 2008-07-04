@@ -1100,21 +1100,43 @@ void Model::SkelAnim::stats()
 bool Model::SkelAnim::propEqual(const SkelAnim & rhs, int propBits, double tolerance ) const
 {
    if ( (propBits & PropName) != 0 )
+   {
       if ( m_name != rhs.m_name )
+      {
+         log_warning( "match failed at anim name, lhs = '%s', rhs = '%s'\n",
+               m_name.c_str(), rhs.m_name.c_str() );
          return false;
+      }
+   }
 
    if ( (propBits & PropTime) != 0 )
+   {
       if ( fabs( m_fps - rhs.m_fps ) > tolerance )
+      {
+         log_warning( "match failed at anim fps, lhs = %f, rhs = %f\n",
+               (float) m_fps, (float) rhs.m_fps );
          return false;
+      }
+   }
 
    if ( (propBits & PropDimensions) != 0 )
+   {
       if ( m_frameCount != rhs.m_frameCount )
+      {
+         log_warning( "match failed at anim frame count, lhs = %d, rhs = %d\n",
+               m_frameCount, rhs.m_frameCount );
          return false;
+      }
+   }
 
    if ( (propBits & (PropCoords | PropRotation | PropType)) != 0 )
    {
       if ( m_jointKeyframes.size() != rhs.m_jointKeyframes.size() )
+      {
+         log_warning( "match failed at anim keyframe size, lhs = %d, rhs = %d\n",
+               m_jointKeyframes.size(), rhs.m_jointKeyframes.size() );
          return false;
+      }
 
       JointKeyframeList::const_iterator lhs_it = m_jointKeyframes.begin();
       JointKeyframeList::const_iterator rhs_it = rhs.m_jointKeyframes.begin();
@@ -1239,17 +1261,33 @@ void Model::FrameAnim::stats()
 bool Model::FrameAnim::propEqual(const FrameAnim & rhs, int propBits, double tolerance ) const
 {
    if ( (propBits & PropName) != 0 )
+   {
       if ( m_name != rhs.m_name )
+      {
+         log_warning( "match failed at anim name lhs '%s', rhs '%s'\n",
+               m_name.c_str(), rhs.m_name.c_str() );
          return false;
+      }
+   }
 
    if ( (propBits & PropTime) != 0 )
+   {
       if ( fabs( m_fps - rhs.m_fps ) > tolerance )
+      {
+         log_warning( "match failed at anim fps lhs %f, rhs %f\n",
+               (float) m_fps, (float) rhs.m_fps );
          return false;
+      }
+   }
 
    if ( (propBits & (PropCoords | PropRotation)) != 0 )
    {
       if ( m_frameData.size() != rhs.m_frameData.size() )
+      {
+         log_warning( "match failed at anim frame size lhs %d, rhs %d\n",
+               m_frameData.size(), rhs.m_frameData.size() );
          return false;
+      }
 
       FrameAnimDataList::const_iterator lhs_it = m_frameData.begin();
       FrameAnimDataList::const_iterator rhs_it = rhs.m_frameData.begin();
@@ -1257,7 +1295,10 @@ bool Model::FrameAnim::propEqual(const FrameAnim & rhs, int propBits, double tol
             ++lhs_it, ++rhs_it )
       {
          if ( !(*lhs_it)->propEqual( **rhs_it, propBits, tolerance ) )
+         {
+            log_warning( "match failed at frame %d\n", lhs_it - m_frameData.begin() );
             return false;
+         }
       }
    }
 
@@ -1333,8 +1374,15 @@ void Model::FrameAnimVertex::stats()
 bool Model::FrameAnimVertex::propEqual(const FrameAnimVertex & rhs, int propBits, double tolerance ) const
 {
    if ( (propBits & PropCoords) != 0 )
+   {
       if ( !floatCompareVector( m_coord, rhs.m_coord, 3, tolerance ) )
+      {
+         log_warning( "frame anim vertex coord mismatch, lhs (%f,%f,%f) rhs (%f,%f,%f)\n",
+               (float) m_coord[0], (float) m_coord[1], (float) m_coord[2],
+               (float) rhs.m_coord[0], (float) rhs.m_coord[1], (float) rhs.m_coord[2] );
          return false;
+      }
+   }
 
    return true;
 }
@@ -1408,12 +1456,27 @@ void Model::FrameAnimPoint::stats()
 bool Model::FrameAnimPoint::propEqual(const FrameAnimPoint & rhs, int propBits, double tolerance ) const
 {
    if ( (propBits & PropCoords) != 0 )
+   {
       if ( !floatCompareVector( m_trans, rhs.m_trans, 3, tolerance ) )
+      {
+         log_warning( "frame anim point translation mismatch, lhs (%f,%f,%f) rhs (%f,%f,%f) tolerance (%f)\n",
+               (float) m_trans[0], (float) m_trans[1], (float) m_trans[2],
+               (float) rhs.m_trans[0], (float) rhs.m_trans[1], (float) rhs.m_trans[2],
+               (float) tolerance );
          return false;
+      }
+   }
 
    if ( (propBits & PropRotation) != 0 )
+   {
       if ( !floatCompareVector( m_rot, rhs.m_rot, 3, tolerance ) )
+      {
+         log_warning( "frame anim point rotation mismatch, lhs (%f,%f,%f) rhs (%f,%f,%f)\n",
+               (float) m_rot[0], (float) m_rot[1], (float) m_rot[2],
+               (float) rhs.m_rot[0], (float) rhs.m_rot[1], (float) rhs.m_rot[2] );
          return false;
+      }
+   }
 
    return true;
 }
@@ -1423,10 +1486,18 @@ bool Model::FrameAnimData::propEqual(const FrameAnimData & rhs, int propBits, do
    if ( (propBits & (PropCoords | PropRotation)) != 0 )
    {
       if ( m_frameVertices->size() != rhs.m_frameVertices->size() )
+      {
+         log_warning( "anim frame vertex size mismatch lhs %d, rhs %d\n",
+               m_frameVertices->size(), rhs.m_frameVertices->size() );
          return false;
+      }
 
       if ( m_framePoints->size() != rhs.m_framePoints->size() )
+      {
+         log_warning( "anim frame point size mismatch lhs %d, rhs %d\n",
+               m_framePoints->size(), rhs.m_framePoints->size() );
          return false;
+      }
 
       FrameAnimVertexList::iterator lv = m_frameVertices->begin();
       FrameAnimVertexList::iterator rv = rhs.m_frameVertices->begin();
@@ -1434,7 +1505,11 @@ bool Model::FrameAnimData::propEqual(const FrameAnimData & rhs, int propBits, do
       for ( ; lv != m_frameVertices->end(), rv != rhs.m_frameVertices->end(); ++lv, ++rv )
       {
          if ( !(*lv)->propEqual( **rv, propBits, tolerance ) )
+         {
+            log_warning( "anim frame vertex mismatch at %d\n",
+                  lv - m_frameVertices->begin() );
             return false;
+         }
       }
 
       FrameAnimPointList::iterator lp = m_framePoints->begin();
@@ -1443,7 +1518,11 @@ bool Model::FrameAnimData::propEqual(const FrameAnimData & rhs, int propBits, do
       for ( ; lp != m_framePoints->end(), rp != rhs.m_framePoints->end(); ++lp, ++rp )
       {
          if ( !(*lp)->propEqual( **rp, propBits, tolerance ) )
+         {
+            log_warning( "anim frame point mismatch at %d\n",
+                  lp - m_framePoints->begin() );
             return false;
+         }
       }
    }
 

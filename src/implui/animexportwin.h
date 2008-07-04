@@ -27,13 +27,12 @@
 
 #include "model.h"
 
-#include "mq3macro.h"
+#include <QtGui/QDialog>
 
-class QAccel;
 class ViewPanel;
 class Model;
 
-class AnimExportWindow : public AnimExportWinBase
+class AnimExportWindow : public QDialog, public Ui::AnimExportWinBase
 {
    Q_OBJECT
 
@@ -42,14 +41,13 @@ class AnimExportWindow : public AnimExportWinBase
       virtual ~AnimExportWindow();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
       void accept();
       void reject();
 
       void directoryButtonClicked();
 
    protected:
-      QAccel * m_accel;
       Model * m_model;
       ViewPanel * m_viewPanel;
 

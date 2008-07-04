@@ -24,16 +24,17 @@
 #ifndef __BOOLPANEL_H
 #define __BOOLPANEL_H
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-
 #include "contextwidget.h"
 #include "model.h"
+
+#include <QtGui/QDockWidget>
+
+class QContextMenuEvent;
 
 class ViewPanel;
 class BoolWin;
 
-class BoolPanel : public QDockWindow, public Model::Observer
+class BoolPanel : public QDockWidget, public Model::Observer
 {
    Q_OBJECT
 

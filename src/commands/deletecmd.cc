@@ -21,9 +21,9 @@
  */
 
 
-#include <qnamespace.h>
-#include <qobject.h>
-#include <qapplication.h>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
+#include <QtGui/QKeySequence>
 
 #include "deletecmd.h"
 #include "model.h"
@@ -76,7 +76,7 @@ bool DeleteCommand::activated( int arg, Model * model )
       if ( model->getAnimationMode() == Model::ANIMMODE_NONE && joints.size() > 0 && model->getAnimCount( Model::ANIMMODE_SKELETAL ) > 0 && !warnedAlready )
       {
          QString s = qApp->translate( "Command", "Deleting joints may destroy skeletal animations\nDo you wish to continue?" );
-         if ( msg_warning_prompt( (const char *) s.utf8(), "yN" ) == 'Y' )
+         if ( msg_warning_prompt( (const char *) s.toUtf8(), "yN" ) == 'Y' )
          {
             warnedAlready = true;
          }
@@ -88,7 +88,7 @@ bool DeleteCommand::activated( int arg, Model * model )
 
       if ( doDelete )
       {
-         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Primitives deleted" ).utf8() );
+         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Primitives deleted" ).toUtf8() );
          model->deleteSelected();
       }
       return doDelete;

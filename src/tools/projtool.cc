@@ -33,8 +33,8 @@
 
 #include "pixmap/projtool.xpm"
 
-#include <qobject.h>
-#include <qapplication.h>
+#include <QtGui/QMainWindow>
+#include <QtGui/QApplication>
 
 ProjectionTool::ProjectionTool()
    : m_type( Model::TPT_Sphere )
@@ -129,7 +129,7 @@ void ProjectionTool::mouseButtonDown( Parent * parent, int buttonState, int x, i
 
    parent->updateAllViews();
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Projection created" ).utf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Projection created" ).toUtf8() );
 }
 
 void ProjectionTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )
@@ -214,9 +214,6 @@ void ProjectionTool::setTypeValue( int newValue )
 void ProjectionTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    m_widget = new ProjToolWidget( this, mainwin );
-#ifdef HAVE_QT4
-   //mainwin->addDockWindow( m_widget, DockBottom );
-#endif
    m_widget->show();
 }
 

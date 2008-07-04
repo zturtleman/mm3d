@@ -108,11 +108,9 @@ libmm3d_a_SOURCES = \
 	txtfilter.cc \
 	$(libmm3d_HFILES)
 
-#mm3d_LDADD = $(QGL_LIBS) $(QT_LIBS) $(LUALIB_LIBS) $(GL_LIBS) $(DLOPEN_LIBS)
-#mm3d_LDFLAGS = $(all_libraries) $(QT_CXXFLAGS)
-
-# FIXME Add -pg support to ./configure
-AM_CPPFLAGS = $(CORE_PROFILE) -Wall -I.. -DMM3D_EDIT $(all_includes) $(GL_CFLAGS)
+AM_CPPFLAGS = $(CORE_PROFILE) $(COVFLAGS) -Wall -I.. -DMM3D_EDIT $(all_includes) $(GL_CFLAGS)
 
 wc:
 	wc `ls *.h *.cpp *.cc *.y *.l 2> /dev/null | grep -v moc.cc | grep -v "\.base\." ` | sort -n
+
+CLEANFILES = *.gcno *.gcda

@@ -102,10 +102,8 @@ int init_std_cmds( CommandManager * cmdMgr )
    cmd = new RotateTextureCommand();
    cmdMgr->registerCommand( cmd );
 
-#ifdef HAVE_QT4
    cmd = new SeparatorCommand();
    cmdMgr->registerCommand( cmd );
-#endif // HAVE_QT4
 
    // Meshes
 
@@ -159,8 +157,9 @@ int init_std_cmds( CommandManager * cmdMgr )
 
    // ----------------------
 
-   cmd = new PointCommand();
-   cmdMgr->registerCommand( cmd );
+   // This doesn't really do anything any more (use properties to rename)
+   //cmd = new PointCommand();
+   //cmdMgr->registerCommand( cmd );
 
    return 0;
 }

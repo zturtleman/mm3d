@@ -28,6 +28,16 @@
 
 #include <stdarg.h>
 
+DestCloser::DestCloser( DataDest * src )
+   : m_src( src )
+{
+}
+
+DestCloser::~DestCloser()
+{
+   m_src->close();
+}
+
 DataDest::DataDest()
    : m_endian( LittleEndian ),
      m_fileSize( 0 ),

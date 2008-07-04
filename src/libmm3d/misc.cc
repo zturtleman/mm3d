@@ -126,7 +126,7 @@ bool pathIsAbsolute( const char * path )
    {
       return true;
    }
-   return ( path[0] == '/' );
+   return ( path[0] == '/' || path[0] == '\\' );
 }
 
 string normalizePath( const char * path, const char * pwd )
@@ -431,17 +431,8 @@ void normalizePath( const char * filename, std::string & fullName, std::string &
 
 std::string replaceExtension( const char * infile, const char * ext )
 {
-   std::string rval = infile;
-   size_t i = rval.rfind( '.' );
-   if ( i > 0 && i < rval.size() )
-   {
-      i++;
-      rval.resize(i);
-   }
-   else
-   {
-      rval += '.';
-   }
+   std::string rval = removeExtension( infile );
+   rval += '.';
    rval += ext;
    return rval;
 }
@@ -450,9 +441,16 @@ std::string removeExtension( const char * infile )
 {
    std::string rval = infile;
    size_t i = rval.rfind( '.' );
-   if ( i > 0 && i < rval.size() )
+   size_t len = rval.size();
+
+   if ( i > 0 && i < len )
    {
-      rval.resize(i);
+      size_t slash = rval.rfind( '/' );
+      if ( slash > len )
+         slash = rval.rfind( '\\' );
+
+      if ( slash > len || i > slash + 1 ) 
+         rval.resize(i);
    }
    return rval;
 }
@@ -572,15 +570,27 @@ void utf8strtrunc( char * str, size_t len )
    {
       size_t pos = 0;
       size_t n = 0;
-      while ( str[pos] && n <= len )
+      size_t slen = strlen(str);
+      while ( pos < slen && n < len )
       {
          unsigned char ch = ((unsigned char) str[pos]) & 0xc0;
 
-         if ( ch == 0 || ch == 0x40 || ch == 0xc0 )
+         if ( (ch & 0xc0) == 0xc0 )
          {
             n++;
+            ch = str[pos];
+            if ( (ch & 0xe0) == 0xc0 )
+               pos += 2;
+            else if ( (ch & 0xf0) == 0xe0 )
+               pos += 3;
+            else if ( (ch & 0xf8) == 0xf0 )
+               pos += 4;
          }
-         pos++;
+         else
+         {
+            n++;
+            pos++;
+         }
       }
       utf8chrtrunc( str, pos );
    }
@@ -590,15 +600,27 @@ void utf8strtrunc( std::string & str, size_t len )
 {
    size_t pos = 0;
    size_t n = 0;
-   while ( str[pos] && n <= len )
+   size_t slen = str.size();
+   while ( pos < slen && n < len )
    {
       unsigned char ch = ((unsigned char) str[pos]) & 0xc0;
 
-      if ( ch == 0 || ch == 0x40 || ch == 0xc0 )
+      if ( (ch & 0xc0) == 0xc0 )
       {
          n++;
+         ch = str[pos];
+         if ( (ch & 0xe0) == 0xc0 )
+            pos += 2;
+         else if ( (ch & 0xf0) == 0xe0 )
+            pos += 3;
+         else if ( (ch & 0xf8) == 0xf0 )
+            pos += 4;
       }
-      pos++;
+      else
+      {
+         n++;
+         pos++;
+      }
    }
    utf8chrtrunc( str, pos );
 }
@@ -622,6 +644,7 @@ void utf8chrtrunc( std::string & str, size_t len )
    {
       len--;
    }
-   str.resize(len);
+   if ( len < str.size() )
+      str.resize(len);
 }
 

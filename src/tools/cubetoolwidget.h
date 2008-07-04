@@ -24,23 +24,20 @@
 #ifndef __CUBETOOLWIDGET_H
 #define __CUBETOOLWIDGET_H
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-
 class QMainWindow;
 
 class QVBoxLayout;
 class QHBoxLayout;
+class QBoxLayout;
 
-#ifdef HAVE_QT4
-#define QGroupBox Q3GroupBox
-#endif
 class QGroupBox;
 class QSpinBox;
 class QCheckBox;
 class QLabel;
 
-class CubeToolWidget : public QDockWindow
+#include "toolwidget.h"
+
+class CubeToolWidget : public ToolWidget
 {
    Q_OBJECT
 
@@ -53,7 +50,7 @@ class CubeToolWidget : public QDockWindow
             virtual void setSegmentValue( int newValue ) = 0;
       };
 
-      CubeToolWidget( Observer * observer, QWidget * parent );
+      CubeToolWidget( Observer * observer, QMainWindow * parent );
       virtual ~CubeToolWidget();
 
    public slots:
@@ -63,7 +60,7 @@ class CubeToolWidget : public QDockWindow
    protected:
       Observer    * m_observer;
 
-      QBoxLayout * m_layout;
+      QBoxLayout  * m_layout;
 
       QGroupBox   * m_groupBox;
       QLabel      * m_cubeLabel;

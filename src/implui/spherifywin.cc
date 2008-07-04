@@ -28,21 +28,21 @@
 #include "decalmgr.h"
 #include "log.h"
 
-#include "mq3compat.h"
+#include <QtGui/QSlider>
+#include <QtGui/QLineEdit>
+#include <QtGui/QLabel>
 
-#include <qslider.h>
-#include <qlineedit.h>
-#include <qlabel.h>
 #include <math.h>
 #include <stdlib.h>
 
 
-SpherifyWin::SpherifyWin( Model * model, QWidget * parent, const char * name )
-   : ValueWin( parent, name, true, WDestructiveClose ),
+SpherifyWin::SpherifyWin( Model * model, QWidget * parent )
+   : ValueWin( parent ),
      m_model( model )
 {
+   setAttribute( Qt::WA_DeleteOnClose );
    setLabel( "Spherify" );
-   m_valueSlider->setMinValue( -100 );
+   m_valueSlider->setMinimum( -100 );
    m_valueEdit->setText( QString("0") );
 
    double min[3] = { 0.0, 0.0, 0.0 };
@@ -161,7 +161,7 @@ void SpherifyWin::valueEditChanged( const QString & str )
 
 void SpherifyWin::accept()
 {
-   m_model->operationComplete( tr( "Spherify", "operation complete" ).utf8() );
+   m_model->operationComplete( tr( "Spherify", "operation complete" ).toUtf8() );
    DecalManager::getInstance()->modelUpdated( m_model );
    ValueWin::accept();
 }

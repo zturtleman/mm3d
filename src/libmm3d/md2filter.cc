@@ -42,18 +42,6 @@
 #include <stdint.h>
 #include <ctype.h>
 
-// FIXME this should be centralized
-template<typename T>
-class FunctionCaller
-{
-   public:
-      FunctionCaller( T * obj, void (T::*method)(void) ) { m_obj = obj; m_method = method; }
-      ~FunctionCaller() { (m_obj->*m_method)(); }
-   private:
-      T * m_obj;
-      void (T::*m_method)(void);
-};
-
 const unsigned MAX_QUAKE_NORMALS = 162;
 static float s_quakeNormals[ MAX_QUAKE_NORMALS ][3] = {
 #include "md2filter-anorms.h"
@@ -124,7 +112,7 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
    {
       Model::ModelErrorE err = Model::ERROR_NONE;
       DataSource* src = openInput( filename, err );
-      FunctionCaller<DataSource> fc( src, &DataSource::close );
+      SourceCloser fc( src );
 
       if ( err != Model::ERROR_NONE )
          return err;
@@ -590,7 +578,7 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
 
       Model::ModelErrorE err = Model::ERROR_NONE;
       DataDest * dst = openOutput( filename, err );
-      FunctionCaller<DataDest> fc( dst, &DataDest::close );
+      DestCloser fc( dst );
 
       if ( err != Model::ERROR_NONE )
          return err;

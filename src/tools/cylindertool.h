@@ -24,7 +24,6 @@
 #ifndef __CYLINDERTOOL_H
 #define __CYLINDERTOOL_H
 
-#include "mq3macro.h"
 #include "tool.h"
 #include "cylindertoolwidget.h"
 

@@ -24,7 +24,8 @@
 #ifndef __ERROROBJ_H
 #define __ERROROBJ_H
 
-#include <qobject.h>
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
 #include "model.h"
 #include "texture.h"

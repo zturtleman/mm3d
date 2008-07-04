@@ -1,5 +1,5 @@
 /* XPM */
-static char * selectpointtool_xpm[] = {
+static const char * selectpointtool_xpm[] = {
 "22 22 6 1",
 " 	c None",
 ".	c #FF0000",

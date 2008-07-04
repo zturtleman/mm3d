@@ -24,31 +24,32 @@
 #include "projtoolwidget.h"
 #include "3dmprefs.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
 #include "model.h"
 
-#include <qlayout.h>
-#include <qcombobox.h>
-#include <qlabel.h>
+#include <QtGui/QLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QGroupBox>
+#include <QtGui/QComboBox>
 
-ProjToolWidget::ProjToolWidget( Observer * observer, QWidget * parent )
-   : QDockWindow ( QDockWindow::InDock, parent, "", WDestructiveClose ),
+ProjToolWidget::ProjToolWidget( Observer * observer, QMainWindow * parent )
+   : ToolWidget ( parent ),
      m_observer( observer )
 {
    const int DEFAULT_TYPE = Model::TPT_Sphere;
 
    m_layout = boxLayout();
 
-   m_typeLabel = new QLabel( tr("Type"), this, "" );
+   m_typeLabel = new QLabel( tr("Type"), mainWidget() );
    m_layout->addWidget( m_typeLabel );
 
-   m_typeValue = new QComboBox( this, "" );
+   m_typeValue = new QComboBox( mainWidget() );
    m_layout->addWidget( m_typeValue );
 
-   m_typeValue->insertItem( tr("Cylinder", "Cylinder projection type"), Model::TPT_Cylinder );
-   m_typeValue->insertItem( tr("Sphere", "Sphere projection type"), Model::TPT_Sphere );
-   m_typeValue->insertItem( tr("Plane", "Plane projection type"), Model::TPT_Plane );
+   m_typeValue->insertItem( Model::TPT_Cylinder, tr("Cylinder", "Cylinder projection type") );
+   m_typeValue->insertItem( Model::TPT_Sphere, tr("Sphere", "Sphere projection type") );
+   m_typeValue->insertItem( Model::TPT_Plane, tr("Plane", "Plane projection type") );
 
    int typeIndex = DEFAULT_TYPE;
    g_prefs.setDefault( "ui_projtool_type_index", DEFAULT_TYPE );
@@ -57,7 +58,9 @@ ProjToolWidget::ProjToolWidget( Observer * observer, QWidget * parent )
    {
       typeIndex = temp;
    }
-   m_typeValue->setCurrentItem( typeIndex );
+   m_typeValue->setCurrentIndex( typeIndex );
+
+   m_layout->addStretch();
 
    connect( m_typeValue, SIGNAL(activated(int)), this, SLOT(typeValueChanged(int)) );
 

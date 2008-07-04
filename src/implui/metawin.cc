@@ -28,17 +28,27 @@
 #include "decalmgr.h"
 #include "helpwin.h"
 
-#include "mq3compat.h"
+#include <QtGui/QPushButton>
+#include <QtGui/QCheckBox>
+#include <QtGui/QRadioButton>
+#include <QtGui/QTreeWidget>
+#include <QtGui/QHeaderView>
+#include <QtGui/QShortcut>
 
-#include <qpushbutton.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-MetaWindow::MetaWindow( Model * model, QWidget * parent, const char * name )
-   : MetaWindowBase( parent, name, true, WDestructiveClose ),
-     m_accel( new QAccel(this) ),
+MetaWindow::MetaWindow( Model * model, QWidget * parent )
+   : QDialog( parent ),
      m_model( model )
 {
+   setAttribute( Qt::WA_DeleteOnClose );
+   setupUi( this );
+   setModal( true );
+
+   m_list->header()->setClickable( false );
+   m_list->header()->setMovable( false );
+
    unsigned count = m_model->getMetaDataCount();
 
    for ( unsigned int m = 0; m < count; m++ )
@@ -47,20 +57,20 @@ MetaWindow::MetaWindow( Model * model, QWidget * parent, const char * name )
       char value[1024];
 
       m_model->getMetaData( m, key, sizeof(key), value, sizeof(value) );
-      QListViewItem * item = new QListViewItem( m_list );
+      QTreeWidgetItem * item = new QTreeWidgetItem( m_list );
       item->setText( 0, QString::fromUtf8( key ) );
       item->setText( 1, QString::fromUtf8( value ) );
    }
 
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
 MetaWindow::~MetaWindow()
 {
 }
 
-void MetaWindow::helpNowEvent( int id )
+void MetaWindow::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_metawin.html", true );
    win->show();
@@ -68,15 +78,14 @@ void MetaWindow::helpNowEvent( int id )
 
 void MetaWindow::newClicked()
 {
-   QListViewItem * item = new QListViewItem( m_list, tr("Name", "meta value key name"), tr("Value", "meta value 'value'") );
+   QTreeWidgetItem * item = new QTreeWidgetItem( m_list );
+   item->setText( 0, tr("Name", "meta value key name") );
+   item->setText( 1, tr("Value", "meta value 'value'") );
 
-   m_list->clearSelection();
-
-   QListViewItem * i = m_list->firstChild();
-   while ( i )
+   int count = m_list->topLevelItemCount();
+   for ( int i = 0; i < count; ++i )
    {
-      i->setSelected( false );
-      i = i->nextSibling();
+      m_list->topLevelItem( i )->setSelected( false );
    }
 
    item->setSelected( true );
@@ -85,15 +94,10 @@ void MetaWindow::newClicked()
 
 void MetaWindow::deleteClicked()
 {
-   QListViewItem * item = m_list->selectedItem();
-
-   if ( item )
-   {
-      delete item;
-   }
+   delete m_list->currentItem();
 }
 
-void MetaWindow::editItemEvent( QListViewItem * item )
+void MetaWindow::editItemEvent( QTreeWidgetItem * item, int col )
 {
    KeyValueWindow w( item );
    w.exec();
@@ -102,23 +106,24 @@ void MetaWindow::editItemEvent( QListViewItem * item )
 void MetaWindow::accept()
 {
    m_model->clearMetaData();
-   QListViewItem * item = m_list->firstChild();
 
-   while ( item )
+   int count = m_list->topLevelItemCount();
+   for ( int i = 0; i < count; ++i )
    {
-      m_model->addMetaData( item->text(0).latin1(), item->text(1).utf8() );
-      item = item->nextSibling();
+      QTreeWidgetItem * item = m_list->topLevelItem(i);
+      m_model->addMetaData( (const char *) item->text(0).toUtf8(),
+            (const char *) item->text(1).toUtf8() );
    }
    
-   m_model->operationComplete( tr( "Change meta data", "operation complete" ).utf8() );
-   MetaWindowBase::accept();
+   m_model->operationComplete( tr( "Change meta data", "operation complete" ).toUtf8() );
+   QDialog::accept();
 }
 
 void MetaWindow::reject()
 {
    m_model->undoCurrent();
    DecalManager::getInstance()->modelUpdated( m_model );
-   MetaWindowBase::reject();
+   QDialog::reject();
 }
 
 

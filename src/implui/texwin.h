@@ -26,22 +26,21 @@
 
 #include "texwin.base.h"
 
-#include "mq3macro.h"
+#include <QtGui/QDialog>
 
 class Model;
-class QAccel;
 class RgbaWin;
 
-class TextureWindow : public TextureWindowBase
+class TextureWindow : public QDialog, public Ui::TextureWindowBase
 {
    Q_OBJECT
 
    public:
-      TextureWindow( Model * model, QWidget * parent = NULL, const char * name = "" );
+      TextureWindow( Model * model, QWidget * parent = NULL );
       virtual ~TextureWindow();
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
       void updateEvent();
 
@@ -76,7 +75,6 @@ class TextureWindow : public TextureWindowBase
    protected:
       void updateChangeButton();
 
-      QAccel * m_accel;
       Model  * m_model;
       bool      m_editing;
       bool      m_setting;

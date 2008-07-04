@@ -34,8 +34,8 @@
 
 #include <list>
 #include <map>
-#include <qobject.h>
-#include <qapplication.h>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 using std::list;
 using std::map;
@@ -60,12 +60,12 @@ bool WeldCommand::activated( int arg, Model * model )
          int unwelded = 0;
          int welded = 0;
          weldSelectedVertices( model, 0.0001, unwelded, welded );
-         model_status( model, StatusNormal, STATUSTIME_SHORT, (qApp->translate( "Command", "Welded %1 vertices into %2 vertices" ).arg(unwelded).arg(welded)).utf8() );
+         model_status( model, StatusNormal, STATUSTIME_SHORT, (qApp->translate( "Command", "Welded %1 vertices into %2 vertices" ).arg(unwelded).arg(welded)).toUtf8() );
          return true;
       }
       else
       {
-         model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have 2 or more vertices selected to weld." ).utf8() );
+         model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have 2 or more vertices selected to weld." ).toUtf8() );
       }
    }
    

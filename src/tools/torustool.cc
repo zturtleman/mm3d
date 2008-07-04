@@ -32,15 +32,11 @@
 #include "glmath.h"
 #include "weld.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
-
 #include <math.h>
 #include <vector>
 
-#include <qobject.h>
-#include <qapplication.h>
-#include <qwidget.h>
+#include <QtGui/QMainWindow>
+#include <QtGui/QApplication>
 
 using std::vector;
 using std::list;
@@ -62,9 +58,6 @@ void TorusTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    log_debug( "torus activated\n" );
    m_widget = new TorusToolWidget( this, mainwin );
-#ifdef HAVE_QT4
-   ////mainwin->addDockWindow( m_widget, DockBottom );
-#endif
    m_widget->show();
 }
 
@@ -156,7 +149,7 @@ void TorusTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y 
 
    parent->updateAllViews();
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Torus created" ).utf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Torus created" ).toUtf8() );
 }
 
 void TorusTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )

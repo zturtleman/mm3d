@@ -1,13 +1,17 @@
 TODO:
-   What's new?
    grep FIXME
+   Cal3D doc
    Update table of contents
    Add "tell me more..." links to window-specific documentation
    Screenshot for Persp/Ortho comparison
-   Remove all scripting references
-   Add any other missing window documentation
+      images taken, crop and include
 
-   Write up details for tips doc
+   Screenshots (taken, crop and include):
+    - Boolean operations
+    - Edge turn command
+    - Simplify mesh command
+    - Normals face out command
+    - Drag vertex tool
 
    Tutorial
       UI Tour (main window documentation)
@@ -15,22 +19,20 @@ TODO:
          Primitive Creation
          Manipulations
          Extrude, split, turn
-      Background Images
-      Polytool / Free Vertices / Make Face
-      Grouping
-      Texturing / Materials
+         Background Images
+         Polytool / Free Vertices / Make Face
+      Groups and Textures
+         Grouping
+         Texturing / Materials
          Projections
          Direct coord edit
          Texture paint
          Texture reload
-      Points / uses
-      Skeletal structure
+      Skeletal structure and Animations
          Bone Joints
          Influences
-      Animations
-      MD2/MD3 guides
+         Animations
+      Points / uses
+      MD2/MD3/Cal3d guides
       Links to other modeling tutorials
 
-Docs:
-   olh_mm3dformat.htm
-   olh_use.htm

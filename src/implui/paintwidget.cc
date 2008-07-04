@@ -26,8 +26,8 @@
 
 #include "log.h"
 
-PaintWidget::PaintWidget( TextureWidget * drawBuddy, QWidget * parent, const char * name )
-   : QGLWidget( parent, name ),
+PaintWidget::PaintWidget( TextureWidget * drawBuddy, QWidget * parent )
+   : QGLWidget( parent ),
      m_drawBuddy( drawBuddy )
 {
 }

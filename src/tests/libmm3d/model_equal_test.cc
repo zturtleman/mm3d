@@ -141,9 +141,9 @@ private:
       grp->m_materialIndex = 1;
 
       grp->m_triangleIndices.clear();
-      grp->m_triangleIndices.push_back(2);
-      grp->m_triangleIndices.push_back(4);
-      grp->m_triangleIndices.push_back(6);
+      grp->m_triangleIndices.insert(2);
+      grp->m_triangleIndices.insert(4);
+      grp->m_triangleIndices.insert(6);
    }
 
    void initCompareMaterial( Model::Material * mat )
@@ -705,9 +705,9 @@ private slots:
       initCompareGroup( rhs );
       QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_triangleIndices.clear();
-      rhs->m_triangleIndices.push_back( 2 );
-      rhs->m_triangleIndices.push_back( 4 );
-      rhs->m_triangleIndices.push_back( 6 );
+      rhs->m_triangleIndices.insert( 2 );
+      rhs->m_triangleIndices.insert( 4 );
+      rhs->m_triangleIndices.insert( 6 );
       QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_triangleIndices.clear();
       rhs->m_triangleIndices.insert( 2 );
@@ -719,10 +719,10 @@ private slots:
       initCompareGroup( rhs );
       QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_triangleIndices.clear();
-      rhs->m_triangleIndices.push_back( 1 );
-      rhs->m_triangleIndices.push_back( 2 );
-      rhs->m_triangleIndices.push_back( 4 );
-      rhs->m_triangleIndices.push_back( 6 );
+      rhs->m_triangleIndices.insert( 1 );
+      rhs->m_triangleIndices.insert( 2 );
+      rhs->m_triangleIndices.insert( 4 );
+      rhs->m_triangleIndices.insert( 6 );
       QVERIFY_FALSE( lhs->propEqual( *rhs ) );
       QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
       QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
@@ -730,10 +730,10 @@ private slots:
       initCompareGroup( rhs );
       QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_triangleIndices.clear();
-      rhs->m_triangleIndices.push_back( 2 );
-      rhs->m_triangleIndices.push_back( 4 );
-      rhs->m_triangleIndices.push_back( 6 );
-      rhs->m_triangleIndices.push_back( 7 );
+      rhs->m_triangleIndices.insert( 2 );
+      rhs->m_triangleIndices.insert( 4 );
+      rhs->m_triangleIndices.insert( 6 );
+      rhs->m_triangleIndices.insert( 7 );
       QVERIFY_FALSE( lhs->propEqual( *rhs ) );
       QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
       QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
@@ -741,8 +741,8 @@ private slots:
       initCompareGroup( rhs );
       QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_triangleIndices.clear();
-      rhs->m_triangleIndices.push_back( 2 );
-      rhs->m_triangleIndices.push_back( 6 );
+      rhs->m_triangleIndices.insert( 2 );
+      rhs->m_triangleIndices.insert( 6 );
       QVERIFY_FALSE( lhs->propEqual( *rhs ) );
       QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
       QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
@@ -750,10 +750,10 @@ private slots:
       initCompareGroup( rhs );
       QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_triangleIndices.clear();
-      rhs->m_triangleIndices.push_back( 2 );
-      rhs->m_triangleIndices.push_back( 4 );
-      rhs->m_triangleIndices.push_back( 5 );
-      rhs->m_triangleIndices.push_back( 6 );
+      rhs->m_triangleIndices.insert( 2 );
+      rhs->m_triangleIndices.insert( 4 );
+      rhs->m_triangleIndices.insert( 5 );
+      rhs->m_triangleIndices.insert( 6 );
       QVERIFY_FALSE( lhs->propEqual( *rhs ) );
       QVERIFY_FALSE( lhs->propEqual( *rhs, bits ) );
       QVERIFY_TRUE( lhs->propEqual( *rhs, ~bits ) );
@@ -762,9 +762,9 @@ private slots:
       initCompareGroup( rhs );
       QVERIFY_TRUE( lhs->propEqual( *rhs ) );
       rhs->m_triangleIndices.clear();
-      rhs->m_triangleIndices.push_back( 6 );
-      rhs->m_triangleIndices.push_back( 4 );
-      rhs->m_triangleIndices.push_back( 2 );
+      rhs->m_triangleIndices.insert( 6 );
+      rhs->m_triangleIndices.insert( 4 );
+      rhs->m_triangleIndices.insert( 2 );
       QVERIFY_TRUE( lhs->propEqual( *rhs ) );
 
       lhs->release();

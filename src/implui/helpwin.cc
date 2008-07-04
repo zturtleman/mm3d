@@ -25,22 +25,25 @@
 
 #include "sysconf.h"
 
-#include <qtextbrowser.h>
-#include <qpushbutton.h>
+#include <QtGui/QTextBrowser>
+#include <QtGui/QPushButton>
 
-HelpWin::HelpWin( const char * document, bool modal, QWidget * parent, const char * name )
-   : HelpWinBase( parent, name, modal, Qt::WDestructiveClose )
+HelpWin::HelpWin( const char * document, bool modal, QWidget * parent )
+   : QDialog( parent )
 {
+   setAttribute( Qt::WA_DeleteOnClose );
+   setModal( modal );
+   setupUi( this );
 #ifdef WIN32
    QString source = 
         QString( getDocDirectory().c_str() )
       + QString( "\\olh_index.html" );
 #else
-   QString source = QString( "file://" ) 
-      + QString( getDocDirectory().c_str() )
+   QString source =
+        QString( getDocDirectory().c_str() )
       + QString( "/olh_index.html" );
 #endif
-   m_text->setSource( source );
+   m_text->setSource( QUrl::fromLocalFile( source ) );
 
    if ( document )
    {
@@ -50,12 +53,12 @@ HelpWin::HelpWin( const char * document, bool modal, QWidget * parent, const cha
          + QString( "\\" )
          + QString( document );
 #else
-      QString source = QString( "file://" ) 
-         + QString( getDocDirectory().c_str() )
+      QString source =
+           QString( getDocDirectory().c_str() )
          + QString( "/" )
          + QString( document );
 #endif
-      m_text->setSource( source );
+      m_text->setSource( QUrl::fromLocalFile( source ) );
    }
    //m_text->home();
    m_forwardButton->setEnabled( false );

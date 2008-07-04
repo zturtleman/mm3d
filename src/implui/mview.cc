@@ -27,15 +27,17 @@
 #include "log.h"
 #include "decalmgr.h"
 
-#include <qcombobox.h>
-#include <qlineedit.h>
-#include <qlabel.h>
-#include <qimage.h>
+#include <QtGui/QComboBox>
+#include <QtGui/QLineEdit>
+#include <QtGui/QLabel>
+#include <QtGui/QImage>
 
-ModelView::ModelView( Toolbox * toolbox, QWidget * parent, const char * name )
-   : ModelViewBase( parent, name ),
+ModelView::ModelView( Toolbox * toolbox, QWidget * parent )
+   : QWidget( parent ),
      m_toolbox( toolbox )
 {
+   setupUi( this );
+
    QString zoomStr;
    zoomStr.sprintf( "%f", m_modelView->getZoomLevel() );
    m_zoomInput->setText( zoomStr );
@@ -65,13 +67,13 @@ void ModelView::freeTextures()
 
 void ModelView::setViewDirection( int dir )
 {
-   m_viewInput->setCurrentItem( dir );
+   m_viewInput->setCurrentIndex( dir );
    m_modelView->viewChangeEvent( dir );
 }
 
 void ModelView::zoomLevelEnterEvent()
 {
-   m_modelView->setZoomLevel( atof(m_zoomInput->text()) );
+   m_modelView->setZoomLevel( atof(m_zoomInput->text().toLatin1()) );
 }
 
 void ModelView::zoomInEvent()
@@ -107,7 +109,7 @@ void ModelView::updateView()
 
 unsigned ModelView::getViewDirection()
 {
-   return m_viewInput->currentItem();
+   return m_viewInput->currentIndex();
 }
 
 QString ModelView::getViewDirectionLabel()

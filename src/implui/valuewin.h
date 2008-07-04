@@ -26,20 +26,16 @@
 
 #include "valuewin.base.h"
 
-#include <qwidget.h>
+#include <QtGui/QDialog>
 
-#include "mq3macro.h"
-
-class QAccel;
-
-class ValueWin : public ValueWinBase
+class ValueWin : public QDialog, public Ui::ValueWinBase
 {
    Q_OBJECT
 
    public:
 
-      ValueWin( QWidget * parent = NULL, const char * name = "",
-            bool modal = true, Qt::WFlags flags = 0 );
+      ValueWin( QWidget * parent = NULL, bool modal = true,
+            Qt::WFlags flags = 0 );
       virtual ~ValueWin();
 
       void setLabel( const char * newLabel );
@@ -48,16 +44,14 @@ class ValueWin : public ValueWinBase
       void setValue( const float & v );
 
    public slots:
-      void helpNowEvent( int );
+      void helpNowEvent();
 
-      void valueEditChanged( const QString & );
-      void valueSliderChanged( int );
+      virtual void valueEditChanged( const QString & );
+      virtual void valueSliderChanged( int );
 
    protected:
 
       virtual void showHelp();
-
-      QAccel * m_accel;
 
       // We don't want to update the edit box if the user is typing in it
       // So we set this to true when editing.  When we update the slider,

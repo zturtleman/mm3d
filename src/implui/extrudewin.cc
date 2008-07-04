@@ -30,19 +30,20 @@
 #include "3dmprefs.h"
 #include "helpwin.h"
 
-#include "mq3compat.h"
-
-#include <qlineedit.h>
-#include <qcheckbox.h>
+#include <QtGui/QLineEdit>
+#include <QtGui/QCheckBox>
+#include <QtGui/QShortcut>
 
 using std::list;
 using std::map;
 
-ExtrudeWin::ExtrudeWin( Model * model, QWidget * parent, const char * name )
-   : ExtrudeWinBase( parent, name, true ),
-     m_accel( new QAccel(this) ),
+ExtrudeWin::ExtrudeWin( Model * model, QWidget * parent )
+   : QDialog( parent ),
      m_model( model )
 {
+   setupUi( this );
+   setModal( true );
+
    if ( g_prefs.exists( "ui_extrude_makebackfaces" ) )
    {
       int val = g_prefs( "ui_extrude_makebackfaces" ).intValue();
@@ -56,15 +57,15 @@ ExtrudeWin::ExtrudeWin( Model * model, QWidget * parent, const char * name )
       }
    }
 
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
 ExtrudeWin::~ExtrudeWin()
 {
 }
 
-void ExtrudeWin::helpNowEvent( int id )
+void ExtrudeWin::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_commands.html#extrude", true );
    win->show();
@@ -75,12 +76,12 @@ void ExtrudeWin::absoluteExtrudeEvent()
    m_sides.clear();
    m_evMap.clear();
 
-   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Extrude complete").utf8() );
+   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Extrude complete").toUtf8() );
 
    // get extrude arguments
-   double x = atof( m_xEdit->text() );
-   double y = atof( m_yEdit->text() );
-   double z = atof( m_zEdit->text() );
+   double x = atof( m_xEdit->text().toLatin1() );
+   double y = atof( m_yEdit->text().toLatin1() );
+   double z = atof( m_zEdit->text().toLatin1() );
 
    list<int> faces;
    m_model->getSelectedTriangles( faces );
@@ -184,7 +185,7 @@ void ExtrudeWin::absoluteExtrudeEvent()
 
    m_model->deleteOrphanedVertices();
 
-   m_model->operationComplete( tr( "Extrude", "operation complete" ).utf8() );
+   m_model->operationComplete( tr( "Extrude", "operation complete" ).toUtf8() );
    DecalManager::getInstance()->modelUpdated( m_model );
 }
 

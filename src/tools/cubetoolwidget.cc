@@ -25,13 +25,17 @@
 
 #include "3dmprefs.h"
 
-#include <qlayout.h>
-#include <qspinbox.h>
-#include <qlabel.h>
-#include <qcheckbox.h>
+#include <QtGui/QDockWidget>
+#include <QtGui/QLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QGroupBox>
+#include <QtGui/QSpinBox>
+#include <QtGui/QCheckBox>
 
-CubeToolWidget::CubeToolWidget( Observer * observer, QWidget * parent )
-   : QDockWindow ( QDockWindow::InDock, parent, "", WDestructiveClose ),
+CubeToolWidget::CubeToolWidget( Observer * observer, QMainWindow * parent )
+   : ToolWidget( parent ),
      m_observer( observer )
 {
    const int  DEFAULT_SEGMENT = 1;
@@ -39,10 +43,10 @@ CubeToolWidget::CubeToolWidget( Observer * observer, QWidget * parent )
 
    m_layout = boxLayout();
 
-   m_cubeLabel = new QLabel( tr("Cube"), this, "" );
+   m_cubeLabel = new QLabel( tr("Cube"), mainWidget() );
    m_layout->addWidget( m_cubeLabel );
 
-   m_cubeValue = new QCheckBox( this, "" );
+   m_cubeValue = new QCheckBox( mainWidget() );
    m_layout->addWidget( m_cubeValue );
 
    bool isCube = DEFAULT_CUBE;
@@ -52,14 +56,14 @@ CubeToolWidget::CubeToolWidget( Observer * observer, QWidget * parent )
    }
    m_cubeValue->setChecked( isCube );
 
-   m_segmentLabel = new QLabel( tr("Segment"), this, "" );
+   m_segmentLabel = new QLabel( tr("Segment"), mainWidget() );
    m_layout->addWidget( m_segmentLabel );
 
-   m_segmentValue = new QSpinBox( this, "" );
+   m_segmentValue = new QSpinBox( mainWidget() );
    m_layout->addWidget( m_segmentValue );
 
-   m_segmentValue->setMinValue( 1 );
-   m_segmentValue->setMaxValue( 25 );
+   m_segmentValue->setMinimum( 1 );
+   m_segmentValue->setMaximum( 25 );
    int segmentVal = DEFAULT_SEGMENT;
    if ( g_prefs.exists( "ui_cubetool_segment" ) )
    {
@@ -71,6 +75,8 @@ CubeToolWidget::CubeToolWidget( Observer * observer, QWidget * parent )
    }
    m_segmentValue->setValue( segmentVal );
 
+   m_layout->addStretch();
+
    connect( m_cubeValue,  SIGNAL(toggled(bool)), this, SLOT(cubeValueChanged(bool))  );
    connect( m_segmentValue, SIGNAL(valueChanged(int)), this, SLOT(segmentValueChanged(int)) );
 
@@ -81,6 +87,7 @@ CubeToolWidget::CubeToolWidget( Observer * observer, QWidget * parent )
 
    cubeValueChanged( isCube );
    segmentValueChanged( segmentVal );
+   m_layout->addStretch();
 }
 
 CubeToolWidget::~CubeToolWidget()

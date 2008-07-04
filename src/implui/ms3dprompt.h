@@ -28,12 +28,11 @@
 #include "modelfilter.h"
 #include "ms3dfilter.h"
 
-#include "mq3macro.h"
+#include <QtGui/QDialog>
 
-class QAccel;
 class Model;
 
-class Ms3dPrompt : public Ms3dPromptBase
+class Ms3dPrompt : public QDialog, public Ui::Ms3dPromptBase
 {
    Q_OBJECT
 
@@ -45,15 +44,13 @@ class Ms3dPrompt : public Ms3dPromptBase
       void getOptions( Ms3dFilter::Ms3dOptions * o );
 
    public slots:
-      void helpNowEvent( int id );
+      void helpNowEvent();
 
-      void subVersionChangedEvent( int );
+      void subVersionChangedEvent();
 
    protected:
 
       void updateExtraEnabled();
-
-      QAccel * m_accel;
 };
 
 bool ms3dprompt_show( Model * model, ModelFilter::Options * o );

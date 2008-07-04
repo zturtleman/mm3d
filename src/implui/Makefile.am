@@ -8,6 +8,7 @@ libimplui_HFILES = \
 	animexportwin.h \
 	animsetwin.h \
 	animwidget.h \
+	animwin.h \
 	autoassignjointwin.h \
 	backgroundselect.h \
 	backgroundwin.h \
@@ -62,6 +63,7 @@ libimplui_MOC = \
    animexportwin.moc.cc \
 	animsetwin.moc.cc \
 	animwidget.moc.cc \
+	animwin.moc.cc \
 	autoassignjointwin.moc.cc \
 	backgroundselect.moc.cc \
 	backgroundwin.moc.cc \
@@ -112,6 +114,7 @@ libimplui_a_SOURCES = \
 	animexportwin.cc \
 	animsetwin.cc \
 	animwidget.cc \
+	animwin.cc \
 	autoassignjointwin.cc \
 	backgroundselect.cc \
 	backgroundwin.cc \
@@ -172,7 +175,7 @@ libimplui_a_SOURCES = \
 		$(QT_UIC) -o $@ -impl $*.base.h $*.ui
 
 # -DQT_NO_CAST_ASCII
-AM_CPPFLAGS = $(PROFILE) -DQT_COMPAT -Wall -I../libmm3d -I../mm3dcore -I../depui -I../qtui -I../ -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
+AM_CPPFLAGS = $(PROFILE) $(COVFLAGS) -Wall -I../libmm3d -I../mm3dcore -I../depui -I../qtui -I../ -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
 
-CLEANFILES = $(libimplui_MOC) $(mm3d_UIHEADERS)
+CLEANFILES = $(libimplui_MOC) $(mm3d_UIHEADERS) *.gcno *.gcda
 

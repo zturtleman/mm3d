@@ -1,336 +1,284 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>AnimSetWinBase</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>AnimSetWinBase</cstring>
+<ui version="4.0" stdsetdef="1" >
+  <author></author>
+  <comment></comment>
+  <exportmacro></exportmacro>
+  <class>AnimSetWinBase</class>
+  <widget class="QDialog" name="AnimSetWinBase" >
+    <property name="geometry" >
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>515</width>
+        <height>444</height>
+      </rect>
     </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>515</width>
-            <height>444</height>
-        </rect>
+    <property name="windowTitle" >
+      <string>Animation Sets</string>
     </property>
-    <property name="caption">
-        <string>Animation Sets</string>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <property name="margin">
-            <number>11</number>
-        </property>
-        <property name="spacing">
+    <layout class="QVBoxLayout" >
+      <property name="margin" >
+        <number>11</number>
+      </property>
+      <property name="spacing" >
+        <number>6</number>
+      </property>
+      <item>
+        <widget class="QComboBox" name="m_animType" />
+      </item>
+      <item>
+        <widget class="QListWidget" name="m_animList" >
+          <property name="selectionMode" >
+            <enum>QListWidget::ExtendedSelection</enum>
+          </property>
+        </widget>
+      </item>
+      <item>
+        <layout class="QHBoxLayout" >
+          <property name="margin" >
+            <number>0</number>
+          </property>
+          <property name="spacing" >
             <number>6</number>
-        </property>
-        <widget class="QComboBox">
-            <property name="name">
-                <cstring>m_animType</cstring>
-            </property>
+          </property>
+          <item>
+            <spacer name="Spacer2" >
+              <property name="sizeHint" >
+                <size>
+                  <width>222</width>
+                  <height>0</height>
+                </size>
+              </property>
+              <property name="sizeType" >
+                <enum>Expanding</enum>
+              </property>
+              <property name="orientation" >
+                <enum>Horizontal</enum>
+              </property>
+            </spacer>
+          </item>
+          <item>
+            <widget class="QPushButton" name="m_downButton" >
+              <property name="text" >
+                <string>&amp;Down</string>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QPushButton" name="m_upButton" >
+              <property name="text" >
+                <string>&amp;Up</string>
+              </property>
+            </widget>
+          </item>
+        </layout>
+      </item>
+      <item>
+        <layout class="QHBoxLayout" >
+          <property name="margin" >
+            <number>0</number>
+          </property>
+          <property name="spacing" >
+            <number>6</number>
+          </property>
+          <item>
+            <widget class="QPushButton" name="m_newButton" >
+              <property name="text" >
+                <string>&amp;New</string>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QPushButton" name="m_renameButton" >
+              <property name="text" >
+                <string>&amp;Rename</string>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QPushButton" name="m_deleteButton" >
+              <property name="text" >
+                <string>D&amp;elete</string>
+              </property>
+            </widget>
+          </item>
+        </layout>
+      </item>
+      <item>
+        <layout class="QHBoxLayout" >
+          <property name="margin" >
+            <number>0</number>
+          </property>
+          <property name="spacing" >
+            <number>6</number>
+          </property>
+          <item>
+            <widget class="QPushButton" name="m_copyButton" >
+              <property name="text" >
+                <string>&amp;Copy</string>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QPushButton" name="m_splitButton" >
+              <property name="text" >
+                <string>&amp;Split</string>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QPushButton" name="m_joinButton" >
+              <property name="text" >
+                <string>&amp;Join</string>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QPushButton" name="m_mergeButton" >
+              <property name="text" >
+                <string>&amp;Merge</string>
+              </property>
+            </widget>
+          </item>
+        </layout>
+      </item>
+      <item>
+        <widget class="QPushButton" name="m_convertButton" >
+          <property name="text" >
+            <string>Con&amp;vert To Frame Animation</string>
+          </property>
         </widget>
-        <widget class="QListBox">
-            <property name="name">
-                <cstring>m_animList</cstring>
-            </property>
-            <property name="selectionMode">
-                <enum>Extended</enum>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>Layout5</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <spacer>
-                    <property name="name">
-                        <cstring>Spacer2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>222</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>m_downButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Down</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>m_upButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Up</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>Layout2</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>m_newButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;New</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>m_renameButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Rename</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>m_deleteButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>D&amp;elete</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>Layout8</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>m_copyButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Copy</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>m_splitButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Split</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>m_joinButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Join</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>m_mergeButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Merge</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QPushButton">
-            <property name="name">
-                <cstring>m_convertButton</cstring>
-            </property>
-            <property name="text">
-                <string>Con&amp;vert To Frame Animation</string>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout33</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel7</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Press F1 for help</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>Spacer1</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>120</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>m_okButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Ok</string>
-                    </property>
-                    <property name="default">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>m_cancelButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Cancel</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-    </vbox>
-</widget>
-<connections>
+      </item>
+      <item>
+        <layout class="QHBoxLayout" >
+          <property name="margin" >
+            <number>0</number>
+          </property>
+          <item>
+            <widget class="QLabel" name="textLabel7" >
+              <property name="text" >
+                <string>Press F1 for help</string>
+              </property>
+              <property name="wordWrap" >
+                <bool>false</bool>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <spacer name="Spacer1" >
+              <property name="sizeHint" >
+                <size>
+                  <width>120</width>
+                  <height>20</height>
+                </size>
+              </property>
+              <property name="sizeType" >
+                <enum>Expanding</enum>
+              </property>
+              <property name="orientation" >
+                <enum>Horizontal</enum>
+              </property>
+            </spacer>
+          </item>
+          <item>
+            <widget class="QPushButton" name="m_okButton" >
+              <property name="text" >
+                <string>Ok</string>
+              </property>
+              <property name="default" >
+                <bool>true</bool>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QPushButton" name="m_cancelButton" >
+              <property name="text" >
+                <string>Cancel</string>
+              </property>
+            </widget>
+          </item>
+        </layout>
+      </item>
+    </layout>
+  </widget>
+  <layoutdefault spacing="6" margin="11" />
+  <connections>
     <connection>
-        <sender>m_okButton</sender>
-        <signal>clicked()</signal>
-        <receiver>AnimSetWinBase</receiver>
-        <slot>accept()</slot>
+      <sender>m_okButton</sender>
+      <signal>clicked()</signal>
+      <receiver>AnimSetWinBase</receiver>
+      <slot>accept()</slot>
     </connection>
     <connection>
-        <sender>m_cancelButton</sender>
-        <signal>clicked()</signal>
-        <receiver>AnimSetWinBase</receiver>
-        <slot>reject()</slot>
+      <sender>m_cancelButton</sender>
+      <signal>clicked()</signal>
+      <receiver>AnimSetWinBase</receiver>
+      <slot>reject()</slot>
     </connection>
     <connection>
-        <sender>m_animType</sender>
-        <signal>activated(int)</signal>
-        <receiver>AnimSetWinBase</receiver>
-        <slot>animModeSelected(int)</slot>
+      <sender>m_animType</sender>
+      <signal>activated(int)</signal>
+      <receiver>AnimSetWinBase</receiver>
+      <slot>animModeSelected(int)</slot>
     </connection>
     <connection>
-        <sender>m_downButton</sender>
-        <signal>clicked()</signal>
-        <receiver>AnimSetWinBase</receiver>
-        <slot>downClicked()</slot>
+      <sender>m_downButton</sender>
+      <signal>clicked()</signal>
+      <receiver>AnimSetWinBase</receiver>
+      <slot>downClicked()</slot>
     </connection>
     <connection>
-        <sender>m_upButton</sender>
-        <signal>clicked()</signal>
-        <receiver>AnimSetWinBase</receiver>
-        <slot>upClicked()</slot>
+      <sender>m_upButton</sender>
+      <signal>clicked()</signal>
+      <receiver>AnimSetWinBase</receiver>
+      <slot>upClicked()</slot>
     </connection>
     <connection>
-        <sender>m_newButton</sender>
-        <signal>clicked()</signal>
-        <receiver>AnimSetWinBase</receiver>
-        <slot>newClicked()</slot>
+      <sender>m_newButton</sender>
+      <signal>clicked()</signal>
+      <receiver>AnimSetWinBase</receiver>
+      <slot>newClicked()</slot>
     </connection>
     <connection>
-        <sender>m_renameButton</sender>
-        <signal>clicked()</signal>
-        <receiver>AnimSetWinBase</receiver>
-        <slot>renameClicked()</slot>
+      <sender>m_renameButton</sender>
+      <signal>clicked()</signal>
+      <receiver>AnimSetWinBase</receiver>
+      <slot>renameClicked()</slot>
     </connection>
     <connection>
-        <sender>m_deleteButton</sender>
-        <signal>clicked()</signal>
-        <receiver>AnimSetWinBase</receiver>
-        <slot>deleteClicked()</slot>
+      <sender>m_deleteButton</sender>
+      <signal>clicked()</signal>
+      <receiver>AnimSetWinBase</receiver>
+      <slot>deleteClicked()</slot>
     </connection>
     <connection>
-        <sender>m_copyButton</sender>
-        <signal>clicked()</signal>
-        <receiver>AnimSetWinBase</receiver>
-        <slot>copyClicked()</slot>
+      <sender>m_copyButton</sender>
+      <signal>clicked()</signal>
+      <receiver>AnimSetWinBase</receiver>
+      <slot>copyClicked()</slot>
     </connection>
     <connection>
-        <sender>m_splitButton</sender>
-        <signal>clicked()</signal>
-        <receiver>AnimSetWinBase</receiver>
-        <slot>splitClicked()</slot>
+      <sender>m_splitButton</sender>
+      <signal>clicked()</signal>
+      <receiver>AnimSetWinBase</receiver>
+      <slot>splitClicked()</slot>
     </connection>
     <connection>
-        <sender>m_joinButton</sender>
-        <signal>clicked()</signal>
-        <receiver>AnimSetWinBase</receiver>
-        <slot>joinClicked()</slot>
+      <sender>m_joinButton</sender>
+      <signal>clicked()</signal>
+      <receiver>AnimSetWinBase</receiver>
+      <slot>joinClicked()</slot>
     </connection>
     <connection>
-        <sender>m_convertButton</sender>
-        <signal>clicked()</signal>
-        <receiver>AnimSetWinBase</receiver>
-        <slot>convertClicked()</slot>
+      <sender>m_convertButton</sender>
+      <signal>clicked()</signal>
+      <receiver>AnimSetWinBase</receiver>
+      <slot>convertClicked()</slot>
     </connection>
     <connection>
-        <sender>m_mergeButton</sender>
-        <signal>clicked()</signal>
-        <receiver>AnimSetWinBase</receiver>
-        <slot>mergeClicked()</slot>
+      <sender>m_mergeButton</sender>
+      <signal>clicked()</signal>
+      <receiver>AnimSetWinBase</receiver>
+      <slot>mergeClicked()</slot>
     </connection>
-</connections>
-<slots>
-    <slot>animModeSelected(int)</slot>
-    <slot>convertClicked()</slot>
-    <slot>copyClicked()</slot>
-    <slot>deleteClicked()</slot>
-    <slot>downClicked()</slot>
-    <slot>joinClicked()</slot>
-    <slot>newClicked()</slot>
-    <slot>mergeClicked()</slot>
-    <slot>renameClicked()</slot>
-    <slot>splitClicked()</slot>
-    <slot>upClicked()</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+  </connections>
+</ui>

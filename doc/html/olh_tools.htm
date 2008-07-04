@@ -3,6 +3,7 @@
       <h3>General Usage</h3>
       <ul>
          <li> <a href="#using">Using the toolbar</a> </li>
+         <li> <a href="#snapto">Snap to grid/vertex</a> </li>
       </ul>
       <h3>Tools</h3>
       <ul>
@@ -11,6 +12,7 @@
          <li> <a href="#rotate">Rotate</a> </li>
          <li> <a href="#scale">Scale</a> </li>
          <li> <a href="#shear">Shear</a> </li>
+         <li> <a href="#extrude">Extrude</a> </li>
          <li> <a href="#dragvertex">Drag Vertex on Edge</a> </li>
          <li> <a href="#atrnear">Attract Near</a> </li>
          <li> <a href="#atrfar">Attract Far</a> </li>
@@ -66,6 +68,17 @@
 
 
       <hr/>
+
+      <a name="snapto"></a></a>
+      <h1>Snap to Grid/Vertex</h1>
+
+      <p>
+      The tools menu contains a &quot;Snap To&quot; submenu. In this submenu
+      there are two options: &quot;Snap to Grid&quot; and
+      &quot;Snap to Vertex&quot;. The former will cause objects dragged by
+      the mouse to align with the nearest grid line when it comes close enough.
+      The latter will cause the objects to align with the nearest vertex.
+      </p>
 
       <a name="tools"></a>
       <h1>Tools</h1>
@@ -316,13 +329,44 @@
       </ul>
       </p>
 
+      <a name="extrude"></a>
+      <h2>Extrude</h2>
+
+      <p>
+      <img alt="Extrude tool icon" src="olh_images/tools/extrudetool.png"/><br/>
+      <b>Extrude</b> selected faces. This works like the extrude tool except
+      that instead of entering a numeric offset for the location of the
+      extruded faces, you drag the faces to the desired location with the
+      mouse.
+      </p>
+
+      <h3>Mouse operations</h3>
+      <p>
+      Press and hold a mouse button to begin an extrude operation. The faces
+      you select will move with the mouse. New faces will be created to connect
+      the moving faces to the rest of the object. If you release the mouse
+      button and press and hold again, it will start a new extrude operation.
+      </p>
+
+      <h3>Animation mode</h3>
+      <p>
+      This tool works like a create tool and has no effect in animation mode.
+      </p>
+
+      <p>
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>None</b> </li>
+      </ul>
+      </p>
+
+
       <a name="dragvertex"></a>
       <h2>Drag Vertex on Edge</h2>
 
       <h3>Overview</h3>
       <p>
-      <!-- FIXME image -->
-      <img alt="Drag vertex tool icon" src="olh_images/tools/sheartool.png"/><br/>
+      <img alt="Drag vertex tool icon" src="olh_images/tools/dragvertextool.png"/><br/>
       <b>Drag Vertex on Edge</b> of a triangle toward connected vertices.
       </p>
 

@@ -25,25 +25,25 @@
 
 #include "3dmprefs.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
+#include <QtGui/QLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QGroupBox>
+#include <QtGui/QCheckBox>
 
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qcheckbox.h>
-
-SelectFaceToolWidget::SelectFaceToolWidget( Observer * observer, QWidget * parent )
-   : QDockWindow ( QDockWindow::InDock, parent, "", WDestructiveClose ),
+SelectFaceToolWidget::SelectFaceToolWidget( Observer * observer, QMainWindow * parent )
+   : ToolWidget ( parent ),
      m_observer( observer )
 {
    const bool DEFAULT_BACKFACING  = true;
 
    m_layout = boxLayout();
 
-   m_backfacingLabel = new QLabel( tr("Include Back-facing"), this, "" );
+   m_backfacingLabel = new QLabel( tr("Include Back-facing"), mainWidget() );
    m_layout->addWidget( m_backfacingLabel );
 
-   m_backfacingValue = new QCheckBox( this, "" );
+   m_backfacingValue = new QCheckBox( mainWidget() );
    m_layout->addWidget( m_backfacingValue );
 
    bool includeBackfacing = DEFAULT_BACKFACING;
@@ -52,6 +52,8 @@ SelectFaceToolWidget::SelectFaceToolWidget( Observer * observer, QWidget * paren
       includeBackfacing = (g_prefs( "ui_selectfacetool_backfacing" ).intValue() != 0) ? true : false;
    }
    m_backfacingValue->setChecked( includeBackfacing );
+
+   m_layout->addStretch();
 
    connect( m_backfacingValue,  SIGNAL(toggled(bool)), this, SLOT(backfacingValueChanged(bool))  );
 

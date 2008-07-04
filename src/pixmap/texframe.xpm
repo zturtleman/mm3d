@@ -1,5 +1,5 @@
 /* XPM */
-static char * texframe_xpm[] = {
+static const char * texframe_xpm[] = {
 "64 64 680 2",
 "  	c None",
 ". 	c #000000",

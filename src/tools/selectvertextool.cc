@@ -32,9 +32,9 @@
 #include "pixmap/selectvertextool.xpm"
 
 #include <stdio.h>
-#include <qobject.h>
-#include <qapplication.h>
-#include <qnamespace.h>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
+#include <QtGui/QKeySequence>
 
 SelectVertexTool::SelectVertexTool()
    : m_boundingBox( NULL ),
@@ -89,7 +89,7 @@ void SelectVertexTool::mouseButtonDown( Parent * parent, int buttonState, int x,
    }
 
    parent->updateAllViews();
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Starting selection" ).utf8() );
+   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Starting selection" ).toUtf8() );
 }
 
 void SelectVertexTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
@@ -136,7 +136,7 @@ void SelectVertexTool::mouseButtonUp( Parent * parent, int buttonState, int x, i
       m_boundingBox = NULL;
 
       parent->updateAllViews();
-      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Selection complete" ).utf8() );
+      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Selection complete" ).toUtf8() );
    }
 }
 
@@ -162,11 +162,7 @@ const char ** SelectVertexTool::getPixmap()
 
 const char * SelectVertexTool::getPath()
 {
-#ifdef HAVE_QT4
-   return "";
-#else
    return TOOLS_SELECT_MENU;
-#endif
 }
 
 const char * SelectVertexTool::getName( int arg )

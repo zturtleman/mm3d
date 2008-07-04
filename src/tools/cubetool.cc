@@ -31,9 +31,8 @@
 
 #include <math.h>
 
-#include <qobject.h>
-#include <qapplication.h>
-#include <qwidget.h>
+#include <QtGui/QMainWindow>
+#include <QtGui/QApplication>
 
 using std::vector;
 
@@ -205,7 +204,7 @@ void CubeTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y )
 
       parent->updateAllViews();
 
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Cube created" ).utf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Cube created" ).toUtf8() );
    }
 }
 
@@ -305,9 +304,6 @@ void CubeTool::updateVertexCoords( Parent * parent, double x1, double y1, double
 void CubeTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
    m_widget = new CubeToolWidget( this, mainwin );
-#ifdef HAVE_QT4
-   //mainwin->addDockWindow( m_widget, DockBottom );
-#endif
    m_widget->show();
 }
 

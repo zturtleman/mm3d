@@ -35,33 +35,35 @@
 #include "3dmprefs.h"
 #include "helpwin.h"
 
-#include "mq3compat.h"
+#include <QtGui/QComboBox>
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QInputDialog>
+#include <QtGui/QLineEdit>
+#include <QtGui/QSlider>
+#include <QtGui/QLabel>
+#include <QtGui/QShortcut>
 
-#include <qcombobox.h>
-#include <qmessagebox.h>
-#include <qpushbutton.h>
 #include <list>
 #include <string>
-#include <qinputdialog.h>
-#include <qlineedit.h>
-#include <qslider.h>
-#include <qlabel.h>
 
 using std::list;
 using std::string;
 
-TransformWindow::TransformWindow( Model * model, QWidget * parent, const char * name )
-   : TransformWindowBase( parent, name ),
-     m_accel( new QAccel(this) ),
+TransformWindow::TransformWindow( Model * model, QWidget * parent )
+   : QDialog( parent ),
      m_model( model )
 {
+   setupUi( this );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
 TransformWindow::~TransformWindow()
 {
 }
 
-void TransformWindow::helpNowEvent( int id )
+void TransformWindow::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_transformwin.html", true );
    win->show();
@@ -69,7 +71,7 @@ void TransformWindow::helpNowEvent( int id )
 
 void TransformWindow::close()
 {
-   TransformWindowBase::hide();
+   QDialog::hide();
 }
 
 void TransformWindow::setModel( Model * m )
@@ -79,27 +81,22 @@ void TransformWindow::setModel( Model * m )
 
 void TransformWindow::translateEvent()
 {
-   double x = atof( m_transX->text().utf8() );
-   double y = atof( m_transY->text().utf8() );
-   double z = atof( m_transZ->text().utf8() );
+   double x = atof( m_transX->text().toUtf8() );
+   double y = atof( m_transY->text().toUtf8() );
+   double z = atof( m_transZ->text().toUtf8() );
 
    Matrix m;
    m.setTranslation( x, y, z );
 
-   if ( warnNoUndo( matrixIsUndoable( m ) ) )
-   {
-      m_model->applyMatrix( m, Model::OS_Global, true, m_undoable );
-      m_model->operationComplete( tr("Matrix Translate").utf8() );
-      DecalManager::getInstance()->modelUpdated( m_model );
-   }
+   applyMatrix( m,  tr("Matrix Translate") );
 }
 
 void TransformWindow::rotateEulerEvent()
 {
    double vec[3];
-   vec[0] = atof( m_rotX->text().utf8() );
-   vec[1] = atof( m_rotY->text().utf8() );
-   vec[2] = atof( m_rotZ->text().utf8() );
+   vec[0] = atof( m_rotX->text().toUtf8() );
+   vec[1] = atof( m_rotY->text().toUtf8() );
+   vec[2] = atof( m_rotZ->text().toUtf8() );
 
    vec[0] *= PIOVER180; // convert to radians
    vec[1] *= PIOVER180; // convert to radians
@@ -108,94 +105,68 @@ void TransformWindow::rotateEulerEvent()
    Matrix m;
    m.setRotation( vec );
 
-   if ( warnNoUndo( matrixIsUndoable( m ) ) )
-   {
-      m_model->applyMatrix( m, Model::OS_Global, true, m_undoable );
-      m_model->operationComplete( tr("Matrix Rotate").utf8() );
-      DecalManager::getInstance()->modelUpdated( m_model );
-   }
+   applyMatrix( m, tr("Matrix Rotate") );
 }
 
 void TransformWindow::rotateQuaternionEvent()
 {
    double vec[3];
-   vec[0] = atof( m_axisX->text().utf8() );
-   vec[1] = atof( m_axisY->text().utf8() );
-   vec[2] = atof( m_axisZ->text().utf8() );
-   double angle = atof( m_angle->text().utf8() );
+   vec[0] = atof( m_axisX->text().toUtf8() );
+   vec[1] = atof( m_axisY->text().toUtf8() );
+   vec[2] = atof( m_axisZ->text().toUtf8() );
+   double angle = atof( m_angle->text().toUtf8() );
 
    angle = angle * PIOVER180; // convert to radians
 
    Matrix m;
    m.setRotationOnAxis( vec, angle );
 
-   if ( warnNoUndo( matrixIsUndoable( m ) ) )
-   {
-      m_model->applyMatrix( m, Model::OS_Global, true, m_undoable );
-      m_model->operationComplete( tr("Matrix Rotate On Axis").utf8() );
-      DecalManager::getInstance()->modelUpdated( m_model );
-   }
+   applyMatrix( m, tr("Matrix Rotate On Axis") );
 }
 
 void TransformWindow::scaleEvent()
 {
-   double x = atof( m_scaleX->text().utf8() );
-   double y = atof( m_scaleY->text().utf8() );
-   double z = atof( m_scaleZ->text().utf8() );
+   double x = atof( m_scaleX->text().toUtf8() );
+   double y = atof( m_scaleY->text().toUtf8() );
+   double z = atof( m_scaleZ->text().toUtf8() );
 
    Matrix m;
    m.set( 0, 0, x );
    m.set( 1, 1, y );
    m.set( 2, 2, z );
 
-   if ( warnNoUndo( matrixIsUndoable( m ) ) )
-   {
-      m_model->applyMatrix( m, Model::OS_Global, true, m_undoable );
-      m_model->operationComplete( tr("Matrix Scale").utf8() );
-      DecalManager::getInstance()->modelUpdated( m_model );
-   }
+   applyMatrix( m, tr("Matrix Scale") );
 }
 
 void TransformWindow::matrixEvent()
 {
    Matrix m;
-   m.set( 0, 0, atof( m_00->text().utf8() ) );
-   m.set( 0, 1, atof( m_01->text().utf8() ) );
-   m.set( 0, 2, atof( m_02->text().utf8() ) );
-   m.set( 0, 3, atof( m_03->text().utf8() ) );
-   m.set( 1, 0, atof( m_10->text().utf8() ) );
-   m.set( 1, 1, atof( m_11->text().utf8() ) );
-   m.set( 1, 2, atof( m_12->text().utf8() ) );
-   m.set( 1, 3, atof( m_13->text().utf8() ) );
-   m.set( 2, 0, atof( m_20->text().utf8() ) );
-   m.set( 2, 1, atof( m_21->text().utf8() ) );
-   m.set( 2, 2, atof( m_22->text().utf8() ) );
-   m.set( 2, 3, atof( m_23->text().utf8() ) );
-   m.set( 3, 0, atof( m_30->text().utf8() ) );
-   m.set( 3, 1, atof( m_31->text().utf8() ) );
-   m.set( 3, 2, atof( m_32->text().utf8() ) );
-   m.set( 3, 3, atof( m_33->text().utf8() ) );
+   m.set( 0, 0, atof( m_00->text().toUtf8() ) );
+   m.set( 0, 1, atof( m_01->text().toUtf8() ) );
+   m.set( 0, 2, atof( m_02->text().toUtf8() ) );
+   m.set( 0, 3, atof( m_03->text().toUtf8() ) );
+   m.set( 1, 0, atof( m_10->text().toUtf8() ) );
+   m.set( 1, 1, atof( m_11->text().toUtf8() ) );
+   m.set( 1, 2, atof( m_12->text().toUtf8() ) );
+   m.set( 1, 3, atof( m_13->text().toUtf8() ) );
+   m.set( 2, 0, atof( m_20->text().toUtf8() ) );
+   m.set( 2, 1, atof( m_21->text().toUtf8() ) );
+   m.set( 2, 2, atof( m_22->text().toUtf8() ) );
+   m.set( 2, 3, atof( m_23->text().toUtf8() ) );
+   m.set( 3, 0, atof( m_30->text().toUtf8() ) );
+   m.set( 3, 1, atof( m_31->text().toUtf8() ) );
+   m.set( 3, 2, atof( m_32->text().toUtf8() ) );
+   m.set( 3, 3, atof( m_33->text().toUtf8() ) );
 
-   if ( warnNoUndo( matrixIsUndoable( m ) ) )
-   {
-      m_model->applyMatrix( m, Model::OS_Global, true, m_undoable );
-      m_model->operationComplete( tr("Apply Matrix").utf8() );
-      DecalManager::getInstance()->modelUpdated( m_model );
-   }
+   applyMatrix( m, tr("Apply Matrix") );
 }
 
 bool TransformWindow::matrixIsUndoable( const Matrix & m )
 {
    if ( fabs( m.getDeterminant() ) >= 0.0006 ) 
-   {
-      m_undoable = true;
       return true;
-   }
    else
-   {
-      m_undoable = false;
       return false;
-   }
 }
 
 bool TransformWindow::warnNoUndo( bool undoable )
@@ -204,14 +175,22 @@ bool TransformWindow::warnNoUndo( bool undoable )
    {
       if ( QMessageBox::warning( NULL, tr("Transform Cannot Be Undone", "window title"), tr("This transformation cannot be undone.") + QString("\n") + tr("Are you sure you wish to continue?" ),
                tr("Apply Transformation", "button" ), tr("Cancel Transformation", "button" ) ) == 0 )
-      {
          return true;
-      }
       else
-      {
          return false;
-      }
    }
    return true;
 }
 
+void TransformWindow::applyMatrix( const Matrix & m, const QString & action )
+{
+   bool undoable = matrixIsUndoable( m );
+   if ( warnNoUndo( undoable ) )
+   {
+      Model::OperationScopeE scope = (m_scope->currentIndex() == 0)
+         ? Model::OS_Selected : Model::OS_Global;
+      m_model->applyMatrix( m, scope, true, undoable );
+      m_model->operationComplete( action.toUtf8() );
+      DecalManager::getInstance()->modelUpdated( m_model );
+   }
+}

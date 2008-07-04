@@ -28,8 +28,8 @@
 #include "modelstatus.h"
 
 #include <math.h>
-#include <qobject.h>
-#include <qapplication.h>
+#include <QtCore/QObject>
+#include <QtGui/QApplication>
 
 #include "log.h"
 
@@ -53,7 +53,7 @@ void MoveTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y )
 
    m_viewInverse = parent->getParentViewInverseMatrix();
 
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Moving selected primitives" ).utf8() );
+   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Moving selected primitives" ).toUtf8() );
 }
 
 void MoveTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
@@ -71,7 +71,7 @@ void MoveTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
    */
    parent->updateAllViews();
 
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Move complete" ).utf8() );
+   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Move complete" ).toUtf8() );
 }
 
 void MoveTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )
@@ -132,7 +132,7 @@ const char ** MoveTool::getPixmap()
 
 void MoveTool::activated( int argc, Model * model, QMainWindow * mainwin )
 {
-   model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Tip: Hold shift to restrict movement to one dimension" ).utf8() );
+   model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Tip: Hold shift to restrict movement to one dimension" ).toUtf8() );
 }
 
 const char * MoveTool::getName( int arg )

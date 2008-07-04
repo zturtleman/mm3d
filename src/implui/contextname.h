@@ -26,13 +26,13 @@
 
 #include "contextname.base.h"
 
-#include "mq3macro.h"
-
 #include "contextwidget.h"
+
+#include <QtGui/QWidget>
 
 class Model;
 
-class ContextName : public ContextNameBase, public ContextWidget
+class ContextName : public QWidget, public Ui::ContextNameBase, public ContextWidget
 {
    Q_OBJECT
    public:

@@ -1,5 +1,5 @@
 /* XPM */
-static char * atrfartool_xpm[] = {
+static const char * atrfartool_xpm[] = {
 "22 22 4 1",
 " 	c None",
 ".	c #FF0000",

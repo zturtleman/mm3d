@@ -439,7 +439,7 @@ Le nombre d&apos;images diffère.</translation>
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished">F1</translation>
+        <translation type="obsolete">F1</translation>
     </message>
     <message>
         <source>&lt;New Animation&gt;</source>
@@ -559,7 +559,7 @@ Le nombre d&apos;images diffère.</translation>
     <name>AnimWindow</name>
     <message>
         <source>Animations</source>
-        <translation type="obsolete">Animations</translation>
+        <translation type="unfinished">Animations</translation>
     </message>
 </context>
 <context>
@@ -613,7 +613,7 @@ Le nombre d&apos;images diffère.</translation>
     </message>
     <message>
         <source>All Files (*)</source>
-        <translation type="unfinished">Tous les fichiers (*)</translation>
+        <translation type="obsolete">Tous les fichiers (*)</translation>
     </message>
     <message>
         <source>Could not open file</source>
@@ -1344,7 +1344,7 @@ Etes vous sûr de vouloir continuer?</translation>
     <message>
         <source>Properties</source>
         <comment>Window title</comment>
-        <translation type="obsolete">Propriétés</translation>
+        <translation type="unfinished">Propriétés</translation>
     </message>
 </context>
 <context>
@@ -2813,12 +2813,12 @@ Opération Terminée</translation>
     <message>
         <source>Ctrl+Z</source>
         <comment>Undo</comment>
-        <translation type="unfinished">Ctrl+Z</translation>
+        <translation type="obsolete">Ctrl+Z</translation>
     </message>
     <message>
         <source>Ctrl+Y</source>
         <comment>Redo</comment>
-        <translation type="unfinished">Ctrl+Y</translation>
+        <translation type="obsolete">Ctrl+Y</translation>
     </message>
     <message>
         <source>Set Projection Type</source>
@@ -2853,6 +2853,16 @@ Opération Terminée</translation>
         <source>Rename Projection</source>
         <comment>operation complete</comment>
         <translation>Renommer la projection</translation>
+    </message>
+    <message>
+        <source>CTRL+Z</source>
+        <comment>Undo shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CTRL+Y</source>
+        <comment>Redo shortcut</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3129,6 +3139,21 @@ Opération Terminée</translation>
         <source>Move texture coordinates</source>
         <translation>Bouger les Coordonnées de texture</translation>
     </message>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CTRL+Z</source>
+        <comment>Undo shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CTRL+Y</source>
+        <comment>Redo shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TextureCoordBase</name>
@@ -3218,7 +3243,7 @@ Opération Terminée</translation>
     </message>
     <message>
         <source>All Files (*)</source>
-        <translation type="unfinished">Tous les fichiers (*)</translation>
+        <translation type="obsolete">Tous les fichiers (*)</translation>
     </message>
     <message>
         <source>Could not open file</source>
@@ -3263,6 +3288,11 @@ Opération Terminée</translation>
         <source>Set texture...</source>
         <comment>Add texture file to material</comment>
         <translation>Choisir la texture...</translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3741,6 +3771,11 @@ bouton</translation>
         <comment>button</comment>
         <translation>Annuler la transformation</translation>
     </message>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TransformWindowBase</name>
@@ -3818,7 +3853,7 @@ bouton</translation>
     </message>
     <message>
         <source>Entire Model and Animations</source>
-        <translation type="unfinished">Tout le Modèle et Animations</translation>
+        <translation type="obsolete">Tout le Modèle et Animations</translation>
     </message>
     <message>
         <source>Press F1 for help</source>
@@ -3828,9 +3863,22 @@ bouton</translation>
         <source>Close</source>
         <translation>Fermer</translation>
     </message>
+    <message>
+        <source>Selected (including animations)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Entire Model (including animations)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ValueWin</name>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ValueWinBase</name>
@@ -3867,7 +3915,7 @@ bouton</translation>
     </message>
     <message>
         <source>Animations</source>
-        <translation type="unfinished">Animations</translation>
+        <translation type="obsolete">Animations</translation>
     </message>
     <message>
         <source>Properties</source>
@@ -4289,7 +4337,7 @@ bouton</translation>
     </message>
     <message>
         <source>File exists.  Overwrite?</source>
-        <translation type="unfinished">Le Fichier existe.  Ecraser ?</translation>
+        <translation type="obsolete">Le Fichier existe.  Ecraser ?</translation>
     </message>
     <message>
         <source>Open model file</source>
@@ -4330,7 +4378,7 @@ Voulez vous sauver avant de fermer ?</translation>
     <message>
         <source>Hide Properties</source>
         <comment>View|Hide Properties</comment>
-        <translation type="unfinished">Cacher les Propriétés</translation>
+        <translation type="obsolete">Cacher les Propriétés</translation>
     </message>
     <message>
         <source>Cannot hide with selected projections.  Unselect projections now?</source>
@@ -4553,6 +4601,11 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
         <translation>Tous les formats supportés</translation>
     </message>
     <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Export Selected...</source>
         <comment>File|Export Selected</comment>
         <translation type="unfinished"></translation>
@@ -4568,6 +4621,11 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
 </context>
 <context>
     <name>ViewportSettings</name>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ViewportSettingsBase</name>

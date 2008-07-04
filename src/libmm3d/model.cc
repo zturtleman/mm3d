@@ -1611,62 +1611,10 @@ void Model::rotateSelected( const Matrix & m, double * point )
 
                setSkelAnimKeyframe( m_currentAnim, m_currentFrame, joint, true, rot[0], rot[1], rot[2] );
                setCurrentAnimationFrame( m_currentFrame );
-#if 0
-               double rot[4] = { 0, 0, 0, 0 };
 
-               if ( ! getSkelAnimKeyframe( m_currentAnim, m_currentFrame, joint, true,
-                     rot[0], rot[1], rot[2] ) )
-               {
-                  /*
-                  Matrix f = m_joints[ joint ]->m_final;
-                  f.setTranslation( rot );
-                  Matrix l;
-                  l.setRotation( m_joints[ joint ]->m_localRotation );
-
-                  f = f * l.getInverse();
-
-                  f.getRotation( rot );
-                  */
-               }
-
-               Matrix kfMatrix;
-               kfMatrix.setRotation( rot );
-
-               Matrix mm;
-               double vec[4] = { 0,0,0,0 };
-               double angle = 0;
-
-               m.getRotation( rot );
-               Quaternion mQuat;
-               mQuat.setEulerAngles( rot );
-               mQuat.getRotationOnAxis( vec, angle );
-
-               Matrix localRot;
-               localRot.setRotation( m_joints[joint]->m_localRotation );
-
-               if ( m_joints[ joint ]->m_parent >= 0 )
-               {
-                  Matrix final = m_joints[ m_joints[joint]->m_parent ]->m_final;
-                  localRot = localRot * final;
-               }
-
-               localRot.inverseRotateVector( vec );
-               mQuat.setRotationOnAxis( vec, angle );
-               mm.setRotationQuaternion( mQuat );
-
-               kfMatrix = kfMatrix * mm;
-
-               kfMatrix.getRotation( rot );
-
-               setSkelAnimKeyframe( m_currentAnim, m_currentFrame, joint, true,
-                     rot[0], rot[1], rot[2] );
-
-               setCurrentAnimationFrame( m_currentFrame );
-
-#endif
                // setSkelAnimKeyframe handles undo
 
-               // TODO: should I really allow this?
+               // TODO: should I really allow multiple joints here?
                //break;
             }
          }
@@ -1773,6 +1721,11 @@ void Model::rotateSelected( const Matrix & m, double * point )
 
       for ( unsigned j = 0; j < m_joints.size(); j++ )
       {
+         // NOTE: This code assumes that if a bone joint is rotated,
+         // all children are rotated with it. That may not be what
+         // the user expects. To prevent this I would have to find
+         // unselected joints whose direct parent was selected
+         // and invert the operation on those joints.
          if ( m_joints[j]->m_selected && !parentJointSelected(j) )
          {
             Joint * joint = m_joints[j];
@@ -1895,62 +1848,63 @@ void Model::applyMatrix( const Matrix & m, OperationScopeE scope, bool animation
       }
    }
 
-   // OS_Selected doesn't work on this...
    Matrix * matArray = new Matrix[ bcount ];
-   if ( global )
+   for ( b = 0; b < bcount; b++ )
    {
-      for ( b = 0; b < bcount; b++ )
+      matArray[b].loadIdentity();
+      matArray[b].setRotation( m_joints[b]->m_localRotation );
+      matArray[b].setTranslation( m_joints[b]->m_localTranslation );
+
+      Matrix inv;
+      int p = m_joints[b]->m_parent;
+      if ( p >= 0 && (global || parentJointSelected(p)) )
       {
-         matArray[b].loadIdentity();
-         matArray[b].setRotation( m_joints[b]->m_localRotation );
-         matArray[b].setTranslation( m_joints[b]->m_localTranslation );
+         // undo rotation and translation (keep scale)
+         matArray[b] = matArray[b] * matArray[p];
+         inv = matArray[p];
+         inv.normalizeRotation();
+         inv = inv.getInverse();
+      }
+      else
+      {
+         matArray[b] = matArray[b] * m;
+      }
+      Matrix rel = matArray[b] * inv;
 
-         Matrix inv;
-         int p = m_joints[b]->m_parent;
-         if ( p >= 0 )
-         {
-            // undo rotation and translation (keep scale)
-            matArray[b] = matArray[b] * matArray[p];
-            inv = matArray[p];
-            inv.normalizeRotation();
-            inv = inv.getInverse();
-         }
-         else
-         {
-            matArray[b] = matArray[b] * m;
-         }
-         Matrix rel = matArray[b] * inv;
-
+      if ( global || parentJointSelected(b) )
+      {
          rel.normalizeRotation();
          rel.getTranslation( m_joints[b]->m_localTranslation );
          rel.getRotation( m_joints[b]->m_localRotation );
       }
-   }
-   else
-   {
-      // FIXME implement (see rotateSelected, parentJointSelected)
    }
 
    delete[] matArray;
 
    for ( p = 0; p < pcount; p++ )
    {
-      Matrix pmat;
-      pmat.setRotation( m_points[p]->m_rot );
-      pmat.setTranslation( m_points[p]->m_trans );
+      if ( global || m_points[ p ]->m_selected )
+      {
+         Matrix pmat;
+         pmat.setRotation( m_points[p]->m_rot );
+         pmat.setTranslation( m_points[p]->m_trans );
 
-      pmat = pmat * m;
+         pmat = pmat * m;
 
-      pmat.normalizeRotation();
-      pmat.getRotation( m_points[p]->m_rot );
-      pmat.getTranslation( m_points[p]->m_trans );
+         pmat.normalizeRotation();
+         pmat.getRotation( m_points[p]->m_rot );
+         pmat.getTranslation( m_points[p]->m_trans );
+      }
    }
 
    for ( r = 0; r < rcount; r++ )
    {
-      m.apply3x( m_projections[ r ]->m_pos );
-      m.apply3( m_projections[ r ]->m_upVec );
-      m.apply3( m_projections[ r ]->m_seamVec );
+      if ( global || m_projections[ r ]->m_selected )
+      {
+         m.apply3x( m_projections[ r ]->m_pos );
+         m.apply3( m_projections[ r ]->m_upVec );
+         m.apply3( m_projections[ r ]->m_seamVec );
+      }
    }
 
    for ( a = 0; a < facount; a++ )
@@ -1961,23 +1915,28 @@ void Model::applyMatrix( const Matrix & m, OperationScopeE scope, bool animation
       {
          for ( v = 0; v < vcount; v++ )
          {
-            FrameAnimVertex * fav = (*m_frameAnims[a]->m_frameData[f]->m_frameVertices)[v];
-
-            m.apply3x( fav->m_coord );
+            if ( global || m_vertices[ v ]->m_selected )
+            {
+               FrameAnimVertex * fav = (*m_frameAnims[a]->m_frameData[f]->m_frameVertices)[v];
+               m.apply3x( fav->m_coord );
+            }
          }
 
          for ( p = 0; p < pcount; p++ )
          {
-            FrameAnimPoint * fap = (*m_frameAnims[a]->m_frameData[f]->m_framePoints)[p];
+            if ( global || m_points[ p ]->m_selected )
+            {
+               FrameAnimPoint * fap = (*m_frameAnims[a]->m_frameData[f]->m_framePoints)[p];
 
-            Matrix pmat;
-            pmat.setRotation( fap->m_rot );
-            pmat.setTranslation( fap->m_trans );
+               Matrix pmat;
+               pmat.setRotation( fap->m_rot );
+               pmat.setTranslation( fap->m_trans );
 
-            pmat = pmat * m;
+               pmat = pmat * m;
 
-            pmat.getRotation( fap->m_rot );
-            pmat.getTranslation( fap->m_trans );
+               pmat.getRotation( fap->m_rot );
+               pmat.getTranslation( fap->m_trans );
+            }
          }
       }
    }

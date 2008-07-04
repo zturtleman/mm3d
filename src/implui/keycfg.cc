@@ -25,8 +25,7 @@
 #include "log.h"
 #include "qtmain.h"
 
-#include <qnamespace.h>
-#include <qapplication.h>
+#include <QtGui/QApplication>
 
 static void _chomp( char * str )
 {
@@ -216,7 +215,7 @@ bool KeyConfig::saveFile( const char * filename )
          }
          else
          {
-            fprintf( fp, "%s %s\n", (*it).operation.c_str(), keyStr.latin1() );
+            fprintf( fp, "%s %s\n", (*it).operation.c_str(), (const char *) keyStr.toUtf8() );
          }
       }
 

@@ -55,7 +55,7 @@ void ViewWindow::jointAssignSelectedToJoint()
 
       log_debug( "assigning %d vertices and %d points to joints\n", vertList.size(), pointList.size() );
       QString str = tr( "assigning %1 vertices and %2 points to joints").arg(vertList.size()).arg( pointList.size() );
-      model_status( m_model, StatusNormal, STATUSTIME_SHORT, "%s", (const char *) str.utf8() );
+      model_status( m_model, StatusNormal, STATUSTIME_SHORT, "%s", (const char *) str.toUtf8() );
 
       for ( it = vertList.begin(); it != vertList.end(); it++ )
       {
@@ -75,12 +75,12 @@ void ViewWindow::jointAssignSelectedToJoint()
          }
       }
 
-      m_model->operationComplete( tr("Assign Selected to Joint").utf8() );
+      m_model->operationComplete( tr("Assign Selected to Joint").toUtf8() );
       m_viewPanel->modelUpdatedEvent();
    }
    else
    {
-      model_status( m_model, StatusError, STATUSTIME_LONG, tr("You must have at least one bone joint selected.").utf8() );
+      model_status( m_model, StatusError, STATUSTIME_LONG, tr("You must have at least one bone joint selected.").toUtf8() );
    }
 }
 
@@ -106,13 +106,13 @@ void ViewWindow::jointAutoAssignSelected()
             m_model->autoSetPositionInfluences( *pit, sensitivity, selected );
          }
 
-         m_model->operationComplete( tr("Auto-Assign Selected to Bone Joints").utf8() );
+         m_model->operationComplete( tr("Auto-Assign Selected to Bone Joints").toUtf8() );
          m_viewPanel->modelUpdatedEvent();
       }
    }
    else
    {
-      model_status( m_model, StatusError, STATUSTIME_LONG, tr("You must have at least one vertex or point selected.").utf8() );
+      model_status( m_model, StatusError, STATUSTIME_LONG, tr("You must have at least one vertex or point selected.").toUtf8() );
    }
 }
 
@@ -127,7 +127,7 @@ void ViewWindow::jointRemoveInfluencesFromSelected()
       m_model->removeAllPositionInfluences( *it );
    }
 
-   m_model->operationComplete( tr("Remove All Influences from Selected").utf8() );
+   m_model->operationComplete( tr("Remove All Influences from Selected").toUtf8() );
    m_viewPanel->modelUpdatedEvent();
 }
 
@@ -153,7 +153,7 @@ void ViewWindow::jointRemoveInfluenceJoint()
       }
    }
 
-   m_model->operationComplete( tr("Remove Joint from Influencing").utf8() );
+   m_model->operationComplete( tr("Remove Joint from Influencing").toUtf8() );
    m_viewPanel->modelUpdatedEvent();
 }
 
@@ -194,7 +194,7 @@ void ViewWindow::jointMakeSingleInfluence()
       }
    }
 
-   m_model->operationComplete( tr("Convert To Single Influence").utf8() );
+   m_model->operationComplete( tr("Convert To Single Influence").toUtf8() );
    m_viewPanel->modelUpdatedEvent();
 }
 
@@ -217,7 +217,7 @@ void ViewWindow::jointSelectUnassignedVertices()
 
    m_model->endSelectionDifference();
 
-   m_model->operationComplete( tr("Select Unassigned Vertices").utf8() );
+   m_model->operationComplete( tr("Select Unassigned Vertices").toUtf8() );
    m_viewPanel->modelUpdatedEvent();
 }
 
@@ -240,7 +240,7 @@ void ViewWindow::jointSelectUnassignedPoints()
 
    m_model->endSelectionDifference();
 
-   m_model->operationComplete( tr("Select Unassigned Points").utf8() );
+   m_model->operationComplete( tr("Select Unassigned Points").toUtf8() );
    m_viewPanel->modelUpdatedEvent();
 }
 
@@ -267,7 +267,7 @@ void ViewWindow::jointSelectInfluenceJoints()
 
    m_model->endSelectionDifference();
 
-   m_model->operationComplete( tr("Select Joint Influences").utf8() );
+   m_model->operationComplete( tr("Select Joint Influences").toUtf8() );
    m_viewPanel->modelUpdatedEvent();
 }
 
@@ -301,7 +301,7 @@ void ViewWindow::jointSelectInfluencedVertices()
 
    m_model->endSelectionDifference();
 
-   m_model->operationComplete( tr("Select Influences Vertices").utf8() );
+   m_model->operationComplete( tr("Select Influences Vertices").toUtf8() );
    m_viewPanel->modelUpdatedEvent();
 }
 
@@ -335,7 +335,7 @@ void ViewWindow::jointSelectInfluencedPoints()
 
    m_model->endSelectionDifference();
 
-   m_model->operationComplete( tr("Select Influenced Points").utf8() );
+   m_model->operationComplete( tr("Select Influenced Points").toUtf8() );
    m_viewPanel->modelUpdatedEvent();
 }
 

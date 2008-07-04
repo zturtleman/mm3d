@@ -24,14 +24,16 @@
 
 #include "model.h"
 
-#include <qlineedit.h>
+#include <QtGui/QLineEdit>
+
 #include <stdlib.h>
 
 ContextPosition::ContextPosition( QWidget * parent )
-   : ContextPositionBase( parent ),
+   : QWidget( parent ),
      m_change( false ),
      m_update( false )
 {
+   setupUi( this );
 }
 
 ContextPosition::~ContextPosition()
@@ -155,9 +157,9 @@ void ContextPosition::updatePosition()
       // Change model based on text field input
       double coords[3];
       double trans[3];
-      coords[0] = atof( m_xValue->text().latin1() );
-      coords[1] = atof( m_yValue->text().latin1() );
-      coords[2] = atof( m_zValue->text().latin1() );
+      coords[0] = atof( m_xValue->text().toLatin1() );
+      coords[1] = atof( m_yValue->text().toLatin1() );
+      coords[2] = atof( m_zValue->text().toLatin1() );
 
       trans[0] = coords[0] - m_coords[0];
       trans[1] = coords[1] - m_coords[1];
@@ -171,7 +173,7 @@ void ContextPosition::updatePosition()
       Matrix m;
       m.setTranslation( trans[0], trans[1], trans[2] );
       m_model->translateSelected( m );
-      m_model->operationComplete( tr( "Set Position", "operation complete" ).utf8() );
+      m_model->operationComplete( tr( "Set Position", "operation complete" ).toUtf8() );
 
       emit panelChange();
 

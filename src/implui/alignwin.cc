@@ -29,34 +29,40 @@
 #include "decalmgr.h"
 #include "helpwin.h"
 
-#include <qlineedit.h>
-#include <qradiobutton.h>
+#include <QtGui/QLineEdit>
+#include <QtGui/QRadioButton>
+#include <QtGui/QShortcut>
+
 #include <stdlib.h>
+
 
 using std::list;
 using std::map;
 
-AlignWin::AlignWin( Model * model, QWidget * parent, const char * name )
-   : AlignWinBase( parent, name, true, Qt::WDestructiveClose ),
-     m_accel( new QAccel(this) ),
+AlignWin::AlignWin( Model * model, QWidget * parent )
+   : QDialog( parent ),
      m_model( model ),
      m_atX( AT_Center ),
      m_atY( AT_Center ),
      m_atZ( AT_Center )
 {
+   setAttribute( Qt::WA_DeleteOnClose );
+   setModal( true );
+   setupUi( this );
+
    m_xCenter->setChecked( true );
    m_yCenter->setChecked( true );
    m_zCenter->setChecked( true );
 
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
 AlignWin::~AlignWin()
 {
 }
 
-void AlignWin::helpNowEvent( int id )
+void AlignWin::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_alignwin.html", true );
    win->show();
@@ -64,29 +70,29 @@ void AlignWin::helpNowEvent( int id )
 
 void AlignWin::alignX()
 {
-   double val = atof( m_xValue->text().latin1() );
+   double val = atof( m_xValue->text().toLatin1() );
    log_debug( "aligning x on %f\n", val );
    alignSelectedX( m_model, m_atX, val );
    DecalManager::getInstance()->modelUpdated( m_model );
-   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align X").utf8() );
+   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align X").toUtf8() );
 }
 
 void AlignWin::alignY()
 {
-   double val = atof( m_yValue->text().latin1() );
+   double val = atof( m_yValue->text().toLatin1() );
    log_debug( "aligning y on %f\n", val );
    alignSelectedY( m_model, m_atY, val );
    DecalManager::getInstance()->modelUpdated( m_model );
-   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align Y").utf8() );
+   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align Y").toUtf8() );
 }
 
 void AlignWin::alignZ()
 {
-   double val = atof( m_zValue->text().latin1() );
+   double val = atof( m_zValue->text().toLatin1() );
    log_debug( "aligning z on %f\n", val );
    alignSelectedZ( m_model, m_atZ, val );
    DecalManager::getInstance()->modelUpdated( m_model );
-   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align Z").utf8() );
+   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align Z").toUtf8() );
 }
 
 void AlignWin::selectedXCenter()
@@ -136,16 +142,16 @@ void AlignWin::selectedZMax()
 
 void AlignWin::accept()
 {
-   log_debug( "Alignment complete" );
-   m_model->operationComplete( tr( "Align Selected", "operation complete" ).utf8() );
-   AlignWinBase::accept();
+   log_debug( "Alignment complete\n" );
+   m_model->operationComplete( tr( "Align Selected", "operation complete" ).toUtf8() );
+   QDialog::accept();
 }
 
 void AlignWin::reject()
 {
-   log_debug( "Alignment canceled" );
+   log_debug( "Alignment canceled\n" );
    m_model->undoCurrent();
    DecalManager::getInstance()->modelUpdated( m_model );
-   AlignWinBase::reject();
+   QDialog::reject();
 }
 

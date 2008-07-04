@@ -533,7 +533,7 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
       glEnable( GL_LIGHT0 );
       glDisable( GL_LIGHT1 );
       _defaultMaterial();
-      glColor3f( 0.9, 0.9, 0.9 );
+      glColor3f( 0.9f, 0.9f, 0.9f );
 
       if ( m_animationMode )
       {

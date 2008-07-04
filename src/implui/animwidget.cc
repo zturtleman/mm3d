@@ -33,19 +33,17 @@
 
 #include "helpwin.h"
 
-#include "mq3compat.h"
-
-#include <qcombobox.h>
-#include <qcheckbox.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qmessagebox.h>
-#include <qpushbutton.h>
-#include <qslider.h>
-#include <qspinbox.h>
-#include <qtabwidget.h>
-#include <qtimer.h>
-#include <qinputdialog.h>
+#include <QtCore/QTimer>
+#include <QtGui/QComboBox>
+#include <QtGui/QCheckBox>
+#include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QSlider>
+#include <QtGui/QSpinBox>
+#include <QtGui/QTabWidget>
+#include <QtGui/QInputDialog>
 
 enum
 {
@@ -87,25 +85,21 @@ static int getSliderTickInterval( int val )
    return 1;
 }
 
-AnimWidget::AnimWidget( Model * model, bool isUndo, QWidget * parent, const char * name )
-   : AnimWidgetBase( parent ),
+AnimWidget::AnimWidget( Model * model, bool isUndo, QWidget * parent )
+   : QWidget( parent ),
      m_model( model ),
      m_doLoop( true ),
      m_playing( false ),
      m_undoing( isUndo ),
      m_ignoreChange( false )
 {
+   setupUi( this );
+
    log_debug( "AnimWidget constructor\n" );
 
    m_animTimer = new QTimer( this );
-   m_accel     = new QAccel( this );
-
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), ANIMWIN_HELP_ID );
 
    connect( m_animTimer, SIGNAL(timeout()),      this, SLOT(timeElapsed()) );
-   connect( m_accel,     SIGNAL(activated(int)), this, SLOT(accelActivated(int)) );
-
-   //setCloseMode( QDockWindow::Always );
 
    initialize( model, isUndo );
 }
@@ -122,7 +116,7 @@ void AnimWidget::initialize( Model * model, bool isUndo )
 
    //m_skelNew->setDefault( false );
 
-   m_countSlider->setTickmarks( QSlider::Below );
+   m_countSlider->setTickPosition( QSlider::TicksBelow );
 
    m_doLoop = m_model->isAnimationLooping();
    m_loop->setChecked( m_doLoop );
@@ -157,7 +151,7 @@ void AnimWidget::initialize( Model * model, bool isUndo )
       m_model->setCurrentAnimation( mode, anim );
       m_model->setCurrentAnimationFrame( frame );
 
-      m_animName->setCurrentItem( animToIndex( mode, anim ) );
+      m_animName->setCurrentIndex( animToIndex( mode, anim ) );
 
       m_undoing = false;
 
@@ -172,26 +166,20 @@ void AnimWidget::initialize( Model * model, bool isUndo )
       m_mode = Model::ANIMMODE_SKELETAL;
       if ( m_skelAnimCount > 0 )
       {
-         m_model->setCurrentAnimation( m_mode, indexToAnim( m_animName->currentItem() ) );
+         m_model->setCurrentAnimation( m_mode, indexToAnim( m_animName->currentIndex() ) );
       }
       else if ( m_frameAnimCount > 0 )
       {
          m_mode = Model::ANIMMODE_FRAME;
-         m_model->setCurrentAnimation( m_mode, indexToAnim( m_animName->currentItem() ) );
+         m_model->setCurrentAnimation( m_mode, indexToAnim( m_animName->currentIndex() ) );
       }
 
       refreshPage();
 
-      m_model->operationComplete( tr( "Start animation mode", "operation complete" ).utf8() );
+      m_model->operationComplete( tr( "Start animation mode", "operation complete" ).toUtf8() );
    }
 
    m_stop->setEnabled( false );
-}
-
-void AnimWidget::helpNowEvent( int )
-{
-   HelpWin * win = new HelpWin( "olh_animwin.html", true );
-   win->show();
 }
 
 void AnimWidget::nameSelected( int index )
@@ -213,9 +201,9 @@ void AnimWidget::nameSelected( int index )
             ? Model::ANIMMODE_SKELETAL
             : Model::ANIMMODE_FRAME;
 
-         int anim = m_model->addAnimation( mode, name.utf8() );
+         int anim = m_model->addAnimation( mode, name.toUtf8() );
          m_model->setCurrentAnimation( mode, anim );
-         m_model->operationComplete( tr( "New Animation", "operation complete" ).utf8() );
+         m_model->operationComplete( tr( "New Animation", "operation complete" ).toUtf8() );
          initialize( m_model, true );
          return;
       }
@@ -224,7 +212,7 @@ void AnimWidget::nameSelected( int index )
          if ( m_animCount > 0 )
          {
             index = animToIndex( m_mode, m_currentAnim );
-            m_animName->setCurrentItem( index );
+            m_animName->setCurrentIndex( index );
          }
          else
          {
@@ -277,7 +265,7 @@ void AnimWidget::setCurrentFrame( int frame )
 
 void AnimWidget::deleteClicked()
 {
-   int index = m_animName->currentItem();
+   int index = m_animName->currentIndex();
    if ( (unsigned int) index < m_animCount )
    {
       if ( QMessageBox::Ok == QMessageBox::warning( this, tr("Delete Animation?", "window title"), 
@@ -298,10 +286,10 @@ void AnimWidget::deleteClicked()
          {
             index = 0;
          }
-         m_animName->setCurrentItem( index );
+         m_animName->setCurrentIndex( index );
          nameSelected( index );
          m_ignoreChange = false;
-         m_model->operationComplete( tr( "Delete Animation", "Delete animation, operation complete" ).utf8() );
+         m_model->operationComplete( tr( "Delete Animation", "Delete animation, operation complete" ).toUtf8() );
       }
    }
 }
@@ -311,8 +299,8 @@ void AnimWidget::changeFPS()
    if ( !m_ignoreChange && m_animCount > 0 )
    {
       log_debug( "changing FPS\n" );
-      m_model->setAnimFPS( m_mode, indexToAnim( m_animName->currentItem() ), atof(m_fps->text().utf8()) );
-      m_model->operationComplete( tr( "Set FPS", "Frames per second, operation complete" ).utf8() );
+      m_model->setAnimFPS( m_mode, indexToAnim( m_animName->currentIndex() ), atof(m_fps->text().toUtf8()) );
+      m_model->operationComplete( tr( "Set FPS", "Frames per second, operation complete" ).toUtf8() );
    }
 }
 
@@ -322,13 +310,13 @@ void AnimWidget::changeFrameCount()
    {
       if ( m_animCount > 0 )
       {
-         m_model->setAnimFrameCount( m_mode, indexToAnim( m_animName->currentItem() ), m_frameCount->value() );
-         m_model->operationComplete( tr( "Change Frame Count", "operation complete" ).utf8() );
-         m_countSlider->setMinValue( 1 );
+         m_model->setAnimFrameCount( m_mode, indexToAnim( m_animName->currentIndex() ), m_frameCount->value() );
+         m_model->operationComplete( tr( "Change Frame Count", "operation complete" ).toUtf8() );
+         m_countSlider->setMinimum( 1 );
          m_countSlider->setValue( m_model->getCurrentAnimationFrame() + 1 );
          setCurrentFrame( m_model->getCurrentAnimationFrame() + 1 );
 
-         m_countSlider->setMaxValue( m_frameCount->value() );
+         m_countSlider->setMaximum( m_frameCount->value() );
          m_countSlider->update();
          DecalManager::getInstance()->modelAnimate( m_model );
       }
@@ -345,7 +333,7 @@ void AnimWidget::clearFrame()
       int anim  = m_model->getCurrentAnimation();
       int frame = m_model->getCurrentAnimationFrame();
       m_model->clearAnimFrame( mode, anim, frame );
-      m_model->operationComplete( tr( "Clear frame", "Remove animation data from frame, operation complete" ).utf8() );
+      m_model->operationComplete( tr( "Clear frame", "Remove animation data from frame, operation complete" ).toUtf8() );
       DecalManager::getInstance()->modelUpdated( m_model );
    }
 }
@@ -458,7 +446,7 @@ void AnimWidget::pasteFrame()
    {
       if ( m_frameCopyList.empty() && m_framePointCopyList.empty() )
       {
-         msg_error( tr("No frame animation data to paste").utf8() );
+         msg_error( tr("No frame animation data to paste").toUtf8() );
          return;
       }
 
@@ -479,7 +467,7 @@ void AnimWidget::pasteFrame()
                (*pit).rx, (*pit).ry, (*pit).rz );
       }
 
-      m_model->operationComplete( tr( "Paste frame", "paste frame animation position, operation complete" ).utf8() );
+      m_model->operationComplete( tr( "Paste frame", "paste frame animation position, operation complete" ).toUtf8() );
 
       m_model->setCurrentAnimationFrame( m_currentFrame );
       DecalManager::getInstance()->modelUpdated( m_model );
@@ -489,7 +477,7 @@ void AnimWidget::pasteFrame()
       KeyframeCopyList::iterator it;
       if ( m_keyframeCopyList.empty() )
       {
-         msg_error( tr("No skeletal animation data to paste").utf8() );
+         msg_error( tr("No skeletal animation data to paste").toUtf8() );
          return;
       }
 
@@ -498,7 +486,7 @@ void AnimWidget::pasteFrame()
          m_model->setSkelAnimKeyframe( m_currentAnim, m_currentFrame, (*it).joint, (*it).isRotation,
                (*it).x, (*it).y, (*it).z );
       }
-      m_model->operationComplete( tr( "Paste keyframe", "Paste keyframe animation data complete" ).utf8() );
+      m_model->operationComplete( tr( "Paste keyframe", "Paste keyframe animation data complete" ).toUtf8() );
 
       m_model->setCurrentAnimationFrame( m_currentFrame );  // Force refresh of joints
       DecalManager::getInstance()->modelUpdated( m_model );
@@ -523,6 +511,8 @@ void AnimWidget::stopClicked()
    m_currentTime = 0;
    m_stop->setEnabled( false );
    m_play->setEnabled(true);
+   m_frameCount->setEnabled(true);
+   m_countSlider->setEnabled(true);
    m_playing = false;
    m_animTimer->stop();
    m_model->setCurrentAnimationFrame( m_countSlider->value() - 1 );
@@ -545,7 +535,10 @@ void AnimWidget::doPlay()
       return;
    }
    m_play->setEnabled(false);
-   m_timeInterval = double (1.0 / m_model->getAnimFPS( m_mode, indexToAnim( m_animName->currentItem() ) ));
+   m_frameCount->setEnabled(false);
+   m_countSlider->setEnabled(false);
+
+   m_timeInterval = double (1.0 / m_model->getAnimFPS( m_mode, indexToAnim( m_animName->currentIndex() ) ));
 
    const double shortInterval = 1.0 / 20.0;
    if ( m_timeInterval > shortInterval )
@@ -553,7 +546,7 @@ void AnimWidget::doPlay()
 
    PORT_gettimeofday( &m_startTime );
 
-   m_animTimer->start( (int) (m_timeInterval * 1000), false );
+   m_animTimer->start( (int) (m_timeInterval * 1000) );
    log_debug( "starting %s animation, update every %.03f seconds\n", (m_mode == Model::ANIMMODE_SKELETAL ? "skeletal" : "frame" ), m_timeInterval );
 }
 
@@ -562,23 +555,6 @@ void AnimWidget::doPause()
    m_playing = false;
    m_play->setEnabled(true);
    m_animTimer->stop();
-}
-
-/*
-void AnimWidget::closeEvent( QCloseEvent * e )
-{
-   AnimWidgetBase::closeEvent( e );
-   //emit animWindowClosed();
-   stopAnimationMode();
-}
-*/
-
-void AnimWidget::close()
-{
-   log_debug( "hiding window on close\n" );
-   emit animWindowClosed();
-   stopAnimationMode();
-   hide();
 }
 
 void AnimWidget::timeElapsed()
@@ -634,7 +610,7 @@ void AnimWidget::undoGuts()
 
    insertAnimationNames();
 
-   m_animName->setCurrentItem( animToIndex( mode, anim ) );
+   m_animName->setCurrentIndex( animToIndex( mode, anim ) );
    m_model->setCurrentAnimation( mode, anim );
    m_model->setCurrentAnimationFrame( frame );
 
@@ -657,37 +633,18 @@ void AnimWidget::insertAnimationNames()
    m_skelAnimCount = m_model->getAnimCount( Model::ANIMMODE_SKELETAL );
    for ( t = 0; t < m_skelAnimCount; t++ )
    {
-      m_animName->insertItem( QString::fromUtf8( m_model->getAnimName( Model::ANIMMODE_SKELETAL, t )), t );
+      m_animName->insertItem( t, QString::fromUtf8( m_model->getAnimName( Model::ANIMMODE_SKELETAL, t )), t );
    }
 
    m_frameAnimCount = m_model->getAnimCount( Model::ANIMMODE_FRAME );
    for ( t = 0; t < m_frameAnimCount; t++ )
    {
-      m_animName->insertItem( QString( m_model->getAnimName( Model::ANIMMODE_FRAME, t )), t + m_skelAnimCount );
+      m_animName->insertItem( m_skelAnimCount + t, QString( m_model->getAnimName( Model::ANIMMODE_FRAME, t )), t + m_skelAnimCount );
    }
 
    m_animCount = m_skelAnimCount + m_frameAnimCount;
 
-   m_animName->insertItem( tr( "<New Animation>" ), m_animCount );
-}
-
-void AnimWidget::accelActivated( int id )
-{
-   switch ( id )
-   {
-      case ANIMWIN_HELP_ID:
-         helpNowEvent( id );
-         break;
-      case ANIMWIN_UNDO_ID:
-         undoRequest();
-         break;
-      case ANIMWIN_REDO_ID:
-         redoRequest();
-         break;
-      default:
-         log_error( "Unknown animwindow accel id: %d", id );
-         break;
-   }
+   m_animName->insertItem( m_animCount, tr( "<New Animation>" ), m_animCount );
 }
 
 void AnimWidget::refreshPage()
@@ -698,16 +655,24 @@ void AnimWidget::refreshPage()
    {
       if( m_animCount > 0 )
       {
-         int index = m_animName->currentItem();
+         int index = m_animName->currentIndex();
 
          Model::AnimationModeE mode = indexToMode( index );
          index = indexToAnim( index );
 
          m_deleteButton->setEnabled( true );
-         m_frameCount->setEnabled( true );
+         if ( m_playing )
+         {
+            m_frameCount->setEnabled( false );
+            m_countSlider->setEnabled( false );
+         }
+         else
+         {
+            m_frameCount->setEnabled( true );
+            m_countSlider->setEnabled( true );
+         }
          m_fps->setEnabled( true );
          m_animName->setEnabled( true );
-         m_countSlider->setEnabled( true );
          m_play->setEnabled( true );
          m_loop->setEnabled( true );
 
@@ -718,8 +683,8 @@ void AnimWidget::refreshPage()
          m_fps->setText( QString::number(m_model->getAnimFPS( mode, index ) ) );
          m_ignoreChange = false;
 
-         m_countSlider->setMinValue( 1 );
-         m_countSlider->setMaxValue( count );
+         m_countSlider->setMinimum( 1 );
+         m_countSlider->setMaximum( count );
          m_countSlider->setValue( m_currentFrame + 1 );
          m_countSlider->setTickInterval( getSliderTickInterval( count ) );
          m_countSlider->update();
@@ -742,8 +707,8 @@ void AnimWidget::refreshPage()
          m_ignoreChange = true;  // Qt alerts us even if we're responsible
          m_frameCount->setValue( 0 );
          m_ignoreChange = false;
-         m_countSlider->setMinValue( 0 );
-         m_countSlider->setMaxValue( 0 );
+         m_countSlider->setMinimum( 0 );
+         m_countSlider->setMaximum( 0 );
          m_countSlider->setValue( 0 );
          setCurrentFrame( 0 );
 
@@ -755,9 +720,17 @@ void AnimWidget::refreshPage()
       if ( m_animCount > 0)
       {
          m_animName->setEnabled( true );
-         m_frameCount->setEnabled( true );
+         if ( m_playing )
+         {
+            m_frameCount->setEnabled( false );
+            m_countSlider->setEnabled( false );
+         }
+         else
+         {
+            m_frameCount->setEnabled( true );
+            m_countSlider->setEnabled( true );
+         }
          m_fps->setEnabled( true );
-         m_countSlider->setEnabled( true );
          m_play->setEnabled( true );
          m_stop->setEnabled( true );
          m_loop->setEnabled( true );
@@ -776,8 +749,8 @@ void AnimWidget::refreshPage()
          m_ignoreChange = true;  // Qt alerts us even if we're responsible
          m_frameCount->setValue( 0 );
          m_ignoreChange = false;
-         m_countSlider->setMinValue( 0 );
-         m_countSlider->setMaxValue( 0 );
+         m_countSlider->setMinimum( 0 );
+         m_countSlider->setMaximum( 0 );
          m_countSlider->setValue( 0 );
       }
    }
@@ -790,7 +763,7 @@ void AnimWidget::stopAnimationMode()
       if ( m_model->getAnimationMode() ) 
       {
          m_model->setNoAnimation();
-         m_model->operationComplete( tr( "End animation mode", "operation complete" ).utf8() );
+         m_model->operationComplete( tr( "End animation mode", "operation complete" ).toUtf8() );
          DecalManager::getInstance()->modelUpdated( m_model );
       }
       emit animWindowClosed();

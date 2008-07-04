@@ -24,19 +24,21 @@
 #include "objprompt.h"
 #include "objfilter.h"
 #include "model.h"
-#include "mq3compat.h"
-
-#include <qspinbox.h>
-#include <qcheckbox.h>
 
 #include "helpwin.h"
 
+#include <QtGui/QSpinBox>
+#include <QtGui/QCheckBox>
+#include <QtGui/QShortcut>
+
 ObjPrompt::ObjPrompt()
-   : ObjPromptBase( NULL, "", true ),
-     m_accel( new QAccel(this) )
+   : QDialog( NULL )
 {
-   m_accel->insertItem( QKeySequence( tr("F1", "Help Shortcut")), 0 );
-   connect( m_accel, SIGNAL(activated(int)), this, SLOT(helpNowEvent(int)) );
+   setupUi( this );
+   setModal( true );
+
+   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
+   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
 ObjPrompt::~ObjPrompt()
@@ -59,9 +61,9 @@ void ObjPrompt::getOptions( ObjFilter::ObjOptions * opts )
    opts->m_normalPlaces  = m_normalPlacesValue->value();
 }
 
-void ObjPrompt::helpNowEvent( int id )
+void ObjPrompt::helpNowEvent()
 {
-   HelpWin * win = new HelpWin( "olh_pluginwin.html", true );
+   HelpWin * win = new HelpWin( "olh_objprompt.html", true );
    win->show();
 }
 

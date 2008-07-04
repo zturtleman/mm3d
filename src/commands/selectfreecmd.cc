@@ -22,15 +22,14 @@
 
 
 #include "menuconf.h"
-#include <qnamespace.h>
+#include <QtCore/QObject>
+#include <QtGui/QKeySequence>
+#include <QtGui/QApplication>
 
 #include "selectfreecmd.h"
 #include "model.h"
 #include "msg.h"
 #include "modelstatus.h"
-
-#include <qobject.h>
-#include <qapplication.h>
 
 SelectFreeCommand::SelectFreeCommand()
 {
@@ -62,7 +61,7 @@ bool SelectFreeCommand::activated( int arg, Model * model )
    if ( model )
    {
       model->selectFreeVertices();
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Free-floating vertices selected" ).utf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Free-floating vertices selected" ).toUtf8() );
       return true;
    }
    else

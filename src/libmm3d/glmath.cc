@@ -26,6 +26,8 @@
 #include <math.h>
 #include <string.h>
 
+static const double EQ_TOLERANCE = 0.00001;
+
 Matrix::Matrix()
 {
    loadIdentity();
@@ -40,6 +42,19 @@ void Matrix::loadIdentity()
    m_val[15] = 1.0;
 }
 
+bool Matrix::isIdentity() const
+{
+   for ( int c = 0; c < 4; ++c )
+   {
+      for ( int r = 0; r < 4; ++r )
+      {
+         if ( !float_equiv(get(r, c), (r == c) ? 1.0 : 0.0 ) )
+            return false;
+      }
+   }
+   return true;
+}
+
 void Matrix::show() const
 {
    for ( int r = 0; r < 4; r++ )
@@ -50,6 +65,47 @@ void Matrix::show() const
       }
       printf( "\n" );
    }
+}
+
+bool Matrix::operator==( const Matrix & rhs ) const
+{
+   for ( int c = 0; c < 4; ++c )
+   {
+      for ( int r = 0; r < 4; ++r )
+      {
+         if ( !float_equiv(get(r, c), rhs.get(r, c) ) )
+            return false;
+      }
+   }
+   return true;
+}
+
+bool Matrix::equiv( const Matrix & rhs, double tolerance ) const
+{
+   Vector lright( 2, 0, 0 );
+   Vector lup( 0, 2, 0 );
+   Vector lfront( 0, 0, 2 );
+
+   Vector rright( 2, 0, 0 );
+   Vector rup( 0, 2, 0 );
+   Vector rfront( 0, 0, 2 );
+
+   this->apply( lright );
+   this->apply( lup );
+   this->apply( lfront );
+
+   rhs.apply( rright );
+   rhs.apply( rup );
+   rhs.apply( rfront );
+
+   if ( (lright - rright).mag() > tolerance )
+      return false;
+   if ( (lup - rup).mag() > tolerance )
+      return false;
+   if ( (lfront - rfront).mag() > tolerance )
+      return false;
+
+   return true;
 }
 
 void Matrix::setTranslation( const double * vector )
@@ -309,7 +365,7 @@ void Matrix::setRotationQuaternion( const Quaternion & quat )
    m_val[15] = 1;
 }
 
-void Matrix::getRotationQuaternion( Quaternion & quat )
+void Matrix::getRotationQuaternion( Quaternion & quat ) const
 {
    double s;
 
@@ -805,7 +861,7 @@ void Vector::scale3( double scale )
    }
 }
 
-double Vector::mag()
+double Vector::mag() const
 {
    return sqrt(   m_val[0]*m_val[0]
                 + m_val[1]*m_val[1]
@@ -813,7 +869,7 @@ double Vector::mag()
                 + m_val[3]*m_val[3] );
 }
 
-double Vector::mag3()
+double Vector::mag3() const
 {
    return sqrt(   m_val[0]*m_val[0]
                 + m_val[1]*m_val[1]
@@ -838,14 +894,14 @@ void Vector::normalize3()
    }
 }
 
-double Vector::dot3( const Vector & rhs )
+double Vector::dot3( const Vector & rhs ) const
 {
    return(   m_val[0] * rhs.m_val[0]
            + m_val[1] * rhs.m_val[1]
            + m_val[2] * rhs.m_val[2] );
 }
 
-double Vector::dot4( const Vector & rhs )
+double Vector::dot4( const Vector & rhs ) const
 {
    return(   m_val[0] * rhs.m_val[0]
            + m_val[1] * rhs.m_val[1]
@@ -890,6 +946,11 @@ Vector Vector::operator-=( const Vector & rhs )
    this->m_val[2] -= rhs.m_val[2];
    this->m_val[3] -= rhs.m_val[3];
    return *this;
+}
+
+bool Vector::operator==( const Vector & rhs ) const
+{
+   return floatCompareVector(this->getVector(), rhs.getVector(), 4);
 }
 
 Quaternion::Quaternion( const double * val )
@@ -1052,11 +1113,12 @@ void Quaternion::setRotationToPoint( const double & faceX, const double & faceY,
    setRotationOnAxis( normal.getVector(), angle );
 }
 
-void Quaternion::getRotationOnAxis( double * axis, double & radians )
+void Quaternion::getRotationOnAxis( double * axis, double & radians ) const
 {
-   normalize();
+   Quaternion q(m_val);
+   q.normalize();
 
-   double cos_a = m_val[3];
+   double cos_a = q.m_val[3];
    radians = acos( cos_a ) * 2;
 
    double sin_a = sqrt( 1.0 - cos_a * cos_a );
@@ -1065,9 +1127,9 @@ void Quaternion::getRotationOnAxis( double * axis, double & radians )
       sin_a = 1.0;
    }
 
-   axis[0] = m_val[0] / sin_a;
-   axis[1] = m_val[1] / sin_a;
-   axis[2] = m_val[2] / sin_a;
+   axis[0] = q.m_val[0] / sin_a;
+   axis[1] = q.m_val[1] / sin_a;
+   axis[2] = q.m_val[2] / sin_a;
 }
 
 void Quaternion::normalize()

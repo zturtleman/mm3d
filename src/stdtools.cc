@@ -86,10 +86,8 @@ static void _new_std_tools( Toolbox * toolbox )
    tool = new SelectProjectionTool();
    toolbox->registerTool( tool );
 
-#ifdef HAVE_QT4
    tool = new ToolSeparator();
    toolbox->registerTool( tool );
-#endif // HAVE_QT4
 
    tool = new MoveTool();
    toolbox->registerTool( tool );

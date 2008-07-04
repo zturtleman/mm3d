@@ -25,17 +25,17 @@
 
 #include "3dmprefs.h"
 
-#include "mq3macro.h"
-#include "mq3compat.h"
+#include <QtGui/QLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QGroupBox>
+#include <QtGui/QLabel>
+#include <QtGui/QSpinBox>
+#include <QtGui/QCheckBox>
+#include <QtGui/QSlider>
 
-#include <qlayout.h>
-#include <qspinbox.h>
-#include <qcheckbox.h>
-#include <qlabel.h>
-#include <qslider.h>
-
-TorusToolWidget::TorusToolWidget( Observer * observer, QWidget * parent )
-   : QDockWindow ( QDockWindow::InDock, parent, "", WDestructiveClose ),
+TorusToolWidget::TorusToolWidget( Observer * observer, QMainWindow * parent )
+   : ToolWidget ( parent ),
      m_observer( observer )
 {
    const int  DEFAULT_SEGMENTS = 8;
@@ -45,14 +45,14 @@ TorusToolWidget::TorusToolWidget( Observer * observer, QWidget * parent )
 
    m_layout = boxLayout();
 
-   m_segmentsLabel = new QLabel( tr("Segments"), this, "" );
+   m_segmentsLabel = new QLabel( tr("Segments"), mainWidget() );
    m_layout->addWidget( m_segmentsLabel );
 
-   m_segmentsValue = new QSpinBox( this, "" );
+   m_segmentsValue = new QSpinBox( mainWidget() );
    m_layout->addWidget( m_segmentsValue );
 
-   m_segmentsValue->setMinValue( 3 );
-   m_segmentsValue->setMaxValue( 100 );
+   m_segmentsValue->setMinimum( 3 );
+   m_segmentsValue->setMaximum( 100 );
    
    int segmentsVal = DEFAULT_SEGMENTS;
    if ( g_prefs.exists( "ui_torustool_segments" ) )
@@ -65,14 +65,14 @@ TorusToolWidget::TorusToolWidget( Observer * observer, QWidget * parent )
    }
    m_segmentsValue->setValue( segmentsVal );
 
-   m_sidesLabel = new QLabel( tr("Sides"), this, "" );
+   m_sidesLabel = new QLabel( tr("Sides"), mainWidget() );
    m_layout->addWidget( m_sidesLabel );
 
-   m_sidesValue = new QSpinBox( this, "" );
+   m_sidesValue = new QSpinBox( mainWidget() );
    m_layout->addWidget( m_sidesValue );
 
-   m_sidesValue->setMinValue( 3 );
-   m_sidesValue->setMaxValue( 100 );
+   m_sidesValue->setMinimum( 3 );
+   m_sidesValue->setMaximum( 100 );
    
    int sidesVal = DEFAULT_SIDES;
    if ( g_prefs.exists( "ui_torustool_sides" ) )
@@ -85,14 +85,14 @@ TorusToolWidget::TorusToolWidget( Observer * observer, QWidget * parent )
    }
    m_sidesValue->setValue( sidesVal );
 
-   m_widthLabel = new QLabel( tr("Width"), this, "" );
+   m_widthLabel = new QLabel( tr("Width"), mainWidget() );
    m_layout->addWidget( m_widthLabel );
 
-   m_widthValue = new QSpinBox( this, "" );
+   m_widthValue = new QSpinBox( mainWidget() );
    m_layout->addWidget( m_widthValue );
 
-   m_widthValue->setMinValue( 1 );
-   m_widthValue->setMaxValue( 199 );
+   m_widthValue->setMinimum( 1 );
+   m_widthValue->setMaximum( 199 );
    int widthVal = DEFAULT_WIDTH;
    if ( g_prefs.exists( "ui_torustool_width" ) )
    {
@@ -104,7 +104,7 @@ TorusToolWidget::TorusToolWidget( Observer * observer, QWidget * parent )
    }
    m_widthValue->setValue( widthVal );
 
-   m_circleValue = new QCheckBox( tr("Circle"), this, "" );
+   m_circleValue = new QCheckBox( tr("Circle"), mainWidget() );
    m_layout->addWidget( m_circleValue );
 
    bool circleVal = DEFAULT_CIRCLE;
@@ -113,7 +113,7 @@ TorusToolWidget::TorusToolWidget( Observer * observer, QWidget * parent )
 
    m_circleValue->setChecked( circleVal );
 
-   m_centerValue = new QCheckBox( tr("From Center", "Checkbox that indicates if torus is created from center or from far corner"), this, "" );
+   m_centerValue = new QCheckBox( tr("From Center", "Checkbox that indicates if torus is created from center or from far corner"), mainWidget() );
    m_layout->addWidget( m_centerValue );
 
    bool centerVal = DEFAULT_CIRCLE;
@@ -121,6 +121,8 @@ TorusToolWidget::TorusToolWidget( Observer * observer, QWidget * parent )
    centerVal = g_prefs( "ui_torustool_center" ).intValue() ? true : false;
 
    m_centerValue->setChecked( centerVal );
+
+   m_layout->addStretch();
 
    connect( m_segmentsValue, SIGNAL(valueChanged(int)), this, SLOT(segmentsValueChanged(int)) );
    connect( m_sidesValue, SIGNAL(valueChanged(int)), this, SLOT(sidesValueChanged(int)) );

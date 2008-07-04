@@ -28,10 +28,11 @@
 
 #include "log.h"
 
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qinputdialog.h>
+#include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
+#include <QtGui/QComboBox>
+#include <QtGui/QInputDialog>
+
 #include <stdlib.h>
 
 ContextInfluences::JointCount::JointCount()
@@ -47,10 +48,11 @@ ContextInfluences::JointCount::JointCount()
 }
 
 ContextInfluences::ContextInfluences( QWidget * parent )
-   : ContextInfluencesBase( parent ),
+   : QWidget( parent ),
      m_change( false ),
      m_update( false )
 {
+   setupUi( this );
 }
 
 ContextInfluences::~ContextInfluences()
@@ -77,26 +79,26 @@ void ContextInfluences::modelChanged( int changeBits )
          m_joint3->clear();
          m_joint4->clear();
 
-         m_joint1->insertItem( tr("<None>"), 0 );
-         m_joint2->insertItem( tr("<None>"), 0 );
-         m_joint3->insertItem( tr("<None>"), 0 );
-         m_joint4->insertItem( tr("<None>"), 0 );
+         m_joint1->insertItem( 0, tr("<None>") );
+         m_joint2->insertItem( 0, tr("<None>") );
+         m_joint3->insertItem( 0, tr("<None>") );
+         m_joint4->insertItem( 0, tr("<None>") );
 
          int bcount = m_model->getBoneJointCount();
 
          for ( int b = 0; b < bcount; b++ )
          {
             QString name = QString::fromUtf8( m_model->getBoneJointName( b ) );
-            m_joint1->insertItem( name, b+1 );
-            m_joint2->insertItem( name, b+1 );
-            m_joint3->insertItem( name, b+1 );
-            m_joint4->insertItem( name, b+1 );
+            m_joint1->insertItem( b+1, name );
+            m_joint2->insertItem( b+1, name );
+            m_joint3->insertItem( b+1, name );
+            m_joint4->insertItem( b+1, name );
          }
 
-         m_joint1->setCurrentItem( 0 );
-         m_joint2->setCurrentItem( 0 );
-         m_joint3->setCurrentItem( 0 );
-         m_joint4->setCurrentItem( 0 );
+         m_joint1->setCurrentIndex( 0 );
+         m_joint2->setCurrentIndex( 0 );
+         m_joint3->setCurrentIndex( 0 );
+         m_joint4->setCurrentIndex( 0 );
 
          m_joints[0] = -1;
          m_joints[1] = -1;
@@ -208,7 +210,7 @@ void ContextInfluences::modelChanged( int changeBits )
                      break;
                }
 
-               jointBox->setCurrentItem( joint + 1 );
+               jointBox->setCurrentIndex( joint + 1 );
 
                updateWeightField( index, true, 
                      m_jclist[ joint ].typeIndex, m_jclist[ joint ].weight );
@@ -252,16 +254,16 @@ void ContextInfluences::jointChanged( int index, int oldJoint, int newJoint )
                switch ( index )
                {
                   case 0:
-                     m_joint1->setCurrentItem( oldJoint + 1 );
+                     m_joint1->setCurrentIndex( oldJoint + 1 );
                      break;
                   case 1:
-                     m_joint2->setCurrentItem( oldJoint + 1 );
+                     m_joint2->setCurrentIndex( oldJoint + 1 );
                      break;
                   case 2:
-                     m_joint3->setCurrentItem( oldJoint + 1 );
+                     m_joint3->setCurrentIndex( oldJoint + 1 );
                      break;
                   case 3:
-                     m_joint4->setCurrentItem( oldJoint + 1 );
+                     m_joint4->setCurrentIndex( oldJoint + 1 );
                      break;
                   default:
                      break;
@@ -330,7 +332,7 @@ void ContextInfluences::jointChanged( int index, int oldJoint, int newJoint )
          updateRemainders();
       }
 
-      m_model->operationComplete( tr( "Change Joint Assignment", "operation complete" ).utf8() );
+      m_model->operationComplete( tr( "Change Joint Assignment", "operation complete" ).toUtf8() );
 
       emit panelChange();
 
@@ -366,7 +368,7 @@ void ContextInfluences::weightChanged( int index, double weight )
          m_model->setPositionInfluenceWeight( *it, joint, weight );
       }
 
-      m_model->operationComplete( tr( "Change Influence Weight", "operation complete" ).utf8() );
+      m_model->operationComplete( tr( "Change Influence Weight", "operation complete" ).toUtf8() );
       updateRemainders();
 
       emit panelChange();
@@ -401,7 +403,7 @@ void ContextInfluences::typeChanged( int index )
 
       Model::InfluenceTypeE type = Model::IT_Auto;
 
-      switch ( typeValue->currentItem() )
+      switch ( typeValue->currentIndex() )
       {
          case 0:
             // Not really a valid selection, return
@@ -459,7 +461,7 @@ void ContextInfluences::typeChanged( int index )
       updateRemainders();
       m_change = false;
 
-      m_model->operationComplete( tr( "Change Influence Type", "operation complete" ).utf8() );
+      m_model->operationComplete( tr( "Change Influence Type", "operation complete" ).toUtf8() );
 
       emit panelChange();
 
@@ -470,25 +472,25 @@ void ContextInfluences::typeChanged( int index )
 void ContextInfluences::joint1Changed()
 {
    int index = 0;
-   jointChanged( index, m_joints[ index ], m_joint1->currentItem() - 1);
+   jointChanged( index, m_joints[ index ], m_joint1->currentIndex() - 1);
 }
 
 void ContextInfluences::joint2Changed()
 {
    int index = 1;
-   jointChanged( index, m_joints[ index ], m_joint2->currentItem() - 1);
+   jointChanged( index, m_joints[ index ], m_joint2->currentIndex() - 1);
 }
 
 void ContextInfluences::joint3Changed()
 {
    int index = 2;
-   jointChanged( index, m_joints[ index ], m_joint3->currentItem() - 1);
+   jointChanged( index, m_joints[ index ], m_joint3->currentIndex() - 1);
 }
 
 void ContextInfluences::joint4Changed()
 {
    int index = 3;
-   jointChanged( index, m_joints[ index ], m_joint4->currentItem() - 1);
+   jointChanged( index, m_joints[ index ], m_joint4->currentIndex() - 1);
 }
 
 void ContextInfluences::type1Changed()
@@ -518,60 +520,36 @@ void ContextInfluences::type4Changed()
 void ContextInfluences::weight1Changed( const QString & weight )
 {
    int index = 0;
-   if ( 
-#ifdef HAVE_QT4
-         weight.size() != 0 
-#else
-         weight.length() != 0 
-#endif
-         && weight[0].isDigit() )
+   if ( weight.size() != 0 && weight[0].isDigit() )
    {
-      weightChanged( index, atof( weight.latin1()) / 100.0 );
+      weightChanged( index, atof( weight.toUtf8()) / 100.0 );
    }
 }
 
 void ContextInfluences::weight2Changed( const QString & weight )
 {
    int index = 1;
-   if ( 
-#ifdef HAVE_QT4
-         weight.size() != 0 
-#else
-         weight.length() != 0 
-#endif
-         && weight[0].isDigit() )
+   if ( weight.size() != 0 && weight[0].isDigit() )
    {
-      weightChanged( index, atof( weight.latin1() ) / 100.0 );
+      weightChanged( index, atof( weight.toUtf8() ) / 100.0 );
    }
 }
 
 void ContextInfluences::weight3Changed( const QString & weight )
 {
    int index = 2;
-   if ( 
-#ifdef HAVE_QT4
-         weight.size() != 0 
-#else
-         weight.length() != 0 
-#endif
-         && weight[0].isDigit() )
+   if ( weight.size() != 0 && weight[0].isDigit() )
    {
-      weightChanged( index, atof( weight.latin1()) / 100.0 );
+      weightChanged( index, atof( weight.toUtf8()) / 100.0 );
    }
 }
 
 void ContextInfluences::weight4Changed( const QString & weight )
 {
    int index = 3;
-   if ( 
-#ifdef HAVE_QT4
-         weight.size() != 0 
-#else
-         weight.length() != 0 
-#endif
-         && weight[0].isDigit() )
+   if ( weight.size() != 0 && weight[0].isDigit() )
    {
-      weightChanged( index, atof( weight.latin1()) / 100.0 );
+      weightChanged( index, atof( weight.toUtf8()) / 100.0 );
    }
 }
 
@@ -598,11 +576,11 @@ void ContextInfluences::updateRemainders()
             break;
       }
 
-      if ( weightBox->currentItem() - 1 == Model::IT_Remainder )
+      if ( weightBox->currentIndex() - 1 == Model::IT_Remainder )
       {
          int w = getRemainderWeight( m_joints[ index ] );
          log_debug( "updating box %d with remaining weight %d\n", index, w );
-         updateWeightField( index, weightBox->isEnabled(), weightBox->currentItem(), w );
+         updateWeightField( index, weightBox->isEnabled(), weightBox->currentIndex(), w );
       }
    }
 }
@@ -628,10 +606,10 @@ void ContextInfluences::updateWeightField( int index, bool enabled, int type, in
          break;
    }
 
-   weightBox->changeItem( tr("<Mixed>", "multiple types of bone joint influence"),   0 );
-   weightBox->changeItem( tr("Custom", "bone joint influence"),    1 );
-   weightBox->changeItem( tr("Auto", "bone joint influence"),      2 );
-   weightBox->changeItem( tr("Remainder", "bone joint influence"), 3 );
+   weightBox->setItemText( 0, tr("<Mixed>", "multiple types of bone joint influence") );
+   weightBox->setItemText( 1, tr("Custom", "bone joint influence") );
+   weightBox->setItemText( 2, tr("Auto", "bone joint influence") );
+   weightBox->setItemText( 3, tr("Remainder", "bone joint influence") );
 
    if ( enabled )
    {
@@ -655,13 +633,13 @@ void ContextInfluences::updateWeightField( int index, bool enabled, int type, in
             break;
       }
 
-      weightBox->setCurrentItem( type );
-      weightBox->changeItem( typeStr, type );
+      weightBox->setCurrentIndex( type );
+      weightBox->setItemText( type, typeStr );
       weightBox->setEnabled( true );
    }
    else
    {
-      weightBox->setCurrentItem( 0 );
+      weightBox->setCurrentIndex( 0 );
       weightBox->setEnabled( false );
    }
 

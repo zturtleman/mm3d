@@ -21,19 +21,21 @@
  */
 
 
-#include <qgl.h>
 #include "qtmain.h"
 #include "viewwin.h"
 #include "model.h"
 #include "sysconf.h"
 #include "config.h"
-#include <unistd.h>
-#include <qapplication.h>
-#include <qtranslator.h>
-#include <qtextcodec.h>
-#include <qlocale.h>
+
+#include <QtCore/QLocale>
+#include <QtCore/QTranslator>
+#include <QtGui/QApplication>
+#include <QtOpenGL/QGLFormat>
+
 #include <list>
 #include <string>
+#include <unistd.h>
+#include <limits.h>
 
 #include "log.h"
 #include "mm3dport.h"
@@ -88,7 +90,7 @@ static bool loadTranslationFile( QTranslator * xlat, const QString & localeFile 
    // try current directory first (for override), then mm3d system directory
    for ( std::list<std::string>::iterator it = path_list.begin(); it != path_list.end(); ++it )
    {
-      log_debug( "attempting to load translation %s from %s\n", (const char *) localeFile.utf8(), (const char *) it->c_str() );
+      log_debug( "attempting to load translation %s from %s\n", (const char *) localeFile.toUtf8(), (const char *) it->c_str() );
       if ( s_qtXlat->load( localeFile, it->c_str() ) )
       {
          log_debug( "  loaded.\n" );
@@ -96,7 +98,7 @@ static bool loadTranslationFile( QTranslator * xlat, const QString & localeFile 
       }
    }
 
-   log_warning( "unable to load translation for %s\n", (const char *) localeFile.utf8() );
+   log_warning( "unable to load translation for %s\n", (const char *) localeFile.toUtf8() );
    return false;
 }
 
@@ -105,19 +107,15 @@ QApplication * ui_getapp()
    return s_app;
 }
 
-int ui_prep( int argc, char * argv[] )
+int ui_prep( int & argc, char * argv[] )
 {
    s_app = new QApplication( argc, argv );
 
-   QString loc = mlocale_get();
+   QString loc = mlocale_get().c_str();
 
    if ( loc == "" )
    {
-#ifdef HAVE_QT4
       loc = QLocale::system().name();
-#else
-      loc = QTextCodec::locale();
-#endif
    }
 
    // General Qt translations
@@ -135,7 +133,7 @@ int ui_prep( int argc, char * argv[] )
    return 0;
 }
 
-int ui_init( int argc, char * argv[] )
+int ui_init( int & argc, char * argv[] )
 {
    int rval = 0;
 
@@ -181,7 +179,7 @@ int ui_init( int argc, char * argv[] )
          for ( unsigned t = 0; t < openCount; t++ )
          {
             Model * m = cmdline_getOpenModel( t );
-            ViewWindow * win = new ViewWindow( m, NULL, "" );
+            ViewWindow * win = new ViewWindow( m );
             win->getSaved(); // Just so I don't have a warning
             opened = true;
          }
