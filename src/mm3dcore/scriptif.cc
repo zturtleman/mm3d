@@ -43,7 +43,7 @@ typedef vector<int> IntList;
 static string _getWriteFileName( const char * file )
 {
    string s = file;
-   char * ext = strrchr( file, '.' );
+   const char * ext = strrchr( file, '.' );
 
    if ( ext == NULL )
    {

@@ -161,7 +161,7 @@ void BoolWin::setObjectEvent()
       m_opButton->setEnabled( true );
 
       QString labelStr;
-      labelStr.sprintf( "Object: %d Faces", tris.size() );
+      labelStr.sprintf( "Object: %d Faces", (int) tris.size() );
       m_setLabel->setText( labelStr );
 
       m_model->clearMarkedTriangles();

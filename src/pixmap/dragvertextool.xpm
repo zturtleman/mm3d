@@ -1,5 +1,5 @@
 /* XPM */
-static char * dragvertextool_xpm[] = {
+static const char * dragvertextool_xpm[] = {
 "22 22 4 1",
 " 	c None",
 ".	c #FF0000",

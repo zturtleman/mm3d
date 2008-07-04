@@ -1,5 +1,5 @@
 /* XPM */
-static char * mm3dlogo_16x16_xpm[] = {
+static const char * mm3dlogo_16x16_xpm[] = {
 "16 16 123 2",
 "  	c None",
 ". 	c #0000F9",

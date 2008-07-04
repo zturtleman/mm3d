@@ -1,5 +1,5 @@
 /* XPM */
-static char * extrudetool_xpm[] = {
+static const char * extrudetool_xpm[] = {
 "22 22 6 1",
 " 	c None",
 ".	c #FFFFFF",

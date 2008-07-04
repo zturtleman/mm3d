@@ -1,5 +1,5 @@
 /* XPM */
-static char * jointtool_xpm[] = {
+static const char * jointtool_xpm[] = {
 "22 22 3 1",
 " 	c None",
 ".	c #FF0000",

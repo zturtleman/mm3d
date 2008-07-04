@@ -610,7 +610,7 @@ bool Md3Filter::readAnimations( bool create )
                      //m_animMap.push_back( m_model->getAnimCount( Model::ANIMMODE_FRAME ) );
                      m_animStartFrame.push_back( first );
 
-                     char * name = NULL;
+                     const char * name = NULL;
                      if ( animCount < MD3_ANIMATIONS )
                      {
                         // I won't change it, I promise
@@ -618,25 +618,26 @@ bool Md3Filter::readAnimations( bool create )
                      }
                      else
                      {
-                        name = strrchr( line, '/' );
-                        if ( name )
+                        char * tempname = strrchr( line, '/' );
+                        if ( tempname )
                         {
-                           name++;
-                           while ( isspace(name[0]) )
+                           tempname++;
+                           while ( isspace(tempname[0]) )
                            {
-                              name++;
+                              tempname++;
                            }
                            int end = 0;
-                           while ( name[end] && !isspace(name[end]) )
+                           while ( tempname[end] && !isspace(tempname[end]) )
                            {
                               end++;
                            }
-                           name[end] = '\0';
+                           tempname[end] = '\0';
 
                            for ( end = 0; line[end]; end++ )
                            {
-                              name[end] = tolower( line[end] );
+                              tempname[end] = tolower( line[end] );
                            }
+                           name = tempname;
                         }
                         else
                         {

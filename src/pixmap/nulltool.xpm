@@ -1,5 +1,5 @@
 /* XPM */
-static char * nulltool_xpm[] = {
+static const char * nulltool_xpm[] = {
 "22 22 1 1",
 " 	c None",
 "                      ",

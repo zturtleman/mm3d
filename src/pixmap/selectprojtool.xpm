@@ -1,5 +1,5 @@
 /* XPM */
-static char * selectprojtool_xpm[] = {
+static const char * selectprojtool_xpm[] = {
 "22 22 6 1",
 " 	c None",
 ".	c #000000",

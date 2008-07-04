@@ -1,5 +1,5 @@
 /* XPM */
-static char * cubetool_xpm[] = {
+static const char * cubetool_xpm[] = {
 "22 22 17 1",
 " 	c None",
 ".	c #FF0000",
