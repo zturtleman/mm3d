@@ -67,15 +67,6 @@ If you want to link against a specific library of Qt you can use
 you want to force the multi-threaded Qt library, you would use
 --with-Qt-lib=qt-mt
 
-Building with the lua scripting language is now deprecated. Scripting
-support is not maintained and may be removed in future versions.
-
-If you build lua from source, make sure you build and install the 
-shared libraries ("make so" and "make soinstall").  As of Lua 5.0.2
-building and installing shared libraries was not default behavior
-for the Lua build process.  See the "Shared Libraries" section
-in the INSTALL file included in the Lua distribution.
-
 Use ./configure --help for a complete list of options.
 
 If you need installation help you can contact the 
