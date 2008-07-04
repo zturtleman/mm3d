@@ -56,6 +56,6 @@ libmm3dcore_a_SOURCES = \
 	toolpoly.cc \
 	$(libmm3dcore_HFILES)
 
-AM_CPPFLAGS = $(CORE_PROFILE) -coverage -Wall -I../libmm3d -I../ -DMM3D_EDIT $(all_includes) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
+AM_CPPFLAGS = $(CORE_PROFILE) $(COVFLAGS) -Wall -I../libmm3d -I../ -DMM3D_EDIT $(all_includes) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
 
 CLEANFILES = $(libtools_MOC) *.gcno *.gcda
