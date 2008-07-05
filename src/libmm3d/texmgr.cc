@@ -164,7 +164,7 @@ void TextureManager::registerTextureFilter( TextureFilter * filter )
    m_filters.push_front( filter );
 }
 
-Texture * TextureManager::getTexture( const char * filename, bool noCache )
+Texture * TextureManager::getTexture( const char * filename, bool noCache, bool warning )
 {
    if ( filename == NULL )
    {
@@ -212,7 +212,8 @@ Texture * TextureManager::getTexture( const char * filename, bool noCache )
             newTexture->m_origHeight = newTexture->m_height;
             if ( texture_scale_need_scale( newTexture->m_width, newTexture->m_height ) )
             {
-               _doWarning = true;
+               if ( warning )
+                  _doWarning = true;
 
                uint8_t * oldData = newTexture->m_data;
                newTexture->m_data = texture_scale_auto(

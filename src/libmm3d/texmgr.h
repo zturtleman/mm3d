@@ -167,7 +167,7 @@ class TextureManager
 
       void registerTextureFilter( TextureFilter * filter );
       
-      Texture * getTexture( const char * filename, bool noCache = false );
+      Texture * getTexture( const char * filename, bool noCache = false, bool warning = true );
       Texture * getBlankTexture( const char * filename );
       Texture * getDefaultTexture( const char * filename );
       Texture::ErrorE getLastError() { return m_lastError; };

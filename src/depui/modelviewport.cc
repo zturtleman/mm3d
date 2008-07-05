@@ -1040,7 +1040,7 @@ void ModelViewport::updateBackground()
 
       if ( m_backgroundFile[0] != '\0' )
       {
-         m_texture = TextureManager::getInstance()->getTexture( m_backgroundFile.c_str() );
+         m_texture = TextureManager::getInstance()->getTexture( m_backgroundFile.c_str(), false, false );
          if ( !m_texture )
          {
             QString str = tr("Could not load background %1").arg( m_backgroundFile.c_str() );
