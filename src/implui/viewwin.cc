@@ -117,6 +117,42 @@ static ViewWindowList _winList;
 
 static bool _shuttingDown = false;
 
+CommandWidget::CommandWidget( QObject * parent, Model * model, bool * canEdit,
+      Command * cmd, int index )
+   : QObject( parent ),
+     m_model( model ),
+     m_canEdit( canEdit ),
+     m_cmd( cmd ),
+     m_index( index )
+{
+}
+
+CommandWidget::~CommandWidget()
+{
+}
+
+void CommandWidget::setModel( Model * m )
+{
+   m_model = m;
+}
+
+void CommandWidget::activateCommand( bool )
+{
+   if ( !(*m_canEdit) )
+   {
+      model_status( m_model, StatusError, STATUSTIME_LONG,
+            tr("You are in animation mode, but there are no animations").toUtf8() );
+      return;
+   }
+
+   if ( m_cmd->activated( m_index, m_model ) )
+   {
+      m_model->operationComplete( qApp->translate( "Command", (m_cmd)->getName( m_index ) ).toUtf8() );
+      DecalManager * mgr = DecalManager::getInstance();
+      mgr->modelUpdated( m_model );
+   }
+}
+
 bool ViewWindow::closeAllWindows()
 {
    bool noPrompt = true;
@@ -581,8 +617,6 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent )
 
    initializeCommands();
 
-   connect( m_geometryMenu, SIGNAL(triggered(QAction*)), this, SLOT(primitiveCommandActivated(QAction*)) );
-
    //m_scriptMenu = new QPopupMenu( this );
 
    m_animMenu = new QMenu( this );
@@ -736,6 +770,12 @@ void ViewWindow::setModel( Model * model )
    if ( m_currentTool )
    {
       m_currentTool->setModel( m_model );
+   }
+
+   for ( CommandMenuItemList::iterator it = m_primitiveCommands.begin();
+         it != m_primitiveCommands.end(); ++it )
+   {
+      (*it)->widget->setModel( m_model );
    }
 }
 
@@ -1478,6 +1518,7 @@ void ViewWindow::toolActivated( QAction * id )
    }
 }
 
+// FIXME this can probably be deleted now.
 void ViewWindow::primitiveCommandActivated( QAction * id )
 {
    if ( !m_canEdit )
@@ -2088,6 +2129,8 @@ void ViewWindow::initializeCommands()
                item->id = id;
                item->command = cmd;
                item->arg = t;
+               item->widget = new CommandWidget(this, m_model, &m_canEdit, cmd, t );
+               connect(id, SIGNAL(triggered(bool)), item->widget, SLOT(activateCommand(bool)));
 
                _registerKeyBinding( cmd, t, menu, id );
                m_primitiveCommands.push_back( item );
@@ -2103,6 +2146,8 @@ void ViewWindow::initializeCommands()
             item->id = id;
             item->command = cmd;
             item->arg = 0;
+            item->widget = new CommandWidget(this, m_model, &m_canEdit, cmd, 0 );
+            connect(id, SIGNAL(triggered(bool)), item->widget, SLOT(activateCommand(bool)));
 
             m_primitiveCommands.push_back( item );
          }
@@ -2116,6 +2161,8 @@ void ViewWindow::initializeCommands()
             item->id = id;
             item->command = cmd;
             item->arg = 0;
+            item->widget = new CommandWidget(this, m_model, &m_canEdit, cmd, 0 );
+            connect(id, SIGNAL(triggered(bool)), item->widget, SLOT(activateCommand(bool)));
 
             _registerKeyBinding( cmd, 0, curMenu, id );
 
