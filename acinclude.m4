@@ -21,8 +21,8 @@ AC_DEFUN([KSW_IS_PROFILE],
      is_profile="yes (core)"
   fi
 
-  AC_DEFINE( [PROFILE], [], [Define to include profilling information] )
-  AC_DEFINE( [CORE_PROFILE], [], [Define to include core profilling information] )
+  AC_DEFINE( [PROFILE], [], [Define to include profiling information] )
+  AC_DEFINE( [CORE_PROFILE], [], [Define to include core profiling information] )
 
   AC_MSG_RESULT($is_profile)
 ])
@@ -92,6 +92,9 @@ dnl Boo!
       LDFLAGS="${enable_debug_save_LDFLAGS}"
     fi
    ])
+  AC_SUBST(COVFLAGS)
+  AC_SUBST(COVLFLAGS)
+
   AC_MSG_RESULT($is_debug)
 ])
 

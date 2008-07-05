@@ -63,6 +63,27 @@ class QCloseEvent;
 class QResizeEvent;
 
 #include <QtGui/QMainWindow>
+#include <QtCore/QObject>
+
+class CommandWidget : public QObject
+{
+   Q_OBJECT
+
+   public:
+      CommandWidget( QObject * parent, Model * model, bool * canEdit,
+            Command * cmd, int index );
+      virtual ~CommandWidget();
+
+   public slots:
+      void setModel( Model * m );
+      void activateCommand( bool );
+
+   private:
+      Model * m_model;
+      bool * m_canEdit;
+      Command * m_cmd;
+      int m_index;
+};
 
 class ViewWindow : public QMainWindow, public ContextPanelObserver
 {
@@ -235,6 +256,7 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       {
          QAction * id;
          Command * command;
+         CommandWidget * widget;
          int arg;
       } CommandMenuItemT;
 
