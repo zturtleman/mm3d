@@ -367,6 +367,34 @@ void TextureCoord::scaleSettingsChangedEvent()
    g_prefs( "ui_texcoord_scale_center" ) = m_scaleCenter->isChecked() ? 1 : 0;
 }
 
+void TextureCoord::rotateCcwEvent()
+{
+   m_textureWidget->rotateCoordinatesCcw();
+   updateTextureCoordsEvent();
+   updateDoneEvent();
+}
+
+void TextureCoord::rotateCwEvent()
+{
+   m_textureWidget->rotateCoordinatesCw();
+   updateTextureCoordsEvent();
+   updateDoneEvent();
+}
+
+void TextureCoord::vFlipEvent()
+{
+   m_textureWidget->vFlipCoordinates();
+   updateTextureCoordsEvent();
+   updateDoneEvent();
+}
+
+void TextureCoord::hFlipEvent()
+{
+   m_textureWidget->hFlipCoordinates();
+   updateTextureCoordsEvent();
+   updateDoneEvent();
+}
+
 void TextureCoord::zoomIn()
 {
    m_textureWidget->zoomIn();

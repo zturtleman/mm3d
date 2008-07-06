@@ -1,5 +1,6 @@
 For 1.4:
    Finish doc TODO list
+      Document CCW/CW/vFlip/hFlip buttons
    Add subversion and ./configure options to website.
    Update plugin docs to point to User's 1.4 plugin directory
 

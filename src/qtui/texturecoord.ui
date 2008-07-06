@@ -13,34 +13,14 @@
    <string>Texture Coordinates</string>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>11</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item>
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
      <item>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>0</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
        <item>
         <widget class="TextureFrame" native="1" name="m_textureFrame" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>3</hsizetype>
-           <vsizetype>3</vsizetype>
+          <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -49,11 +29,52 @@
        </item>
        <item>
         <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
-         </property>
+         <item>
+          <widget class="QPushButton" name="m_rotateCcwButton" >
+           <property name="text" >
+            <string>Rotate CCW</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="m_rotateCwButton" >
+           <property name="text" >
+            <string>Rotate CW</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="m_vFlipButton" >
+           <property name="text" >
+            <string>V Flip</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="m_hFlipButton" >
+           <property name="text" >
+            <string>H Flip</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" >
          <property name="spacing" >
           <number>6</number>
+         </property>
+         <property name="leftMargin" >
+          <number>0</number>
+         </property>
+         <property name="topMargin" >
+          <number>0</number>
+         </property>
+         <property name="rightMargin" >
+          <number>0</number>
+         </property>
+         <property name="bottomMargin" >
+          <number>0</number>
          </property>
          <item>
           <widget class="QLabel" name="textLabel1" >
@@ -101,18 +122,25 @@
      </item>
      <item>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>0</number>
-       </property>
        <property name="spacing" >
         <number>6</number>
+       </property>
+       <property name="leftMargin" >
+        <number>0</number>
+       </property>
+       <property name="topMargin" >
+        <number>0</number>
+       </property>
+       <property name="rightMargin" >
+        <number>0</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>0</number>
        </property>
        <item>
         <widget class="QGroupBox" name="m_toolGroup" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>1</hsizetype>
-           <vsizetype>5</vsizetype>
+          <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -121,10 +149,19 @@
           <string>Mouse Tool</string>
          </property>
          <layout class="QVBoxLayout" >
-          <property name="margin" >
+          <property name="spacing" >
            <number>6</number>
           </property>
-          <property name="spacing" >
+          <property name="leftMargin" >
+           <number>6</number>
+          </property>
+          <property name="topMargin" >
+           <number>6</number>
+          </property>
+          <property name="rightMargin" >
+           <number>6</number>
+          </property>
+          <property name="bottomMargin" >
            <number>6</number>
           </property>
           <item>
@@ -164,10 +201,19 @@
           <string>Scale Options</string>
          </property>
          <layout class="QVBoxLayout" >
-          <property name="margin" >
+          <property name="spacing" >
            <number>6</number>
           </property>
-          <property name="spacing" >
+          <property name="leftMargin" >
+           <number>6</number>
+          </property>
+          <property name="topMargin" >
+           <number>6</number>
+          </property>
+          <property name="rightMargin" >
+           <number>6</number>
+          </property>
+          <property name="bottomMargin" >
            <number>6</number>
           </property>
           <item>
@@ -190,9 +236,7 @@
        <item>
         <widget class="QGroupBox" name="m_mapGroup" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>1</hsizetype>
-           <vsizetype>5</vsizetype>
+          <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -254,11 +298,20 @@
    </item>
    <item>
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
      <property name="spacing" >
       <number>6</number>
+     </property>
+     <property name="leftMargin" >
+      <number>0</number>
+     </property>
+     <property name="topMargin" >
+      <number>0</number>
+     </property>
+     <property name="rightMargin" >
+      <number>0</number>
+     </property>
+     <property name="bottomMargin" >
+      <number>0</number>
      </property>
      <item>
       <widget class="QLabel" name="textLabel6" >
@@ -550,6 +603,70 @@
    <signal>stateChanged(int)</signal>
    <receiver>TextureCoordBase</receiver>
    <slot>scaleSettingsChangedEvent()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_rotateCcwButton</sender>
+   <signal>clicked()</signal>
+   <receiver>TextureCoordBase</receiver>
+   <slot>rotateCcwEvent()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_rotateCwButton</sender>
+   <signal>clicked()</signal>
+   <receiver>TextureCoordBase</receiver>
+   <slot>rotateCwEvent()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_vFlipButton</sender>
+   <signal>clicked()</signal>
+   <receiver>TextureCoordBase</receiver>
+   <slot>vFlipEvent()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_hFlipButton</sender>
+   <signal>clicked()</signal>
+   <receiver>TextureCoordBase</receiver>
+   <slot>hFlipEvent()</slot>
    <hints>
     <hint type="sourcelabel" >
      <x>20</x>

@@ -123,6 +123,11 @@ class TextureWidget : public QGLWidget
 
       void setSolidBackground( bool o ) { m_solidBackground = o; };
 
+      void vFlipCoordinates();
+      void hFlipCoordinates();
+      void rotateCoordinatesCcw();
+      void rotateCoordinatesCw();
+
       int  addVertex( double t, double s );
       int  addTriangle( int v1, int v2, int v3 );
 

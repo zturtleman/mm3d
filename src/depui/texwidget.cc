@@ -776,6 +776,60 @@ void TextureWidget::setTexture( int materialId, Texture * texture )
    updateGL();
 }
 
+void TextureWidget::vFlipCoordinates()
+{
+   for ( unsigned v = 0; v < m_vertices.size(); v++ )
+   {
+      if ( m_vertices[v]->selected ) 
+      {
+         m_vertices[v]->t = 1.0 - m_vertices[v]->t;
+      }
+   }
+   updateGL();
+}
+
+void TextureWidget::hFlipCoordinates()
+{
+   for ( unsigned v = 0; v < m_vertices.size(); v++ )
+   {
+      if ( m_vertices[v]->selected ) 
+      {
+         m_vertices[v]->s = 1.0 - m_vertices[v]->s;
+      }
+   }
+   updateGL();
+}
+
+void TextureWidget::rotateCoordinatesCcw()
+{
+   for ( unsigned v = 0; v < m_vertices.size(); v++ )
+   {
+      if ( m_vertices[v]->selected ) 
+      {
+
+         double temp = m_vertices[v]->t;
+         m_vertices[v]->t = m_vertices[v]->s;
+         m_vertices[v]->s = 1.0 - temp;
+      }
+   }
+   updateGL();
+}
+
+void TextureWidget::rotateCoordinatesCw()
+{
+   for ( unsigned v = 0; v < m_vertices.size(); v++ )
+   {
+      if ( m_vertices[v]->selected ) 
+      {
+
+         double temp = m_vertices[v]->t;
+         m_vertices[v]->t = 1.0 - m_vertices[v]->s;
+         m_vertices[v]->s = temp;
+      }
+   }
+   updateGL();
+}
+
 int TextureWidget::addVertex( double s, double t )
 {
    int index = m_vertices.size();
