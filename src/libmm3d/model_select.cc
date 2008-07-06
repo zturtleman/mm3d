@@ -527,7 +527,7 @@ bool Model::selectTrianglesInVolumeMatrix( bool select, const Matrix & viewMat, 
       Triangle * tri = m_triangles[t];
       if ( tri->m_selected != select 
             && tri->m_visible
-            && !test || (test && test->shouldSelect( tri ) )) 
+            && (!test || (test && test->shouldSelect( tri )) )) 
       {
          bool above = false;
          bool below = false;

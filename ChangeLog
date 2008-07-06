@@ -1,3 +1,14 @@
+Changes for 1.3.8
+   Don't report power of two warning for background images
+   Rotate texture coordinates
+   Horizontal/vertical flip texture coordinates
+   Fix to prevent selection of hidden faces when using the "ignore
+      back-facing" option
+   Fix broken shortcuts on geometry sub-menus
+   Fix coverage build/autoconf
+   Fix help links on Windows
+   Fix several compilation warnings
+
 Changes for 1.3.7
    Added "Apply to selected" for Transform Model
    Export Selected (geometry, joints, points, and textures)
