@@ -173,6 +173,7 @@ void AnimWidget::initialize( Model * model, bool isUndo )
          m_mode = Model::ANIMMODE_FRAME;
          m_model->setCurrentAnimation( m_mode, indexToAnim( m_animName->currentIndex() ) );
       }
+      m_model->setCurrentAnimationFrame( 0 );
 
       refreshPage();
 
