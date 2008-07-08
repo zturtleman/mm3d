@@ -4,15 +4,6 @@ TODO:
    Cal3D doc
    Update table of contents
    Add "tell me more..." links to window-specific documentation
-   Screenshot for Persp/Ortho comparison
-      images taken, crop and include
-
-   Screenshots (taken, crop and include):
-    - Boolean operations
-    - Edge turn command
-    - Simplify mesh command
-    - Normals face out command
-    - Drag vertex tool
 
    Tutorial
       UI Tour (main window documentation)

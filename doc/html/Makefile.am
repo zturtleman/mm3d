@@ -21,6 +21,7 @@ SPAGES =  \
 	olh_animwin.htm \
 	olh_autoassignjointwin.htm \
 	olh_backgroundwin.htm \
+	olh_boolwin.htm \
 	olh_cmdline.htm \
 	olh_commands.htm \
 	olh_develop.htm \
@@ -76,6 +77,7 @@ PAGES =  \
 	olh_animwin.html \
 	olh_autoassignjointwin.html \
 	olh_backgroundwin.html \
+	olh_boolwin.html \
 	olh_cmdline.html \
 	olh_commands.html \
 	olh_develop.html \
