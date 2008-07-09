@@ -633,8 +633,8 @@ void ContextInfluences::updateWeightField( int index, bool enabled, int type, in
             break;
       }
 
-      weightBox->setCurrentIndex( type );
       weightBox->setItemText( type, typeStr );
+      weightBox->setCurrentIndex( type );
       weightBox->setEnabled( true );
    }
    else
