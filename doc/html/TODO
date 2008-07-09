@@ -1,6 +1,5 @@
 TODO:
    grep FIXME
-   Document CCW/CW/vFlip/hFlip buttons
    Cal3D doc
    Update table of contents
    Add "tell me more..." links to window-specific documentation
@@ -16,8 +15,8 @@ TODO:
       Groups and Textures
        x Grouping
          Texturing / Materials
-         Projections
-         Direct coord edit
+       x Projections
+       x Coord edit
          Texture paint
          Texture reload
       Skeletal structure and Animations
