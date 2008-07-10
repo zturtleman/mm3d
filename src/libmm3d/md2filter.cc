@@ -910,9 +910,8 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
                   float    s1 = stripList[t][i].s;
                   float    t1 = 1.0f - stripList[t][i].t;
 
-                  // FIXME this is reversed from below. Is it correct?
-                  dst->write(t1);
                   dst->write(s1);
+                  dst->write(t1);
                   dst->write(v1);
                }
             }
@@ -929,10 +928,9 @@ Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filen
                   float    s1 = fanList[t][i].s;
                   float    t1 = 1.0f - fanList[t][i].t;
 
-                  // FIXME this is reversed from above. Is it correct?
-                  dst->write(v1);
                   dst->write(s1);
                   dst->write(t1);
+                  dst->write(v1);
                }
             }
          }
