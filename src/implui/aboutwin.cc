@@ -32,7 +32,7 @@
    "<h1>Misfit Model 3D</h1>" \
    "<h2>" VERSION_STRING "</h2> <br>" \
    "http://www.misfitcode.com/misfitmodel3d/<br><br>" \
-   "Copyright &copy; 2004-2007, Kevin Worcester<br>" \
+   "Copyright &copy; 2004-2008, Kevin Worcester<br>" \
    "<font color=\"blue\">kevin&nbsp;at</font>&nbsp;the&nbsp;<font color=\"blue\">misfitcode.com</font> domain<br>" \
    "</center></body></html>" 
 
