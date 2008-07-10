@@ -27,6 +27,7 @@ SPAGES =  \
 	olh_develop.htm \
 	olh_quakemd2.htm \
 	olh_quakemd3.htm \
+	olh_cal3d.htm \
 	olh_groupwin.htm \
 	olh_index.htm \
 	olh_jointwin.htm \
@@ -68,7 +69,7 @@ PAGES =  \
 	olh_projectiondetails.html \
 	olh_jointdetails.html \
 	olh_pointdetails.html \
-	olh_backgroundimagedetails.htm \
+	olh_animationdetails.html \
 	olh_backgroundimagedetails.html \
 	olh_alignwin.html \
 	olh_animconvertwin.html \
@@ -83,6 +84,7 @@ PAGES =  \
 	olh_develop.html \
 	olh_quakemd2.html \
 	olh_quakemd3.html \
+	olh_cal3d.html \
 	olh_groupwin.html \
 	olh_index.html \
 	olh_jointwin.html \
