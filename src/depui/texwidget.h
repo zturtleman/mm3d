@@ -116,6 +116,7 @@ class TextureWidget : public QGLWidget
 
       void setDrawMode( DrawModeE dm );
       void setDrawVertices( bool dv ) { m_drawVertices = dv; };
+      void setDrawBorder( bool db ) { m_drawBorder = db; };
       void setMouseOperation( MouseOperationE op );
 
       void setScaleKeepAspect( bool o ) { m_scaleKeepAspect = o; };
@@ -246,6 +247,7 @@ class TextureWidget : public QGLWidget
 
       DrawModeE       m_drawMode;
       bool            m_drawVertices;
+      bool            m_drawBorder;
       bool            m_solidBackground;
       MouseOperationE m_operation;
 

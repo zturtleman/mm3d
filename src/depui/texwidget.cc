@@ -87,6 +87,7 @@ TextureWidget::TextureWidget( QWidget * parent )
      m_overlayButton( ScrollButtonMAX ),
      m_drawMode( DM_Edit ),
      m_drawVertices( true ),
+     m_drawBorder( false ),
      m_solidBackground( false ),
      m_operation( MouseSelect ),
      m_scaleKeepAspect( false ),
@@ -474,14 +475,25 @@ void TextureWidget::paintInternal()
    glDisable( GL_TEXTURE_2D );
    glDisable( GL_LIGHTING );
 
+   glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
+   if ( m_drawBorder )
+   {
+      glColor3f( 0.7, 0.7, 0.7 );
+      glBegin( GL_QUADS );
+      glVertex3f( 0.0f, 0.0f, -0.25f );
+      glVertex3f( 1.0f, 0.0f, -0.25f );
+      glVertex3f( 1.0f, 1.0f, -0.25f );
+      glVertex3f( 0.0f, 1.0f, -0.25f );
+      glEnd();
+   }
+
    glColor3f( 1.0, 1.0, 1.0 );
 
    if ( m_operation == MouseRange )
    {
       glColor3f( 0.7, 0.7, 0.7 );
    }
-
-   glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
    switch ( m_drawMode )
    {

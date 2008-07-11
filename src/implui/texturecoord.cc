@@ -81,6 +81,7 @@ TextureCoord::TextureCoord( Model * model, QWidget * parent )
 
    m_textureWidget = m_textureFrame->getTextureWidget();
    m_textureWidget->setInteractive( true );
+   m_textureWidget->setDrawBorder( true );
 
    g_prefs.setDefault( "ui_texcoord_scale_aspect", 0 );
    g_prefs.setDefault( "ui_texcoord_scale_center", 1 );
