@@ -30,6 +30,7 @@ SPAGES =  \
 	olh_cal3d.htm \
 	olh_groupwin.htm \
 	olh_index.htm \
+	olh_influences.htm \
 	olh_jointwin.htm \
 	olh_license.htm \
 	olh_mergewin.htm \
@@ -87,6 +88,7 @@ PAGES =  \
 	olh_cal3d.html \
 	olh_groupwin.html \
 	olh_index.html \
+	olh_influences.html \
 	olh_jointwin.html \
 	olh_license.html \
 	olh_mergewin.html \
