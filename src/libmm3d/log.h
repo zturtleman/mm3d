@@ -27,6 +27,7 @@
 #ifdef __DO_PROFILE
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/timeb.h>
 
 extern FILE * _logProfileFP;

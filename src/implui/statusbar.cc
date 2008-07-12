@@ -32,6 +32,7 @@
 #include <QtGui/QToolTip>
 
 #include <stdarg.h>
+#include <stdlib.h>
 
 using std::map;
 

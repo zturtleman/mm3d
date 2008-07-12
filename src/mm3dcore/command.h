@@ -44,6 +44,8 @@
 // accordingly.  Also non-modal dialogs are inconsistent with 
 // Misfit Model's general behavior and may be confusing to the user.
 
+#include <stdlib.h>
+
 class Model;
 
 class Command

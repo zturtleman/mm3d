@@ -29,6 +29,8 @@
 #include <psapi.h>
 #endif // 0
 #include <string>
+#include <string.h>
+#include <stdlib.h>
 #include "mm3dreg.h"
 #include "version.h"
 

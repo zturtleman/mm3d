@@ -28,6 +28,7 @@
 #include "log.h"
 
 #include <ctype.h>
+#include <stdlib.h>
 
 #include <QtCore/QBuffer>
 #include <QtCore/QString>

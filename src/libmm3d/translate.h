@@ -25,6 +25,7 @@
 #define __TRANSLATE_H
 
 #include <string>
+#include <stdlib.h>
 
 #undef  QT_TRANSLATE_NOOP
 #define QT_TRANSLATE_NOOP( a, b ) b

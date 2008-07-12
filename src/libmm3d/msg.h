@@ -24,6 +24,8 @@
 #ifndef __MSG_H
 #define __MSG_H
 
+#include <stdlib.h>
+
 extern "C" void msg_error(   const char * str );
 extern "C" void msg_warning( const char * str );
 extern "C" void msg_info(    const char * str );

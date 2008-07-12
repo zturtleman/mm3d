@@ -38,6 +38,8 @@
 
 #include "mm3dtypes.h"
 
+#include <stdlib.h>
+
 class ModelFilter
 {
    public:
