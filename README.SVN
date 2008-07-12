@@ -9,6 +9,9 @@ files and help pages are also output files from the build process. You can
 build mm3d without building the i18n and doc/html files. For instructions
 on creating the build files for MM3D, i18n, and help, continue reading below.
 
+If you plan to look at or modify the code itself, read the CODE file
+in this directory may be helpful.
+
 To build MM3D:
 
 Run the ./autosetup.sh script. This runs autoconf and automake. If those run

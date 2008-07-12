@@ -23,3 +23,13 @@ About half of the code is in src/libmm3d, and about half of the code
 in src/libmm3d is in the model class (model.h, model.cc, model_*.cc).
 
 You can use src/maketags.sh to make ctags files for the source tree.
+
+Some development options for ./configure:
+
+   --enable-debug=[yes/no/cov]  The yes and no options turn debug information
+                                on and off. The cov option turns on debugging
+                                and coverage information.
+   --enable-profile=[yes/no/core]  The yes and no options turn profiling
+                                   information on and off. The core option
+                                   turns on profiling just for the application
+                                   libraries (not the User Interface).
