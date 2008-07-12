@@ -1,6 +1,7 @@
 For 1.4:
    Finish doc TODO list
    Update plugin docs to point to User's 1.4 plugin directory
+   Add necessary includes for 4.3 (see SourceForge bug)
 
 For 1.6:
    Resample animation
