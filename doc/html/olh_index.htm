@@ -1,5 +1,4 @@
       <h1>Contents</h1>
-      <!-- FIXME update TOC -->
       <ul>
          <li>
             <h2>Overview</h2> 
@@ -7,6 +6,8 @@
                <li> <a href="olh_index.html#readme">Help! What should I read first!?</a> </li>
                <li> <a href="olh_index.html#intro">Misfit Model 3D Introduction</a> </li>
                <li> <a href="olh_index.html#mainwindow">The Main Window</a> </li>
+               <li> <a href="olh_whatsnew.html">What's New?</a> </li>
+               <li> <a href="olh_tips.html">Quick Tips</a> </li>
             </ul>
          </li>
          <li>
@@ -19,25 +20,43 @@
                <li> <a href="olh_use.html#animations">Animations</a> </li>
             </ul>
          </li>
-         <!-- FIXME add details index -->
+         <h2>3D Model Introduction</h2>
+         <ul>
+            <li><a href="olh_vertexdetails.htm">Vertices</a></li>
+            <li><a href="olh_facedetails.htm">Faces</a></li>
+            <li><a href="olh_normaldetails.htm">Normals</a></li>
+            <li><a href="olh_meshdetails.htm">Meshes</a></li>
+            <li><a href="olh_groupdetails.htm">Groups</a></li>
+            <li><a href="olh_materialdetails.htm">Materials</a></li>
+            <li><a href="olh_texturecoorddetails.htm">Texture Coordinates</a></li>
+            <li><a href="olh_projectiondetails.htm">Texture Projections</a></li>
+            <li><a href="olh_jointdetails.htm">Bone Joints</a></li>
+            <li><a href="olh_animationdetails.htm">Animations</a></li>
+            <li><a href="olh_pointdetails.htm">Points</a></li>
+            <li><a href="olh_backgroundimagedetails.htm">Background Images</a></li>
+         </ul>
          <h2>Window-specific Help</h2>
-         <!-- FIXME add anything that is missing -->
          <ul>
             <li> <a href="olh_mainwin.html">Main Window</a> </li>
             <li> <a href="olh_properties.html">Properties Panel</a> </li>
-            <li> <a href="olh_texturewin.html">Materials Window</a> </li>
+            <li> <a href="olh_boolwin.html">Boolean Operations Panel</a> </li>
             <li> <a href="olh_groupwin.html">Groups Window</a> </li>
+            <li> <a href="olh_texturewin.html">Materials Window</a> </li>
             <li> <a href="olh_texturecoordwin.html">Texture Coordinates Window</a> </li>
             <li> <a href="olh_projectionwin.html">Texture Projection Window</a> </li>
             <li> <a href="olh_jointwin.html">Joints Window</a> </li>
+            <li> <a href="olh_pointwin.html">Points Window</a> </li>
             <li> <a href="olh_alignwin.html">Align Selection Window</a> </li>
             <li> <a href="olh_animsetwin.html">Animation Sets Window</a> </li>
             <li> <a href="olh_animwin.html">Animation Mode Window</a> </li>
             <li> <a href="olh_animexportwin.html">Export Animation Window</a> </li>
             <li> <a href="olh_animconvertwin.html">Convert To Frame Window</a> </li>
+            <li> <a href="olh_autoassignjointwin.html">Auto-Assign Bone Joints Window</a> </li>
+            <li> <a href="olh_transformwin.html">Transform Model Window</a> </li>
             <li> <a href="olh_mergewin.html">Merge Window</a> </li>
             <li> <a href="olh_backgroundwin.html">Select Background Image Window</a> </li>
             <li> <a href="olh_spherifywin.html">Spherify Window</a> </li>
+            <li> <a href="olh_viewportsettings.html">Viewport Settings Window</a> </li>
             <li> <a href="olh_pluginwin.html">Plugins Window</a> </li>
             <li> <a href="olh_metawin.html">Model Meta Data Window</a> </li>
          </ul>
@@ -71,59 +90,62 @@
          <li>
          <h2>Geometry Menu</h2>
          <ul>
-            <li> <a href="#undo">Undo</a> </li>
-            <li> <a href="#redo">Redo</a> </li>
-            <li> <a href="#copy">Copy Selected to Clipboard</a> </li>
-            <li> <a href="#paste">Paste from Clipboard</a> </li>
+            <li> <a href="olh_commands.html#undo">Undo</a> </li>
+            <li> <a href="olh_commands.html#redo">Redo</a> </li>
+            <li> <a href="olh_commands.html#copy">Copy Selected to Clipboard</a> </li>
+            <li> <a href="olh_commands.html#paste">Paste from Clipboard</a> </li>
 
             <li> Vertices
-               <li> <a href="#weld">Weld Vertices</a> </li>
-               <li> <a href="#unweld">Unweld Vertices</a> </li>
-               <li> <a href="#snap">Snap Vertices Together</a> </li>
-               <li> <a href="#makeface">Make Face From Vertices</a> </li>
-               <li> <a href="#selectfree">Select Free Vertices</a> </li>
+               <li> <a href="olh_commands.html#weld">Weld Vertices</a> </li>
+               <li> <a href="olh_commands.html#unweld">Unweld Vertices</a> </li>
+               <li> <a href="olh_commands.html#snap">Snap Vertices Together</a> </li>
+               <li> <a href="olh_commands.html#makeface">Make Face From Vertices</a> </li>
+               <li> <a href="olh_commands.html#selectfree">Select Free Vertices</a> </li>
             </li>
 
             <li> Faces
-               <li> <a href="#edgeturn">Edge Turn</a> </li>
-               <li> <a href="#edgedivide">Edge Divide</a> </li>
-               <li> <a href="#subdivide">Subdivide Faces</a> </li>
-               <li> <a href="#rotatetex">Rotate Texture Coordinates</a> </li>
+               <li> <a href="olh_commands.html#edgeturn">Edge Turn</a> </li>
+               <li> <a href="olh_commands.html#edgedivide">Edge Divide</a> </li>
+               <li> <a href="olh_commands.html#subdivide">Subdivide Faces</a> </li>
+               <li> <a href="olh_commands.html#rotatetex">Rotate Texture Coordinates</a> </li>
             </li>
 
             <li> Meshes
-               <li> <a href="#align">Align Selected</a> </li>
-               <li> <a href="#simplifymesh">Simplify Mesh</a> </li>
-               <li> <a href="#capholes">Cap Holes</a> </li>
-               <li> <a href="#spherify">Spherify</a> </li>
+               <li> <a href="olh_commands.html#align">Align Selected</a> </li>
+               <li> <a href="olh_commands.html#simplifymesh">Simplify Mesh</a> </li>
+               <li> <a href="olh_commands.html#capholes">Cap Holes</a> </li>
+               <li> <a href="olh_commands.html#spherify">Spherify</a> </li>
             </li>
 
             <li> Normals
-               <li> <a href="#invnorm">Invert Normals</a> </li>
-               <li> <a href="#faceout">Normals Face Out</a> </li>
+               <li> <a href="olh_commands.html#invnorm">Invert Normals</a> </li>
+               <li> <a href="olh_commands.html#faceout">Normals Face Out</a> </li>
             </li>
 
-            <li> <a href="#hide">Hide</a> </li>
-            <li> <a href="#delete">Delete</a> </li>
-            <li> <a href="#flip">Flip</a> </li>
-            <li> <a href="#flatten">Flatten</a> </li>
-            <li> <a href="#duplicate">Duplicate</a> </li>
-            <li> <a href="#extrude">Extrude</a> </li>
-            <li> <a href="#invsel">Invert Selection</a> </li>
+            <li> <a href="olh_commands.html#hide">Hide</a> </li>
+            <li> <a href="olh_commands.html#delete">Delete</a> </li>
+            <li> <a href="olh_commands.html#flip">Flip</a> </li>
+            <li> <a href="olh_commands.html#flatten">Flatten</a> </li>
+            <li> <a href="olh_commands.html#duplicate">Duplicate</a> </li>
+            <li> <a href="olh_commands.html#extrude">Extrude</a> </li>
+            <li> <a href="olh_commands.html#invsel">Invert Selection</a> </li>
          </ul>
          </li>
+         <li>
          <h2>Influences Menu</h2>
          <ul>
-            <li> <a href="olh_influences#assigntojoint">Assign Vertices to Bone Joint</a> </li>
-            <li> <a href="olh_influences#removeallinfluences">Remove All Influences from Selected</a> </li>
-            <li> <a href="olh_influences#removeinfluence">Remove Selected Joint from Influencing</a> </li>
-            <li> <a href="olh_influences#converttosingle">Convert Multiple Influences to Single</a> </li>
-            <li> <a href="olh_influences#selectinfluences">Select Joint Influences</a> </li>
-            <li> <a href="olh_influences#selectinfluencedvertices">Select Influenced Vertices</a> </li>
-            <li> <a href="olh_influences#selectinfluencedpoints">Select Influenced Points</a> </li>
-            <li> <a href="olh_influences#selectunassignedvertices">Select Unassigned Vertices</a> </li>
-            <li> <a href="olh_influences#selectunassignedpoints">Select Unassigned Points</a> </li>
+            <li> <a href="olh_influences.html#assigntojoint">Assign Selected to Joint</a> </li>
+            <li> <a href="olh_influences.html#autoassignselected">Auto-Assign Selected</a> </li>
+            <li> <a href="olh_influences.html#removeallinfluences">Remove All Influences from Selected</a> </li>
+            <li> <a href="olh_influences.html#removeinfluence">Remove Selected Joint from Influencing</a> </li>
+            <li> <a href="olh_influences.html#converttosingle">Convert Multiple Influences to Single</a> </li>
+            <li> <a href="olh_influences.html#selectinfluences">Select Joint Influences</a> </li>
+            <li> <a href="olh_influences.html#selectinfluencedvertices">Select Influenced Vertices</a> </li>
+            <li> <a href="olh_influences.html#selectinfluencedpoints">Select Influenced Points</a> </li>
+            <li> <a href="olh_influences.html#selectunassignedvertices">Select Unassigned Vertices</a> </li>
+            <li> <a href="olh_influences.html#selectunassignedpoints">Select Unassigned Points</a> </li>
          </ul>
+         </li>
          <li>
          <h2>Command line Help</h2>
          <ul>
@@ -156,7 +178,12 @@
          <ul>
             <li> <a href="olh_quakemd2.html">Quake MD2</a> </li>
             <li> <a href="olh_quakemd3.html">Quake MD3</a> </li>
-            <li> <a href="olh_cal3d.html">Cal3D</a> </li>
+            <li>
+               <a href="olh_cal3d.html">Cal3D</a>
+               <a href="olh_cal3dprompt.html">(Prompt Window)</a>
+            </li>
+            <li> <a href="olh_cal3dprompt.html">MS3D Prompt Window</a> </li>
+            <li> <a href="olh_objprompt.html">OBJ Prompt Window</a> </li>
          </ul>
          </li>
       </ul>
@@ -183,7 +210,7 @@
          <li> The <a href="olh_mainwin.html">Main Window</a> documentation
          gives you an overview of the user interface and a high-level
          description of the program's features.
-         <li> See the <a href="olh_detailsindex.html">details index</a>
+         <li> See the <a href="olh_detailsindex.html">3D Model Introduction</a>
          for information on specific topics. </li>
          <li> The <a href="olh_tutorial_index.html">Tutorial</a>
          is not yet written. When it is done it will walk you through

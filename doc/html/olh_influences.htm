@@ -1,6 +1,7 @@
       <h1>Influences Menu</h1>
       <ul>
-        <li> <a href="#assigntojoint">Assign Vertices to Bone Joint</a> </li>
+        <li> <a href="#assigntojoint">Assign Selected to Joint</a> </li>
+        <li> <a href="#autoassignselected">Auto-Assign Selected</a> </li>
         <li> <a href="#removeallinfluences">Remove All Influences from Selected</a> </li>
         <li> <a href="#removeinfluence">Remove Selected Joint from Influencing</a> </li>
         <li> <a href="#converttosingle">Convert Multiple Influences to Single</a> </li>
@@ -13,13 +14,13 @@
       <hr/>
 
       <a name="assigntojoint">
-      <h1>Assign Vertices to Bone Joint</h1>
+      <h1>Assign Selected to Joint</h1>
 
       <h3>Overview</h3>
       <p>
-      <b>Assign Vertices to Bone Joint</b> assigns the currently
-      selected vertices to the currently selected bone joint.
-      You must have only one bone joint selected to use this command.
+      <b>Assign Selected to Joint</b> assigns the currently
+      selected vertices and points to the currently selected bone joint.
+      You may have more than one bone joint selected.
       </p>
       
       <p>
@@ -32,7 +33,29 @@
          <li> <b>None</b>
       </ul>
 
-      <!-- FIXME auto assign selected -->
+      <a name="autoassignselected">
+      <h1>Auto-Assign Selected</h1>
+
+      <h3>Overview</h3>
+      <p>
+      <b>Auto-Assign Selected</b> assigns the currently
+      selected vertices and points to the joints that MM3D thinks are
+      most appropriate. You can increase and decrease the tendency to
+      assign a vertex to multiple joints.
+      </p>
+      
+      <p>
+      Generally auto-assign works fine when the bone joints are obvious,
+      requires some adjustment in weight when near a joint, and doesn't
+      do a very good job at all if the vertex is betwen several joints
+      but not along one of the bone lines. The algorithm is not perfect,
+      but is a good starting point to begin fine-tuning manually.
+      </p>
+
+      <h3>Keyboard shortcuts</h3>
+      <ul>
+         <li> <b>None</b>
+      </ul>
 
       <a name="removeallinfluences">
       <h1>Remove All Influences from Selected</h1>
