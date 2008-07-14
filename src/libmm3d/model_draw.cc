@@ -1540,8 +1540,8 @@ void Model::drawJoints()
                   {
                      glColor3f( 1.0, 0.0, 1.0 );
                   }
-                  else if ( m_animationMode && hasSkelAnimKeyframe( m_currentAnim, m_currentFrame, j, true )  
-                        || m_animationMode && hasSkelAnimKeyframe( m_currentAnim, m_currentFrame, j, false ) )
+                  else if ( (m_animationMode && hasSkelAnimKeyframe( m_currentAnim, m_currentFrame, j, true ))  
+                        || (m_animationMode && hasSkelAnimKeyframe( m_currentAnim, m_currentFrame, j, false )) )
                   {
                      glColor3f( 0.0, 1.0, 0.0 );
                   }

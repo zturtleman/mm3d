@@ -39,6 +39,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <limits.h>
 #include <errno.h>
 #include <vector>
@@ -707,6 +708,7 @@ Model::ModelErrorE MisfitFilterRef::readFile( Model * model, const char * const 
    for ( t = 0; t < offsetCount; t++ )
    {
       MisfitOffsetT mo;
+      memset(&mo, 0, sizeof(mo));
       read( mo.offsetType );
       read( mo.offsetValue );
 
@@ -853,6 +855,7 @@ Model::ModelErrorE MisfitFilterRef::readFile( Model * model, const char * const 
          }
 
          MM3DFILE_VertexT fileVert;
+         memset(&fileVert, 0, sizeof(fileVert));
 
          read( fileVert.flags );
          read( fileVert.coord[0] );
@@ -903,6 +906,7 @@ Model::ModelErrorE MisfitFilterRef::readFile( Model * model, const char * const 
          }
 
          MM3DFILE_TriangleT fileTri;
+         memset(&fileTri, 0, sizeof(fileTri));
          read( fileTri.flags );
          read( fileTri.vertex[0] );
          read( fileTri.vertex[1] );
@@ -1007,10 +1011,10 @@ Model::ModelErrorE MisfitFilterRef::readFile( Model * model, const char * const 
 
          Model::Group    * grp = Model::Group::get();
 
-         uint16_t flags;
-         uint32_t triCount;
-         uint8_t  smoothness;
-         uint32_t materialIndex;
+         uint16_t flags = 0;
+         uint32_t triCount = 0;
+         uint8_t  smoothness = 0;
+         uint32_t materialIndex = 0;
          char name[1024];
 
          read( flags );
@@ -1237,6 +1241,7 @@ Model::ModelErrorE MisfitFilterRef::readFile( Model * model, const char * const 
          }
 
          MM3DFILE_TexCoordT tc;
+         memset(&tc, 0, sizeof(tc));
          read( tc.flags );
          read( tc.triangleIndex );
          read( tc.sCoord[0] );
@@ -1288,6 +1293,7 @@ Model::ModelErrorE MisfitFilterRef::readFile( Model * model, const char * const 
          }
 
          MM3DFILE_CanvasBackgroundT cb;
+         memset(&cb, 0, sizeof(cb));
          read( cb.flags );
          read( cb.viewIndex );
          read( cb.scale );
@@ -1526,6 +1532,7 @@ Model::ModelErrorE MisfitFilterRef::readFile( Model * model, const char * const 
          }
 
          MM3DFILE_SmoothAngleT fileSa;
+         memset(&fileSa, 0, sizeof(fileSa));
          read( fileSa.groupIndex );
          read( fileSa.angle );
 
@@ -1582,6 +1589,7 @@ Model::ModelErrorE MisfitFilterRef::readFile( Model * model, const char * const 
          }
 
          MM3DFILE_WeightedInfluenceT fileWi;
+         memset(&fileWi, 0, sizeof(fileWi));
          read( fileWi.posType );
          read( fileWi.posIndex );
          read( fileWi.infIndex );
@@ -1783,10 +1791,10 @@ Model::ModelErrorE MisfitFilterRef::readFile( Model * model, const char * const 
             read( size );
          }
 
-         uint16_t  flags;
-         char      name[1024];
-         float32_t fps;
-         uint32_t  frameCount;
+         uint16_t  flags = 0;
+         char      name[1024] = "";
+         float32_t fps = 0.0f;
+         uint32_t  frameCount = 0;
 
          read( flags );
 
@@ -1807,12 +1815,13 @@ Model::ModelErrorE MisfitFilterRef::readFile( Model * model, const char * const 
 
          for ( unsigned f = 0; f < frameCount; f++ )
          {
-            uint32_t keyframeCount;
+            uint32_t keyframeCount = 0;
             read( keyframeCount );
 
             for ( unsigned k = 0; k < keyframeCount; k++ )
             {
                MM3DFILE_SkelKeyframeT fileKf;
+               memset(&fileKf, 0, sizeof(fileKf));
                read( fileKf.jointIndex );
                read( fileKf.keyframeType );
                read( fileKf.param[0] );
@@ -1863,10 +1872,10 @@ Model::ModelErrorE MisfitFilterRef::readFile( Model * model, const char * const 
             return Model::ERROR_BAD_DATA;
          }
 
-         uint16_t  flags;
-         char      name[1024];
-         float32_t fps;
-         uint32_t  frameCount;
+         uint16_t  flags = 0;
+         char      name[1024] = "";
+         float32_t fps = 0.0f;
+         uint32_t  frameCount = 0;
 
          read( flags );
 
@@ -1948,9 +1957,9 @@ Model::ModelErrorE MisfitFilterRef::readFile( Model * model, const char * const 
             read( size );
          }
 
-         uint16_t  flags;
-         uint32_t  anim;
-         uint32_t  frameCount;
+         uint16_t  flags = 0;
+         uint32_t  anim = 0;
+         uint32_t  frameCount = 0;
 
          read( flags );
 

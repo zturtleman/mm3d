@@ -2284,7 +2284,7 @@ MU_SetAnimName::~MU_SetAnimName()
 void MU_SetAnimName::undo( Model * model )
 {
    model->setAnimName( m_mode, m_animNum, m_oldName.c_str() );
-   if ( model->getAnimationMode() != Model::ANIMMODE_NONE && model->getAnimationMode() != m_mode || model->getCurrentAnimation() != m_animNum )
+   if ( (model->getAnimationMode() != Model::ANIMMODE_NONE && model->getAnimationMode() != m_mode) || (model->getCurrentAnimation() != m_animNum) )
    {
       model->setCurrentAnimation( m_mode, m_oldName.c_str() );
    }
@@ -2293,7 +2293,7 @@ void MU_SetAnimName::undo( Model * model )
 void MU_SetAnimName::redo( Model * model )
 {
    model->setAnimName( m_mode, m_animNum, m_newName.c_str() );
-   if ( model->getAnimationMode() != Model::ANIMMODE_NONE && model->getAnimationMode() != m_mode || model->getCurrentAnimation() != m_animNum )
+   if ( (model->getAnimationMode() != Model::ANIMMODE_NONE && model->getAnimationMode() != m_mode) || (model->getCurrentAnimation() != m_animNum) )
    {
       model->setCurrentAnimation( m_mode, m_newName.c_str() );
    }

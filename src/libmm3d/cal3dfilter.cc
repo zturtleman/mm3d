@@ -1192,7 +1192,7 @@ Model::ModelErrorE Cal3dFilter::readAnimationFile( uint8_t * buf, size_t len )
          if ( fileVersion >= CAL3D_COMP_ANIM_VERSION )
          {
             int flags = readBInt32();
-            compressed = ( flags & 1 != 0 );
+            compressed = ( (flags & 1) != 0 );
          }
          //name += ".";
          //name += m_modelPartExt;

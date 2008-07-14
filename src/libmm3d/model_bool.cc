@@ -939,8 +939,8 @@ static void _removeSubtractionTriangles( Model * model, UnionTriangleList & la, 
    {
       _findNearTriangles( model, *it, lb, coplanar, front );
 
-      if ( coplanar >= 0 && front < 0
-            || coplanar < 0 && front >= 0 )
+      if ( (coplanar >= 0 && front < 0)
+            || (coplanar < 0 && front >= 0) )
       {
          //log_debug( "A triangle %d is on the inside\n", (*it).tri );
          removeList2.push_back( (*it).tri );

@@ -244,7 +244,7 @@ class MU_MovePrimitive : public ModelUndo
 
       unsigned size();
 
-      typedef enum _MoveType_e
+      enum _MoveType_e
       {
           MT_Vertex,
           MT_Joint,

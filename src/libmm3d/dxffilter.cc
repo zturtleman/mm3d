@@ -716,7 +716,7 @@ bool DxfFilter::read3dface( const char * line )
                     if ( m_lastCode == 33 )
                     {
                         // add polygon
-                        int vert[3];
+                        int vert[4];
                         int tri;
 
                         // Exchange Y and Z coordinates

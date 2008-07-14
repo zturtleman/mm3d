@@ -534,7 +534,7 @@ bool Model::selectTrianglesInVolumeMatrix( bool select, const Matrix & viewMat, 
 
          int v;
          Vertex *vert[3];
-         double tCords[3][3];
+         double tCords[3][4];
 
 
          // 0. Assign vert to triangle's verticies 
