@@ -1,7 +1,11 @@
 For 1.4:
    Finish doc TODO list
+   Fix keyboard shortcut for unhide all
+   Add subversion and ./configure options to website.
    Update plugin docs to point to User's 1.4 plugin directory
-   Add necessary includes for 4.3 (see SourceForge bug)
+   Investigate MD2 export changes to find Rab,d's crash
+   dvh's bugs on the forum
+      I beam cursor
 
 For 1.6:
    Resample animation

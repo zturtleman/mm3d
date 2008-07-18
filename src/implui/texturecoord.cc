@@ -248,7 +248,7 @@ void TextureCoord::mapGroupEvent()
       return;
    }
 
-   MapDirection dir;
+   MapDirection dir(this);
    dir.setMapDirection( getDefaultDirection() );
    if ( dir.exec() )
    {
@@ -266,11 +266,12 @@ void TextureCoord::resetClickedEvent()
 {
    if ( m_currentMapScheme == MapSchemeGroup )
    {
-      MapDirection dir;
+      MapDirection dir(this);
 
       if ( dir.exec() )
       {
          mapGroup( dir.getMapDirection() );
+         m_textureWidget->updateGL();
          log_debug( "reset texture coordinates and map from direction %d\n", dir.getMapDirection() );
       }
    }
@@ -476,12 +477,6 @@ void TextureCoord::mapQuad()
 void TextureCoord::mapGroup( int direction )
 {
    log_debug( "mapGroup( %d )\n", direction );
-
-   if ( MapSchemeGroup == m_currentMapScheme )
-   {
-      log_debug( "  ignored\n" );
-      return;
-   }
 
    m_currentMapScheme = MapSchemeGroup;
 

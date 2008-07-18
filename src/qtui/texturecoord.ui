@@ -529,7 +529,7 @@
   </connection>
   <connection>
    <sender>m_zoomInput</sender>
-   <signal>textChanged(QString)</signal>
+   <signal>textEdited(QString)</signal>
    <receiver>TextureCoordBase</receiver>
    <slot>zoomChangeEvent()</slot>
    <hints>
