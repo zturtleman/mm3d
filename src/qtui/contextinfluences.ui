@@ -263,25 +263,25 @@
     </connection>
     <connection>
       <sender>m_weight1</sender>
-      <signal>textChanged(QString)</signal>
+      <signal>editTextChanged(QString)</signal>
       <receiver>ContextInfluencesBase</receiver>
       <slot>weight1Changed(QString)</slot>
     </connection>
     <connection>
       <sender>m_weight2</sender>
-      <signal>textChanged(QString)</signal>
+      <signal>editTextChanged(QString)</signal>
       <receiver>ContextInfluencesBase</receiver>
       <slot>weight2Changed(QString)</slot>
     </connection>
     <connection>
       <sender>m_weight3</sender>
-      <signal>textChanged(QString)</signal>
+      <signal>editTextChanged(QString)</signal>
       <receiver>ContextInfluencesBase</receiver>
       <slot>weight3Changed(QString)</slot>
     </connection>
     <connection>
       <sender>m_weight4</sender>
-      <signal>textChanged(QString)</signal>
+      <signal>editTextChanged(QString)</signal>
       <receiver>ContextInfluencesBase</receiver>
       <slot>weight4Changed(QString)</slot>
     </connection>
