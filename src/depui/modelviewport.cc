@@ -38,6 +38,7 @@
 #include "pixmap/crosshairrow.xpm"
 
 #include <QtCore/QTimer>
+#include <QtGui/QCursor>
 #include <QtGui/QFont>
 #include <QtGui/QPixmap>
 #include <QtGui/QFocusEvent>
@@ -154,6 +155,8 @@ ModelViewport::ModelViewport( QWidget * parent )
    makeTextureFromImage( img, m_scrollTextures[1] );
 
    connect( m_scrollTimer, SIGNAL(timeout()), this, SLOT(scrollTimeout()));
+
+   setCursor( Qt::ArrowCursor );
 }
 
 ModelViewport::~ModelViewport()

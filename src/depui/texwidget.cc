@@ -110,6 +110,7 @@ TextureWidget::TextureWidget( QWidget * parent )
    setFocusPolicy( Qt::WheelFocus );
 
    connect( m_scrollTimer, SIGNAL(timeout()), this, SLOT(scrollTimeout()));
+   setCursor( QCursor( Qt::ArrowCursor ) );
 }
 
 TextureWidget::~TextureWidget()
