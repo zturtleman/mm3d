@@ -335,6 +335,7 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
       for ( i = 0; i < numSkins; i++ )
       {
          src->readBytes( (uint8_t *) name, 64 );
+         name[63] = '\0';
          log_debug( "Skin %d: %s\n", i, name );
 
          string tempStr = name;
