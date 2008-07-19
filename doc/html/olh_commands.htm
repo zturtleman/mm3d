@@ -1,44 +1,52 @@
       <h1>Geometry Menu</h1>
       <ul>
-        <li> <a href="#undo">Undo</a> </li>
-        <li> <a href="#redo">Redo</a> </li>
-        <li> <a href="#copy">Copy Selected to Clipboard</a> </li>
-        <li> <a href="#paste">Paste from Clipboard</a> </li>
+         <li> <a href="olh_commands.html#undo">Undo</a> </li>
+         <li> <a href="olh_commands.html#redo">Redo</a> </li>
+         <li> <a href="olh_commands.html#copy">Copy Selected to Clipboard</a> </li>
+         <li> <a href="olh_commands.html#paste">Paste from Clipboard</a> </li>
 
-        <li> Vertices
-           <li> <a href="#weld">Weld Vertices</a> </li>
-           <li> <a href="#unweld">Unweld Vertices</a> </li>
-           <li> <a href="#snap">Snap Vertices Together</a> </li>
-           <li> <a href="#makeface">Make Face From Vertices</a> </li>
-           <li> <a href="#selectfree">Select Free Vertices</a> </li>
-        </li>
+         <li> Vertices
+            <ul>
+               <li> <a href="olh_commands.html#weld">Weld Vertices</a> </li>
+               <li> <a href="olh_commands.html#unweld">Unweld Vertices</a> </li>
+               <li> <a href="olh_commands.html#snap">Snap Vertices Together</a> </li>
+               <li> <a href="olh_commands.html#makeface">Make Face From Vertices</a> </li>
+               <li> <a href="olh_commands.html#selectfree">Select Free Vertices</a> </li>
+            </ul>
+         </li>
 
-        <li> Faces
-           <li> <a href="#edgeturn">Edge Turn</a> </li>
-           <li> <a href="#edgedivide">Edge Divide</a> </li>
-           <li> <a href="#subdivide">Subdivide Faces</a> </li>
-           <li> <a href="#rotatetex">Rotate Texture Coordinates</a> </li>
-        </li>
+         <li> Faces
+            <ul>
+               <li> <a href="olh_commands.html#edgeturn">Edge Turn</a> </li>
+               <li> <a href="olh_commands.html#edgedivide">Edge Divide</a> </li>
+               <li> <a href="olh_commands.html#subdivide">Subdivide Faces</a> </li>
+               <li> <a href="olh_commands.html#rotatetex">Rotate Texture Coordinates</a> </li>
+            </ul>
+         </li>
 
-        <li> Meshes
-           <li> <a href="#align">Align Selected</a> </li>
-           <li> <a href="#simplifymesh">Simplify Mesh</a> </li>
-           <li> <a href="#capholes">Cap Holes</a> </li>
-           <li> <a href="#spherify">Spherify</a> </li>
-        </li>
+         <li> Meshes
+            <ul>
+               <li> <a href="olh_commands.html#align">Align Selected</a> </li>
+               <li> <a href="olh_commands.html#simplifymesh">Simplify Mesh</a> </li>
+               <li> <a href="olh_commands.html#capholes">Cap Holes</a> </li>
+               <li> <a href="olh_commands.html#spherify">Spherify</a> </li>
+            </ul>
+         </li>
 
-        <li> Normals
-           <li> <a href="#invnorm">Invert Normals</a> </li>
-           <li> <a href="#faceout">Normals Face Out</a> </li>
-        </li>
+         <li> Normals
+            <ul>
+               <li> <a href="olh_commands.html#invnorm">Invert Normals</a> </li>
+               <li> <a href="olh_commands.html#faceout">Normals Face Out</a> </li>
+            </ul>
+         </li>
 
-        <li> <a href="#hide">Hide</a> </li>
-        <li> <a href="#delete">Delete</a> </li>
-        <li> <a href="#flip">Flip</a> </li>
-        <li> <a href="#flatten">Flatten</a> </li>
-        <li> <a href="#duplicate">Duplicate</a> </li>
-        <li> <a href="#extrude">Extrude</a> </li>
-        <li> <a href="#invsel">Invert Selection</a> </li>
+         <li> <a href="olh_commands.html#hide">Hide</a> </li>
+         <li> <a href="olh_commands.html#delete">Delete</a> </li>
+         <li> <a href="olh_commands.html#flip">Flip</a> </li>
+         <li> <a href="olh_commands.html#flatten">Flatten</a> </li>
+         <li> <a href="olh_commands.html#duplicate">Duplicate</a> </li>
+         <li> <a href="olh_commands.html#extrude">Extrude</a> </li>
+         <li> <a href="olh_commands.html#invsel">Invert Selection</a> </li>
       </ul>
 
       <a name="undo">
@@ -67,7 +75,7 @@
 
       <h3>Overview</h3>
       <p>
-      <b>Redo</b> reverses the effects of undo (if the preceeding operations where undo
+      <b>Redo</b> reverses the effects of undo (if the preceding operations were undo
       commands).  Redo can be used multiple times.
       </p>
 
@@ -159,9 +167,9 @@
 
       <h3>Overview</h3>
       <p>
-      <b>Snap Vertices Together</b> will join a set of selected vertices
-      and optionally weld them together.  This command has four different 
-      behavaiors:
+      <b>Snap Vertices Together</b> will move a set of selected vertices
+      to the same coordinates and optionally weld them together.  This command
+      has four different behavaiors:
       </p>
 
       <ul>
@@ -318,7 +326,7 @@
       <h3>Overview</h3>
       <p>
       <b>Simplify Mesh</b> combines faces that do not add detail to a shape.
-      This command does not perform true LOD reduction.
+      This command does not perform LOD reduction.
       </p>
 
       <p>
@@ -351,14 +359,14 @@
       <h3>Overview</h3>
       <p>
       <b>Cap Holes</b> creates faces to fill in gaps in a mesh. This
-      command is can be confused by complex geometry with multiple
+      command can be confused by complex geometry with multiple
       holes. The best way to 
       deal with more complex shapes is to select only the faces around
       a single hole at a time.
       </p>
 
       <p>
-      After use the cap holes command you may need to use the 
+      After using the cap holes command you may need to use the 
       <a href="olh_commands.html#faceout">Normals&nbsp;Face&nbsp;Out</a>
       command to correct the orientation of
       the new faces.
@@ -502,8 +510,8 @@
       <b>Flip</b> will move selected vertices and faces so that they
       face a different direction.  You can flip in the X, Y, or Z directions.
       For example, a <b>Flip X</b> would cause the selected part of the model 
-      to change to its mirror image from the front or back canvas view (the actual
-      model is affected, not just the view).
+      to change to its mirror image from left to rigth (as viewed from the
+      front or back viewports).
       </p>
 
       <h3>Keyboard shortcuts</h3>
@@ -550,6 +558,10 @@
       <b>Extrude</b> takes faces that you have selected
       and extends them in a direction you specify.  When those faces are extended,
       each edge becomes another face which is connected to the faces' original locations.
+      </p>
+
+      <p>
+      There is also an <a href="olh_tools.html#extrude">Extrude Tool</a>.
       </p>
 
       <p>

@@ -57,7 +57,8 @@
       <p>It is important to note that faces often share
       vertices.  Unselected faces may be modified by changes to vertices which
       are also part of a selected face.  To disconnect faces from each other
-      so that they do not share vertices, see the <b>Unweld vertices</b> command.
+      so that they do not share vertices, see the
+      <a href="olh_commands.html#unweld">Unweld vertices</a> command.
       </p>
 
       <p>
@@ -96,8 +97,9 @@
       <img alt="Select point tool icon" src="olh_images/tools/selectpointtool.png"/>
       <img alt="Select projection tool icon" src="olh_images/tools/selectprojtool.png"/>
       <br/>
-      There are five <b>Select</b> tools that allow you to select vertices, faces, groups,
-      bone joints, points, and texture projections.  Each behaves in a similar manner as described below.
+      There are seven <b>Select</b> tools that allow you to select vertices,
+      faces, connected meshes, groups, bone joints, points, and texture
+      projections.  Each behaves in a similar manner as described below.
       </p>
 
       <h3>Mouse operations</h3>
@@ -145,6 +147,7 @@
          <li> <b>G</b> - Select Groups </li>
          <li> <b>C</b> - Select Connected </li>
          <li> <b>B</b> - Select Bone Joints </li>
+         <li> <b>T</b> - Select Points </li>
       </ul>
       </p>
 
@@ -200,8 +203,8 @@
       <p>
       Press and hold the left mouse button in a canvas view to begin a
       rotate operation.  Drag the mouse around the rotation point (default
-      rotation point is the
-      origin, but this can be changed with the right mouse button).  
+      rotation point is the center of the seleced object, but this can be
+      changed with the right mouse button).  
       </p>
 
       <p>
@@ -220,8 +223,8 @@
       In animation mode the rotate tool rotates vertices for frame animations
       and sets rotation keyframes for bone joints in skeletal animations.  The
       rotation of vertices is identical to the operation in model edit mode.
-      The rotation of bone joints is different from model edit mode.  
-      The rotation is always centered on the bone joint.
+      The rotation of bone joints is different from model edit mode in that
+      the rotation is always centered on the bone joint.
       </p>
 
       <p>
@@ -242,28 +245,22 @@
 
       <h3>Mouse operations</h3>
       <p>
-      Press and hold a mouse button to begin a scale operation.  The
-      scale tool will find the bounds of the selected vertices.  The scale
-      factor will be applied towards the nearest bounds (left, right, top, bottom)
-      of the selected region.  The scale is based on the distance from the
-      far corner of the bounding region.  If you move the mouse to the opposite 
-      side of the bounding region the selected vertices will scale back in the
-      original direction.
+      Press and hold a mouse button to begin a scale operation.
       </p>
 
       <p>
-      The amount of scaling is based on the position of the mouse
-      relative to the far bounding corner, and the position of each selected
-      vertex from the far bounding corner (vertices closer to the mouse will
-      scale more than vertices closer to the far bounding corner).
+      You can specify whether to scale from the far corner of the selected mesh
+      or the center of the selected mesh by changing the <b>Point</b> combo box
+      in the toolbar.  By default the center point is used.
       </p>
 
       <p>
-      You can specify whether to scale from the far corner of the selected
-      mesh or the center of the selected mesh by changing the <b>Point</b>
-      combo box in the toolbar.  
-      By default the center point is used.
+      The amount of scaling is based on the position of the mouse relative to
+      the scaling point, and the position of each selected vertex (vertices
+      farther from the scaling point will scale more than vertices closer
+      to the scaling point).
       </p>
+
 
       <p>
       You can force the scale tool to preserve the aspect ratio of the
@@ -627,24 +624,25 @@
       <h3>Overview</h3>
       <p>
       <img alt="Create ellipsoid tool icon" src="olh_images/tools/ellipsetool.png"/><br/>
-      The <b>Create Ellipsoid</b> tool creates a set of faces in the shape of an ellipsoid.
-      The depth dimension of the tool will be identical to the shorter of the two
-      radii (an ellipse is cigar-shaped, not plate-shaped).
+      The <b>Create Ellipsoid</b> tool creates a set of faces in the shape of
+      an ellipsoid.  The depth dimension of the tool will be identical to the
+      shorter of the two radii (an ellipse is cigar-shaped, not plate-shaped).
       </p>
 
       <p>
-      When you select the ellipsoid tool the ellipsoid tool bar will appear.  You
-      can use the ellipsoid tool bar to increase the smoothness of the ellipsoid
-      or make the ellipse a sphere (forcing the the radii to be the same in
-      all three dimensions).
+      When you select the ellipsoid tool the ellipsoid tool bar will appear.
+      You can use the ellipsoid tool bar to increase the smoothness of the
+      ellipsoid or make the ellipse a sphere (forcing the the radii to be the
+      same in all three dimensions).
       </p>
 
       <h3>Mouse operations</h3>
       <p>
-      Press and hold a mouse button to begin creating an ellipsoid.  The radius
-      of the ellipsoid will be half the distance between the start and end points
-      of the mouse drag.  The center will be at the center of the mouse drag.
-      Release the mouse button to finish creating the ellipsoid.
+      Press and hold a mouse button to begin creating an ellipsoid. The
+      ellipsoid will be drawn within the space you drag the mouse over,
+      or with the center at the original click point, depending on the
+      value of the <b>From center</b> check box in the tool bar.  Release the
+      mouse button to finish creating the ellipsoid.
       </p>
 
       <h3>Animation mode</h3>
@@ -897,8 +895,10 @@
       </p>
       
       <p> 
-      A sphere is created by default. You can change the sphere to a cylinder
-      using the
+      You can change the type of projection to create by selecting the type
+      from the <b>Type</b> combo box.
+      You can also change the type of a projection after creating it
+      using either the
       <a href="olh_projectionwin.html">Texture Projections Window</a> or the 
       <a href="olh_properties.html#projection">Projection Properties Panel</a>.
       </p>

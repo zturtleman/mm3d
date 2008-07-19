@@ -1,33 +1,47 @@
       <h1>Main Window</h1>
 
+      <h2> Contents </h2>
+
+      <ul>
+         <li> <a href="#overview">Overview</a> </li>
+         <li> <a href="#toolbar">Tool Bar</a> </li>
+         <li> <a href="#menubar">Menu Bar</a> </li>
+         <li> <a href="#statusbar">Status Bar</a> </li>
+         <li> <a href="#viewports">Viewports</a> </li>
+      </ul>
+
+      <a name="overview"></a>
       <h2> Overview </h2>
 
       <p>
       The <b>Main Window</b> is where you modify a model.  The Main
       Window has a menu bar, a tool bar, a status bar, and a number of 
-      viewports that let
-      you see the model from various directions.
-      There are also several dockable windows that are hidden by default.
-      The <a href="olh_properties.html">Properties Panel</a>
-      in particular can be very useful.
+      viewports that let you see the model from various directions.  There are
+      also several dockable windows.  The
+      <a href="olh_properties.html">Properties Panel</a> in particular can be
+      very useful.
       </p>
 
       <p>
-      The <b>Main Window</b> has a menu bar that allows you to operate on the
-      model in the window's viewports as well as creating new models and opening
-      existing models.
+      There are two modes for the main window.  The default one is the
+      <b>Model Edit Mode</b>.  This is the mode you are in when you start
+      Misfit Model 3D and are viewing a model.  In this mode changes you make
+      affect the position of polygons and bone joints.
+      The other mode is
+      <b>Animation Mode</b>.  This mode is active when you have the 
+      <a href="olh_animwin.html">Animation Panel</a> open.  In this mode
+      changes you make affect the current animation frame.
       </p>
-      
+
       <a name="toolbar"></a>
-      <h2> Toolbar </h2>
+      <h2> Tool Bar </h2>
 
       <p>
-      The <b>Toolbar</b> has a set of tool buttons.  The tool buttons
-      select tools that allow you to manipulate a model interactively.
-      For example, you can select the &quot;Draw Cube&quot; tool
-      and then click and drag the mouse in a viewport to create a cube.
-      Each of the tools in the toolbar is also available in the Main Window's
-      <b>Tools</b> menu.
+      The <b>Tool Bar</b> has a set of tool buttons.  The tools allow you to
+      manipulate a model interactively.  For example, you can select the
+      &quot;Draw Cube&quot; tool and then click and drag the mouse in a
+      viewport to create a cube.  Each of the tools in the toolbar is also
+      available in the Main Window's <b>Tools</b> menu.
       </p>
 
       <a name="menubar"></a>
@@ -67,7 +81,7 @@
          <li> Texture - Shows the model as a set of smoothed, lit polygons with
             textures applied. </li>
          <li> Alpha Blend - Shows the model as a set of smoothed, lit polygons with
-            alpha blended (transparent) textures applied. </li>
+            alpha-blended (transparent) textures applied. </li>
       </ul>
 
       <p>
@@ -105,7 +119,8 @@
       The Draw/Hide back-facing triangles option is used to enable/disable drawing
       of triangles that are facing away from the viewport camera. By default 
       these are rendered as darkened polygons. In some cases you may want to
-      these polygons to be invisible if they are not facing the camera.
+      these polygons to be invisible if they are not facing the camera
+      (such as when using transparent textures).
       </p>
 
       <p>
@@ -139,7 +154,7 @@
 
       <p>
       <b>Boolean Operation</b> allows you to combine two object into one.
-      See the <a href="boolwin.html">Boolean&nbsp;Operation&nbsp;Window</a>
+      See the <a href="olh_boolwin.html">Boolean&nbsp;Operation&nbsp;Window</a>
       for more details.
       </p>
 
@@ -148,7 +163,8 @@
       <a href="olh_backgroundimagedetails.html">background image</a>
       to one or more of the six pre-defined orthographic projections.
       Background images can be useful as a modeling reference when attempting
-      to create complex shapes.  See the modeling tutorial for more
+      to create complex shapes.  See the
+      <a href="olh_tutorial_index.html">modeling tutorial</a> for more
       information.
       </p>
 
@@ -177,18 +193,25 @@
       <p>
       The <b>Influences</b> menu includes functionality for dealing with bone
       joints and how they influence the model geometry.
-      See <a href="olh_jointdetails.html">Bone Joint Details</a> for more information.
+      See the <a href="olh_influences.html">Influences Menu</a>
+      and <a href="olh_jointdetails.html">Bone Joint Details</a> for more
+      information.
       </p>
 
       <p>
       The <b>Animations</b> menu provides functions to manipulate model animations.
       There are interactive and non-interactive functions provided by this menu.
-      See <a href="olh_animationdetails.html">Animation Details</a> for more information.
+      See the <a href="olh_animwin.html">Animation Panel</a> and
+      <a href="olh_animationdetails.html">Animation Details</a> for more
+      information.
       </p>
 
       <p>
       The <b>Help</b> menu brings you to this documentation.
       </p>
+
+      <a name="statusbar"></a>
+      <h2> Status Bar </h2>
 
       <p>
       The status bar contains text (on the left side) that describes the results of 
@@ -199,6 +222,9 @@
       the count will be shown with the selected separated from the
       total with a slash ('/').
       </p>
+
+      <a name="viewports"></a>
+      <h2> Viewports </h2>
 
       <p>
       The <b>Viewports</b> in the center of the Main Window are where you 
@@ -265,7 +291,7 @@
       By left-clicking and dragging your mouse pointer you can rotate the
       perspective view
       along the horizontal axis or vertical axis.  By middle-clicking and
-      dragging you can move the viewport left, right, up, and down.  Using the
+      dragging you can pan the viewport left, right, up, and down.  Using the
       scroll wheel will zoom in or out.  The
       right mouse button has no effect in the Perspective View.
       </p>
@@ -311,18 +337,8 @@
       will have a slightly lighter background color
       than the others.  Some keyboard shortcuts will modify the selected
       viewport.  For example + and - will zoom in and out.  0 (zero) will
-      center the viewport on the origin.  The backtick (left quote) will
+      center the viewport on the origin.  The backslash will
       flip an orthographic view to the opposite side (front view will become
-      a back view).
-      </p>
-
-      <p>
-      There are two modes for the view window.  The default one is the
-      <b>Model Edit Mode</b>.  This is the mode you are in when you start
-      Misfit Model 3D and are viewing a model.  In this mode changes you make
-      affect the position of polygons and bone joints.
-      The other mode is
-      <b>Animation Mode</b>.  This mode is active when you have the 
-      <b>Animation Mode Toolbar</b> open.  In this mode changes you make affect
-      the current animation frame.
+      a back view). The backtick (left quote) will switch an orthographic
+      view to a perspective view.
       </p>

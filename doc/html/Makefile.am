@@ -44,7 +44,6 @@ SPAGES =  \
 	olh_pluginwin.htm \
 	olh_projectionwin.htm \
 	olh_properties.htm \
-	olh_rgbawin.htm \
 	olh_spherifywin.htm \
 	olh_texturecoordwin.htm \
 	olh_texturewin.htm \
@@ -52,8 +51,6 @@ SPAGES =  \
 	olh_tools.htm \
 	olh_transformwin.htm \
 	olh_tutorial_index.htm \
-	olh_use.htm \
-	olh_valuewin.htm \
 	olh_viewportsettings.htm \
 	olh_whatsnew.htm \
 	olh_mainwin.htm
@@ -102,7 +99,6 @@ PAGES =  \
 	olh_pluginwin.html \
 	olh_projectionwin.html \
 	olh_properties.html \
-	olh_rgbawin.html \
 	olh_spherifywin.html \
 	olh_texturecoordwin.html \
 	olh_texturewin.html \
@@ -110,8 +106,6 @@ PAGES =  \
 	olh_tools.html \
 	olh_tutorial_index.html \
 	olh_transformwin.html \
-	olh_use.html \
-	olh_valuewin.html \
 	olh_viewportsettings.html \
 	olh_whatsnew.html \
 	olh_mainwin.html

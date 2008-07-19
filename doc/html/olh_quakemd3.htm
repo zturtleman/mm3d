@@ -42,7 +42,7 @@ as a single MD3 file.
 
 <ul>
 <li>The saving file name is head.md3, upper.md3, or lower.md3</li>
-<li>The model contains at least three points named <b>tag_torso</b>,
+<li>The model contains at least three points; one aech named <b>tag_torso</b>,
    <b>tag_head</b>, and <b>tag_weapon</b>.</li>
 <li>The model contains at least one group beginning with h_ (for head meshes),
 u_ (for upper body meshes), and l_ (for lower body meshes).</li>
@@ -67,8 +67,8 @@ A typical MD3 player model might be 60 GL units
 tall and 15 wide (would be a human size). The base of the feet should be
 at -24.</p>
 <p>Player models consist of three model
-files: head.md3, upper.md3, and lower.md3. Usually it corisponds to
-head, torso, and legs. These three models are connected with <a
+files: head.md3, upper.md3, and lower.md3. Usually these correspond to
+head, torso, and legs respectively. These three models are connected with <a
  href="#tags">tags</a> (Points in MM3D). The weapon the player is
 holding is also connected to the player model with a tag.</p>
 <p>
@@ -113,17 +113,15 @@ All animation sequences should have at least one frame.
 <b>NOTE:</b> It is very important that the animations in your model
 are in the same order as the Quake MD3 animations listed in the
 animation example. Animations that are out of order or missing
-may cause problems with the animation export. This is a bug that
-will hopefully be addressed soon.
+may cause problems with the animation export.
 </p>
 
 <p>
-Head models do not have animations, they are
-joined with the upper and follow the <b>tag_head</b> point.
-If you want to animate the head, you can have
-the tag_head way out of bounds in upper.md3 and do all the head animations
-in the torso (upper) meshes. You should still make a
-head model because it is used in the HUD).</p>
+Head models do not have animations, they are joined with the upper body mesh
+and follow the <b>tag_head</b> point in that mesh.  If you want to animate the
+head, you can have the tag_head way out of bounds in upper.md3 and do all the
+head animations in the torso (upper) meshes. You should still make a head model
+because it is used in the HUD).</p>
 
 <a name="animation_cfg_example"></a>
 <p>Example animation.cfg:
@@ -171,17 +169,18 @@ A typical MD3 weapon might be 5 GL units wide
 and 45 long. They usually would have no animations, although it should
 be possible to add animation by modifying the Quake 3 code. You can
 also add texture animations with shaders. Weapons have a <a
- href="#tags">tag</a> named <b>tag_weapon</b> where attaches to
-the player model's <b>tag_weapon</b> tag.
+ href="#tags">tag</a> named <b>tag_weapon</b> that attaches to
+the player model's <b>tag_weapon</b> tag in the upper body mesh.
 </p>
 
 <h2><a name="tags">Tags</a></h2>
 
 <p>
 Quake 3 uses tags to join models to each other. MM3D
-loads tags as points, so if you want to create a tag make a Point. The
+loads tags as points, so if you want to create a tag make a Point
+(<a href="olh_pointdetails.html">more details about points</a>). The
 point name should be whatever you want the name of the tag to be. The
-red axis of the tag is forward and the blue axis of the tag is up, and the
+red axis of the tag is forward, the blue axis of the tag is up, and the
 green axis of the tag is left. For example you want the red side of
 that tag to face front for tag_weapon.
 </p>
@@ -223,10 +222,10 @@ saving as MD3.
 
 <h2><a name="paths">Paths</a></h2>
 <p>
-When a MD3 model is saved, path information is stored
-in the model. Quake3 uses a virtual file system, and you must tell
-Quake3 where you files are located in this virtual file system. For
-example a player model might be located in the Quake3 vfs at
+When an MD3 model is saved, path information is stored
+in the model. Quake3 uses a VFS (virtual file system), and you must tell
+Quake3 where your files are located in this VFS. For
+example a player model might be located in the Quake3 VFS at
 models/players/man/. So all the models and textures should probably be
 located in there and when you make a pk3 file (zip file really), it
 should contain that directory hierarchy.</p>
@@ -238,18 +237,18 @@ set the MD3_PATH metadata attribute to models/players/man/. MD3 Filter
 will append all filenames that gets stored in the MD3 file to
 MD3_PATH. So your body.tga texture when saved would be written in the
 MD3 file as models/players/man/body.tga. When quake3 opens it that is
-where it will look in the virtual file system.</p>
+where it will look in the VFS.</p>
 <p>
-Notice: The Quake 3 virtual file system does not start with a /.
+Note: The Quake 3 VFS does not start with a /.
 </p>
 
 <h2><a name="textures">Skins and Textures</a></h2>
 <p>
-MD3 filter can load any image type as a texture if
+The MD3 filter can load any image type as a texture if
 MM3D can use it. When looking for a texture file it ignores the
-extension and finds any texture with the the right file name (regardless of
-extension). For example if the model says it should use a file called
-body.tga, MD3 Filter could use body.png if it exists.</p>
+extension and finds any loadable texture with the the right file name
+(regardless of extension). For example if the model says it should use a file
+called body.tga, MD3 Filter could use body.png if it exists.</p>
 <p></p>
 <p>MD3 filter looks for texture images and skin
 files in the same directory as the model regardless of the values for
@@ -270,22 +269,20 @@ filename matches {meshName}.* </li>
 </ul>
 <p></p>
 <p>
-When saving MD3 models it sets the shader name to
-the current texture a group is set to. Also of note is that Quake3 by
-default only loads tgas, and jpgs.</p>
+When saving MD3 models it sets the shader name to the name of the texture that
+is assigned to the group. Also note that Quake3 by default only loads
+TGA and JPG files.</p>
 <p>
-A skin file should be in the formate indicated
-below.
+A skin file should be of the form indicated below.
 </p>
 <p>
-mesh_name,MD3_PATH/textureFilename<br>
-mesh_name,MD3_PATH/textureFilename<br>
+mesh_name,MD3_PATH/textureFilename
 </p>
-<br>
-and example upper_default.skin:<br>
-<br>
-<p>u_body,models/players/man/default_b.tga<br>
-u_cape,models/players/man/default_c.tga<br>
+<p>
+and example upper_default.skin:
+</p>
+<p>u_body,models/players/man/default_b.tga<br/>
+u_cape,models/players/man/default_c.tga
 </p>
 <p>
 Currently MD3 Filter will not load .shader files.
@@ -302,10 +299,12 @@ to look for meshName.* and Quake3 should take the shader file first. </li>
 </ul>
 
 <h2><a name="md3limits"></a>MD3 Limits</h2>
+<p>
 The MD3 file format has several limits that you should consider when
 making a model for this format. These are outlined below. If your model
 has more that the MD3 limit, the file will not be saved correctly and
-you should get a error message dialog.<br>
+you should get a error message.
+</p>
 <ul>
   <li>Only faces and verticies in a group get saved.</li>
   <li>The MD3_PATH+file name cannot be longer than <span

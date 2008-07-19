@@ -40,9 +40,9 @@ where the information is in the file.
 Data sections have their own header before the data.  Each data type 
 is either a fixed size or a variable size.
 If the data size is fixed 
-(constant, <b>Type B</b>) the data size immediatley preceeds the data block of the
+(constant, <b>Type B</b>) the data size immediatley precedes the data block of the
 data section.
-If the data size is variable (<b>Type A)</b> the data size preceeds
+If the data size is variable (<b>Type A)</b> the data size precedes
 each data element.
 </p>
 
@@ -59,18 +59,20 @@ strings are truncated to 1024 bytes (including the terminating null) if necessar
 </p>
 
 <p>
-As of MM3D version 1.4 (and later 1.3 versions) all text strings are encoded as UTF-8.
-Versions 1.2 and earlier (as well as early 1.3 versions) used extended ASCII encoding.
-If you want your MM3D models to be usable in new and older versions of MM3D you should 
-use only standard ASCII characters (0-127) for model object names and texture
-filenames.
+As of MM3D version 1.4 all text strings are encoded as UTF-8.  Versions 1.2 and
+earlier used extended ASCII encoding.  If you want your MM3D models to be
+usable in new and older versions of MM3D you should use only standard ASCII
+characters (0-127) for model object names and texture filenames.
 </p>
 
+<!-- There are no sections in development at this time -->
+<!--
 <p><b>NOTE:</b>  Items marked in <font color="red">red</font> are still under
 development.  They will not be finalized until the next revision of the file
 format is complete.  They are provided for reference in the interim and 
 are subject to change without notice.
 </p>
+-->
 
 <a name="header"></a>
 <h2> File Header </h2>
@@ -147,7 +149,7 @@ the file is complete.  There is no data at the end of file offset.
    <tr><td>0x0191</td> <td>1.4+  </td> <td><a href="#data_type_canvas_background_images">Canvas Background Images</a></td></tr>
    <tr><td>0x0301</td> <td>&nbsp;</td> <td><a href="#data_type_skeletal_animations">Skeletal Animations</a></td></tr>
    <tr><td>0x0321</td> <td>&nbsp;</td> <td><a href="#data_type_frame_animations">Frame Animations</a></td></tr>
-   <tr><td>0x0321</td> <td>1.6+  </td> <td><a href="#data_type_frame_points">Frame Animation Points</a></td></tr>
+   <tr><td>0x0326</td> <td>1.6+  </td> <td><a href="#data_type_frame_points">Frame Animation Points</a></td></tr>
    <tr><td>0x0341</td> <td>&nbsp;</td> <td>Frame Relative Animations (not implemented)</td></tr>
    <tr><td>0x3fff</td> <td>&nbsp;</td> <td>End of file (offset is file size)</td></tr>
 </table>
@@ -163,7 +165,7 @@ the file is complete.  There is no data at the end of file offset.
    <tr><td>0x8046</td> <td>&nbsp;</td> <td><a href="#data_type_joint_vertices">Joint Vertices</a></td></tr>
    <tr><td>0x8061</td> <td>1.6+  </td> <td><a href="#data_type_points">Points</a></td></tr>
    <tr><td>0x8106</td> <td>1.4+  </td> <td><a href="#data_type_smoothness_angles">Smoothness Angles</a></td></tr>
-   <tr><td>0x8168</td> <td>1.6+  </td> <td><a href="#data_type_weighted_influences">Weighted Influences</a></td></tr>
+   <tr><td>0x8146</td> <td>1.6+  </td> <td><a href="#data_type_weighted_influences">Weighted Influences</a></td></tr>
    <tr><td>0x8168</td> <td>1.6+  </td> <td><a href="#data_type_texture_projections">Texture Projections (sphere/cylinder map)</a></td></tr>
    <tr><td>0x8121</td> <td>&nbsp;</td> <td><a href="#data_type_texture_coordinates">Texture Coordinates</a></td></tr>
 </table>
@@ -255,9 +257,9 @@ Data chunk:
 </p>
 
 <p>
-The meta data section contains key/values pairs of ASCIIZ strings.  These key/value
-pairs do not affect model display in any way.  These are purely information strings
-for things like copyright, contact, urls, etc.
+The meta data section contains key/values pairs of ASCIIZ strings.  These
+key/value pairs do not affect model display in any way.  These are purely
+informational strings for things like copyright, contact, URLs, etc.
 </p>
 
 <p>
@@ -459,7 +461,10 @@ Point flags:
 </p>
 
 <p>
-The joint vertices section associates vertices with joints.
+Defines the maximum angle at which triangle edges in a group will be
+averaged for normal calculation. If two triangles share an edge that
+is greater than this angle, the edge will appear sharp rather than
+rounded.
 </p>
 
 <table border="1" cellpadding="4" cellspacing="0">
@@ -645,9 +650,7 @@ the 0.0 to 1.0 range are valid.
 <p>
 The external textures section describes the textures in the model.  The textures
 are assigned to materials which describe the lighting properties.  Groups reference
-materials.  Currently there is a 1-to-1 relationship between materials and
-textures, but this is not required and should not be expected in the future.
-One texture may be referenced by many materials in later file versions.
+materials. One texture may be referenced by many materials.
 </p>
 
 <table border="1" cellpadding="4" cellspacing="0">
@@ -694,7 +697,7 @@ stretched.
 
 <table border="1" cellpadding="4" cellspacing="0">
    <tr><th>Bits</th> <th>Version</th> <th>Data</th>               <th>Description</th></tr>
-   <tr><td>0-3</td>  <td>&nbsp; </td> <td>Material type</td>      <td>0 = external texture, 1-15 = reserved </td></tr>
+   <tr><td>0-3</td>  <td>&nbsp; </td> <td>Material type</td>      <td>0 = external texture, 15 = Blank (no texture, only lighting), 1-14 = reserved </td></tr>
    <tr><td>4</td>    <td>1.4+   </td> <td>Clamp S</td>            <td>Clamp S texture coordinates (do not tile/repeat)</td></tr>
    <tr><td>5</td>    <td>1.4+   </td> <td>Clamp T</td>            <td>Clamp T texture coordinates (do not tile/repeat)</td></tr>
 </table>
@@ -708,13 +711,8 @@ stretched.
 </p>
 
 <p>
-The texture projection section describes objects that map triangle texture
-coordinates onto a texture as a cylinder or sphere. The &quot;up&quot;
-vector defines which direction is the U component of the texture projection.
-In some cases (such as cylinder) the magnitude of this vector determines
-the size of the projection area.
-The &quot;seam&quot; vector indicates where the V texture component
-starts and 0.0 and wraps back to 0.0 after reaching 1.0.
+The texture projection triangles section is a list of which triangles
+are using a specified texture projection to set their texture coordinates.
 </p>
 
 <table border="1" cellpadding="4" cellspacing="0">
