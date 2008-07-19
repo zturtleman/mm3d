@@ -45,6 +45,7 @@ libmm3d_HFILES = \
 	msg.h \
 	objfilter.h \
 	pcxtex.h \
+	raii.h \
 	rawtex.h \
 	release_ptr.h \
 	sorted_list.h \
