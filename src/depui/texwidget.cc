@@ -104,7 +104,9 @@ TextureWidget::TextureWidget( QWidget * parent )
      m_yMin( 0.0 ),
      m_yMax( 1.0 ),
      m_xRotPoint( 0.5 ),
-     m_yRotPoint( 0.5 )
+     m_yRotPoint( 0.5 ),
+     m_linesColor( 0xffffff ),
+     m_selectionColor( 0xff0000 )
 {
    connect( m_animTimer, SIGNAL(timeout()), this, SLOT(animationTimeout()));
    setFocusPolicy( Qt::WheelFocus );
@@ -489,7 +491,7 @@ void TextureWidget::paintInternal()
       glEnd();
    }
 
-   glColor3f( 1.0, 1.0, 1.0 );
+   useLinesColor();
 
    if ( m_operation == MouseRange )
    {
@@ -555,7 +557,7 @@ void TextureWidget::paintInternal()
    // TODO may want to make "draw points" a separate property
    if ( m_operation == MouseRange )
    {
-      glColor3f( 1.0, 1.0, 1.0 );
+      useLinesColor();
    }
 
    // TODO may want to make "draw points" a separate property
@@ -572,11 +574,11 @@ void TextureWidget::paintInternal()
             TextureVertexT * vert = m_vertices[ m_triangles[t]->vertex[v] ];
             if ( m_drawMode == DM_Edit && vert->selected )
             {
-               glColor3f( 1.0, 0.0, 0.0 );
+               useSelectionColor();
             }
             else
             {
-               glColor3f( 1.0, 1.0, 1.0 );
+               useLinesColor();
             }
 
             //glVertex3f( (vert->s - m_xMin) / m_zoom, (vert->t - m_yMin) / m_zoom, -0.5 );
@@ -2289,5 +2291,21 @@ double TextureWidget::distance( const double & x1, const double & y1, const doub
 double TextureWidget::max( const double & a, const double & b )
 {
    return ( a > b ) ? a : b;
+}
+
+void TextureWidget::useLinesColor()
+{
+   float b = ((m_linesColor >> 0) & 255) / 255.0;
+   float g = ((m_linesColor >> 8) & 255) / 255.0;
+   float r = ((m_linesColor >> 16) & 255) / 255.0;
+   glColor3f( r, g, b );
+}
+
+void TextureWidget::useSelectionColor()
+{
+   float b = ((m_selectionColor >> 0) & 255) / 255.0;
+   float g = ((m_selectionColor >> 8) & 255) / 255.0;
+   float r = ((m_selectionColor >> 16) & 255) / 255.0;
+   glColor3f( r, g, b );
 }
 

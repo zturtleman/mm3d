@@ -83,6 +83,9 @@ class TextureCoord : public QDialog, public Ui::TextureCoordBase, public Model::
       void vFlipEvent();
       void hFlipEvent();
 
+      void selectionColorChangedEvent(int);
+      void linesColorChangedEvent(int);
+
       void zoomIn();
       void zoomOut();
       void undoEvent();

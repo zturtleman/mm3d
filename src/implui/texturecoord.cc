@@ -103,6 +103,27 @@ TextureCoord::TextureCoord( Model * model, QWidget * parent )
    m_textureWidget->setMouseOperation( TextureWidget::MouseSelect );
 
    m_groupButton->setChecked( true );  // if you change this, change m_currentMapScheme also
+
+   g_prefs.setDefault( "ui_texcoord_lines_color", 0xffffff );
+   g_prefs.setDefault( "ui_texcoord_selection_color", 0xff0000 );
+
+   uint32_t linesColor = g_prefs( "ui_texcoord_lines_color" ).intValue();
+   uint32_t selectionColor = g_prefs( "ui_texcoord_selection_color" ).intValue();
+
+   m_textureWidget->setLinesColor( linesColor );
+   m_textureWidget->setSelectionColor( selectionColor );
+
+   int linesIndex = 0;
+   linesIndex |= (linesColor & 0x800000) ? 4 : 0 ;
+   linesIndex |= (linesColor & 0x008000) ? 2 : 0 ;
+   linesIndex |= (linesColor & 0x000080) ? 1 : 0 ;
+   m_linesColor->setCurrentIndex( linesIndex );
+
+   int selectionIndex = 0;
+   selectionIndex |= (selectionColor & 0x800000) ? 4 : 0 ;
+   selectionIndex |= (selectionColor & 0x008000) ? 2 : 0 ;
+   selectionIndex |= (selectionColor & 0x000080) ? 1 : 0 ;
+   m_selectionColor->setCurrentIndex( selectionIndex );
 }
 
 TextureCoord::~TextureCoord()
@@ -395,6 +416,28 @@ void TextureCoord::hFlipEvent()
    m_textureWidget->hFlipCoordinates();
    updateTextureCoordsEvent();
    updateDoneEvent();
+}
+
+void TextureCoord::selectionColorChangedEvent( int newColor )
+{
+   uint32_t rgb = 0;
+   rgb |= (newColor & 1) ? 0x0000ff : 0;
+   rgb |= (newColor & 2) ? 0x00ff00 : 0;
+   rgb |= (newColor & 4) ? 0xff0000 : 0;
+   m_textureWidget->setSelectionColor( rgb );
+   m_textureWidget->updateGL();
+   g_prefs( "ui_texcoord_selection_color" ) = (int) rgb;
+}
+
+void TextureCoord::linesColorChangedEvent( int newColor )
+{
+   uint32_t rgb = 0;
+   rgb |= (newColor & 1) ? 0x0000ff : 0;
+   rgb |= (newColor & 2) ? 0x00ff00 : 0;
+   rgb |= (newColor & 4) ? 0xff0000 : 0;
+   m_textureWidget->setLinesColor( rgb );
+   m_textureWidget->updateGL();
+   g_prefs( "ui_texcoord_lines_color" ) = (int) rgb;
 }
 
 void TextureCoord::zoomIn()

@@ -14,7 +14,7 @@
   </property>
   <layout class="QVBoxLayout" >
    <property name="margin" >
-    <number>11</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
@@ -38,7 +38,9 @@
        <item>
         <widget class="TextureFrame" native="1" name="m_textureFrame" >
          <property name="sizePolicy" >
-          <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
+          <sizepolicy>
+           <hsizetype>0</hsizetype>
+           <vsizetype>0</vsizetype>
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -47,6 +49,124 @@
        </item>
        <item>
         <layout class="QHBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label" >
+           <property name="text" >
+            <string>Lines</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="m_linesColor" >
+           <item>
+            <property name="text" >
+             <string>Black</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Blue</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Green</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Cyan</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Red</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Magenta</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Yellow</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>White</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2" >
+           <property name="text" >
+            <string>Selection</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="m_selectionColor" >
+           <item>
+            <property name="text" >
+             <string>Black</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Blue</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Green</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Cyan</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Red</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Magenta</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Yellow</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>White</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
          <item>
           <widget class="QPushButton" name="m_rotateCcwButton" >
            <property name="text" >
@@ -638,6 +758,18 @@
      <y>20</y>
     </hint>
    </hints>
+  </connection>
+  <connection>
+    <sender>m_selectionColor</sender>
+    <signal>activated(int)</signal>
+    <receiver>TextureCoordBase</receiver>
+    <slot>selectionColorChangedEvent(int)</slot>
+  </connection>
+  <connection>
+    <sender>m_linesColor</sender>
+    <signal>activated(int)</signal>
+    <receiver>TextureCoordBase</receiver>
+    <slot>linesColorChangedEvent(int)</slot>
   </connection>
  </connections>
 </ui>

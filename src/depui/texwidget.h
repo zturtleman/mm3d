@@ -24,6 +24,8 @@
 #ifndef __TEXWIDGET_H
 #define __TEXWIDGET_H
 
+#include <stdint.h>
+
 #include <QtOpenGL/QGLWidget>
 #include <QtGui/QWheelEvent>
 #include <QtGui/QMouseEvent>
@@ -129,6 +131,9 @@ class TextureWidget : public QGLWidget
       void rotateCoordinatesCcw();
       void rotateCoordinatesCw();
 
+      void setLinesColor( uint32_t newColor ) { m_linesColor = newColor; }
+      void setSelectionColor( uint32_t newColor ) { m_selectionColor = newColor; }
+
       int  addVertex( double t, double s );
       int  addTriangle( int v1, int v2, int v3 );
 
@@ -216,6 +221,9 @@ class TextureWidget : public QGLWidget
 
       double distance( const double &, const double &, const double &, const double & );
       double max( const double &, const double & );
+
+      void useLinesColor();
+      void useSelectionColor();
 
       int m_viewportWidth;
       int m_viewportHeight;
@@ -312,6 +320,9 @@ class TextureWidget : public QGLWidget
       double m_centerY;
       double m_startLengthX;
       double m_startLengthY;
+
+      uint32_t m_linesColor;
+      uint32_t m_selectionColor;
 
       ScaleVerticesList m_scaleList;
 };
