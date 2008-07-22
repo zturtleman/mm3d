@@ -379,7 +379,7 @@ void keycfg_set_defaults()
    g_keyConfig.setDefaultKey( "cmd_select_free_vertices", 0 );
    g_keyConfig.setDefaultKey( "cmd_hide_hide_unselected", QKeySequence( a->translate( "KeyConfig", "H", "Hide Unselected Command Shortcut")) );
    g_keyConfig.setDefaultKey( "cmd_hide_hide_selected", QKeySequence( a->translate( "KeyConfig", "Shift+H", "Hide Selected Command Shortcut")) );
-   g_keyConfig.setDefaultKey( "cmd_hide_unhide_all", QKeySequence( a->translate( "KeyConfig", "?", "Unhide All Command Shortcut")) );
+   g_keyConfig.setDefaultKey( "cmd_hide_unhide_all", QKeySequence( a->translate( "KeyConfig", "Shift+U", "Unhide All Command Shortcut")) );
    g_keyConfig.setDefaultKey( "cmd_hide", 0 );
    g_keyConfig.setDefaultKey( "cmd_delete", QKeySequence( a->translate( "KeyConfig", "Delete", "Delete Command Shortcut")) );
    g_keyConfig.setDefaultKey( "cmd_duplicate", QKeySequence( a->translate( "KeyConfig", "Ctrl+D", "Duplicate Command Shortcut")) );
