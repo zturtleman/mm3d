@@ -200,11 +200,15 @@ void BspTree::Poly::render( DrawingContext * context )
       glBegin( GL_TRIANGLES );
    }
 
-   for ( int i = 0; i < 3; i++ )
+   Model::Triangle * tri = static_cast< Model::Triangle *>( triangle );
+   if ( tri->m_visible )
    {
-      glTexCoord2f( s[ i ], t[ i ] );
-      glNormal3fv( drawNormals[i] );
-      glVertex3fv( coord[i] );
+      for ( int i = 0; i < 3; i++ )
+      {
+         glTexCoord2f( s[ i ], t[ i ] );
+         glNormal3fv( drawNormals[i] );
+         glVertex3fv( coord[i] );
+      }
    }
 }
 

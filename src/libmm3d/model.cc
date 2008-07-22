@@ -2692,10 +2692,7 @@ bool Model::hideUnselected()
    // Hide triangles with any unselected vertices
    for ( t = 0; t < m_triangles.size(); t++ )
    {
-      if ( !m_triangles[t]->m_selected 
-          && (    !m_vertices[ m_triangles[t]->m_vertexIndices[0] ]->m_selected 
-               || !m_vertices[ m_triangles[t]->m_vertexIndices[1] ]->m_selected 
-               || !m_vertices[ m_triangles[t]->m_vertexIndices[2] ]->m_selected ) )
+      if ( !m_triangles[t]->m_selected )
       {
          log_debug( "triangle %d is unselected, hiding\n", t );
          m_triangles[t]->m_visible = false;
@@ -4417,29 +4414,27 @@ void Model::calculateBspTree()
                Triangle * triangle = m_triangles[ *it ];
                triangle->m_marked = true;
 
-               if ( triangle->m_visible )
+               BspTree::Poly * poly = BspTree::Poly::get();
+               for (int i = 0; i < 3; i++ )
                {
-                  BspTree::Poly * poly = BspTree::Poly::get();
-                  for (int i = 0; i < 3; i++ )
-                  {
-                     poly->coord[0][i] = m_vertices[ triangle->m_vertexIndices[0] ]->m_coord[i];
-                     poly->coord[1][i] = m_vertices[ triangle->m_vertexIndices[1] ]->m_coord[i];
-                     poly->coord[2][i] = m_vertices[ triangle->m_vertexIndices[2] ]->m_coord[i];
+                  poly->coord[0][i] = m_vertices[ triangle->m_vertexIndices[0] ]->m_coord[i];
+                  poly->coord[1][i] = m_vertices[ triangle->m_vertexIndices[1] ]->m_coord[i];
+                  poly->coord[2][i] = m_vertices[ triangle->m_vertexIndices[2] ]->m_coord[i];
 
-                     poly->s[i] = triangle->m_s[i];
-                     poly->t[i] = triangle->m_t[i];
+                  poly->s[i] = triangle->m_s[i];
+                  poly->t[i] = triangle->m_t[i];
 
-                     poly->drawNormals[0][i] = triangle->m_finalNormals[0][i];
-                     poly->drawNormals[1][i] = triangle->m_finalNormals[1][i];
-                     poly->drawNormals[2][i] = triangle->m_finalNormals[2][i];
+                  poly->drawNormals[0][i] = triangle->m_finalNormals[0][i];
+                  poly->drawNormals[1][i] = triangle->m_finalNormals[1][i];
+                  poly->drawNormals[2][i] = triangle->m_finalNormals[2][i];
 
-                     poly->norm[i] = triangle->m_flatNormals[i];
-                  }
-                  poly->texture = index;
-                  poly->material = static_cast< void *>( m_materials[ index ] );
-                  poly->calculateD();
-                  m_bspTree.addPoly( poly );
+                  poly->norm[i] = triangle->m_flatNormals[i];
                }
+               poly->texture = index;
+               poly->material = static_cast< void *>( m_materials[ index ] );
+               poly->triangle = static_cast< void *>( triangle );
+               poly->calculateD();
+               m_bspTree.addPoly( poly );
             }
          }
       }

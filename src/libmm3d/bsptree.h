@@ -46,6 +46,7 @@ class BspTree
 
             int   texture;
             void * material; // Yeah, yeah, I know... it's hackish
+            void * triangle; // Yeah, yeah, I know... it's hackish
 
             float s[3];    // texture coordinates
             float t[3];
