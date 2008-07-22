@@ -29,7 +29,6 @@
 #include <limits.h>
 
 #include "config.h"
-#include "log.h" // FIXME debugging
 
 #ifdef HAVE_GETTIMEOFDAY
 #include <sys/time.h>
@@ -128,8 +127,6 @@ char * PORT_realpath( const char * path, char * resolved_path, size_t len )
                return rval;
             }
          }
-
-         //log_warning( "normalized path = '%s'\n", rval );
       }
    }
    return rval;

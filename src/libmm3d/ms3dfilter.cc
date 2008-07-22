@@ -1148,14 +1148,9 @@ void Ms3dFilter::writeVertexWeightSection( const MeshList & ml )
    MeshList::const_iterator it;
    for ( it = ml.begin(); it != ml.end(); it++ )
    {
-      // FIXME remove debug
-      //fprintf( stderr, "writing influences for mesh\n" );
       int vcount = it->vertices.size();
       for ( int v = 0; v < vcount; v++ )
       {
-         // FIXME remove debug
-         //fprintf( stderr, " mesh vertex %d (%d) is model vertex %d\n", v, vwritten, it->vertices[v].v );
-
          ilist.clear();
          if (!m_model->getVertexInfluences( it->vertices[v].v, ilist ))
             log_error( "get influences failed for vertex %d\n",

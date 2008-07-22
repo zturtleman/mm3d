@@ -21,8 +21,6 @@
  */
 
 
-// FIXME: Prevent model edit for invalid animation (modifying model)
-
 #include "animwidget.h"
 
 #include "decalmgr.h"

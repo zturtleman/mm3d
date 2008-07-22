@@ -1518,33 +1518,6 @@ void ViewWindow::toolActivated( QAction * id )
    }
 }
 
-// FIXME this can probably be deleted now.
-void ViewWindow::primitiveCommandActivated( QAction * id )
-{
-   if ( !m_canEdit )
-   {
-      model_status( m_model, StatusError, STATUSTIME_LONG,
-            tr("You are in animation mode, but there are no animations").toUtf8() );
-      return;
-   }
-
-   CommandMenuItemList::iterator it;
-   it = m_primitiveCommands.begin();
-   while ( it != m_primitiveCommands.end() )
-   {
-      if ( (*it)->id == id )
-      {
-         if ( ((*it)->command)->activated( (*it)->arg, m_model ) )
-         {
-            m_model->operationComplete( qApp->translate( "Command", ((*it)->command)->getName( (*it)->arg ) ).toUtf8() );
-            m_viewPanel->modelUpdatedEvent();
-         }
-         break;
-      }
-      it++;
-   }
-}
-
 void ViewWindow::scriptActivated( QAction * id )
 {
 }

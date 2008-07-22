@@ -162,7 +162,6 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       void buttonToggled( bool on );
 
       void toolActivated( QAction * id );
-      void primitiveCommandActivated( QAction * id );
       void scriptActivated( QAction * id );
 
       void animSetWindowEvent();
