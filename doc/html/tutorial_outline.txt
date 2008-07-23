@@ -1,14 +1,14 @@
-Meta Data  ###gettingstarted
+Meta Data
    Copyright
 Add background image
    Front - proportions
-Start modeling  ###creatingbasicshapes
+Start modeling
    Cylinder, 4 segments, six sides
    Have to rotate (hold shift) to get it vertical
    select vertices and scale to chest size
    move vertices to match drawing
    Adjust dimensions in other viewports (but only adjust on the depth axis)
-   edge turn at waist  ###detailadjustments
+   edge turn at waist
       see problem edge, highlight
       select edge turn
       see corrected faces
@@ -33,4 +33,67 @@ Start modeling  ###creatingbasicshapes
       Select center vertices
       weld
          (note vertex count)
-   Pick up at image 44
+   Use proportions image in Right viewport
+      Just for depth reference on next to leg
+   Cylinder for leg
+      6 segments, 8 sides
+      horizontal, rotate to vertical
+      scale to match leg width
+   Connect
+      Remove faces under torso where leg will connect
+      Remove top faces above leg where it will connect with torso
+      snap to vertex to join vertices
+      weld to connect
+   Need to edge turn
+      Finding exact faces in side view can be tricky
+      Switch perspective to ortho and select faces that way
+      Flip back to perspective
+      Do ede turn and see result
+   Move vertices to match up with leg (in side view)
+   Make foot
+      Select bottom faces to make ankle and heel
+      Extrude tool
+      Move toe-side leg vertices up to ankle top, snap nearest and and weld
+      Extrude again to make foot
+   Move vertices to match up with leg (in front view)
+      Leg is kind of curvey, doesn't look natural
+      Go back up leg and adjust vertex postions
+   Duplicate leg, flip, select seam vertices, and weld
+   Make less pigeon toed (100 to 101)
+   Make arm
+      8 segments, 8 sides, horizontal, don't need to rotate this time
+      Match vertices to reference in front view
+      Extrude where arm will meet shoulder
+   Connect
+      Rotate arm on X axis so that front view is now facing down (palm down)
+      Remove shoulder and arm internal faces in preparation for weld
+      Hide legs, arm, and far side of torso to get a better view
+      Move vertices (snap to vertex for move tool) and weld
+   Adjust vertices from front view again to make the cylinder more arm-shaped
+      Looks kind of octogony, weld some vertices to make the shape look less blocky
+   Make hand
+      Extrude end of arm for hand
+      Extrude side faces to make thumb
+      Move vertices and weld to make thumb look less blocky
+      Add smoothness by splitting faces
+      Weld split faces to reconnect
+      Do some edge turns on the thumb
+   Arm looks good enough for now
+      Don't want to duplicate and connect on to the shoulder on the other side
+      Just delete half of torso, dup and flip along with arm
+      Select all and weld (only near vertices are welded)
+   Head
+      Extrude torso top to make neck
+      Remove neck top faces to make room to attach head
+      Cylinder, 6 segments, 8 sides
+      Horizontal, rotate it
+      Use reference image to scale to basic head size
+      Create visor by moving vertices, edge turning as necessary
+      Shape back of helmet
+      Adjust vertices to match head shape (in Front view)
+      Edge divide and move vertices to create breathing mask area
+      Face shield, duplicate and extrude to create inset
+      Hide helmet to show what it looks like
+      Face shield will be transparent, insde will be visible
+      Connect neck to torso at shoulders
+   Completed geometry (1x1 view)
