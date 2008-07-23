@@ -76,6 +76,7 @@ class TextureCoord : public QDialog, public Ui::TextureCoordBase, public Model::
       virtual void scaleSettingsChangedEvent();
 
       virtual void updateTextureCoordsEvent();
+      virtual void updateSelectionDoneEvent();
       virtual void updateDoneEvent();
 
       void rotateCcwEvent();

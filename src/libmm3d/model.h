@@ -1686,6 +1686,10 @@ class Model
       // like a manual analog to the deleteOrphanedVertices() function).
       void selectFreeVertices();
 
+      void setSelectedUv( const vector<int> & uvList );
+      void getSelectedUv( vector<int> & uvList ) const;
+      void clearSelectedUv();
+
       // ------------------------------------------------------------------
       // Hide functions
       // ------------------------------------------------------------------
@@ -1861,6 +1865,7 @@ class Model
       double   m_currentTime;
 
 #ifdef MM3D_EDIT
+      vector<int> m_selectedUv;
 
       ObserverList m_observers;
 

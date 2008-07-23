@@ -96,6 +96,7 @@ TextureCoord::TextureCoord( Model * model, QWidget * parent )
    m_textureWidget->setScaleFromCenter( m_scaleCenter->isChecked() );
 
    connect( m_textureWidget, SIGNAL(updateCoordinatesSignal()), this, SLOT(updateTextureCoordsEvent()));
+   connect( m_textureWidget, SIGNAL(updateSelectionDoneSignal()), this, SLOT(updateSelectionDoneEvent()));
    connect( m_textureWidget, SIGNAL(updateCoordinatesDoneSignal()), this, SLOT(updateDoneEvent()));
    connect( m_textureWidget, SIGNAL(zoomLevelChanged(QString)), this, SLOT(zoomLevelChangedEvent(QString)) );
 
@@ -138,6 +139,7 @@ void TextureCoord::undoEvent()
       m_model->undo();
       m_undoCount--;
       m_inUndo = false;
+      m_textureWidget->restoreSelectedUv();
       m_textureWidget->updateGL();
    }
 }
@@ -193,7 +195,7 @@ void TextureCoord::initWindow()
       if ( m >= 0 )
       {
          // FIXME cache current texture value and don't change it if we 
-         // don't have to (to prevent resetting zoom and  center)
+         // don't have to (to prevent resetting zoom and center)
          m_textureFrame->textureChangedEvent( m + 1 );
          foundTexture = true;
       }
@@ -206,6 +208,11 @@ void TextureCoord::initWindow()
 
    useGroupCoordinates();
    DecalManager::getInstance()->modelUpdated( m_model );
+
+   if ( m_inUndo )
+      m_textureWidget->restoreSelectedUv();
+   else
+      m_textureWidget->saveSelectedUv();
    m_textureWidget->updateGL();
 }
 
@@ -321,6 +328,12 @@ void TextureCoord::resetClickedEvent()
 void TextureCoord::updateDoneEvent()
 {
    operationComplete( tr("Move texture coordinates").toUtf8() );
+}
+
+void TextureCoord::updateSelectionDoneEvent()
+{
+   m_textureWidget->saveSelectedUv();
+   operationComplete( tr("Select texture coordinates").toUtf8() );
 }
 
 void TextureCoord::updateTextureCoordsEvent()

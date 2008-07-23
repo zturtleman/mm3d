@@ -140,6 +140,9 @@ class TextureWidget : public QGLWidget
       void clearCoordinates();
       void getCoordinates( int tri, float * s, float * t );
 
+      void saveSelectedUv();
+      void restoreSelectedUv();
+
       // This is min/max of the current viewport, not of the
       // vertices in the viewport
       double getMinViewCoord() { return m_xMin; };
@@ -168,6 +171,7 @@ class TextureWidget : public QGLWidget
 
    signals:
       void updateCoordinatesSignal();
+      void updateSelectionDoneSignal();
       void updateCoordinatesDoneSignal();
       void updateRangeSignal();
       void updateRangeDoneSignal();

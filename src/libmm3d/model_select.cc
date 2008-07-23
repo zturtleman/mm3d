@@ -2244,4 +2244,26 @@ void Model::selectFreeVertices()
    endSelectionDifference();
 }
 
+void Model::setSelectedUv( const vector<int> & uvList )
+{
+   m_changeBits |= SelectionChange;
+
+   MU_SetSelectedUv * undo = new MU_SetSelectedUv();
+   undo->setSelectedUv( uvList, m_selectedUv );
+   sendUndo( undo );
+
+   m_selectedUv = uvList;
+}
+
+void Model::getSelectedUv( vector<int> & uvList ) const
+{
+   uvList = m_selectedUv;
+}
+
+void Model::clearSelectedUv()
+{
+   vector<int> empty;
+   setSelectedUv( empty );
+}
+
 #endif // MM3D_EDIT

@@ -401,6 +401,40 @@ void MU_Select::setSelectionDifference( int number, bool selected, bool oldSelec
    m_diff.insert_sorted( diff );
 }
 
+MU_SetSelectedUv::MU_SetSelectedUv()
+{
+}
+
+MU_SetSelectedUv::~MU_SetSelectedUv()
+{
+}
+
+void MU_SetSelectedUv::undo( Model * model )
+{
+   model->setSelectedUv( m_oldUv );
+}
+
+void MU_SetSelectedUv::redo( Model * model )
+{
+   model->setSelectedUv( m_newUv );
+}
+
+bool MU_SetSelectedUv::combine( Undo * u )
+{
+   return false;
+}
+
+unsigned MU_SetSelectedUv::size()
+{
+   return sizeof(MU_SetSelectedUv) + m_oldUv.size() * sizeof(int) + m_newUv.size() * sizeof(int) + sizeof(m_oldUv) + sizeof(m_newUv);
+}
+
+void MU_SetSelectedUv::setSelectedUv( const vector<int> & newUv, const vector<int> & oldUv )
+{
+   m_newUv = newUv;
+   m_oldUv = oldUv;
+}
+
 MU_Hide::MU_Hide( Model::SelectionModeE mode )
    : m_mode( mode )
 {

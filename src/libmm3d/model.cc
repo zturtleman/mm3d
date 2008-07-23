@@ -295,6 +295,7 @@ Model::Model()
 Model::~Model()
 {
    m_bspTree.clear();
+   m_selectedUv.clear();
 
    log_debug( "deleting model\n" );
    DrawingContextList::iterator it;

@@ -1077,6 +1077,7 @@ void TextureWidget::mouseReleaseEvent( QMouseEvent * e )
                         (x / (double) this->width()) * (m_xMax - m_xMin) + m_xMin, 
                         (1.0 - (y / (double) this->height())) * (m_yMax - m_yMin) + m_yMin );
                   selectDone();
+                  emit updateSelectionDoneSignal();
                   break;
                case MouseMove:
                   moveSelectedVertices( 
@@ -2053,6 +2054,37 @@ void TextureWidget::getCoordinates( int tri, float * s, float * t )
    {
       s[v] = m_vertices[ m_triangles[ tri ]->vertex[v] ]->s;
       t[v] = m_vertices[ m_triangles[ tri ]->vertex[v] ]->t;
+   }
+}
+
+void TextureWidget::saveSelectedUv()
+{
+   std::vector<int> selectedUv;
+
+   for ( size_t vert = 0; vert < m_vertices.size(); ++vert )
+   {
+      if ( m_vertices[ vert ]->selected )
+         selectedUv.push_back( vert );
+   }
+
+   m_model->setSelectedUv( selectedUv );
+}
+
+void TextureWidget::restoreSelectedUv()
+{
+   std::vector<int> selectedUv;
+   m_model->getSelectedUv( selectedUv );
+
+   for ( size_t vert = 0; vert < m_vertices.size(); ++vert )
+   {
+      m_vertices[ vert ]->selected = false;
+   }
+
+   for ( size_t vert = 0; vert < selectedUv.size(); ++vert )
+   {
+      size_t v = selectedUv[vert];
+      if ( v < m_vertices.size() )
+         m_vertices[ v ]->selected = true;
    }
 }
 

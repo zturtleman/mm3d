@@ -31,9 +31,11 @@
 
 #include <list>
 #include <string>
+#include <vector>
 
 using std::list;
 using std::string;
+using std::vector;
 
 class Model;
 
@@ -183,6 +185,25 @@ class MU_Select : public ModelUndo
       Model::SelectionModeE m_mode;
       SelectionDifferenceList m_diff;
       
+};
+
+class MU_SetSelectedUv : public ModelUndo
+{
+   public:
+      MU_SetSelectedUv();
+      virtual ~MU_SetSelectedUv();
+
+      void undo( Model * );
+      void redo( Model * );
+      bool combine( Undo * );
+
+      unsigned size();
+
+      void setSelectedUv( const vector<int> & newUv, const vector<int> & oldUv );
+
+   private:
+      vector<int> m_oldUv;
+      vector<int> m_newUv;
 };
 
 class MU_Hide : public ModelUndo
