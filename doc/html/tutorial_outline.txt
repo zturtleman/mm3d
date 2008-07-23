@@ -1,0 +1,36 @@
+Meta Data  ###gettingstarted
+   Copyright
+Add background image
+   Front - proportions
+Start modeling  ###creatingbasicshapes
+   Cylinder, 4 segments, six sides
+   Have to rotate (hold shift) to get it vertical
+   select vertices and scale to chest size
+   move vertices to match drawing
+   Adjust dimensions in other viewports (but only adjust on the depth axis)
+   edge turn at waist  ###detailadjustments
+      see problem edge, highlight
+      select edge turn
+      see corrected faces
+   edge divide to add detail
+   snap to vertex
+      see also drag vertex
+   hide
+      back faces are getting in the 
+      select, hide selected
+   edge turn
+      All down the side (single before and after picture)
+   unhide
+   Mirror
+      Use boolean operation to cut it half
+      Torso is object A
+      Cube is object B
+      Subtract B from A
+      Simplify mesh
+      Duplicate
+         (note vertex count)
+      Flip
+      Select center vertices
+      weld
+         (note vertex count)
+   Pick up at image 44
