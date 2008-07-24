@@ -1253,6 +1253,13 @@ Chcete pokračovať?</translation>
     </message>
 </context>
 <context>
+    <name>CommandWidget</name>
+    <message>
+        <source>You are in animation mode, but there are no animations</source>
+        <translation type="unfinished">Ste v režime animácie, ale nie sú tu žiadne animácie</translation>
+    </message>
+</context>
+<context>
     <name>ContextGroup</name>
     <message>
         <source>&lt;None&gt;</source>
@@ -1995,7 +2002,7 @@ Chcete pokračovať?</translation>
     <message>
         <source>?</source>
         <comment>Unhide All Command Shortcut</comment>
-        <translation>?</translation>
+        <translation type="obsolete">?</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -2076,6 +2083,11 @@ Chcete pokračovať?</translation>
         <source>Ctrl+B</source>
         <comment>Joints | Assign Selected Shortcut</comment>
         <translation></translation>
+    </message>
+    <message>
+        <source>Shift+U</source>
+        <comment>Unhide All Command Shortcut</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3258,6 +3270,10 @@ Chcete načítať všetky sekcie?</translation>
         <comment>Redo shortcut</comment>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Select texture coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TextureCoordBase</name>
@@ -3332,6 +3348,62 @@ Chcete načítať všetky sekcie?</translation>
     <message>
         <source>Rotate</source>
         <translation>Otočiť</translation>
+    </message>
+    <message>
+        <source>Lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Black</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blue</source>
+        <translation type="unfinished">Modrá</translation>
+    </message>
+    <message>
+        <source>Green</source>
+        <translation type="unfinished">Zelená</translation>
+    </message>
+    <message>
+        <source>Cyan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Red</source>
+        <translation type="unfinished">Červená</translation>
+    </message>
+    <message>
+        <source>Magenta</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yellow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>White</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selection</source>
+        <translation type="unfinished">Výber</translation>
+    </message>
+    <message>
+        <source>Rotate CCW</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate CW</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>V Flip</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>H Flip</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4782,7 +4854,7 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
     </message>
     <message>
         <source>You are in animation mode, but there are no animations</source>
-        <translation>Ste v režime animácie, ale nie sú tu žiadne animácie</translation>
+        <translation type="obsolete">Ste v režime animácie, ale nie sú tu žiadne animácie</translation>
     </message>
 </context>
 <context>
