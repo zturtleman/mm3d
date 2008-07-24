@@ -1267,6 +1267,13 @@ Do you wish to continue?</source>
     </message>
 </context>
 <context>
+    <name>CommandWidget</name>
+    <message>
+        <source>You are in animation mode, but there are no animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ContextGroup</name>
     <message>
         <source>&lt;None&gt;</source>
@@ -2008,7 +2015,7 @@ Do you wish to continue?</source>
     <message>
         <source>?</source>
         <comment>Unhide All Command Shortcut</comment>
-        <translation>?</translation>
+        <translation type="obsolete">?</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -2089,6 +2096,11 @@ Do you wish to continue?</source>
         <source>Ctrl+B</source>
         <comment>Joints | Assign Selected Shortcut</comment>
         <translation>Ctrl+B</translation>
+    </message>
+    <message>
+        <source>Shift+U</source>
+        <comment>Unhide All Command Shortcut</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3287,6 +3299,10 @@ Do you want to load all sections?</source>
         <comment>Redo shortcut</comment>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Select texture coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TextureCoordBase</name>
@@ -3361,6 +3377,62 @@ Do you want to load all sections?</source>
     <message>
         <source>Rotate</source>
         <translation>Bork!</translation>
+    </message>
+    <message>
+        <source>Lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Black</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blue</source>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+    <message>
+        <source>Green</source>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+    <message>
+        <source>Cyan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Red</source>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+    <message>
+        <source>Magenta</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yellow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>White</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selection</source>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+    <message>
+        <source>Rotate CCW</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate CW</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>V Flip</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>H Flip</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4808,10 +4880,6 @@ Use the &apos;Select Faces&apos; tool.</source>
     </message>
     <message>
         <source>You must have at least 1 face, joint, or point selected to Export Selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You are in animation mode, but there are no animations</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
