@@ -703,7 +703,7 @@ počet rámcov sa líši.</translation>
     <name>BackgroundSelectBase</name>
     <message>
         <source>BackgroundSelect</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>None</source>
@@ -1256,7 +1256,7 @@ Chcete pokračovať?</translation>
     <name>CommandWidget</name>
     <message>
         <source>You are in animation mode, but there are no animations</source>
-        <translation type="unfinished">Ste v režime animácie, ale nie sú tu žiadne animácie</translation>
+        <translation>Ste v režime animácie, ale nie sú tu žiadne animácie</translation>
     </message>
 </context>
 <context>
@@ -2087,7 +2087,7 @@ Chcete pokračovať?</translation>
     <message>
         <source>Shift+U</source>
         <comment>Unhide All Command Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2472,7 +2472,7 @@ Chcete načítať všetky sekcie?</translation>
     <name>ModelViewBase</name>
     <message>
         <source>ModelView</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Perspective</source>
@@ -2973,12 +2973,12 @@ Chcete načítať všetky sekcie?</translation>
     <message>
         <source>CTRL+Z</source>
         <comment>Undo shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>CTRL+Y</source>
         <comment>Redo shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -3099,15 +3099,15 @@ Chcete načítať všetky sekcie?</translation>
     <name>RotateToolWidget</name>
     <message>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Z</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -3258,21 +3258,21 @@ Chcete načítať všetky sekcie?</translation>
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>CTRL+Z</source>
         <comment>Undo shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>CTRL+Y</source>
         <comment>Redo shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Select texture coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvoľte súradnice textúry</translation>
     </message>
 </context>
 <context>
@@ -3351,59 +3351,59 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <source>Lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Čiary</translation>
     </message>
     <message>
         <source>Black</source>
-        <translation type="unfinished"></translation>
+        <translation>Čierna</translation>
     </message>
     <message>
         <source>Blue</source>
-        <translation type="unfinished">Modrá</translation>
+        <translation>Modrá</translation>
     </message>
     <message>
         <source>Green</source>
-        <translation type="unfinished">Zelená</translation>
+        <translation>Zelená</translation>
     </message>
     <message>
         <source>Cyan</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyrkisová</translation>
     </message>
     <message>
         <source>Red</source>
-        <translation type="unfinished">Červená</translation>
+        <translation>Červená</translation>
     </message>
     <message>
         <source>Magenta</source>
-        <translation type="unfinished"></translation>
+        <translation>Fialová</translation>
     </message>
     <message>
         <source>Yellow</source>
-        <translation type="unfinished"></translation>
+        <translation>Žltá</translation>
     </message>
     <message>
         <source>White</source>
-        <translation type="unfinished"></translation>
+        <translation>Biela</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation type="unfinished">Výber</translation>
+        <translation>Výber</translation>
     </message>
     <message>
         <source>Rotate CCW</source>
-        <translation type="unfinished"></translation>
+        <translation>Otočiť proti</translation>
     </message>
     <message>
         <source>Rotate CW</source>
-        <translation type="unfinished"></translation>
+        <translation>Otočiť</translation>
     </message>
     <message>
         <source>V Flip</source>
-        <translation type="unfinished"></translation>
+        <translation>V preklopiť</translation>
     </message>
     <message>
         <source>H Flip</source>
-        <translation type="unfinished"></translation>
+        <translation>H preklopiť</translation>
     </message>
 </context>
 <context>
@@ -3468,7 +3468,7 @@ Chcete načítať všetky sekcie?</translation>
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -3949,7 +3949,7 @@ Chcete načítať všetky sekcie?</translation>
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -4052,7 +4052,7 @@ Chcete načítať všetky sekcie?</translation>
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -4841,7 +4841,7 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Export Selected...</source>
@@ -4862,7 +4862,7 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
     <message>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
