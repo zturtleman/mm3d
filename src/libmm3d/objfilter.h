@@ -108,18 +108,18 @@ class ObjFilter : public ModelFilter
       typedef std::vector< MaterialGroupT > MaterialGroupList;
 
    protected:
-      bool readLine( const char * line );
-      bool readVertex( const char * line );
-      bool readTextureCoord( const char * line );
-      bool readFace( const char * line );
-      bool readGroup( const char * line );
-      bool readLibrary( const char * line );
-      bool readMaterial( const char * line );
+      bool readLine( char * line );
+      bool readVertex( char * line );
+      bool readTextureCoord( char * line );
+      bool readFace( char * line );
+      bool readGroup( char * line );
+      bool readLibrary( char * line );
+      bool readMaterial( char * line );
 
       bool readMaterialLibrary( const char * filename );
 
       void addObjMaterial( ObjMaterial * mat );
-      const char * skipSpace( const char * str );
+      char * skipSpace( char * str );
 
       bool writeLine( const char * line, ... );
       bool writeStripped( const char * line, ... );

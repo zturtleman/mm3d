@@ -48,6 +48,18 @@ using std::string;
 static ObjFilter * s_filter = NULL;
 #endif // PLUGIN
 
+namespace {
+
+void replace( char * str, char this_char, char that_char )
+{
+   size_t len = strlen(str);
+   for ( size_t t = 0; t < len; ++t )
+      if ( str[t] == this_char )
+         str[t] = that_char;
+}
+
+}
+
 ObjFilter::ObjOptions::ObjOptions()
    : m_saveNormals( true ),
      m_places( 6 ),
@@ -679,7 +691,7 @@ void ObjFilter::addObjMaterial( ObjMaterial * objmat )
    }
 }
 
-const char * ObjFilter::skipSpace( const char * str )
+char * ObjFilter::skipSpace( char * str )
 {
    if ( str )
    {
@@ -691,17 +703,19 @@ const char * ObjFilter::skipSpace( const char * str )
    return str;
 }
 
-bool ObjFilter::readLine( const char * line )
+bool ObjFilter::readLine( char * line )
 {
-   const char * str = skipSpace( line );
+   char * str = skipSpace( line );
 
    if ( strncmp( str, "v ", 2 ) == 0 )
    {
       m_vertices++;
+      replace( str, ',', '.' );
       readVertex( str );
    }
    if ( strncmp( str, "vt ", 3 ) == 0 )
    {
+      replace( str, ',', '.' );
       readTextureCoord( str );
    }
    else if ( strncmp( str, "f ", 2 ) == 0 )
@@ -725,7 +739,7 @@ bool ObjFilter::readLine( const char * line )
    return true;
 }
 
-bool ObjFilter::readVertex( const char * line )
+bool ObjFilter::readVertex( char * line )
 {
    line += 2;
    float x, y, z;
@@ -737,7 +751,7 @@ bool ObjFilter::readVertex( const char * line )
    return false;
 }
 
-bool ObjFilter::readTextureCoord( const char * line )
+bool ObjFilter::readTextureCoord( char * line )
 {
    line += 3;
    UvDataT uvd;
@@ -754,7 +768,7 @@ bool ObjFilter::readTextureCoord( const char * line )
    return true;
 }
 
-bool ObjFilter::readFace( const char * line )
+bool ObjFilter::readFace( char * line )
 {
    line += 2;
    std::vector<int> vlist;
@@ -874,7 +888,7 @@ bool ObjFilter::readFace( const char * line )
    return true;
 }
 
-bool ObjFilter::readGroup( const char * line )
+bool ObjFilter::readGroup( char * line )
 {
    int lastGroup = m_curGroup;
    m_needGroup = false;
@@ -936,7 +950,7 @@ bool ObjFilter::readGroup( const char * line )
    return true;
 }
 
-bool ObjFilter::readLibrary( const char * line )
+bool ObjFilter::readLibrary( char * line )
 {
    char filename[256];
 
@@ -972,7 +986,7 @@ bool ObjFilter::readLibrary( const char * line )
    return true;
 }
 
-bool ObjFilter::readMaterial( const char * line )
+bool ObjFilter::readMaterial( char * line )
 {
    char * temp = strdup( line );
    char * ptr = temp;
