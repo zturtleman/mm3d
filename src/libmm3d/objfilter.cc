@@ -210,6 +210,7 @@ bool ObjFilter::writeStripped( const char * fmt, ... )
    va_list ap;
    va_start( ap, fmt );
    PORT_vsnprintf( line, sizeof(line), fmt, ap );
+   replace( line, ',', '.' );
    va_end( ap );
 
    OFWS_StateE state = OFWS_Whitespace;
