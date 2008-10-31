@@ -1069,6 +1069,9 @@ class Model
       void setCanvasDrawMode( int m ) { m_canvasDrawMode = m; };
       int  getCanvasDrawMode() const { return m_canvasDrawMode; };
 
+      void setPerspectiveDrawMode( int m ) { m_perspectiveDrawMode = m; };
+      int  getPerspectiveDrawMode() const { return m_perspectiveDrawMode; };
+
       void setDrawJoints( DrawJointModeE m ) { m_drawJoints = m; };
       DrawJointModeE getDrawJoints() const { return m_drawJoints; };
 
@@ -1848,6 +1851,7 @@ class Model
       vector<FormatData *>  m_formatData;
 
       int  m_canvasDrawMode;
+      int  m_perspectiveDrawMode;
       DrawJointModeE m_drawJoints;
       bool m_drawProjections;
 

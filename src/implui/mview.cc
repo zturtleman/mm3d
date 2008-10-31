@@ -117,31 +117,6 @@ QString ModelView::getViewDirectionLabel()
    return m_viewInput->currentText();
 }
 
-void ModelView::wireframeEvent()
-{
-   m_modelView->wireframeEvent();
-}
-
-void ModelView::flatEvent()
-{
-   m_modelView->flatEvent();
-}
-
-void ModelView::smoothEvent()
-{
-   m_modelView->smoothEvent();
-}
-
-void ModelView::textureEvent()
-{
-   m_modelView->textureEvent();
-}
-
-void ModelView::alphaEvent()
-{
-   m_modelView->alphaEvent();
-}
-
 void ModelView::copyContentsToTexture( Texture * tex )
 {
    m_modelView->copyContentsToTexture( tex );

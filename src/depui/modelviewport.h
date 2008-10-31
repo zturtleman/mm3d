@@ -165,12 +165,6 @@ class ModelViewport : public QGLWidget, public Tool::Parent
       void setZoomLevel( double zoomLevel );
       void setViewState( const ModelViewport::ViewStateT & viewState );
 
-      void wireframeEvent();
-      void flatEvent();
-      void smoothEvent();
-      void textureEvent();
-      void alphaEvent();
-
       void scrollTimeout();
 
    protected slots:

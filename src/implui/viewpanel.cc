@@ -105,42 +105,32 @@ void ViewPanel::frameArea( double x1, double y1, double z1, double x2, double y2
 
 void ViewPanel::wireframeEvent()
 {
-   for ( unsigned i = 0; i < m_viewCount; i++ )
-   {
-      m_modelView[i]->wireframeEvent();
-   }
+   m_model->setPerspectiveDrawMode( ModelViewport::ViewWireframe );
+   modelUpdatedEvent();
 }
 
 void ViewPanel::flatEvent()
 {
-   for ( unsigned i = 0; i < m_viewCount; i++ )
-   {
-      m_modelView[i]->flatEvent();
-   }
+   m_model->setPerspectiveDrawMode( ModelViewport::ViewFlat );
+   modelUpdatedEvent();
 }
 
 void ViewPanel::smoothEvent()
 {
-   for ( unsigned i = 0; i < m_viewCount; i++ )
-   {
-      m_modelView[i]->smoothEvent();
-   }
+   m_model->setPerspectiveDrawMode( ModelViewport::ViewSmooth );
+   modelUpdatedEvent();
 }
 
 void ViewPanel::textureEvent()
 {
-   for ( unsigned i = 0; i < m_viewCount; i++ )
-   {
-      m_modelView[i]->textureEvent();
-   }
+   m_model->setPerspectiveDrawMode( ModelViewport::ViewTexture );
+   modelUpdatedEvent();
 }
 
 void ViewPanel::alphaEvent()
 {
-   for ( unsigned i = 0; i < m_viewCount; i++ )
-   {
-      m_modelView[i]->alphaEvent();
-   }
+   m_model->setPerspectiveDrawMode( ModelViewport::ViewAlpha );
+   modelUpdatedEvent();
 }
 
 void ViewPanel::canvasWireframeEvent()

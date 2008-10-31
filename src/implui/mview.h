@@ -63,12 +63,6 @@ class ModelView : public QWidget, public Ui::ModelViewBase
       void zoomInEvent();
       void zoomOutEvent();
 
-      void wireframeEvent();
-      void flatEvent();
-      void smoothEvent();
-      void textureEvent();
-      void alphaEvent();
-
    protected:
 
       Toolbox * m_toolbox;
