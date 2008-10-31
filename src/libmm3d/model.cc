@@ -257,6 +257,7 @@ Model::Model()
      m_filename( "" ),
      m_validBspTree( false ),
      m_canvasDrawMode( 0 ),
+     m_perspectiveDrawMode( 3 ),
      m_drawJoints( JOINTMODE_BONES ),
      m_drawProjections( true ),
      m_validNormals( false ),

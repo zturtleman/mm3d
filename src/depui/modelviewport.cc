@@ -107,7 +107,6 @@ ModelViewport::ModelViewport( QWidget * parent )
      m_overlayButton( ScrollButtonMAX ),
      m_capture( false ),
      m_texturesLoaded( false ),
-     m_viewOptions( ViewTexture ),
      m_toolbox( NULL )
 {
    // Default preferences
@@ -381,7 +380,7 @@ void ModelViewport::paintGL()
             = (g_prefs( "ui_render_3d_selections" ).intValue() == 0) 
             ? false : true;
 
-         switch ( m_viewOptions )
+         switch ( m_model->getPerspectiveDrawMode() )
          {
             case ViewWireframe:
                opt = Model::DO_WIREFRAME;
@@ -2203,36 +2202,6 @@ void ModelViewport::setZoomLevel( double zoom )
       zoomStr.sprintf( "%f", m_zoomLevel );
       emit zoomLevelChanged( zoomStr );
    }
-}
-
-void ModelViewport::wireframeEvent()
-{
-   m_viewOptions = ViewWireframe;
-   updateGL();
-}
-
-void ModelViewport::flatEvent()
-{
-   m_viewOptions = ViewFlat;
-   updateGL();
-}
-
-void ModelViewport::smoothEvent()
-{
-   m_viewOptions = ViewSmooth;
-   updateGL();
-}
-
-void ModelViewport::textureEvent()
-{
-   m_viewOptions = ViewTexture;
-   updateGL();
-}
-
-void ModelViewport::alphaEvent()
-{
-   m_viewOptions = ViewAlpha;
-   updateGL();
 }
 
 void ModelViewport::scrollTimeout()
