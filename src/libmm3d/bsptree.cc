@@ -339,6 +339,7 @@ void BspTree::Node::splitNodes( int idx1, int idx2, int idx3,
 
    n1->self->calculateNormal();
    n1->self->texture = self->texture;
+   n1->self->triangle = self->triangle;
    n1->self->material = self->material;
 
    n2->self = Poly::get();
@@ -363,6 +364,7 @@ void BspTree::Node::splitNodes( int idx1, int idx2, int idx3,
 
    n2->self->calculateNormal();
    n2->self->texture = self->texture;
+   n2->self->triangle = self->triangle;
    n2->self->material = self->material;
 
    for ( int i = 0; i < 3; i++ )
@@ -409,6 +411,7 @@ void BspTree::Node::splitNode( int idx1, int idx2, int idx3,
 
    n1->self->calculateNormal();
    n1->self->texture = self->texture;
+   n1->self->triangle = self->triangle;
    n1->self->material = self->material;
 
    for ( int i = 0; i < 3; i++ )
