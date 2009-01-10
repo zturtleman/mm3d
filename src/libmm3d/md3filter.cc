@@ -52,6 +52,7 @@
 #include <string.h>
 #include <limits.h>
 #include <vector>
+#include <limits>
 
 #ifdef PLUGIN
 #include "pluginapi.h"
@@ -530,15 +531,17 @@ bool Md3Filter::readAnimations( bool create )
    string animFile = m_modelPath + "animation.cfg";
    FILE * fp = fopen( animFile.c_str(), "r" );
    int animCount = 0;
-   int animFrames = 0;
-   int animOffset = 0;
 
-   //m_animMap.clear();
    m_animStartFrame.clear();
-   m_torsoStart = 0;
-   m_legsStart = 0;
    m_standFrame = 0;
    m_idleFrame = 0;
+
+   int bothStart = -1;
+   int bothEnd = -1;
+   int torsoStart = -1;
+   int torsoEnd = -1;
+   int legsStart = -1;
+   int legsEnd = -1;
 
    if ( fp != NULL )
    {
@@ -564,87 +567,106 @@ bool Md3Filter::readAnimations( bool create )
                      &first, &fcount, &loop, &fps ) == 4 )
             {
                log_debug( "got anim frame details\n" );
-               if ( animCount == 6 )
-               {
-                  m_torsoStart = first;
-               }
-               else if ( animCount == 11 )
+               if ( animCount == 11 )
                {
                   m_standFrame = first;
                }
-               else if ( animCount == 13 )
-               {
-                  // Some animation files have the leg frames continuously numbered 
-                  // after the torso frames, others number the legs following the
-                  // "both" frames. Here we are adjusting the second case to make
-                  // it match the first case by using "animOffset"
-                  if ( first == m_torsoStart )
-                  {
-                     animOffset = animFrames - m_torsoStart;
-                  }
-                  m_legsStart = first + animOffset;
-               }
                else if ( animCount == 22 )
                {
-                  m_idleFrame = first - (m_legsStart - m_torsoStart) + animOffset;
+                  m_idleFrame = first;
                }
 
-               first += animOffset;
-
-               if ( first + fcount > animFrames )
+               if ( animCount < 6 )
                {
-                  if ( create )
+                  if ( first + fcount > legsEnd )
                   {
-                     //m_animMap.push_back( m_model->getAnimCount( Model::ANIMMODE_FRAME ) );
-                     m_animStartFrame.push_back( first );
-
-                     const char * name = NULL;
-                     if ( animCount < MD3_ANIMATIONS )
+                     if ( bothStart == -1 )
                      {
-                        // I won't change it, I promise
-                        name = (char *) s_animNames[ animCount ];
+                        bothStart = first;
+                        bothEnd = first + fcount;
                      }
                      else
                      {
-                        char * tempname = strrchr( line, '/' );
-                        if ( tempname )
-                        {
-                           tempname++;
-                           while ( isspace(tempname[0]) )
-                           {
-                              tempname++;
-                           }
-                           int end = 0;
-                           while ( tempname[end] && !isspace(tempname[end]) )
-                           {
-                              end++;
-                           }
-                           tempname[end] = '\0';
-
-                           for ( end = 0; line[end]; end++ )
-                           {
-                              tempname[end] = tolower( line[end] );
-                           }
-                           name = tempname;
-                        }
-                        else
-                        {
-                           name = "Unknown";
-                        }
+                        bothStart = std::min(bothStart, first);
+                        bothEnd = std::max(bothEnd, first + fcount);
                      }
-
-                     log_debug( "adding animation '%s'\n", name );
-                     int animIndex = m_model->addAnimation( Model::ANIMMODE_FRAME, s_animNames[ animCount ] );
-                     m_model->setAnimFPS( Model::ANIMMODE_FRAME, animIndex, (double) fps );
-                     m_model->setAnimFrameCount( Model::ANIMMODE_FRAME, animIndex, fcount );
                   }
-
-                  animFrames += fcount;
+               }
+               else if ( animCount < 13 )
+               {
+                  if ( first + fcount > legsEnd )
+                  {
+                     if ( torsoStart == -1 )
+                     {
+                        torsoStart = first;
+                        torsoEnd = first + fcount;
+                     }
+                     else
+                     {
+                        torsoStart = std::min(torsoStart, first);
+                        torsoEnd = std::max(torsoEnd, first + fcount);
+                     }
+                  }
                }
                else
                {
-                  log_debug( "did not add animation for '%s'\n", s_animNames[ animCount ] );
+                  if ( legsStart == -1 )
+                  {
+                     legsStart = first;
+                     legsEnd = first + fcount;
+                  }
+                  else
+                  {
+                     legsStart = std::min(legsStart, first);
+                     legsEnd = std::max(legsEnd, first + fcount);
+                  }
                }
+
+               m_animStartFrame.push_back( first );
+
+               if ( create )
+               {
+                  const char * name = NULL;
+                  if ( animCount < MD3_ANIMATIONS )
+                  {
+                     // I won't change it, I promise
+                     name = (char *) s_animNames[ animCount ];
+                  }
+                  else
+                  {
+                     char * tempname = strrchr( line, '/' );
+                     if ( tempname )
+                     {
+                        tempname++;
+                        while ( isspace(tempname[0]) )
+                        {
+                           tempname++;
+                        }
+                        int end = 0;
+                        while ( tempname[end] && !isspace(tempname[end]) )
+                        {
+                           end++;
+                        }
+                        tempname[end] = '\0';
+
+                        for ( end = 0; line[end]; end++ )
+                        {
+                           tempname[end] = tolower( line[end] );
+                        }
+                        name = tempname;
+                     }
+                     else
+                     {
+                        name = "Unknown";
+                     }
+                  }
+
+                  log_debug( "adding animation '%s'\n", name );
+                  int animIndex = m_model->addAnimation( Model::ANIMMODE_FRAME, s_animNames[ animCount ] );
+                  m_model->setAnimFPS( Model::ANIMMODE_FRAME, animIndex, (double) fps );
+                  m_model->setAnimFrameCount( Model::ANIMMODE_FRAME, animIndex, fcount );
+               }
+
                animCount++;
             }
             else
@@ -719,7 +741,26 @@ bool Md3Filter::readAnimations( bool create )
             }
          }
       }
+
       fclose( fp );
+
+      // Some animation files have the leg frames continuously numbered 
+      // after the torso frames, others number the legs following the
+      // "both" frames. Here we are adjusting the first case to make
+      // it match the second case.
+
+      if ( legsStart >= torsoEnd )
+      {
+         int animOffset = legsStart - torsoStart;
+         for ( size_t a = 13; a < m_animStartFrame.size(); ++a )
+         {
+            if ( m_animStartFrame[a] >= animOffset )
+               m_animStartFrame[a] -= animOffset;
+         }
+         
+         if ( m_idleFrame >= animOffset )
+            m_idleFrame -= animOffset;
+      }
       return true;
    }
    return false;
@@ -1376,7 +1417,7 @@ int Md3Filter::animToFrame( MeshSectionE section, int anim, int frame )
 {
    if ( anim < 0 )
    {
-      // Not an animation, use first frame
+      // Not an animation, use 'default' frame
       switch ( section )
       {
          case MS_Lower:
@@ -1393,7 +1434,7 @@ int Md3Filter::animToFrame( MeshSectionE section, int anim, int frame )
 
    if ( !animInSection( getSafeName( anim ), section ) )
    {
-      // Not valid for this section, use first frame
+      // Not valid for this section, use 'default' frame
       switch ( section )
       {
          case MS_Lower:
@@ -1422,12 +1463,6 @@ int Md3Filter::animToFrame( MeshSectionE section, int anim, int frame )
          return frame;
 
       case MS_Lower:
-         if ( fileFrame > m_torsoStart )
-         {
-            fileFrame -= (m_legsStart - m_torsoStart);
-         }
-         return fileFrame;
-
       case MS_Upper:
          return fileFrame;
 
@@ -1936,8 +1971,8 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
          {
             Matrix saveMatrix = getMatrixFromPoint( a, t, rootTag ).getInverse();
             list<int>::iterator vit;
-            double max[4] = { DBL_MIN, DBL_MIN, DBL_MIN, 1 };
-            double min[4] = { DBL_MAX, DBL_MAX, DBL_MAX, 1 };
+            double dmax[4] = { DBL_MIN, DBL_MIN, DBL_MIN, 1 };
+            double dmin[4] = { DBL_MAX, DBL_MAX, DBL_MAX, 1 };
             for ( mlit = meshes.begin(); mlit != meshes.end(); mlit++ )
             {
                int i = (*mlit).group;
@@ -1952,28 +1987,28 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                         int vertex = m_model->getTriangleVertex( *it, n );
                         double cords[3];
                         m_model->getFrameAnimVertexCoords( a, t, vertex, cords[0], cords[1], cords[2] );
-                        max[0] = greater( max[0], cords[0] );
-                        max[1] = greater( max[1], cords[1] );
-                        max[2] = greater( max[2], cords[2] );
-                        min[0] = smaller( min[0], cords[0] );
-                        min[1] = smaller( min[1], cords[1] );
-                        min[2] = smaller( min[2], cords[2] );
+                        dmax[0] = greater( dmax[0], cords[0] );
+                        dmax[1] = greater( dmax[1], cords[1] );
+                        dmax[2] = greater( dmax[2], cords[2] );
+                        dmin[0] = smaller( dmin[0], cords[0] );
+                        dmin[1] = smaller( dmin[1], cords[1] );
+                        dmin[2] = smaller( dmin[2], cords[2] );
                      }
                   }
                }
             }
-            saveMatrix.apply( min );
-            saveMatrix.apply( max );
+            saveMatrix.apply( dmin );
+            saveMatrix.apply( dmax );
 
             //min_bounds
             for ( int v = 0; v < 3; v++ )
             {
-               m_dst->write( (float) min[v] );
+               m_dst->write( (float) dmin[v] );
             }
             //max_bounds
             for ( int v = 0; v < 3; v++ )
             {
-               m_dst->write( (float) max[v] );
+               m_dst->write( (float) dmax[v] );
             }
             //local_origin
             float temp = 0;
@@ -1982,8 +2017,8 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                m_dst->write( temp );
             }
             //radius
-            double radiusm = sqrt( min[0] * min[0] + min[1] * min[1] + min[2] * min[2] );
-            double radius = sqrt( max[0] * max[0] + max[1] * max[1] + max[2] * max[2] );
+            double radiusm = sqrt( dmin[0] * dmin[0] + dmin[1] * dmin[1] + dmin[2] * dmin[2] );
+            double radius = sqrt( dmax[0] * dmax[0] + dmax[1] * dmax[1] + dmax[2] * dmax[2] );
             if ( radiusm > radius )
             {
                radius = radiusm;

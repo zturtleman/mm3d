@@ -157,10 +157,7 @@ class Md3Filter : public ModelFilter
       MeshVectorInfoT   ** m_meshVecInfos;
       string    m_modelPath;
       string    m_modelBaseName;
-      //std::vector<int> m_animMap;
       std::vector<int> m_animStartFrame;
-      int              m_torsoStart;
-      int              m_legsStart;
       int              m_standFrame;
       int              m_idleFrame;
       std::string      m_lastMd3Path;
