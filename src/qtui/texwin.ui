@@ -577,25 +577,25 @@
     </connection>
     <connection>
       <sender>m_redEdit</sender>
-      <signal>textChanged(QString)</signal>
+      <signal>textEdited(QString)</signal>
       <receiver>TextureWindowBase</receiver>
       <slot>redEditChanged(QString)</slot>
     </connection>
     <connection>
       <sender>m_greenEdit</sender>
-      <signal>textChanged(QString)</signal>
+      <signal>textEdited(QString)</signal>
       <receiver>TextureWindowBase</receiver>
       <slot>greenEditChanged(QString)</slot>
     </connection>
     <connection>
       <sender>m_blueEdit</sender>
-      <signal>textChanged(QString)</signal>
+      <signal>textEdited(QString)</signal>
       <receiver>TextureWindowBase</receiver>
       <slot>blueEditChanged(QString)</slot>
     </connection>
     <connection>
       <sender>m_alphaEdit</sender>
-      <signal>textChanged(QString)</signal>
+      <signal>textEdited(QString)</signal>
       <receiver>TextureWindowBase</receiver>
       <slot>alphaEditChanged(QString)</slot>
     </connection>
