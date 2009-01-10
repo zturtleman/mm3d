@@ -948,7 +948,7 @@ bool Model::propEqual( const Model * model, int partBits, int propBits,
       if ( numFrameAnims != model->m_frameAnims.size() )
       {
          log_warning( "match failed at frameAnim count %d != %d\n",
-               numVertices, model->m_vertices.size() );
+               numFrameAnims, model->m_frameAnims.size() );
          return false;
       }
 
