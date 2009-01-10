@@ -566,13 +566,29 @@ void ModelViewport::drawGridLines()
 
       double unitWidth = g_prefs( "ui_grid_inc" ).doubleValue();
 
-      while ( (maxDimension / unitWidth) > 16 )
+      double ratio;
+      int scale_min, scale_max;
+
+      if ( g_prefs( "ui_grid_decimal" ).intValue() != 0 )
       {
-         unitWidth *= 2.0;
+         ratio = 10.0;
+         scale_min = 2;
+         scale_max = 60;
       }
-      while ( (maxDimension / unitWidth) < 4 )
+      else
       {
-         unitWidth /= 2.0;
+         ratio = 2.0;
+         scale_min = 4;
+         scale_max = 16;
+      }
+
+      while ( (maxDimension / unitWidth) > scale_max )
+      {
+         unitWidth *= ratio;
+      }
+      while ( (maxDimension / unitWidth) < scale_min )
+      {
+         unitWidth /= ratio;
       }
 
       double xRangeMin = 0;
