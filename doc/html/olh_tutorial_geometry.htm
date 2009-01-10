@@ -33,7 +33,7 @@
       some short-cuts in the interest of producing this tutorial more
       quickly. There are several places where spending more time on
       detail would provide better results; but my goal was to finish
-      this document rather than perform my best at 3D art.
+      this document rather than create a refined example of 3D art.
       </p>
 
       <h3>Meta Data</h3>
@@ -45,6 +45,7 @@
       going to note my own name in a copyright string by clicking "New",
       then double-clicking on the row to edit the key and value.
       </p>
+      <!-- FIXME need year in copyright string? -->
 
       <p>
       In this instance the meta data is entirely optional. You can enter
@@ -61,14 +62,12 @@
       forward-facing viewport to aid in constructing the humanoid model. In
       this case I'll be using DaVinci's &quot;Proportions&quot;. Often you'll
       want to use a reference object with images from multiple angles so you
-      can get a better sense of width and depth. In this case I'm using this as
-      a reference to avoid copyright issues.
+      can get a better sense of width and depth.
       </p>
 
       <p>
       The model is not intended to look exactly like DaVinci's work, it's
-      just a rough guide. Also, the model will not be anotomically correct.
-      :-)  <!-- FIXME does that smiley look dumb in a browser? Probably -->
+      just a rough guide.
       </p>
       
       <p>
@@ -82,18 +81,263 @@
       <a name="#creatingbasicshapes"></a>
       <h2>Torso -- Creating Basic Shapes</h2>
 
-      <!-- FIXME text here -->
+      <h3>Pick a Starting Shape</h3>
+      <p>
+      When creating a 3D object, you will usually start with one of the basic
+      creation tools (cube, ellipse, cylinder, or torus). From there you can
+      move vertices around to get the basic shape right and split edges or
+      extrude to add detail.
+      </p>
+
+      <p>
+      For our humanoid model, a cylinder is roughly the right shape for all the
+      large geometry components. Expect to see many of those.
+      </p>
+
+      <h3>Reshaping Geometry</h3>
+      <p>
+      I am starting with the torso, so I will create a cylinder for that.
+      Cylinders are always created horizontally with respect to the viewport
+      in which they are created. So after creating this cylinder I need to
+      rotate it vertically. If you hold the shift key down while rotating,
+      the rotate tool will rotate in 15 degree increments. This makes it
+      very easy to get the cylinder perfectly vertical.
+      </p>
+
+      <!-- FIXME talk about selection operations here? -->
+      <p>
+      Now I want to use the Front viewport background image as a reference
+      to relocate vertices.
+      The selection tools allow you to select portions of the model.
+      There are selection tools for vertices, faces, material groups,
+      connected meshes, etc. You start a selection operation with the
+      mouse button, and use the bounding box to select the region 
+      that contains the geometry you want to select.
+      </p>
+
+      <p>
+      The left mouse button selects geometry, the right mouse button
+      unselects. If you press the left mouse button alone, all selected
+      portions of the model will automatically be unselected. If you
+      hold the shift button the current selection will remain selected.
+      The right mouse button never clears the current selection.
+      </p>
+
+      <p>
+      I use the <a href="olh_tools.html#select">Select Vertices</a> tool to
+      select the vertices for the upper body and use the
+      <a href="olh_tools.html#scale">Scale Tool</a> to resize that section all
+      at once. Then I select vertices down the sides and move them to match the
+      outline of the image.
+      </p>
+
+      <p>
+      Next I use the side viewport to adjust the vertices in the Z (depth)
+      axis, which isn't possible from the Front view. In this case the X
+      (width) axis and Y (height) axis are correct. So I want to be careful
+      to only move the vertices left or right in the Side viewport.
+      If I hold down the shift key while using the
+      <a href="olh_tools.html#move">Move Tool</a>, the move
+      tool will only move on one axis--the first axis it detects motion on.
+      </p>
 
       <hr/>
 
       <a name="#detailadjustments"></a>
       <h2>Torso -- Detail Adjustments</h2>
 
-      <!-- FIXME text here -->
+      <h3>Edge Turn</h3>
+
+      <p>
+      Of course vertices are not the only things to be concerned with when
+      shaping the geometry. The faces themselves need attention too. Note
+      the highlighted faces near the base of the torso in the image. The edge
+      where the faces meet forms a concave angle on the outside of the
+      geometry. A convex angle would look more correct. We can fix this with an
+      <a href="olh_commands.html#edgeturn">Edge Turn</a>. This rotates the
+      edge from the two shared vertices of a face to the two opposite vertices.
+      </p>
+
+      <p>
+      If you do any significant work in a 3D model editor, you will make
+      regular use of the Edge Turn feature. If you are just starting out
+      with 3D modelling and the faces look wrong even though all the vertices
+      seem to be in the right place, it is probably because you need some edge
+      turns. Occasionally you'll need a sequence of edge turns. Note that
+      edge turns do not preserve texture coordinates, so you'll want to make
+      sure your geometry is mostly where you want it to be before you
+      starting applying a texture map to it.
+      </p>
+
+      <h3>Edge Divide</h3>
+
+      <p>
+      The basic torso shape is in place, but it looks a bit angular on
+      the sides. To fix this I'm going to split faces by doing a series of
+      <a href="olh_commands.html#edgedivide">Edge Divide</a> operations.
+      If you have two vertices selected, and do an Edge Divide, it will
+      add a vertex between the two vertices and split any triangles that
+      use that edge into two triangles.
+      </p>
+
+      <p>
+      I mentioned above that you select the vertices of the edge to split.
+      Selecting the edge would be more intuitive, but edges are not first-class
+      objects in Misfit Model 3D, so there isn't a way to select the edge.
+      However, you can select a face that uses the edge and then unselect
+      the odd vertex that isn't on the edge you want to split (use the shift
+      key with the select tool to unselect selected geometry).
+      </p>
+
+      <h3>Snap, Weld, and Hide</h3>
+
+      <p>
+      I'm splitting some edges, but I'm also
+      <a href="olh_commands.html#weld">welding</a> some vertices back together.
+      Welding vertices causes two or more vertices selected vertices that
+      are near each other to become one vertex. This may cause some triangles
+      to be removed implicitly (if a triangle has an edge with two vertices
+      that are welded, the triangle becomes invisible and is unecessary).
+      To get the vertices lined up I'm using the
+      <a href="olh_tools.html#snapto">Snap to Vertex</a> feature.
+      Alternatively you could use the
+      <a href="olh_commands.html#snap">Snap Together</a> command. The Snap
+      Together command has welding and non-welding versions.
+      </p>
+
+      <p>
+      While I am working on one side of the model, faces from the other
+      side are visible in the same viewport and are distracting, so I
+      use the <a href="olh_commands.html#hide">Hide</a> command to 
+      make that portion of the model invisible. While hidden, the geometry
+      still exists but it is not drawn and it will not be modified except
+      under some specific circumstances. Some hidden faces may share
+      vertices with unhidden faces. If you move those shared vertices the
+      hidden faces will be modified.
+      </p>
+
+      <h3>Boolean Operations and Flipping</h3>
+      <p>
+      Now that one side looks good I want to make the other side match it.
+      I could repeat all the work I did on the opposite side, but I'd
+      rather not go through that effort. What would be easier would be
+      to cut the torso in half, duplicate the side that I've finished,
+      and then mirror it so that both sides are identical.
+      </p>
+
+      <p>
+      Here I use the <a href="olh_boolwin.html">Boolean Operation</a> panel
+      to cut the torso in half (read more about boolean operations if 
+      the following doesn't make sense). I will set the torso as Object A and
+      subtract a cube from the torso. I use the
+      <a href="olh_commands.html#simplifymesh">Simlify Mesh</a> command
+      to remove faces that don't add detail.
+      </p>
+      
+      <p>
+      Then I remove the faces that will be inside the torso since they won't be
+      visible. Finally I <a href="olh_commands.html#duplicate">Duplicate</a>
+      the half of the torso and <a href="olh_commands.html#flip">Flip</a> it.
+      I select the vertices down the middle and use the
+      <a href="olh_commands.html#weld">Weld</a> command to join the torso
+      together again. Note that weld only welds vertices that are extremely
+      close, so I can weld all the verticies in one operation.
+      </p>
+
+      <!-- FIXME talk about why weld? Normal blending. Also seam may show (ie,
+      during animation?), also -->
+
+      <p>
+      If you're thinking that this use of
+      <a href="olh_boolwin.html">Boolean Operations</a> is a bit contrived,
+      I agree. Boolean operations can work with much more complex objects
+      than what I have shown here, but this works well as a basic example.
+      </p>
 
       <hr/>
 
       <a name="#combiningshapes"></a>
       <h2>Torso and Legs -- Combining Shapes</h2>
+
+      <p>
+      I'm ready to start working on the legs. Before I do that I want to
+      adjust the depth of the torso. Assuming that the depth of the torso
+      is about the same as the width of the upper leg, I'll use the same
+      background image in the side view as the front view, then I'll
+      scale the depth of the torso until it looks about right.
+      </p>
+
+      <p>
+      For the legs, we'll start with the left leg and plan to duplicate it.
+      First I create a cylinder, this time with more sides since I ended
+      up increasing that with the torso manually. Again, the tool creates
+      the cylinder horizontally, so I shift-rotate it to vertical.
+      Then I'll scale it to be roughly the right proportions for the
+      leg reference.
+      </p>
+
+      <p>
+      Now I connect the leg to the torso. I remove the faces on the bottom of
+      the torso and the top of the leg where the two will connect. I use
+      snap to vertex with the move tool to connect the vertices. Then I use
+      weld to fuse the two meshes into one.
+      </p>
+
+      <p>
+      I need to do an edge turn to make the angles look right. Finding the
+      right faces to select in the orthographic side and front projections can
+      be tricky. So instead, I flip the perspective view into an orthographic
+      projection and use that projection to select the faces. Then I flip
+      back to perspective to make sure the right faces are selected. Finally
+      I do the edge turn.
+      </p>
+
+      <p>
+      Now I move the leg vertices in the side view to match the leg in the
+      background image. Note that the reference image has the leg twisted
+      to one side, so this should be pretty close to the expected final
+      results. The process for using the background image as a reference
+      for the vertices is the same as for the torso.
+      </p>
+
+      <p>
+      Now I need to add a foot. Rather than creating a separate piece of
+      geometry and welding it on, I will extrude existing faces on the leg
+      into a foot. The extrude feature is available as an interactive
+      <a href="olh_tools.html#extrude">Extrude Tool</a> and an
+      <a href="olh_commands.html#extrude">Extrude Geometry Command</a>.
+      I will be using the tool version here.
+      </p>
+      
+      <p>
+      First I extrude the bottom faces to make segments for the ankle and heel.
+      Before extruding the foot itself I move some toe-side leg vertices
+      up to the ankle and use
+      <a href="olh_commands#snap">Snap Nearest and Weld</a>.
+      Then I extrude the front faces on the ankle/heel to make the foot.
+      Finally I move the foot vertices around a bit to make the foot look
+      more... foot-like.
+      </p>
+
+      <p>
+      Zooming out a bit, the leg looks somewhat curvy. I adjust the leg
+      vertices to take some of the curve out.
+      </p>
+
+      <p>
+      Now that the leg is in pretty good shape, I want to duplicate it
+      for the right side. This is just a simple matter of select, duplicate
+      and flip. Because the torso is symmetrical (and I didn't move the
+      torso vertices to connect the leg) all I need to do to fuse the
+      meshes together is select the vertices on the seam and weld them
+      together.
+      </p>
+
+      <p>
+      Now that I have two legs, the model looks pigeon-toed. So I'll adjust
+      that now.
+      </p>
+
+      <!-- FIXME sections about arms, hand, head -->
 
       <!-- FIXME text here -->
