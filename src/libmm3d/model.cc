@@ -4195,6 +4195,10 @@ void Model::calculateNormals()
                   tri->m_vertexNormals[vert][1] = tri->m_flatNormals[1];
                   tri->m_vertexNormals[vert][2] = tri->m_flatNormals[2];
                }
+               // May be overridden by group smoothing below
+               tri->m_finalNormals[vert][0] = tri->m_vertexNormals[vert][0];
+               tri->m_finalNormals[vert][1] = tri->m_vertexNormals[vert][1];
+               tri->m_finalNormals[vert][2] = tri->m_vertexNormals[vert][2];
             }
          }
       }
@@ -4251,6 +4255,11 @@ void Model::calculateNormals()
                tri->m_vertexNormals[vert][0] = acc.norm[0];
                tri->m_vertexNormals[vert][1] = acc.norm[1];
                tri->m_vertexNormals[vert][2] = acc.norm[2];
+
+               // May be overridden by group smoothing below
+               tri->m_finalNormals[vert][0] = acc.norm[0];
+               tri->m_finalNormals[vert][1] = acc.norm[1];
+               tri->m_finalNormals[vert][2] = acc.norm[2];
             }
          }
       }
