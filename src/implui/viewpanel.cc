@@ -80,6 +80,12 @@ void ViewPanel::freeTextures()
 
 void ViewPanel::setModel( Model * model )
 {
+   if ( m_model != NULL && model != NULL )
+   {
+      model->setPerspectiveDrawMode(m_model->getPerspectiveDrawMode());
+      model->setCanvasDrawMode(m_model->getCanvasDrawMode());
+   }
+
    for ( unsigned t = 0; t < m_viewCount; t++ )
    {
       m_modelView[t]->setModel( model );

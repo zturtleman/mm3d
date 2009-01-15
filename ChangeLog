@@ -8,6 +8,7 @@ Changes for 1.3.8
       hidden triangles
    Change Hide Unselected so that it operates on the face level rather than
       face and vertex
+   Fix viewport drawing mode so that it is applied to loaded models
    Fix to prevent selection of hidden faces when using the "ignore
       back-facing" option
    Fix broken shortcuts on geometry sub-menus
