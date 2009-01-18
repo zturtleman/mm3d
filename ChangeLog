@@ -16,6 +16,7 @@ Changes for 1.3.8
    Fix broken shortcuts on geometry sub-menus
    Fix coverage build/autoconf
    Fix MD2 export (vertex/texture coord indices)
+   Fix relative path to parent dir for textures in OBJ format
    Fix cursor, reset coords, and zoom on texture coordinates window
    Fix help links on Windows
    Fix several compilation warnings
