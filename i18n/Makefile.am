@@ -1,4 +1,5 @@
 QMFILES = \
+	mm3d_de.qm \
 	mm3d_fr.qm \
 	mm3d_sk.qm \
 	mm3d_ref.qm \
