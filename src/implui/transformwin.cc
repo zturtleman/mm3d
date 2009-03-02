@@ -81,9 +81,9 @@ void TransformWindow::setModel( Model * m )
 
 void TransformWindow::translateEvent()
 {
-   double x = atof( m_transX->text().toUtf8() );
-   double y = atof( m_transY->text().toUtf8() );
-   double z = atof( m_transZ->text().toUtf8() );
+   double x = m_transX->text().toDouble();
+   double y = m_transY->text().toDouble();
+   double z = m_transZ->text().toDouble();
 
    Matrix m;
    m.setTranslation( x, y, z );
@@ -94,9 +94,9 @@ void TransformWindow::translateEvent()
 void TransformWindow::rotateEulerEvent()
 {
    double vec[3];
-   vec[0] = atof( m_rotX->text().toUtf8() );
-   vec[1] = atof( m_rotY->text().toUtf8() );
-   vec[2] = atof( m_rotZ->text().toUtf8() );
+   vec[0] = m_rotX->text().toDouble();
+   vec[1] = m_rotY->text().toDouble();
+   vec[2] = m_rotZ->text().toDouble();
 
    vec[0] *= PIOVER180; // convert to radians
    vec[1] *= PIOVER180; // convert to radians
@@ -111,10 +111,10 @@ void TransformWindow::rotateEulerEvent()
 void TransformWindow::rotateQuaternionEvent()
 {
    double vec[3];
-   vec[0] = atof( m_axisX->text().toUtf8() );
-   vec[1] = atof( m_axisY->text().toUtf8() );
-   vec[2] = atof( m_axisZ->text().toUtf8() );
-   double angle = atof( m_angle->text().toUtf8() );
+   vec[0] = m_axisX->text().toDouble();
+   vec[1] = m_axisY->text().toDouble();
+   vec[2] = m_axisZ->text().toDouble();
+   double angle = m_angle->text().toDouble();
 
    angle = angle * PIOVER180; // convert to radians
 
@@ -126,9 +126,9 @@ void TransformWindow::rotateQuaternionEvent()
 
 void TransformWindow::scaleEvent()
 {
-   double x = atof( m_scaleX->text().toUtf8() );
-   double y = atof( m_scaleY->text().toUtf8() );
-   double z = atof( m_scaleZ->text().toUtf8() );
+   double x = m_scaleX->text().toDouble();
+   double y = m_scaleY->text().toDouble();
+   double z = m_scaleZ->text().toDouble();
 
    Matrix m;
    m.set( 0, 0, x );
@@ -141,22 +141,22 @@ void TransformWindow::scaleEvent()
 void TransformWindow::matrixEvent()
 {
    Matrix m;
-   m.set( 0, 0, atof( m_00->text().toUtf8() ) );
-   m.set( 0, 1, atof( m_01->text().toUtf8() ) );
-   m.set( 0, 2, atof( m_02->text().toUtf8() ) );
-   m.set( 0, 3, atof( m_03->text().toUtf8() ) );
-   m.set( 1, 0, atof( m_10->text().toUtf8() ) );
-   m.set( 1, 1, atof( m_11->text().toUtf8() ) );
-   m.set( 1, 2, atof( m_12->text().toUtf8() ) );
-   m.set( 1, 3, atof( m_13->text().toUtf8() ) );
-   m.set( 2, 0, atof( m_20->text().toUtf8() ) );
-   m.set( 2, 1, atof( m_21->text().toUtf8() ) );
-   m.set( 2, 2, atof( m_22->text().toUtf8() ) );
-   m.set( 2, 3, atof( m_23->text().toUtf8() ) );
-   m.set( 3, 0, atof( m_30->text().toUtf8() ) );
-   m.set( 3, 1, atof( m_31->text().toUtf8() ) );
-   m.set( 3, 2, atof( m_32->text().toUtf8() ) );
-   m.set( 3, 3, atof( m_33->text().toUtf8() ) );
+   m.set( 0, 0, m_00->text().toDouble() );
+   m.set( 0, 1, m_01->text().toDouble() );
+   m.set( 0, 2, m_02->text().toDouble() );
+   m.set( 0, 3, m_03->text().toDouble() );
+   m.set( 1, 0, m_10->text().toDouble() );
+   m.set( 1, 1, m_11->text().toDouble() );
+   m.set( 1, 2, m_12->text().toDouble() );
+   m.set( 1, 3, m_13->text().toDouble() );
+   m.set( 2, 0, m_20->text().toDouble() );
+   m.set( 2, 1, m_21->text().toDouble() );
+   m.set( 2, 2, m_22->text().toDouble() );
+   m.set( 2, 3, m_23->text().toDouble() );
+   m.set( 3, 0, m_30->text().toDouble() );
+   m.set( 3, 1, m_31->text().toDouble() );
+   m.set( 3, 2, m_32->text().toDouble() );
+   m.set( 3, 3, m_33->text().toDouble() );
 
    applyMatrix( m, tr("Apply Matrix") );
 }

@@ -62,9 +62,9 @@ void MergeWindow::getRotation( double * vec )
 {
    if ( vec )
    {
-      vec[0] = atof( m_rotX->text().toLatin1() ) * PIOVER180;
-      vec[1] = atof( m_rotY->text().toLatin1() ) * PIOVER180;
-      vec[2] = atof( m_rotZ->text().toLatin1() ) * PIOVER180;
+      vec[0] = m_rotX->text().toDouble() * PIOVER180;
+      vec[1] = m_rotY->text().toDouble() * PIOVER180;
+      vec[2] = m_rotZ->text().toDouble() * PIOVER180;
    }
 }
 
@@ -72,9 +72,9 @@ void MergeWindow::getTranslation( double * vec )
 {
    if ( vec )
    {
-      vec[0] = atof( m_transX->text().toLatin1() );
-      vec[1] = atof( m_transY->text().toLatin1() );
-      vec[2] = atof( m_transZ->text().toLatin1() );
+      vec[0] = m_transX->text().toDouble();
+      vec[1] = m_transY->text().toDouble();
+      vec[2] = m_transZ->text().toDouble();
    }
 }
 

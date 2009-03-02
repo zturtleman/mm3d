@@ -542,7 +542,7 @@ void TextureWindow::alphaSliderChanged( int v )
 void TextureWindow::redEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.toLatin1() );
+   float v = str.toDouble();
    m_redSlider->setValue( (int) (v * 100) );
    m_editing = false;
 }
@@ -550,7 +550,7 @@ void TextureWindow::redEditChanged( const QString & str )
 void TextureWindow::greenEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.toLatin1() );
+   float v = str.toDouble();
    m_greenSlider->setValue( (int) (v * 100) );
    m_editing = false;
 }
@@ -558,7 +558,7 @@ void TextureWindow::greenEditChanged( const QString & str )
 void TextureWindow::blueEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.toLatin1() );
+   float v = str.toDouble();
    m_blueSlider->setValue( (int) (v * 100) );
    m_editing = false;
 }
@@ -566,7 +566,7 @@ void TextureWindow::blueEditChanged( const QString & str )
 void TextureWindow::alphaEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.toLatin1() );
+   float v = str.toDouble();
    m_alphaSlider->setValue( (int) (v * 100) );
    m_editing = false;
 }

@@ -73,7 +73,7 @@ void ModelView::setViewDirection( int dir )
 
 void ModelView::zoomLevelEnterEvent()
 {
-   m_modelView->setZoomLevel( atof(m_zoomInput->text().toLatin1()) );
+   m_modelView->setZoomLevel( m_zoomInput->text().toDouble() );
 }
 
 void ModelView::zoomInEvent()

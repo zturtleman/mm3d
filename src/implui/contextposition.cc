@@ -160,9 +160,9 @@ void ContextPosition::updatePosition()
       // Change model based on text field input
       double coords[3];
       double trans[3];
-      coords[0] = atof( m_xValue->text().toLatin1() );
-      coords[1] = atof( m_yValue->text().toLatin1() );
-      coords[2] = atof( m_zValue->text().toLatin1() );
+      coords[0] = m_xValue->text().toDouble();
+      coords[1] = m_yValue->text().toDouble();
+      coords[2] = m_zValue->text().toDouble();
 
       trans[0] = coords[0] - m_coords[0];
       trans[1] = coords[1] - m_coords[1];

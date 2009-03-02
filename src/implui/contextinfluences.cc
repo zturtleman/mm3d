@@ -522,7 +522,7 @@ void ContextInfluences::weight1Changed( const QString & weight )
    int index = 0;
    if ( weight.size() != 0 && weight[0].isDigit() )
    {
-      weightChanged( index, atof( weight.toUtf8()) / 100.0 );
+      weightChanged( index, weight.toDouble() / 100.0 );
    }
 }
 
@@ -531,7 +531,7 @@ void ContextInfluences::weight2Changed( const QString & weight )
    int index = 1;
    if ( weight.size() != 0 && weight[0].isDigit() )
    {
-      weightChanged( index, atof( weight.toUtf8() ) / 100.0 );
+      weightChanged( index, weight.toDouble() / 100.0 );
    }
 }
 
@@ -540,7 +540,7 @@ void ContextInfluences::weight3Changed( const QString & weight )
    int index = 2;
    if ( weight.size() != 0 && weight[0].isDigit() )
    {
-      weightChanged( index, atof( weight.toUtf8()) / 100.0 );
+      weightChanged( index, weight.toDouble() / 100.0 );
    }
 }
 
@@ -549,7 +549,7 @@ void ContextInfluences::weight4Changed( const QString & weight )
    int index = 3;
    if ( weight.size() != 0 && weight[0].isDigit() )
    {
-      weightChanged( index, atof( weight.toUtf8()) / 100.0 );
+      weightChanged( index, weight.toDouble() / 100.0 );
    }
 }
 
