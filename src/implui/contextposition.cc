@@ -144,6 +144,9 @@ void ContextPosition::modelChanged( int changeBits )
       str.sprintf( "%f", m_coords[2] );
       m_zValue->setText( str );
 
+      str.sprintf( "%g, %g, %g", cmax[0]-cmin[0], cmax[1]-cmin[1], cmax[2]-cmin[2] );
+      m_dimensionsValue->setText( str );
+
       m_change = false;
    }
 }
