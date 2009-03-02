@@ -10,6 +10,7 @@ Changes for 1.3.8
       face and vertex
    Show dimensions of selected geometry in context panel
    Added grid unit distance to status bar
+   In MD3, use anim name + frame num for frame name on export
    Fix viewport drawing mode so that it is applied to loaded models
    Fix texture rendering after deleted textures (off by one on greater index)
    Fix to draw proper normals for ungrouped geometry in skeletal animations

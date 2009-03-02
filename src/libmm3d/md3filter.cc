@@ -1967,6 +1967,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
          {
             aFrameCount = 1;
          }
+         std::string animName = getSafeName( a );
          for ( unsigned t = 0; t < aFrameCount; t++ )
          {
             Matrix saveMatrix = getMatrixFromPoint( a, t, rootTag ).getInverse();
@@ -2026,7 +2027,8 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
             //log_debug( "Frame radius: %f\n", ( (float) radius ) );
             m_dst->write( (float) radius );
             char name[16] = "Misfit Model 3D"; // this is what other exporters do
-            m_dst->writeBytes( (uint8_t*) name, 16 );
+            PORT_snprintf( name, sizeof(name), "%s%02d", animName.c_str(), t);
+            m_dst->writeBytes( (uint8_t*) name, sizeof(name) );
          }
       }
    }
