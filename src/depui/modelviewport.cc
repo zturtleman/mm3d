@@ -1024,6 +1024,11 @@ void ModelViewport::makeTextureFromImage( const QImage & i, GLuint & t )
 
 double ModelViewport::getUnitWidth()
 {
+   if ( m_viewDirection == ViewPerspective || m_viewDirection == ViewOrtho )
+   {
+      return g_prefs( "ui_3dgrid_inc" ).doubleValue();
+   }
+
    double unitWidth = g_prefs( "ui_grid_inc" ).doubleValue();
 
    double ratio;
@@ -1601,7 +1606,8 @@ void ModelViewport::mouseMoveEvent( QMouseEvent * e )
    }
    else
    {
-      model_status( m_model, StatusNormal, STATUSTIME_NONE, "" );
+      model_status( m_model, StatusNormal, STATUSTIME_NONE, "Units: %g",
+            getUnitWidth());
    }
 
    if ( m_operation == MO_Rotate )
