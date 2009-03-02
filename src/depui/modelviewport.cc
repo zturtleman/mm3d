@@ -97,6 +97,7 @@ ModelViewport::ModelViewport( QWidget * parent )
      m_rotY( 0.0 ),
      m_rotZ( 0.0 ),
      m_zoomLevel( 32.0 ),
+     m_unitWidth( 1.0 ),
      m_far( 10000.0 ),
      m_near( 1.0 ),
      m_farOrtho( 1000000.0 ),
@@ -562,34 +563,7 @@ void ModelViewport::drawGridLines()
    }
    else
    {
-      double maxDimension = (m_width > m_height) ? m_width : m_height;
-
-      double unitWidth = g_prefs( "ui_grid_inc" ).doubleValue();
-
-      double ratio;
-      int scale_min, scale_max;
-
-      if ( g_prefs( "ui_grid_decimal" ).intValue() != 0 )
-      {
-         ratio = 10.0;
-         scale_min = 2;
-         scale_max = 60;
-      }
-      else
-      {
-         ratio = 2.0;
-         scale_min = 4;
-         scale_max = 16;
-      }
-
-      while ( (maxDimension / unitWidth) > scale_max )
-      {
-         unitWidth *= ratio;
-      }
-      while ( (maxDimension / unitWidth) < scale_min )
-      {
-         unitWidth /= ratio;
-      }
+      m_unitWidth = getUnitWidth();
 
       double xRangeMin = 0;
       double xRangeMax = 0;
@@ -614,16 +588,16 @@ void ModelViewport::drawGridLines()
             yRangeMin = m_arcballPoint[1] - (m_height / 2.0);
             yRangeMax = m_arcballPoint[1] + (m_height / 2.0);
 
-            xStart = unitWidth * ((int) (xRangeMin / unitWidth));
-            yStart = unitWidth * ((int) (yRangeMin / unitWidth));
+            xStart = m_unitWidth * ((int) (xRangeMin / m_unitWidth));
+            yStart = m_unitWidth * ((int) (yRangeMin / m_unitWidth));
 
-            for ( x = xStart; x < xRangeMax; x += unitWidth )
+            for ( x = xStart; x < xRangeMax; x += m_unitWidth )
             {
                glVertex3f( x, yRangeMin, 0 );
                glVertex3f( x, yRangeMax, 0 );
             }
 
-            for ( y = yStart; y < yRangeMax; y += unitWidth )
+            for ( y = yStart; y < yRangeMax; y += m_unitWidth )
             {
                glVertex3f( xRangeMin, y, 0 );
                glVertex3f( xRangeMax, y, 0 );
@@ -636,16 +610,16 @@ void ModelViewport::drawGridLines()
             yRangeMin = m_arcballPoint[1] - (m_height / 2.0);
             yRangeMax = m_arcballPoint[1] + (m_height / 2.0);
 
-            xStart = unitWidth * ((int) (xRangeMin / unitWidth));
-            yStart = unitWidth * ((int) (yRangeMin / unitWidth));
+            xStart = m_unitWidth * ((int) (xRangeMin / m_unitWidth));
+            yStart = m_unitWidth * ((int) (yRangeMin / m_unitWidth));
 
-            for ( x = xStart; x < xRangeMax; x += unitWidth )
+            for ( x = xStart; x < xRangeMax; x += m_unitWidth )
             {
                glVertex3f( x, yRangeMin, 0 );
                glVertex3f( x, yRangeMax, 0 );
             }
 
-            for ( y = yStart; y < yRangeMax; y += unitWidth )
+            for ( y = yStart; y < yRangeMax; y += m_unitWidth )
             {
                glVertex3f( xRangeMin, y, 0 );
                glVertex3f( xRangeMax, y, 0 );
@@ -658,16 +632,16 @@ void ModelViewport::drawGridLines()
             yRangeMin = m_arcballPoint[1] - (m_height / 2.0);
             yRangeMax = m_arcballPoint[1] + (m_height / 2.0);
 
-            xStart = unitWidth * ((int) (xRangeMin / unitWidth));
-            yStart = unitWidth * ((int) (yRangeMin / unitWidth));
+            xStart = m_unitWidth * ((int) (xRangeMin / m_unitWidth));
+            yStart = m_unitWidth * ((int) (yRangeMin / m_unitWidth));
 
-            for ( x = xStart; x < xRangeMax; x += unitWidth )
+            for ( x = xStart; x < xRangeMax; x += m_unitWidth )
             {
                glVertex3f( 0, yRangeMin, x );
                glVertex3f( 0, yRangeMax, x );
             }
 
-            for ( y = yStart; y < yRangeMax; y += unitWidth )
+            for ( y = yStart; y < yRangeMax; y += m_unitWidth )
             {
                glVertex3f( 0, y, xRangeMin );
                glVertex3f( 0, y, xRangeMax );
@@ -680,16 +654,16 @@ void ModelViewport::drawGridLines()
             yRangeMin = m_arcballPoint[1] - (m_height / 2.0);
             yRangeMax = m_arcballPoint[1] + (m_height / 2.0);
 
-            xStart = unitWidth * ((int) (xRangeMin / unitWidth));
-            yStart = unitWidth * ((int) (yRangeMin / unitWidth));
+            xStart = m_unitWidth * ((int) (xRangeMin / m_unitWidth));
+            yStart = m_unitWidth * ((int) (yRangeMin / m_unitWidth));
 
-            for ( x = xStart; x < xRangeMax; x += unitWidth )
+            for ( x = xStart; x < xRangeMax; x += m_unitWidth )
             {
                glVertex3f( 0, yRangeMin, x );
                glVertex3f( 0, yRangeMax, x );
             }
 
-            for ( y = yStart; y < yRangeMax; y += unitWidth )
+            for ( y = yStart; y < yRangeMax; y += m_unitWidth )
             {
                glVertex3f( 0, y, xRangeMin );
                glVertex3f( 0, y, xRangeMax );
@@ -702,16 +676,16 @@ void ModelViewport::drawGridLines()
             yRangeMin = -m_arcballPoint[1] - (m_height / 2.0);
             yRangeMax = -m_arcballPoint[1] + (m_height / 2.0);
 
-            xStart = unitWidth * ((int) (xRangeMin / unitWidth));
-            yStart = unitWidth * ((int) (yRangeMin / unitWidth));
+            xStart = m_unitWidth * ((int) (xRangeMin / m_unitWidth));
+            yStart = m_unitWidth * ((int) (yRangeMin / m_unitWidth));
 
-            for ( x = xStart; x < xRangeMax; x += unitWidth )
+            for ( x = xStart; x < xRangeMax; x += m_unitWidth )
             {
                glVertex3f( x, 0, yRangeMin );
                glVertex3f( x, 0, yRangeMax );
             }
 
-            for ( y = yStart; y < yRangeMax; y += unitWidth )
+            for ( y = yStart; y < yRangeMax; y += m_unitWidth )
             {
                glVertex3f( xRangeMin, 0, y );
                glVertex3f( xRangeMax, 0, y );
@@ -724,16 +698,16 @@ void ModelViewport::drawGridLines()
             yRangeMin = m_arcballPoint[1] - (m_height / 2.0);
             yRangeMax = m_arcballPoint[1] + (m_height / 2.0);
 
-            xStart = unitWidth * ((int) (xRangeMin / unitWidth));
-            yStart = unitWidth * ((int) (yRangeMin / unitWidth));
+            xStart = m_unitWidth * ((int) (xRangeMin / m_unitWidth));
+            yStart = m_unitWidth * ((int) (yRangeMin / m_unitWidth));
 
-            for ( x = xStart; x < xRangeMax; x += unitWidth )
+            for ( x = xStart; x < xRangeMax; x += m_unitWidth )
             {
                glVertex3f( x, 0, yRangeMin );
                glVertex3f( x, 0, yRangeMax );
             }
 
-            for ( y = yStart; y < yRangeMax; y += unitWidth )
+            for ( y = yStart; y < yRangeMax; y += m_unitWidth )
             {
                glVertex3f( xRangeMin, 0, y );
                glVertex3f( xRangeMax, 0, y );
@@ -786,7 +760,7 @@ void ModelViewport::drawGridLines()
          // well). That is why it is disabled by default. You can set ui_render_text
          // to a non-zero value in your mm3drc file to enable text rendering.
          QString text;
-         text.sprintf( "%g", unitWidth );
+         text.sprintf( "%g", m_unitWidth );
          renderText( 2, this->height() - 12, text, QFont( "Sans", 10 ) );
       }
    }
@@ -1048,6 +1022,39 @@ void ModelViewport::makeTextureFromImage( const QImage & i, GLuint & t )
    delete data;
 }
 
+double ModelViewport::getUnitWidth()
+{
+   double unitWidth = g_prefs( "ui_grid_inc" ).doubleValue();
+
+   double ratio;
+   int scale_min, scale_max;
+
+   if ( g_prefs( "ui_grid_decimal" ).intValue() != 0 )
+   {
+      ratio = 10.0;
+      scale_min = 2;
+      scale_max = 60;
+   }
+   else
+   {
+      ratio = 2.0;
+      scale_min = 4;
+      scale_max = 16;
+   }
+
+   double maxDimension = (m_width > m_height) ? m_width : m_height;
+   while ( (maxDimension / unitWidth) > scale_max )
+   {
+      unitWidth *= ratio;
+   }
+   while ( (maxDimension / unitWidth) < scale_min )
+   {
+      unitWidth /= ratio;
+   }
+
+   return unitWidth;
+}
+
 void ModelViewport::updateBackground()
 {
    int index = (int) m_viewDirection - 1;
@@ -1263,6 +1270,11 @@ void ModelViewport::zoomIn()
          m_zoomLevel *= (VP_ZOOMSCALE);
       }
 
+      m_unitWidth = getUnitWidth();
+      char str[80];
+      PORT_snprintf( str, sizeof(str), "Units: %g", m_unitWidth );
+      model_status( m_model, StatusNormal, STATUSTIME_NONE, str );
+
       QString zoomStr;
       zoomStr.sprintf( "%f", m_zoomLevel );
       emit zoomLevelChanged( zoomStr );
@@ -1280,6 +1292,11 @@ void ModelViewport::zoomOut()
       {
          m_zoomLevel /= VP_ZOOMSCALE;
       }
+
+      m_unitWidth = getUnitWidth();
+      char str[80];
+      PORT_snprintf( str, sizeof(str), "Units: %g", m_unitWidth );
+      model_status( m_model, StatusNormal, STATUSTIME_NONE, str );
 
       QString zoomStr;
       zoomStr.sprintf( "%f", m_zoomLevel );
@@ -1578,7 +1595,8 @@ void ModelViewport::mouseMoveEvent( QMouseEvent * e )
       }
 
       char str[80];
-      PORT_snprintf( str, sizeof(str), "%g, %g, %g", pos[0], pos[1], pos[2] );
+      PORT_snprintf( str, sizeof(str), "Units: %g  (%g, %g, %g)",
+            m_unitWidth, pos[0], pos[1], pos[2] );
       model_status( m_model, StatusNormal, STATUSTIME_NONE, str );
    }
    else
@@ -2459,20 +2477,6 @@ void ModelViewport::getParentXYValue( int x, int y, double & xval, double & yval
    {
       // snap to grid
 
-      double unitWidth = 1.0;
-      double maxDimension = (m_width > m_height) ? m_width : m_height;
-
-      unitWidth = g_prefs( "ui_grid_inc" ).doubleValue();
-
-      while ( (maxDimension / unitWidth) > 16 )
-      {
-         unitWidth *= 2.0;
-      }
-      while ( (maxDimension / unitWidth) < 4 )
-      {
-         unitWidth /= 2.0;
-      }
-
       double val;
       int mult;
       double fudge;
@@ -2490,8 +2494,8 @@ void ModelViewport::getParentXYValue( int x, int y, double & xval, double & yval
          fudge = -0.5;
       }
 
-      mult = (int) (x / unitWidth + fudge);
-      val = (double) mult * unitWidth;
+      mult = (int) (x / m_unitWidth + fudge);
+      val = (double) mult * m_unitWidth;
 
       if ( fabs( x - val ) < maxDist )
       {
@@ -2515,8 +2519,8 @@ void ModelViewport::getParentXYValue( int x, int y, double & xval, double & yval
          fudge = -0.5;
       }
 
-      mult = (int) (y / unitWidth + fudge);
-      val = (double) mult * unitWidth;
+      mult = (int) (y / m_unitWidth + fudge);
+      val = (double) mult * m_unitWidth;
 
       if ( fabs( y - val ) < maxDist )
       {

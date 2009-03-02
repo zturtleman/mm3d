@@ -197,6 +197,8 @@ class ModelViewport : public QGLWidget, public Tool::Parent
 
       void makeTextureFromImage( const QImage & i, GLuint & t );
 
+      double getUnitWidth();
+
       Model * m_model;
 
       MouseOperationE m_operation;
@@ -217,6 +219,7 @@ class ModelViewport : public QGLWidget, public Tool::Parent
       double m_width;
       double m_height;
       double m_zoomLevel;
+      double m_unitWidth;
       double m_far;
       double m_near;
       double m_farOrtho;
