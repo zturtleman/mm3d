@@ -23,16 +23,22 @@
 #ifndef __DRAWCONTEXT_H
 #define __DRAWCONTEXT_H
 
-#include <vector>
 #include <list>
+#include <map>
+#include <string>
+#include <vector>
 
 typedef void * ContextT;
+
+typedef std::map< std::string, int > FileTextureMap;
+typedef std::vector< int > MaterialTextureList;
 
 class DrawingContext
 {
    public:
       ContextT    m_context;
-      std::vector<int> m_textures;
+      FileTextureMap m_fileTextures;
+      MaterialTextureList m_matTextures;
       bool        m_valid;
 
       int         m_currentTexture;

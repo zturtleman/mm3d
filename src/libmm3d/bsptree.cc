@@ -90,7 +90,7 @@ static void _setMaterial( DrawingContext * context, int texture, Model::Material
    if ( material->m_type == Model::Material::MATTYPE_TEXTURE )
    {
       glBindTexture( GL_TEXTURE_2D,
-            context->m_textures[ context->m_currentTexture ] );
+            context->m_matTextures[ context->m_currentTexture ] );
 
       glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
             material->m_sClamp ? GL_CLAMP : GL_REPEAT);

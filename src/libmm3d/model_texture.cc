@@ -43,16 +43,13 @@ bool Model::loadTextures( ContextT context )
    {
       deleteGlTextures( context );
       drawContext = getDrawingContext( context );
-      drawContext->m_textures.clear();
+      drawContext->m_fileTextures.clear();
+      drawContext->m_matTextures.clear();
    }
 
    for ( unsigned t = 0; t < m_materials.size(); t++ )
    {
-      if ( drawContext )
-      {
-         drawContext->m_textures.push_back( -1 );
-      }
-
+      drawContext->m_matTextures.push_back( -1 );
       if ( m_materials[t]->m_filename[0] 
             && m_materials[t]->m_type == Model::Material::MATTYPE_TEXTURE )
       {
@@ -72,12 +69,26 @@ bool Model::loadTextures( ContextT context )
          {
             m_materials[t]->m_textureData = tex;
 
-            glGenTextures( 1, &(m_materials[t]->m_texture) );
-            s_glTextures++;
-
             if ( drawContext )
             {
-               drawContext->m_textures[t] = m_materials[t]->m_texture;
+               FileTextureMap::iterator it = drawContext->m_fileTextures.find(m_materials[t]->m_filename);
+               if ( it == drawContext->m_fileTextures.end() )
+               {
+                  glGenTextures( 1, &(m_materials[t]->m_texture) );
+                  s_glTextures++;
+                  log_debug("GL textures: %d\n", s_glTextures);
+
+                  drawContext->m_fileTextures[m_materials[t]->m_filename] =
+                     m_materials[t]->m_texture;
+               }
+
+               drawContext->m_matTextures[t] = m_materials[t]->m_texture;
+            }
+            else
+            {
+               glGenTextures( 1, &(m_materials[t]->m_texture) );
+               s_glTextures++;
+               log_debug("GL textures: %d\n", s_glTextures);
             }
 
             log_debug( "loaded texture %s as %d\n", tex->m_name, m_materials[t]->m_texture );
@@ -767,16 +778,19 @@ void Model::invalidateTextures()
 void Model::deleteGlTextures( ContextT context )
 {
    DrawingContext * drawContext = getDrawingContext( context );
-   for ( unsigned t = 0; t < drawContext->m_textures.size(); t++ )
+   for ( FileTextureMap::const_iterator it = drawContext->m_fileTextures.begin();
+         it != drawContext->m_fileTextures.end(); ++it )
    {
-      int texId = drawContext->m_textures[t];
+      int texId = it->second;
       if ( texId > 0 )
       {
          glDeleteTextures( 1, (GLuint *) &texId );
          s_glTextures--;
+         log_debug("GL textures: %d\n", s_glTextures);
       }
-      drawContext->m_textures[t] = -1;
    }
+   drawContext->m_fileTextures.clear();
+   drawContext->m_matTextures.clear();
    drawContext->m_valid = false;
 }
 
