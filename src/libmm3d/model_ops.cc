@@ -1260,10 +1260,13 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
       {
          if ( model->getMaterialType( n ) == Model::Material::MATTYPE_TEXTURE )
          {
-            const char * name = model->getTextureFilename( n );
-            Texture * newtex = texmgr->getTexture( name );
+            const char * filename = model->getTextureFilename( n );
+            Texture * newtex = texmgr->getTexture( filename );
 
-            addTexture( newtex );
+            int num = addTexture( newtex );
+
+            const char * name = model->getTextureName( n );
+            setTextureName(num, name);
          }
          else
          {
