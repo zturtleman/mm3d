@@ -29,6 +29,7 @@
 
 #include <ctype.h>
 #include <stdlib.h>
+#include <cstdio>
 
 #include <QtCore/QBuffer>
 #include <QtCore/QString>
@@ -317,7 +318,7 @@ list<string> QtTextureFilter::getWriteTypes()
 
 void QtTextureFilter::getFormatString( char * format, const char * filename )
 {
-   char * ext = strrchr( filename, '.' );
+   const char * ext = strrchr( filename, '.' );
    if ( ext )
    {
       ext++; // Skip '.'

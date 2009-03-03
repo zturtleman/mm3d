@@ -20,6 +20,8 @@
  *  See the COPYING file for full license text.
  */
 
+#include <cstdio>
+
 #include "texturetest.h"
 
 #include "texmgr.h"
