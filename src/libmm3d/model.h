@@ -1339,6 +1339,11 @@ class Model
       Material::MaterialTypeE getMaterialType( unsigned materialIndex ) const;
       int getMaterialColor( unsigned materialIndex, unsigned c, unsigned v = 0 ) const;
 
+      int removeUnusedGroups();
+      int mergeIdenticalGroups();
+      int removeUnusedMaterials();
+      int mergeIdenticalMaterials();
+
       // These implicitly change the material type.
       void setMaterialTexture( unsigned textureId, Texture * tex );
       void removeMaterialTexture( unsigned textureId );

@@ -25,6 +25,8 @@
 
 #include "log.h"
 
+#include <set>
+
 #ifdef MM3D_EDIT
 #include "modelundo.h"
 #endif // MM3D_EDIT
@@ -415,5 +417,115 @@ uint8_t Model::getGroupAngle( unsigned groupNum  ) const
    {
       return 180;
    }
+}
+
+int Model::removeUnusedGroups()
+{
+   int removed = 0;
+   for ( int g = m_groups.size() - 1; g >=0; --g )
+   {
+      if ( m_groups[g]->m_triangleIndices.empty() )
+      {
+         ++removed;
+         deleteGroup( g );
+      }
+   }
+   return removed;
+}
+
+int Model::mergeIdenticalGroups()
+{
+   int merged = 0;
+   std::set<int> toRemove;
+   int groupCount = m_groups.size();
+   for ( int g = 0; g < groupCount; ++g )
+   {
+      if ( toRemove.find(g) == toRemove.end() )
+      {
+         for ( int g2 = g + 1; g2 < groupCount; ++g2 )
+         {
+            Group * grp = m_groups[g2];
+            if ( m_groups[g]->propEqual( *grp, ~Model::PropTriangles ) )
+            {
+               for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+                     it != grp->m_triangleIndices.end(); ++it ) {
+                  addTriangleToGroup( g, *it );
+               }
+               toRemove.insert( g2 );
+               ++merged;
+            }
+         }
+      }
+   }
+
+   for ( int g = groupCount - 1; g >= 0; --g )
+   {
+      if ( toRemove.find(g) != toRemove.end() )
+      {
+         deleteGroup( g );
+      }
+   }
+   return merged;
+}
+
+int Model::removeUnusedMaterials()
+{
+   int removed = 0;
+   std::set<int> inUse;
+   for ( int g = m_groups.size() - 1; g >=0; --g )
+   {
+      int mat = m_groups[g]->m_materialIndex;
+      if ( mat >= 0 )
+      {
+         inUse.insert( mat );
+      }
+   }
+   for ( int m = m_materials.size() - 1; m >= 0; --m )
+   {
+      if ( inUse.find( m ) == inUse.end() )
+      {
+         ++removed;
+         deleteTexture( m );
+      }
+   }
+   return removed;
+}
+
+int Model::mergeIdenticalMaterials()
+{
+   int merged = 0;
+   std::set<int> toRemove;
+   int matCount = m_materials.size();
+   for ( int m = 0; m < matCount; ++m )
+   {
+      if ( toRemove.find(m) == toRemove.end() )
+      {
+         for ( int m2 = m + 1; m2 < matCount; ++m2 )
+         {
+            Material * mat = m_materials[m2];
+            if ( m_materials[m]->propEqual( *mat ) )
+            {
+               for ( unsigned g = 0; g < m_groups.size(); ++g )
+               {
+                  if ( m_groups[g]->m_materialIndex == m2 )
+                  {
+                     setGroupTextureId( g, m );
+                  }
+               }
+               toRemove.insert( m2 );
+               ++merged;
+            }
+         }
+      }
+   }
+
+   for ( int m = matCount - 1; m >= 0; --m )
+   {
+      if ( toRemove.find(m) != toRemove.end() )
+      {
+         deleteTexture( m );
+      }
+   }
+   return merged;
 }
 
