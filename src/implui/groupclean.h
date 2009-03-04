@@ -1,6 +1,6 @@
 /*  Misfit Model 3D
  * 
- *  Copyright (c) 2004-2007 Kevin Worcester
+ *  Copyright (c) 2009 Kevin Worcester
  * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,30 +20,32 @@
  *  See the COPYING file for full license text.
  */
 
-#ifndef __DRAWCONTEXT_H
-#define __DRAWCONTEXT_H
 
-#include <list>
-#include <map>
-#include <string>
-#include <vector>
+#ifndef __GROUPCLEAN_H
+#define __GROUPCLEAN_H
 
-typedef void * ContextT;
+#include "groupclean.base.h"
 
-typedef std::map< std::string, int > FileTextureMap;
-typedef std::vector< int > MaterialTextureList;
+#include <QtGui/QDialog>
 
-class DrawingContext
+class Model;
+
+class GroupCleanWin : public QDialog, public Ui::GroupCleanBase
 {
-   public:
-      ContextT    m_context;
-      FileTextureMap m_fileTextures;
-      MaterialTextureList m_matTextures;
-      bool        m_valid;
+   Q_OBJECT
 
-      int         m_currentTexture;
+   public:
+      GroupCleanWin( Model *, QWidget * parent = NULL );
+      virtual ~GroupCleanWin();
+
+   public slots:
+      void accept();
+      void reject();
+
+      void helpNowEvent();
+
+   protected:
+      Model * m_model;
 };
 
-typedef std::list< DrawingContext * > DrawingContextList;
-
-#endif // __DRAWCONTEXT_H
+#endif // __GROUPCLEAN_H

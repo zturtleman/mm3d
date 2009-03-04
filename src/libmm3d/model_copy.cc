@@ -145,7 +145,8 @@ Model * Model::copySelected() const
             case Model::Material::MATTYPE_TEXTURE:
                {
                   Texture * tex = TextureManager::getInstance()->getTexture( this->getTextureFilename( t ) );
-                  m->addTexture( tex );
+                  int num = m->addTexture( tex );
+                  m->setTextureName(num, getTextureName( t ) );
                }
                break;
             default:

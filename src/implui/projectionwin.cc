@@ -431,7 +431,7 @@ void ProjectionWin::projectionIndexChangedEvent( int newIndex )
 
 void ProjectionWin::zoomChangeEvent()
 {
-   double zoom = atof( m_zoomInput->text().toLatin1() );
+   double zoom = m_zoomInput->text().toDouble();
    if ( zoom < 0.00001 )
    {
       zoom = 1;

@@ -88,6 +88,7 @@ MM3D_UI= \
 	src/qtui/contextprojection.base.h \
 	src/qtui/contextrotation.base.h \
 	src/qtui/extrudewin.base.h \
+	src/qtui/groupclean.base.h \
 	src/qtui/groupwin.base.h \
 	src/qtui/helpwin.base.h \
 	src/qtui/jointwin.base.h \
@@ -137,6 +138,7 @@ MM3D_MOC= \
 	src/tools/ellipsetoolwidget.moc.cc \
 	src/depui/errorobj.moc.cc \
 	src/implui/extrudewin.moc.cc \
+	src/implui/groupclean.moc.cc \
 	src/implui/groupwin.moc.cc \
 	src/implui/helpwin.moc.cc \
 	src/implui/jointwin.moc.cc \
@@ -199,6 +201,7 @@ MM3D_MOC_OBJ= \
 	src/tools/toolwidget.moc.o \
 	src/depui/errorobj.moc.o \
 	src/implui/extrudewin.moc.o \
+	src/implui/groupclean.moc.o \
 	src/implui/groupwin.moc.o \
 	src/implui/helpwin.moc.o \
 	src/implui/jointwin.moc.o \
@@ -291,6 +294,7 @@ MM3D_OBJ= \
 	src/commands/faceoutcmd.o \
 	src/commands/flattencmd.o \
 	src/commands/flipcmd.o \
+	src/implui/groupclean.o \
 	src/implui/groupwin.o \
 	src/implui/helpwin.o \
 	src/commands/hidecmd.o \

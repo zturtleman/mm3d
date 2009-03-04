@@ -138,7 +138,7 @@ int LuaScript::runFile( const char * filename )
       }
 
       // strip bracket from error string
-      char * bracket = strchr( m_errstr.c_str(), ']' );
+      const char * bracket = strchr( m_errstr.c_str(), ']' );
       if ( bracket )
       {
          bracket++;

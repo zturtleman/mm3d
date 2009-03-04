@@ -94,7 +94,7 @@ void ValueWin::valueSliderChanged( int v )
 void ValueWin::valueEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.toLatin1() );
+   float v = str.toDouble();
    m_valueSlider->setValue( (int) v );
    m_editing = false;
 }

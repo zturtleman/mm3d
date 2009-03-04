@@ -503,7 +503,6 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
       if ( context )
       {
          drawContext = getDrawingContext( context );
-         //drawContext->m_textures.clear();
 
          if ( !drawContext->m_valid )
          {
@@ -568,7 +567,7 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                         if ( drawContext )
                         {
                            glBindTexture( GL_TEXTURE_2D,
-                                 drawContext->m_textures[ grp->m_materialIndex ] );
+                                 drawContext->m_matTextures[ grp->m_materialIndex ] );
                         }
                         else
                         {
@@ -747,7 +746,7 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                            if ( drawContext )
                            {
                               glBindTexture( GL_TEXTURE_2D,
-                                    drawContext->m_textures[ grp->m_materialIndex ] );
+                                    drawContext->m_matTextures[ grp->m_materialIndex ] );
                            }
                            else
                            {
@@ -931,7 +930,7 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                      if ( drawContext )
                      {
                         glBindTexture( GL_TEXTURE_2D,
-                              drawContext->m_textures[ grp->m_materialIndex ] );
+                              drawContext->m_matTextures[ grp->m_materialIndex ] );
                      }
                      else
                      {

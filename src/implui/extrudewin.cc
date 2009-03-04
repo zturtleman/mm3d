@@ -79,9 +79,9 @@ void ExtrudeWin::absoluteExtrudeEvent()
    model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Extrude complete").toUtf8() );
 
    // get extrude arguments
-   double x = atof( m_xEdit->text().toLatin1() );
-   double y = atof( m_yEdit->text().toLatin1() );
-   double z = atof( m_zEdit->text().toLatin1() );
+   double x = m_xEdit->text().toDouble();
+   double y = m_yEdit->text().toDouble();
+   double z = m_zEdit->text().toDouble();
 
    list<int> faces;
    m_model->getSelectedTriangles( faces );
@@ -195,7 +195,7 @@ void ExtrudeWin::normalExtrudeEvent()
    m_sides.clear();
    m_evMap.clear();
 
-   double magnitude = atof( m_normalEdit->text() );
+   double magnitude = m_normalEdit->text().toDouble();
 
    list<int> faces     = m_model->getSelectedTriangles();
    list<int> vertices  = m_model->getSelectedVertices();

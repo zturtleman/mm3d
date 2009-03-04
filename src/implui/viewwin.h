@@ -151,6 +151,7 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
 
       void groupWindowEvent();
       void textureWindowEvent();
+      void groupCleanWindowEvent();
       void textureCoordEvent();
       void paintTextureEvent();
       void projectionWindowEvent();

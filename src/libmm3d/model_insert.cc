@@ -727,6 +727,7 @@ void Model::removeTexture( unsigned index )
          if ( count == index )
          {
             m_materials.erase( it );
+            invalidateTextures();
             break;
          }
          count++;

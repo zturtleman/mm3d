@@ -16,7 +16,7 @@ Start modeling
    snap to vertex
       see also drag vertex
    hide
-      back faces are getting in the 
+      back faces are getting in the way
       select, hide selected
    edge turn
       All down the side (single before and after picture)
@@ -48,7 +48,7 @@ Start modeling
       Finding exact faces in side view can be tricky
       Switch perspective to ortho and select faces that way
       Flip back to perspective
-      Do ede turn and see result
+      Do edge turn and see result
    Move vertices to match up with leg (in side view)
    Make foot
       Select bottom faces to make ankle and heel
@@ -97,3 +97,4 @@ Start modeling
       Face shield will be transparent, insde will be visible
       Connect neck to torso at shoulders
    Completed geometry (1x1 view)
+      (lacks chest shield)

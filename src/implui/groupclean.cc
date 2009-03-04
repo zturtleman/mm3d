@@ -1,6 +1,6 @@
 /*  Misfit Model 3D
  * 
- *  Copyright (c) 2004-2007 Kevin Worcester
+ *  Copyright (c) 2009 Kevin Worcester
  * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,76 +21,69 @@
  */
 
 
-#include "mergewin.h"
+#include "groupclean.h"
 
 #include "model.h"
-#include "glmath.h"
+#include "log.h"
+#include "modelstatus.h"
 #include "decalmgr.h"
 #include "helpwin.h"
 
-#include <QtGui/QCheckBox>
-#include <QtGui/QRadioButton>
-#include <QtGui/QPushButton>
 #include <QtGui/QLineEdit>
+#include <QtGui/QRadioButton>
 #include <QtGui/QShortcut>
 
-#include <stdio.h>
 #include <stdlib.h>
 
-MergeWindow::MergeWindow( Model * model, QWidget * parent )
+
+using std::list;
+using std::map;
+
+GroupCleanWin::GroupCleanWin( Model * model, QWidget * parent )
    : QDialog( parent ),
      m_model( model )
 {
-   setupUi( this );
+   setAttribute( Qt::WA_DeleteOnClose );
    setModal( true );
+   setupUi( this );
 
    QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
    connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 }
 
-MergeWindow::~MergeWindow()
+GroupCleanWin::~GroupCleanWin()
 {
 }
 
-void MergeWindow::helpNowEvent()
+void GroupCleanWin::helpNowEvent()
 {
-   HelpWin * win = new HelpWin( "olh_mergewin.html", true );
+   HelpWin * win = new HelpWin( "olh_groupclean.html", true );
    win->show();
 }
 
-void MergeWindow::getRotation( double * vec )
+void GroupCleanWin::accept()
 {
-   if ( vec )
+   if ( m_mergeMaterials->isChecked() )
    {
-      vec[0] = m_rotX->text().toDouble() * PIOVER180;
-      vec[1] = m_rotY->text().toDouble() * PIOVER180;
-      vec[2] = m_rotZ->text().toDouble() * PIOVER180;
+      m_model->mergeIdenticalMaterials();
    }
-}
-
-void MergeWindow::getTranslation( double * vec )
-{
-   if ( vec )
+   if ( m_removeMaterials->isChecked() )
    {
-      vec[0] = m_transX->text().toDouble();
-      vec[1] = m_transY->text().toDouble();
-      vec[2] = m_transZ->text().toDouble();
+      m_model->removeUnusedMaterials();
    }
-}
-
-void MergeWindow::includeAnimEvent( bool o )
-{
-   m_animMerge->setEnabled( o );
-   m_animAppend->setEnabled( o );
-}
-
-void MergeWindow::accept()
-{
-   m_model->operationComplete( tr( "Merge models", "operation complete" ).toUtf8() );
+   if ( m_mergeGroups->isChecked() )
+      m_model->mergeIdenticalGroups();
+   {
+   }
+   if ( m_removeGroups->isChecked() )
+   {
+      m_model->removeUnusedGroups();
+   }
+   m_model->operationComplete( tr( "Group Clean-up", "operation complete" ).toUtf8() );
    QDialog::accept();
 }
 
-void MergeWindow::reject()
+void GroupCleanWin::reject()
 {
    m_model->undoCurrent();
    DecalManager::getInstance()->modelUpdated( m_model );

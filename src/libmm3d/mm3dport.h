@@ -54,7 +54,7 @@ int    PORT_symlink( const char * oldpath, const char * newpath );
 int    PORT_mkdir( const char * pathname, mode_t mode );
 int    PORT_snprintf( char * dest, size_t len, const char * fmt, ... );
 int    PORT_vsnprintf( char * dest, size_t len, const char * fmt, va_list args );
-char * PORT_strcasestr( const char * haystack, const char * needle );
+const char * PORT_strcasestr( const char * haystack, const char * needle );
 char * PORT_basename( const char * path );
 char * PORT_dirname( const char * path );
 

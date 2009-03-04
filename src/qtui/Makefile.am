@@ -19,6 +19,7 @@ libqtui_UIFILES = alignwin.ui \
 	contextrotation.ui \
 	extrudewin.ui \
 	groupwin.ui \
+	groupclean.ui \
 	helpwin.ui \
 	jointwin.ui \
 	pointwin.ui \
@@ -61,6 +62,7 @@ libqtui_UIHEADERS = \
 	contextrotation.base.h \
 	extrudewin.base.h   \
 	groupwin.base.h     \
+	groupclean.base.h     \
 	helpwin.base.h      \
 	jointwin.base.h     \
 	pointwin.base.h     \

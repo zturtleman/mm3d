@@ -30,6 +30,7 @@
 #include "toolbox.h"
 #include "cmdmgr.h"
 #include "viewportsettings.h"
+#include "groupclean.h"
 #include "groupwin.h"
 #include "texwin.h"
 #include "texturecoord.h"
@@ -593,6 +594,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent )
 
    m_materialsMenu->addAction( tr("Edit Groups...", "Groups|Edit Groups"), this, SLOT(groupWindowEvent()), g_keyConfig.getKey( "viewwin_groups_edit_groups" ) );
    m_materialsMenu->addAction( tr("Edit Materials...", "Groups|Edit Materials"), this, SLOT(textureWindowEvent()), g_keyConfig.getKey( "viewwin_groups_edit_materials" ) );
+   m_materialsMenu->addAction( tr("Clean Up Groups...", "Groups|Clean Up Groups"), this, SLOT(groupCleanWindowEvent()), g_keyConfig.getKey( "viewwin_groups_cleanup" ) );
    m_materialsMenu->addAction( tr("Reload Textures", "Groups|Reload Textures"), this, SLOT(reloadTexturesEvent()), g_keyConfig.getKey( "viewwin_groups_reload_textures" ) );
    m_materialsMenu->addSeparator();
    m_materialsMenu->addAction( tr("Edit Projection...", "Groups|Edit Projection"), this, SLOT(projectionWindowEvent()), g_keyConfig.getKey( "viewwin_groups_edit_projection" ) );
@@ -1531,6 +1533,12 @@ void ViewWindow::groupWindowEvent()
 void ViewWindow::textureWindowEvent()
 {
    TextureWindow * win = new TextureWindow( m_model );
+   win->show();
+}
+
+void ViewWindow::groupCleanWindowEvent()
+{
+   GroupCleanWin * win = new GroupCleanWin( m_model );
    win->show();
 }
 

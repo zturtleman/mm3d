@@ -100,7 +100,7 @@ void RgbaWin::alphaSliderChanged( int v )
 void RgbaWin::redEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.toLatin1() );
+   float v = str.toDouble();
    m_redSlider->setValue( (int) (v * 100) );
    m_editing = false;
 }
@@ -108,7 +108,7 @@ void RgbaWin::redEditChanged( const QString & str )
 void RgbaWin::greenEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.toLatin1() );
+   float v = str.toDouble();
    m_greenSlider->setValue( (int) (v * 100) );
    m_editing = false;
 }
@@ -116,7 +116,7 @@ void RgbaWin::greenEditChanged( const QString & str )
 void RgbaWin::blueEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.toLatin1() );
+   float v = str.toDouble();
    m_blueSlider->setValue( (int) (v * 100) );
    m_editing = false;
 }
@@ -124,7 +124,7 @@ void RgbaWin::blueEditChanged( const QString & str )
 void RgbaWin::alphaEditChanged( const QString & str )
 {
    m_editing = true;
-   float v = atof( str.toLatin1() );
+   float v = str.toDouble();
    m_alphaSlider->setValue( (int) (v * 100) );
    m_editing = false;
 }

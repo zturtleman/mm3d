@@ -299,7 +299,7 @@ string fixAbsolutePath( const char * base, const char * path )
       if ( pathIsAbsolute( path ) )
       {
          string rval;
-         char * temp = strrchr( path, '/' );
+         const char * temp = strrchr( path, '/' );
          if ( temp )
          {
             temp++;

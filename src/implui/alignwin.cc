@@ -70,7 +70,7 @@ void AlignWin::helpNowEvent()
 
 void AlignWin::alignX()
 {
-   double val = atof( m_xValue->text().toLatin1() );
+   double val = m_xValue->text().toDouble();
    log_debug( "aligning x on %f\n", val );
    alignSelectedX( m_model, m_atX, val );
    DecalManager::getInstance()->modelUpdated( m_model );
@@ -79,7 +79,7 @@ void AlignWin::alignX()
 
 void AlignWin::alignY()
 {
-   double val = atof( m_yValue->text().toLatin1() );
+   double val = m_yValue->text().toDouble();
    log_debug( "aligning y on %f\n", val );
    alignSelectedY( m_model, m_atY, val );
    DecalManager::getInstance()->modelUpdated( m_model );
@@ -88,7 +88,7 @@ void AlignWin::alignY()
 
 void AlignWin::alignZ()
 {
-   double val = atof( m_zValue->text().toLatin1() );
+   double val = m_zValue->text().toDouble();
    log_debug( "aligning z on %f\n", val );
    alignSelectedZ( m_model, m_atZ, val );
    DecalManager::getInstance()->modelUpdated( m_model );

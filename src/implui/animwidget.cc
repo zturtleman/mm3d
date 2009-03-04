@@ -298,7 +298,7 @@ void AnimWidget::changeFPS()
    if ( !m_ignoreChange && m_animCount > 0 )
    {
       log_debug( "changing FPS\n" );
-      m_model->setAnimFPS( m_mode, indexToAnim( m_animName->currentIndex() ), atof(m_fps->text().toUtf8()) );
+      m_model->setAnimFPS( m_mode, indexToAnim( m_animName->currentIndex() ), m_fps->text().toDouble() );
       m_model->operationComplete( tr( "Set FPS", "Frames per second, operation complete" ).toUtf8() );
    }
 }

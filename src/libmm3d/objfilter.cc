@@ -1099,7 +1099,9 @@ bool ObjFilter::readMaterialLibrary( const char * filename )
          }
          ptr[0] = '\0';
 
-         objmat->textureMap = m_modelPath + std::string("/") + fixFileCase( m_modelPath.c_str(), filename );
+         replaceBackslash(filename);
+         const string relativePath = fixFileCase( m_modelPath.c_str(), filename );
+         objmat->textureMap = getAbsolutePath( m_modelPath.c_str(), relativePath.c_str() );
          log_debug( "  texture map is '%s'\n", objmat->textureMap.c_str() );
       }
       else if ( strncmp( "Kd ", ptr, 3 ) == 0 )

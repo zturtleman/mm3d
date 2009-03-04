@@ -1,6 +1,11 @@
 For 1.4:
+   Test build with gcc 4.3
    Finish doc TODO list
    Update plugin docs to point to User's 1.4 plugin directory
+
+   ImTex compile fix
+   Texture path problem on Win32
+   OBJ relative material path with parent dir
 
 For 1.6:
    Resample animation

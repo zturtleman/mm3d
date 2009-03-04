@@ -231,7 +231,7 @@ class Tool
               double x, double y, double z );
 
       void makeToolCoordList( Parent * parent, ToolCoordList & list, 
-              const list< Model::Position > & positions );
+              const std::list< Model::Position > & positions );
 };
 
 class ToolSeparator : public Tool
