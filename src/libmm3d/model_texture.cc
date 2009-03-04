@@ -257,6 +257,8 @@ bool Model::setGroupTextureId( unsigned groupNumber, int textureId )
       return false;
    }
 
+   log_debug( "assigning texture %d to group %d\n", textureId, groupNumber );
+
    m_changeBits |= AddOther;
 
    if ( groupNumber >= 0 && groupNumber < m_groups.size() && textureId < (int) m_materials.size() )

@@ -1127,7 +1127,9 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
    unsigned n = 0;
    unsigned count = 0;
 
-   std::map<int,int> m_groupMap;
+   std::map<int,int> groupMap;
+   std::map<int,int> materialMap;
+   std::set<int> materialsNeeded;
 
    vertbase   = m_vertices.size();
    tribase    = m_triangles.size();
@@ -1163,14 +1165,15 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
       if ( emptyGroups || !model->getGroupTriangles(n).empty() )
       {
          const char * name = model->getGroupName( n );
-         m_groupMap[n] = addGroup( name );
+         groupMap[n] = addGroup( name );
+         uint8_t val = model->getGroupSmooth( n );
+         setGroupSmooth( groupMap[n], val );
+         int mat = model->getGroupTextureId( n );
+         if ( mat >= 0 )
+         {
+            materialsNeeded.insert( mat );
+         }
       }
-   }
-
-   for ( n = 0; n < count; n++ )
-   {
-      uint8_t val = model->getGroupSmooth( n );
-      setGroupSmooth( m_groupMap[n], val );
    }
 
    count = model->m_joints.size();
@@ -1258,46 +1261,51 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
       count = model->getTextureCount();
       for ( n = 0; n < count; n++ )
       {
-         if ( model->getMaterialType( n ) == Model::Material::MATTYPE_TEXTURE )
+         if ( materialsNeeded.find(n) != materialsNeeded.end() )
          {
-            const char * filename = model->getTextureFilename( n );
-            Texture * newtex = texmgr->getTexture( filename );
+            int newMat = 0;
+            if ( model->getMaterialType( n ) == Model::Material::MATTYPE_TEXTURE )
+            {
+               const char * filename = model->getTextureFilename( n );
+               Texture * newtex = texmgr->getTexture( filename );
 
-            int num = addTexture( newtex );
+               newMat = addTexture( newtex );
 
-            const char * name = model->getTextureName( n );
-            setTextureName(num, name);
+               const char * name = model->getTextureName( n );
+               setTextureName(newMat, name);
+            }
+            else
+            {
+               const char * name = model->getTextureName( n );
+               newMat = addColorMaterial( name );
+            }
+            materialMap[ n ] = newMat;
+
+            float val[4] = { 0.0, 0.0, 0.0, 0.0 };
+            float shin = 0.0;
+
+            model->getTextureAmbient(  n, val );
+            setTextureAmbient(  newMat, val );
+            model->getTextureDiffuse(  n, val );
+            setTextureDiffuse(  newMat, val );
+            model->getTextureEmissive( n, val );
+            setTextureEmissive( newMat, val );
+            model->getTextureSpecular( n, val );
+            setTextureSpecular( newMat, val );
+
+            model->getTextureShininess( n, shin );
+            setTextureShininess( newMat, shin );
          }
-         else
-         {
-            const char * name = model->getTextureName( n );
-            addColorMaterial( name );
-         }
-      }
-
-      for ( n = 0; n < count; n++ )
-      {
-         float val[4] = { 0.0, 0.0, 0.0, 0.0 };
-         float shin = 0.0;
-
-         model->getTextureAmbient(  n, val );
-         setTextureAmbient(  n + matbase, val );
-         model->getTextureDiffuse(  n, val );
-         setTextureDiffuse(  n + matbase, val );
-         model->getTextureEmissive( n, val );
-         setTextureEmissive( n + matbase, val );
-         model->getTextureSpecular( n, val );
-         setTextureSpecular( n + matbase, val );
-
-         model->getTextureShininess( n, shin );
-         setTextureShininess( n + matbase, shin );
       }
 
       count = model->m_groups.size();
       for ( n = 0; n < count; n++ )
       {
-         int val = model->getGroupTextureId( n );
-         setGroupTextureId( m_groupMap[n], val + matbase );
+         if ( groupMap.find(n) != groupMap.end() )
+         {
+            int oldMat = model->getGroupTextureId( n );
+            setGroupTextureId( groupMap[n], materialMap[oldMat] );
+         }
       }
 
       count = model->getProjectionCount();
@@ -1340,7 +1348,7 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
          int grp = model->getTriangleGroup( n );
          if ( grp >= 0 )
          {
-            addTriangleToGroup( m_groupMap[grp], n + tribase );
+            addTriangleToGroup( groupMap[grp], n + tribase );
          }
 
          int prj = model->getTriangleProjection( n );
