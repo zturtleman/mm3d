@@ -15,6 +15,7 @@ QMFILES = \
 
 TSFILES = \
 	mm3d_ref.ts \
+	mm3d_de.ts \
 	mm3d_fr.ts \
 	mm3d_sk.ts \
 	mm3d_bork.ts 
