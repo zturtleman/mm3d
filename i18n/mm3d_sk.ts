@@ -1468,6 +1468,10 @@ Chcete pokračovať?</translation>
         <source>X</source>
         <translation></translation>
     </message>
+    <message>
+        <source>Dimensions</source>
+        <translation>Rozmery</translation>
+    </message>
 </context>
 <context>
     <name>ContextProjection</name>
@@ -1734,6 +1738,50 @@ Chcete pokračovať?</translation>
     <message>
         <source>Close</source>
         <translation>Zatvoriť</translation>
+    </message>
+</context>
+<context>
+    <name>GroupCleanBase</name>
+    <message>
+        <source>Group Clean-up Window</source>
+        <translation>Okno vyčistenia skupín</translation>
+    </message>
+    <message>
+        <source>Merge identical materials</source>
+        <translation>Zlúčiť identické materiály</translation>
+    </message>
+    <message>
+        <source>Remove unused materials</source>
+        <translation>Odstrániť nepoužité materiály</translation>
+    </message>
+    <message>
+        <source>Merge identical groups</source>
+        <translation>Zlúčiť identické skupiny</translation>
+    </message>
+    <message>
+        <source>Remove unused groups</source>
+        <translation>Odstrániť nepoužité skupiny</translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation>Ok</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Zrušiť</translation>
+    </message>
+</context>
+<context>
+    <name>GroupCleanWin</name>
+    <message>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Group Clean-up</source>
+        <comment>operation complete</comment>
+        <translation>Vyčistiť skupiny</translation>
     </message>
 </context>
 <context>
@@ -4856,6 +4904,11 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
         <source>You are in animation mode, but there are no animations</source>
         <translation type="obsolete">Ste v režime animácie, ale nie sú tu žiadne animácie</translation>
     </message>
+    <message>
+        <source>Clean Up Groups...</source>
+        <comment>Groups|Clean Up Groups</comment>
+        <translation>Vyčistiť skupiny...</translation>
+    </message>
 </context>
 <context>
     <name>ViewportSettings</name>
@@ -4918,6 +4971,10 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
     <message>
         <source>Alt+C</source>
         <translation>Alt+Z</translation>
+    </message>
+    <message>
+        <source>Decimal Grid</source>
+        <translation>Desiatková mriežka</translation>
     </message>
 </context>
 </TS>
