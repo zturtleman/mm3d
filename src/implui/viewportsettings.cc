@@ -46,7 +46,20 @@ ViewportSettings::ViewportSettings( QWidget * parent )
    m_3dGridUnit->setText( QString( g_prefs( "ui_3dgrid_inc" ).stringValue().c_str() ) );
    m_3dGridLines->setText( QString( g_prefs( "ui_3dgrid_count" ).stringValue().c_str() ) );
 
-   m_grid_decimal->setChecked( g_prefs( "ui_grid_decimal" ).intValue() != 0 );
+   switch ( g_prefs( "ui_grid_mode" ).intValue() )
+   {
+      default:
+      case 0:
+         m_binaryGrid->setChecked( true );
+         break;
+      case 1:
+         m_decimalGrid->setChecked( true );
+         break;
+      case 2:
+         m_fixedGrid->setChecked( true );
+         break;
+   }
+
    m_3dXY->setChecked( g_prefs( "ui_3dgrid_xy" ).intValue() != 0 );
    m_3dXZ->setChecked( g_prefs( "ui_3dgrid_xz" ).intValue() != 0 );
    m_3dYZ->setChecked( g_prefs( "ui_3dgrid_yz" ).intValue() != 0 );
@@ -62,7 +75,14 @@ void ViewportSettings::accept()
    g_prefs( "ui_3dgrid_inc" )   = (const char *) m_3dGridUnit->text().toLatin1();
    g_prefs( "ui_3dgrid_count" ) = (const char *) m_3dGridLines->text().toLatin1();
 
-   g_prefs( "ui_grid_decimal" ) = m_grid_decimal->isChecked() ? 1 : 0;
+   int grid_mode = 0;
+
+   if ( m_decimalGrid->isChecked() )
+      grid_mode = 1;
+   else if (m_fixedGrid->isChecked() )
+      grid_mode = 2;
+
+   g_prefs( "ui_grid_mode" ) = grid_mode;
    g_prefs( "ui_3dgrid_xy" ) = m_3dXY->isChecked() ? 1 : 0;
    g_prefs( "ui_3dgrid_xz" ) = m_3dXZ->isChecked() ? 1 : 0;
    g_prefs( "ui_3dgrid_yz" ) = m_3dYZ->isChecked() ? 1 : 0;

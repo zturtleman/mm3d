@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>368</width>
-    <height>364</height>
+    <width>370</width>
+    <height>409</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -34,21 +34,6 @@
       <string>Canvas Grid</string>
      </property>
      <layout class="QVBoxLayout" >
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <property name="leftMargin" >
-       <number>9</number>
-      </property>
-      <property name="topMargin" >
-       <number>9</number>
-      </property>
-      <property name="rightMargin" >
-       <number>9</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>9</number>
-      </property>
       <item>
        <layout class="QHBoxLayout" >
         <property name="spacing" >
@@ -82,9 +67,23 @@
        </layout>
       </item>
       <item>
-       <widget class="QCheckBox" name="m_grid_decimal" >
+       <widget class="QRadioButton" name="m_binaryGrid" >
+        <property name="text" >
+         <string>Binary Grid</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="m_decimalGrid" >
         <property name="text" >
          <string>Decimal Grid</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="m_fixedGrid" >
+        <property name="text" >
+         <string>Fixed Grid</string>
         </property>
        </widget>
       </item>
@@ -95,8 +94,8 @@
         </property>
         <property name="sizeHint" >
          <size>
-          <width>20</width>
-          <height>40</height>
+          <width>330</width>
+          <height>16</height>
          </size>
         </property>
        </spacer>
@@ -267,6 +266,9 @@
  <layoutdefault spacing="6" margin="11" />
  <tabstops>
   <tabstop>m_gridUnit</tabstop>
+  <tabstop>m_binaryGrid</tabstop>
+  <tabstop>m_decimalGrid</tabstop>
+  <tabstop>m_fixedGrid</tabstop>
   <tabstop>m_3dGridUnit</tabstop>
   <tabstop>m_3dGridLines</tabstop>
   <tabstop>m_3dXY</tabstop>

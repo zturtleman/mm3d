@@ -2954,47 +2954,47 @@ Do you want to load all sections?</source>
 <context>
     <name>ModelViewport</name>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="1076"/>
+        <location filename="../src/depui/modelviewport.cc" line="1105"/>
         <source>Could not load background %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="1559"/>
+        <location filename="../src/depui/modelviewport.cc" line="1588"/>
         <source>Use the middle mouse button to drag/pan the viewport</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="2989"/>
+        <location filename="../src/depui/modelviewport.cc" line="3018"/>
         <source>OpenGL error = Invalid Value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="2992"/>
+        <location filename="../src/depui/modelviewport.cc" line="3021"/>
         <source>OpenGL error = Invalid Enum</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="2995"/>
+        <location filename="../src/depui/modelviewport.cc" line="3024"/>
         <source>OpenGL error = Invalid Operation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="2998"/>
+        <location filename="../src/depui/modelviewport.cc" line="3027"/>
         <source>OpenGL error = Stack Overflow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="3001"/>
+        <location filename="../src/depui/modelviewport.cc" line="3030"/>
         <source>OpenGL error = Stack Underflow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="3004"/>
+        <location filename="../src/depui/modelviewport.cc" line="3033"/>
         <source>OpenGL error = Out Of Memory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="3007"/>
+        <location filename="../src/depui/modelviewport.cc" line="3036"/>
         <source>OpenGL error = Unknown</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5731,63 +5731,73 @@ Use the &apos;Select Faces&apos; tool.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="154"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="153"/>
         <source>Default Grid Unit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="110"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="109"/>
         <source>3D Grid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="167"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="166"/>
         <source>Grid Lines</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="179"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="178"/>
         <source>X/Y Plane</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="186"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="185"/>
         <source>X/Z Plane</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="193"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="192"/>
         <source>Y/Z Plane</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="220"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="219"/>
         <source>Press F1 for help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="246"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="245"/>
         <source>&amp;Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="249"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="248"/>
         <source>Alt+O</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="256"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="255"/>
         <source>&amp;Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="259"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="258"/>
         <source>Alt+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="87"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="79"/>
         <source>Decimal Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/qtui/viewportsettings.ui" line="72"/>
+        <source>Binary Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/qtui/viewportsettings.ui" line="86"/>
+        <source>Fixed Grid</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -1034,17 +1034,46 @@ double ModelViewport::getUnitWidth()
    double ratio;
    int scale_min, scale_max;
 
-   if ( g_prefs( "ui_grid_decimal" ).intValue() != 0 )
+   if ( g_prefs.exists( "ui_grid_mode" )
+         || !g_prefs.exists( "ui_grid_decimal" ) )
    {
-      ratio = 10.0;
-      scale_min = 2;
-      scale_max = 60;
+      // Note early return for fixed width ('case 2:')
+      switch ( g_prefs( "ui_grid_mode" ).intValue() )
+      {
+         default:
+         case 0:  // Binary
+            ratio = 2.0;
+            scale_min = 4;
+            scale_max = 16;
+            break;
+         case 1:  // Decimal
+            ratio = 10.0;
+            scale_min = 2;
+            scale_max = 60;
+            break;
+         case 2:  // Fixed
+            return unitWidth;
+            break;
+      }
    }
    else
    {
-      ratio = 2.0;
-      scale_min = 4;
-      scale_max = 16;
+      // ui_grid_decimal is set, and ui_grid_mode is not.
+
+      if ( g_prefs( "ui_grid_decimal" ).intValue() != 0 )
+      {
+         ratio = 10.0;
+         scale_min = 2;
+         scale_max = 60;
+         g_prefs( "ui_grid_mode" ) = 1;
+      }
+      else
+      {
+         ratio = 2.0;
+         scale_min = 4;
+         scale_max = 16;
+         g_prefs( "ui_grid_mode" ) = 0;
+      }
    }
 
    double maxDimension = (m_width > m_height) ? m_width : m_height;
