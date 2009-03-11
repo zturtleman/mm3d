@@ -71,8 +71,13 @@ bool Model::loadTextures( ContextT context )
 
             if ( drawContext )
             {
+               int texNum = -1;
                FileTextureMap::iterator it = drawContext->m_fileTextures.find(m_materials[t]->m_filename);
-               if ( it == drawContext->m_fileTextures.end() )
+               if ( it != drawContext->m_fileTextures.end() )
+               {
+                  texNum = it->second;
+               }
+               else
                {
                   glGenTextures( 1, &(m_materials[t]->m_texture) );
                   s_glTextures++;
@@ -80,9 +85,10 @@ bool Model::loadTextures( ContextT context )
 
                   drawContext->m_fileTextures[m_materials[t]->m_filename] =
                      m_materials[t]->m_texture;
-               }
 
-               drawContext->m_matTextures[t] = m_materials[t]->m_texture;
+                  texNum = m_materials[t]->m_texture;
+               }
+               drawContext->m_matTextures[t] = texNum;
             }
             else
             {
