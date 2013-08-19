@@ -90,7 +90,7 @@ static const char * _luascript_readchunk( lua_State * L, void * data, size_t * s
 
 LuaScript::LuaScript()
 {
-   m_luaState = lua_open();
+   m_luaState = luaL_newstate();
    luaopen_math( m_luaState );
 }
 
@@ -110,7 +110,7 @@ int LuaScript::runFile( const char * filename )
       ReadChunkDataT rcd;
       rcd.src = NULL;
       rcd.filename = filename;
-      rval = lua_load( m_luaState, _luascript_readchunk, (void *) &rcd, filename );
+      rval = lua_load( m_luaState, _luascript_readchunk, (void *) &rcd, filename, NULL );
 
       if ( rval == 0 )
       {
@@ -167,7 +167,7 @@ void LuaScript::registerClosure( void * ptr, const char * name, lua_CFunction fu
    lua_pushstring( m_luaState, name );
    lua_pushlightuserdata( m_luaState, ptr );
    lua_pushcclosure( m_luaState, func, 1 );
-   lua_settable( m_luaState, LUA_GLOBALSINDEX );
+   lua_setglobal( m_luaState, name );
 }
 
 /*
