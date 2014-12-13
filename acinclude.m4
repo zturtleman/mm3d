@@ -819,7 +819,7 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
       # Normally, when there is no traditional Trolltech installation,
       # the library is installed in a place where the linker finds it
       # automatically.
-      qt_direct_test_header=qapplication.h
+      qt_direct_test_header=QtGui/QApplication
       qt_direct_test_main="
         int argc;
         char ** argv;
