@@ -55,7 +55,7 @@ template <typename T> void sorted_list<T>::insert_sorted( const T & val )
    unsigned len = this->size();
    if ( len == 0 || (*this)[len-1] < val )
    {
-      push_back( val );
+      this->push_back( val );
    }
    else
    {
@@ -128,7 +128,7 @@ template <typename T> void sorted_ptr_list<T>::insert_sorted( const T & val )
    unsigned len = this->size();
    if ( len == 0 || *((*this)[len-1]) < *val )
    {
-      push_back( val );
+      this->push_back( val );
    }
    else
    {

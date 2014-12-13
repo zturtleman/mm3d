@@ -39,6 +39,7 @@
 #include <sys/stat.h>
 #include <ctype.h>
 #include <errno.h>
+#include <unistd.h>
 
 using std::string;
 
