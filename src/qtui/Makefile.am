@@ -88,7 +88,7 @@ libqtui_UIHEADERS = \
 
 BUILT_SOURCES = $(libqtui_UIHEADERS)
 
-libqtui_a_SOURCES = $(libqtui_UIFILES)
+libqtui_a_SOURCES = $(libqtui_UIFILES) dummy.c
 
 %.base.h: %.ui
 		$(QT_UIC) -o $@ $*.ui

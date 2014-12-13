@@ -477,7 +477,11 @@ AC_DEFUN([BNV_HAVE_QT],
     [  --with-Qt-lib-dir=DIR   The Qt library is in DIR])
   dnl FIXME moc-qt4 and uic-qt4
   bnv_is_qt4=no
-  bnv_qt4_libs="-lQtCore -lQtGui -lQtOpenGL -lQtNetwork"
+  if test x"$is_osx" = xyes; then
+    bnv_qt4_libs="-framework QtCore -framework QtGui -framework QtOpenGL -framework QtNetwork"
+  else
+    bnv_qt4_libs="-lQtCore -lQtGui -lQtOpenGL -lQtNetwork"
+  fi
   if test x"$with_Qt_dir" = x"no" ||
      test x"$with_Qt_include_dir" = x"no" ||
      test x"$with_Qt_bin_dir" = x"no" ||
@@ -511,7 +515,11 @@ AC_DEFUN([BNV_HAVE_QT],
       else
         bnv_qt_lib_dir="$with_Qt_dir/lib"
       fi
-      bnv_qt_LIBS="-L$bnv_qt_lib_dir $bnv_qt4_libs $QT_XLIBS "
+      if test x"$is_osx" = xyes; then
+        bnv_qt_LIBS="-F$bnv_qt_dir/Frameworks -L$bnv_qt_lib_dir $bnv_qt4_libs $QT_XLIBS "
+      else
+        bnv_qt_LIBS="-L$bnv_qt_lib_dir $bnv_qt4_libs $QT_XLIBS "
+      fi
     else
       # Use cached value or do search, starting with suggestions from
       # the command line
