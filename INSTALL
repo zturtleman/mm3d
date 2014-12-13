@@ -13,8 +13,6 @@ Linux system.
    OpenGL with GLU (probably Mesa if you are using Linux)
       http://www.mesa3d.org/
 
-For Qt 4.x support, see notes on --with-Qt-dir below.
-
 Even if you have these packages installed you may need to install
 development packages as well.  These include header files which are
 needed to compile Misfit Model 3D.  Often such packages are marked
@@ -26,6 +24,7 @@ This program uses autoconf and automake for building from source.  What
 this means is that if you are lucky you can install this program by
 running these commands at a shell prompt (terminal window):
 
+   ./autosetup.sh
    ./configure
    make
    su [become root]
@@ -53,14 +52,10 @@ to specify the directory where Qt is installed.  In a default Qt
 installation this is what your QTDIR environment variable is set to.
 Include files are in $QTDIR/include and library files are in $QTDIR/lib.
 
-Currently on Unix-like systems you must explicitly use --with-Qt-dir
-to specify the location of Qt 4.x (ie, Qt 4.x will not be detected
-automatically).
-
 Sometimes development files are in separate paths completely, such as
-libs in /usr/lib/qt3 and headers in /usr/include/qt3.  In this case 
-use --with-Qt-include-dir=/usr/include/qt3 and 
---with-Qt-lib-dir=/usr/lib/qt3.
+libs in /usr/lib/qt4 and headers in /usr/include/qt4.  In this case 
+use --with-Qt-include-dir=/usr/include/qt4 and 
+--with-Qt-lib-dir=/usr/lib/qt4.
 
 If you want to link against a specific library of Qt you can use
 --with-Qt-lib=LIBRARY to specify the library.  For example, if

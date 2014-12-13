@@ -10,13 +10,14 @@ The home page is here:
 The help and developer mailing lists (including archives) are here:
    http://www.misfitcode.com/misfitmodel3d/mailinglist.html
 
-Misfit Model 3D requires Qt (3.x) with OpenGL support.  See the INSTALL file
+Misfit Model 3D requires Qt (4.x) with OpenGL support.  See the INSTALL file
 for details on where to get these packages.
 
 This program uses autoconf and automake for building from source.  What this
 means is that if you are lucky you can install this program with these
 easy steps:
 
+   ./autosetup.sh
    ./configure
    make
    su [become root]
@@ -27,7 +28,17 @@ instead of "su" to get a root shell.  This will build an 'mm3d' executable
 and install it in /usr/local/bin.  Documentation will be in
 /usr/local/share/doc/mm3d.
 
-On Mac OS X you must run "make mm3d.app" after "make".
+On Mac OS X, install homebrew from http://brew.sh and run the following commands.
+
+   brew install autoconf automake qt
+   ./autosetup.sh
+   ./configure --with-Qt-dir=/usr/local/Cellar/qt/4.8.6
+   make -C src
+   make mm3d.app
+
+The app bundle does not appear to work. You can launch the "mm3d" binary directly
+using "exec ./mm3d.app/Contents/MacOS/mm3d". The help manual only works if you
+run "sudo make install".
 
 For more detailed installation instructions, see the INSTALL file.
 See INSTALL.WIN32 for Windows-specific instructions.
