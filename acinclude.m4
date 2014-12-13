@@ -450,7 +450,11 @@ AC_DEFUN([BNV_HAVE_QT],
 
   AC_MSG_CHECKING(for Qt)
 
-  QT_XLIBS="$X_PRE_LIBS $X_LIBS -lX11 -lXext -lXmu -lXt -lXi $X_EXTRA_LIBS"
+
+  dnl Recent QT4 doesn't need these anymore. -- garden@acheronte.it
+  dnl QT_XLIBS="$X_PRE_LIBS $X_LIBS -lX11 -lXext -lXmu -lXt -lXi $X_EXTRA_LIBS"
+  QT_XLIBS=""
+
   if test x"$no_x" = xyes; then
      QT_XLIBS=""
   fi
@@ -975,7 +979,9 @@ dnl If we are running under X11 then add in the appropriate libraries.
 dnl Add everything we need to compile and link X programs to GL_X_CFLAGS
 dnl and GL_X_LIBS.
       GL_CFLAGS="$X_CFLAGS"
-      GL_X_LIBS="$X_PRE_LIBS $X_LIBS -lX11 -lXext -lXmu -lXt -lXi $X_EXTRA_LIBS"
+      dnl Recent QT4 doesn't need these anymore. -- garden@acheronte.it
+      dnl GL_X_LIBS="$X_PRE_LIBS $X_LIBS -lX11 -lXext -lXmu -lXt -lXi $X_EXTRA_LIBS"
+      GL_X_LIBS=""
    fi
 fi
     GL_save_CPPFLAGS="$CPPFLAGS"
