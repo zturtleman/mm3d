@@ -20,8 +20,8 @@
 ; See the COPYING file for full license text.
 
 
-!define VERSION "1.3.8"
-!define FILE_VERSION "1_3_8"
+!define VERSION "1.3.9"
+!define FILE_VERSION "1_3_9"
 
 Name "Misfit Model 3D ${VERSION}"
 OutFile "mm3d-${FILE_VERSION}-win32-installer.exe"

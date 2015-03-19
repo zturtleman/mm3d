@@ -2,8 +2,8 @@ AC_PREREQ(2.61)
 
 dnl if you change version, also change src/mm3dcore/version.h, config.h.mingw,
 dnl mm3d-win32-installer.nsi, and src/plugins/Makefile.am
-AC_INIT(mm3d, 1.3.8, kevin@misfitcode.com)
-AM_INIT_AUTOMAKE( mm3d, 1.3.8 )
+AC_INIT(mm3d, 1.3.9, zturtleman@gmail.com)
+AM_INIT_AUTOMAKE( mm3d, 1.3.9 )
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADER([config.h])
 

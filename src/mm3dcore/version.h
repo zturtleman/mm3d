@@ -28,7 +28,7 @@
 
 #define VERSION_MAJOR 1  // If you change version, change ../configure.in also
 #define VERSION_MINOR 3
-#define VERSION_PATCH 8
+#define VERSION_PATCH 9
 
 #define MM3D_DEVEL_VERSION 1
 
