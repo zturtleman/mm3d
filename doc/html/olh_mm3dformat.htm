@@ -15,7 +15,7 @@
 <h2> Overview </h2>
 
 <p>
-This document describes version 1.6 of the MM3D file format.  Data
+This document describes version 1.7 of the MM3D file format.  Data
 that is available only in specific versions will be noted below.  All other data
 is common to every version of the file format.  Previous releases of 
 Misfit Model 3D that do not read all data segments should still be able to
@@ -85,7 +85,7 @@ The file header is 12 bytes.
    <tr><th>Data</th>          <th>Type</th>     <th>Notes</th>           <th>Description</th></tr>
    <tr><td>MAGIC_NUMBER</td>  <td>int8 * 8</td> <td>'MISFIT3D'</td>      <td>If the first 8 bytes do not match this string it is not an MM3D file</td></tr>
    <tr><td>MAJOR_VERSION</td> <td>uint8</td>    <td>0x01</td>            <td>Major version number, the file format may be incompatible with newer or older filters if the major version number does not match</td></tr>
-   <tr><td>MINOR_VERSION</td> <td>uint8</td>    <td>0x06</td>            <td>Minor version number, older filters should be able to get useful data from the file but may not understand the value of all flags or data segments</td></tr>
+   <tr><td>MINOR_VERSION</td> <td>uint8</td>    <td>0x07</td>            <td>Minor version number, older filters should be able to get useful data from the file but may not understand the value of all flags or data segments</td></tr>
    <tr><td>MODEL_FLAGS</td>   <td>uint8</td>    <td>0x00 (reserved)</td> <td>Currently there are no model-wide flags, this byte is reserved in case such flags are ever needed</td></tr>
    <tr><td>OFFSET_COUNT</td>  <td>uint8</td>    <td>&nbsp;</td>          <td>This is the number of data segments.  It tells you how many offsets are in the next section of the file</td></tr>
 </table>
@@ -773,11 +773,20 @@ animation data and joint keyframes.
 
 <table border="1" cellpadding="4" cellspacing="0">
    <tr><th>Data</th>             <th>Type</th>        <th>Description</th></tr>
-   <tr><td>SKEL_FLAGS</td>       <td>uint16</td>      <td>Flags for skeletal animation (unused)</td></tr>
+   <tr><td>SKEL_FLAGS</td>       <td>uint16</td>      <td>See skeletal animation flags below</td></tr>
    <tr><td>SKEL_NAME</td>        <td>ASCIIZ</td>      <td>Name of animation</td></tr>
    <tr><td>SKEL_FPS</td>         <td>float32</td>     <td>Frames per second</td></tr>
    <tr><td>SKEL_FRAME_COUNT</td> <td>uint32</td>      <td>Number of frames in animation</td></tr>
    <tr><td>SKEL_FRAME_DATA</td>  <td>SKEL_FRAME_TYPE * [SKEL_FRAME_COUNT]</td>      <td>Frame data for skeletal animation, see below</td></tr>
+</table>
+
+<p>
+Skeletal animation flags:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Bits</th> <th>Version</th> <th>Data</th>               <th>Description</th></tr>
+   <tr><td>0</td>    <td>1.7+</td>  <td>Loop</td>      <td>If set it's a looping aniamtion, if clear it's non-looping</td></tr>
 </table>
 
 <p>
@@ -816,11 +825,20 @@ vertex positions for every vertex in the model).
 
 <table border="1" cellpadding="4" cellspacing="0">
    <tr><th>Data</th>             <th>Type</th>        <th>Description</th></tr>
-   <tr><td>FRAME_FLAGS</td>       <td>uint16</td>      <td>Flags for skeletal animation (unused)</td></tr>
+   <tr><td>FRAME_FLAGS</td>       <td>uint16</td>      <td>See frame animation flags below</td></tr>
    <tr><td>FRAME_NAME</td>        <td>ASCIIZ</td>      <td>Name of animation</td></tr>
    <tr><td>FRAME_FPS</td>         <td>float32</td>     <td>Frames per second</td></tr>
    <tr><td>FRAME_COUNT</td>       <td>uint32</td>      <td>Number of frames in animation</td></tr>
    <tr><td>FRAME_DATA</td>        <td>FRAME_ANIM_DATA * [FRAME_COUNT]</td>      <td>Vertex position data for each frame, see below</td></tr>
+</table>
+
+<p>
+Frame animation flags:
+</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+   <tr><th>Bits</th> <th>Version</th> <th>Data</th>               <th>Description</th></tr>
+   <tr><td>0</td>    <td>1.7+</td>  <td>Loop</td>      <td>If set it's a looping aniamtion, if clear it's non-looping</td></tr>
 </table>
 
 <p>

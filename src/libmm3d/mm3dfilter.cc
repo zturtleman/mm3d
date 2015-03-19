@@ -48,7 +48,7 @@ using std::string;
 const char     MisfitFilter::MAGIC[] = "MISFIT3D";
 
 const uint8_t  MisfitFilter::WRITE_VERSION_MAJOR = 0x01;
-const uint8_t  MisfitFilter::WRITE_VERSION_MINOR = 0x06;
+const uint8_t  MisfitFilter::WRITE_VERSION_MINOR = 0x07;
 
 const uint16_t MisfitFilter::OFFSET_TYPE_MASK  = 0x3fff;
 const uint16_t MisfitFilter::OFFSET_UNI_MASK   = 0x8000;
