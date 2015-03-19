@@ -264,7 +264,6 @@ Model::Model()
      m_validJoints( false ),
      m_forceAddOrDelete( false ),
      m_animationMode( ANIMMODE_NONE ),
-     m_animationLoop( true ),
      m_currentFrame( 0 ),
      m_currentAnim( 0 ),
      m_currentTime( 0.0 )

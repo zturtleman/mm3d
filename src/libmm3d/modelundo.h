@@ -1069,6 +1069,29 @@ class MU_SetAnimFPS : public ModelUndo
       double   m_oldFPS;
 };
 
+class MU_SetAnimLoop : public ModelUndo
+{
+   public:
+
+      MU_SetAnimLoop();
+      virtual ~MU_SetAnimLoop();
+
+      void undo( Model * );
+      void redo( Model * );
+      bool combine( Undo * );
+
+      unsigned size();
+
+      void setAnimLoop( Model::AnimationModeE mode, unsigned animNum, bool newLoop, bool oldLoop );
+
+   private:
+
+      Model::AnimationModeE m_mode;
+      unsigned m_animNum;
+      bool   m_newLoop;
+      bool   m_oldLoop;
+};
+
 class MU_SetAnimKeyframe : public ModelUndo
 {
    public:

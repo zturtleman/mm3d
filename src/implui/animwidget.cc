@@ -86,7 +86,6 @@ static int getSliderTickInterval( int val )
 AnimWidget::AnimWidget( Model * model, bool isUndo, QWidget * parent )
    : QWidget( parent ),
      m_model( model ),
-     m_doLoop( true ),
      m_playing( false ),
      m_undoing( isUndo ),
      m_ignoreChange( false )
@@ -116,8 +115,7 @@ void AnimWidget::initialize( Model * model, bool isUndo )
 
    m_countSlider->setTickPosition( QSlider::TicksBelow );
 
-   m_doLoop = m_model->isAnimationLooping();
-   m_loop->setChecked( m_doLoop );
+   m_loop->setChecked( m_model->getAnimationLooping(m_model->getAnimationMode(), m_model->getCurrentAnimation()) );
 
    m_skelAnimCount = m_model->getAnimCount( Model::ANIMMODE_SKELETAL );
    m_frameAnimCount = m_model->getAnimCount( Model::ANIMMODE_FRAME );
@@ -520,10 +518,15 @@ void AnimWidget::stopClicked()
 
 void AnimWidget::loopToggled( bool o )
 {
-   m_doLoop = o;
-   m_model->setAnimationLooping( o );
-   m_model->setCurrentAnimationFrame( m_countSlider->value() - 1 );
-   DecalManager::getInstance()->modelUpdated( m_model );
+   if ( !m_ignoreChange && m_animCount > 0 )
+   {
+      log_debug( "toggling loop\n" );
+      m_model->setAnimationLooping( m_mode, indexToAnim( m_animName->currentIndex() ), o );
+      m_model->operationComplete( tr( "Set Looping", "Looping, operation complete" ).toUtf8() );
+
+      m_model->setCurrentAnimationFrame( m_countSlider->value() - 1 );
+      DecalManager::getInstance()->modelUpdated( m_model );
+   }
 }
 
 void AnimWidget::doPlay()
@@ -680,6 +683,7 @@ void AnimWidget::refreshPage()
          m_ignoreChange = true;  // Qt alerts us even if we're responsible
          m_frameCount->setValue( count );
          m_fps->setText( QString::number(m_model->getAnimFPS( mode, index ) ) );
+         m_loop->setChecked( m_model->getAnimationLooping( mode, index ) );
          m_ignoreChange = false;
 
          m_countSlider->setMinimum( 1 );
@@ -703,6 +707,7 @@ void AnimWidget::refreshPage()
          m_loop->setEnabled( false );
 
          m_fps->setText( QString("0") );
+         m_loop->setChecked( false );
          m_ignoreChange = true;  // Qt alerts us even if we're responsible
          m_frameCount->setValue( 0 );
          m_ignoreChange = false;
@@ -745,6 +750,7 @@ void AnimWidget::refreshPage()
          m_loop->setEnabled( false );
 
          m_fps->setText( QString("0") );
+         m_loop->setChecked( false );
          m_ignoreChange = true;  // Qt alerts us even if we're responsible
          m_frameCount->setValue( 0 );
          m_ignoreChange = false;

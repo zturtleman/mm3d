@@ -268,7 +268,6 @@ void AnimExportWindow::accept()
 
       bool enable = m_model->setUndoEnabled( false );
 
-      m_model->setAnimationLooping( true );
       m_model->setCurrentAnimation( mode, a );
 
       int frameNum = 0;

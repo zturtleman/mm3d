@@ -2441,6 +2441,60 @@ void MU_SetAnimFPS::setFPS( Model::AnimationModeE mode, unsigned animNum, double
    m_oldFPS     = oldFps;
 }
 
+MU_SetAnimLoop::MU_SetAnimLoop()
+{
+}
+
+MU_SetAnimLoop::~MU_SetAnimLoop()
+{
+}
+
+void MU_SetAnimLoop::undo( Model * model )
+{
+   model->setAnimationLooping( m_mode, m_animNum, m_oldLoop );
+   if ( model->getAnimationMode() != Model::ANIMMODE_NONE && (model->getAnimationMode() != m_mode || model->getCurrentAnimation() != m_animNum) ) 
+   {
+      model->setCurrentAnimation( m_mode, m_animNum );
+   }
+}
+
+void MU_SetAnimLoop::redo( Model * model )
+{
+   model->setAnimationLooping( m_mode, m_animNum, m_newLoop );
+   if ( model->getAnimationMode() != Model::ANIMMODE_NONE && (model->getAnimationMode() != m_mode || model->getCurrentAnimation() != m_animNum) ) 
+   {
+      model->setCurrentAnimation( m_mode, m_animNum );
+   }
+}
+
+bool MU_SetAnimLoop::combine( Undo * u )
+{
+   MU_SetAnimLoop * undo = dynamic_cast< MU_SetAnimLoop * >( u );
+
+   if ( undo && undo->m_mode == m_mode && undo->m_animNum == m_animNum )
+   {
+      m_newLoop = undo->m_newLoop;
+      return true;
+   }
+   else
+   {
+      return false;
+   }
+}
+
+unsigned MU_SetAnimLoop::size()
+{
+   return sizeof(MU_SetAnimLoop);
+}
+
+void MU_SetAnimLoop::setAnimLoop( Model::AnimationModeE mode, unsigned animNum, bool newLoop, bool oldLoop )
+{
+   m_mode       = mode;
+   m_animNum    = animNum;
+   m_newLoop    = newLoop;
+   m_oldLoop    = oldLoop;
+}
+
 MU_SetAnimKeyframe::MU_SetAnimKeyframe()
 {
 }

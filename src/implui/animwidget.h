@@ -84,7 +84,6 @@ class AnimWidget : public QWidget, public Ui::AnimWidgetBase
       void insertAnimationNames();
 
       Model  * m_model;
-      bool     m_doLoop;
       bool     m_playing;
       double   m_timeInterval;
       double   m_currentTime;
