@@ -1,6 +1,7 @@
 /*  Md3Filter plugin for Misfit Model 3D
  *
  *  Copyright (c) 2005-2007 Russell Valentine and Kevin Worcester
+ *  Copyright (c) 2009-2015 Zack Middleton
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,6 +28,8 @@
  */
 #ifndef __MD3FILTER_H
 #define __MD3FILTER_H
+
+#define TURTLE_ARENA // Enable special tag support for my ioquake3 mod, Turtle Arena, that should not be in mm3d?
 
 #define MD3_VERSION 15
 #define MAX_QPATH 64
@@ -81,6 +84,18 @@ class Md3Filter : public ModelFilter
          MS_Head,
          MS_MAX
       } MeshSectionE;
+
+      // the order is important, used for writing continue frames by type
+      typedef enum _MeshAnimationType_e
+      {
+         MA_All,
+         MA_Both,
+         MA_Torso,
+         MA_Legs,
+         // NOTE: Team Arena has extra torso animations after legs
+         MA_Head,
+         MA_MAX
+      } MeshAnimationTypeE;
 
       typedef struct _MeshVectorInfo_t
       {
@@ -141,9 +156,9 @@ class Md3Filter : public ModelFilter
       // Indicates if the animation specified is contained in the 
       // specified MD3 model section 
       bool     animInSection( std::string animName, MeshSectionE section );
-      bool     groupInSection( std::string animName, MeshSectionE section );
-      bool     tagInSection( std::string animName, MeshSectionE section );
-      bool     tagIsSectionRoot( std::string animName, MeshSectionE section );
+      bool     groupInSection( std::string groupName, MeshSectionE section );
+      bool     tagInSection( std::string tagName, MeshSectionE section );
+      bool     tagIsSectionRoot( std::string tagName, MeshSectionE section );
 
       // Path handling functions
       std::string extractPath( const char * md3DataPath );
@@ -158,8 +173,9 @@ class Md3Filter : public ModelFilter
       string    m_modelPath;
       string    m_modelBaseName;
       std::vector<int> m_animStartFrame;
-      int              m_standFrame;
-      int              m_idleFrame;
+      int              m_standFrame; // torso
+      int              m_idleFrame; // legs
+      int              m_headFrame; // head
       std::string      m_lastMd3Path;
       Md3PathList      m_pathList;
 
@@ -170,12 +186,13 @@ class Md3Filter : public ModelFilter
       DataDest * m_dst;
 
       //writes util
+      bool     animSyncWarning(std::string name);
       bool     getVertexNormal(Model * model, int groupId, int vertexId, float *normal);
       double   greater(double a, double b);
       double   smaller(double a, double b);
       Matrix   getMatrixFromPoint( int anim, int frame, int point );
-      void getExportAnimData( int fileAnim, int & modelAnim, 
+      MeshAnimationTypeE getAnimationType(const std::string animName);
+      bool getExportAnimData( int modelAnim,
             int & fileFrame, int & frameCount, int & fps );
-
 };
 #endif // __MD3FILTER_H

@@ -1,6 +1,7 @@
 /*  Md3Filter plugin for Misfit Model 3D
  *
  *  Copyright (c) 2005-2007 Russell Valentine and Kevin Worcester
+ *  Copyright (c) 2009-2015 Zack Middleton
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -97,62 +98,13 @@ const char s_animNames[ MD3_ANIMATIONS ][16] =
    "legs_turn",
 };
 
-int s_animLoop[ MD3_ANIMATIONS ] = 
+const char *s_animSyncWarning[] =
 {
-   0, // both_death1
-   0, // both_dead1
-   0, // both_death2
-   0, // both_dead2
-   0, // both_death3
-   0, // both_dead3
-   0, // torso_gesture
-   0, // torso_attack
-   0, // torso_attack2
-   0, // torso_drop
-   0, // torso_raise
-   1, // torso_stand
-   1, // torso_stand2
-   1, // legs_walkcr
-   1, // legs_walk
-   1, // legs_run
-   1, // legs_back
-   1, // legs_swim
-   0, // legs_jump
-   0, // legs_land
-   0, // legs_jumpb
-   0, // legs_landb
-   1, // legs_idle
-   1, // legs_idlecr
-   1, // legs_turn
-};
-
-int s_animSyncWarning[ MD3_ANIMATIONS ] = 
-{
-   0, // both_death1
-   0, // both_dead1
-   0, // both_death2
-   0, // both_dead2
-   0, // both_death3
-   0, // both_dead3
-   0, // torso_gesture
-   1, // torso_attack
-   1, // torso_attack2
-   1, // torso_drop
-   1, // torso_raise
-   0, // torso_stand
-   0, // torso_stand2
-   0, // legs_walkcr
-   0, // legs_walk
-   0, // legs_run
-   0, // legs_back
-   0, // legs_swim
-   0, // legs_jump
-   0, // legs_land
-   0, // legs_jumpb
-   0, // legs_landb
-   0, // legs_idle
-   0, // legs_idlecr
-   0, // legs_turn
+   "torso_attack",
+   "torso_attack2",
+   "torso_drop",
+   "torso_raise",
+   NULL
 };
 
 Md3Filter::Md3Filter()
@@ -428,6 +380,7 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
                int animIndex = m_model->addAnimation( Model::ANIMMODE_FRAME, "AnimFrames" );
                m_model->setAnimFPS( Model::ANIMMODE_FRAME, animIndex, 15.0);
                m_model->setAnimFrameCount( Model::ANIMMODE_FRAME, 0, fileList.front().numFrames );
+               m_model->setAnimationLooping( Model::ANIMMODE_FRAME, animIndex, false );
             }
          }
       }
@@ -531,10 +484,16 @@ bool Md3Filter::readAnimations( bool create )
    string animFile = m_modelPath + "animation.cfg";
    FILE * fp = fopen( animFile.c_str(), "r" );
    int animCount = 0;
+   std::vector<std::string> animNames;
+   int last_fcount = 0;
+   bool eliteLoop = false; // Elite Force loop style
+   std::vector<int> animLoop;
+   int animKeyword = 0;
 
    m_animStartFrame.clear();
    m_standFrame = 0;
    m_idleFrame = 0;
+   m_headFrame = 0;
 
    int bothStart = -1;
    int bothEnd = -1;
@@ -542,6 +501,8 @@ bool Md3Filter::readAnimations( bool create )
    int torsoEnd = -1;
    int legsStart = -1;
    int legsEnd = -1;
+   int headStart = -1;
+   int headEnd = -1;
 
    if ( fp != NULL )
    {
@@ -563,22 +524,105 @@ bool Md3Filter::readAnimations( bool create )
             int fcount = 0;
             int loop   = 0;
             int fps    = 0;
-            if ( sscanf( line, "%d %d %d %d",
-                     &first, &fcount, &loop, &fps ) == 4 )
+            char comment[128] = { 0 }; // May hold "//" or "//BOTH_x..."
+            char fname[128] = { 0 }; // May hold "BOTH_x..."
+
+            // Loads the following types
+            // "0 5 5 15"
+            // "0 5 5 15 //"
+            // "0 5 5 15 //BOTH_DEATH1"
+            // "0 5 5 15 // BOTH_DEATH1"
+            // "0 5 5 15 //         BOTH_DEATH1"
+            // "BOTH_DEATH1 0 5 5 15" (Elite Force Single Player style)
+            // If EF SP style, must check if valid animation name
+            //   (or metadata could be loaded as animation)
+
+            if ( sscanf( line, "%d %d %d %d %s %s",
+                   &first, &fcount, &loop, &fps, comment, fname ) >= 4
+                || (sscanf( line, "%s %d %d %d %d",
+                      fname, &first, &fcount, &loop, &fps ) == 5
+                    && (strncasecmp(fname, "all_", 4) == 0 || strncasecmp(fname, "both_", 5) == 0
+                      || strncasecmp(fname, "torso_", 6) == 0 || strncasecmp(fname, "legs_", 5) == 0
+                      || strncasecmp(fname, "head_", 5) == 0)
+                    && (animKeyword || (animKeyword = 1)) ))
             {
                log_debug( "got anim frame details\n" );
-               if ( animCount == 11 )
+
+               // Check for animations that are played in reverse
+               if (fcount < 0)
                {
-                  m_standFrame = first;
-               }
-               else if ( animCount == 22 )
-               {
-                  m_idleFrame = first;
+                  // ZTM: FIXME: Make a note that it is reversed?
+                  fcount = abs(fcount);
                }
 
-               if ( animCount < 6 )
+               animLoop.push_back(loop);
+               if (create && loop == -1 && !eliteLoop)
                {
-                  if ( first + fcount > legsEnd )
+                  m_model->addMetaData( "MD3_EliteLoop", "1" );
+                  eliteLoop = true;
+               }
+
+               if (create && animKeyword == 1)
+               {
+                  m_model->addMetaData( "MD3_AnimKeyword", "1" );
+                  animKeyword = 2; // Avoid setting MD3_AnimKeyword each time
+               }
+
+               char * name = NULL;
+
+               // Check if read name from file.
+               if (strlen(comment) > 6 || strlen(fname) > 4)
+               {
+                  // "//ALL_x..."
+                  if (strlen(comment) > 6 && strncasecmp(comment, "//", 2) == 0)
+                  {
+                     name = &comment[2];
+                  }
+                  // "ALL_x..."
+                  else //if (strlen(fname) > 4)
+                  {
+                     name = fname;
+                  }
+
+                  for ( int i = 0; name[i]; i++ )
+                  {
+                     name[i] = tolower( name[i] );
+                  }
+               }
+               else
+               {
+                  // Failed to load name from file, use quake3 player default.
+                  if ( animCount < MD3_ANIMATIONS )
+                  {
+                     // I won't change it, I promise
+                     name = (char *) s_animNames[ animCount ];
+                  }
+                  else
+                  {
+                     name = (char *) "Unknown";
+                  }
+               }
+
+               // Save name for offset fixing after animations are loaded.
+               animNames.push_back(name);
+
+               if ( strncasecmp( name, "all_", 4 ) == 0 )
+               {
+                  // Check for single frame dead animation that use the last
+                  //   frame of the death animation
+                  if (animCount > 0 && strncasecmp(name, "all_dead", 8) == 0
+                     && strncasecmp(animNames[animCount-1].c_str(), "all_death", 9) == 0
+                     && fcount <= 1 )
+                  {
+                     if (m_animStartFrame[animCount-1] + last_fcount - 1 == first)
+                     {
+                        fcount = 0;
+                     }
+                  }
+               }
+               else if ( strncasecmp( name, "both_", 5 ) == 0 )
+               {
+                  if ( first + fcount > headEnd )
                   {
                      if ( bothStart == -1 )
                      {
@@ -591,8 +635,20 @@ bool Md3Filter::readAnimations( bool create )
                         bothEnd = std::max(bothEnd, first + fcount);
                      }
                   }
+
+                  // Check for single frame dead animation that use the last
+                  //   frame of the death animation
+                  if (animCount > 0 && strncasecmp(name, "both_dead", 9) == 0
+                     && strncasecmp(animNames[animCount-1].c_str(), "both_death", 10) == 0
+                     && fcount <= 1 )
+                  {
+                     if (m_animStartFrame[animCount-1] + last_fcount - 1 == first)
+                     {
+                        fcount = 0;
+                     }
+                  }
                }
-               else if ( animCount < 13 )
+               else if ( strncasecmp( name, "torso_", 6 ) == 0 )
                {
                   if ( first + fcount > legsEnd )
                   {
@@ -607,8 +663,13 @@ bool Md3Filter::readAnimations( bool create )
                         torsoEnd = std::max(torsoEnd, first + fcount);
                      }
                   }
+
+                  if ( strcasecmp(name, "torso_stand") == 0 )
+                  {
+                     m_standFrame = first;
+                  }
                }
-               else
+               else if ( strncasecmp( name, "legs_", 5 ) == 0 )
                {
                   if ( legsStart == -1 )
                   {
@@ -620,122 +681,98 @@ bool Md3Filter::readAnimations( bool create )
                      legsStart = std::min(legsStart, first);
                      legsEnd = std::max(legsEnd, first + fcount);
                   }
+
+                  if ( strcasecmp(name, "legs_idle") == 0 )
+                  {
+                     m_idleFrame = first;
+                  }
+               }
+               else if ( strncasecmp( name, "head_", 5 ) == 0 )
+               {
+                  if ( headStart == -1 )
+                  {
+                     headStart = first;
+                     headEnd = first + fcount;
+                  }
+                  else
+                  {
+                     headStart = std::min(headStart, first);
+                     headEnd = std::max(headEnd, first + fcount);
+                  }
+
+                  if ( strcasecmp(name, "head_idle") == 0 )
+                  {
+                     m_headFrame = first;
+                  }
+               }
+               else
+               {
+                  // Unknown animation
+                  log_debug( "unknown animation type-prefix '%s'\n", name );
                }
 
                m_animStartFrame.push_back( first );
 
                if ( create )
                {
-                  const char * name = NULL;
-                  if ( animCount < MD3_ANIMATIONS )
-                  {
-                     // I won't change it, I promise
-                     name = (char *) s_animNames[ animCount ];
-                  }
-                  else
-                  {
-                     char * tempname = strrchr( line, '/' );
-                     if ( tempname )
-                     {
-                        tempname++;
-                        while ( isspace(tempname[0]) )
-                        {
-                           tempname++;
-                        }
-                        int end = 0;
-                        while ( tempname[end] && !isspace(tempname[end]) )
-                        {
-                           end++;
-                        }
-                        tempname[end] = '\0';
-
-                        for ( end = 0; line[end]; end++ )
-                        {
-                           tempname[end] = tolower( line[end] );
-                        }
-                        name = tempname;
-                     }
-                     else
-                     {
-                        name = "Unknown";
-                     }
-                  }
-
                   log_debug( "adding animation '%s'\n", name );
-                  int animIndex = m_model->addAnimation( Model::ANIMMODE_FRAME, s_animNames[ animCount ] );
+                  int animIndex = m_model->addAnimation( Model::ANIMMODE_FRAME, name );
                   m_model->setAnimFPS( Model::ANIMMODE_FRAME, animIndex, (double) fps );
                   m_model->setAnimFrameCount( Model::ANIMMODE_FRAME, animIndex, fcount );
                }
 
                animCount++;
+               last_fcount = fcount;
             }
             else
             {
                if ( create )
                {
-                  char * value = NULL;
-                  if ( strncasecmp( line, "sex", 3 ) == 0 )
-                  {
-                     // sex (m,f,n)
-                     value = &line[3];
-                     while( isspace(value[0]) )
-                     {
-                        value++;
-                     }
-                     int end = 0;
-                     while ( value[end] && !isspace( value[end] ) )
-                     {
-                        end++;
-                     }
-                     value[end] = '\0';
+                  bool checkValue = false;
+                  char *name = NULL;
+                  std::string str;
 
-                     m_model->addMetaData( "MD3_sex", value );
-                  }
-                  else if ( strncasecmp( line, "footsteps", 9 ) == 0 )
-                  {
-                     // footsteps (normal,boot,flesh,mech)
-                     value = &line[9];
-                     while( isspace(value[0]) )
-                     {
-                        value++;
-                     }
-                     int end = 0;
-                     while ( value[end] && !isspace( value[end] ) )
-                     {
-                        end++;
-                     }
-                     value[end] = '\0';
+                  // Save settings "name value" into MD3_CGF_(name)
 
-                     m_model->addMetaData( "MD3_footsteps", value );
-                  }
-                  else if ( strncasecmp( line, "headoffset", 10 ) == 0 )
+                  name = line;
+                  while( isspace(name[0]) )
                   {
-                     // headoffset %d %d %d
-                     value = &line[10];
+                     name++;
+                  }
+                  int end = 0;
+                  while ( name[end] && name[end] != '\r' && name[end] != '\n' )
+                  {
+                     if (isspace(name[end]))
+                     {
+                        checkValue = true;
+                        break;
+                     }
+                     end++;
+                  }
+                  name[end] = '\0';
+                  end++;
+                  str = "MD3_CFG_";
+                  str += name;
+
+                  if (checkValue)
+                  {
+                     char *value = &name[end];
                      while( isspace(value[0]) )
                      {
                         value++;
                      }
-                     int end = 0;
+                     end = 0;
                      while ( value[end] && value[end] != '\r' && value[end] != '\n' )
                      {
                         end++;
                      }
                      value[end] = '\0';
 
-                     m_model->addMetaData( "MD3_headoffset", value );
-                  }
-                  else if ( strncasecmp( line, "fixedtorso", 10 ) == 0 )
-                  {
-                     m_model->addMetaData( "MD3_fixedtorso", "" );
-                  }
-                  else if ( strncasecmp( line, "fixedlegs", 9 ) == 0 )
-                  {
-                     m_model->addMetaData( "MD3_fixedlegs", "" );
+                     m_model->addMetaData( str.c_str(), value );
                   }
                   else
                   {
-                     log_warning( "Unknown meta data: %s", line );
+                     m_model->addMetaData( str.c_str(), "" );
                   }
                }
             }
@@ -743,6 +780,35 @@ bool Md3Filter::readAnimations( bool create )
       }
 
       fclose( fp );
+
+      // Set looping
+      if (create)
+      {
+         int animCount = m_model->getAnimCount( Model::ANIMMODE_FRAME );
+         for (int animIndex = 0; animIndex < animCount; ++animIndex)
+         {
+            bool loop = (eliteLoop) ? (animLoop[animIndex] == 0) : (animLoop[animIndex] != 0);
+            m_model->setAnimationLooping( Model::ANIMMODE_FRAME, animIndex, loop );
+         }
+      }
+
+      if (m_standFrame == 0 && torsoStart > 0)
+      {
+         // Didn't find "torso_stand", use first torso frame
+         m_standFrame = torsoStart;
+      }
+
+      if (m_idleFrame == 0 && legsStart > 0)
+      {
+         // Didn't find "legs_idle", use first legs frame
+         m_idleFrame = legsStart;
+      }
+
+      if (m_headFrame == 0 && headStart > 0)
+      {
+         // Didn't find "head_idle", use first head frame
+         m_headFrame = headStart;
+      }
 
       // Some animation files have the leg frames continuously numbered 
       // after the torso frames, others number the legs following the
@@ -752,14 +818,31 @@ bool Md3Filter::readAnimations( bool create )
       if ( legsStart >= torsoEnd )
       {
          int animOffset = legsStart - torsoStart;
-         for ( size_t a = 13; a < m_animStartFrame.size(); ++a )
+         for ( size_t a = 0; a < m_animStartFrame.size(); ++a )
          {
+            if ( strncasecmp( animNames[a].c_str(), "legs_", 5 ) != 0 )
+               continue;
             if ( m_animStartFrame[a] >= animOffset )
                m_animStartFrame[a] -= animOffset;
          }
          
          if ( m_idleFrame >= animOffset )
             m_idleFrame -= animOffset;
+      }
+
+      if ( headStart >= bothEnd )
+      {
+         int animOffset = headStart - bothStart;
+         for ( size_t a = 0; a < m_animStartFrame.size(); ++a )
+         {
+            if ( strncasecmp( animNames[a].c_str(), "head_", 5 ) != 0 )
+               continue;
+            if ( m_animStartFrame[a] >= animOffset )
+               m_animStartFrame[a] -= animOffset;
+         }
+         
+         if ( m_headFrame >= animOffset )
+            m_headFrame -= animOffset;
       }
       return true;
    }
@@ -1415,34 +1498,17 @@ void Md3Filter::setPoints( MeshSectionE section, int32_t offsetTags, int32_t num
 
 int Md3Filter::animToFrame( MeshSectionE section, int anim, int frame )
 {
-   if ( anim < 0 )
-   {
-      // Not an animation, use 'default' frame
-      switch ( section )
-      {
-         case MS_Lower:
-            return m_idleFrame;
-            break;
-         case MS_Upper:
-            return m_standFrame;
-            break;
-         default:
-            break;
-      }
-      return 0;
-   }
-
-   if ( !animInSection( getSafeName( anim ), section ) )
+   if ( anim < 0 || !animInSection( getSafeName( anim ), section ) )
    {
       // Not valid for this section, use 'default' frame
       switch ( section )
       {
          case MS_Lower:
             return m_idleFrame;
-            break;
          case MS_Upper:
             return m_standFrame;
-            break;
+         case MS_Head:
+            return m_headFrame;
          default:
             break;
       }
@@ -1459,28 +1525,20 @@ int Md3Filter::animToFrame( MeshSectionE section, int anim, int frame )
    switch ( section )
    {
       case MS_None:
+      default:
          // Not a multi-MD3 model, use specified frame
          return frame;
 
       case MS_Lower:
       case MS_Upper:
-         return fileFrame;
-
       case MS_Head:
-      default:
-         // No head animations, use first frame
-         return 0;
+         return fileFrame;
    }
    return frame;
 }
 
 bool Md3Filter::animInSection( std::string animName, MeshSectionE section )
 {
-   if ( section == MS_Head )
-   {
-      return false;
-   }
-
    if ( section == MS_None )
    {
       // Uh... sure...
@@ -1502,11 +1560,30 @@ bool Md3Filter::animInSection( std::string animName, MeshSectionE section )
          return false;
    }
 
+   if ( strncasecmp( animName.c_str(), "head_", 5 ) == 0 )
+   {
+      if ( section == MS_Head )
+         return true;
+      else
+         return false;
+   }
+
    // It's a "both_" animation, or something weird
    if ( strncasecmp( animName.c_str(), "both_", 5 ) == 0 )
+   {
+      if ( section == MS_Lower || section == MS_Upper )
+         return true;
+      else
+         return false;
+   }
+
+   if ( strncasecmp( animName.c_str(), "all_", 4 ) == 0 )
+   {
+      // Animation for torso, legs, and head!
       return true;
-   else
-      return false;
+   }
+
+   return false;
 }
 
 bool Md3Filter::groupInSection( std::string groupName, MeshSectionE section )
@@ -1569,12 +1646,31 @@ bool Md3Filter::tagInSection( std::string tagName, MeshSectionE section )
          return true;
       }
    }
-   else if ( strcasecmp( tagName.c_str(), "tag_weapon" ) == 0 )
+   else if ( strcasecmp( tagName.c_str(), "tag_weapon" ) == 0
+      // ZTM: FIXME: Game specific
+      // Support Team Arena tag point
+      || strcasecmp( tagName.c_str(), "tag_flag" ) == 0
+#ifdef TURTLE_ARENA
+      // Support Turtle Arena tag points
+      || strcasecmp( tagName.c_str(), "tag_hand_primary" ) == 0
+      || strcasecmp( tagName.c_str(), "tag_hand_secondary" ) == 0
+      || strcasecmp( tagName.c_str(), "tag_wp_away_primary" ) == 0
+      || strcasecmp( tagName.c_str(), "tag_wp_away_secondary" ) == 0
+#endif
+      )
    {
       if ( section == MS_Upper )
       {
          return true;
       }
+   }
+   else
+   {
+      // Support unknown tags. Mods can add new tags.
+      //   Better to have unknown tag in all models then none.
+      // In Quake3 the programmer selects which section the tag is on,
+      //   so it should be harmless (Other then the larger file size in the models that don't use the tag...).
+      return true;
    }
 
    return false;
@@ -1682,7 +1778,11 @@ Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filen
       if ( haveUpper && haveLower )
       {
          if (  m_model->getPointByName( "tag_torso" )  < 0
+#ifdef TURTLE_ARENA // Turtle Arena supports using tag_hand_primary as well as tag_weapon ...
+            || (m_model->getPointByName( "tag_weapon" ) < 0 && m_model->getPointByName( "tag_hand_primary" ) < 0)
+#else
             || m_model->getPointByName( "tag_weapon" ) < 0
+#endif
             || m_model->getPointByName( "tag_head" )   < 0 )
          {
             // missing required tags for player model
@@ -1713,8 +1813,20 @@ Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filen
             }
             else
             {
-               // TODO: Eventually create a prompt instead of assuming "yes"
-               log_debug( "model is implicitly a composite (no composite meta tag)\n" );
+               char answer = msg_info_prompt( transll( QT_TRANSLATE_NOOP( "LowLevel", "This looks like a player model.\nDo you want to save all sections?")).c_str(), "Ync" );
+               if ( answer == 'Y' )
+               {
+                  model->addMetaData( "MD3_composite", "1" );
+               }
+               else if ( answer == 'N' )
+               {
+                  model->addMetaData( "MD3_composite", "0" );
+                  saveAsPlayer = false;
+               }
+               else
+               {
+                  return Model::ERROR_CANCEL;
+               }
             }
          }
          else
@@ -1730,7 +1842,6 @@ Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filen
 
          std::string playerFile;
          std::string path = modelPath + "/";
-
          playerFile = path + fixFileCase( m_modelPath.c_str(), "lower.md3" );
          writeSectionFile( playerFile.c_str(), MS_Lower, meshes );
 
@@ -1813,6 +1924,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
 
    int32_t flags = 0;
    int32_t numFrames = 0;
+   int32_t numAnims = 0;
    //We are making all the anims be one anim.
    unsigned animCount = m_model->getAnimCount( Model::ANIMMODE_FRAME );
    for ( unsigned i = 0; i < animCount; i++ )
@@ -1821,6 +1933,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
       std::string name = getSafeName( i );
       if ( animInSection( name, section ) )
       {
+         numAnims++;
          numFrames += m_model->getAnimFrameCount( Model::ANIMMODE_FRAME, i );
       }
    }
@@ -1843,17 +1956,17 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
 
    unsigned pcount = m_model->getPointCount();
    int32_t numTags = (int32_t) pcount;
-   switch ( section )
+   // If spliting model, count tags.
+   if (section == MS_Head || section == MS_Lower || section == MS_Upper)
    {
-      case MS_Head:
-      case MS_Lower:
-         numTags = 1;
-         break;
-      case MS_Upper:
-         numTags = 3;
-         break;
-      default:
-         break;
+      numTags = 0;
+      for ( unsigned j = 0; j < pcount; j++ )
+      {
+         if ( tagInSection( m_model->getPointName( j ), section ) )
+         {
+            numTags++;
+         }
+      }
    }
 
    MeshList::iterator mlit;
@@ -1959,14 +2072,15 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    for ( a = 0; a < animCount; a++ )
    {
       if ( animInSection( getSafeName( a ), section ) 
-            || (section == MS_Head && a == 0) )
+            || (numAnims == 0 && a == 0) )
       {
          unsigned aFrameCount = m_model->getAnimFrameCount( Model::ANIMMODE_FRAME, a );
          if ( (aFrameCount == 0 && animCount == 1 )
-               || (section == MS_Head) )
+               || (numAnims == 0) )
          {
             aFrameCount = 1;
          }
+
          std::string animName = getSafeName( a );
          for ( unsigned t = 0; t < aFrameCount; t++ )
          {
@@ -2033,17 +2147,19 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
       }
    }
 
+   m_model->setNoAnimation();
+
    //TAGS
    log_debug( "writing tags at %d/%d\n", offsetTags, m_dst->offset() );
 
    for ( a = 0; a < animCount; a++ )
    {
       if ( animInSection( getSafeName( a ), section ) 
-            || (section == MS_Head && a == 0) )
+            || (numAnims == 0 && a == 0) )
       {
          unsigned aFrameCount = m_model->getAnimFrameCount( Model::ANIMMODE_FRAME, a );
          if ( (aFrameCount == 0 && animCount == 1)
-               || (section == MS_Head) )
+               || (numAnims == 0) )
          {
             aFrameCount = 1;
          }
@@ -2258,7 +2374,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
          for ( unsigned a = 0; a < animCount; a++ )
          {
             if ( animInSection( getSafeName( a ), section ) 
-                  || (section == MS_Head && a == 0) )
+                  || (numAnims == 0 && a == 0) )
             {
                // If there are no anims calculateFrameNormals will segfault
                // (in earlier versions of MM3D)
@@ -2268,17 +2384,21 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                }
                unsigned aFrameCount = m_model->getAnimFrameCount( Model::ANIMMODE_FRAME, a );
                if ( (aFrameCount == 0 && animCount == 1) 
-                     || (section == MS_Head) )
+                     || (numAnims == 0) )
                {
                   aFrameCount = 1;
                }
                for ( unsigned t = 0; t < aFrameCount; t++ )
                {
-                  Matrix saveMatrix = getMatrixFromPoint( a, t, rootTag ).getInverse();
+                  Matrix saveMatrix;
 
-                  if ( section == MS_Head )
+                  if ( numAnims == 0 )
                   {
                      saveMatrix = getMatrixFromPoint( -1, -1, rootTag ).getInverse();
+                  }
+                  else
+                  {
+                     saveMatrix = getMatrixFromPoint( a, t, rootTag ).getInverse();
                   }
 
                   for ( vit = (*mlit).vertices.begin(); vit != (*mlit).vertices.end(); vit++ )
@@ -2286,7 +2406,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                      double meshVec[4] = {0,0,0,1};
                      double meshNor[4] = {0,0,0,1};
 
-                     if ( section == MS_Head )
+                     if ( numAnims == 0 )
                      {
                         // force unanimated coordinates for head
                         m_model->getVertexCoords( (*vit).v, meshVec );
@@ -2353,37 +2473,85 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    return Model::ERROR_NONE;
 }
 
+bool Md3Filter::animSyncWarning(std::string name)
+{
+   char value[20];
+
+   if ( m_model->getMetaData( "MD3_NoSyncWarning", value, sizeof(value) ) )
+   {
+      if ( atoi( value ) == 1 )
+         return false;
+   }
+
+   for (unsigned i = 0; s_animSyncWarning[i] != NULL; i++)
+   {
+      if (strncasecmp(s_animSyncWarning[i], name.c_str(), name.length()) == 0)
+      {
+         return true;
+      }
+   }
+   return false;
+}
+
 bool Md3Filter::writeAnimations()
 {
    string animFile = m_modelPath + "/animation.cfg";
    FILE * fp = fopen( animFile.c_str(), "w" );
+   bool eliteLoop = false;
+   bool animKeyword = false;
 
    if ( fp != NULL )
    {
       log_debug( "writing animation.cfg\n" );
 
-      fprintf( fp, "// animation config file\r\n\r\n" );
+      fprintf( fp, "// animation config file\r\n" );
 
-      char value[30];
-      if ( m_model->getMetaData( "MD3_sex", value, sizeof(value) ) )
+      bool hadKeyword = false;
+      char keyword[1024], value[1024];
+
+      for (unsigned int i = 0; i < m_model->getMetaDataCount(); i++)
       {
-         fprintf( fp, "sex %s\r\n", value );
-      }
-      if ( m_model->getMetaData( "MD3_footsteps", value, sizeof(value) ) )
-      {
-         fprintf( fp, "footsteps %s\r\n", value );
-      }
-      if ( m_model->getMetaData( "MD3_headoffset", value, sizeof(value) ) )
-      {
-         fprintf( fp, "headoffset %s\r\n", value );
-      }
-      if ( m_model->getMetaData( "MD3_fixedtorso", value, sizeof(value) ) )
-      {
-         fprintf( fp, "fixedtorso %s\r\n", value );
-      }
-      if ( m_model->getMetaData( "MD3_fixedlegs", value, sizeof(value) ) )
-      {
-         fprintf( fp, "fixedlegs %s\r\n", value );
+         if (!m_model->getMetaData(i, keyword, sizeof (keyword), value, sizeof (value)))
+            continue;
+
+         if (strncasecmp(keyword, "MD3_CFG_", 8) == 0)
+         {
+            if (!hadKeyword)
+            {
+               hadKeyword = true;
+               fprintf( fp, "\r\n" );
+            }
+            if (strlen(value) > 0)
+               fprintf( fp, "%s %s\r\n", &keyword[8], value );
+            else
+               fprintf( fp, "%s\r\n", &keyword[8] );
+         }
+         // Support old keywords
+         else if (strncasecmp(keyword, "MD3_sex", 7) == 0
+           || strncasecmp(keyword, "MD3_footsteps", 13) == 0
+           || strncasecmp(keyword, "MD3_headoffset", 14) == 0
+           || strncasecmp(keyword, "MD3_fixedtorso", 14) == 0
+           || strncasecmp(keyword, "MD3_fixedlegs", 13) == 0)
+         {
+            if (!hadKeyword)
+            {
+               hadKeyword = true;
+               fprintf( fp, "\r\n" );
+            }
+            if (strlen(value) > 0)
+               fprintf( fp, "%s %s\r\n", &keyword[4], value );
+            else
+               fprintf( fp, "%s\r\n", &keyword[4] );
+         }
+         // animations.cfg format settings
+         else if (strncasecmp(keyword, "MD3_EliteLoop", 13) == 0)
+         {
+            eliteLoop = (atoi(value) > 0);
+         }
+         else if (strncasecmp(keyword, "MD3_AnimKeyword", 15) == 0)
+         {
+            animKeyword = (atoi(value) > 0);
+         }
       }
 
       fprintf( fp, "\r\n" );
@@ -2392,33 +2560,75 @@ bool Md3Filter::writeAnimations()
       fprintf( fp, "//    first   count   looping   fps\r\n\r\n" );
 
       char warning[] = " (MUST NOT CHANGE -- hand animation is synced to this)";
-      for ( int anim = 0; anim < MD3_ANIMATIONS; anim++ )
+      size_t animCount = m_model->getAnimCount( Model::ANIMMODE_FRAME );
+
+      size_t longestName = 16; // minimum name length for spacing
+      for ( size_t anim = 0; anim < animCount; anim++ )
       {
-         int animIndex = 0;
+         std::string name = getSafeName( anim );
+         size_t len = name.length();
+         if (len > longestName) {
+            longestName = len;
+         }
+      }
+
+      for ( size_t anim = 0; anim < animCount; anim++ )
+      {
          int animFrame = 0;
          int count = 1;
          int fps   = 15;
-         getExportAnimData( anim, animIndex, animFrame, count, fps );
+         if (!getExportAnimData( (int)anim, animFrame, count, fps ))
+         {
+            continue;
+         }
 
          int loop = count; // loop by default
 
+         std::string name = getSafeName( anim );
+         size_t len = name.length();
+         for ( size_t n = 0; n < len; n++ )
+         {
+            name[n] = std::toupper(name[n]);
+         }
+
          // disable looping on non-looping anims
-         if ( count <= 1 || s_animLoop[anim] == 0 )
+         if ( count <= 1 || !m_model->getAnimationLooping( Model::ANIMMODE_FRAME, anim ) )
          {
             loop = 0;
          }
 
-         char name[30];
-         strcpy( name, s_animNames[anim] );
-         size_t len = strlen( name );
-         for ( size_t n = 0; n < len; n++ )
+         // Convert to Elite Force Single Player Style
+         if (eliteLoop)
          {
-            name[n] = toupper( name[n] );
+            if (loop == 0)
+               loop = -1; // No loop
+            else
+               loop = 0; // Loop
          }
 
-         fprintf( fp, "%d\t%d\t%d\t%d\t\t// %s%s\r\n", 
-               animFrame, count, loop, fps, name,
-               (s_animSyncWarning[anim] ? warning : "") );
+         if (animKeyword)
+         {
+            // Align animFrame
+            const size_t MAX_SPACES = 40;
+            char spaces[MAX_SPACES+2] = {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
+                                 ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\0'};
+            size_t maxSpaces = (longestName+6 > MAX_SPACES) ? MAX_SPACES : longestName+6;
+
+            spaces[((name.length() < maxSpaces) ? (maxSpaces - name.length()) : 0)] = '\0';
+
+            if (animSyncWarning(name))
+               fprintf( fp, "%s%s\t%d\t%d\t%d\t%d\t\t// %s\r\n", 
+                     name.c_str(), spaces, animFrame, count, loop, fps, warning );
+            else
+               fprintf( fp, "%s%s\t%d\t%d\t%d\t%d\r\n", 
+                     name.c_str(), spaces, animFrame, count, loop, fps );
+         }
+         else
+         {
+            fprintf( fp, "%d\t%d\t%d\t%d\t\t// %s%s\r\n", 
+                  animFrame, count, loop, fps, name.c_str(),
+                  (animSyncWarning(name) ? warning : "") );
+         }
       }
       fclose( fp );
       return true;
@@ -2458,21 +2668,65 @@ Matrix Md3Filter::getMatrixFromPoint( int anim, int frame, int point )
    return m;
 }
 
-void Md3Filter::getExportAnimData( int fileAnim, int & modelAnim, 
+Md3Filter::MeshAnimationTypeE Md3Filter::getAnimationType(const std::string animName)
+{
+   MeshAnimationTypeE animType = MA_All;
+
+   if (strncasecmp(animName.c_str(), "both_", 5) == 0)
+   {
+      animType = MA_Both;
+   }
+   else if (strncasecmp(animName.c_str(), "torso_", 6) == 0)
+   {
+      animType = MA_Torso;
+   }
+   else if (strncasecmp(animName.c_str(), "legs_", 5) == 0)
+   {
+      animType = MA_Legs;
+   }
+   else if (strncasecmp(animName.c_str(), "head_", 5) == 0)
+   {
+      animType = MA_Head;
+   }
+
+   return animType;
+}
+
+bool Md3Filter::getExportAnimData( int modelAnim,
       int & fileFrame, int & frameCount, int & fps )
 {
    fileFrame  = 0;
    frameCount = 0;
 
    size_t animCount = m_model->getAnimCount( Model::ANIMMODE_FRAME );
+   std::string animName = getSafeName( modelAnim );
+   MeshAnimationTypeE animType = getAnimationType(animName);
+
+   // If this is a "dead" animation and its after a "death" animation
+   //   and it has 0 frames, use the last frame of the death animation.
+   if (modelAnim > 0 && ((strncasecmp(animName.c_str(), "all_dead", 8) == 0
+         && strncasecmp(getSafeName( modelAnim - 1 ).c_str(), "all_death", 9) == 0)
+      || (strncasecmp(animName.c_str(), "both_dead", 9) == 0
+         && strncasecmp(getSafeName( modelAnim - 1 ).c_str(), "both_death", 10) == 0))
+      && m_model->getAnimFrameCount( Model::ANIMMODE_FRAME, modelAnim ) == 0 )
+   {
+      if (getExportAnimData( modelAnim - 1, fileFrame, frameCount, fps ))
+      {
+         fileFrame += frameCount - 1;
+         frameCount = 1;
+         return true;
+      }
+   }
 
    for ( size_t a = 0; a < animCount; a++ )
    {
       std::string name = getSafeName( a );
       if ( animInSection( name, MS_Upper )
-            || animInSection( name, MS_Lower ) )
+            || animInSection( name, MS_Lower )
+            || animInSection( name, MS_Head ))
       {
-         if ( strcasecmp( s_animNames[ fileAnim ], name.c_str() ) == 0 )
+         MeshAnimationTypeE type = getAnimationType(name);
+         if ( (int)a == modelAnim )
          {
             frameCount = m_model->getAnimFrameCount( Model::ANIMMODE_FRAME, a );
             fps   = (int) m_model->getAnimFPS( Model::ANIMMODE_FRAME, a );
@@ -2482,30 +2736,31 @@ void Md3Filter::getExportAnimData( int fileAnim, int & modelAnim,
                fps = 15;
             }
 
-            return;
+            if (animType > MA_Torso)
+            {
+               // Must still count torso animations after this for fileFrame
+               //   and in the case of 'head' we must also count legs animations
+            }
+            else
+            {
+               return true;
+            }
          }
-         else
+         // All torso frames go before leg frames, all legs go after tosro
+         else if (((int)a < modelAnim && animType >= type) || ((int)a > modelAnim && animType > type))
          {
-            fileFrame += m_model->getAnimFrameCount( Model::ANIMMODE_FRAME, a );
+               fileFrame += m_model->getAnimFrameCount( Model::ANIMMODE_FRAME, a );
          }
       }
    }
 
-   // if this is a "dead" animation and there isn't a "dead" animation, try the
-   // last frame of the "death" animation.
-   if ( fileAnim < 6 && (fileAnim % 2) == 1 )
+   if (animType > MA_Torso && frameCount)
    {
-      fileAnim--;
-      getExportAnimData( fileAnim, modelAnim, fileFrame, frameCount, fps );
-      if ( modelAnim >= 0 )
-      {
-         fileFrame += frameCount - 1;
-         frameCount = 1;
-         return;
-      }
+      // Finished adding up fileFrame for legs or head animations
+      return true;
    }
 
-   modelAnim = -1;
+   return false;
 }
 
 size_t Md3Filter::writeIdentity()

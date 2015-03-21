@@ -2,6 +2,36 @@ Changes for 1.3.9 (devel)
    Allow user to set fixed grid
    Fixed incorrect texture rending for materials that share GL textures
    Made animation loop a per-animation setting that is saved in .mm3d files
+   Fix saving MD3 models with no frame animations
+   Added dialog to confirm saving a 3 part MD3 player model (before always assumed yes)
+   Made MD3 player support more general
+      Read animation names / looping from animations.cfg (names fallback to
+         Quake 3 ones if missing)
+      Write animation names / looping from model animations instead of using
+         a hard coded list
+      Save all unknown points (e.g., not tag_torso, tag_head, or tag_weapon)
+         as tags in all model parts
+      Added support for "ALL_" (legs, torso, head) and "HEAD_" animation prefixes
+   Store options from animations.cfg in meta data "MD3_CFG_(keyword)" "(value)"
+      instead of special handling for 'sex','footsteps','headoffset',
+      'fixedtorso','fixedlegs' which were stored as MD3_(keyword)
+      MD3_sex, MD3_footsteps, etc are still supported for saving
+   Added support for animation names to be at the beginning of each animation
+      line in animations.cfg. Meta data "MD3_AnimKeyword" "1". Automatically
+      detected when loading animations.cfg
+   Allow disabling writing sync warnings in MD3 player animations.cfg using
+      meta data "MD3_NoSyncWarning" "1". This is not automatically detected
+      when loading animations.cfg
+   Added support for Elite Force animations.cfg loop numbering style
+      0=loop all frames, -1=don't loop. Meta data "MD3_EliteLoop" "1"
+      Automatically detected when loading animations.cfg
+   Added support for loading / saving Quake III: Team Arena players
+      Save point "tag_flag" in (only) the torso model
+      Handle new Q3TA torso animations after legs in animations.cfg
+   Added support for loading / saving Turtle Arena players
+
+   Note: Exporting existing mm3d models to quake 3 md3 players requires setting
+      the correct names and loop on animations.
 
 Changes for 1.3.8
    Don't report power of two warning for background images
