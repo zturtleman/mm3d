@@ -1647,16 +1647,14 @@ bool Md3Filter::tagInSection( std::string tagName, MeshSectionE section )
       }
    }
    else if ( strcasecmp( tagName.c_str(), "tag_weapon" ) == 0
-      // ZTM: FIXME: Game specific
+      // ZTM: FIXME?: Game specific
       // Support Team Arena tag point
       || strcasecmp( tagName.c_str(), "tag_flag" ) == 0
-#ifdef TURTLE_ARENA
       // Support Turtle Arena tag points
       || strcasecmp( tagName.c_str(), "tag_hand_primary" ) == 0
       || strcasecmp( tagName.c_str(), "tag_hand_secondary" ) == 0
       || strcasecmp( tagName.c_str(), "tag_wp_away_primary" ) == 0
       || strcasecmp( tagName.c_str(), "tag_wp_away_secondary" ) == 0
-#endif
       )
    {
       if ( section == MS_Upper )
@@ -1778,11 +1776,6 @@ Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filen
       if ( haveUpper && haveLower )
       {
          if (  m_model->getPointByName( "tag_torso" )  < 0
-#ifdef TURTLE_ARENA // Turtle Arena supports using tag_hand_primary as well as tag_weapon ...
-            || (m_model->getPointByName( "tag_weapon" ) < 0 && m_model->getPointByName( "tag_hand_primary" ) < 0)
-#else
-            || m_model->getPointByName( "tag_weapon" ) < 0
-#endif
             || m_model->getPointByName( "tag_head" )   < 0 )
          {
             // missing required tags for player model

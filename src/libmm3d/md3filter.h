@@ -29,8 +29,6 @@
 #ifndef __MD3FILTER_H
 #define __MD3FILTER_H
 
-#define TURTLE_ARENA // Enable special tag support for my ioquake3 mod, Turtle Arena, that should not be in mm3d?
-
 #define MD3_VERSION 15
 #define MAX_QPATH 64
 #define MD3_MAX_FRAMES 1024
