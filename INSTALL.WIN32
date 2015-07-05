@@ -49,7 +49,7 @@ Once you have installed mingw and Qt, do the following steps:
 1. Make sure QTDIR is set and mingw's bin directory and Qt's bin
    directory is in your PATH
 2. Open a cmd prompt and go to the mm3d-X.X.X directory
-3. Run 'mingw32-make -f Makefile.mingw'
+3. Run 'mingw32-make -f Makefile.generic'
 
 
 Install Instructions

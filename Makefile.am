@@ -1,4 +1,4 @@
-EXTRA_DIST = Makefile.mingw \
+EXTRA_DIST = Makefile.generic \
 	config.h.mingw \
 	cleanup.sh \
 	mm3d-win32-installer.nsi \
