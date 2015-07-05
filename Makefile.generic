@@ -38,6 +38,13 @@ PLATFORM=$(COMPILE_PLATFORM)
 endif
 export PLATFORM
 
+ifeq ($(PLATFORM),mingw32)
+  MINGW=1
+endif
+ifeq ($(PLATFORM),mingw64)
+  MINGW=1
+endif
+
 ifeq ($(COMPILE_ARCH),powerpc)
   COMPILE_ARCH=ppc
 endif
@@ -68,7 +75,7 @@ ifndef BUILD
 BUILD=build
 endif
 
-ifeq ($(PLATFORM),mingw32)
+ifdef MINGW
 	B=${BUILD}/mingw-${ARCH}
 
 ifndef QTDIR
@@ -606,7 +613,7 @@ mm3d_moc: ${MM3D_MOC}
 
 $(BIN)/mm3d${BINEXT}: ${MM3D_MOC_OBJ} ${LIB_OBJ} ${MM3D_OBJ}
 	$(echo_cmd) "LINKING $(BIN)/mm3d${BINEXT}"
-ifeq ($(MINGW32),1)
+ifdef MINGW
 	${WINDRES} src/icon.rc ${B}/icon.o
 	$(Q)${CXX} ${CXXFLAGS} ${DEFS} -o $(BIN)/mm3d${BINEXT} ${MM3D_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} ${B}/icon.o ${LINK}
 else
@@ -616,7 +623,7 @@ endif
 mm3d: $(BIN)/mm3d${BINEXT}
 
 install:
-ifeq ($(PLATFORM),mingw32)
+ifdef MINGW
 	$(echo_cmd) "See install.bat"
 else
 	$(Q)${MKDIR} -p "$(PREFIX)/bin"
