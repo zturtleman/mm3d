@@ -621,9 +621,15 @@ ifeq ($(PLATFORM),mingw32)
 else
 	$(Q)${MKDIR} -p "$(PREFIX)/bin"
 	$(Q)$(CP) $(BIN)/mm3d${BINEXT} "$(PREFIX)/bin/mm3d"
-	# FIXME: Copy plugins to "$(PREFIX)share/mm3d/plugins"
+	$(echo_cmd) FIXME: Copy plugins to "$(PREFIX)/share/mm3d/plugins"
 	$(Q)${MKDIR} -p "$(PREFIX)/share/doc/mm3d"
 	$(Q)$(CP) -r doc/* "$(PREFIX)/share/doc/mm3d"
+	$(Q)${MKDIR} -p "$(PREFIX)/share/applications/"
+	$(Q)$(CP) desktop/mm3d.desktop "$(PREFIX)/share/applications/"
+	$(Q)${MKDIR} -p "$(PREFIX)/share/mimelnk/application/"
+	$(Q)$(CP) desktop/x-mm3d.desktop "$(PREFIX)/share/mimelnk/application/"
+	$(Q)${MKDIR} -p "$(PREFIX)/share/pixmaps/"
+	$(Q)$(CP) desktop/*.xpm "$(PREFIX)/share/pixmaps/"
 endif
 
 installer: mm3d
