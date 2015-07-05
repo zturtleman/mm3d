@@ -73,8 +73,13 @@ ifndef BUILD
 BUILD=build
 endif
 
+B=${BUILD}/${PLATFORM}-${ARCH}
+
+#############################################################################
+# SETUP AND BUILD -- MINGW
+#############################################################################
+
 ifdef MINGW
-	B=${BUILD}/mingw-${ARCH}
 
 ifndef QTDIR
 	QTDIR = C:/Qt4
@@ -155,8 +160,61 @@ endif
 	LINK=-L${QT_LIB_DIR} ${QT_LIBS} -mwindows -lopengl32 -lglu32 -lwsock32
 
 	BINEXT=.${ARCH}.exe
-else
-	B=${BUILD}/linux-${ARCH}
+else # ifeq mingw
+
+#############################################################################
+# SETUP AND BUILD -- MAC OS X
+#############################################################################
+
+ifeq ($(PLATFORM),darwin)
+
+  ifndef PREFIX
+    PREFIX=/usr/local
+  endif
+
+  ifndef QTDIR
+    QTDIR = /usr/local/Cellar/qt/4.8.7
+  endif
+  ifndef QT_INCLUDE_DIR
+    QT_INCLUDE_DIR=${QTDIR}/include
+  endif
+  ifndef QT_LIB_DIR
+    QT_LIB_DIR=${QTDIR}/lib
+  endif
+  ifndef QT_LIBS
+    QT_LIBS = -framework QtCore -framework QtGui -framework QtOpenGL -framework QtNetwork
+  endif
+
+  CC=gcc
+  CXX=g++
+  DEL=rm -f
+  CP=cp
+  MKDIR=mkdir -p
+
+  ifndef UIC
+    UIC=${QTDIR}/bin/uic
+  endif
+  ifndef MOC
+    MOC=${QTDIR}/bin/moc
+  endif
+
+  LIB=lib
+
+  LINK=-F$(QTDIR)/Frameworks -L${QT_LIB_DIR} ${QT_LIBS} -framework OpenGl
+
+  ifeq ($(ARCH),x86)
+    BASE_FLAGS += -m32
+  endif
+
+  BASE_FLAGS += -DPREFIX="\"$(PREFIX)\"" -DMACOSX -DIS_OSX
+
+  BINEXT=.${ARCH}
+
+else # ifeq darwin
+
+#############################################################################
+# SETUP AND BUILD -- LINUX
+#############################################################################
 
 ifndef PREFIX
 	PREFIX=/usr/local
@@ -224,7 +282,8 @@ endif
 	BASE_FLAGS += -DPREFIX="\"$(PREFIX)\""
 
 	BINEXT=.${ARCH}
-endif
+endif # darwin
+endif # mingw
 
 #CXXFLAGS=-Wall -g3
 CXXFLAGS=-O1 ${BASE_FLAGS} -I${QT_INCLUDE_DIR} -DMM3D_EDIT -DQT3_SUPPORT -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${B}/depui -I${B}/qtui -I${B}/implui -I${B}/commands
