@@ -98,6 +98,9 @@ ifdef MINGW
     ifndef MOC
       MOC=${QTDIR}/bin/moc
     endif
+    ifndef LRELEASE
+      LRELEASE=${QTDIR}/bin/lrelease
+    endif
 
     ifndef QT_LIB_DIR
       $(error Need to specify QT_LIB_DIR with MinGW Qt4 libs)
@@ -173,6 +176,9 @@ ifdef MINGW
   ifndef MOC
     MOC=${QTDIR}/bin/moc.exe
   endif
+  ifndef LRELEASE
+    LRELEASE=${QTDIR}/bin/lrelease.exe
+  endif
 
   LINK=-L${QT_LIB_DIR} ${QT_LIBS} -mwindows -lopengl32 -lglu32 -static-libgcc -static-libstdc++
 
@@ -211,6 +217,9 @@ ifeq ($(PLATFORM),darwin)
   endif
   ifndef MOC
     MOC=${QTDIR}/bin/moc
+  endif
+  ifndef LRELEASE
+    LRELEASE=${QTDIR}/bin/lrelease
   endif
 
   LIB=lib
@@ -256,6 +265,9 @@ else # ifeq darwin
   endif
   ifndef MOC
     MOC=${QTDIR}/bin/moc
+  endif
+  ifndef LRELEASE
+    LRELEASE=${QTDIR}/bin/lrelease
   endif
 
   LINK=-L${QT_LIB_DIR} ${QT_LIBS} -lGLU -lGL -lSM -lICE
@@ -661,6 +673,21 @@ MM3D_OBJ= \
 	${B}/implui/viewwin_influences.o \
 	${B}/commands/weldcmd.o 
 
+QMFILES = \
+	${B}/i18n/mm3d_de.qm \
+	${B}/i18n/mm3d_fr.qm \
+	${B}/i18n/mm3d_sk.qm \
+	${B}/i18n/mm3d_ref.qm \
+	${B}/i18n/mm3d_bork.qm \
+	${B}/i18n/qt_ar.qm \
+	${B}/i18n/qt_cs.qm \
+	${B}/i18n/qt_de.qm \
+	${B}/i18n/qt_fr.qm \
+	${B}/i18n/qt_iw.qm \
+	${B}/i18n/qt_ru.qm \
+	${B}/i18n/qt_sk.qm \
+	${B}/i18n/qt_zh_CN.qm
+
 ifeq (${V},1)
 echo_cmd=@:
 Q=
@@ -689,9 +716,14 @@ $(echo_cmd) "MOC $<"
 $(Q)${MOC} $< -o $@
 endef
 
+define DO_LRELEASE
+$(echo_cmd) "LRELEASE $<"
+$(Q)${LRELEASE} $< -qm $@
+endef
+
 .PHONY: all mm3d_ui mm3d_moc mm3d clean
 
-all: makedirs mm3d_ui mm3d_moc mm3d
+all: makedirs mm3d_ui mm3d_moc mm3d qmfiles
 
 makedirs:
 	@if [ ! -d ${B} ];then ${MKDIR} ${B};fi
@@ -703,10 +735,13 @@ makedirs:
 	@if [ ! -d ${B}/libmm3d ];then ${MKDIR} ${B}/libmm3d;fi
 	@if [ ! -d ${B}/mm3dcore ];then ${MKDIR} ${B}/mm3dcore;fi
 	@if [ ! -d ${B}/commands ];then ${MKDIR} ${B}/commands;fi
+	@if [ ! -d ${B}/i18n ];then ${MKDIR} ${B}/i18n;fi
 
 mm3d_ui: ${MM3D_UI}
 
 mm3d_moc: ${MM3D_MOC}
+
+qmfiles: ${QMFILES}
 
 $(BIN)/mm3d${BINEXT}: ${MM3D_MOC_OBJ} ${LIB_OBJ} ${MM3D_OBJ}
 	$(echo_cmd) "LINKING $(BIN)/mm3d${BINEXT}"
@@ -719,7 +754,6 @@ endif
 
 mm3d: $(BIN)/mm3d${BINEXT}
 
-# FIXME: Missing installing i18n
 install:
 ifdef MINGW
 	$(echo_cmd) "See install.bat"
@@ -727,12 +761,14 @@ else
 	$(INSTALL) -d "$(PREFIX)/bin"
 	$(INSTALL) -m 0755 $(BIN)/mm3d${BINEXT} "$(PREFIX)/bin/mm3d"
 	$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/"
-	$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/olh_images/screencaps"
-	$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/olh_images/tools"
+	$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/olh_images/screencaps/"
+	$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/olh_images/tools/"
 	${INSTALL} -m 0644 doc/html/*.html "$(PREFIX)/share/doc/mm3d/"
 	${INSTALL} -m 0644 doc/html/olh_images/screencaps/*.png "$(PREFIX)/share/doc/mm3d/olh_images/screencaps/"
 	${INSTALL} -m 0644 doc/html/olh_images/tools/*.png "$(PREFIX)/share/doc/mm3d/olh_images/tools/"
 	${INSTALL} -m 0644 doc/html/olh_images/tools/*.jpg "$(PREFIX)/share/doc/mm3d/olh_images/tools/"
+	$(INSTALL) -d "$(PREFIX)/share/mm3d/i18n/"
+	${INSTALL} -m 0644 ${B}/i18n/*.qm "$(PREFIX)/share/mm3d/i18n/"
 	$(INSTALL) -d "$(PREFIX)/share/applications/"
 	$(INSTALL) -d "$(PREFIX)/share/mimelnk/application/"
 	$(INSTALL) -d "$(PREFIX)/share/pixmaps/"
@@ -770,10 +806,14 @@ ${B}/tools/%.moc.cc: src/tools/%.h
 ${B}/depui/%.moc.cc: src/depui/%.h
 	$(DO_MOC)
 
+${B}/i18n/%.qm: i18n/%.ts
+	$(DO_LRELEASE)
+
 clean:
 	$(Q)rm ${LIB_OBJ}
 	$(Q)rm ${MM3D_UI}
 	$(Q)rm ${MM3D_MOC}
+	$(Q)rm ${QMFILES}
 	$(Q)rm ${MM3D_OBJ}
 	$(Q)rm ${MM3D_MOC_OBJ}
 	$(Q)rm $(BIN)/mm3d.${ARCH}
