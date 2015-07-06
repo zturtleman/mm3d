@@ -92,15 +92,6 @@ ifdef MINGW
     ifndef QTDIR
       QTDIR=/usr/share/qt4
     endif
-    ifndef UIC
-      UIC=${QTDIR}/bin/uic
-    endif
-    ifndef MOC
-      MOC=${QTDIR}/bin/moc
-    endif
-    ifndef LRELEASE
-      LRELEASE=${QTDIR}/bin/lrelease
-    endif
 
     ifndef QT_LIB_DIR
       $(error Need to specify QT_LIB_DIR with MinGW Qt4 libs)
@@ -137,6 +128,8 @@ ifdef MINGW
       WINDRES=$(strip $(foreach MINGW_PREFIX, $(MINGW_PREFIXES), \
          $(call bin_path, $(MINGW_PREFIX)-windres)))
     endif
+
+    TOOLS_BINEXT=
   else
     # Some MinGW installations define CC to cc, but don't actually provide cc,
     # so check that CC points to a real binary and use gcc if it doesn't
@@ -151,6 +144,8 @@ ifdef MINGW
     ifndef WINDRES
       WINDRES=windres
     endif
+
+    TOOLS_BINEXT=.exe
   endif
 
   ifeq ($(CC),)
@@ -168,16 +163,6 @@ ifdef MINGW
   endif
   ifndef QT_LIBS
     QT_LIBS=-lQtCore4 -lQtGui4 -lQtOpenGL4 -lQtNetwork4
-  endif
-
-  ifndef UIC
-    UIC=${QTDIR}/bin/uic.exe
-  endif
-  ifndef MOC
-    MOC=${QTDIR}/bin/moc.exe
-  endif
-  ifndef LRELEASE
-    LRELEASE=${QTDIR}/bin/lrelease.exe
   endif
 
   LINK=-L${QT_LIB_DIR} ${QT_LIBS} -mwindows -lopengl32 -lglu32 -static-libgcc -static-libstdc++
@@ -212,16 +197,6 @@ ifeq ($(PLATFORM),darwin)
   CC=gcc
   CXX=g++
 
-  ifndef UIC
-    UIC=${QTDIR}/bin/uic
-  endif
-  ifndef MOC
-    MOC=${QTDIR}/bin/moc
-  endif
-  ifndef LRELEASE
-    LRELEASE=${QTDIR}/bin/lrelease
-  endif
-
   LIB=lib
 
   LINK=-F$(QTDIR)/Frameworks -L${QT_LIB_DIR} ${QT_LIBS} -framework OpenGl
@@ -233,6 +208,7 @@ ifeq ($(PLATFORM),darwin)
   BASE_FLAGS += -DPREFIX="\"$(PREFIX)\"" -DMACOSX -DIS_OSX
 
   BINEXT=.${ARCH}
+  TOOLS_BINEXT=
 
 else # ifeq darwin
 
@@ -260,16 +236,6 @@ else # ifeq darwin
   CC=gcc
   CXX=g++
 
-  ifndef UIC
-    UIC=${QTDIR}/bin/uic
-  endif
-  ifndef MOC
-    MOC=${QTDIR}/bin/moc
-  endif
-  ifndef LRELEASE
-    LRELEASE=${QTDIR}/bin/lrelease
-  endif
-
   LINK=-L${QT_LIB_DIR} ${QT_LIBS} -lGLU -lGL -lSM -lICE
 
   ifeq ($(ARCH),x86)
@@ -284,9 +250,21 @@ else # ifeq darwin
   BASE_FLAGS += -DPREFIX="\"$(PREFIX)\""
 
   BINEXT=.${ARCH}
+  TOOLS_BINEXT=
 
 endif # darwin
 endif # mingw
+
+ifndef UIC
+  UIC=${QTDIR}/bin/uic${TOOLS_BINEXT}
+endif
+ifndef MOC
+  MOC=${QTDIR}/bin/moc${TOOLS_BINEXT}
+endif
+ifndef LRELEASE
+  LRELEASE=${QTDIR}/bin/lrelease${TOOLS_BINEXT}
+endif
+
 
 #CXXFLAGS=-Wall -g3
 CXXFLAGS=-O1 ${BASE_FLAGS} -I${QT_INCLUDE_DIR} -DMM3D_EDIT -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${B}/depui -I${B}/qtui -I${B}/implui -I${B}/commands
