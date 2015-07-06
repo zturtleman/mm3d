@@ -83,20 +83,22 @@ B=${BUILD}/${PLATFORM}-${ARCH}
 
 ifdef MINGW
 
-ifndef QTDIR
-	QTDIR = C:/Qt4
-endif
-ifndef QT_INCLUDE_DIR
-	QT_INCLUDE_DIR=${QTDIR}/include
-endif
-ifndef QT_LIB_DIR
-	QT_LIB_DIR=${QTDIR}/lib
-endif
-ifndef QT_LIBS
-	QT_LIBS = -lQtCore4 -lQtGui4 -lQtOpenGL4 -lQtNetwork4
-endif
-
   ifeq ($(CROSS_COMPILING),1)
+    # Linux QT
+    ifndef QTDIR
+      QTDIR = /usr/share/qt4
+    endif
+    ifndef UIC
+      UIC=${QTDIR}/bin/uic
+    endif
+    ifndef MOC
+      MOC=${QTDIR}/bin/moc
+    endif
+
+    ifndef QT_LIB_DIR
+      $(error Need to specify QT_LIB_DIR with MinGW Qt4 libs)
+    endif
+
     # If CC is already set to something generic, we probably want to use
     # something more specific
     ifneq ($(findstring $(strip $(CC)),cc gcc),)
@@ -146,6 +148,19 @@ endif
 
   ifeq ($(CC),)
     $(error Cannot find a suitable cross compiler for $(PLATFORM))
+  endif
+
+  ifndef QTDIR
+    QTDIR = C:/Qt/4.8.5
+  endif
+  ifndef QT_INCLUDE_DIR
+    QT_INCLUDE_DIR=${QTDIR}/include
+  endif
+  ifndef QT_LIB_DIR
+    QT_LIB_DIR=${QTDIR}/lib
+  endif
+  ifndef QT_LIBS
+    QT_LIBS = -lQtCore4 -lQtGui4 -lQtOpenGL4 -lQtNetwork4
   endif
 
 	DEL=rm -f
@@ -722,7 +737,7 @@ mm3d_moc: ${MM3D_MOC}
 $(BIN)/mm3d${BINEXT}: ${MM3D_MOC_OBJ} ${LIB_OBJ} ${MM3D_OBJ}
 	$(echo_cmd) "LINKING $(BIN)/mm3d${BINEXT}"
 ifdef MINGW
-	${WINDRES} src/icon.rc ${B}/icon.o
+	$(Q)${WINDRES} src/icon.rc ${B}/icon.o
 	$(Q)${CXX} ${CXXFLAGS} ${DEFS} -o $(BIN)/mm3d${BINEXT} ${MM3D_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} ${B}/icon.o ${LINK}
 else
 	$(Q)${CXX} ${CXXFLAGS} ${DEFS} -o $(BIN)/mm3d${BINEXT} ${MM3D_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} ${LINK}
