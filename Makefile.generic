@@ -88,11 +88,10 @@ MKDIR=mkdir -p
 ifdef MINGW
 
   ifeq ($(CROSS_COMPILING),1)
-    # Linux QT
+    # Linux QTDIR
     ifndef QTDIR
       QTDIR=/usr/share/qt4
     endif
-
     ifndef QT_LIB_DIR
       $(error Need to specify QT_LIB_DIR with MinGW Qt4 libs)
     endif
@@ -155,12 +154,6 @@ ifdef MINGW
   ifndef QTDIR
     QTDIR=C:/Qt/4.8.5
   endif
-  ifndef QT_INCLUDE_DIR
-    QT_INCLUDE_DIR=${QTDIR}/include
-  endif
-  ifndef QT_LIB_DIR
-    QT_LIB_DIR=${QTDIR}/lib
-  endif
   ifndef QT_LIBS
     QT_LIBS=-lQtCore4 -lQtGui4 -lQtOpenGL4 -lQtNetwork4
   endif
@@ -184,20 +177,9 @@ ifeq ($(PLATFORM),darwin)
   ifndef QTDIR
     QTDIR=/usr/local/Cellar/qt/4.8.7
   endif
-  ifndef QT_INCLUDE_DIR
-    QT_INCLUDE_DIR=${QTDIR}/include
-  endif
-  ifndef QT_LIB_DIR
-    QT_LIB_DIR=${QTDIR}/lib
-  endif
   ifndef QT_LIBS
     QT_LIBS=-framework QtCore -framework QtGui -framework QtOpenGL -framework QtNetwork
   endif
-
-  CC=gcc
-  CXX=g++
-
-  LIB=lib
 
   LINK=-F$(QTDIR)/Frameworks -L${QT_LIB_DIR} ${QT_LIBS} -framework OpenGl
 
@@ -205,7 +187,7 @@ ifeq ($(PLATFORM),darwin)
     BASE_FLAGS += -m32
   endif
 
-  BASE_FLAGS += -DPREFIX="\"$(PREFIX)\"" -DMACOSX -DIS_OSX
+  BASE_FLAGS += -DPREFIX="\"$(PREFIX)\"" -DIS_OSX
 
   BINEXT=.${ARCH}
   TOOLS_BINEXT=
@@ -223,18 +205,9 @@ else # ifeq darwin
   ifndef QTDIR
     QTDIR=/usr/share/qt4
   endif
-  ifndef QT_INCLUDE_DIR
-    QT_INCLUDE_DIR=${QTDIR}/include
-  endif
-  ifndef QT_LIB_DIR
-    QT_LIB_DIR=${QTDIR}/lib
-  endif
   ifndef QT_LIBS
     QT_LIBS=-lQtCore -lQtGui -lQtOpenGL -lQtNetwork
   endif
-
-  CC=gcc
-  CXX=g++
 
   LINK=-L${QT_LIB_DIR} ${QT_LIBS} -lGLU -lGL -lSM -lICE
 
@@ -254,6 +227,13 @@ else # ifeq darwin
 
 endif # darwin
 endif # mingw
+
+ifndef QT_INCLUDE_DIR
+  QT_INCLUDE_DIR=${QTDIR}/include
+endif
+ifndef QT_LIB_DIR
+  QT_LIB_DIR=${QTDIR}/lib
+endif
 
 ifndef UIC
   UIC=${QTDIR}/bin/uic${TOOLS_BINEXT}
