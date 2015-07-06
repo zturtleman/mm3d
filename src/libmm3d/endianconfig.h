@@ -27,10 +27,6 @@
 // Can't use qconfig.h here because libmm3d cannot depend on Qt
 #include "config.h"
 
-#ifndef WIN32
-#include <arpa/inet.h>
-#endif  // !WIN32
-
 #if BYTEORDER == 4321 // endian test (big endian)
 
 inline uint16_t ltoh_u16( uint16_t littleval ) {

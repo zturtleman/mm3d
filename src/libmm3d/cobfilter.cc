@@ -36,12 +36,6 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#ifdef WIN32
-#include <winsock2.h>
-#else
-#include <netinet/in.h>
-#endif // WIN32
-
 #include <vector>
 
 using std::list;

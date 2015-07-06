@@ -159,7 +159,7 @@ ifndef MOC
 	MOC=${QTDIR}/bin/moc.exe
 endif
 
-	LINK=-L${QT_LIB_DIR} ${QT_LIBS} -mwindows -lopengl32 -lglu32 -lwsock32
+	LINK=-L${QT_LIB_DIR} ${QT_LIBS} -mwindows -lopengl32 -lglu32
 
 	BINEXT=.${ARCH}.exe
 else # ifeq mingw

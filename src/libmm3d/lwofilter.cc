@@ -26,6 +26,7 @@
 #include "model.h"
 #include "texture.h"
 #include "log.h"
+#include "endianconfig.h"
 #include "binutil.h"
 #include "misc.h"
 #include "filtermgr.h"
@@ -920,7 +921,7 @@ uint32_t LwoFilter::readU4()
    memcpy( &val, m_bufPos, sizeof(val) );
    m_bufPos += sizeof(val);
 
-   val = ntohl( val );
+   val = btoh_u32( val );
 
    return val;
 }
@@ -931,7 +932,7 @@ uint16_t LwoFilter::readU2()
    memcpy( &val, m_bufPos, sizeof(val) );
    m_bufPos += sizeof(val);
 
-   val = ntohs( val );
+   val = btoh_u16( val );
 
    return val;
 }
@@ -951,7 +952,7 @@ int32_t LwoFilter::readI4()
    memcpy( &val, m_bufPos, sizeof(val) );
    m_bufPos += sizeof(val);
 
-   val = ntohl( val );
+   val = btoh_32( val );
 
    return val;
 }
@@ -962,7 +963,7 @@ int16_t LwoFilter::readI2()
    memcpy( &val, m_bufPos, sizeof(val) );
    m_bufPos += sizeof(val);
 
-   val = ntohs( val );
+   val = btoh_16( val );
 
    return val;
 }
@@ -978,16 +979,13 @@ int8_t LwoFilter::readI1()
 
 float LwoFilter::readF4()
 {
-   uint32_t val = 0;
+   float val = 0;
    memcpy( &val, m_bufPos, sizeof(val) );
    m_bufPos += sizeof(val);
 
-   val = ntohl( val );
+   val = btoh_float( val );
 
-   float fval = 0;
-   memcpy( &fval, &val, sizeof(val) );
-
-   return fval;
+   return val;
 }
 
 unsigned LwoFilter::readColor( float & r, float & g, float & b )

@@ -74,12 +74,6 @@
 #include <ctype.h>
 #include <limits.h>
 
-#ifdef WIN32
-#include <winsock2.h>
-#else
-#include <netinet/in.h>
-#endif // WIN32
-
 #include <map>
 #include <vector>
 

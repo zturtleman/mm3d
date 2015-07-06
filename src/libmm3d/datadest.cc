@@ -69,16 +69,8 @@ void DataDest::setEndianness( EndiannessE e )
    }
    else
    {
-#ifdef WIN32
       m_endfunc16 = htob_u16;
       m_endfunc32 = htob_u32;
-#elif defined IS_OSX
-      m_endfunc16 = htol_u16;
-      m_endfunc32 = htol_u32;
-#else
-      m_endfunc16 = htons;
-      m_endfunc32 = htonl;
-#endif
       m_endfuncfl = htob_float;
    }
 }

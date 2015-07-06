@@ -2047,9 +2047,9 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
          if ( modelJoints[j]->m_parent >= (signed) jcount )
          {
             log_warning( "Joint %d has bad parent joint, checking endianness\n", j );
-            if ( htonl( modelJoints[j]->m_parent ) < jcount )
+            if ( htob_u32( modelJoints[j]->m_parent ) < jcount )
             {
-               modelJoints[j]->m_parent = htonl( modelJoints[j]->m_parent );
+               modelJoints[j]->m_parent = htob_u32( modelJoints[j]->m_parent );
             }
             else if ( htol_u32( modelJoints[j]->m_parent ) < jcount )
             {

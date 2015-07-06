@@ -66,16 +66,8 @@ void DataSource::setEndianness( EndiannessE e )
    }
    else
    {
-#ifdef WIN32
       m_endfunc16 = btoh_u16;
       m_endfunc32 = btoh_u32;
-#elif defined IS_OSX
-      m_endfunc16 = ltoh_u16;
-      m_endfunc32 = ltoh_u32;
-#else
-      m_endfunc16 = ntohs;
-      m_endfunc32 = ntohl;
-#endif
       m_endfuncfl = btoh_float;
    }
 }

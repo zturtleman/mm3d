@@ -30,12 +30,6 @@
 #include <stdarg.h>
 #include "config.h"
 
-#ifdef WIN32
-#include <winsock2.h>
-#else
-#include <netinet/in.h>
-#endif // WIN32
-
 
 struct _PORT_timeval
 {
