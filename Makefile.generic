@@ -739,6 +739,7 @@ endif
 
 mm3d: $(BIN)/mm3d${BINEXT}
 
+# FIXME: Missing installing i18n
 install:
 ifdef MINGW
 	$(echo_cmd) "See install.bat"
@@ -758,6 +759,8 @@ else
 	${INSTALL} -m 0644 desktop/mm3d.desktop "$(PREFIX)/share/applications/"
 	${INSTALL} -m 0644 desktop/x-mm3d.desktop "$(PREFIX)/share/mimelnk/application/"
 	${INSTALL} -m 0644 desktop/*.xpm "$(PREFIX)/share/pixmaps/"
+	$(INSTALL) -d "$(PREFIX)/share/man/man1/"
+	${INSTALL} -m 0644 man/mm3d.1 "$(PREFIX)/share/man/man1/"
 endif
 
 installer: mm3d
