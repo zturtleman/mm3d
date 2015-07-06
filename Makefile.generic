@@ -775,5 +775,5 @@ clean:
 	$(Q)rm ${QMFILES}
 	$(Q)rm ${MM3D_OBJ}
 	$(Q)rm ${MM3D_MOC_OBJ}
-	$(Q)rm $(BIN)/mm3d.${ARCH}
+	$(Q)rm $(BIN)/mm3d${BINEXT}
 
