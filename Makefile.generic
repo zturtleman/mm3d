@@ -303,7 +303,7 @@ endif # darwin
 endif # mingw
 
 #CXXFLAGS=-Wall -g3
-CXXFLAGS=-O1 ${BASE_FLAGS} -I${QT_INCLUDE_DIR} -DMM3D_EDIT -DQT3_SUPPORT -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${B}/depui -I${B}/qtui -I${B}/implui -I${B}/commands
+CXXFLAGS=-O1 ${BASE_FLAGS} -I${QT_INCLUDE_DIR} -DMM3D_EDIT -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${B}/depui -I${B}/qtui -I${B}/implui -I${B}/commands
 DEFS=
 
 BIN=${B}
