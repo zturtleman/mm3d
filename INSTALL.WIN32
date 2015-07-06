@@ -27,9 +27,9 @@ Misfit Model 3D.  By default only .mm3d is associated.
 Prerequisites
 =============
 
-You can get Qt 4 here:
+You can get Qt 4.x here:
 
-   http://trolltech.com/developer/downloads/qt/windows
+   https://download.qt.io/archive/qt/
 
 You can get mingw using Qt 4's binary installer, or download
 and install mingw yourself from the official website:
@@ -37,7 +37,7 @@ and install mingw yourself from the official website:
    http://www.mingw.org/
 
 You must have your QTDIR environment variable set to the root
-Qt directory (for example, c:\Qt\4.0.1).  The Mingw and Qt bin
+Qt directory (for example, C:\Qt\4.8.6).  The Mingw and Qt bin
 directories must be in your path.
 
 
@@ -49,7 +49,8 @@ Once you have installed mingw and Qt, do the following steps:
 1. Make sure QTDIR is set and mingw's bin directory and Qt's bin
    directory is in your PATH
 2. Open a cmd prompt and go to the mm3d-X.X.X directory
-3. Run 'mingw32-make -f Makefile.generic'
+3. Copy config.h.generic to config.h
+4. Run 'mingw32-make -f Makefile.generic'
 
 
 Install Instructions

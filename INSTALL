@@ -8,8 +8,8 @@ Misfit Model 3D requires the following packages for proper operation.
 They are most likely already installed if you have a modern working 
 Linux system.
 
-   Qt (3.x or 4.x) with OpenGL support
-      http://www.trolltech.com
+   Qt (4.x) with OpenGL support
+      https://download.qt.io/archive/qt/
    OpenGL with GLU (probably Mesa if you are using Linux)
       http://www.mesa3d.org/
 
@@ -27,20 +27,20 @@ running these commands at a shell prompt (terminal window):
    ./autosetup.sh
    ./configure
    make
-   su [become root]
-   make install
+   sudo make install
 
-On some system configurations you may need to run "sudo bash" instead of
-"su" to get a root shell.
+On Mac OS X, you must run "make mm3d.app" after running "make".
 
-On Mac OS X, you must run "make mm3d.app" after "make".
-
-The default PREFIX (install location) is /usr/local.  Files are 
+The default PREFIX (install location) is /usr/local.  Files are
 installed in the following directories.
 
-   PREFIX/bin                 - mm3d executable
-   PREFIX/share/mm3d/plugins  - plugins
-   PREFIX/share/doc/mm3d      - program documentation
+   PREFIX/bin                       - mm3d executable
+   PREFIX/share/mm3d/plugins        - plugins
+   PREFIX/share/doc/mm3d            - program documentation
+   PREFIX/share/applications        - program menu entry
+   PREFIX/share/mimelnk/application - .mm3d file integration
+   PREFIX/share/pixmaps             - program menu icon
+   PREFIX/share/man/man1            - program manual
 
 You can give ./configure arguments to change how the program is 
 compiled.  For example you can change the default install location 

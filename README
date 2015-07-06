@@ -20,15 +20,13 @@ easy steps:
    ./autosetup.sh
    ./configure
    make
-   su [become root]
-   make install
+   sudo make install
 
-Depending on your system configuration, you may have to run "sudo bash"
-instead of "su" to get a root shell.  This will build an 'mm3d' executable
-and install it in /usr/local/bin.  Documentation will be in
-/usr/local/share/doc/mm3d.
+This will build an 'mm3d' executable and install it in /usr/local/bin.
+Documentation will be in /usr/local/share/doc/mm3d.
 
-On Mac OS X, install homebrew from http://brew.sh and run the following commands.
+On Mac OS X, install homebrew from http://brew.sh and run the following
+commands.
 
    brew install autoconf automake qt
    ./autosetup.sh
@@ -36,9 +34,9 @@ On Mac OS X, install homebrew from http://brew.sh and run the following commands
    make -C src
    make mm3d.app
 
-The app bundle does not appear to work. You can launch the "mm3d" binary directly
-using "exec ./mm3d.app/Contents/MacOS/mm3d". The help manual only works if you
-run "sudo make install".
+The app bundle does not appear to work. You can launch the "mm3d" binary
+directly using "exec ./mm3d.app/Contents/MacOS/mm3d". The help manual only
+works if you run "sudo make install".
 
 For more detailed installation instructions, see the INSTALL file.
 See INSTALL.WIN32 for Windows-specific instructions.
