@@ -1311,7 +1311,7 @@ void Model::insertFrameAnimFrame( unsigned anim, unsigned frame,
       {
          fa->m_frameData.push_back( data );
       }
-      else if ( frame == fa->m_frameData.size() )
+      else if ( frame < fa->m_frameData.size() )
       {
          unsigned count = 0;
          vector<FrameAnimData *>::iterator it;
