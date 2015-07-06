@@ -77,6 +77,10 @@ bin_path=$(shell which $(1) 2> /dev/null)
 
 B=${BUILD}/${PLATFORM}-${ARCH}
 
+INSTALL=install
+MKDIR=mkdir -p
+
+
 #############################################################################
 # SETUP AND BUILD -- MINGW
 #############################################################################
@@ -163,10 +167,6 @@ ifdef MINGW
     QT_LIBS = -lQtCore4 -lQtGui4 -lQtOpenGL4 -lQtNetwork4
   endif
 
-	DEL=rm -f
-	CP=cmd /c copy
-	MKDIR=mkdir -p
-
 ifndef UIC
 	UIC=${QTDIR}/bin/uic.exe
 endif
@@ -204,9 +204,6 @@ ifeq ($(PLATFORM),darwin)
 
   CC=gcc
   CXX=g++
-  DEL=rm -f
-  CP=cp
-  MKDIR=mkdir -p
 
   ifndef UIC
     UIC=${QTDIR}/bin/uic
@@ -252,9 +249,6 @@ endif
 
 	CC=gcc
 	CXX=g++
-	DEL=rm -f
-	CP=cp
-	MKDIR=mkdir -p
 
 ifndef UIC
 	UIC=${QTDIR}/bin/uic
@@ -749,17 +743,21 @@ install:
 ifdef MINGW
 	$(echo_cmd) "See install.bat"
 else
-	$(Q)${MKDIR} -p "$(PREFIX)/bin"
-	$(Q)$(CP) $(BIN)/mm3d${BINEXT} "$(PREFIX)/bin/mm3d"
-	$(echo_cmd) FIXME: Copy plugins to "$(PREFIX)/share/mm3d/plugins"
-	$(Q)${MKDIR} -p "$(PREFIX)/share/doc/mm3d"
-	$(Q)$(CP) -r doc/* "$(PREFIX)/share/doc/mm3d"
-	$(Q)${MKDIR} -p "$(PREFIX)/share/applications/"
-	$(Q)$(CP) desktop/mm3d.desktop "$(PREFIX)/share/applications/"
-	$(Q)${MKDIR} -p "$(PREFIX)/share/mimelnk/application/"
-	$(Q)$(CP) desktop/x-mm3d.desktop "$(PREFIX)/share/mimelnk/application/"
-	$(Q)${MKDIR} -p "$(PREFIX)/share/pixmaps/"
-	$(Q)$(CP) desktop/*.xpm "$(PREFIX)/share/pixmaps/"
+	$(INSTALL) -d "$(PREFIX)/bin"
+	$(INSTALL) -m 0755 $(BIN)/mm3d${BINEXT} "$(PREFIX)/bin/mm3d"
+	$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/"
+	$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/olh_images/screencaps"
+	$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/olh_images/tools"
+	${INSTALL} -m 0644 doc/html/*.html "$(PREFIX)/share/doc/mm3d/"
+	${INSTALL} -m 0644 doc/html/olh_images/screencaps/*.png "$(PREFIX)/share/doc/mm3d/olh_images/screencaps/"
+	${INSTALL} -m 0644 doc/html/olh_images/tools/*.png "$(PREFIX)/share/doc/mm3d/olh_images/tools/"
+	${INSTALL} -m 0644 doc/html/olh_images/tools/*.jpg "$(PREFIX)/share/doc/mm3d/olh_images/tools/"
+	$(INSTALL) -d "$(PREFIX)/share/applications/"
+	$(INSTALL) -d "$(PREFIX)/share/mimelnk/application/"
+	$(INSTALL) -d "$(PREFIX)/share/pixmaps/"
+	${INSTALL} -m 0644 desktop/mm3d.desktop "$(PREFIX)/share/applications/"
+	${INSTALL} -m 0644 desktop/x-mm3d.desktop "$(PREFIX)/share/mimelnk/application/"
+	${INSTALL} -m 0644 desktop/*.xpm "$(PREFIX)/share/pixmaps/"
 endif
 
 installer: mm3d
@@ -790,12 +788,10 @@ ${B}/depui/%.moc.cc: src/depui/%.h
 	$(DO_MOC)
 
 clean:
-	$(Q)${DEL} ${LIB_OBJ}
-	$(Q)${DEL} ${MM3D_UI}
-	$(Q)${DEL} ${MM3D_MOC}
-	$(Q)${DEL} ${MM3D_OBJ}
-	$(Q)${DEL} ${MM3D_MOC_OBJ}
-	$(Q)${DEL} src/*.base.*
-	$(Q)${DEL} $(BIN)/mm3d.${ARCH}
-	$(Q)${DEL} -r ${BUILD}
+	$(Q)rm ${LIB_OBJ}
+	$(Q)rm ${MM3D_UI}
+	$(Q)rm ${MM3D_MOC}
+	$(Q)rm ${MM3D_OBJ}
+	$(Q)rm ${MM3D_MOC_OBJ}
+	$(Q)rm $(BIN)/mm3d.${ARCH}
 
