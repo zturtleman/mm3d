@@ -113,6 +113,7 @@ AC_CONFIG_FILES([ Makefile
           doc/Makefile
           doc/html/Makefile
           doc/html/olh_images/Makefile
+          doc/html/olh_images/screencaps/Makefile
           doc/html/olh_images/tools/Makefile
           ])
 AC_OUTPUT

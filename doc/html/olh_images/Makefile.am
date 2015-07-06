@@ -1,1 +1,1 @@
-SUBDIRS = tools
+SUBDIRS = screencaps tools
