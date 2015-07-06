@@ -90,7 +90,7 @@ ifdef MINGW
   ifeq ($(CROSS_COMPILING),1)
     # Linux QT
     ifndef QTDIR
-      QTDIR = /usr/share/qt4
+      QTDIR=/usr/share/qt4
     endif
     ifndef UIC
       UIC=${QTDIR}/bin/uic
@@ -155,7 +155,7 @@ ifdef MINGW
   endif
 
   ifndef QTDIR
-    QTDIR = C:/Qt/4.8.5
+    QTDIR=C:/Qt/4.8.5
   endif
   ifndef QT_INCLUDE_DIR
     QT_INCLUDE_DIR=${QTDIR}/include
@@ -164,19 +164,20 @@ ifdef MINGW
     QT_LIB_DIR=${QTDIR}/lib
   endif
   ifndef QT_LIBS
-    QT_LIBS = -lQtCore4 -lQtGui4 -lQtOpenGL4 -lQtNetwork4
+    QT_LIBS=-lQtCore4 -lQtGui4 -lQtOpenGL4 -lQtNetwork4
   endif
 
-ifndef UIC
-	UIC=${QTDIR}/bin/uic.exe
-endif
-ifndef MOC
-	MOC=${QTDIR}/bin/moc.exe
-endif
+  ifndef UIC
+    UIC=${QTDIR}/bin/uic.exe
+  endif
+  ifndef MOC
+    MOC=${QTDIR}/bin/moc.exe
+  endif
 
-	LINK=-L${QT_LIB_DIR} ${QT_LIBS} -mwindows -lopengl32 -lglu32 -static-libgcc -static-libstdc++
+  LINK=-L${QT_LIB_DIR} ${QT_LIBS} -mwindows -lopengl32 -lglu32 -static-libgcc -static-libstdc++
 
-	BINEXT=.${ARCH}.exe
+  BINEXT=.${ARCH}.exe
+
 else # ifeq mingw
 
 #############################################################################
@@ -190,7 +191,7 @@ ifeq ($(PLATFORM),darwin)
   endif
 
   ifndef QTDIR
-    QTDIR = /usr/local/Cellar/qt/4.8.7
+    QTDIR=/usr/local/Cellar/qt/4.8.7
   endif
   ifndef QT_INCLUDE_DIR
     QT_INCLUDE_DIR=${QTDIR}/include
@@ -199,7 +200,7 @@ ifeq ($(PLATFORM),darwin)
     QT_LIB_DIR=${QTDIR}/lib
   endif
   ifndef QT_LIBS
-    QT_LIBS = -framework QtCore -framework QtGui -framework QtOpenGL -framework QtNetwork
+    QT_LIBS=-framework QtCore -framework QtGui -framework QtOpenGL -framework QtNetwork
   endif
 
   CC=gcc
@@ -230,47 +231,48 @@ else # ifeq darwin
 # SETUP AND BUILD -- LINUX
 #############################################################################
 
-ifndef PREFIX
-	PREFIX=/usr/local
-endif
+  ifndef PREFIX
+    PREFIX=/usr/local
+  endif
 
-ifndef QTDIR
-	QTDIR = /usr/share/qt4
-endif
-ifndef QT_INCLUDE_DIR
-	QT_INCLUDE_DIR=${QTDIR}/include
-endif
-ifndef QT_LIB_DIR
-	QT_LIB_DIR=${QTDIR}/lib
-endif
-ifndef QT_LIBS
-	QT_LIBS = -lQtCore -lQtGui -lQtOpenGL -lQtNetwork
-endif
+  ifndef QTDIR
+    QTDIR=/usr/share/qt4
+  endif
+  ifndef QT_INCLUDE_DIR
+    QT_INCLUDE_DIR=${QTDIR}/include
+  endif
+  ifndef QT_LIB_DIR
+    QT_LIB_DIR=${QTDIR}/lib
+  endif
+  ifndef QT_LIBS
+    QT_LIBS=-lQtCore -lQtGui -lQtOpenGL -lQtNetwork
+  endif
 
-	CC=gcc
-	CXX=g++
+  CC=gcc
+  CXX=g++
 
-ifndef UIC
-	UIC=${QTDIR}/bin/uic
-endif
-ifndef MOC
-	MOC=${QTDIR}/bin/moc
-endif
+  ifndef UIC
+    UIC=${QTDIR}/bin/uic
+  endif
+  ifndef MOC
+    MOC=${QTDIR}/bin/moc
+  endif
 
-	LINK=-L${QT_LIB_DIR} ${QT_LIBS} -lGLU -lGL -lSM -lICE
+  LINK=-L${QT_LIB_DIR} ${QT_LIBS} -lGLU -lGL -lSM -lICE
 
-	ifeq ($(ARCH),x86)
-		# linux32 make ...
-		BASE_FLAGS += -m32
-	else
-	ifeq ($(ARCH),ppc64)
-		BASE_FLAGS += -m64
-	endif
-	endif
+  ifeq ($(ARCH),x86)
+    # linux32 make ...
+    BASE_FLAGS += -m32
+  else
+  ifeq ($(ARCH),ppc64)
+    BASE_FLAGS += -m64
+  endif
+  endif
 
-	BASE_FLAGS += -DPREFIX="\"$(PREFIX)\""
+  BASE_FLAGS += -DPREFIX="\"$(PREFIX)\""
 
-	BINEXT=.${ARCH}
+  BINEXT=.${ARCH}
+
 endif # darwin
 endif # mingw
 
