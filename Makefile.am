@@ -1,5 +1,5 @@
 EXTRA_DIST = Makefile.generic \
-	config.h.mingw \
+	config.h.generic \
 	cleanup.sh \
 	mm3d-win32-installer.nsi \
 	TRANSLATORS \
