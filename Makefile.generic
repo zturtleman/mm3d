@@ -279,7 +279,7 @@ endif
 	endif
 	endif
 
-	LINK=-L${QT_LIB_DIR} ${QT_LIBS} -lGLU -lGL -lSM -lICE  -lX11 -lXext -lXmu -lXt -lXi
+	LINK=-L${QT_LIB_DIR} ${QT_LIBS} -lGLU -lGL -lSM -lICE
 
 	ifeq ($(ARCH),x86)
 		# linux32 make ...
