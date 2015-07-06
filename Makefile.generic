@@ -257,28 +257,6 @@ ifndef MOC
 	MOC=${QTDIR}/bin/moc
 endif
 
-	ifeq ($(COMPILE_ARCH),x86_64)
-		LIB=lib32
-	else
-		LIB=lib
-	endif
-
-	ifeq ($(ARCH),axp)
-		ARCH=alpha
-	else
-	ifeq ($(ARCH),x86_64)
-		LIB=lib64
-	else
-	ifeq ($(ARCH),ppc64)
-		LIB=lib64
-	else
-	ifeq ($(ARCH),s390x)
-		LIB=lib64
-	endif
-	endif
-	endif
-	endif
-
 	LINK=-L${QT_LIB_DIR} ${QT_LIBS} -lGLU -lGL -lSM -lICE
 
 	ifeq ($(ARCH),x86)
