@@ -712,19 +712,20 @@ endif
 
 mm3d: $(BIN)/mm3d${BINEXT}
 
+# FIXME: html docs are only created by autotools build system
+#$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/"
+#$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/olh_images/screencaps/"
+#$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/olh_images/tools/"
+#${INSTALL} -m 0644 doc/html/*.html "$(PREFIX)/share/doc/mm3d/"
+#${INSTALL} -m 0644 doc/html/olh_images/screencaps/*.png "$(PREFIX)/share/doc/mm3d/olh_images/screencaps/"
+#${INSTALL} -m 0644 doc/html/olh_images/tools/*.png "$(PREFIX)/share/doc/mm3d/olh_images/tools/"
+#${INSTALL} -m 0644 doc/html/olh_images/tools/*.jpg "$(PREFIX)/share/doc/mm3d/olh_images/tools/"
 install:
 ifdef MINGW
 	$(echo_cmd) "See install.bat"
 else
 	$(INSTALL) -d "$(PREFIX)/bin"
 	$(INSTALL) -m 0755 $(BIN)/mm3d${BINEXT} "$(PREFIX)/bin/mm3d"
-	$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/"
-	$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/olh_images/screencaps/"
-	$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/olh_images/tools/"
-	${INSTALL} -m 0644 doc/html/*.html "$(PREFIX)/share/doc/mm3d/"
-	${INSTALL} -m 0644 doc/html/olh_images/screencaps/*.png "$(PREFIX)/share/doc/mm3d/olh_images/screencaps/"
-	${INSTALL} -m 0644 doc/html/olh_images/tools/*.png "$(PREFIX)/share/doc/mm3d/olh_images/tools/"
-	${INSTALL} -m 0644 doc/html/olh_images/tools/*.jpg "$(PREFIX)/share/doc/mm3d/olh_images/tools/"
 	$(INSTALL) -d "$(PREFIX)/share/mm3d/i18n/"
 	${INSTALL} -m 0644 ${B}/i18n/*.qm "$(PREFIX)/share/mm3d/i18n/"
 	$(INSTALL) -d "$(PREFIX)/share/applications/"
