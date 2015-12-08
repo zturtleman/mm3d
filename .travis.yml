@@ -1,0 +1,28 @@
+language: cpp
+
+sudo: false
+
+# gcc fails to configure. I don't know why.
+compiler:
+  - clang
+
+script: ./autosetup.sh && ./configure && make
+
+notifications:
+  irc: "irc.freenode.org#spearmint"
+  on_success: change
+  on_failure: always
+
+addons:
+  apt:
+    packages:
+    - libgl1-mesa-dev
+    - qt4-dev-tools
+    - libqt4-core
+    - libqt4-dev
+    - libqt4-gui
+    - libqt4-network
+    - libqt4-opengl
+    - libqt4-opengl-dev
+    - libhtml-template-perl
+
