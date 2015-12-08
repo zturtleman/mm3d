@@ -917,11 +917,11 @@ int main( int argc, char ** argv )
 EOF
 
       ksw_cv_qgl_test_result="failure"
-        ksw_try_1="$CXX $GL_CFLAGS $GL_LIBS $QT_CXXFLAGS $QT_LIBS -o ksw_qgl_test ksw_qgl_test.${ac_ext} >/dev/null 2>ksw_qgl_test_1.out"
+        ksw_try_1="$CXX $GL_CFLAGS $GL_LIBS $QT_CXXFLAGS $QT_LIBS -Wno-uninitialized -o ksw_qgl_test ksw_qgl_test.${ac_ext} >/dev/null 2>ksw_qgl_test_1.out"
         AC_TRY_EVAL(ksw_try_1)
         ksw_err_1=`grep -v '^ *+' ksw_qgl_test_1.out | grep -v "^ksw_qgl_test.{$ac_ext}\$"`
         if test x"$ksw_err_1" != x; then
-           ksw_try_2="$CXX $GL_CFLAGS $GL_LIBS $QT_CXXFLAGS $QT_LIBS -lqglviewer -o ksw_qgl_test ksw_qgl_test.${ac_ext} >/dev/null 2>ksw_qgl_test_2.out"
+           ksw_try_2="$CXX $GL_CFLAGS $GL_LIBS $QT_CXXFLAGS $QT_LIBS -lqglviewer -Wno-uninitialized -o ksw_qgl_test ksw_qgl_test.${ac_ext} >/dev/null 2>ksw_qgl_test_2.out"
            AC_TRY_EVAL(ksw_try_2)
            ksw_err_2=`grep -v '^ *+' ksw_qgl_test_2.out | grep -v "^ksw_qgl_test.{$ac_ext}\$"`
            if test x"$ksw_err_2" != x; then
