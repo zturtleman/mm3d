@@ -1060,11 +1060,7 @@ AC_DEFUN([KSW_HAVE_DLOPEN],
   [
     DLOPEN_save_LIBS="$LIBS"
 
-    if test x"$is_osx" = xyes; then
-       DLOPEN_LIBS="-ldl"
-    else
-       DLOPEN_LIBS="-ldl -rdynamic"
-    fi
+    DLOPEN_LIBS="-ldl -rdynamic"
     LIBS="$DLOPEN_save_LIBS $DLOPEN_LIBS"
     cat > ksw_dlopen_test.c << EOF
 #include <stdio.h>
@@ -1078,13 +1074,19 @@ EOF
     if ${CC} -o ksw_dlopen_test ksw_dlopen_test.c $LIBS 2> /dev/null > /dev/null; then
        have_dlopen=yes
     else
-        DLOPEN_LIBS="-ldl -Wl,export-dynamic"
+        DLOPEN_LIBS="-ldl -Wl,-export-dynamic"
         LIBS="$DLOPEN_save_LIBS $DLOPEN_LIBS"
         if ${CC} -o ksw_dlopen_test ksw_dlopen_test.c $LIBS 2> /dev/null > /dev/null; then
            have_dlopen=yes
         else
-           have_dlopen=no
-           DLOPEN_LIBS=
+           DLOPEN_LIBS="-ldl"
+           LIBS="$DLOPEN_save_LIBS $DLOPEN_LIBS"
+           if ${CC} -o ksw_dlopen_test ksw_dlopen_test.c $LIBS 2> /dev/null > /dev/null; then
+              have_dlopen=yes
+           else
+              have_dlopen=no
+              DLOPEN_LIBS=
+           fi
         fi
     fi
 
