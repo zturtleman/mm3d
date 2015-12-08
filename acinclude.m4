@@ -1069,7 +1069,7 @@ AC_DEFUN([KSW_HAVE_DLOPEN],
     cat > ksw_dlopen_test.c << EOF
 #include <stdio.h>
 #include <dlfcn.h>
-int main( int argc, char * argv[] )
+int main( int argc, char ** argv )
 {
    dlopen( "filename", 0 );
    return 0;
