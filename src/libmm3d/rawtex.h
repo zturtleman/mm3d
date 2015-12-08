@@ -22,7 +22,7 @@
 
 
 #ifndef __RAWTEX_H
-#define __TGATEX_H
+#define __RAWTEX_H
 
 #include <stdio.h>
 #include <stdint.h>
@@ -45,4 +45,4 @@ class RawTextureFilter : public TextureFilter
       std::list< std::string > m_write;
 };
 
-#endif // TGATEX_H
+#endif // RAWTEX_H
