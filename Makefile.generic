@@ -209,7 +209,7 @@ else # ifeq darwin
     QT_LIBS=-lQtCore -lQtGui -lQtOpenGL -lQtNetwork
   endif
 
-  LINK=-L${QT_LIB_DIR} ${QT_LIBS} -lGLU -lGL
+  LINK=-L${QT_LIB_DIR} ${QT_LIBS} -lGLU -lGL -ldl
 
   ifeq ($(ARCH),x86)
     # linux32 make ...
