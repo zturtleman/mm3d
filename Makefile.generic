@@ -769,11 +769,11 @@ ${B}/i18n/%.qm: i18n/%.ts
 	$(DO_LRELEASE)
 
 clean:
-	$(Q)rm ${LIB_OBJ}
-	$(Q)rm ${MM3D_UI}
-	$(Q)rm ${MM3D_MOC}
-	$(Q)rm ${QMFILES}
-	$(Q)rm ${MM3D_OBJ}
-	$(Q)rm ${MM3D_MOC_OBJ}
-	$(Q)rm $(BIN)/mm3d${BINEXT}
+	$(Q)rm -f ${LIB_OBJ}
+	$(Q)rm -f ${MM3D_UI}
+	$(Q)rm -f ${MM3D_MOC}
+	$(Q)rm -f ${QMFILES}
+	$(Q)rm -f ${MM3D_OBJ}
+	$(Q)rm -f ${MM3D_MOC_OBJ}
+	$(Q)rm -f $(BIN)/mm3d${BINEXT}
 
