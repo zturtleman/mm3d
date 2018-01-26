@@ -39,7 +39,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <QtCore/QObject>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 
 
 SnapCommand::SnapCommand()

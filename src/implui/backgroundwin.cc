@@ -30,11 +30,11 @@
 #include "textureframe.h"
 #include "helpwin.h"
 
-#include <QtGui/QPushButton>
-#include <QtGui/QLayout>
-#include <QtGui/QTabWidget>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QShortcut>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QShortcut>
 
 #include <stdlib.h>
 

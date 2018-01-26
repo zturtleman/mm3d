@@ -27,7 +27,7 @@
 #include "modelview.base.h"
 #include "modelviewport.h"
 
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 
 class Model;
 class Toolbox;

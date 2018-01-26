@@ -35,7 +35,7 @@
 #include <list>
 #include <map>
 #include <QtCore/QObject>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 
 using std::list;
 using std::map;

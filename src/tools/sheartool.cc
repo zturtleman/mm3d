@@ -29,7 +29,7 @@
 #include "log.h"
 
 #include <QtCore/QObject>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include <math.h>
 
 ShearTool::ShearTool()

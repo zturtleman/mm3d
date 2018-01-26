@@ -34,15 +34,15 @@
 #include "keycfg.h"
 #include "3dmprefs.h"
 
-#include <QtGui/QPushButton>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QRadioButton>
-#include <QtGui/QCheckBox>
-#include <QtGui/QMessageBox>
-#include <QtGui/QSlider>
-#include <QtGui/QLineEdit>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QLineEdit>
 #include <QtGui/QPixmap>
-#include <QtGui/QShortcut>
+#include <QtWidgets/QShortcut>
 
 #include <math.h>
 

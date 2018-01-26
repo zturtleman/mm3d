@@ -26,7 +26,7 @@
 
 #include "pluginwin.base.h"
 
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 
 class PluginWindow : public QDialog, public Ui::PluginWinBase
 {

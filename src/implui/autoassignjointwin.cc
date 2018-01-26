@@ -28,9 +28,9 @@
 #include "modelstatus.h"
 #include "helpwin.h"
 
-#include <QtGui/QSlider>
-#include <QtGui/QCheckBox>
-#include <QtGui/QShortcut>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QShortcut>
 
 using std::list;
 using std::map;

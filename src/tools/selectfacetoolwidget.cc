@@ -25,12 +25,12 @@
 
 #include "3dmprefs.h"
 
-#include <QtGui/QLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QGroupBox>
-#include <QtGui/QCheckBox>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QCheckBox>
 
 SelectFaceToolWidget::SelectFaceToolWidget( Observer * observer, QMainWindow * parent )
    : ToolWidget ( parent ),

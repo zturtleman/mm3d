@@ -32,7 +32,7 @@
 #include "pixmap/pointtool.xpm"
 
 #include <QtCore/QObject>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 
 PointTool::PointTool()
 {

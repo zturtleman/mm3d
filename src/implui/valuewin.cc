@@ -25,15 +25,15 @@
 #include "helpwin.h"
 #include "log.h"
 
-#include <QtGui/QSlider>
-#include <QtGui/QLineEdit>
-#include <QtGui/QLabel>
-#include <QtGui/QShortcut>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QShortcut>
 
 #include <math.h>
 #include <stdlib.h>
 
-ValueWin::ValueWin( QWidget * parent, bool modal, Qt::WFlags flags )
+ValueWin::ValueWin( QWidget * parent, bool modal, Qt::WindowFlags flags )
    : QDialog( parent, flags ),
      m_editing( false )
 {

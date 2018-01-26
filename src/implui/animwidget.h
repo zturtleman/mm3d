@@ -30,7 +30,7 @@
 
 #include "model.h"
 
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 
 class QTimer;
 

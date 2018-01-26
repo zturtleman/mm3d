@@ -28,11 +28,11 @@
 #include "decalmgr.h"
 #include "helpwin.h"
 
-#include <QtGui/QCheckBox>
-#include <QtGui/QRadioButton>
-#include <QtGui/QPushButton>
-#include <QtGui/QLineEdit>
-#include <QtGui/QShortcut>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QShortcut>
 
 #include <stdio.h>
 #include <stdlib.h>

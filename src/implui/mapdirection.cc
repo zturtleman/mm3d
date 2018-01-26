@@ -23,7 +23,7 @@
 
 #include "mapdirection.h"
 
-#include <QtGui/QComboBox>
+#include <QtWidgets/QComboBox>
 
 MapDirection::MapDirection( QWidget * parent )
    : QDialog( parent )

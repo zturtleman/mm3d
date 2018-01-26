@@ -27,9 +27,9 @@
 #include "misc.h"
 
 #include <QtCore/QTimer>
-#include <QtGui/QLabel>
+#include <QtWidgets/QLabel>
 #include <QtGui/QPixmap>
-#include <QtGui/QToolTip>
+#include <QtWidgets/QToolTip>
 
 #include <stdarg.h>
 #include <stdlib.h>

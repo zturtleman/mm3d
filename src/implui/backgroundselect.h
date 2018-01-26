@@ -26,7 +26,7 @@
 
 #include "backgroundselect.base.h"
 
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 
 class Model;
 

@@ -25,7 +25,7 @@
 #define __HELPWIN_H
 
 #include "helpwin.base.h"
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 
 class HelpWin : public QDialog, public Ui::HelpWinBase
 {

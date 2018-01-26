@@ -75,8 +75,8 @@
 /* Define to 1 if you have the `pow' function. */
 #undef HAVE_POW
 
-/* Define when you have QT4 installed */
-#undef HAVE_QT4
+/* Define when you have QT5 installed */
+#undef HAVE_QT5
 
 /* Define to 1 if your system has a GNU libc compatible `realloc' function,
    and to 0 otherwise. */

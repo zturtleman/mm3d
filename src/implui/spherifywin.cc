@@ -28,9 +28,9 @@
 #include "decalmgr.h"
 #include "log.h"
 
-#include <QtGui/QSlider>
-#include <QtGui/QLineEdit>
-#include <QtGui/QLabel>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QLabel>
 
 #include <math.h>
 #include <stdlib.h>

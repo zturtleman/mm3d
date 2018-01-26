@@ -33,8 +33,8 @@
 
 #include "pixmap/projtool.xpm"
 
-#include <QtGui/QMainWindow>
-#include <QtGui/QApplication>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QApplication>
 
 ProjectionTool::ProjectionTool()
    : m_type( Model::TPT_Sphere )

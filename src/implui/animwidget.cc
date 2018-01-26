@@ -32,16 +32,16 @@
 #include "helpwin.h"
 
 #include <QtCore/QTimer>
-#include <QtGui/QComboBox>
-#include <QtGui/QCheckBox>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#include <QtGui/QSlider>
-#include <QtGui/QSpinBox>
-#include <QtGui/QTabWidget>
-#include <QtGui/QInputDialog>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QInputDialog>
 
 enum
 {

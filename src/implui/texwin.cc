@@ -36,14 +36,14 @@
 #include "helpwin.h"
 #include "errorobj.h"
 
-#include <QtGui/QComboBox>
-#include <QtGui/QPushButton>
-#include <QtGui/QInputDialog>
-#include <QtGui/QFileDialog>
-#include <QtGui/QLineEdit>
-#include <QtGui/QSlider>
-#include <QtGui/QLabel>
-#include <QtGui/QShortcut>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QInputDialog>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QShortcut>
 
 #include <list>
 #include <string>
@@ -152,7 +152,7 @@ void TextureWindow::changeTextureFileEvent()
    QFileDialog d(NULL, "", dir, formatsStr + QString(";; All Files (*)" ) );
 
    d.setWindowTitle( tr("Open texture image") );
-   d.selectFilter( formatsStr );
+   d.selectNameFilter( formatsStr );
 
    int execval = d.exec();
    QStringList files = d.selectedFiles();

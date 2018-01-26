@@ -26,7 +26,7 @@
 
 #include "rgbawin.base.h"
 
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 
 class RgbaWin : public QDialog, public Ui::RgbaWinBase
 {

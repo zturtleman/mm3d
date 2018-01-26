@@ -22,7 +22,7 @@
 
 
 #include <QtCore/QObject>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include <QtGui/QKeySequence>
 
 #include "deletecmd.h"

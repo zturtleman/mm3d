@@ -29,11 +29,11 @@
 #include "msg.h"
 #include "helpwin.h"
 
-#include <QtGui/QPushButton>
-#include <QtGui/QComboBox>
-#include <QtGui/QInputDialog>
-#include <QtGui/QMessageBox>
-#include <QtGui/QShortcut>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QInputDialog>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QShortcut>
 
 #include <list>
 
@@ -403,7 +403,7 @@ void AnimSetWindow::splitClicked()
          {
             bool ok = false;
             QString name = QString::fromUtf8( m_model->getAnimName( mode, t ) );
-            unsigned frame = QInputDialog::getInteger( this,
+            unsigned frame = QInputDialog::getInt( this,
                   tr("Split at frame", "Split animation frame window title" ), tr("Split", "'Split' refers to splitting an animation into two separate animations" ) 
                   + QString(" ") + name + QString(" ") + tr("at frame number", "the frame number where the second (split) animation begins" ),
                   2, 2, m_model->getAnimFrameCount( mode, t ), 1, &ok );

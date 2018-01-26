@@ -28,12 +28,12 @@
 #include "decalmgr.h"
 #include "helpwin.h"
 
-#include <QtGui/QPushButton>
-#include <QtGui/QCheckBox>
-#include <QtGui/QRadioButton>
-#include <QtGui/QTreeWidget>
-#include <QtGui/QHeaderView>
-#include <QtGui/QShortcut>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QShortcut>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,8 +46,8 @@ MetaWindow::MetaWindow( Model * model, QWidget * parent )
    setupUi( this );
    setModal( true );
 
-   m_list->header()->setClickable( false );
-   m_list->header()->setMovable( false );
+   m_list->header()->setSectionsClickable( false );
+   m_list->header()->setSectionsMovable( false );
 
    unsigned count = m_model->getMetaDataCount();
 

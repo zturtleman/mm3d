@@ -24,8 +24,8 @@
 #ifndef __VIEWPANEL_H
 #define __VIEWPANEL_H
 
-#include <QtGui/QWidget>
-#include <QtGui/QGridLayout>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QGridLayout>
 
 #include "modelviewport.h"
 

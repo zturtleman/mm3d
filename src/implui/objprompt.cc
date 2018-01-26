@@ -27,9 +27,9 @@
 
 #include "helpwin.h"
 
-#include <QtGui/QSpinBox>
-#include <QtGui/QCheckBox>
-#include <QtGui/QShortcut>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QShortcut>
 
 ObjPrompt::ObjPrompt()
    : QDialog( NULL )

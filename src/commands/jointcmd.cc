@@ -27,7 +27,7 @@
 #include "log.h"
 
 #include <QtCore/QObject>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 
 JointCommand::JointCommand()
 {

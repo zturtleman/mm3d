@@ -27,7 +27,7 @@
 
 #include "log.h"
 
-#include <QtGui/QLayout>
+#include <QtWidgets/QLayout>
 #include <QtGui/QContextMenuEvent>
 
 BoolPanel::BoolPanel( Model * model, QWidget * parent, ViewPanel * panel )

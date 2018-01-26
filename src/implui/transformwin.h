@@ -28,7 +28,7 @@
 
 #include "glmath.h"
 
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 
 class Model;
 class RgbaWin;

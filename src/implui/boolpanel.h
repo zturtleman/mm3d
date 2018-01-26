@@ -27,7 +27,7 @@
 #include "contextwidget.h"
 #include "model.h"
 
-#include <QtGui/QDockWidget>
+#include <QtWidgets/QDockWidget>
 
 class QContextMenuEvent;
 

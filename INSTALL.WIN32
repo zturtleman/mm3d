@@ -5,10 +5,10 @@ Misfit Model 3D is known to run on Windows 2000 and Windows XP.
 Windows 95, 98, and ME are untested and may or may not work.
 
 Misfit Model 3D for Win32 requires the mingw environment and
-the Open Source version of Qt 4 for Win32.  To run binaries
+the Open Source version of Qt 5 for Win32.  To run binaries
 of mm3d you only need the qt and mingw DLLs, which are provided 
 with the binary distribution.  To build from source you must
-have a development environment set up with mingw and qt4.
+have a development environment set up with mingw and qt5.
 
 Note that plugins are not currently available on Windows.
 
@@ -27,17 +27,17 @@ Misfit Model 3D.  By default only .mm3d is associated.
 Prerequisites
 =============
 
-You can get Qt 4.x here:
+You can get Qt 5.x here:
 
    https://download.qt.io/archive/qt/
 
-You can get mingw using Qt 4's binary installer, or download
+You can get mingw using Qt 5's binary installer, or download
 and install mingw yourself from the official website:
 
    http://www.mingw.org/
 
 You must have your QTDIR environment variable set to the root
-Qt directory (for example, C:\Qt\4.8.6).  The Mingw and Qt bin
+Qt directory (for example, C:\Qt\5.0.0).  The Mingw and Qt bin
 directories must be in your path.
 
 

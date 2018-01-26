@@ -29,7 +29,7 @@
 
 #include <QtCore/QLocale>
 #include <QtCore/QTranslator>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include <QtOpenGL/QGLFormat>
 
 #include <list>

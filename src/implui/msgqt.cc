@@ -23,7 +23,7 @@
 
 #include "msg.h"
 
-#include <QtGui/QMessageBox>
+#include <QtWidgets/QMessageBox>
 #include <ctype.h>
 
 extern "C" void msgqt_info( const char * str )

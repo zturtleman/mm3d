@@ -88,12 +88,14 @@ MKDIR=mkdir -p
 ifdef MINGW
 
   ifeq ($(CROSS_COMPILING),1)
-    # Linux QTDIR
-    ifndef QTDIR
-      QTDIR=/usr/share/qt4
+    ifndef QT_BIN_DIR
+      $(error Need to specify QT_BIN_DIR with native Qt5 executables for uic, moc, and lrelease)
+    endif
+    ifndef QT_INCLUDE_DIR
+      $(error Need to specify QT_INCLUDE_DIR with MinGW Qt5 headers)
     endif
     ifndef QT_LIB_DIR
-      $(error Need to specify QT_LIB_DIR with MinGW Qt4 libs)
+      $(error Need to specify QT_LIB_DIR with MinGW Qt5 libs)
     endif
 
     # If CC is already set to something generic, we probably want to use
@@ -152,10 +154,20 @@ ifdef MINGW
   endif
 
   ifndef QTDIR
-    QTDIR=C:/Qt/4.8.5
+    QTDIR=C:/Qt/5.0.0
   endif
+  ifndef QT_BIN_DIR
+    QT_BIN_DIR=${QTDIR}/bin
+  endif
+  ifndef QT_INCLUDE_DIR
+    QT_INCLUDE_DIR=${QTDIR}/include
+  endif
+  ifndef QT_LIB_DIR
+    QT_LIB_DIR=${QTDIR}/lib
+  endif
+
   ifndef QT_LIBS
-    QT_LIBS=-lQtCore4 -lQtGui4 -lQtOpenGL4 -lQtNetwork4
+    QT_LIBS=-lQt5Core -lQt5Gui -lQt5Widgets -lQt5OpenGL -lQt5Network
   endif
 
   LINK=-L${QT_LIB_DIR} ${QT_LIBS} -mwindows -lopengl32 -lglu32 -static-libgcc -static-libstdc++
@@ -175,13 +187,26 @@ ifeq ($(PLATFORM),darwin)
   endif
 
   ifndef QTDIR
-    QTDIR=/usr/local/Cellar/qt/4.8.7
+    QTDIR=/usr/local/Cellar/qt/5.0.0
   endif
-  ifndef QT_LIBS
-    QT_LIBS=-framework QtCore -framework QtGui -framework QtOpenGL -framework QtNetwork
+  ifndef QT_BIN_DIR
+    QT_BIN_DIR=${QTDIR}/bin
+  endif
+  ifndef QT_INCLUDE_DIR
+    QT_INCLUDE_DIR=${QTDIR}/include
+  endif
+  ifndef QT_LIB_DIR
+    QT_LIB_DIR=${QTDIR}/lib
+  endif
+  ifndef QT_FRAMEWORKS_DIR
+    QT_FRAMEWORKS_DIR=${QTDIR}/Frameworks
   endif
 
-  LINK=-F$(QTDIR)/Frameworks -L${QT_LIB_DIR} ${QT_LIBS} -framework OpenGl
+  ifndef QT_LIBS
+    QT_LIBS=-framework Qt5Core -framework Qt5Gui -framework Qt5Widgets -framework Qt5OpenGL -framework Qt5Network
+  endif
+
+  LINK=-F${QT_FRAMEWORKS_DIR} -L${QT_LIB_DIR} ${QT_LIBS} -framework OpenGl
 
   ifeq ($(ARCH),x86)
     BASE_FLAGS += -m32
@@ -202,11 +227,39 @@ else # ifeq darwin
     PREFIX=/usr/local
   endif
 
-  ifndef QTDIR
-    QTDIR=/usr/share/qt4
+  ifdef QTDIR
+    ifndef QT_BIN_DIR
+      QT_BIN_DIR=${QTDIR}/bin
+    endif
+    ifndef QT_INCLUDE_DIR
+      QT_INCLUDE_DIR=${QTDIR}/include
+    endif
+    ifndef QT_LIB_DIR
+      QT_LIB_DIR=${QTDIR}/lib
+    endif
+  else
+    ifndef QT_BIN_DIR
+      ifeq ($(ARCH),x86)
+        QT_BIN_DIR=/usr/lib/i386-linux-gnu/qt5/bin
+      else
+        QT_BIN_DIR=/usr/lib/$(ARCH)-linux-gnu/qt5/bin
+      endif
+    endif
+    ifndef QT_INCLUDE_DIR
+      ifeq ($(ARCH),x86)
+        QT_INCLUDE_DIR=/usr/include/i386-linux-gnu/qt5
+      else
+        QT_INCLUDE_DIR=/usr/include/$(ARCH)-linux-gnu/qt5
+      endif
+    endif
+    ifndef QT_LIB_DIR
+      # the stardard library path is used for Qt5
+      QT_LIB_DIR=.
+    endif
   endif
+
   ifndef QT_LIBS
-    QT_LIBS=-lQtCore -lQtGui -lQtOpenGL -lQtNetwork
+    QT_LIBS=-lQt5Core -lQt5Gui -lQt5Widgets -lQt5OpenGL -lQt5Network
   endif
 
   LINK=-L${QT_LIB_DIR} ${QT_LIBS} -lGLU -lGL -ldl
@@ -228,26 +281,26 @@ else # ifeq darwin
 endif # darwin
 endif # mingw
 
-ifndef QT_INCLUDE_DIR
-  QT_INCLUDE_DIR=${QTDIR}/include
+ifndef QT_BIN_DIR
+  $(error QT_BIN_DIR is not set)
 endif
-ifndef QT_LIB_DIR
-  QT_LIB_DIR=${QTDIR}/lib
+ifndef QT_INCLUDE_DIR
+  $(error QT_INCLUDE_DIR is not set)
 endif
 
 ifndef UIC
-  UIC=${QTDIR}/bin/uic${TOOLS_BINEXT}
+  UIC=${QT_BIN_DIR}/uic${TOOLS_BINEXT}
 endif
 ifndef MOC
-  MOC=${QTDIR}/bin/moc${TOOLS_BINEXT}
+  MOC=${QT_BIN_DIR}/moc${TOOLS_BINEXT}
 endif
 ifndef LRELEASE
-  LRELEASE=${QTDIR}/bin/lrelease${TOOLS_BINEXT}
+  LRELEASE=${QT_BIN_DIR}/lrelease${TOOLS_BINEXT}
 endif
 
 
 #CXXFLAGS=-Wall -g3
-CXXFLAGS=-O1 ${BASE_FLAGS} -I${QT_INCLUDE_DIR} -DMM3D_EDIT -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${B}/depui -I${B}/qtui -I${B}/implui -I${B}/commands
+CXXFLAGS=-O1 ${BASE_FLAGS} -fPIC -I${QT_INCLUDE_DIR} -DMM3D_EDIT -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${B}/depui -I${B}/qtui -I${B}/implui -I${B}/commands
 DEFS=
 
 BIN=${B}

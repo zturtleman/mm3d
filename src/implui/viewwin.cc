@@ -71,24 +71,24 @@
 #include <QtCore/QDataStream>
 #include <QtCore/QFile>
 #include <QtCore/QTimer>
-#include <QtGui/QActionGroup>
-#include <QtGui/QApplication>
+#include <QtWidgets/QActionGroup>
+#include <QtWidgets/QApplication>
 #include <QtGui/QCloseEvent>
 #include <QtGui/QContextMenuEvent>
-#include <QtGui/QDockWidget>
-#include <QtGui/QFileDialog>
+#include <QtWidgets/QDockWidget>
+#include <QtWidgets/QFileDialog>
 #include <QtGui/QIcon>
-#include <QtGui/QLayout>
-#include <QtGui/QMenu>
-#include <QtGui/QMenuBar>
-#include <QtGui/QMessageBox>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QMessageBox>
 #include <QtGui/QPixmap>
 #include <QtGui/QResizeEvent>
-#include <QtGui/QShortcut>
-#include <QtGui/QToolBar>
-#include <QtGui/QToolButton>
-#include <QtGui/QToolTip>
-#include <QtGui/QVBoxLayout>
+#include <QtWidgets/QShortcut>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QToolTip>
+#include <QtWidgets/QVBoxLayout>
 
 #include "errorobj.h"
 
@@ -962,7 +962,7 @@ void ViewWindow::saveModelInternal( Model * model, bool exportModel )
    {
       d.setWindowTitle( tr( "Export model" ) );
    }
-   d.selectFilter( formatsStr );
+   d.selectNameFilter( formatsStr );
    d.setFileMode( QFileDialog::AnyFile );
 
    m_abortQuit = true;
@@ -1047,7 +1047,7 @@ void ViewWindow::mergeModelsEvent()
    QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; ") + tr( "All Files (*)" ) );
 
    d.setWindowTitle( tr( "Open model file" ) );
-   d.selectFilter( formatsStr );
+   d.selectNameFilter( formatsStr );
 
    if ( QDialog::Accepted == d.exec() )
    {
@@ -1136,7 +1136,7 @@ void ViewWindow::mergeAnimationsEvent()
    QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; ") + tr( "All Files (*)" ) );
 
    d.setWindowTitle( tr( "Open model file" ) );
-   d.selectFilter( formatsStr );
+   d.selectNameFilter( formatsStr );
 
    if ( QDialog::Accepted == d.exec() )
    {
@@ -1184,7 +1184,7 @@ void ViewWindow::scriptEvent()
    QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; ") + tr( "All Files (*)" ) );
 
    d.setWindowTitle( tr( "Open model file" ) );
-   d.selectFilter( formatsStr );
+   d.selectNameFilter( formatsStr );
 
    if ( QDialog::Accepted == d.exec() )
    {
@@ -1942,7 +1942,7 @@ static QString _makeToolTip( ::Tool * tool, int index )
    if ( !key.isEmpty() )
    {
       name += QString(" (");
-      name += (QString) key;
+      name += key.toString();
       name += QString(")");
    }
    return name;
@@ -2263,7 +2263,7 @@ bool ViewWindow::openModelDialog( const char * openDirectory )
    QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; ") + tr( "All Files (*)" ) );
 
    d.setWindowTitle( tr( "Open model file" ) );
-   d.selectFilter( formatsStr );
+   d.selectNameFilter( formatsStr );
 
    if ( QDialog::Accepted == d.exec() )
    {
@@ -2383,7 +2383,7 @@ bool ViewWindow::openModelDialogInWindow( const char * openDirectory )
    QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; ") + tr( "All Files (*)" ) );
 
    d.setWindowTitle( tr( "Open model file" ) );
-   d.selectFilter( formatsStr );
+   d.selectNameFilter( formatsStr );
 
    if ( QDialog::Accepted == d.exec() )
    {

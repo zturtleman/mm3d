@@ -62,7 +62,7 @@ class QContextMenuEvent;
 class QCloseEvent;
 class QResizeEvent;
 
-#include <QtGui/QMainWindow>
+#include <QtWidgets/QMainWindow>
 #include <QtCore/QObject>
 
 class CommandWidget : public QObject

@@ -27,9 +27,9 @@
 #include "log.h"
 #include "decalmgr.h"
 
-#include <QtGui/QComboBox>
-#include <QtGui/QLineEdit>
-#include <QtGui/QLabel>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QLabel>
 #include <QtGui/QImage>
 
 ModelView::ModelView( Toolbox * toolbox, QWidget * parent )

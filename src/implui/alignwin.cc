@@ -29,9 +29,9 @@
 #include "decalmgr.h"
 #include "helpwin.h"
 
-#include <QtGui/QLineEdit>
-#include <QtGui/QRadioButton>
-#include <QtGui/QShortcut>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QShortcut>
 
 #include <stdlib.h>
 

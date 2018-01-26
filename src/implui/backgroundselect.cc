@@ -35,9 +35,9 @@
 #include "model.h"
 #include "errorobj.h"
 
-#include <QtGui/QPushButton>
 #include <QtGui/QPixmap>
-#include <QtGui/QFileDialog>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QFileDialog>
 
 #include <stdlib.h>
 
@@ -99,7 +99,7 @@ void BackgroundSelect::selectFileEvent()
    QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; All Files (*)" ) );
 
    d.setWindowTitle( tr("Open background image") );
-   d.selectFilter( formatsStr );
+   d.selectNameFilter( formatsStr );
 
    int execval = d.exec();
 

@@ -33,7 +33,7 @@
 
 #include <stdio.h>
 #include <QtCore/QObject>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include <QtGui/QKeySequence>
 
 SelectConnectedTool::SelectConnectedTool()

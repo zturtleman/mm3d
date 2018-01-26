@@ -46,13 +46,13 @@ AC_DEFUN([KSW_IS_DEBUG],
   if test x"$enable_debug" = xyes; then
     COVFLAGS=""
     COVLFLAGS=""
-    CFLAGS="-g"
+    CFLAGS="-g -fPIC"
     CXXFLAGS="${CFLAGS}"
     LDFLAGS=""
   elif test x"$enable_debug" = xcov; then
     COVFLAGS="-coverage"
     COVLFLAGS="-lgcov"
-    CFLAGS="-g"
+    CFLAGS="-g -fPIC"
     CXXFLAGS="${CFLAGS}"
     LDFLAGS=""
     is_debug=coverage
@@ -63,7 +63,7 @@ AC_DEFUN([KSW_IS_DEBUG],
     fi
     COVFLAGS=""
     COVLFLAGS=""
-    CFLAGS="-O2 ${omit_frame} -fno-math-errno"
+    CFLAGS="-O2 ${omit_frame} -fno-math-errno -fPIC"
     CXXFLAGS="${CFLAGS}"
     LDFLAGS="${omit_frame} -fno-math-errno"
   fi
@@ -475,12 +475,12 @@ AC_DEFUN([BNV_HAVE_QT],
     [  --with-Qt-bin-dir=DIR   Qt utilities such as moc and uic are in DIR])
   AC_ARG_WITH([Qt-lib-dir],
     [  --with-Qt-lib-dir=DIR   The Qt library is in DIR])
-  dnl FIXME moc-qt4 and uic-qt4
-  bnv_is_qt4=no
+
+  bnv_is_qt5=no
   if test x"$is_osx" = xyes; then
-    bnv_qt4_libs="-framework QtCore -framework QtGui -framework QtOpenGL -framework QtNetwork"
+    bnv_qt5_libs="-framework QtCore -framework QtGui -framework QtOpenGL -framework QtNetwork"
   else
-    bnv_qt4_libs="-lQtCore -lQtGui -lQtOpenGL -lQtNetwork"
+    bnv_qt5_libs="-lQt5Core -lQt5Gui -lQt5Widgets -lQt5OpenGL -lQt5Network"
   fi
   if test x"$with_Qt_dir" = x"no" ||
      test x"$with_Qt_include_dir" = x"no" ||
@@ -516,9 +516,9 @@ AC_DEFUN([BNV_HAVE_QT],
         bnv_qt_lib_dir="$with_Qt_dir/lib"
       fi
       if test x"$is_osx" = xyes; then
-        bnv_qt_LIBS="-F$bnv_qt_dir/Frameworks -L$bnv_qt_lib_dir $bnv_qt4_libs $QT_XLIBS "
+        bnv_qt_LIBS="-F$bnv_qt_dir/Frameworks -L$bnv_qt_lib_dir $bnv_qt5_libs $QT_XLIBS "
       else
-        bnv_qt_LIBS="-L$bnv_qt_lib_dir $bnv_qt4_libs $QT_XLIBS "
+        bnv_qt_LIBS="-L$bnv_qt_lib_dir $bnv_qt5_libs $QT_XLIBS "
       fi
     else
       # Use cached value or do search, starting with suggestions from
@@ -541,7 +541,7 @@ AC_DEFUN([BNV_HAVE_QT],
                        bnv_qt_dir=$bnv_qt_dir          \
                bnv_qt_include_dir=$bnv_qt_include_dir  \
                    bnv_qt_bin_dir=$bnv_qt_bin_dir      \
-                   bnv_is_qt4=$bnv_is_qt4              \
+                   bnv_is_qt5=$bnv_is_qt5              \
                       bnv_qt_LIBS=\"$bnv_qt_LIBS\""
         fi
       ])dnl
@@ -555,86 +555,96 @@ AC_DEFUN([BNV_HAVE_QT],
     if test x"$bnv_qt_bin_dir" != x; then
       # We were told where to look for the utilities?
       # UIC detection
-      if test -x "$bnv_qt_bin_dir/uic-qt4"; then
-        QT_UIC="$bnv_qt_bin_dir/uic-qt4"
-      elif test -x "$bnv_qt_bin_dir/qt4-uic"; then
-        QT_UIC="$bnv_qt_bin_dir/qt4-uic"
-      elif test -x "$bnv_qt_bin_dir/uic"; then
+      if test -x "$bnv_qt_bin_dir/uic"; then
         QT_UIC="$bnv_qt_bin_dir/uic"
       fi
       # MOC detection
-      if test -x "$bnv_qt_bin_dir/moc-qt4"; then
-        QT_MOC="$bnv_qt_bin_dir/moc-qt4"
-      elif test -x "$bnv_qt_bin_dir/qt4-moc"; then
-        QT_MOC="$bnv_qt_bin_dir/qt4-moc"
-      elif test -x "$bnv_qt_bin_dir/moc"; then
+      if test -x "$bnv_qt_bin_dir/moc"; then
         QT_MOC="$bnv_qt_bin_dir/moc"
       fi
       # LRELEASE detection
-      if test -x "$bnv_qt_bin_dir/lrelease-qt4"; then
-        QT_LRELEASE="$bnv_qt_bin_dir/lrelease-qt4"
-      elif test -x "$bnv_qt_bin_dir/qt4-lrelease"; then
-        QT_LRELEASE="$bnv_qt_bin_dir/qt4-lrelease"
-      elif test -x "$bnv_qt_bin_dir/lrelease"; then
+      if test -x "$bnv_qt_bin_dir/lrelease"; then
         QT_LRELEASE="$bnv_qt_bin_dir/lrelease"
       fi
     elif test x"$bnv_qt_dir" != x; then
       # If bnv_qt_dir is defined, utilities are expected to be in the
       # bin subdirectory
       # UIC detection
-      if test -x "$bnv_qt_dir/bin/uic-qt4"; then
-        QT_UIC="$bnv_qt_dir/bin/uic-qt4"
-      elif test -x "$bnv_qt_dir/bin/qt4-uic"; then
-        QT_UIC="$bnv_qt_dir/bin/qt4-uic"
-      elif test -x "$bnv_qt_dir/bin/uic"; then
+      if test -x "$bnv_qt_dir/bin/uic"; then
         QT_UIC="$bnv_qt_dir/bin/uic"
       fi
       # MOC detection
-      if test -x "$bnv_qt_dir/bin/moc-qt4"; then
-        QT_MOC="$bnv_qt_dir/bin/moc-qt4"
-      elif test -x "$bnv_qt_dir/bin/qt4-moc"; then
-        QT_MOC="$bnv_qt_dir/bin/qt4-moc"
-      elif test -x "$bnv_qt_dir/bin/moc"; then
+      if test -x "$bnv_qt_dir/bin/moc"; then
         QT_MOC="$bnv_qt_dir/bin/moc"
       fi
       # LRELEASE detection
-      if test -x "$bnv_qt_dir/bin/lrelease-qt4"; then
-        QT_LRELEASE="$bnv_qt_dir/bin/lrelease-qt4"
-      elif test -x "$bnv_qt_dir/bin/qt4-lrelease"; then
-        QT_LRELEASE="$bnv_qt_dir/bin/qt4-lrelease"
-      elif test -x "$bnv_qt_dir/bin/lrelease"; then
+      if test -x "$bnv_qt_dir/bin/lrelease"; then
         QT_LRELEASE="$bnv_qt_dir/bin/lrelease"
+      fi
+    fi
+
+    # If binaries are still not set, try /usr/lib/x86_64-linux-gnu/qt5/bin/
+    if test x"$host_alias" != x; then
+      # set by configure --host
+      bnv_qt_lib_host=$host_alias
+    else
+      bnv_qt_lib_host=`sh config.guess | cut -d'-' -f 1,3-4`
+    fi
+    if test x"$QT_UIC" = x; then
+      # UIC detection
+      if test -x "/usr/lib/$bnv_qt_lib_host/qt5/bin/uic"; then
+        QT_UIC="/usr/lib/$bnv_qt_lib_host/qt5/bin/uic"
+      fi
+    fi
+    if test x"$QT_MOC" = x; then
+      # MOC detection
+      if test -x "/usr/lib/$bnv_qt_lib_host/qt5/bin/moc"; then
+        QT_MOC="/usr/lib/$bnv_qt_lib_host/qt5/bin/moc"
+      fi
+    fi
+    if test x"$QT_LRELEASE" = x; then
+      # LRELEASE detection
+      if test -x "/usr/lib/$bnv_qt_lib_host/qt5/bin/lrelease"; then
+        QT_LRELEASE="/usr/lib/$bnv_qt_lib_host/qt5/bin/lrelease"
+      fi
+    fi
+
+    # If binaries are still not set, try qtchooser
+    if test x"$QT_UIC" = x; then
+      # UIC detection
+      if test `which qtchooser 2> /dev/null`; then
+        QT_UIC="qtchooser -qt=5 -run-tool=uic"
+      fi
+    fi
+    if test x"$QT_MOC" = x; then
+      # MOC detection
+      if test `which qtchooser 2> /dev/null`; then
+        QT_MOC="qtchooser -qt=5 -run-tool=moc"
+      fi
+    fi
+    if test x"$QT_LRELEASE" = x; then
+      # LRELEASE detection
+      if test `which qtchooser 2> /dev/null`; then
+        QT_LRELEASE="qtchooser -qt=5 -run-tool=lrelease"
       fi
     fi
 
     # If binaries are still not set, try $PATH
     if test x"$QT_UIC" = x; then
       # UIC detection
-      if test `which uic-qt4 2> /dev/null`; then
-        QT_UIC=`which uic-qt4`
-      elif test `which qt4-uic 2> /dev/null`; then
-        QT_UIC=`which qt4-uic`
-      elif test `which uic 2> /dev/null`; then
+      if test `which uic 2> /dev/null`; then
         QT_UIC=`which uic`
       fi
     fi
     if test x"$QT_MOC" = x; then
       # MOC detection
-      if test `which moc-qt4 2> /dev/null`; then
-        QT_MOC=`which moc-qt4`
-      elif test `which qt4-moc 2> /dev/null`; then
-        QT_MOC=`which qt4-moc`
-      elif test `which moc 2> /dev/null`; then
+      if test `which moc 2> /dev/null`; then
         QT_MOC=`which moc`
       fi
     fi
     if test x"$QT_LRELEASE" = x; then
       # LRELEASE detection
-      if test `which lrelease-qt4 2> /dev/null`; then
-        QT_LRELEASE=`which lrelease-qt4`
-      elif test `which qt4-lrelease 2> /dev/null`; then
-        QT_LRELEASE=`which qt4-lrelease`
-      elif test `which lrelease 2> /dev/null`; then
+      if test `which lrelease 2> /dev/null`; then
         QT_LRELEASE=`which lrelease`
       fi
     fi
@@ -656,10 +666,10 @@ AC_DEFUN([BNV_HAVE_QT],
     QT_LRELEASE=
     AC_MSG_RESULT($have_qt)
   fi
-  if test x"$bnv_is_qt4" = xyes; then
-    HAVE_QT4=1
-    AC_SUBST(HAVE_QT4)
-    AC_DEFINE( [HAVE_QT4], [], [Define when you have QT4 installed] )
+  if test x"$bnv_is_qt5" = xyes; then
+    HAVE_QT5=1
+    AC_SUBST(HAVE_QT5)
+    AC_DEFINE( [HAVE_QT5], [], [Define when you have QT5 installed] )
   fi
   AC_SUBST(QT_CXXFLAGS)
   AC_SUBST(QT_DIR)
@@ -691,7 +701,7 @@ EOF
 
       cat > bnv_qt_main.$ac_ext << EOF
 #include "bnv_qt_test.h"
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 int main( int argc, char **argv )
 {
   QApplication app( argc, argv );
@@ -767,30 +777,30 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
   else
     # The following header file is expected to define QT_VERSION.
     # Look for the header file in a standard set of common directories.
+    if test x"$host_alias" != x; then
+      # set by configure --host
+      bnv_qt_include_host=$host_alias
+    else
+      bnv_qt_include_host=`sh config.guess | cut -d'-' -f 1,3-4`
+    fi
     qt_direct_test_header=qglobal.h
     bnv_include_path_list="
-      /usr/include
-      `ls -dr /usr/include/qt* 2>/dev/null`
-      `ls -dr /usr/lib/qt*/include 2>/dev/null`
-      `ls -dr /usr/local/qt*/include 2>/dev/null`
-      `ls -dr /opt/sfw/include 2>/dev/null`
-      `ls -dr /opt/qt*/include 2>/dev/null`
-      `ls -dr /usr/qt*/include 2>/dev/null`
-      `ls -dr /usr/qt/*/include 2>/dev/null`
-      `ls -dr /usr/include/qt/* 2>/dev/null`
+      /usr/include/$bnv_qt_include_host/qt5
+      /usr/include/qt5
+      /usr/qt5/include
     "
     for bnv_dir in $bnv_include_path_list; do
-      if test -r "$bnv_dir/Qt/$qt_direct_test_header"; then
+      if test -r "$bnv_dir/QtCore/$qt_direct_test_header"; then
         bnv_dirs="$bnv_dirs $bnv_dir"
       fi
     done
     # Now look for the newest in this list
     bnv_prev_ver=0
     for bnv_dir in $bnv_dirs; do
-      if test -r "$bnv_dir/Qt/$qt_direct_test_header"; then
-         bnv_this_ver=`egrep -w '#define QT_VERSION' $bnv_dir/Qt/$qt_direct_test_header | sed s/'#define QT_VERSION'//`
+      if test -r "$bnv_dir/QtCore/$qt_direct_test_header"; then
+         bnv_this_ver=`egrep -w '#define QT_VERSION' $bnv_dir/QtCore/$qt_direct_test_header | sed s/'#define QT_VERSION'//`
          if expr $bnv_this_ver '>' $bnv_prev_ver > /dev/null; then
-           bnv_is_qt4=yes
+           bnv_is_qt5=yes
            bnv_qt_include_dir=$bnv_dir
            bnv_prev_ver=$bnv_this_ver
          fi
@@ -802,11 +812,8 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
   # That would be $bnv_qt_include_dir stripped from its last element:
   bnv_found_traditional=no
   bnv_possible_qt_dir=`dirname $bnv_qt_include_dir`
-  if test -x $bnv_possible_qt_dir/bin/moc-qt4 &&
-     ls $bnv_possible_qt_dir/lib/libQtCore* 1> /dev/null 2> /dev/null; then
-    bnv_found_traditional=yes
-  elif test -x $bnv_possible_qt_dir/bin/moc &&
-     ls $bnv_possible_qt_dir/lib/libQtCore.* 1> /dev/null 2> /dev/null; then
+  if test -x $bnv_possible_qt_dir/bin/moc &&
+     ls $bnv_possible_qt_dir/lib/libQt5Core.* 1> /dev/null 2> /dev/null; then
     bnv_found_traditional=yes
   fi
   if test x"$bnv_found_traditional" = xyes; then
@@ -818,7 +825,7 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
     else
       bnv_qt_lib_dir="$bnv_qt_dir/lib"
     fi
-    bnv_qt_LIBS="-L$bnv_qt_lib_dir $bnv_qt4_libs $QT_XLIBS"
+    bnv_qt_LIBS="-L$bnv_qt_lib_dir $bnv_qt5_libs $QT_XLIBS"
   fi
   if test $bnv_found_traditional = no; then
     # There is no valid definition for $QTDIR as Trolltech likes to see it
@@ -826,12 +833,12 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
     ## Look for Qt library ##
     if test x"$with_Qt_lib_dir" != x; then
       bnv_qt_lib_dir="$with_Qt_lib_dir"
-      bnv_qt_LIBS="-L$bnv_qt_lib_dir $bnv_qt4_libs $QT_XLIBS"
+      bnv_qt_LIBS="-L$bnv_qt_lib_dir $bnv_qt5_libs $QT_XLIBS"
     else
       # Normally, when there is no traditional Trolltech installation,
       # the library is installed in a place where the linker finds it
       # automatically.
-      qt_direct_test_header=QtGui/QApplication
+      qt_direct_test_header=QtWidgets/QApplication
       qt_direct_test_main="
         int argc;
         char ** argv;
@@ -841,8 +848,8 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
       # Don't add top $LIBS permanently yet
       bnv_save_LIBS="$LIBS"
       bnv_save_CXXFLAGS="$CXXFLAGS"
-      CXXFLAGS="-I$bnv_qt_include_dir"
-      LIBS="$bnv_qt4_libs  $QT_XLIBS"
+      CXXFLAGS="-I$bnv_qt_include_dir -fPIC"
+      LIBS="$bnv_qt5_libs  $QT_XLIBS"
       bnv_qt_LIBS="$LIBS"
       AC_TRY_LINK([#include <$qt_direct_test_header>],
         $qt_direct_test_main,
@@ -867,13 +874,13 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
           `ls -dr /opt/qt* 2>/dev/null`
         "
         for bnv_dir in $bnv_dir_list; do
-          if ls $bnv_dir/libQtCore* > /dev/null 2> /dev/null ; then
+          if ls $bnv_dir/libQt5Core* > /dev/null 2> /dev/null ; then
             bnv_qt_lib_dir="$bnv_dir"
             break
           fi
         done
         # Try with that one
-        LIBS="$bnv_qt4_libs  $QT_XLIBS"
+        LIBS="$bnv_qt5_libs  $QT_XLIBS"
       ])
       if test x"$bnv_qt_lib_dir" != x; then
         bnv_qt_LIBS="-L$bnv_qt_lib_dir $LIBS"
@@ -903,8 +910,8 @@ AC_DEFUN([KSW_HAVE_QGL],
     AC_CACHE_VAL(ksw_cv_qgl_test_result,
     [
       cat > ksw_qgl_test.${ac_ext} << EOF
-#include <QtGui/QApplication>
-#include <QtGui/QWidget>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QWidget>
 #include <QtOpenGL/QGLWidget>
 
 int main( int argc, char ** argv )
@@ -917,11 +924,11 @@ int main( int argc, char ** argv )
 EOF
 
       ksw_cv_qgl_test_result="failure"
-        ksw_try_1="$CXX $GL_CFLAGS $GL_LIBS $QT_CXXFLAGS $QT_LIBS -Wno-uninitialized -o ksw_qgl_test ksw_qgl_test.${ac_ext} >/dev/null 2>ksw_qgl_test_1.out"
+        ksw_try_1="$CXX $GL_CFLAGS $GL_LIBS $QT_CXXFLAGS $QT_LIBS -fPIC -Wno-uninitialized -o ksw_qgl_test ksw_qgl_test.${ac_ext} >/dev/null 2>ksw_qgl_test_1.out"
         AC_TRY_EVAL(ksw_try_1)
         ksw_err_1=`grep -v '^ *+' ksw_qgl_test_1.out | grep -v "^ksw_qgl_test.{$ac_ext}\$"`
         if test x"$ksw_err_1" != x; then
-           ksw_try_2="$CXX $GL_CFLAGS $GL_LIBS $QT_CXXFLAGS $QT_LIBS -lqglviewer -Wno-uninitialized -o ksw_qgl_test ksw_qgl_test.${ac_ext} >/dev/null 2>ksw_qgl_test_2.out"
+           ksw_try_2="$CXX $GL_CFLAGS $GL_LIBS $QT_CXXFLAGS $QT_LIBS -fPIC -lqglviewer -Wno-uninitialized -o ksw_qgl_test ksw_qgl_test.${ac_ext} >/dev/null 2>ksw_qgl_test_2.out"
            AC_TRY_EVAL(ksw_try_2)
            ksw_err_2=`grep -v '^ *+' ksw_qgl_test_2.out | grep -v "^ksw_qgl_test.{$ac_ext}\$"`
            if test x"$ksw_err_2" != x; then

@@ -27,7 +27,7 @@
 #include "log.h"
 #include "qtmain.h"
 
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 
 static void _chomp( char * str )
 {
@@ -210,7 +210,7 @@ bool KeyConfig::saveFile( const char * filename )
 
       for ( it = m_list.begin(); it != m_list.end(); it++ )
       {
-         QString keyStr = (QString) (*it).key;
+         QString keyStr = (*it).key.toString();
          if ( keyStr.isNull() )
          {
             fprintf( fp, "%s \n", (*it).operation.c_str() );

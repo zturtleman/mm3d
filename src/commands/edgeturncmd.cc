@@ -28,7 +28,7 @@
 #include "log.h"
 #include "modelstatus.h"
 #include <QtCore/QObject>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 
 EdgeTurnCommand::EdgeTurnCommand()
 {

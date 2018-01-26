@@ -25,9 +25,9 @@
 #include "helpwin.h"
 #include "3dmprefs.h"
 
-#include <QtGui/QLineEdit>
-#include <QtGui/QCheckBox>
-#include <QtGui/QShortcut>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QShortcut>
 
 
 ViewportSettings::ViewportSettings( QWidget * parent )

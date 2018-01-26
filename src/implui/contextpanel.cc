@@ -32,8 +32,8 @@
 
 #include "log.h"
 
-#include <QtGui/QLayout>
-#include <QtGui/QSpacerItem>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QSpacerItem>
 #include <QtGui/QContextMenuEvent>
 #include <QtGui/QCloseEvent>
 

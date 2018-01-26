@@ -27,9 +27,9 @@
 #include "groupwin.h"
 #include "texwin.h"
 
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QComboBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QComboBox>
 
 #include <stdlib.h>
 

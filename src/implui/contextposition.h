@@ -26,7 +26,7 @@
 
 #include "contextposition.base.h"
 
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 
 #include "contextwidget.h"
 

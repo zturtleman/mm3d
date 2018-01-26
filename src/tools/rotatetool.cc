@@ -32,8 +32,8 @@
 #include "modelstatus.h"
 
 #include <math.h>
-#include <QtGui/QMainWindow>
-#include <QtGui/QApplication>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QApplication>
 
 static void _add_coords( double * dest, double * rhs, double * lhs )
 {

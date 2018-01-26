@@ -35,16 +35,16 @@
 #include "helpwin.h"
 #include "config.h"
 
-#include <QtGui/QPushButton>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QRadioButton>
-#include <QtGui/QMessageBox>
-#include <QtGui/QComboBox>
-#include <QtGui/QSlider>
-#include <QtGui/QLineEdit>
-#include <QtGui/QFileDialog>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QFileDialog>
 #include <QtGui/QPixmap>
-#include <QtGui/QShortcut>
+#include <QtWidgets/QShortcut>
 
 #include <math.h>
 

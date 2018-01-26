@@ -30,7 +30,7 @@ class ContextPanelObserver;
 
 #include "contextwidget.h"
 
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 
 class Model;
 

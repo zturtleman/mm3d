@@ -28,12 +28,12 @@
 #include "texwidget.h"
 #include "decalmgr.h"
 
-#include <QtGui/QInputDialog>
-#include <QtGui/QPushButton>
-#include <QtGui/QComboBox>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QShortcut>
+#include <QtWidgets/QInputDialog>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QShortcut>
 
 #include <list>
 

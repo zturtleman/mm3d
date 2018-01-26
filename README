@@ -10,7 +10,7 @@ The home page is here:
 The help and developer mailing lists (including archives) are here:
    http://www.misfitcode.com/misfitmodel3d/mailinglist.html
 
-Misfit Model 3D requires Qt (4.x) with OpenGL support.  See the INSTALL file
+Misfit Model 3D requires Qt (5.x) with OpenGL support.  See the INSTALL file
 for details on where to get these packages.
 
 This program uses autoconf and automake for building from source.  What this
@@ -30,7 +30,7 @@ commands.
 
    brew install autoconf automake qt
    ./autosetup.sh
-   ./configure --with-Qt-dir=/usr/local/Cellar/qt/4.8.6
+   ./configure --with-Qt-dir=/usr/local/Cellar/qt/5.0.0
    make -C src
    make mm3d.app
 

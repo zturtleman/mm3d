@@ -28,7 +28,7 @@
 #include "modelfilter.h"
 #include "cal3dfilter.h"
 
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 
 class Model;
 

@@ -26,7 +26,7 @@
 
 #include "backgroundwin.base.h"
 
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 
 class Model;
 class BackgroundSelect;

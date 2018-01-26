@@ -27,7 +27,7 @@
 #include "projectionwin.base.h"
 #include "model.h"
 
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 #include <QtGui/QCloseEvent>
 
 class ViewPanel;

@@ -31,8 +31,8 @@
 #include "modelviewport.h"
 #include "3dmprefs.h"
 
-#include <QtGui/QLayout>
-#include <QtGui/QGridLayout>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QGridLayout>
 
 ViewPanel::ViewPanel( Toolbox * toolbox, QWidget * parent )
    : QWidget( parent ),

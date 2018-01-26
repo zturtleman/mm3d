@@ -25,13 +25,13 @@
 
 #include "3dmprefs.h"
 
-#include <QtGui/QLabel>
-#include <QtGui/QLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QGroupBox>
-#include <QtGui/QSpinBox>
-#include <QtGui/QComboBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QComboBox>
 
 PolyToolWidget::PolyToolWidget( Observer * observer, QMainWindow * parent )
    : ToolWidget ( parent ),

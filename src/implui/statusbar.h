@@ -29,7 +29,7 @@
 #include "modelstatus.h"
 
 #include <QtGui/QPalette>
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 
 #include <map>
 #include <list>

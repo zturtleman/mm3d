@@ -24,7 +24,7 @@
 #include "menuconf.h"
 #include <QtCore/QObject>
 #include <QtGui/QKeySequence>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 
 #include "selectfreecmd.h"
 #include "model.h"

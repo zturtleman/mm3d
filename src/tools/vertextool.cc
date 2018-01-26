@@ -31,7 +31,7 @@
 #include "pixmap/vertextool.xpm"
 
 #include <QtCore/QObject>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 
 VertexTool::VertexTool()
 {

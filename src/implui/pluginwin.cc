@@ -26,8 +26,8 @@
 
 #include "helpwin.h"
 
-#include <QtGui/QHeaderView>
-#include <QtGui/QShortcut>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QShortcut>
 
 PluginWindow::PluginWindow()
    : QDialog( NULL )
@@ -36,8 +36,8 @@ PluginWindow::PluginWindow()
    setupUi( this );
    setModal( false );
 
-   m_pluginList->header()->setClickable( false );
-   m_pluginList->header()->setMovable( false );
+   m_pluginList->header()->setSectionsClickable( false );
+   m_pluginList->header()->setSectionsMovable( false );
 
    QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
    connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );

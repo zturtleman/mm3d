@@ -28,7 +28,7 @@
 
 #include "align.h"
 
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 
 class Model;
 

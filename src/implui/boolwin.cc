@@ -31,9 +31,9 @@
 #include "viewpanel.h"
 #include "modelstatus.h"
 
-#include <QtGui/QPushButton>
-#include <QtGui/QLabel>
-#include <QtGui/QRadioButton>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QRadioButton>
 
 #include <stdlib.h>
 

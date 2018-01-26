@@ -25,7 +25,7 @@
 
 #include "version.h"
 
-#include <QtGui/QTextBrowser>
+#include <QtWidgets/QTextBrowser>
 
 #define ABOUT_TEXT "<html><head><title>Misfit Model 3D - About</title></head> " \
    "<body><center><br>" \

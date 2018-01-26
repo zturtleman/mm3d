@@ -35,14 +35,14 @@
 #include "3dmprefs.h"
 #include "helpwin.h"
 
-#include <QtGui/QComboBox>
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#include <QtGui/QInputDialog>
-#include <QtGui/QLineEdit>
-#include <QtGui/QSlider>
-#include <QtGui/QLabel>
-#include <QtGui/QShortcut>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QInputDialog>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QShortcut>
 
 #include <list>
 #include <string>

@@ -25,7 +25,7 @@
 
 #include "viewportsettings.base.h"
 
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 
 class ViewportSettings : public QDialog, public Ui::ViewportSettingsBase
 {

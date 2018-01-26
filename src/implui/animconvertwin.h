@@ -27,7 +27,7 @@
 
 #include "model.h"
 
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 
 class Q3Accel;
 

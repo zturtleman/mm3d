@@ -26,7 +26,7 @@
 
 #include "autoassignjointwin.base.h"
 
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 
 class Model;
 

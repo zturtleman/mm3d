@@ -25,8 +25,8 @@
 
 #include "sysconf.h"
 
-#include <QtGui/QTextBrowser>
-#include <QtGui/QPushButton>
+#include <QtWidgets/QTextBrowser>
+#include <QtWidgets/QPushButton>
 
 HelpWin::HelpWin( const char * document, bool modal, QWidget * parent )
    : QDialog( parent )

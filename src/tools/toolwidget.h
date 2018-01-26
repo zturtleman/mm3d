@@ -24,9 +24,9 @@
 #ifndef TOOLWIDGET_H_INC__
 #define TOOLWIDGET_H_INC__
 
-#include <QtGui/QDockWidget>
-#include <QtGui/QMainWindow>
-#include <QtGui/QBoxLayout>
+#include <QtWidgets/QDockWidget>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QBoxLayout>
 
 class ToolWidget : public QDockWidget
 {

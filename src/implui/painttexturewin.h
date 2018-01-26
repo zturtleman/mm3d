@@ -33,7 +33,7 @@
 using std::list;
 using std::map;
 
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 
 class Model;
 class TextureWidget;

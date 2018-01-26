@@ -29,7 +29,7 @@
 
 #include <math.h>
 #include <QtCore/QObject>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 
 #include "log.h"
 

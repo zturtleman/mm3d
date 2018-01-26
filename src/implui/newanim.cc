@@ -22,9 +22,9 @@
 
 #include "newanim.h"
 
-#include <QtGui/QLineEdit>
-#include <QtGui/QRadioButton>
-#include <QtGui/QPushButton>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QPushButton>
 
 NewAnim::NewAnim( QWidget * parent )
    : QDialog( parent )

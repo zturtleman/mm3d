@@ -33,8 +33,8 @@
 
 #include <stdio.h>
 
-#include <QtGui/QMainWindow>
-#include <QtGui/QApplication>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QApplication>
 #include <QtGui/QKeySequence>
 
 class NormalTest : public Model::SelectionTest

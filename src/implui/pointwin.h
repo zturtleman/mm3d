@@ -26,7 +26,7 @@
 
 #include "pointwin.base.h"
 
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 
 class Model;
 class Q3Accel;

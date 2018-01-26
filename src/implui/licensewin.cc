@@ -25,7 +25,7 @@
 
 #include "sysconf.h"
 
-#include <QtGui/QTextBrowser>
+#include <QtWidgets/QTextBrowser>
 
 LicenseWin::LicenseWin( QWidget * parent )
    : QDialog( parent )

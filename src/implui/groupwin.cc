@@ -29,14 +29,14 @@
 #include "helpwin.h"
 
 #include <QtCore/QString>
-#include <QtGui/QComboBox>
-#include <QtGui/QInputDialog>
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#include <QtGui/QCheckBox>
-#include <QtGui/QSlider>
-#include <QtGui/QLabel>
-#include <QtGui/QShortcut>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QInputDialog>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QShortcut>
 
 #include <list>
 

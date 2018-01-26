@@ -24,7 +24,7 @@
 #ifndef __TEXFRAME_H
 #define __TEXFRAME_H
 
-#include <QtGui/QFrame>
+#include <QtWidgets/QFrame>
 #include <QtGui/QResizeEvent>
 
 class Model;
