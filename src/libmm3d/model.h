@@ -1360,7 +1360,6 @@ class Model
 
       const char * getTextureFilename( unsigned textureId ) const;
       Texture * getTextureData( unsigned textureId );
-      const Texture * getTextureData( unsigned textureId ) const { return getTextureData( textureId ); }
 
       // Lighting accessors
       bool getTextureAmbient(   unsigned textureId,       float * ambient   ) const;
