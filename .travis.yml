@@ -8,11 +8,6 @@ compiler:
 
 script: ./autosetup.sh && ./configure && make
 
-notifications:
-  irc: "irc.freenode.org#spearmint"
-  on_success: change
-  on_failure: always
-
 addons:
   apt:
     packages:
