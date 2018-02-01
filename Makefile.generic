@@ -12,10 +12,6 @@ ifeq ($(COMPILE_PLATFORM),sunos)
   # Solaris uname and GNU uname differ
   COMPILE_ARCH=$(shell uname -p | sed -e s/i.86/x86/)
 endif
-ifeq ($(COMPILE_PLATFORM),darwin)
-  # Apple does some things a little differently...
-  COMPILE_ARCH=$(shell uname -p | sed -e s/i.86/x86/)
-endif
 
 #############################################################################
 #
@@ -187,7 +183,7 @@ ifeq ($(PLATFORM),darwin)
   endif
 
   ifndef QTDIR
-    QTDIR=/usr/local/Cellar/qt/5.0.0
+    QTDIR=/usr/local/Cellar/qt/5.10.0_1
   endif
   ifndef QT_BIN_DIR
     QT_BIN_DIR=${QTDIR}/bin
@@ -203,10 +199,13 @@ ifeq ($(PLATFORM),darwin)
   endif
 
   ifndef QT_LIBS
-    QT_LIBS=-framework Qt5Core -framework Qt5Gui -framework Qt5Widgets -framework Qt5OpenGL -framework Qt5Network
+    QT_LIBS=-framework QtCore -framework QtGui -framework QtWidgets -framework QtOpenGL -framework QtNetwork
   endif
 
   LINK=-F${QT_FRAMEWORKS_DIR} -L${QT_LIB_DIR} ${QT_LIBS} -framework OpenGl
+
+  # Qt5 requires C++11
+  BASE_FLAGS+=-std=c++11 -stdlib=libc++
 
   ifeq ($(ARCH),x86)
     BASE_FLAGS += -m32

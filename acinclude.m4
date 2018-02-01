@@ -58,9 +58,10 @@ AC_DEFUN([KSW_IS_DEBUG],
     is_debug=coverage
   else
     omit_frame=
-    if test x"${CORE_PROFILE}" = "x"; then
-       omit_frame="-fomit-frame-pointer"
-    fi
+    # FIXME?: Using -fomit-frame-pointer causes SEGFAULT at start up on macOS 10.11 using clang++.
+    #if test x"${CORE_PROFILE}" = "x"; then
+    #   omit_frame="-fomit-frame-pointer"
+    #fi
     COVFLAGS=""
     COVLFLAGS=""
     CFLAGS="-O2 ${omit_frame} -fno-math-errno -fPIC"
@@ -478,7 +479,7 @@ AC_DEFUN([BNV_HAVE_QT],
 
   bnv_is_qt5=no
   if test x"$is_osx" = xyes; then
-    bnv_qt5_libs="-framework QtCore -framework QtGui -framework QtOpenGL -framework QtNetwork"
+    bnv_qt5_libs="-framework QtCore -framework QtGui -framework QtWidgets -framework QtOpenGL -framework QtNetwork"
   else
     bnv_qt5_libs="-lQt5Core -lQt5Gui -lQt5Widgets -lQt5OpenGL -lQt5Network"
   fi

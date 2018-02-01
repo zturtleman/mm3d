@@ -25,18 +25,19 @@ easy steps:
 This will build an 'mm3d' executable and install it in /usr/local/bin.
 Documentation will be in /usr/local/share/doc/mm3d.
 
-On Mac OS X, install homebrew from http://brew.sh and run the following
+On macOS 10.11+, install homebrew from http://brew.sh and run the following
 commands.
 
    brew install autoconf automake qt
+   cpan App::cpanminus # choose sudo in the interactive command
+   cpanm HTML::Template --sudo
    ./autosetup.sh
-   ./configure --with-Qt-dir=/usr/local/Cellar/qt/5.0.0
-   make -C src
+   CXX='clang++ -std=c++11 -stdlib=libc++' ./configure --with-Qt-dir=/usr/local/Cellar/qt/5.10.0_1
+   make
    make mm3d.app
 
-The app bundle does not appear to work. You can launch the "mm3d" binary
-directly using "exec ./mm3d.app/Contents/MacOS/mm3d". The help manual only
-works if you run "sudo make install".
+This will build an 'Misfit Model 3D.app' AppBundle. The help manual
+only works if you run "sudo make install".
 
 For more detailed installation instructions, see the INSTALL file.
 See INSTALL.WIN32 for Windows-specific instructions.
