@@ -1502,7 +1502,7 @@ bool Model::FrameAnimData::propEqual(const FrameAnimData & rhs, int propBits, do
       FrameAnimVertexList::iterator lv = m_frameVertices->begin();
       FrameAnimVertexList::iterator rv = rhs.m_frameVertices->begin();
 
-      for ( ; lv != m_frameVertices->end(), rv != rhs.m_frameVertices->end(); ++lv, ++rv )
+      for ( ; lv != m_frameVertices->end() && rv != rhs.m_frameVertices->end(); ++lv, ++rv )
       {
          if ( !(*lv)->propEqual( **rv, propBits, tolerance ) )
          {
@@ -1515,7 +1515,7 @@ bool Model::FrameAnimData::propEqual(const FrameAnimData & rhs, int propBits, do
       FrameAnimPointList::iterator lp = m_framePoints->begin();
       FrameAnimPointList::iterator rp = rhs.m_framePoints->begin();
 
-      for ( ; lp != m_framePoints->end(), rp != rhs.m_framePoints->end(); ++lp, ++rp )
+      for ( ; lp != m_framePoints->end() && rp != rhs.m_framePoints->end(); ++lp, ++rp )
       {
          if ( !(*lp)->propEqual( **rp, propBits, tolerance ) )
          {
