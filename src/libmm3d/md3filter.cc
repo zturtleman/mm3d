@@ -1218,7 +1218,7 @@ int32_t Md3Filter::materialsCheck( std::string textureFullName )
 //it will return the default material.
 int32_t Md3Filter::setSkins( char *meshName )
 {
-   if ( strlen(meshName) < 0 )
+   if ( strlen(meshName) == 0 )
    {
       log_debug( "setSkins() no meshName.\n" );
       return -1;
