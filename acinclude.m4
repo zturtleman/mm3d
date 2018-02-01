@@ -479,9 +479,9 @@ AC_DEFUN([BNV_HAVE_QT],
 
   bnv_is_qt5=no
   if test x"$is_osx" = xyes; then
-    bnv_qt5_libs="-framework QtCore -framework QtGui -framework QtWidgets -framework QtOpenGL -framework QtNetwork"
+    bnv_qt5_libs="-framework QtCore -framework QtGui -framework QtWidgets -framework QtOpenGL"
   else
-    bnv_qt5_libs="-lQt5Core -lQt5Gui -lQt5Widgets -lQt5OpenGL -lQt5Network"
+    bnv_qt5_libs="-lQt5Core -lQt5Gui -lQt5Widgets -lQt5OpenGL"
   fi
   if test x"$with_Qt_dir" = x"no" ||
      test x"$with_Qt_include_dir" = x"no" ||

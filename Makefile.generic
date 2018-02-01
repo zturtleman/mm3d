@@ -163,7 +163,7 @@ ifdef MINGW
   endif
 
   ifndef QT_LIBS
-    QT_LIBS=-lQt5Core -lQt5Gui -lQt5Widgets -lQt5OpenGL -lQt5Network
+    QT_LIBS=-lQt5Core -lQt5Gui -lQt5Widgets -lQt5OpenGL
   endif
 
   LINK=-L${QT_LIB_DIR} ${QT_LIBS} -mwindows -lopengl32 -lglu32 -static-libgcc -static-libstdc++
@@ -199,7 +199,7 @@ ifeq ($(PLATFORM),darwin)
   endif
 
   ifndef QT_LIBS
-    QT_LIBS=-framework QtCore -framework QtGui -framework QtWidgets -framework QtOpenGL -framework QtNetwork
+    QT_LIBS=-framework QtCore -framework QtGui -framework QtWidgets -framework QtOpenGL
   endif
 
   LINK=-F${QT_FRAMEWORKS_DIR} -L${QT_LIB_DIR} ${QT_LIBS} -framework OpenGl
@@ -258,7 +258,7 @@ else # ifeq darwin
   endif
 
   ifndef QT_LIBS
-    QT_LIBS=-lQt5Core -lQt5Gui -lQt5Widgets -lQt5OpenGL -lQt5Network
+    QT_LIBS=-lQt5Core -lQt5Gui -lQt5Widgets -lQt5OpenGL
   endif
 
   LINK=-L${QT_LIB_DIR} ${QT_LIBS} -lGLU -lGL -ldl
@@ -533,7 +533,7 @@ MM3D_OBJ= \
 	${B}/src/3dm.o \
 	${B}/mm3dcore/3dmprefs.o \
 	${B}/implui/aboutwin.o \
- 	${B}/mm3dcore/align.o \
+	${B}/mm3dcore/align.o \
 	${B}/commands/aligncmd.o \
 	${B}/implui/alignwin.o \
 	${B}/mm3dcore/allocstats.o \
