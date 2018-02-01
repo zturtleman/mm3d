@@ -77,7 +77,7 @@ class NullTool : public ::Tool
 
       int getToolCount() { return 1; };
       const char * getName( int arg ) { return ""; };
-      void activated( int arg ) {};
+      void activated( int arg, Model * model, QMainWindow * mainwin ) {};
 
       void mouseButtonDown( Parent * parent, int buttonState, int x, int y ) {};
       void mouseButtonUp(   Parent * parent, int buttonState, int x, int y ) {};
