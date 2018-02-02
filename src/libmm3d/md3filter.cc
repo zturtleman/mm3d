@@ -1412,7 +1412,7 @@ void Md3Filter::setPoints( MeshSectionE section, int32_t offsetTags, int32_t num
       animCount = 0;
    }
 
-   for ( animIndex = animIndex; animIndex < animCount; animIndex++ )
+   for ( /**/; animIndex < animCount; animIndex++ )
    {
       int frameCount = m_model->getAnimFrameCount( Model::ANIMMODE_FRAME, animIndex );
       if ( animIndex < 0 )

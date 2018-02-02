@@ -2987,7 +2987,6 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
             flags |= MSAF_ANIM_LOOP;
          }
 
-         animSize = animSize;
          m_dst->write( animSize );
          m_dst->write( flags );
          m_dst->writeBytes( (const uint8_t *) sa->m_name.c_str(), sa->m_name.length() + 1 );
