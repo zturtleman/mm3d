@@ -252,8 +252,11 @@ else # ifeq darwin
       endif
     endif
     ifndef QT_LIB_DIR
-      # the stardard library path is used for Qt5
-      QT_LIB_DIR=.
+      ifeq ($(ARCH),x86)
+        QT_LIB_DIR=/usr/lib/i386-linux-gnu
+      else
+        QT_LIB_DIR=/usr/lib/$(ARCH)-linux-gnu
+      endif
     endif
   endif
 
