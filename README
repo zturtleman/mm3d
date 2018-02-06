@@ -1,13 +1,21 @@
-This is the README file for Misfit Model 3D
+This is the README file for Misfit Model 3D (clover.moe fork)
 
 Misfit Model 3D is a 3D model editor.  It was written and tested on Linux.
 It is reported to run on other Unix-like operating systems. It also runs
 on Windows. See INSTALL.WIN32 for Windows-specific instructions.
 
+This is an unofficial fork maintained by Zack Middleton (zturtleman).
+
 The home page is here:
+   https://clover.moe/mm3d
+
+The discussion forum is here:
+   https://forum.clover.moe
+
+The original project's home page is here:
    http://www.misfitcode.com/misfitmodel3d/
 
-The help and developer mailing lists (including archives) are here:
+The original project's help and developer mailing lists (including archives) are here:
    http://www.misfitcode.com/misfitmodel3d/mailinglist.html
 
 Misfit Model 3D requires Qt (5.x) with OpenGL support.  See the INSTALL file

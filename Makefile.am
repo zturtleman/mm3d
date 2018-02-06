@@ -25,7 +25,7 @@ define INFOPLIST
 <key>CFBundleIconFile</key>
 <string>${PACKAGE}</string>
 <key>CFBundleIdentifier</key>
-<string>com.misfitcode.${PACKAGE}</string>
+<string>moe.clover.${PACKAGE}</string>
 <key>CFBundleInfoDictionaryVersion</key>
 <string>6.0</string>
 <key>CFBundleName</key>
@@ -43,7 +43,7 @@ define INFOPLIST
 <key>LSMinimumSystemVersion</key>
 <string>${MACOSX_DEPLOYMENT_TARGET}</string>
 <key>NSHumanReadableCopyright</key>
-<string>Copyright © 2004-2008 Kevin Worcester.</string>
+<string>Copyright © 2004-2008 Kevin Worcester, clover.moe fork © 2009-2018 Zack Middleton.</string>
 <key>NSPrincipalClass</key>
 <string>NSApplication</string>
 </dict>

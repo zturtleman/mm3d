@@ -30,11 +30,11 @@
 #define ABOUT_TEXT "<html><head><title>Misfit Model 3D - About</title></head> " \
    "<body><center><br>" \
    "<h1>Misfit Model 3D</h1>" \
-   "<h2>" VERSION_STRING "</h2> <br>" \
-   "http://www.misfitcode.com/misfitmodel3d/<br><br>" \
+   "<h2>" VERSION_STRING "</h2><br>" \
    "Copyright &copy; 2004-2008, Kevin Worcester<br>" \
-   "<font color=\"blue\">kevin&nbsp;at</font>&nbsp;the&nbsp;<font color=\"blue\">misfitcode.com</font> domain<br>" \
-   "</center></body></html>" 
+   "clover.moe fork &copy; 2009-2018 Zack Middleton<br><br>" \
+   "https://clover.moe/mm3d<br>" \
+   "</center></body></html>"
 
 AboutWin::AboutWin( QWidget * parent )
    : QDialog( parent )

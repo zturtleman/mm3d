@@ -64,12 +64,9 @@ you want to force the multi-threaded Qt library, you would use
 
 Use ./configure --help for a complete list of options.
 
-If you need installation help you can contact the 
-misfitmodel3d-help mailing list at:
+If you need installation help you can post on the discussion forum:
 
-   http://www.misfitcode.com/misfitmodel3d/mailinglist.html
-
-You can also email "kevin" at the "misfitcode.com" domain.
+   https://forum.clover.moe
 
 Below are generic instructions for installing programs using autoconf
 and automake.  They are provided for reference if you need more help
