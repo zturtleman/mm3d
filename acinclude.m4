@@ -768,6 +768,13 @@ dnl Set bnv_qt_dir bnv_qt_include_dir bnv_qt_bin_dir bnv_qt_lib_dir
 dnl Copyright 2001 Bastiaan N. Veelo <Bastiaan.N.Veelo@immtek.ntnu.no>
 AC_DEFUN([BNV_PATH_QT_DIRECT],
 [
+  if test x"$host_alias" != x; then
+    # set by configure --host
+    bnv_qt_host=$host_alias
+  else
+    bnv_qt_host=`sh config.guess | cut -d'-' -f 1,3-4`
+  fi
+
   ## Binary utilities ##
   if test x"$with_Qt_bin_dir" != x; then
     bnv_qt_bin_dir=$with_Qt_bin_dir
@@ -778,17 +785,14 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
   else
     # The following header file is expected to define QT_VERSION.
     # Look for the header file in a standard set of common directories.
-    if test x"$host_alias" != x; then
-      # set by configure --host
-      bnv_qt_include_host=$host_alias
-    else
-      bnv_qt_include_host=`sh config.guess | cut -d'-' -f 1,3-4`
-    fi
     qt_direct_test_header=qglobal.h
     bnv_include_path_list="
-      /usr/include/$bnv_qt_include_host/qt5
+      /usr/include/$bnv_qt_host/qt5
       /usr/include/qt5
       /usr/qt5/include
+      /usr/local/include/$bnv_qt_host/qt5
+      /usr/local/include/qt5
+      /usr/local/qt5/include
     "
     for bnv_dir in $bnv_include_path_list; do
       if test -r "$bnv_dir/QtCore/$qt_direct_test_header"; then
@@ -862,17 +866,21 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
         # That did not work. Maybe a library version I don't know about?
         # Look for some Qt lib in a standard set of common directories.
         bnv_dir_list="
-          `echo $bnv_qt_includes | sed ss/includess`
-          /lib
+          `echo $bnv_qt_include_dir | sed "s|/include|/lib|"`
+          /usr/lib/$bnv_qt_host
+          /usr/lib/qt5
+          /usr/qt5/lib
           /usr/lib64
           /usr/lib
+          /usr/local/lib/$bnv_qt_host
+          /usr/local/lib/qt5
+          /usr/local/qt5/lib
           /usr/local/lib64
           /usr/local/lib
+          /lib64
+          /lib
           /opt/lib64
           /opt/lib
-          `ls -dr /usr/lib/qt* 2>/dev/null`
-          `ls -dr /usr/local/qt* 2>/dev/null`
-          `ls -dr /opt/qt* 2>/dev/null`
         "
         for bnv_dir in $bnv_dir_list; do
           if ls $bnv_dir/libQt5Core* > /dev/null 2> /dev/null ; then
