@@ -2,8 +2,8 @@ language: cpp
 
 sudo: false
 
-# gcc fails to configure. I don't know why.
 compiler:
+  - gcc
   - clang
 
 script: ./autosetup.sh && ./configure && make

@@ -736,7 +736,7 @@ EOF
             echo "configure: could not compile:" >&AC_FD_CC
             cat bnv_qt_main.$ac_ext >&AC_FD_CC
           else
-            bnv_try_4="$CXX $QT_LIBS $LIBS -o bnv_qt_main bnv_qt_main.o moc_bnv_qt_test.o >/dev/null 2>bnv_qt_test_4.out"
+            bnv_try_4="$CXX -o bnv_qt_main bnv_qt_main.o moc_bnv_qt_test.o $QT_LIBS $LIBS >/dev/null 2>bnv_qt_test_4.out"
             AC_TRY_EVAL(bnv_try_4)
             bnv_err_4=`grep -v '^ *+' bnv_qt_test_4.out`
             if test x"$bnv_err_4" != x; then
@@ -933,11 +933,11 @@ int main( int argc, char ** argv )
 EOF
 
       ksw_cv_qgl_test_result="failure"
-        ksw_try_1="$CXX $GL_CFLAGS $GL_LIBS $QT_CXXFLAGS $QT_LIBS -fPIC -Wno-uninitialized -o ksw_qgl_test ksw_qgl_test.${ac_ext} >/dev/null 2>ksw_qgl_test_1.out"
+        ksw_try_1="$CXX $QT_CXXFLAGS $GL_CFLAGS -fPIC -Wno-uninitialized -o ksw_qgl_test ksw_qgl_test.${ac_ext} $QT_LIBS $GL_LIBS >/dev/null 2>ksw_qgl_test_1.out"
         AC_TRY_EVAL(ksw_try_1)
         ksw_err_1=`grep -v '^ *+' ksw_qgl_test_1.out | grep -v "^ksw_qgl_test.{$ac_ext}\$"`
         if test x"$ksw_err_1" != x; then
-           ksw_try_2="$CXX $GL_CFLAGS $GL_LIBS $QT_CXXFLAGS $QT_LIBS -fPIC -lqglviewer -Wno-uninitialized -o ksw_qgl_test ksw_qgl_test.${ac_ext} >/dev/null 2>ksw_qgl_test_2.out"
+           ksw_try_2="$CXX $QT_CXXFLAGS $GL_CFLAGS -fPIC -Wno-uninitialized -o ksw_qgl_test ksw_qgl_test.${ac_ext} $QT_LIBS -lqglviewer $GL_LIBS  >/dev/null 2>ksw_qgl_test_2.out"
            AC_TRY_EVAL(ksw_try_2)
            ksw_err_2=`grep -v '^ *+' ksw_qgl_test_2.out | grep -v "^ksw_qgl_test.{$ac_ext}\$"`
            if test x"$ksw_err_2" != x; then
