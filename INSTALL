@@ -29,7 +29,8 @@ running these commands at a shell prompt (terminal window):
    make
    sudo make install
 
-On Mac OS X, you must run "make mm3d.app" after running "make".
+On macOS, use the commands listed in the README to create an App Bundle
+instead.
 
 The default PREFIX (install location) is /usr/local.  Files are
 installed in the following directories.

@@ -30,7 +30,7 @@ easy steps:
    make
    sudo make install
 
-This will build an 'mm3d' executable and install it in /usr/local/bin.
+This will build a 'mm3d' executable and install it in /usr/local/bin.
 Documentation will be in /usr/local/share/doc/mm3d.
 
 On macOS 10.11+, install homebrew from http://brew.sh and run the following
@@ -44,8 +44,7 @@ commands.
    make
    make mm3d.app
 
-This will build an 'Misfit Model 3D.app' AppBundle. The help manual
-only works if you run "sudo make install".
+This will build a 'Misfit Model 3D.app' AppBundle.
 
 For more detailed installation instructions, see the INSTALL file.
 See INSTALL.WIN32 for Windows-specific instructions.

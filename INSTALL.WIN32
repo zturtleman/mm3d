@@ -1,8 +1,8 @@
 Misfit Model 3D Installation For Win32
 ======================================
 
-Misfit Model 3D is known to run on Windows 2000 and Windows XP.
-Windows 95, 98, and ME are untested and may or may not work.
+Misfit Model 3D may or may not run on Windows XP. It will not work on
+older versions.
 
 Misfit Model 3D for Win32 requires the mingw environment and
 the Open Source version of Qt 5 for Win32.  To run binaries

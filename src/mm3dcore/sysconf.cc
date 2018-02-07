@@ -25,18 +25,19 @@
 #include <windows.h>
 #include <stdio.h>
 #include <cstring>
-#if 0 // Disabled for Win98
-#include <psapi.h>
-#endif // 0
+#include <shlobj.h>
 #include <string>
 #include <string.h>
 #include <stdlib.h>
-#include "mm3dreg.h"
 #include "version.h"
 
-using namespace Mm3dReg;
+#elif defined(__APPLE__)
 
-#endif // WIN32
+#include <errno.h>
+#include <sys/syslimits.h>
+#include <mach-o/dyld.h> // _NSGetExecutablePath
+
+#endif
 
 #include "sysconf.h"
 #include "mm3dconfig.h"
@@ -60,72 +61,76 @@ static std::string s_configFile;
 // Gets the path to the current process's exe file
 static std::string getExecutablePath()
 {
-    std::string rval = "";
-#if 0 // Disabled for Win98
+   std::string rval = "";
+   char execpath[MAX_PATH];
+   DWORD length;
 
-    // Get a list of all the modules in this process.
+   length = GetModuleFileNameA( NULL, execpath, sizeof( execpath ) );
 
-    HANDLE hProcess = OpenProcess(  PROCESS_QUERY_INFORMATION |
-                                    PROCESS_VM_READ,
-                                    FALSE, GetCurrentProcessId() );
-    if ( hProcess )
-    {
-        DWORD cbNeeded = 32 * sizeof( HMODULE );
-        DWORD cb = cbNeeded;
-        HMODULE * hMods = NULL;
-        int success = 0;
+   if ( length >= sizeof( execpath ) ) {
+      log_debug( "getExecutablePath: Execuable path too long\n" );
+   } else if ( length == 0 ) {
+      log_debug( "getExecutablePath: GetModuleFileNameA() failed: 0x%x\n", GetLastError() );
+   } else {
+      char *ptr = strrchr( execpath, '\\' );
 
-        // Allocate memory, make the call
-        // If we didn't allocate enough memory, cbNeeded will
-        // tell us how much we need, try again
-        do {
-            if ( hMods )
-            {
-                free( hMods );
-            }
+      if ( ptr )
+      {
+         ptr[0] = '\0';
+         rval = execpath;
+      }
+   }
 
-            cb = cbNeeded;
-            hMods = (HMODULE *) malloc( cb );
-            success = EnumProcessModules(hProcess, hMods, cb, &cbNeeded);
-
-        } while ( cbNeeded > cb );
-
-        if ( success )
-        {
-            // Run through exe and dlls to find the exe
-            for ( unsigned i = 0; i < (cbNeeded / sizeof(HMODULE)); i++ )
-            {
-                char name[MAX_PATH];
-
-                // This gets the full path to exe or dll
-                if ( GetModuleFileNameEx( hProcess, hMods[i], name,
-                            sizeof(name)))
-                {
-                    // If exe, strip exe name to get path
-                    if ( strstr( name, ".exe" ) )
-                    {
-                        char * ptr = strrchr( name, '\\' );
-
-                        if ( ptr )
-                        {
-                            ptr[0] = '\0';
-                            rval = name;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        free ( hMods );
-        CloseHandle( hProcess );
-    }
-
-#endif // 0
-    return rval;
+   return rval;
 }
 
-#endif // WIN32
+#elif defined(__APPLE__)
+
+static std::string getExecutablePath()
+{
+   char actualpath[PATH_MAX];
+   char tmppath[PATH_MAX];
+   char *ptr;
+   uint32_t size;
+
+   size = sizeof( tmppath );
+
+   if ( _NSGetExecutablePath( tmppath, &size ) == 0 ) {
+      if ( realpath( tmppath, actualpath ) == NULL ) {
+         log_debug( "getExecutablePath: realpath(%s) failed: %s\n", tmppath, strerror( errno ) );
+         actualpath[0] = '.';
+         actualpath[1] = '\0';
+      }
+   } else {
+      log_debug( "getExecutablePath: _NSGetExecutablePath() failed: %s\n", strerror( errno ) );
+      actualpath[0] = '.';
+      actualpath[1] = '\0';
+   }
+
+   // Remove executable name and trailing directory separator
+   ptr = strrchr( actualpath, '/' );
+   if ( ptr ) {
+      ptr[0] = '\0';
+   }
+
+   return actualpath;
+}
+
+static std::string getAppBundlePath()
+{
+   std::string path = getExecutablePath();
+   std::string endsWith = ".app/Contents/MacOS";
+
+   // Check if executable is not in an app bundle
+   if ( path.length() < endsWith.length()
+      || path.compare( path.length() - endsWith.length(), endsWith.length(), endsWith ) != 0 ) {
+      return "";
+   }
+
+   return path.substr( 0, path.length() - endsWith.length() + strlen( ".app" ) );
+}
+
+#endif // __APPLE__
 
 void init_sysconf()
 {
@@ -140,44 +145,59 @@ void init_sysconf()
 
 
 #ifdef WIN32
-   char cwd[PATH_MAX];
-   getcwd( cwd, sizeof(cwd) );
-
-   // Try registry first
-   std::string path = Mm3dRegKey::getRegistryString( HKEY_CURRENT_USER, "Software\\Misfit Code\\Misfit Model 3D", "INSTDIR" );
+   std::string path = getExecutablePath();
 
    if ( path.length() == 0 )
    {
-      // Fall back to executable path, if we can get it
-      path = getExecutablePath();
+      // Fall back to current directory
+      char cwd[PATH_MAX];
 
-      if ( path.length() == 0 )
-      {
-         // Last resort, current directory
+      if ( GetCurrentDirectoryA( sizeof(cwd), cwd ) > 0 ) {
          path = cwd;
+      } else {
+         path = ".";
       }
    }
 
-   s_mm3dHomeDir = path + HOME_MM3D;
+   char appdata[MAX_PATH];
+   if ( SHGetFolderPathA( NULL, CSIDL_APPDATA|CSIDL_FLAG_CREATE, NULL, 0, appdata ) == S_OK ) {
+      s_mm3dHomeDir  = appdata;
+      s_mm3dHomeDir += HOME_MM3D;
+   } else {
+      s_mm3dHomeDir  = path;
+      s_mm3dHomeDir += "\\userhome";
+   }
+
+   s_pluginDir   = s_mm3dHomeDir + HOME_PLUGINS;
+   s_pluginDir  += "\\";
+   s_pluginDir  += majorMinor;
+
    s_docDir      = path + DOC_ROOT;
    s_i18nDir     = path + I18N_ROOT;
-   s_pluginDir   = path + HOME_PLUGINS;
+   s_sharedPluginDir  = path + SHARED_PLUGINS;
+   s_sharedPluginDir += "\\";
+   s_sharedPluginDir += majorMinor;
+#elif defined __APPLE__
+   s_mm3dHomeDir = PORT_getenv( "HOME" );
+   s_mm3dHomeDir += HOME_MM3D;
+   s_pluginDir = s_mm3dHomeDir + HOME_PLUGINS;
+   s_pluginDir += "/";
+   s_pluginDir += majorMinor;
 
-   unsigned len = s_docDir.size();
-   for ( unsigned t = 0; t < len; t++ )
-   {
-      if ( s_docDir[t] == '/' )
-      {
-         s_docDir[t] = '\\';
-      }
-   }
-   len = s_i18nDir.size();
-   for ( unsigned t = 0; t < len; t++ )
-   {
-      if ( s_i18nDir[t] == '/' )
-      {
-         s_i18nDir[t] = '\\';
-      }
+   std::string appPath = getAppBundlePath();
+
+   if ( appPath.length() > 0 ) {
+      s_docDir           = appPath + "/Contents/SharedSupport/mm3d/doc/html";
+      s_i18nDir          = appPath + "/Contents/SharedSupport/mm3d/i18n";
+      s_sharedPluginDir  = appPath + "/Contents/PlugIns/mm3d";
+      s_sharedPluginDir += "/";
+      s_sharedPluginDir += majorMinor;
+   } else {
+      s_docDir           = DOC_ROOT;
+      s_i18nDir          = I18N_ROOT;
+      s_sharedPluginDir  = SHARED_PLUGINS;
+      s_sharedPluginDir += "/";
+      s_sharedPluginDir += majorMinor;
    }
 #else
    s_mm3dHomeDir = PORT_getenv( "HOME" );
@@ -187,11 +207,10 @@ void init_sysconf()
    s_pluginDir = s_mm3dHomeDir + HOME_PLUGINS;
    s_pluginDir += "/";
    s_pluginDir += majorMinor;
-#endif // WIN32
-
    s_sharedPluginDir  = SHARED_PLUGINS;
    s_sharedPluginDir += "/";
    s_sharedPluginDir += majorMinor;
+#endif
 
    s_configFile = s_mm3dHomeDir + HOME_RC;
 

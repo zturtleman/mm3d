@@ -391,13 +391,21 @@ void PluginManager::loadPlugins()
 {
    string plugin_dir = getPluginDirectory();
 
+#if defined WIN32 || defined __APPLE__
+   loadPluginDir( plugin_dir.c_str() );
+
+   plugin_dir  = getSharedPluginDirectory();
+   loadPluginDir( plugin_dir.c_str() );
+#else
    // Check to see if we have a user-specific plugin directory
+   // (By default it contains a symlink to the shared directory, see 3dmprefs.cc)
    if ( ! loadPluginDir( plugin_dir.c_str() ) )
    {
       // No, check shared directory
       plugin_dir  = getSharedPluginDirectory();
       loadPluginDir( plugin_dir.c_str() );
    }
+#endif
 }
 
 int init_plugins()

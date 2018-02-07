@@ -52,10 +52,20 @@ endef
 export INFOPLIST
 
 $(PACKAGE).app:
-	@test -d "$(MAC_APP)/Contents/MacOS/" || mkdir -p "$(MAC_APP)/Contents/MacOS/"
-	@test -d "$(MAC_APP)/Contents/Resources/" || mkdir -p "$(MAC_APP)/Contents/Resources/"
-	@cp "$(DESTDIR)/$(PACKAGE)" "$(MAC_APP)/Contents/MacOS/$(PACKAGE)"
-	@echo "APPL????" > "$(MAC_APP)/Contents/PkgInfo"
+	${INSTALL} -d      "$(MAC_APP)/Contents/MacOS/"
+	${INSTALL} -d      "$(MAC_APP)/Contents/Resources/"
+	${INSTALL} -d      "$(MAC_APP)/Contents/PlugIns/mm3d/1.3"
+	${INSTALL} -d      "$(MAC_APP)/Contents/SharedSupport/mm3d/doc/html/olh_images/screencaps/"
+	${INSTALL} -d      "$(MAC_APP)/Contents/SharedSupport/mm3d/doc/html/olh_images/tools/"
+	${INSTALL} -d      "$(MAC_APP)/Contents/SharedSupport/mm3d/i18n/"
+	${INSTALL} -m 0755 "$(DESTDIR)/$(PACKAGE)" "$(MAC_APP)/Contents/MacOS/$(PACKAGE)"
+	${INSTALL} -m 0644 mm3d.icns "$(MAC_APP)/Contents/Resources/${PACKAGE}.icns"
+	${INSTALL} -m 0644 doc/html/*.html "$(MAC_APP)/Contents/SharedSupport/mm3d/doc/html/"
+	${INSTALL} -m 0644 doc/html/olh_images/screencaps/*.png "$(MAC_APP)/Contents/SharedSupport/mm3d/doc/html/olh_images/screencaps/"
+	${INSTALL} -m 0644 doc/html/olh_images/tools/*.png "$(MAC_APP)/Contents/SharedSupport/mm3d/doc/html/olh_images/tools/"
+	${INSTALL} -m 0644 doc/html/olh_images/tools/*.jpg "$(MAC_APP)/Contents/SharedSupport/mm3d/doc/html/olh_images/tools/"
+	${INSTALL} -m 0644 i18n/*.qm "$(MAC_APP)/Contents/SharedSupport/mm3d/i18n/"
+	echo "APPL????" > "$(MAC_APP)/Contents/PkgInfo"
 	@echo "$$INFOPLIST" > "$(MAC_APP)/Contents/Info.plist"
-	@cp mm3d.icns "$(MAC_APP)/Contents/Resources/${PACKAGE}.icns"
+	@echo "Wrote \"$(MAC_APP)/Contents/Info.plist\""
 

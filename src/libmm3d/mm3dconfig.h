@@ -23,7 +23,9 @@
 #include "config.h"
 
 #ifdef WIN32
-#define HOME_MM3D             "\\userhome"
+#define HOME_MM3D             "\\Misfit Model 3D"
+#elif defined __APPLE__
+#define HOME_MM3D             "/Library/Application Support/Misfit Model 3D"
 #else
 #define HOME_MM3D             "/.mm3d"
 #endif // WIN32
@@ -32,18 +34,24 @@
 #define SHARED_PLUGINS        "\\plugins"
 #define HOME_PLUGINS          "\\plugins"
 #else
+// NOTE: macOS AppBundle uses shared "Contents/PlugIns/mm3d" path in the app bundle.
 #if !defined(SHARED_PLUGINS)
 #define SHARED_PLUGINS        PREFIX "/share/mm3d/plugins"
 #endif
 #define HOME_PLUGINS          "/plugins"
 #endif // WIN32
 
+#ifdef WIN32
+#define HOME_RC               "\\mm3drc"
+#else
 #define HOME_RC               "/mm3drc"
+#endif // WIN32
 
 #ifdef WIN32
 #define DOC_ROOT              "\\doc\\html"
 #define I18N_ROOT             "\\i18n"
 #else
+// NOTE: macOS AppBundle uses "Contents/SharedSupport/mm3d/..." paths in the app bundle.
 #if !defined(DOC_ROOT)
 #define DOC_ROOT              PREFIX "/share/doc/mm3d/html"
 #endif
