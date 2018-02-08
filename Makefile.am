@@ -68,4 +68,5 @@ $(PACKAGE).app:
 	echo "APPL????" > "$(MAC_APP)/Contents/PkgInfo"
 	@echo "$$INFOPLIST" > "$(MAC_APP)/Contents/Info.plist"
 	@echo "Wrote \"$(MAC_APP)/Contents/Info.plist\""
+	$(QT_MACDEPLOYQT) "$(MAC_APP)"
 

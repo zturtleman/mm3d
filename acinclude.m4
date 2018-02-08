@@ -567,6 +567,10 @@ AC_DEFUN([BNV_HAVE_QT],
       if test -x "$bnv_qt_bin_dir/lrelease"; then
         QT_LRELEASE="$bnv_qt_bin_dir/lrelease"
       fi
+      # MACDEPLOYQT detection
+      if test -x "$bnv_qt_bin_dir/macdeployqt"; then
+        QT_MACDEPLOYQT="$bnv_qt_bin_dir/macdeployqt"
+      fi
     elif test x"$bnv_qt_dir" != x; then
       # If bnv_qt_dir is defined, utilities are expected to be in the
       # bin subdirectory
@@ -581,6 +585,10 @@ AC_DEFUN([BNV_HAVE_QT],
       # LRELEASE detection
       if test -x "$bnv_qt_dir/bin/lrelease"; then
         QT_LRELEASE="$bnv_qt_dir/bin/lrelease"
+      fi
+      # MACDEPLOYQT detection
+      if test -x "$bnv_qt_dir/bin/macdeployqt"; then
+        QT_MACDEPLOYQT="$bnv_qt_dir/bin/macdeployqt"
       fi
     fi
 
@@ -609,6 +617,12 @@ AC_DEFUN([BNV_HAVE_QT],
         QT_LRELEASE="/usr/lib/$bnv_qt_lib_host/qt5/bin/lrelease"
       fi
     fi
+    if test x"$QT_MACDEPLOYQT" = x; then
+      # MACDEPLOYQT detection
+      if test -x "/usr/lib/$bnv_qt_lib_host/qt5/bin/macdeployqt"; then
+        QT_MACDEPLOYQT="/usr/lib/$bnv_qt_lib_host/qt5/bin/macdeployqt"
+      fi
+    fi
 
     # If binaries are still not set, try qtchooser
     if test x"$QT_UIC" = x; then
@@ -627,6 +641,12 @@ AC_DEFUN([BNV_HAVE_QT],
       # LRELEASE detection
       if test `which qtchooser 2> /dev/null`; then
         QT_LRELEASE="qtchooser -qt=5 -run-tool=lrelease"
+      fi
+    fi
+    if test x"$QT_MACDEPLOYQT" = x; then
+      # MACDEPLOYQT detection
+      if test `which qtchooser 2> /dev/null`; then
+        QT_MACDEPLOYQT="qtchooser -qt=5 -run-tool=macdeployqt"
       fi
     fi
 
@@ -649,6 +669,12 @@ AC_DEFUN([BNV_HAVE_QT],
         QT_LRELEASE=`which lrelease`
       fi
     fi
+    if test x"$QT_MACDEPLOYQT" = x; then
+      # MACDEPLOYQT detection
+      if test `which macdeployqt 2> /dev/null`; then
+        QT_MACDEPLOYQT=`which macdeployqt`
+      fi
+    fi
     # All variables are defined, report the result
     AC_MSG_RESULT([$have_qt:
     QT_CXXFLAGS=$QT_CXXFLAGS
@@ -656,7 +682,8 @@ AC_DEFUN([BNV_HAVE_QT],
     QT_LIBS=$QT_LIBS
     QT_UIC=$QT_UIC
     QT_MOC=$QT_MOC
-    QT_LRELEASE=$QT_LRELEASE])
+    QT_LRELEASE=$QT_LRELEASE
+    QT_MACDEPLOYQT=$QT_MACDEPLOYQT])
   else
     # Qt was not found
     QT_CXXFLAGS=
@@ -665,6 +692,7 @@ AC_DEFUN([BNV_HAVE_QT],
     QT_UIC=
     QT_MOC=
     QT_LRELEASE=
+    QT_MACDEPLOYQT=
     AC_MSG_RESULT($have_qt)
   fi
   if test x"$bnv_is_qt5" = xyes; then
@@ -678,6 +706,7 @@ AC_DEFUN([BNV_HAVE_QT],
   AC_SUBST(QT_UIC)
   AC_SUBST(QT_MOC)
   AC_SUBST(QT_LRELEASE)
+  AC_SUBST(QT_MACDEPLOYQT)
 
 
   #### Being paranoid:
@@ -736,7 +765,7 @@ EOF
             echo "configure: could not compile:" >&AC_FD_CC
             cat bnv_qt_main.$ac_ext >&AC_FD_CC
           else
-            bnv_try_4="$CXX -o bnv_qt_main bnv_qt_main.o moc_bnv_qt_test.o $QT_LIBS $LIBS >/dev/null 2>bnv_qt_test_4.out"
+            bnv_try_4="$CXX $LDFLAGS -o bnv_qt_main bnv_qt_main.o moc_bnv_qt_test.o $QT_LIBS $LIBS >/dev/null 2>bnv_qt_test_4.out"
             AC_TRY_EVAL(bnv_try_4)
             bnv_err_4=`grep -v '^ *+' bnv_qt_test_4.out`
             if test x"$bnv_err_4" != x; then
@@ -793,6 +822,7 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
       /usr/local/include/$bnv_qt_host/qt5
       /usr/local/include/qt5
       /usr/local/qt5/include
+      `ls -dr /usr/local/Cellar/qt/5*/include 2>/dev/null`
     "
     for bnv_dir in $bnv_include_path_list; do
       if test -r "$bnv_dir/QtCore/$qt_direct_test_header"; then
@@ -817,9 +847,12 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
   # That would be $bnv_qt_include_dir stripped from its last element:
   bnv_found_traditional=no
   bnv_possible_qt_dir=`dirname $bnv_qt_include_dir`
-  if test -x $bnv_possible_qt_dir/bin/moc &&
-     ls $bnv_possible_qt_dir/lib/libQt5Core.* 1> /dev/null 2> /dev/null; then
-    bnv_found_traditional=yes
+  if test -x $bnv_possible_qt_dir/bin/moc; then
+    if ls $bnv_possible_qt_dir/lib/libQt5Core.* 1> /dev/null 2> /dev/null; then
+      bnv_found_traditional=yes
+    elif test -r $bnv_possible_qt_dir/Frameworks/QtCore.framework; then
+      bnv_found_traditional=yes
+    fi
   fi
   if test x"$bnv_found_traditional" = xyes; then
     # Then the rest is a piece of cake
@@ -830,7 +863,11 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
     else
       bnv_qt_lib_dir="$bnv_qt_dir/lib"
     fi
-    bnv_qt_LIBS="-L$bnv_qt_lib_dir $bnv_qt5_libs $QT_XLIBS"
+    if test x"$is_osx" = xyes; then
+      bnv_qt_LIBS="-F$bnv_qt_dir/Frameworks -L$bnv_qt_lib_dir $bnv_qt5_libs $QT_XLIBS"
+    else
+      bnv_qt_LIBS="-L$bnv_qt_lib_dir $bnv_qt5_libs $QT_XLIBS"
+    fi
   fi
   if test $bnv_found_traditional = no; then
     # There is no valid definition for $QTDIR as Trolltech likes to see it
@@ -933,11 +970,11 @@ int main( int argc, char ** argv )
 EOF
 
       ksw_cv_qgl_test_result="failure"
-        ksw_try_1="$CXX $QT_CXXFLAGS $GL_CFLAGS -fPIC -Wno-uninitialized -o ksw_qgl_test ksw_qgl_test.${ac_ext} $QT_LIBS $GL_LIBS >/dev/null 2>ksw_qgl_test_1.out"
+        ksw_try_1="$CXX $QT_CXXFLAGS $CXXFLAGS $GL_CFLAGS -Wno-uninitialized -o ksw_qgl_test ksw_qgl_test.${ac_ext} $QT_LIBS $GL_LIBS >/dev/null 2>ksw_qgl_test_1.out"
         AC_TRY_EVAL(ksw_try_1)
         ksw_err_1=`grep -v '^ *+' ksw_qgl_test_1.out | grep -v "^ksw_qgl_test.{$ac_ext}\$"`
         if test x"$ksw_err_1" != x; then
-           ksw_try_2="$CXX $QT_CXXFLAGS $GL_CFLAGS -fPIC -Wno-uninitialized -o ksw_qgl_test ksw_qgl_test.${ac_ext} $QT_LIBS -lqglviewer $GL_LIBS  >/dev/null 2>ksw_qgl_test_2.out"
+           ksw_try_2="$CXX $QT_CXXFLAGS $CXXFLAGS $GL_CFLAGS -Wno-uninitialized -o ksw_qgl_test ksw_qgl_test.${ac_ext} $QT_LIBS -lqglviewer $GL_LIBS  >/dev/null 2>ksw_qgl_test_2.out"
            AC_TRY_EVAL(ksw_try_2)
            ksw_err_2=`grep -v '^ *+' ksw_qgl_test_2.out | grep -v "^ksw_qgl_test.{$ac_ext}\$"`
            if test x"$ksw_err_2" != x; then
@@ -1391,6 +1428,35 @@ AC_DEFUN([KSW_IS_OSX],
   is_osx="$ksw_cv_is_osx"
   if test x"$is_osx" = "xyes"; then
     AC_DEFINE( [IS_OSX], [], [Define when you run on OSX] )
+  fi
+])
+
+AC_DEFUN([ZTM_WITH_MACOSX_VERSION_MIN],
+[
+  AC_REQUIRE([AC_PROG_CC])
+
+  AC_ARG_WITH([macosx-version-min],
+    [  --with-macosx-version-min=VERSION
+                          Minimum Mac OS X deployment VERISON (i.e., 10.10),
+                          It should not be lower than Qt's macosx-version-min.])
+
+  if test x"$with_macosx_version_min" != x; then
+    ztm_macosx_major=`echo $with_macosx_version_min | cut -d. -f1`
+    ztm_macosx_minor=`echo $with_macosx_version_min | cut -d. -f2`
+    if test $ztm_macosx_minor -gt 9; then
+      # Do math and then remove decimal. 10.10 -> 101000.0 -> 101000
+      MAC_OS_X_VERSION_MIN_REQUIRED=`echo "$ztm_macosx_major * 10000 + $ztm_macosx_minor * 100" | bc` # | cut -d. -f1
+    else
+      # Multiply by 100 and then remove decimal. 10.7 -> 1070.0 -> 1070
+      MAC_OS_X_VERSION_MIN_REQUIRED=`echo "$with_macosx_version_min * 100" | bc` # | cut -d. -f1
+    fi
+
+    LDFLAGS="$LDFLAGS -mmacosx-version-min=$with_macosx_version_min"
+    CFLAGS="$CFLAGS -mmacosx-version-min=$with_macosx_version_min -DMAC_OS_X_VERSION_MIN_REQUIRED=$MAC_OS_X_VERSION_MIN_REQUIRED"
+    CXXFLAGS="$CXXFLAGS -mmacosx-version-min=$with_macosx_version_min -DMAC_OS_X_VERSION_MIN_REQUIRED=$MAC_OS_X_VERSION_MIN_REQUIRED"
+
+    MACOSX_DEPLOYMENT_TARGET=$with_macosx_version_min
+    AC_SUBST(MACOSX_DEPLOYMENT_TARGET)
   fi
 ])
 
