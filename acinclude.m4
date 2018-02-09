@@ -795,6 +795,7 @@ EOF
 dnl Internal subroutine of BNV_HAVE_QT
 dnl Set bnv_qt_dir bnv_qt_include_dir bnv_qt_bin_dir bnv_qt_lib_dir
 dnl Copyright 2001 Bastiaan N. Veelo <Bastiaan.N.Veelo@immtek.ntnu.no>
+dnl Modified in 2018 by Zack Middleton <zturtleman>
 AC_DEFUN([BNV_PATH_QT_DIRECT],
 [
   if test x"$host_alias" != x; then
@@ -814,7 +815,6 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
   else
     # The following header file is expected to define QT_VERSION.
     # Look for the header file in a standard set of common directories.
-    qt_direct_test_header=qglobal.h
     bnv_include_path_list="
       /usr/include/$bnv_qt_host/qt5
       /usr/include/qt5
@@ -825,15 +825,34 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
       `ls -dr /usr/local/Cellar/qt/5*/include 2>/dev/null`
     "
     for bnv_dir in $bnv_include_path_list; do
-      if test -r "$bnv_dir/QtCore/$qt_direct_test_header"; then
+      if test -r "$bnv_dir/QtCore/qconfig.h"; then
         bnv_dirs="$bnv_dirs $bnv_dir"
       fi
     done
     # Now look for the newest in this list
-    bnv_prev_ver=0
+    bnv_prev_ver=0x04FFFF
     for bnv_dir in $bnv_dirs; do
-      if test -r "$bnv_dir/QtCore/$qt_direct_test_header"; then
-         bnv_this_ver=`egrep -w '#define QT_VERSION' $bnv_dir/QtCore/$qt_direct_test_header | sed s/'#define QT_VERSION'//`
+      # Qt 5.7.0 and later use separate defines in qconfig.h
+      if test -r "$bnv_dir/QtCore/qconfig.h"; then
+        ztm_qt_ver_major=`egrep -w '#define QT_VERSION_MAJOR' $bnv_dir/QtCore/qconfig.h | sed s/'#define QT_VERSION_MAJOR'//`
+        if test x"$ztm_qt_ver_major" != x; then
+          ztm_qt_ver_minor=`egrep -w '#define QT_VERSION_MINOR' $bnv_dir/QtCore/qconfig.h | sed s/'#define QT_VERSION_MINOR'//`
+          ztm_qt_ver_patch=`egrep -w '#define QT_VERSION_PATCH' $bnv_dir/QtCore/qconfig.h | sed s/'#define QT_VERSION_PATCH'//`
+          bnv_this_ver=`printf "0x%02X%02X%02X" $ztm_qt_ver_major $ztm_qt_ver_minor $ztm_qt_ver_patch`
+          if expr $bnv_this_ver '>' $bnv_prev_ver > /dev/null; then
+            bnv_is_qt5=yes
+            bnv_qt_include_dir=$bnv_dir
+            bnv_prev_ver=$bnv_this_ver
+          fi
+
+          # don't check qglobal.h
+          continue
+        fi
+      fi
+
+      # Before Qt 5.7.0 the version was a constant (i.e., 0x050600 for 5.6.0) in qglobal.h
+      if test -r "$bnv_dir/QtCore/qglobal.h"; then
+         bnv_this_ver=`egrep -w '#define QT_VERSION' $bnv_dir/QtCore/qglobal.h | sed s/'#define QT_VERSION'//`
          if expr $bnv_this_ver '>' $bnv_prev_ver > /dev/null; then
            bnv_is_qt5=yes
            bnv_qt_include_dir=$bnv_dir
