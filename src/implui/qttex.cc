@@ -233,7 +233,7 @@ Texture::ErrorE QtTextureFilter::writeFile( Texture * texture, const char * file
       }
    }
 
-   delete data; // Must do this after image goes out of scope
+   delete[] data; // Must do this after image goes out of scope
 
    return err;
 }
@@ -277,7 +277,7 @@ Texture::ErrorE QtTextureFilter::writeMemory( const char * format, Texture * tex
       memcpy( (*d)->getDataPtr(), ba.data(), ba.size() );
    }
 
-   delete data; // Must do this after image goes out of scope
+   delete[] data; // Must do this after image goes out of scope
 
    return err;
 }

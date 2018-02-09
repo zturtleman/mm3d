@@ -1702,7 +1702,7 @@ void TextureWidget::makeTextureFromImage( const QImage & i, GLuint & t )
          GL_RGB, GL_UNSIGNED_BYTE,
          data );
 
-   delete data;
+   delete[] data;
 }
 
 void TextureWidget::selectDone()
