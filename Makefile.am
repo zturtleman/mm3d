@@ -33,11 +33,11 @@ define INFOPLIST
 <key>CFBundlePackageType</key>
 <string>APPL</string>
 <key>CFBundleShortVersionString</key>
-<string>1.3.9</string>
+<string>${VERSION}</string>
 <key>CFBundleSignature</key>
 <string>????</string>
 <key>CFBundleVersion</key>
-<string>1.3.9</string>
+<string>${VERSION}</string>
 <key>CGDisableCoalescedUpdates</key>
 <true/>
 <key>LSMinimumSystemVersion</key>
