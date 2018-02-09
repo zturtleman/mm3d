@@ -1,6 +1,6 @@
 include ../Makefile.common
 
-LIB = ../common/libtest_common.a ../../libmm3d/libmm3d.a
+LIBS = ../common/libtest_common.a ../../libmm3d/libmm3d.a
 
 # If you add a test, be sure to add a moc dependency, and a run line below
 
@@ -47,79 +47,79 @@ TESTS = \
 
 all:
 
-cmdlinemgr_test.unit: cmdlinemgr_test.moc $(LIB)
+cmdlinemgr_test.unit: cmdlinemgr_test.moc $(LIBS)
 
-filtermgr_test.unit: filtermgr_test.moc $(LIB)
+filtermgr_test.unit: filtermgr_test.moc $(LIBS)
 
-big_endian_test.unit: big_endian_test.moc $(LIB)
+big_endian_test.unit: big_endian_test.moc $(LIBS)
 
-datasource_test.unit: datasource_test.moc $(LIB)
+datasource_test.unit: datasource_test.moc $(LIBS)
 
-datadest_test.unit: datadest_test.moc $(LIB)
+datadest_test.unit: datadest_test.moc $(LIBS)
 
-filedatasource_test.unit: filedatasource_test.moc $(LIB)
+filedatasource_test.unit: filedatasource_test.moc $(LIBS)
 
-undomgr_test.unit: undomgr_test.moc $(LIB)
+undomgr_test.unit: undomgr_test.moc $(LIBS)
 
-memutil_test.unit: memutil_test.moc $(LIB)
+memutil_test.unit: memutil_test.moc $(LIBS)
 
-glmath_test.unit: glmath_test.moc $(LIB)
+glmath_test.unit: glmath_test.moc $(LIBS)
 
-texcompare_test.unit: texcompare_test.moc $(LIB)
+texcompare_test.unit: texcompare_test.moc $(LIBS)
 
-texscale_test.unit: texscale_test.moc $(LIB)
+texscale_test.unit: texscale_test.moc $(LIBS)
 
-model_init_test.unit: model_init_test.moc $(LIB)
+model_init_test.unit: model_init_test.moc $(LIBS)
 
-model_equal_test.unit: model_equal_test.moc $(LIB)
+model_equal_test.unit: model_equal_test.moc $(LIBS)
 
-model_equiv_test.unit: model_equiv_test.moc $(LIB)
+model_equiv_test.unit: model_equiv_test.moc $(LIBS)
 
-model_add_test.unit: model_add_test.moc $(LIB)
+model_add_test.unit: model_add_test.moc $(LIBS)
 
-model_vertex_test.unit: model_vertex_test.moc $(LIB)
+model_vertex_test.unit: model_vertex_test.moc $(LIBS)
 
-model_triangle_test.unit: model_triangle_test.moc $(LIB)
+model_triangle_test.unit: model_triangle_test.moc $(LIBS)
 
-model_group_test.unit: model_group_test.moc $(LIB)
+model_group_test.unit: model_group_test.moc $(LIBS)
 
-model_material_test.unit: model_material_test.moc $(LIB)
+model_material_test.unit: model_material_test.moc $(LIBS)
 
-model_joint_test.unit: model_joint_test.moc $(LIB)
+model_joint_test.unit: model_joint_test.moc $(LIBS)
 
-model_select_test.unit: model_select_test.moc $(LIB)
+model_select_test.unit: model_select_test.moc $(LIBS)
 
-model_weld_test.unit: model_weld_test.moc $(LIB)
+model_weld_test.unit: model_weld_test.moc $(LIBS)
 
-model_anim_test.unit: model_anim_test.moc $(LIB)
+model_anim_test.unit: model_anim_test.moc $(LIBS)
 
-model_test.unit: model_test.moc $(LIB)
+model_test.unit: model_test.moc $(LIBS)
 
-new_mm3d_test.unit: new_mm3d_test.moc $(LIB)
+new_mm3d_test.unit: new_mm3d_test.moc $(LIBS)
 
-filter_mm3d_test.unit: filter_mm3d_test.moc $(LIB)
+filter_mm3d_test.unit: filter_mm3d_test.moc $(LIBS)
 
-filter_ms3d_test.unit: filter_ms3d_test.moc $(LIB)
+filter_ms3d_test.unit: filter_ms3d_test.moc $(LIBS)
 
-filter_cal3d_test.unit: filter_cal3d_test.moc $(LIB)
+filter_cal3d_test.unit: filter_cal3d_test.moc $(LIBS)
 
-filter_cob_test.unit: filter_cob_test.moc $(LIB)
+filter_cob_test.unit: filter_cob_test.moc $(LIBS)
 
-filter_dxf_test.unit: filter_dxf_test.moc $(LIB)
+filter_dxf_test.unit: filter_dxf_test.moc $(LIBS)
 
-filter_obj_test.unit: filter_obj_test.moc $(LIB)
+filter_obj_test.unit: filter_obj_test.moc $(LIBS)
 
-filter_md2_test.unit: filter_md2_test.moc $(LIB)
+filter_md2_test.unit: filter_md2_test.moc $(LIBS)
 
-filter_md3_test.unit: filter_md3_test.moc $(LIB)
+filter_md3_test.unit: filter_md3_test.moc $(LIBS)
 
-util_test.unit: util_test.moc $(LIB)
+util_test.unit: util_test.moc $(LIBS)
 
-misc_test.unit: misc_test.moc $(LIB)
+misc_test.unit: misc_test.moc $(LIBS)
 
-msg_test.unit: msg_test.moc $(LIB)
+msg_test.unit: msg_test.moc $(LIBS)
 
-translation_test.unit: translation_test.moc $(LIB)
+translation_test.unit: translation_test.moc $(LIBS)
 
 test: $(TESTS)
 
@@ -174,6 +174,6 @@ cov:
 	./genhtml -o cov_html/ cov_html/coverage.dat
 
 clean:
-	rm -rf *.unit *.moc core core.* *.gcno
+	rm -rf *.unit *.moc core core.* *.gcno *.gcda
 
 .PHONY: check fullcheck filtercheck cov clean

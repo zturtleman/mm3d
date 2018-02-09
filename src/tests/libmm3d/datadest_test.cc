@@ -207,13 +207,13 @@ private slots:
 
       std::string str = "foo";
 
-      QVERIFY_EQ( 4, dest.writeAsciiz( str.c_str() ) );
+      QVERIFY_EQ( (ssize_t) 4, dest.writeAsciiz( str.c_str() ) );
       QVERIFY_EQ( (size_t) 10, dest.getFileSize() );
       QVERIFY_EQ( 9, (int) dest.offset() );
-      QVERIFY_EQ( 3, dest.writeString( str.c_str() ) );
+      QVERIFY_EQ( (ssize_t) 3, dest.writeString( str.c_str() ) );
       QVERIFY_EQ( (size_t) 12, dest.getFileSize() );
       QVERIFY_EQ( 12, (int) dest.offset() );
-      QVERIFY_EQ( 13, dest.writePrintf( "printf %s %d", str.c_str(), 42 ) );
+      QVERIFY_EQ( (ssize_t) 13, dest.writePrintf( "printf %s %d", str.c_str(), 42 ) );
       QVERIFY_EQ( (size_t) 25, dest.getFileSize() );
       QVERIFY_EQ( 25, (int) dest.offset() );
 

@@ -13,8 +13,8 @@ PROFILES = \
 all: $(PROFILES)
 
 clean:
-	rm -rf *.prof *.moc core core.*
+	rm -rf *.prof *.moc core core.* *.gcno *.gcda
 
 .cc.prof:
-	g++ $(CXXFLAGS) $(LFLAGS) -lGL -lGLU -pg -o $*.prof $< $(LIBS)
+	$(CXX) $(CXXFLAGS) -pg -o $*.prof $< $(LIBS) $(TESTLIBS)
 

@@ -119,7 +119,7 @@ private slots:
       for ( size_t i = 0; i < fileSize / 4; ++i )
       {
          uint32_t * ptr = (uint32_t *) buf.get();
-         QVERIFY_EQ( (uint32_t) ptr[i], i );
+         QVERIFY_EQ( ptr[i], (uint32_t) i );
       }
 
       QVERIFY_FALSE( src.read( val ) );
