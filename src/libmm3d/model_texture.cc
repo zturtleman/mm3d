@@ -49,7 +49,11 @@ bool Model::loadTextures( ContextT context )
 
    for ( unsigned t = 0; t < m_materials.size(); t++ )
    {
-      drawContext->m_matTextures.push_back( -1 );
+      if ( drawContext )
+      {
+         drawContext->m_matTextures.push_back( -1 );
+      }
+
       if ( m_materials[t]->m_filename[0] 
             && m_materials[t]->m_type == Model::Material::MATTYPE_TEXTURE )
       {
