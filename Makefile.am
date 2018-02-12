@@ -20,6 +20,91 @@ define INFOPLIST
 <dict>
 <key>CFBundleDevelopmentRegion</key>
 <string>en</string>
+<key>UTExportedTypeDeclarations</key>
+<array>
+    <dict>
+        <key>UTTypeConformsTo</key>
+        <array>
+            <string>public.data</string>
+        </array>
+        <key>UTTypeIdentifier</key>
+        <string>moe.clover.mm3dmodel</string>
+        <key>UTTypeDescription</key>
+        <string>MM3D model</string>
+        <key>UTTypeIconFile</key>
+        <string>mm3d</string>
+        <key>UTTypeReferenceURL</key>
+        <string>http://www.misfitcode.com/misfitmodel3d/olh_mm3dformat.html</string>
+        <key>UTTypeTagSpecification</key>
+        <dict>
+            <key>public.filename-extension</key>
+            <string>mm3d</string>
+        </dict>
+    </dict>
+</array>
+<key>CFBundleDocumentTypes</key>
+<array>
+    <dict>
+        <key>CFBundleTypeName</key>
+        <string>MM3D model</string>
+        <key>LSItemContentTypes</key>
+        <array>
+            <string>moe.clover.mm3dmodel</string>
+        </array>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>LSHandlerRank</key>
+        <string>Owner</string>
+    </dict>
+    <dict>
+        <key>CFBundleTypeName</key>
+        <string>Quake 2 model</string>
+        <key>CFBundleTypeExtensions</key>
+        <array>
+            <string>md2</string>
+        </array>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>LSHandlerRank</key>
+        <string>Alternate</string>
+    </dict>
+    <dict>
+        <key>CFBundleTypeName</key>
+        <string>Quake 3 model</string>
+        <key>CFBundleTypeExtensions</key>
+        <array>
+            <string>md3</string>
+        </array>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>LSHandlerRank</key>
+        <string>Alternate</string>
+    </dict>
+    <dict>
+        <key>CFBundleTypeName</key>
+        <string>Milkshape 3D model</string>
+        <key>CFBundleTypeExtensions</key>
+        <array>
+            <string>ms3d</string>
+        </array>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>LSHandlerRank</key>
+        <string>Alternate</string>
+    </dict>
+    <dict>
+        <key>CFBundleTypeName</key>
+        <string>Wavefront OBJ model</string>
+        <key>CFBundleTypeExtensions</key>
+        <array>
+            <string>obj</string>
+        </array>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>LSHandlerRank</key>
+        <string>Alternate</string>
+    </dict>
+</array>
 <key>CFBundleExecutable</key>
 <string>${PACKAGE}</string>
 <key>CFBundleIconFile</key>

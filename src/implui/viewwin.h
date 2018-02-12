@@ -94,6 +94,7 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       virtual ~ViewWindow();
 
       static bool closeAllWindows();
+      static bool openModelInEmptyWindow( const char * filename );
 
       static bool openModel( const char * filename );
       static bool openModelDialog( const char * openDirectory = NULL );
@@ -104,6 +105,8 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
 
       bool openModelInWindow( const char * filename );
       bool openModelDialogInWindow( const char * openDirectory = NULL );
+
+      bool emptyWindow();
 
       bool getSaved();
       bool getAbortQuit() { return m_abortQuit; };

@@ -89,6 +89,7 @@
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QToolTip>
 #include <QtWidgets/QVBoxLayout>
+#include <QtGui/QWindow>
 
 #include "errorobj.h"
 
@@ -219,6 +220,38 @@ bool ViewWindow::closeAllWindows()
    {
       return true;
    }
+}
+
+// open model in an existing window that doesn't have a model open or open a new window.
+bool ViewWindow::openModelInEmptyWindow( const char * filename )
+{
+   QWindow *window = NULL;
+
+   std::list<ViewWindow *>::iterator it;
+
+   for ( it = _winList.begin(); it != _winList.end(); it++ )
+   {
+      if ( !(*it)->emptyWindow() ) {
+         continue;
+      }
+
+      if ( !(*it)->openModelInWindow( filename ) ) {
+         return false;
+      }
+
+      // Unminimize and move window to foreground
+      window = (*it)->windowHandle();
+      window->show();
+      window->raise();
+      window->requestActivate();
+      break;
+   }
+
+   if ( !window ) {
+      return ViewWindow::openModel( filename );
+   }
+
+   return false;
 }
 
 class MainWidget : public QWidget
@@ -779,6 +812,16 @@ void ViewWindow::setModel( Model * model )
    {
       (*it)->widget->setModel( m_model );
    }
+}
+
+bool ViewWindow::emptyWindow()
+{
+   if ( m_model )
+   {
+      // if no model is loaded and default scene is unmodified
+      return ( strcmp( m_model->getFilename(), "" ) == 0 && m_model->getSaved() == true && !m_model->canRedo() );
+   }
+   return true;
 }
 
 bool ViewWindow::getSaved()
@@ -2171,9 +2214,9 @@ void ViewWindow::fillMruMenu()
 void ViewWindow::openMru( QAction * id )
 {
 #ifdef Q_OS_MAC
-   // Open model in a new window if a model is loaded or default model is modified
+   // Open model in a new window if a model is loaded or default scene is modified
    // (matches global menu bar behavior when no window is open).
-   if ( strcmp( m_model->getFilename(), "" ) != 0 || !getSaved() )
+   if ( !emptyWindow() )
    {
       ViewWindow::openModel( id->text().toUtf8() );
    }
@@ -2201,9 +2244,9 @@ void ViewWindow::openScriptMru( QAction * id )
 void ViewWindow::openModelEvent()
 {
 #ifdef Q_OS_MAC
-   // Open model in a new window if a model is loaded or default model is modified
+   // Open model in a new window if a model is loaded or default scene is modified
    // (matches global menu bar behavior when no window is open).
-   if ( strcmp( m_model->getFilename(), "" ) != 0 || !getSaved() )
+   if ( !emptyWindow() )
    {
       ViewWindow::openModelDialog();
    }

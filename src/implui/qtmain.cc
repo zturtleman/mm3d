@@ -31,6 +31,7 @@
 #include <QtCore/QLocale>
 #include <QtCore/QTranslator>
 #include <QtWidgets/QApplication>
+#include <QtGui/QFileOpenEvent>
 #include <QtOpenGL/QGLFormat>
 
 #include <list>
@@ -48,7 +49,29 @@
 
 #include "mlocale.h"
 
-static QApplication * s_app = NULL;
+// Handle macOS opening file in finder or dropping file on dock icon.
+// File types must be listed in AppBundle.app/Contents/Info.plist.
+class MisfitApp : public QApplication
+{
+public:
+   MisfitApp(int &argc, char **argv)
+       : QApplication(argc, argv)
+   {
+   }
+
+   bool event(QEvent *event)
+   {
+      if ( event->type() == QEvent::FileOpen ) {
+         QFileOpenEvent *openEvent = static_cast<QFileOpenEvent *>(event);
+
+         ViewWindow::openModelInEmptyWindow( openEvent->file().toUtf8() );
+      }
+
+      return QApplication::event(event);
+   }
+};
+
+static MisfitApp    * s_app = NULL;
 static QTranslator  * s_qtXlat = NULL;
 static QTranslator  * s_mm3dXlat = NULL;
 static GlobalMenuBar* s_globalMenuBar = NULL;
@@ -111,7 +134,7 @@ QApplication * ui_getapp()
 
 int ui_prep( int & argc, char * argv[] )
 {
-   s_app = new QApplication( argc, argv );
+   s_app = new MisfitApp( argc, argv );
 
    QString loc = mlocale_get().c_str();
 
