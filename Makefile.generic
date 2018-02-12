@@ -383,6 +383,7 @@ MM3D_UI= \
 	${B}/qtui/contextprojection.base.h \
 	${B}/qtui/contextrotation.base.h \
 	${B}/qtui/extrudewin.base.h \
+	${B}/qtui/globalmenubar.base.h \
 	${B}/qtui/groupclean.base.h \
 	${B}/qtui/groupwin.base.h \
 	${B}/qtui/helpwin.base.h \
@@ -433,6 +434,7 @@ MM3D_MOC= \
 	${B}/tools/ellipsetoolwidget.moc.cc \
 	${B}/depui/errorobj.moc.cc \
 	${B}/implui/extrudewin.moc.cc \
+	${B}/implui/globalmenubar.moc.cc \
 	${B}/implui/groupclean.moc.cc \
 	${B}/implui/groupwin.moc.cc \
 	${B}/implui/helpwin.moc.cc \
@@ -496,6 +498,7 @@ MM3D_MOC_OBJ= \
 	${B}/tools/toolwidget.moc.o \
 	${B}/depui/errorobj.moc.o \
 	${B}/implui/extrudewin.moc.o \
+	${B}/implui/globalmenubar.moc.o \
 	${B}/implui/groupclean.moc.o \
 	${B}/implui/groupwin.moc.o \
 	${B}/implui/helpwin.moc.o \
@@ -589,6 +592,7 @@ MM3D_OBJ= \
 	${B}/commands/faceoutcmd.o \
 	${B}/commands/flattencmd.o \
 	${B}/commands/flipcmd.o \
+	${B}/implui/globalmenubar.o \
 	${B}/implui/groupclean.o \
 	${B}/implui/groupwin.o \
 	${B}/implui/helpwin.o \
