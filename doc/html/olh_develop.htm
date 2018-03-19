@@ -55,7 +55,7 @@
       Plugins can be created to add new tools, commands, texture filters and
       model filters.  Currently Misfit development is done in C++.  If you
       have a compelling reason to implement a plugin in another language,
-      contact me and I may be able to arrange C bidings which can be extended
+      contact me and I may be able to arrange C bindings which can be extended
       to support other languages.
       </p>
 
@@ -69,7 +69,7 @@
 
       <p>
       A Misfit plugin is a dynamic library which contains three required functions
-      and two optional functions, declared as <code>extern "C"</code>.  
+      and two optional functions, declared as <code>PLUGIN_API</code> (defined in src/mm3dcore/pluginapi.h).  
       Functions marked with a <b>*</b> are optional.
       </p>
 

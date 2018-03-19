@@ -2973,14 +2973,14 @@ PLUGIN_API bool plugin_uninit()
    return true;
 }
 
-PLUGIN_API const char * plugin_version()
-{
-   return "0.1.0";
-}
-
 PLUGIN_API const char * plugin_mm3d_version()
 {
    return VERSION_STRING;
+}
+
+PLUGIN_API const char * plugin_version()
+{
+   return "0.1.0";
 }
 
 PLUGIN_API const char * plugin_desc()

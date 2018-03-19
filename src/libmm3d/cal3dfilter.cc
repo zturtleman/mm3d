@@ -2733,7 +2733,7 @@ int Cal3dFilter::findAnimation( const std::string& animName )
 // Plugin functions
 //------------------------------------------------------------------
 
-extern "C" bool plugin_init()
+PLUGIN_API bool plugin_init()
 {
    if ( s_filter == NULL )
    {
@@ -2747,19 +2747,24 @@ extern "C" bool plugin_init()
 
 // The filter manager will delete our registered filter.
 // We have no other cleanup to do
-extern "C" bool plugin_uninit()
+PLUGIN_API bool plugin_uninit()
 {
    s_filter = NULL; // FilterManager deletes filters
    log_debug( "CAL3D model filter plugin uninitialized\n" );
    return true;
 }
 
-extern "C" const char * plugin_version()
+PLUGIN_API const char * plugin_mm3d_version()
+{
+   return VERSION_STRING;
+}
+
+PLUGIN_API const char * plugin_version()
 {
    return "0.1.0";
 }
 
-extern "C" const char * plugin_desc()
+PLUGIN_API const char * plugin_desc()
 {
    return "CAL3D model filter";
 }

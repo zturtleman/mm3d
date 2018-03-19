@@ -211,7 +211,7 @@ bool SnapCommand::activated( int arg, Model * model )
 // Plugin functions
 //------------------------------------------------------------------
 
-extern "C" bool plugin_init()
+PLUGIN_API bool plugin_init()
 {
    CommandManager::getInstance()->registerCommand( new SnapCommand() );
 
@@ -220,22 +220,22 @@ extern "C" bool plugin_init()
 }
 
 // We have no cleanup to do
-extern "C" bool plugin_uninit()
+PLUGIN_API bool plugin_uninit()
 {
    return true;
 }
 
-extern "C" const char * plugin_version()
-{
-   return "1.0.0";
-}
-
-extern "C" const char * plugin_mm3d_version()
+PLUGIN_API const char * plugin_mm3d_version()
 {
    return VERSION_STRING;
 }
 
-extern "C" const char * plugin_desc()
+PLUGIN_API const char * plugin_version()
+{
+   return "1.0.0";
+}
+
+PLUGIN_API const char * plugin_desc()
 {
    return "Snap Vertices Together";
 }

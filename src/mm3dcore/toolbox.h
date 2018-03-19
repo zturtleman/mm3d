@@ -40,7 +40,7 @@
 // value.  If you have a class called MyTool, and an you would register it
 // as follows:
 //
-//    extern "C" bool plugin_init()
+//    PLUGIN_API bool plugin_init()
 //    {
 //       Toolbox::registerToolFunction( _newMyToolFunc );
 //       return true;

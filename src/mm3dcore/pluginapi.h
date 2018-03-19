@@ -27,8 +27,10 @@
 
 #ifdef WIN32
 #define PLUGIN_API extern "C" __declspec( dllexport )
+#elif __GNUC__ >= 4
+#define PLUGIN_API extern "C" __attribute__((visibility("default")))
 #else
 #define PLUGIN_API extern "C"
-#endif // WIN32
+#endif
 
 #endif // __PLUGINAPI_H

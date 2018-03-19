@@ -562,7 +562,7 @@ static PcxTextureFilter * s_filter = NULL;
 // Plugin functions
 //------------------------------------------------------------------
 
-extern "C" bool plugin_init()
+PLUGIN_API bool plugin_init()
 {
    if ( s_filter == NULL )
    {
@@ -574,19 +574,24 @@ extern "C" bool plugin_init()
    return true;
 }
 
-extern "C" bool plugin_uninit()
+PLUGIN_API bool plugin_uninit()
 {
    s_filter = NULL; // TextureManager deletes filters
    log_debug( "PCX texture filture plugin uninitialized\n" );
    return true;
 }
 
-extern "C" const char * plugin_version()
+PLUGIN_API const char * plugin_mm3d_version()
+{
+   return VERSION_STRING;
+}
+
+PLUGIN_API const char * plugin_version()
 {
    return "1.0.0";
 }
 
-extern "C" const char * plugin_desc()
+PLUGIN_API const char * plugin_desc()
 {
    return "PCX texture filture";
 }
