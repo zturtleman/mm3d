@@ -113,6 +113,11 @@ TextureWidget::TextureWidget( QWidget * parent )
 
    connect( m_scrollTimer, SIGNAL(timeout()), this, SLOT(scrollTimeout()));
    setCursor( QCursor( Qt::ArrowCursor ) );
+
+   // set up GL textures
+   makeCurrent();
+   glGenTextures( 2, m_scrollTextures );
+   glGenTextures( 1, &m_glTexture );
 }
 
 TextureWidget::~TextureWidget()
@@ -149,16 +154,11 @@ void TextureWidget::initializeGL()
 
    QImage img;
 
-   glGenTextures( 2, m_scrollTextures );
-
    img = arrow.toImage();
    makeTextureFromImage( img, m_scrollTextures[0] );
 
    img = cross.toImage();
    makeTextureFromImage( img, m_scrollTextures[1] );
-
-   // set up GL texture
-   glGenTextures( 1, &m_glTexture );
 
    // set up lighting
    GLfloat ambient[]  = {  0.8f,  0.8f,  0.8f,  1.0f };
@@ -759,6 +759,10 @@ void TextureWidget::setTexture( int materialId, Texture * texture )
       m_yMin = m_yCenter - w;
       m_yMax = m_yCenter + w;
       */
+
+      makeCurrent();
+
+      glEnable( GL_TEXTURE_2D );
 
       glBindTexture( GL_TEXTURE_2D, m_glTexture );
 
