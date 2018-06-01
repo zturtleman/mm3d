@@ -34,12 +34,12 @@
 //   plugins/Makefile.am (for mm3d/plugins/x.x)
 
 #ifndef VERSION
-#define VERSION "1.3.9"
+#define VERSION "1.3.10"
 #endif
 
 #define VERSION_MAJOR 1
 #define VERSION_MINOR 3
-#define VERSION_PATCH 9
+#define VERSION_PATCH 10
 
 // Set to 0 for stable releases (even minor version) and 1 for
 // development versions (odd minor version)
