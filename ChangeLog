@@ -1,4 +1,5 @@
 Changes for 1.3.10
+   Don't sort opaque RGBA textures in 3D Alpha Blend view mode
    Add bone joint rotation to properties panel in non-animation mode
    Update plugin API usage for builtin features
    Fix crash when opening Paint Texture

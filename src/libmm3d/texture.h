@@ -74,6 +74,8 @@ class Texture
 
       static const char * errorToString( Texture::ErrorE );
 
+      void removeOpaqueAlphaChannel();
+
       char    * m_name;
       char    * m_filename;
       bool      m_isBad;

@@ -205,6 +205,7 @@ Texture * TextureManager::getTexture( const char * filename, bool noCache, bool 
          {
             m_lastError = Texture::ERROR_NONE;
             log_debug( "read from image file %s\n", filename );
+            newTexture->removeOpaqueAlphaChannel();
             struct stat statbuf;
             PORT_lstat( filename, &statbuf );
             newTexture->m_loadTime = statbuf.st_mtime;
@@ -272,6 +273,7 @@ Texture * TextureManager::getTexture( const char * format, const TextureFilter::
          {
             m_lastError = Texture::ERROR_NONE;
             log_debug( "read from image memory\n" );
+            newTexture->removeOpaqueAlphaChannel();
             newTexture->m_origWidth = newTexture->m_width;
             newTexture->m_origHeight = newTexture->m_height;
             if ( texture_scale_need_scale( newTexture->m_width, newTexture->m_height ) )
@@ -322,6 +324,7 @@ bool TextureManager::reloadTextures()
          if( refreshedTexture )
          {
             log_debug( "reloaded texture %s\n", (*texIter)->m_filename );
+            refreshedTexture->removeOpaqueAlphaChannel();
             // Swap m_data pointers for new and old
             uint8_t * tempPtr = (*texIter)->m_data;
             
@@ -384,6 +387,8 @@ Texture * TextureManager::getBlankTexture( const char * name )
       tex->m_data[ t ] = 0xFF;
    }
 
+   tex->removeOpaqueAlphaChannel();
+
    m_textures.push_front( tex );
    return tex;
 }
@@ -427,6 +432,8 @@ Texture * TextureManager::getDefaultTexture( const char * filename )
          }
       }
    }
+
+   tex->removeOpaqueAlphaChannel();
 
    m_textures.push_front( tex );
    return tex;

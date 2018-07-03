@@ -155,3 +155,29 @@ const char * Texture::errorToString( Texture::ErrorE e )
    }
    return QT_TRANSLATE_NOOP( "LowLevel", "Invalid error code" );
 }
+
+void Texture::removeOpaqueAlphaChannel()
+{
+   if ( m_data == NULL || m_format != FORMAT_RGBA || m_width < 1 || m_height < 1 )
+   {
+      return;
+   }
+
+   uint32_t srcImageSize = 4 * m_width * m_height;
+   for ( uint32_t src = 0; src < srcImageSize; src += 4 )
+   {
+      if ( m_data[src + 3] < 255 )
+      {
+         // Alpha channel is used.
+         return;
+      }
+   }
+
+   m_format = FORMAT_RGB;
+   for ( uint32_t src = 0, dst = 0; src < srcImageSize; src += 4, dst += 3 )
+   {
+      m_data[dst + 0] = m_data[src + 0];
+      m_data[dst + 1] = m_data[src + 1];
+      m_data[dst + 2] = m_data[src + 2];
+   }
+}

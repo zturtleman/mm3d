@@ -383,6 +383,24 @@ void QtTextureFilter::imageToTexture( Texture * texture, QImage * image )
    bool hasAlpha = image->hasAlphaChannel();
    log_debug( "Alpha channel: %s\n", hasAlpha ? "present" : "not present" );
 
+   // Ignore opaque alpha channel
+   if ( hasAlpha )
+   {
+      hasAlpha = false;
+
+      for ( int y = 0; y < texture->m_height && hasAlpha == false; y ++ )
+      {
+         for ( int x = 0; x < texture->m_width && hasAlpha == false; x++ )
+         {
+            QRgb p = image->pixel( x, texture->m_height - y - 1 );
+            if ( qAlpha( p ) < 255 )
+            {
+               hasAlpha = true;
+            }
+         }
+      }
+   }
+
    unsigned pixelBytes = hasAlpha ? 4 : 3;
    unsigned pixelCount = texture->m_width * texture->m_height;
    unsigned imageSize = pixelCount * (pixelBytes * sizeof(uint8_t));
