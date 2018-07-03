@@ -627,7 +627,7 @@ void Matrix::getSubMatrix( Matrix & ret, int i, int j ) const
          int si = di + ( ( di >= i ) ? 1 : 0 );
          int sj = dj + ( ( dj >= j ) ? 1 : 0 );
 
-         ret.set( di, dj, m_val[si * 4 + sj] );
+         ret.set( di, dj, m_val[(si<<2) + sj] );
       }
    }
 }
