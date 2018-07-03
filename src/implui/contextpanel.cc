@@ -155,11 +155,11 @@ void ContextPanel::modelChanged( int changeBits )
 
       {
          // Only allow points in None and Frame
-         // Only allow joints (for keyframe) in Skel
+         // Only allow joints in None and Skel
          int pcount = m_model->getSelectedPointCount();
          int jcount = m_model->getSelectedBoneJointCount();
          if ( ((pcount == 1) && (jcount == 0) && m_model->getAnimationMode() != Model::ANIMMODE_SKELETAL )
-               || ((jcount == 1) && (pcount == 0) && m_model->getAnimationMode() == Model::ANIMMODE_SKELETAL ) )
+               || ((jcount == 1) && (pcount == 0) && m_model->getAnimationMode() != Model::ANIMMODE_FRAME ) )
          {
             ContextRotation * rot = new ContextRotation( m_mainWidget );
             rot->setModel( m_model );

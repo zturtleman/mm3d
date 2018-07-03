@@ -69,19 +69,31 @@ void ContextRotation::modelChanged( int changeBits )
          }
       }
 
-      if ( m_model->getAnimationMode() == Model::ANIMMODE_SKELETAL )
+      Model::AnimationModeE animationMode = m_model->getAnimationMode();
+      if ( animationMode == Model::ANIMMODE_NONE
+            || animationMode == Model::ANIMMODE_SKELETAL )
       {
          unsigned int bcount = m_model->getBoneJointCount();
          for ( unsigned int b = 0; searching && b < bcount; b++ )
          {
             if ( m_model->isBoneJointSelected(b) )
             {
-               int anim = m_model->getCurrentAnimation();
-               int frame = m_model->getCurrentAnimationFrame();
-               if ( m_model->getSkelAnimKeyframe( anim, frame, b, true,
-                        rad[0], rad[1], rad[2] ) )
+               if ( animationMode == Model::ANIMMODE_SKELETAL )
+               {
+                  int anim = m_model->getCurrentAnimation();
+                  int frame = m_model->getCurrentAnimationFrame();
+                  if ( m_model->getSkelAnimKeyframe( anim, frame, b, true,
+                           rad[0], rad[1], rad[2] ) )
+                  {
+                     searching = false;
+                  }
+               }
+               else
                {
                   searching = false;
+                  Matrix rm;
+                  m_model->getBoneJointRelativeMatrix( b, rm );
+                  rm.getRotation( rad[0], rad[1], rad[2] );
                }
             }
          }
@@ -137,20 +149,31 @@ void ContextRotation::updateRotation()
          }
       }
 
-      if ( m_model->getAnimationMode() == Model::ANIMMODE_SKELETAL )
+      Model::AnimationModeE animationMode = m_model->getAnimationMode();
+      if ( animationMode == Model::ANIMMODE_NONE
+            || animationMode == Model::ANIMMODE_SKELETAL )
       {
          unsigned int bcount = m_model->getBoneJointCount();
          for ( unsigned int b = 0; searching && b < bcount; b++ )
          {
             if ( m_model->isBoneJointSelected(b) )
             {
-               int anim = m_model->getCurrentAnimation();
-               int frame = m_model->getCurrentAnimationFrame();
-               if ( m_model->setSkelAnimKeyframe( anim, frame, b, true,
-                        rad[0], rad[1], rad[2] ) )
+               if ( animationMode == Model::ANIMMODE_SKELETAL )
+               {
+                  int anim = m_model->getCurrentAnimation();
+                  int frame = m_model->getCurrentAnimationFrame();
+                  if ( m_model->setSkelAnimKeyframe( anim, frame, b, true,
+                           rad[0], rad[1], rad[2] ) )
+                  {
+                     searching = false;
+                     m_model->setCurrentAnimationFrame( frame ); // Force re-animate
+                  }
+               }
+               else
                {
                   searching = false;
-                  m_model->setCurrentAnimationFrame( frame ); // Force re-animate
+                  m_model->setBoneJointRotation( b, rad );
+                  m_model->setupJoints();
                }
             }
          }

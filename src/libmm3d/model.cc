@@ -2174,6 +2174,8 @@ bool Model::setBoneJointParent( unsigned joint, int parent )
       sendUndo( undo );
 
       m_joints[joint]->m_parent = parent;
+
+      setupJoints();
       return true;
    }
    else
@@ -2194,6 +2196,8 @@ bool Model::setBoneJointRotation( unsigned j, const double * rot )
       {
          m_joints[j]->m_localRotation[i] = rot[i];
       }
+
+      setupJoints();
       return true;
    }
    return false;
@@ -2211,6 +2215,8 @@ bool Model::setBoneJointTranslation( unsigned j, const double * trans )
       {
          m_joints[j]->m_localTranslation[i] = trans[i];
       }
+
+      setupJoints();
       return true;
    }
    return false;
