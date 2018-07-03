@@ -86,6 +86,13 @@
             </widget>
           </item>
           <item>
+            <widget class="QCheckBox" name="m_loop" >
+              <property name="text" >
+                <string>Loop</string>
+              </property>
+            </widget>
+          </item>
+          <item>
             <widget class="QPushButton" name="m_play" >
               <property name="text" >
                 <string>Play</string>
@@ -96,13 +103,6 @@
             <widget class="QPushButton" name="m_stop" >
               <property name="text" >
                 <string>Stop</string>
-              </property>
-            </widget>
-          </item>
-          <item>
-            <widget class="QCheckBox" name="m_loop" >
-              <property name="text" >
-                <string>Loop</string>
               </property>
             </widget>
           </item>
@@ -186,6 +186,12 @@
       <slot>changeFPS()</slot>
     </connection>
     <connection>
+      <sender>m_loop</sender>
+      <signal>toggled(bool)</signal>
+      <receiver>AnimWidgetBase</receiver>
+      <slot>loopToggled(bool)</slot>
+    </connection>
+    <connection>
       <sender>m_play</sender>
       <signal>clicked()</signal>
       <receiver>AnimWidgetBase</receiver>
@@ -196,12 +202,6 @@
       <signal>clicked()</signal>
       <receiver>AnimWidgetBase</receiver>
       <slot>stopClicked()</slot>
-    </connection>
-    <connection>
-      <sender>m_loop</sender>
-      <signal>toggled(bool)</signal>
-      <receiver>AnimWidgetBase</receiver>
-      <slot>loopToggled(bool)</slot>
     </connection>
     <connection>
       <sender>m_frameCount</sender>
