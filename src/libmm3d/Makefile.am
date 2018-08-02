@@ -20,6 +20,7 @@ libmm3d_HFILES = \
 	filtermgr.h \
 	glheaders.h \
 	glmath.h \
+	iqefilter.h \
 	local_array.h \
 	local_ptr.h \
 	log.h \
@@ -76,6 +77,7 @@ libmm3d_a_SOURCES = \
 	filefactory.cc \
 	filtermgr.cc \
 	glmath.cc \
+	iqefilter.cc \
 	log.cc \
 	lwofilter.cc \
 	mesh.cc \

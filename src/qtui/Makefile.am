@@ -21,6 +21,7 @@ libqtui_UIFILES = alignwin.ui \
 	groupwin.ui \
 	groupclean.ui \
 	helpwin.ui \
+	iqeprompt.ui \
 	jointwin.ui \
 	pointwin.ui \
 	painttexturewin.ui \
@@ -64,6 +65,7 @@ libqtui_UIHEADERS = \
 	groupwin.base.h     \
 	groupclean.base.h     \
 	helpwin.base.h      \
+	iqeprompt.base.h    \
 	jointwin.base.h     \
 	pointwin.base.h     \
 	painttexturewin.base.h     \

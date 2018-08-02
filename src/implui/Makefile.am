@@ -27,6 +27,7 @@ libimplui_HFILES = \
 	groupclean.h \
 	groupwin.h \
 	helpwin.h \
+	iqeprompt.h \
 	jointwin.h \
 	keycfg.h \
 	keyvaluewin.h \
@@ -84,6 +85,7 @@ libimplui_MOC = \
 	groupclean.moc.cc \
 	groupwin.moc.cc \
 	helpwin.moc.cc \
+	iqeprompt.moc.cc \
 	jointwin.moc.cc \
 	pointwin.moc.cc \
 	painttexturewin.moc.cc \
@@ -137,6 +139,7 @@ libimplui_a_SOURCES = \
 	groupclean.cc \
 	groupwin.cc \
 	helpwin.cc \
+	iqeprompt.cc \
 	jointwin.cc \
 	keycfg.cc \
 	keyvaluewin.cc \

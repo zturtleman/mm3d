@@ -36,6 +36,8 @@
 #include "ms3dprompt.h"
 #include "ms3dfilter.h"
 #include "txtfilter.h"
+#include "iqefilter.h"
+#include "iqeprompt.h"
 #include "log.h"
 
 int init_std_filters()
@@ -78,6 +80,10 @@ int init_std_filters()
    mgr->registerFilter( filter );
    
    filter = new DxfFilter();
+   mgr->registerFilter( filter );
+   
+   filter = new IqeFilter();
+   filter->setOptionsPrompt( iqeprompt_show );
    mgr->registerFilter( filter );
    
    return 0;

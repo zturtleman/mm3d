@@ -322,6 +322,7 @@ LIB_OBJ= \
 	${B}/libmm3d/filefactory.o \
 	${B}/libmm3d/filtermgr.o \
 	${B}/libmm3d/glmath.o \
+	${B}/libmm3d/iqefilter.o \
 	${B}/libmm3d/log.o \
 	${B}/libmm3d/lwofilter.o \
 	${B}/libmm3d/md2filter.o \
@@ -398,6 +399,7 @@ MM3D_UI= \
 	${B}/qtui/modelview.base.h \
 	${B}/qtui/newanim.base.h \
 	${B}/qtui/cal3dprompt.base.h \
+	${B}/qtui/iqeprompt.base.h \
 	${B}/qtui/ms3dprompt.base.h \
 	${B}/qtui/objprompt.base.h \
 	${B}/qtui/pluginwin.base.h \
@@ -450,6 +452,7 @@ MM3D_MOC= \
 	${B}/depui/modelviewport.moc.cc \
 	${B}/implui/newanim.moc.cc \
 	${B}/implui/cal3dprompt.moc.cc \
+	${B}/implui/iqeprompt.moc.cc \
 	${B}/implui/ms3dprompt.moc.cc \
 	${B}/implui/objprompt.moc.cc \
 	${B}/implui/pluginwin.moc.cc \
@@ -515,6 +518,7 @@ MM3D_MOC_OBJ= \
 	${B}/depui/modelviewport.moc.o \
 	${B}/implui/newanim.moc.o \
 	${B}/implui/cal3dprompt.moc.o \
+	${B}/implui/iqeprompt.moc.o \
 	${B}/implui/ms3dprompt.moc.o \
 	${B}/implui/objprompt.moc.o \
 	${B}/implui/pluginwin.moc.o \
@@ -626,6 +630,7 @@ MM3D_OBJ= \
 	${B}/mm3dcore/pluginmgr.o \
 	${B}/implui/newanim.o \
 	${B}/implui/cal3dprompt.o \
+	${B}/implui/iqeprompt.o \
 	${B}/implui/ms3dprompt.o \
 	${B}/implui/objprompt.o \
 	${B}/implui/pluginwin.o \
