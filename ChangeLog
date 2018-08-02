@@ -1,4 +1,5 @@
 Changes for 1.3.10
+   Add press F1 for help to OBJ export options window
    Add support for exporting Inter-Quake Export (IQE) models
    Fix new/rename material window titles
    Move animation Loop setting between FPS and Start/Stop buttons
