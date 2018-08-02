@@ -200,7 +200,7 @@ void TextureWindow::noTextureFileEvent()
 void TextureWindow::newMaterialClickedEvent()
 {
    bool ok = false;
-   QString name = QInputDialog::getText( this, tr( "Color Material", "window title" ), tr( "Enter new material name:" ), QLineEdit::Normal, QString(""), &ok );
+   QString name = QInputDialog::getText( this, tr( "New Material", "window title" ), tr( "Enter new material name:" ), QLineEdit::Normal, QString(""), &ok );
 
    if ( ok )
    {
@@ -219,7 +219,7 @@ void TextureWindow::renameClickedEvent()
    if ( textureId >= 0 )
    {
       bool ok = false;
-      QString name = QInputDialog::getText( this, tr( "Rename texture", "window title" ), tr( "Enter new texture name:" ), QLineEdit::Normal, QString::fromUtf8( m_model->getTextureName( textureId ) ), &ok );
+      QString name = QInputDialog::getText( this, tr( "Rename material", "window title" ), tr( "Enter new material name:" ), QLineEdit::Normal, QString::fromUtf8( m_model->getTextureName( textureId ) ), &ok );
 
       if ( ok )
       {
