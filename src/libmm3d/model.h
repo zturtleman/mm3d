@@ -1419,7 +1419,8 @@ class Model
       bool getBoneJointFinalMatrix( unsigned jointNumber, Matrix & m ) const;
       bool getBoneJointAbsoluteMatrix( unsigned jointNumber, Matrix & m ) const;
       bool getBoneJointRelativeMatrix( unsigned jointNumber, Matrix & m ) const;
-      bool getPointFinalMatrix( unsigned jointNumber, Matrix & m ) const;
+      bool getPointFinalMatrix( unsigned pointNumber, Matrix & m ) const;
+      bool getPointAbsoluteMatrix( unsigned pointNumber, Matrix & m ) const;
 
       list<int> getBoneJointVertices( int joint ) const;
       int getVertexBoneJoint( unsigned vertexNumber ) const;

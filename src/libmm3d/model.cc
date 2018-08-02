@@ -3857,6 +3857,24 @@ bool Model::getPointFinalMatrix( unsigned pointNumber, Matrix & m ) const
    return false;
 }
 
+bool Model::getPointAbsoluteMatrix( unsigned pointNumber, Matrix & m ) const
+{
+   if ( pointNumber < m_points.size() )
+   {
+      Matrix mat;
+      Point * p = m_points[ pointNumber ];
+
+      mat.setTranslation( p->m_trans );
+      mat.setRotation( p->m_rot );
+
+      mat = mat * m_localMatrix;
+
+      m = mat;
+      return true;
+   }
+   return false;
+}
+
 int Model::getTriangleVertex( unsigned triangleNumber, unsigned vertexIndex ) const
 {
    if ( triangleNumber < m_triangles.size() && vertexIndex < 3 )
