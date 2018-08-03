@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1">
+<!DOCTYPE TS>
+<TS version="2.0">
 <context>
     <name>AboutWin</name>
     <message>
@@ -51,21 +52,29 @@
         <translation>Ausrichten X</translation>
     </message>
     <message>
+        <location filename="../src/qtui/alignwin.ui" line="45"/>
+        <location filename="../src/qtui/alignwin.ui" line="101"/>
         <location filename="../src/qtui/alignwin.ui" line="157"/>
         <source>Align minimum</source>
         <translation>Ausrichten Minimum</translation>
     </message>
     <message>
+        <location filename="../src/qtui/alignwin.ui" line="52"/>
+        <location filename="../src/qtui/alignwin.ui" line="108"/>
         <location filename="../src/qtui/alignwin.ui" line="164"/>
         <source>Align center</source>
         <translation>Ausrichten Zentrum</translation>
     </message>
     <message>
+        <location filename="../src/qtui/alignwin.ui" line="62"/>
+        <location filename="../src/qtui/alignwin.ui" line="118"/>
         <location filename="../src/qtui/alignwin.ui" line="174"/>
         <source>Align maximum</source>
         <translation>Ausrichten Maximum</translation>
     </message>
     <message>
+        <location filename="../src/qtui/alignwin.ui" line="69"/>
+        <location filename="../src/qtui/alignwin.ui" line="125"/>
         <location filename="../src/qtui/alignwin.ui" line="181"/>
         <source>0.0</source>
         <translation>0.0</translation>
@@ -363,12 +372,12 @@
         <translation>Es müssen mehr als 0 Sekunden Animation sein</translation>
     </message>
     <message>
-        <location filename="../src/implui/animexportwin.cc" line="316"/>
+        <location filename="../src/implui/animexportwin.cc" line="315"/>
         <source>Could not write file: </source>
         <translation>Konnte Datei nicht speichern:</translation>
     </message>
     <message>
-        <location filename="../src/implui/animexportwin.cc" line="335"/>
+        <location filename="../src/implui/animexportwin.cc" line="334"/>
         <source>Output directory does not exist.</source>
         <translation>Ausgabeverzeichnis existiert nicht.</translation>
     </message>
@@ -465,11 +474,13 @@
         <translation>F1</translation>
     </message>
     <message>
+        <location filename="../src/implui/animsetwin.cc" line="247"/>
         <location filename="../src/implui/animsetwin.cc" line="285"/>
         <source>Misfit 3D</source>
         <translation>Misfit 3D</translation>
     </message>
     <message>
+        <location filename="../src/implui/animsetwin.cc" line="248"/>
         <location filename="../src/implui/animsetwin.cc" line="286"/>
         <source>New name:</source>
         <translation>Neuer Name:</translation>
@@ -481,7 +492,7 @@
         <translation>Trenne einen Frame</translation>
     </message>
     <message>
-        <location filename="../src/implui/animsetwin.cc" line="408"/>
+        <location filename="../src/implui/animsetwin.cc" line="407"/>
         <source>Split</source>
         <comment>&apos;Split&apos; refers to splitting an animation into two separate animations</comment>
         <translation>Trennen</translation>
@@ -505,7 +516,7 @@
         <translation>Es müssen mindestens 2 Frames existieren um zu trennen</translation>
     </message>
     <message>
-        <location filename="../src/implui/animsetwin.cc" line="517"/>
+        <location filename="../src/implui/animsetwin.cc" line="516"/>
         <source>Cannot merge animation %1 and %2,
  frame counts differ.</source>
         <translation>Kann Animation %1 und %2 nicht trennen,
@@ -536,92 +547,98 @@ Frame Anzahl ist unterschiedlich.</translation>
 <context>
     <name>AnimWidget</name>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="646"/>
+        <location filename="../src/implui/animwidget.cc" line="649"/>
         <source>&lt;New Animation&gt;</source>
         <translation>&lt;Neue Animation&gt;</translation>
     </message>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="178"/>
+        <location filename="../src/implui/animwidget.cc" line="176"/>
         <source>Start animation mode</source>
         <comment>operation complete</comment>
         <translation>Starte Animations Modus</translation>
     </message>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="205"/>
+        <location filename="../src/implui/animwidget.cc" line="203"/>
         <source>New Animation</source>
         <comment>operation complete</comment>
         <translation>Neue Animation</translation>
     </message>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="253"/>
+        <location filename="../src/implui/animwidget.cc" line="251"/>
         <source>Frame: </source>
         <translation>Frame: </translation>
     </message>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="302"/>
+        <location filename="../src/implui/animwidget.cc" line="300"/>
         <source>Set FPS</source>
         <comment>Frames per second, operation complete</comment>
         <translation>Setze FPS</translation>
     </message>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="313"/>
+        <location filename="../src/implui/animwidget.cc" line="311"/>
         <source>Change Frame Count</source>
         <comment>operation complete</comment>
         <translation>Ändere Frame Anzahl</translation>
     </message>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="335"/>
+        <location filename="../src/implui/animwidget.cc" line="333"/>
         <source>Clear frame</source>
         <comment>Remove animation data from frame, operation complete</comment>
         <translation>Frame zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="469"/>
+        <location filename="../src/implui/animwidget.cc" line="467"/>
         <source>Paste frame</source>
         <comment>paste frame animation position, operation complete</comment>
         <translation>Frame einfügen</translation>
     </message>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="488"/>
+        <location filename="../src/implui/animwidget.cc" line="486"/>
         <source>Paste keyframe</source>
         <comment>Paste keyframe animation data complete</comment>
         <translation>KeyFrame einfügen</translation>
     </message>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="765"/>
+        <location filename="../src/implui/animwidget.cc" line="525"/>
+        <source>Set Looping</source>
+        <comment>Looping, operation complete</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/implui/animwidget.cc" line="771"/>
         <source>End animation mode</source>
         <comment>operation complete</comment>
         <translation>Beende Animationsmodus</translation>
     </message>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="260"/>
+        <location filename="../src/implui/animwidget.cc" line="258"/>
         <source>Frame: n/a</source>
         <translation>Frame: -kein-</translation>
     </message>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="270"/>
+        <location filename="../src/implui/animwidget.cc" line="268"/>
         <source>Delete Animation?</source>
         <comment>window title</comment>
         <translation>Animation löschen?</translation>
     </message>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="271"/>
+        <location filename="../src/implui/animwidget.cc" line="269"/>
         <source>Are you sure you want to delete this animation?</source>
         <translation>Sind Sie sicher, dass sie diese Animation löschen wollen?</translation>
     </message>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="291"/>
+        <location filename="../src/implui/animwidget.cc" line="289"/>
         <source>Delete Animation</source>
         <comment>Delete animation, operation complete</comment>
         <translation>Lösche Animation</translation>
     </message>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="448"/>
+        <location filename="../src/implui/animwidget.cc" line="446"/>
         <source>No frame animation data to paste</source>
         <translation>Keine Frame Animationsdaten zum einfügen</translation>
     </message>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="479"/>
+        <location filename="../src/implui/animwidget.cc" line="477"/>
         <source>No skeletal animation data to paste</source>
         <translation>Keine Skelet Animationsdaten zum einfügen</translation>
     </message>
@@ -639,17 +656,17 @@ Frame Anzahl ist unterschiedlich.</translation>
         <translation>FPS</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animwidget.ui" line="91"/>
+        <location filename="../src/qtui/animwidget.ui" line="98"/>
         <source>Play</source>
         <translation>Abspielen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animwidget.ui" line="98"/>
+        <location filename="../src/qtui/animwidget.ui" line="105"/>
         <source>Stop</source>
         <translation>Stop</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animwidget.ui" line="105"/>
+        <location filename="../src/qtui/animwidget.ui" line="91"/>
         <source>Loop</source>
         <translation>Wiederholen</translation>
     </message>
@@ -844,6 +861,7 @@ Frame Anzahl ist unterschiedlich.</translation>
 <context>
     <name>BoolWin</name>
     <message>
+        <location filename="../src/implui/boolwin.cc" line="119"/>
         <location filename="../src/implui/boolwin.cc" line="132"/>
         <source>Union</source>
         <comment>boolean operation</comment>
@@ -1157,6 +1175,7 @@ Wollen sie fortfahren?</translation>
         <translation>Abflachen Z</translation>
     </message>
     <message>
+        <location filename="../src/commands/flattencmd.cc" line="86"/>
         <location filename="../src/commands/flipcmd.cc" line="86"/>
         <source>Need at least 1 vertex, joint, point, or face selected</source>
         <translation>Sie müssen mindestens eine Fläche, Vertex, Gelenk oder Punkt ausgewählt haben</translation>
@@ -1297,11 +1316,13 @@ Wollen sie fortfahren?</translation>
         <translation>Gruppe</translation>
     </message>
     <message>
+        <location filename="../src/commands/rotatetexcmd.cc" line="100"/>
         <location filename="../src/commands/rotatetexcmd.cc" line="145"/>
         <source>Texture coordinates rotated</source>
         <translation>Textur-Koordinaten rotiert</translation>
     </message>
     <message>
+        <location filename="../src/commands/rotatetexcmd.cc" line="105"/>
         <location filename="../src/commands/rotatetexcmd.cc" line="150"/>
         <source>Must select faces</source>
         <translation>Flächen müssen ausgewählt sein</translation>
@@ -1420,7 +1441,7 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>CommandWidget</name>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="145"/>
+        <location filename="../src/implui/viewwin.cc" line="146"/>
         <source>You are in animation mode, but there are no animations</source>
         <translation>Sie befinden sich im Animationsmodus, aber es gibt keine Animationen</translation>
     </message>
@@ -1428,11 +1449,14 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>ContextGroup</name>
     <message>
+        <location filename="../src/implui/contextgroup.cc" line="70"/>
+        <location filename="../src/implui/contextgroup.cc" line="72"/>
         <location filename="../src/implui/contextgroup.cc" line="74"/>
         <source>&lt;None&gt;</source>
         <translation>&lt;kein&gt;</translation>
     </message>
     <message>
+        <location filename="../src/implui/contextgroup.cc" line="81"/>
         <location filename="../src/implui/contextgroup.cc" line="173"/>
         <source>&lt;New&gt;</source>
         <translation>&lt;Neu&gt;</translation>
@@ -1476,6 +1500,7 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>ContextGroupBase</name>
     <message>
+        <location filename="../src/qtui/contextgroup.ui" line="24"/>
         <location filename="../src/qtui/contextgroup.ui" line="86"/>
         <source>Group</source>
         <translation>Gruppe</translation>
@@ -1486,6 +1511,8 @@ Wollen sie fortfahren?</translation>
         <translation>Projektionsname</translation>
     </message>
     <message>
+        <location filename="../src/qtui/contextgroup.ui" line="52"/>
+        <location filename="../src/qtui/contextgroup.ui" line="96"/>
         <location filename="../src/qtui/contextgroup.ui" line="120"/>
         <source>...</source>
         <translation>...</translation>
@@ -1514,6 +1541,9 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>ContextInfluences</name>
     <message>
+        <location filename="../src/implui/contextinfluences.cc" line="82"/>
+        <location filename="../src/implui/contextinfluences.cc" line="83"/>
+        <location filename="../src/implui/contextinfluences.cc" line="84"/>
         <location filename="../src/implui/contextinfluences.cc" line="85"/>
         <source>&lt;None&gt;</source>
         <translation>&lt;kein&gt;</translation>
@@ -1537,6 +1567,7 @@ Wollen sie fortfahren?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/implui/contextinfluences.cc" line="609"/>
         <location filename="../src/implui/contextinfluences.cc" line="621"/>
         <source>&lt;Mixed&gt;</source>
         <comment>multiple types of bone joint influence</comment>
@@ -1584,21 +1615,33 @@ Wollen sie fortfahren?</translation>
         <translation>Gewicht</translation>
     </message>
     <message>
+        <location filename="../src/qtui/contextinfluences.ui" line="46"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="73"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="128"/>
         <location filename="../src/qtui/contextinfluences.ui" line="155"/>
         <source>Custom</source>
         <translation>Manuell</translation>
     </message>
     <message>
+        <location filename="../src/qtui/contextinfluences.ui" line="51"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="78"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="133"/>
         <location filename="../src/qtui/contextinfluences.ui" line="160"/>
         <source>Auto</source>
         <translation>Automatisch</translation>
     </message>
     <message>
+        <location filename="../src/qtui/contextinfluences.ui" line="56"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="83"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="138"/>
         <location filename="../src/qtui/contextinfluences.ui" line="165"/>
         <source>Remaining</source>
         <translation>Verbleibend</translation>
     </message>
     <message>
+        <location filename="../src/qtui/contextinfluences.ui" line="92"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="111"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="174"/>
         <location filename="../src/qtui/contextinfluences.ui" line="183"/>
         <source>&lt;None&gt;</source>
         <translation>&lt;Kein&gt;</translation>
@@ -1609,6 +1652,9 @@ Wollen sie fortfahren?</translation>
         <translation>Gelenk</translation>
     </message>
     <message>
+        <location filename="../src/qtui/contextinfluences.ui" line="41"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="68"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="123"/>
         <location filename="../src/qtui/contextinfluences.ui" line="150"/>
         <source>&lt;Mixed&gt;</source>
         <translation>&lt;Gemischt&gt;</translation>
@@ -1626,6 +1672,7 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>ContextNameBase</name>
     <message>
+        <location filename="../src/qtui/contextname.ui" line="24"/>
         <location filename="../src/qtui/contextname.ui" line="30"/>
         <source>Name</source>
         <translation>Name</translation>
@@ -1652,6 +1699,7 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>ContextPositionBase</name>
     <message>
+        <location filename="../src/qtui/contextposition.ui" line="24"/>
         <location filename="../src/qtui/contextposition.ui" line="30"/>
         <source>Position</source>
         <translation>Position</translation>
@@ -1722,7 +1770,7 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>ContextRotation</name>
     <message>
-        <location filename="../src/implui/contextrotation.cc" line="161"/>
+        <location filename="../src/implui/contextrotation.cc" line="184"/>
         <source>Set Rotation</source>
         <comment>operation complete</comment>
         <translation>Setze Rotation</translation>
@@ -1731,6 +1779,7 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>ContextRotationBase</name>
     <message>
+        <location filename="../src/qtui/contextrotation.ui" line="16"/>
         <location filename="../src/qtui/contextrotation.ui" line="22"/>
         <source>Rotation</source>
         <translation>Rotation</translation>
@@ -1795,6 +1844,7 @@ Wollen sie fortfahren?</translation>
         <translation>Glätte:</translation>
     </message>
     <message>
+        <location filename="../src/tools/ellipsetoolwidget.cc" line="55"/>
         <location filename="../src/tools/ellipsetoolwidget.cc" line="109"/>
         <source>Faces: </source>
         <translation>Flächen: </translation>
@@ -1814,6 +1864,7 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>ErrorObject</name>
     <message>
+        <location filename="../src/depui/errorobj.cc" line="42"/>
         <location filename="../src/depui/errorobj.cc" line="91"/>
         <source>Success</source>
         <translation>Erfolgreich</translation>
@@ -1829,51 +1880,61 @@ Wollen sie fortfahren?</translation>
         <translation>Operation wird für diesen Dateityp nicht unterstützt</translation>
     </message>
     <message>
+        <location filename="../src/depui/errorobj.cc" line="50"/>
         <location filename="../src/depui/errorobj.cc" line="113"/>
         <source>Invalid argument (internal error)</source>
         <translation>Ungültiges Argument (interner Fehler)</translation>
     </message>
     <message>
+        <location filename="../src/depui/errorobj.cc" line="52"/>
         <location filename="../src/depui/errorobj.cc" line="93"/>
         <source>File does not exist</source>
         <translation>Datei existiert nicht</translation>
     </message>
     <message>
+        <location filename="../src/depui/errorobj.cc" line="54"/>
         <location filename="../src/depui/errorobj.cc" line="95"/>
         <source>Permission denied</source>
         <translation>Zugriff verweigert</translation>
     </message>
     <message>
+        <location filename="../src/depui/errorobj.cc" line="56"/>
         <location filename="../src/depui/errorobj.cc" line="97"/>
         <source>Could not open file</source>
         <translation>Konnte Datei nicht öffnen</translation>
     </message>
     <message>
+        <location filename="../src/depui/errorobj.cc" line="58"/>
         <location filename="../src/depui/errorobj.cc" line="99"/>
         <source>Could not read from file</source>
         <translation>Konnte nicht von Datei lesen</translation>
     </message>
     <message>
+        <location filename="../src/depui/errorobj.cc" line="60"/>
         <location filename="../src/depui/errorobj.cc" line="103"/>
         <source>File is the wrong type or corrupted</source>
         <translation>Datei ist vom falschen Typ oder beschädigt</translation>
     </message>
     <message>
+        <location filename="../src/depui/errorobj.cc" line="62"/>
         <location filename="../src/depui/errorobj.cc" line="105"/>
         <source>Unsupported version</source>
         <translation>Nicht unterstützte Version</translation>
     </message>
     <message>
+        <location filename="../src/depui/errorobj.cc" line="64"/>
         <location filename="../src/depui/errorobj.cc" line="107"/>
         <source>File contains invalid data</source>
         <translation>Datei enthält ungültige Daten</translation>
     </message>
     <message>
+        <location filename="../src/depui/errorobj.cc" line="66"/>
         <location filename="../src/depui/errorobj.cc" line="109"/>
         <source>Unexpected end of file</source>
         <translation>Unerwartetes Dateiende</translation>
     </message>
     <message>
+        <location filename="../src/depui/errorobj.cc" line="79"/>
         <location filename="../src/depui/errorobj.cc" line="115"/>
         <source>Unknown error</source>
         <translation>Unbekannter Fehler</translation>
@@ -1937,6 +1998,8 @@ Wollen sie fortfahren?</translation>
         <translation>X:</translation>
     </message>
     <message>
+        <location filename="../src/qtui/extrudewin.ui" line="58"/>
+        <location filename="../src/qtui/extrudewin.ui" line="75"/>
         <location filename="../src/qtui/extrudewin.ui" line="82"/>
         <source>0</source>
         <translation>0</translation>
@@ -1970,6 +2033,111 @@ Wollen sie fortfahren?</translation>
         <location filename="../src/qtui/extrudewin.ui" line="191"/>
         <source>Close</source>
         <translation>Schließen</translation>
+    </message>
+</context>
+<context>
+    <name>GlobalMenuBar</name>
+    <message>
+        <location filename="../src/implui/globalmenubar.cc" line="47"/>
+        <source>&amp;File</source>
+        <comment>menu bar</comment>
+        <translation type="unfinished">&amp;Datei</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/globalmenubar.cc" line="48"/>
+        <source>New</source>
+        <comment>File|New</comment>
+        <translation type="unfinished">Neu</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/globalmenubar.cc" line="49"/>
+        <source>Open...</source>
+        <comment>File|Open</comment>
+        <translation type="unfinished">Öffnen...</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/globalmenubar.cc" line="52"/>
+        <source>Save</source>
+        <comment>File|Save</comment>
+        <translation type="unfinished">Speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/globalmenubar.cc" line="54"/>
+        <source>Save As...</source>
+        <comment>File|Save As</comment>
+        <translation type="unfinished">Speichern unter...</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/globalmenubar.cc" line="56"/>
+        <source>Export...</source>
+        <comment>File|Export</comment>
+        <translation type="unfinished">Exportieren...</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/globalmenubar.cc" line="58"/>
+        <source>Export Selected...</source>
+        <comment>File|Export Selected</comment>
+        <translation type="unfinished">Exportiere Auswahl...</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/globalmenubar.cc" line="61"/>
+        <source>Run Script...</source>
+        <comment>File|Run Script</comment>
+        <translation type="unfinished">Starte Skript...</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/globalmenubar.cc" line="63"/>
+        <source>Recent Scripts</source>
+        <comment>File|Recent Script</comment>
+        <translation type="unfinished">Zuletzt benutzte Skripte</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/globalmenubar.cc" line="68"/>
+        <source>Recent Models</source>
+        <comment>File|Recent Models</comment>
+        <translation type="unfinished">Zuletzt benutzte Modelle</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/globalmenubar.cc" line="72"/>
+        <source>Plugins...</source>
+        <comment>File|Plugins</comment>
+        <translation type="unfinished">Plugins...</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/globalmenubar.cc" line="76"/>
+        <source>Close</source>
+        <comment>File|Close</comment>
+        <translation type="unfinished">Schließen</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/globalmenubar.cc" line="79"/>
+        <source>Quit</source>
+        <comment>File|Quit</comment>
+        <translation type="unfinished">Beenden</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/globalmenubar.cc" line="81"/>
+        <source>&amp;Help</source>
+        <comment>menu bar</comment>
+        <translation type="unfinished">&amp;Hilfe</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/globalmenubar.cc" line="82"/>
+        <source>Contents...</source>
+        <comment>Help|Contents</comment>
+        <translation type="unfinished">Inhalt...</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/globalmenubar.cc" line="83"/>
+        <source>License...</source>
+        <comment>Help|License</comment>
+        <translation type="unfinished">Lizenz...</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/globalmenubar.cc" line="84"/>
+        <source>About...</source>
+        <comment>Help|About</comment>
+        <translation type="unfinished">Über...</translation>
     </message>
 </context>
 <context>
@@ -2122,12 +2290,14 @@ Wollen sie fortfahren?</translation>
         <translation>F1</translation>
     </message>
     <message>
+        <location filename="../src/implui/groupwin.cc" line="103"/>
         <location filename="../src/implui/groupwin.cc" line="145"/>
         <source>New group</source>
         <comment>window title</comment>
         <translation>Neue Gruppe</translation>
     </message>
     <message>
+        <location filename="../src/implui/groupwin.cc" line="103"/>
         <location filename="../src/implui/groupwin.cc" line="145"/>
         <source>Enter new group name:</source>
         <translation>Gruppenname für neue Gruppe eingeben:</translation>
@@ -2138,6 +2308,7 @@ Wollen sie fortfahren?</translation>
         <translation>Gruppenname muss zwischen 1 und %1 Zeichen lang sein</translation>
     </message>
     <message>
+        <location filename="../src/implui/groupwin.cc" line="118"/>
         <location filename="../src/implui/groupwin.cc" line="159"/>
         <source>Bad group name</source>
         <comment>window title</comment>
@@ -2197,6 +2368,63 @@ Wollen sie fortfahren?</translation>
         <location filename="../src/qtui/helpwin.ui" line="102"/>
         <source>Ok</source>
         <translation>Ok</translation>
+    </message>
+</context>
+<context>
+    <name>IqePrompt</name>
+    <message>
+        <location filename="../src/implui/iqeprompt.cc" line="40"/>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished">F1</translation>
+    </message>
+</context>
+<context>
+    <name>IqePromptBase</name>
+    <message>
+        <location filename="../src/qtui/iqeprompt.ui" line="16"/>
+        <source>IQE Filter Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/qtui/iqeprompt.ui" line="22"/>
+        <source>Save Meshes</source>
+        <translation type="unfinished">Meshes speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/qtui/iqeprompt.ui" line="32"/>
+        <source>Save Points as Bone Joints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/qtui/iqeprompt.ui" line="42"/>
+        <source>Save Points in Animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/qtui/iqeprompt.ui" line="52"/>
+        <source>Save Skeleton</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/qtui/iqeprompt.ui" line="62"/>
+        <source>Save Animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/qtui/iqeprompt.ui" line="84"/>
+        <source>Press F1 for help</source>
+        <translation type="unfinished">Drücken Sie F1 um zur Hilfe zu gelangen</translation>
+    </message>
+    <message>
+        <location filename="../src/qtui/iqeprompt.ui" line="110"/>
+        <source>Ok</source>
+        <translation type="unfinished">Ok</translation>
+    </message>
+    <message>
+        <location filename="../src/qtui/iqeprompt.ui" line="120"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Abbrechen</translation>
     </message>
 </context>
 <context>
@@ -2487,81 +2715,93 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>LowLevel</name>
     <message>
-        <location filename="../src/libmm3d/model.cc" line="910"/>
+        <location filename="../src/libmm3d/model.cc" line="909"/>
         <source>Cannot delete root joint</source>
         <translation>Kann dieses Wurzelgelenk nicht löschen</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/model.cc" line="3276"/>
+        <location filename="../src/libmm3d/model.cc" line="3281"/>
         <source>Cannot add or delete because you have frame animations.  Try &quot;Merge...&quot; instead.</source>
         <translation>?Kann nicht hinzufügen oder löschen, da sie Frame Animationen haben.  Versuchen Sie &quot;Zusammenfügen...&quot; stattdessen.</translation>
     </message>
     <message>
+        <location filename="../src/libmm3d/model.cc" line="381"/>
         <location filename="../src/libmm3d/texture.cc" line="128"/>
         <source>Success</source>
         <translation>Erfolgreich</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/model.cc" line="384"/>
+        <location filename="../src/libmm3d/model.cc" line="383"/>
         <source>Canceled</source>
         <translation>Abgebrochen</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/model.cc" line="388"/>
+        <location filename="../src/libmm3d/model.cc" line="387"/>
         <source>Operation not supported for this file type</source>
         <translation>Operation wird für diesen Dateityp nicht unterstützt</translation>
     </message>
     <message>
+        <location filename="../src/libmm3d/model.cc" line="389"/>
         <location filename="../src/libmm3d/texture.cc" line="150"/>
         <source>Invalid argument (internal error, probably null pointer argument)</source>
         <translation>Ungültiges Argument (interner Fehler, offenbar &quot;null pointer argument&quot;)</translation>
     </message>
     <message>
+        <location filename="../src/libmm3d/model.cc" line="391"/>
         <location filename="../src/libmm3d/texture.cc" line="130"/>
         <source>File does not exist</source>
         <translation>Datei existiert nicht</translation>
     </message>
     <message>
+        <location filename="../src/libmm3d/model.cc" line="393"/>
         <location filename="../src/libmm3d/texture.cc" line="132"/>
         <source>Permission denied</source>
         <translation>Zugriff verweigert</translation>
     </message>
     <message>
+        <location filename="../src/libmm3d/model.cc" line="395"/>
         <location filename="../src/libmm3d/texture.cc" line="134"/>
         <source>Could not open file</source>
         <translation>Konnte Datei nicht öffnen</translation>
     </message>
     <message>
+        <location filename="../src/libmm3d/model.cc" line="397"/>
         <location filename="../src/libmm3d/texture.cc" line="136"/>
         <source>Could not read from file</source>
         <translation>Konnte nicht von Datei lesen</translation>
     </message>
     <message>
+        <location filename="../src/libmm3d/model.cc" line="399"/>
         <location filename="../src/libmm3d/texture.cc" line="140"/>
         <source>File is the wrong type or corrupted</source>
         <translation>Datei ist vom falschen Typ oder beschädigt</translation>
     </message>
     <message>
+        <location filename="../src/libmm3d/model.cc" line="401"/>
         <location filename="../src/libmm3d/texture.cc" line="142"/>
         <source>Unsupported version</source>
         <translation>Nicht unterstützte Version</translation>
     </message>
     <message>
+        <location filename="../src/libmm3d/model.cc" line="403"/>
         <location filename="../src/libmm3d/texture.cc" line="144"/>
         <source>File contains invalid data</source>
         <translation>Datei enthält ungültige Daten</translation>
     </message>
     <message>
+        <location filename="../src/libmm3d/model.cc" line="405"/>
         <location filename="../src/libmm3d/texture.cc" line="146"/>
         <source>Unexpected end of file</source>
         <translation>Unerwartetes Dateiende</translation>
     </message>
     <message>
+        <location filename="../src/libmm3d/model.cc" line="418"/>
         <location filename="../src/libmm3d/texture.cc" line="152"/>
         <source>Unknown error</source>
         <translation>Unbekannter Fehler</translation>
     </message>
     <message>
+        <location filename="../src/libmm3d/model.cc" line="421"/>
         <location filename="../src/libmm3d/texture.cc" line="156"/>
         <source>Invalid error code</source>
         <translation>Ungültiger Fehlercode</translation>
@@ -2577,7 +2817,9 @@ Wollen sie fortfahren?</translation>
         <translation>Operation wird nicht unterstützt</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/mm3dfilter_ref.cc" line="625"/>
+        <location filename="../src/libmm3d/mm3dfilter.cc" line="683"/>
+        <location filename="../src/libmm3d/mm3dfilter.cc" line="2088"/>
+        <location filename="../src/libmm3d/mm3dfilter_ref.cc" line="635"/>
         <source>MM3D encountered an unexpected data size problem
 See Help-&gt;About to contact the developers</source>
         <translation>MM3D hat ein unerwartetes Datengröße Problem festgestellt
@@ -2589,7 +2831,7 @@ Bitte sehen sie unter Hilfe-&gt;Über... nach, um die Entwickler zu kontaktieren
         <translation>Model hat eine Texturgröße die keine 2er-Potenz ist (128x128, 256x256, ...)</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/texmgr.cc" line="345"/>
+        <location filename="../src/libmm3d/texmgr.cc" line="348"/>
         <source>Could not load</source>
         <translation>Konnte nicht laden</translation>
     </message>
@@ -2604,24 +2846,24 @@ Bitte sehen sie unter Hilfe-&gt;Über... nach, um die Entwickler zu kontaktieren
         <translation>Modell Skelette passen nicht zusammen</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="216"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="168"/>
         <source>This looks like a player model.
 Do you want to load all sections?</source>
         <translation>Dies sieht wie Spieler-Modell aus.
 Wollen sie alle Sektionen laden?</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/model_texture.cc" line="61"/>
+        <location filename="../src/libmm3d/model_texture.cc" line="65"/>
         <source>Could not load texture</source>
         <translation>Konnte Textur nicht laden</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/model.cc" line="408"/>
+        <location filename="../src/libmm3d/model.cc" line="407"/>
         <source>Write not supported, try &quot;Export...&quot;</source>
         <translation>Schreiben wird nicht unterstützt, versuchen sie &quot;Exportieren...&quot;</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/model.cc" line="386"/>
+        <location filename="../src/libmm3d/model.cc" line="385"/>
         <source>Unrecognized file extension (unknown type)</source>
         <translation>Unbekannte Dateierweiterung (unbekannter Typ)</translation>
     </message>
@@ -2636,64 +2878,85 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>MD2 Export erfordert, dass alle Flächen einer Gruppe zugeordnet sind.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="1634"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="1728"/>
         <source>MD3 export requires all faces to be grouped.</source>
         <translation>MD3 Export erfordert, dass alle Flächen einer Gruppe zugeordnet sind.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="1810"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="1809"/>
+        <source>This looks like a player model.
+Do you want to save all sections?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/libmm3d/md3filter.cc" line="1914"/>
         <source>MD3_PATH+filename is to long.</source>
         <translation>MD3_PATH+Dateiname ist zu lang.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="1831"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="1937"/>
         <source>Too many animation frames for MD3 export.</source>
         <translation>Zu viele Animations Frames für MD3 export.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="1887"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="1993"/>
         <source>Too many points for MD3 export.</source>
         <translation>Zu viele Punkte für MD3 Export.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="1893"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="1999"/>
         <source>Too many groups for MD3 export.</source>
         <translation>Zu viele Gruppen für MD3 Export.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="1906"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="2012"/>
         <source>Too many faces in a single group for MD3 export</source>
         <translation>Zu viele Flächen in einzelner Gruppe für MD3 Export</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="1912"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="2018"/>
         <source>Too many vertices in a single group for MD3 export</source>
         <translation>Zu viele Vertizes in einzelner Gruppe für MD3 export</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="2062"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="2171"/>
         <source>Point name is too large for MD3 export.</source>
         <translation>Punkt name ist zu lang für MD3 export.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="2124"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="2233"/>
         <source>Group name is too large for MD3 export.</source>
         <translation>Gruppen name ist zu lang für MD3 export.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="2218"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="2327"/>
         <source>Texture filename is too long.</source>
         <translation>Dateiname der Textur ist zu lang.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/cal3dfilter.cc" line="785"/>
+        <location filename="../src/libmm3d/cal3dfilter.cc" line="778"/>
         <source>MM3D does not support CAL3D files in XML format</source>
         <translation>MM3D unterstützt keine CAL3D Dateien im XML Format</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/cal3dfilter.cc" line="788"/>
+        <location filename="../src/libmm3d/cal3dfilter.cc" line="781"/>
         <source>The file does not contain any mesh or animation data</source>
         <translation>Diese Datei enthält keine Mesh- oder Animations- Daten</translation>
+    </message>
+    <message>
+        <location filename="../src/libmm3d/iqefilter.cc" line="94"/>
+        <source>No data marked for saving as IQE.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/libmm3d/iqefilter.cc" line="105"/>
+        <source>IQE requires all faces to be grouped.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/libmm3d/iqefilter.cc" line="121"/>
+        <source>IQE requires points to only have one bone influence.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2762,6 +3025,11 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>?Zusammenfügungs Koordinaten</translation>
     </message>
     <message>
+        <location filename="../src/qtui/mergewin.ui" line="45"/>
+        <location filename="../src/qtui/mergewin.ui" line="52"/>
+        <location filename="../src/qtui/mergewin.ui" line="59"/>
+        <location filename="../src/qtui/mergewin.ui" line="66"/>
+        <location filename="../src/qtui/mergewin.ui" line="83"/>
         <location filename="../src/qtui/mergewin.ui" line="90"/>
         <source>0.0</source>
         <translation>0.0</translation>
@@ -3140,9 +3408,13 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>OBJ Filter Optionen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/objprompt.ui" line="22"/>
         <source>&amp;Save normals</source>
-        <translation>&amp;Normale speichern</translation>
+        <translation type="obsolete">&amp;Normale speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/qtui/objprompt.ui" line="22"/>
+        <source>&amp;Save Normals</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/qtui/objprompt.ui" line="25"/>
@@ -3165,12 +3437,17 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>&amp;Vertex Dezimal Plätze</translation>
     </message>
     <message>
-        <location filename="../src/qtui/objprompt.ui" line="157"/>
+        <location filename="../src/qtui/objprompt.ui" line="141"/>
+        <source>Press F1 for help</source>
+        <translation type="unfinished">Drücken Sie F1 um zur Hilfe zu gelangen</translation>
+    </message>
+    <message>
+        <location filename="../src/qtui/objprompt.ui" line="167"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/objprompt.ui" line="167"/>
+        <location filename="../src/qtui/objprompt.ui" line="177"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -3252,31 +3529,37 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>Größe beim Speichern:</translation>
     </message>
     <message>
+        <location filename="../src/qtui/painttexturewin.ui" line="155"/>
         <location filename="../src/qtui/painttexturewin.ui" line="218"/>
         <source>64</source>
         <translation>64</translation>
     </message>
     <message>
+        <location filename="../src/qtui/painttexturewin.ui" line="160"/>
         <location filename="../src/qtui/painttexturewin.ui" line="223"/>
         <source>128</source>
         <translation>128</translation>
     </message>
     <message>
+        <location filename="../src/qtui/painttexturewin.ui" line="165"/>
         <location filename="../src/qtui/painttexturewin.ui" line="228"/>
         <source>256</source>
         <translation>256</translation>
     </message>
     <message>
+        <location filename="../src/qtui/painttexturewin.ui" line="170"/>
         <location filename="../src/qtui/painttexturewin.ui" line="233"/>
         <source>512</source>
         <translation>512</translation>
     </message>
     <message>
+        <location filename="../src/qtui/painttexturewin.ui" line="175"/>
         <location filename="../src/qtui/painttexturewin.ui" line="238"/>
         <source>1024</source>
         <translation>1024</translation>
     </message>
     <message>
+        <location filename="../src/qtui/painttexturewin.ui" line="180"/>
         <location filename="../src/qtui/painttexturewin.ui" line="243"/>
         <source>2048</source>
         <translation>2048</translation>
@@ -3479,6 +3762,7 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>Setze Projektions Typ</translation>
     </message>
     <message>
+        <location filename="../src/implui/projectionwin.cc" line="356"/>
         <location filename="../src/implui/projectionwin.cc" line="370"/>
         <source>Set Triangle Projection</source>
         <comment>operation complete</comment>
@@ -3636,6 +3920,9 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>Light Eigenschaften</translation>
     </message>
     <message>
+        <location filename="../src/qtui/rgbawin.ui" line="75"/>
+        <location filename="../src/qtui/rgbawin.ui" line="127"/>
+        <location filename="../src/qtui/rgbawin.ui" line="143"/>
         <location filename="../src/qtui/rgbawin.ui" line="192"/>
         <source>0.00</source>
         <translation>0.00</translation>
@@ -3979,41 +4266,49 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>Linien</translation>
     </message>
     <message>
+        <location filename="../src/qtui/texturecoord.ui" line="67"/>
         <location filename="../src/qtui/texturecoord.ui" line="118"/>
         <source>Black</source>
         <translation>Schwarz</translation>
     </message>
     <message>
+        <location filename="../src/qtui/texturecoord.ui" line="72"/>
         <location filename="../src/qtui/texturecoord.ui" line="123"/>
         <source>Blue</source>
         <translation>Blau</translation>
     </message>
     <message>
+        <location filename="../src/qtui/texturecoord.ui" line="77"/>
         <location filename="../src/qtui/texturecoord.ui" line="128"/>
         <source>Green</source>
         <translation>Grün</translation>
     </message>
     <message>
+        <location filename="../src/qtui/texturecoord.ui" line="82"/>
         <location filename="../src/qtui/texturecoord.ui" line="133"/>
         <source>Cyan</source>
         <translation>Türkis</translation>
     </message>
     <message>
+        <location filename="../src/qtui/texturecoord.ui" line="87"/>
         <location filename="../src/qtui/texturecoord.ui" line="138"/>
         <source>Red</source>
         <translation>Rot</translation>
     </message>
     <message>
+        <location filename="../src/qtui/texturecoord.ui" line="92"/>
         <location filename="../src/qtui/texturecoord.ui" line="143"/>
         <source>Magenta</source>
         <translation>Magenta</translation>
     </message>
     <message>
+        <location filename="../src/qtui/texturecoord.ui" line="97"/>
         <location filename="../src/qtui/texturecoord.ui" line="148"/>
         <source>Yellow</source>
         <translation>Gelb</translation>
     </message>
     <message>
+        <location filename="../src/qtui/texturecoord.ui" line="102"/>
         <location filename="../src/qtui/texturecoord.ui" line="153"/>
         <source>White</source>
         <translation>Weiß</translation>
@@ -4063,26 +4358,36 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>Konnte Datei nicht öffnen</translation>
     </message>
     <message>
-        <location filename="../src/implui/texwin.cc" line="203"/>
         <source>Color Material</source>
         <comment>window title</comment>
-        <translation>Material Farbe</translation>
+        <translation type="obsolete">Material Farbe</translation>
     </message>
     <message>
         <location filename="../src/implui/texwin.cc" line="203"/>
+        <location filename="../src/implui/texwin.cc" line="222"/>
         <source>Enter new material name:</source>
         <translation>Geben Sie einen neuen Material Namen ein:</translation>
     </message>
     <message>
-        <location filename="../src/implui/texwin.cc" line="222"/>
         <source>Rename texture</source>
         <comment>window title</comment>
-        <translation>Textur umbenennen</translation>
+        <translation type="obsolete">Textur umbenennen</translation>
+    </message>
+    <message>
+        <source>Enter new texture name:</source>
+        <translation type="obsolete">Neuen Textur Namen eingeben:</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/texwin.cc" line="203"/>
+        <source>New Material</source>
+        <comment>window title</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/implui/texwin.cc" line="222"/>
-        <source>Enter new texture name:</source>
-        <translation>Neuen Textur Namen eingeben:</translation>
+        <source>Rename material</source>
+        <comment>window title</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/implui/texwin.cc" line="381"/>
@@ -4191,6 +4496,9 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>3D Vorschau</translation>
     </message>
     <message>
+        <location filename="../src/qtui/texwin.ui" line="209"/>
+        <location filename="../src/qtui/texwin.ui" line="284"/>
+        <location filename="../src/qtui/texwin.ui" line="300"/>
         <location filename="../src/qtui/texwin.ui" line="316"/>
         <source>0.00</source>
         <translation>0.00</translation>
@@ -4394,6 +4702,7 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>Bewegung abgeschlossen</translation>
     </message>
     <message>
+        <location filename="../src/tools/extrudetool.cc" line="136"/>
         <location filename="../src/tools/movetool.cc" line="135"/>
         <source>Tip: Hold shift to restrict movement to one dimension</source>
         <translation>Tip: Halten Sie [Shift] gedrückt um die Bewegung auf eine Dimension zu beschränken</translation>
@@ -4484,11 +4793,23 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>Tip: Halten Sie [Shift] gedrückt, um die Skalierung auf eine Dimension zu beschränken</translation>
     </message>
     <message>
+        <location filename="../src/tools/selectbonetool.cc" line="100"/>
+        <location filename="../src/tools/selectconnectedtool.cc" line="92"/>
+        <location filename="../src/tools/selectfacetool.cc" line="167"/>
+        <location filename="../src/tools/selectgrouptool.cc" line="92"/>
+        <location filename="../src/tools/selectpointtool.cc" line="92"/>
+        <location filename="../src/tools/selectprojtool.cc" line="94"/>
         <location filename="../src/tools/selectvertextool.cc" line="92"/>
         <source>Starting selection</source>
         <translation>Beginne Auswahl</translation>
     </message>
     <message>
+        <location filename="../src/tools/selectbonetool.cc" line="146"/>
+        <location filename="../src/tools/selectconnectedtool.cc" line="138"/>
+        <location filename="../src/tools/selectfacetool.cc" line="219"/>
+        <location filename="../src/tools/selectgrouptool.cc" line="138"/>
+        <location filename="../src/tools/selectpointtool.cc" line="138"/>
+        <location filename="../src/tools/selectprojtool.cc" line="140"/>
         <location filename="../src/tools/selectvertextool.cc" line="139"/>
         <source>Selection complete</source>
         <translation>Auswahl komplett</translation>
@@ -4584,6 +4905,7 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>Ziehe Vertex auf Ecke</translation>
     </message>
     <message>
+        <location filename="../src/tools/extrudetool.cc" line="75"/>
         <location filename="../src/tools/extrudetool.cc" line="151"/>
         <source>Extrude complete</source>
         <translation>Extrudieren abgeschlossen</translation>
@@ -4723,26 +5045,54 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>Transformiere Model</translation>
     </message>
     <message>
+        <location filename="../src/qtui/transformwin.ui" line="49"/>
+        <location filename="../src/qtui/transformwin.ui" line="56"/>
+        <location filename="../src/qtui/transformwin.ui" line="63"/>
+        <location filename="../src/qtui/transformwin.ui" line="184"/>
+        <location filename="../src/qtui/transformwin.ui" line="191"/>
+        <location filename="../src/qtui/transformwin.ui" line="198"/>
+        <location filename="../src/qtui/transformwin.ui" line="293"/>
+        <location filename="../src/qtui/transformwin.ui" line="300"/>
+        <location filename="../src/qtui/transformwin.ui" line="307"/>
+        <location filename="../src/qtui/transformwin.ui" line="324"/>
+        <location filename="../src/qtui/transformwin.ui" line="503"/>
+        <location filename="../src/qtui/transformwin.ui" line="510"/>
+        <location filename="../src/qtui/transformwin.ui" line="517"/>
+        <location filename="../src/qtui/transformwin.ui" line="524"/>
+        <location filename="../src/qtui/transformwin.ui" line="531"/>
+        <location filename="../src/qtui/transformwin.ui" line="538"/>
+        <location filename="../src/qtui/transformwin.ui" line="545"/>
+        <location filename="../src/qtui/transformwin.ui" line="552"/>
+        <location filename="../src/qtui/transformwin.ui" line="559"/>
+        <location filename="../src/qtui/transformwin.ui" line="566"/>
+        <location filename="../src/qtui/transformwin.ui" line="594"/>
         <location filename="../src/qtui/transformwin.ui" line="608"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
+        <location filename="../src/qtui/transformwin.ui" line="70"/>
+        <location filename="../src/qtui/transformwin.ui" line="205"/>
         <location filename="../src/qtui/transformwin.ui" line="401"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
+        <location filename="../src/qtui/transformwin.ui" line="80"/>
+        <location filename="../src/qtui/transformwin.ui" line="215"/>
         <location filename="../src/qtui/transformwin.ui" line="411"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
+        <location filename="../src/qtui/transformwin.ui" line="90"/>
+        <location filename="../src/qtui/transformwin.ui" line="225"/>
         <location filename="../src/qtui/transformwin.ui" line="421"/>
         <source>Z</source>
         <translation>Z</translation>
     </message>
     <message>
+        <location filename="../src/qtui/transformwin.ui" line="29"/>
         <location filename="../src/qtui/transformwin.ui" line="142"/>
         <source>Translate</source>
         <translation>Übersetze</translation>
@@ -4753,6 +5103,8 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>Eulersche Winkel</translation>
     </message>
     <message>
+        <location filename="../src/qtui/transformwin.ui" line="152"/>
+        <location filename="../src/qtui/transformwin.ui" line="253"/>
         <location filename="../src/qtui/transformwin.ui" line="349"/>
         <source>Rotate</source>
         <translation>Rotiere</translation>
@@ -4773,16 +5125,22 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>Achse</translation>
     </message>
     <message>
+        <location filename="../src/qtui/transformwin.ui" line="380"/>
+        <location filename="../src/qtui/transformwin.ui" line="387"/>
         <location filename="../src/qtui/transformwin.ui" line="394"/>
         <source>1.0</source>
         <translation>1.0</translation>
     </message>
     <message>
+        <location filename="../src/qtui/transformwin.ui" line="360"/>
         <location filename="../src/qtui/transformwin.ui" line="473"/>
         <source>Scale</source>
         <translation>Skalieren</translation>
     </message>
     <message>
+        <location filename="../src/qtui/transformwin.ui" line="573"/>
+        <location filename="../src/qtui/transformwin.ui" line="580"/>
+        <location filename="../src/qtui/transformwin.ui" line="587"/>
         <location filename="../src/qtui/transformwin.ui" line="601"/>
         <source>1</source>
         <translation>1</translation>
@@ -4845,6 +5203,7 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>Werte Fenster</translation>
     </message>
     <message>
+        <location filename="../src/qtui/valuewin.ui" line="33"/>
         <location filename="../src/qtui/valuewin.ui" line="51"/>
         <source>Value</source>
         <translation>Wert</translation>
@@ -4868,584 +5227,597 @@ Wollen sie alle Sektionen laden?</translation>
 <context>
     <name>ViewWindow</name>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="172"/>
+        <location filename="../src/implui/viewwin.cc" line="173"/>
         <source>Some models are unsaved.  Save before exiting?</source>
         <translation>Einige Modelle sind noch nicht gespeichert.  Speichern vor Beenden?</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="283"/>
+        <location filename="../src/implui/viewwin.cc" line="316"/>
         <source>Press F1 for help using any window</source>
         <translation>Drücken Sie F1 um zur Hilfe für jedes Fenster zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="298"/>
+        <location filename="../src/implui/viewwin.cc" line="331"/>
         <source>Properties</source>
         <translation>Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="331"/>
+        <location filename="../src/implui/viewwin.cc" line="364"/>
         <source>New</source>
         <comment>File|New</comment>
         <translation>Neu</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="333"/>
+        <location filename="../src/implui/viewwin.cc" line="366"/>
         <source>Save</source>
         <comment>File|Save</comment>
         <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="338"/>
+        <location filename="../src/implui/viewwin.cc" line="371"/>
         <source>Run Script...</source>
         <comment>File|Run Script</comment>
         <translation>Starte Skript...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="339"/>
+        <location filename="../src/implui/viewwin.cc" line="372"/>
         <source>Recent Scripts</source>
         <comment>File|Recent Script</comment>
         <translation>Zuletzt benutzte Skripte</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="343"/>
+        <location filename="../src/implui/viewwin.cc" line="376"/>
         <source>Recent Models</source>
         <comment>File|Recent Models</comment>
         <translation>Zuletzt benutzte Modelle</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="346"/>
+        <location filename="../src/implui/viewwin.cc" line="379"/>
         <source>Plugins...</source>
         <comment>File|Plugins</comment>
         <translation>Plugins...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="348"/>
+        <location filename="../src/implui/viewwin.cc" line="381"/>
         <source>Close</source>
         <comment>File|Close</comment>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="349"/>
+        <location filename="../src/implui/viewwin.cc" line="382"/>
         <source>Quit</source>
         <comment>File|Quit</comment>
         <translation>Beenden</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="356"/>
+        <location filename="../src/implui/viewwin.cc" line="389"/>
         <source>Hide Joints</source>
         <comment>View|Hide Joints</comment>
         <translation>Verstecke Gelenke</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="357"/>
+        <location filename="../src/implui/viewwin.cc" line="390"/>
         <source>Draw Joint Lines</source>
         <comment>View|Draw Joint Lines</comment>
         <translation>Zeichne Gelenk-Linien</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="358"/>
+        <location filename="../src/implui/viewwin.cc" line="391"/>
         <source>Draw Joint Bones</source>
         <comment>View|Draw Joint Bones</comment>
         <translation>Zeichne Gelenk-Knochen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="377"/>
+        <location filename="../src/implui/viewwin.cc" line="410"/>
         <source>Draw Texture Projections</source>
         <comment>View|Draw Texture Projections</comment>
         <translation>Zeichne Textur Projektionen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="378"/>
+        <location filename="../src/implui/viewwin.cc" line="411"/>
         <source>Hide Texture Projections</source>
         <comment>View|Hide Texture Projections</comment>
         <translation>Verstecke Textur Projektionen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="391"/>
+        <location filename="../src/implui/viewwin.cc" line="424"/>
         <source>Use Red Error Texture</source>
         <comment>View|Use Red Error Texture</comment>
         <translation>Benutze Rote Fehler Textur</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="392"/>
+        <location filename="../src/implui/viewwin.cc" line="425"/>
         <source>Use Blank Error Texture</source>
         <comment>View|Use Blank Error Texture</comment>
         <translation>Benutze leere Fehler Textur</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="409"/>
+        <location filename="../src/implui/viewwin.cc" line="442"/>
         <source>Render 3D Lines</source>
         <comment>View|Render 3D Lines</comment>
         <translation>Linien im 3D View mit rendern</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="410"/>
+        <location filename="../src/implui/viewwin.cc" line="443"/>
         <source>Hide 3D Lines</source>
         <comment>View|Hide 3D Lines</comment>
         <translation>Verstecke Linien im 3D View</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="427"/>
+        <location filename="../src/implui/viewwin.cc" line="460"/>
         <source>Draw Back-facing Triangles</source>
         <comment>View|Draw Back-facing Triangles</comment>
         <translation>Zeichne Rückseiten von Dreiecken</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="428"/>
+        <location filename="../src/implui/viewwin.cc" line="461"/>
         <source>Hide Back-facing Triangles</source>
         <comment>View|Hide Back-facing Triangles</comment>
         <translation>Verstecke Rückseiten von Dreiecken</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="442"/>
+        <location filename="../src/implui/viewwin.cc" line="475"/>
         <source>Frame All</source>
         <comment>View|Frame</comment>
         <translation>Alle Frames</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="443"/>
+        <location filename="../src/implui/viewwin.cc" line="476"/>
         <source>Frame Selected</source>
         <comment>View|Frame</comment>
         <translation>Ausgewählte Frames</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1876"/>
+        <location filename="../src/implui/viewwin.cc" line="478"/>
+        <location filename="../src/implui/viewwin.cc" line="1919"/>
         <source>Show Properties</source>
         <comment>View|Show Properties</comment>
         <translation>Zeige Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="447"/>
+        <location filename="../src/implui/viewwin.cc" line="480"/>
         <source>Render Options</source>
         <comment>View|Render Options</comment>
         <translation>Render Optionen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="453"/>
+        <location filename="../src/implui/viewwin.cc" line="486"/>
         <source>3D Wireframe</source>
         <comment>View|3D</comment>
         <translation>3D Gitter</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="454"/>
+        <location filename="../src/implui/viewwin.cc" line="487"/>
         <source>3D Flat</source>
         <comment>View|3D</comment>
         <translation>3D Flächen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="455"/>
+        <location filename="../src/implui/viewwin.cc" line="488"/>
         <source>3D Smooth</source>
         <comment>View|3D</comment>
         <translation>3D Geglättet</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="456"/>
+        <location filename="../src/implui/viewwin.cc" line="489"/>
         <source>3D Texture</source>
         <comment>View|3D</comment>
         <translation>3D Texturiert</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="457"/>
+        <location filename="../src/implui/viewwin.cc" line="490"/>
         <source>3D Alpha Blend</source>
         <comment>View|3D</comment>
         <translation>3D mit Alpha Blending</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="462"/>
+        <location filename="../src/implui/viewwin.cc" line="495"/>
         <source>Canvas Wireframe</source>
         <comment>View|Canvas</comment>
         <translation>Zeichenfläche Gitter</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="463"/>
+        <location filename="../src/implui/viewwin.cc" line="496"/>
         <source>Canvas Flat</source>
         <comment>View|Canvas</comment>
         <translation>Zeichenfläche Flächen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="464"/>
+        <location filename="../src/implui/viewwin.cc" line="497"/>
         <source>Canvas Smooth</source>
         <comment>View|Canvas</comment>
         <translation>Zeichenfläche Geglättet</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="465"/>
+        <location filename="../src/implui/viewwin.cc" line="498"/>
         <source>Canvas Texture</source>
         <comment>View|Canvas</comment>
         <translation>Zeichenfläche Texturiert</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="466"/>
+        <location filename="../src/implui/viewwin.cc" line="499"/>
         <source>Canvas Alpha Blend</source>
         <comment>View|Canvas</comment>
         <translation>Zeichenfläche mit Alpha Blending</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="471"/>
+        <location filename="../src/implui/viewwin.cc" line="504"/>
         <source>1 View</source>
         <comment>View|Viewports</comment>
         <translation>1 Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="472"/>
+        <location filename="../src/implui/viewwin.cc" line="505"/>
         <source>1x2 View</source>
         <comment>View|Viewports</comment>
         <translation>1x2 Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="473"/>
+        <location filename="../src/implui/viewwin.cc" line="506"/>
         <source>2x1 View</source>
         <comment>View|Viewports</comment>
         <translation>2x1 Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="474"/>
+        <location filename="../src/implui/viewwin.cc" line="507"/>
         <source>2x2 View</source>
         <comment>View|Viewports</comment>
         <translation>2x2 Ansichten</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="475"/>
+        <location filename="../src/implui/viewwin.cc" line="508"/>
         <source>2x3 View</source>
         <comment>View|Viewports</comment>
         <translation>2x3 Ansichten</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="476"/>
+        <location filename="../src/implui/viewwin.cc" line="509"/>
         <source>3x2 View</source>
         <comment>View|Viewports</comment>
         <translation>3x2 Ansichten</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="477"/>
+        <location filename="../src/implui/viewwin.cc" line="510"/>
         <source>3x3 View</source>
         <comment>View|Viewports</comment>
         <translation>3x3 Ansichten</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="543"/>
+        <location filename="../src/implui/viewwin.cc" line="576"/>
         <source>Viewport Settings...</source>
         <comment>View|Viewport Settings</comment>
         <translation>Viewport Einstellungen...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="547"/>
+        <location filename="../src/implui/viewwin.cc" line="580"/>
         <source>Grid</source>
         <comment>Tools|Snap to Grid</comment>
         <translation>Gitter</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="550"/>
+        <location filename="../src/implui/viewwin.cc" line="583"/>
         <source>Vertex</source>
         <comment>Tools|Snap to Vertex</comment>
         <translation>Vertex</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="581"/>
+        <location filename="../src/implui/viewwin.cc" line="614"/>
         <source>Undo</source>
         <translation>Rückgängig</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="581"/>
+        <location filename="../src/implui/viewwin.cc" line="614"/>
         <source>Ctrl+Z</source>
         <comment>Undo shortcut</comment>
         <translation>STRG+Z</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="582"/>
+        <location filename="../src/implui/viewwin.cc" line="615"/>
         <source>Redo</source>
         <translation>Wiederholen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="582"/>
+        <location filename="../src/implui/viewwin.cc" line="615"/>
         <source>Ctrl+Y</source>
         <comment>Redo shortcut</comment>
         <translation>STRG+Y</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="566"/>
+        <location filename="../src/implui/viewwin.cc" line="599"/>
         <source>Snap To</source>
         <translation>Schnappe auf</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="574"/>
+        <location filename="../src/implui/viewwin.cc" line="607"/>
         <source>Tools</source>
         <translation>Werkzeuge</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="595"/>
+        <location filename="../src/implui/viewwin.cc" line="628"/>
         <source>Edit Groups...</source>
         <comment>Groups|Edit Groups</comment>
         <translation>Editiere Gruppen...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="596"/>
+        <location filename="../src/implui/viewwin.cc" line="629"/>
         <source>Edit Materials...</source>
         <comment>Groups|Edit Materials</comment>
         <translation>Editiere Materialien...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="598"/>
+        <location filename="../src/implui/viewwin.cc" line="631"/>
         <source>Reload Textures</source>
         <comment>Groups|Reload Textures</comment>
         <translation>Texuren neu laden</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="600"/>
+        <location filename="../src/implui/viewwin.cc" line="633"/>
         <source>Edit Projection...</source>
         <comment>Groups|Edit Projection</comment>
         <translation>Editiere Projektion...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="601"/>
+        <location filename="../src/implui/viewwin.cc" line="634"/>
         <source>Edit Texture Coordinates...</source>
         <comment>Groups|Edit Texture Coordinates</comment>
         <translation>Editiere Textur Koordinaten...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="602"/>
+        <location filename="../src/implui/viewwin.cc" line="635"/>
         <source>Paint Texture...</source>
         <comment>Groups|Paint Texture</comment>
         <translation>Erstelle/Male Textur...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="606"/>
+        <location filename="../src/implui/viewwin.cc" line="639"/>
         <source>Edit Joints...</source>
         <comment>Joints|Edit Joints</comment>
         <translation>Editiere Gelenke...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="607"/>
+        <location filename="../src/implui/viewwin.cc" line="640"/>
         <source>Assign Selected to Joint</source>
         <comment>Joints|Assign Selected to Joint</comment>
         <translation>Ausgewähltem Gelenk zuweisen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="609"/>
+        <location filename="../src/implui/viewwin.cc" line="642"/>
         <source>Remove All Influences from Selected</source>
         <comment>Joints|Remove All Influences from Selected</comment>
         <translation>Alle Einflüsse von Auswahl entfernen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="610"/>
+        <location filename="../src/implui/viewwin.cc" line="643"/>
         <source>Remove Selected Joint from Influencing</source>
         <comment>Joints|Remove Selected Joint from Influencing</comment>
         <translation>?Entferne Ausgewähltes Gelenk von Anliegenden</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="612"/>
+        <location filename="../src/implui/viewwin.cc" line="645"/>
         <source>Convert Multiple Influences to Single</source>
         <comment>Joints|Convert Multiple Influences to Single</comment>
         <translation>?Konvertiere Mehrere Einflüsse auf Einzelnen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="614"/>
+        <location filename="../src/implui/viewwin.cc" line="647"/>
         <source>Select Joint Influences</source>
         <comment>Joints|Select Joint Influences</comment>
         <translation>?Wähle Gelenk Einflüsse</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="615"/>
+        <location filename="../src/implui/viewwin.cc" line="648"/>
         <source>Select Influenced Vertices</source>
         <comment>Joints|Select Influenced Vertices</comment>
         <translation>Wähle beeinflusste Vertizes</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="616"/>
+        <location filename="../src/implui/viewwin.cc" line="649"/>
         <source>Select Influenced Points</source>
         <comment>Joints|Select Influenced Points</comment>
         <translation>Wähle beeinflusste Punkte</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="617"/>
+        <location filename="../src/implui/viewwin.cc" line="650"/>
         <source>Select Unassigned Vertices</source>
         <comment>Joints|Select Unassigned Vertices</comment>
         <translation>Wähle nicht-zugewiesene Vertizes</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="618"/>
+        <location filename="../src/implui/viewwin.cc" line="651"/>
         <source>Select Unassigned Points</source>
         <comment>Joints|Select Unassigned Points</comment>
         <translation>Wähle nicht-zugewiesene Punkte</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="625"/>
+        <location filename="../src/implui/viewwin.cc" line="658"/>
         <source>Start Animation Mode...</source>
         <comment>Animation|Start Animation Mode</comment>
         <translation>Starte Animationsmodus...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="626"/>
+        <location filename="../src/implui/viewwin.cc" line="659"/>
         <source>Stop Animation Mode</source>
         <comment>Animation|Stop Animation Mode</comment>
         <translation>Beende Animationsmodus</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="628"/>
+        <location filename="../src/implui/viewwin.cc" line="661"/>
         <source>Animation Sets...</source>
         <comment>Animation|Animation Sets</comment>
         <translation>Animations Sets...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="631"/>
+        <location filename="../src/implui/viewwin.cc" line="664"/>
         <source>Copy Animation Frame</source>
         <comment>Animation|Copy Animation Frame</comment>
         <translation>Kopiere Animations Frame</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="632"/>
+        <location filename="../src/implui/viewwin.cc" line="665"/>
         <source>Paste Animation Frame</source>
         <comment>Animation|Paste Animation Frame</comment>
         <translation>Animations Frame einfügen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="633"/>
+        <location filename="../src/implui/viewwin.cc" line="666"/>
         <source>Clear Animation Frame</source>
         <comment>Animation|Clear Animation Frame</comment>
         <translation>?Animationsframe löschen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="638"/>
+        <location filename="../src/implui/viewwin.cc" line="671"/>
         <source>Set Rotation Keyframe</source>
         <comment>Animation|Set Rotation Keyframe</comment>
         <translation>Setze Rotations Keyframe</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="639"/>
+        <location filename="../src/implui/viewwin.cc" line="672"/>
         <source>Set Translation Keyframe</source>
         <comment>Animation|Set Translation Keyframe</comment>
         <translation>Setze Translations Keyframe</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="652"/>
+        <location filename="../src/implui/viewwin.cc" line="685"/>
         <source>Contents...</source>
         <comment>Help|Contents</comment>
         <translation>Inhalt...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="653"/>
+        <location filename="../src/implui/viewwin.cc" line="686"/>
         <source>License...</source>
         <comment>Help|License</comment>
         <translation>Lizenz...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="654"/>
+        <location filename="../src/implui/viewwin.cc" line="687"/>
         <source>About...</source>
         <comment>Help|About</comment>
         <translation>Über...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="657"/>
+        <location filename="../src/implui/viewwin.cc" line="690"/>
         <source>&amp;File</source>
         <comment>menu bar</comment>
         <translation>&amp;Datei</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="659"/>
+        <location filename="../src/implui/viewwin.cc" line="692"/>
         <source>&amp;View</source>
         <comment>menu bar</comment>
         <translation>&amp;Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="661"/>
+        <location filename="../src/implui/viewwin.cc" line="694"/>
         <source>&amp;Tools</source>
         <comment>menu bar</comment>
         <translation>&amp;Werkzeuge</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="669"/>
+        <location filename="../src/implui/viewwin.cc" line="702"/>
         <source>&amp;Influences</source>
         <comment>menu bar</comment>
         <translation>&amp;?Einflüsse</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="671"/>
+        <location filename="../src/implui/viewwin.cc" line="704"/>
         <source>&amp;Animation</source>
         <comment>menu bar</comment>
         <translation>&amp;Animation</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="673"/>
+        <location filename="../src/implui/viewwin.cc" line="706"/>
         <source>&amp;Help</source>
         <comment>menu bar</comment>
         <translation>&amp;Hilfe</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="2383"/>
+        <location filename="../src/implui/viewwin.cc" line="996"/>
+        <location filename="../src/implui/viewwin.cc" line="1090"/>
+        <location filename="../src/implui/viewwin.cc" line="1179"/>
+        <location filename="../src/implui/viewwin.cc" line="1227"/>
+        <location filename="../src/implui/viewwin.cc" line="2328"/>
+        <location filename="../src/implui/viewwin.cc" line="2448"/>
         <source>All Files (*)</source>
         <translation>Alle Dateien (*)</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="960"/>
+        <location filename="../src/implui/viewwin.cc" line="1003"/>
         <source>Save model file as</source>
         <translation>Speichere Model Datei als</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="2385"/>
+        <location filename="../src/implui/viewwin.cc" line="1092"/>
+        <location filename="../src/implui/viewwin.cc" line="1181"/>
+        <location filename="../src/implui/viewwin.cc" line="1229"/>
+        <location filename="../src/implui/viewwin.cc" line="2330"/>
+        <location filename="../src/implui/viewwin.cc" line="2450"/>
         <source>Open model file</source>
         <translation>Öffne Model Datei</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1087"/>
+        <location filename="../src/implui/viewwin.cc" line="1130"/>
         <source>Merge models</source>
         <translation>Modelle zusammenfügen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1166"/>
+        <location filename="../src/implui/viewwin.cc" line="1144"/>
+        <location filename="../src/implui/viewwin.cc" line="1209"/>
         <source>:
 </source>
         <translation>:
 </translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1229"/>
+        <location filename="../src/implui/viewwin.cc" line="1272"/>
         <source>Script %1 complete</source>
         <translation>Skript %1 komplett</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1236"/>
+        <location filename="../src/implui/viewwin.cc" line="1278"/>
         <source>Script %1 error %2</source>
         <translation>Skript %1 Fehler %2</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="2294"/>
+        <location filename="../src/implui/viewwin.cc" line="1301"/>
+        <location filename="../src/implui/viewwin.cc" line="2359"/>
         <source>Save first?</source>
         <translation>Zuerst speichern?</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="2294"/>
+        <location filename="../src/implui/viewwin.cc" line="1301"/>
+        <location filename="../src/implui/viewwin.cc" line="2359"/>
         <source>Model has been modified
 Do you want to save before closing?</source>
         <translation>Model wurde geändert
 Wollen Sie speichern bevor sie schließen?</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1278"/>
+        <location filename="../src/implui/viewwin.cc" line="1320"/>
         <source>Unknown response: %1, Canceling close request</source>
         <translation>Unbekannte Antwort: %1, Abbruch der Close-Anweisung</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1421"/>
+        <location filename="../src/implui/viewwin.cc" line="1464"/>
         <source>Cannot hide with selected projections.  Unselect projections now?</source>
         <translation>Kann nicht mit den ausgewählten Projektionen verstecken.  Projektionen de-selektieren?</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1427"/>
+        <location filename="../src/implui/viewwin.cc" line="1470"/>
         <source>Hide projections</source>
         <translation>Projektionen verstecken</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1459"/>
+        <location filename="../src/implui/viewwin.cc" line="1502"/>
         <source>Cannot hide with selected joints.  Unselect joints now?</source>
         <translation>Kann nicht mit den ausgewählten Geleken verstecken.  Gelenke de-selektieren?</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1465"/>
+        <location filename="../src/implui/viewwin.cc" line="1508"/>
         <source>Hide bone joints</source>
         <translation>Verstecke Knochen Gelenke</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1554"/>
+        <location filename="../src/implui/viewwin.cc" line="1597"/>
         <source>You must select faces first.
 Use the &apos;Select Faces&apos; tool.</source>
         <comment>Notice that user must have faces selected to open &apos;edit texture coordinates&apos; window</comment>
@@ -5453,7 +5825,7 @@ Use the &apos;Select Faces&apos; tool.</source>
 Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1567"/>
+        <location filename="../src/implui/viewwin.cc" line="1610"/>
         <source>You must select faces first.
 Use the &apos;Select Faces&apos; tool.</source>
         <comment>Notice that user must have faces selected to open &apos;paint texture&apos; window</comment>
@@ -5461,47 +5833,47 @@ Use the &apos;Select Faces&apos; tool.</source>
 Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1649"/>
+        <location filename="../src/implui/viewwin.cc" line="1692"/>
         <source>Undo %1</source>
         <translation>Ruckgängig %1</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1662"/>
+        <location filename="../src/implui/viewwin.cc" line="1705"/>
         <source>Nothing to undo</source>
         <translation>Es gibt nichts rückgängig zu machen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1701"/>
+        <location filename="../src/implui/viewwin.cc" line="1744"/>
         <source>Redo %1</source>
         <translation>Wiederhole %1</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1707"/>
+        <location filename="../src/implui/viewwin.cc" line="1750"/>
         <source>Nothing to redo</source>
         <translation>Es gibt nichts zu wiederholen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1757"/>
+        <location filename="../src/implui/viewwin.cc" line="1800"/>
         <source>This model does not have any animations</source>
         <translation>Dieses Model hat keine Animationen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1767"/>
+        <location filename="../src/implui/viewwin.cc" line="1810"/>
         <source>Set rotation keframe</source>
         <translation>Setze Rotations Keyframe</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1775"/>
+        <location filename="../src/implui/viewwin.cc" line="1818"/>
         <source>Set translation keframe</source>
         <translation>Setzte Translations Keyframe</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="2312"/>
+        <location filename="../src/implui/viewwin.cc" line="2377"/>
         <source>Unknown response: Canceling operation</source>
         <translation>Unbekannte Anwort: Breche Operation ab</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="2512"/>
+        <location filename="../src/implui/viewwin.cc" line="2577"/>
         <source>[unnamed]</source>
         <comment>For filename in title bar (if not set)</comment>
         <translation>[unbenannt]</translation>
@@ -5562,7 +5934,7 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
         <translation>Wähle beeinflusste Punkte</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="608"/>
+        <location filename="../src/implui/viewwin.cc" line="641"/>
         <source>Auto-Assign Selected...</source>
         <comment>Joints|Auto-Assign Selected</comment>
         <translation>Auswahl Automatisch zuweisen... </translation>
@@ -5578,140 +5950,142 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
         <translation>Sie müssen mindestens einen Vertex oder einen Punkt ausgewählt haben.</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="332"/>
+        <location filename="../src/implui/viewwin.cc" line="365"/>
         <source>Open...</source>
         <comment>File|Open</comment>
         <translation>Öffnen...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="334"/>
+        <location filename="../src/implui/viewwin.cc" line="367"/>
         <source>Save As...</source>
         <comment>File|Save As</comment>
         <translation>Speichern unter...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="335"/>
+        <location filename="../src/implui/viewwin.cc" line="368"/>
         <source>Export...</source>
         <comment>File|Export</comment>
         <translation>Exportieren...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="584"/>
+        <location filename="../src/implui/viewwin.cc" line="617"/>
         <source>Edit Model Meta Data...</source>
         <comment>Model|Edit Model Meta Data</comment>
         <translation>Editiere Model Meta Daten...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="585"/>
+        <location filename="../src/implui/viewwin.cc" line="618"/>
         <source>Transform Model...</source>
         <comment>Model|Transform Model</comment>
         <translation>Transformiere Model...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="586"/>
+        <location filename="../src/implui/viewwin.cc" line="619"/>
         <source>Boolean Operation...</source>
         <comment>Model|Boolean Operation</comment>
         <translation>Boolsche Operation...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="588"/>
+        <location filename="../src/implui/viewwin.cc" line="621"/>
         <source>Set Background Image...</source>
         <comment>Model|Set Background Image</comment>
         <translation>Setze Hintergrund Bild...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="589"/>
+        <location filename="../src/implui/viewwin.cc" line="622"/>
         <source>Merge...</source>
         <comment>Model|Merge</comment>
         <translation>Vereinen...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="590"/>
+        <location filename="../src/implui/viewwin.cc" line="623"/>
         <source>Import Animations...</source>
         <comment>Model|Import Animations</comment>
         <translation>Importiere Animationen...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="629"/>
+        <location filename="../src/implui/viewwin.cc" line="662"/>
         <source>Save Animation Images...</source>
         <comment>Animation|Save Animation Images</comment>
         <translation>Speichere Animationsbilder...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="635"/>
+        <location filename="../src/implui/viewwin.cc" line="668"/>
         <source>Copy Selected Keyframes</source>
         <comment>Animation|Copy Animation Frame</comment>
         <translation>Kopiere Ausgewählte Keyframes</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="636"/>
+        <location filename="../src/implui/viewwin.cc" line="669"/>
         <source>Paste Selected Keyframes</source>
         <comment>Animation|Paste Animation Frame</comment>
         <translation>Füge Ausgewählte Keyframes ein</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="663"/>
+        <location filename="../src/implui/viewwin.cc" line="696"/>
         <source>&amp;Model</source>
         <comment>menu bar</comment>
         <translation>&amp;Model</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="665"/>
+        <location filename="../src/implui/viewwin.cc" line="698"/>
         <source>&amp;Geometry</source>
         <comment>menu bar</comment>
         <translation>&amp;Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="667"/>
+        <location filename="../src/implui/viewwin.cc" line="700"/>
         <source>Mate&amp;rials</source>
         <comment>menu bar</comment>
         <translation>&amp;Materialien</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="911"/>
+        <location filename="../src/implui/viewwin.cc" line="954"/>
         <source>All Exportable Formats</source>
         <translation>Alle exportierbaren Formate</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="911"/>
+        <location filename="../src/implui/viewwin.cc" line="954"/>
         <source>All Writable Formats</source>
         <translation>Alle schreibbaren Formate</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="963"/>
+        <location filename="../src/implui/viewwin.cc" line="1006"/>
         <source>Export model</source>
         <translation>Exportiere Model</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1113"/>
+        <location filename="../src/implui/viewwin.cc" line="1067"/>
+        <location filename="../src/implui/viewwin.cc" line="1156"/>
         <source>All Supported Formats</source>
         <comment>model formats</comment>
         <translation>Alle unterstützten Formate</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="2355"/>
+        <location filename="../src/implui/viewwin.cc" line="2300"/>
+        <location filename="../src/implui/viewwin.cc" line="2420"/>
         <source>All Supported Formats</source>
         <translation>Alle unterstützten Formate</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="269"/>
+        <location filename="../src/implui/viewwin.cc" line="302"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="336"/>
+        <location filename="../src/implui/viewwin.cc" line="369"/>
         <source>Export Selected...</source>
         <comment>File|Export Selected</comment>
         <translation>Exportiere Auswahl...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="892"/>
+        <location filename="../src/implui/viewwin.cc" line="935"/>
         <source>You must have at least 1 face, joint, or point selected to Export Selected</source>
         <translation>Sie müssen mindestens eine Fläche, Gelenk oder Punkt zum Exportieren Auswählen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="597"/>
+        <location filename="../src/implui/viewwin.cc" line="630"/>
         <source>Clean Up Groups...</source>
         <comment>Groups|Clean Up Groups</comment>
         <translation type="unfinished"></translation>
@@ -5739,6 +6113,7 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
         <translation>Zeichenflächen Gitter</translation>
     </message>
     <message>
+        <location filename="../src/qtui/viewportsettings.ui" line="57"/>
         <location filename="../src/qtui/viewportsettings.ui" line="153"/>
         <source>Default Grid Unit</source>
         <translation>Standard Gitter Einheit</translation>
