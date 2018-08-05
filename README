@@ -40,12 +40,12 @@ commands.
    cpan App::cpanminus # choose sudo in the interactive command
    cpanm HTML::Template --sudo
    ./autosetup.sh
-   CXX='clang++ -std=c++11 -stdlib=libc++' ./configure --with-Qt-dir=/usr/local/Cellar/qt/5.10.0_1 --with-macosx-version-min=10.10
+   CXX='clang++ -std=c++11 -stdlib=libc++' ./configure --with-Qt-dir=/usr/local/Cellar/qt/5.11.1 --with-macosx-version-min=10.11
    make
    make mm3d.app
 
 This will build a 'Misfit Model 3D.app' AppBundle. (macosx-version-min is
-copied from /usr/local/Cellar/qt/5.10.0_1/mkspecs/macx-clang/qmake.conf)
+copied from /usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang/qmake.conf)
 
 For more detailed installation instructions, see the INSTALL file.
 See INSTALL.WIN32 for Windows-specific instructions.
