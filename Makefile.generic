@@ -215,7 +215,7 @@ ifeq ($(PLATFORM),darwin)
   endif
 
   ifndef QTDIR
-    QTDIR=/usr/local/Cellar/qt/5.10.0_1
+    QTDIR=/usr/local/Cellar/qt/5.11.1
   endif
   ifndef QT_BIN_DIR
     QT_BIN_DIR=${QTDIR}/bin
