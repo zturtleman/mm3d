@@ -27,8 +27,8 @@ Name "Misfit Model 3D ${VERSION}"
 OutFile "mm3d-${FILE_VERSION}-win32-installer.exe"
 
 SetCompressor lzma
-Icon src\pixmap\mm3dlogo-32x32.ico
-UninstallIcon src\pixmap\mm3dlogo-32x32.ico
+Icon mm3d.ico
+UninstallIcon mm3d.ico
 BrandingText "Misfit Model 3D"
 CRCCheck on
 XPStyle on

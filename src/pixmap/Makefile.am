@@ -32,6 +32,5 @@ EXTRA_DIST = \
 	sheartool.xpm \
 	texframe.xpm \
 	torustool.xpm \
-	vertextool.xpm \
-	mm3dlogo-32x32.ico 
+	vertextool.xpm
 

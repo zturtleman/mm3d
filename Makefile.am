@@ -5,7 +5,9 @@ EXTRA_DIST = Makefile.generic \
 	TRANSLATORS \
 	INSTALL.WIN32 \
 	install.bat \
-	mm3d.reg 
+	mm3d.reg \
+	mm3d.ico \
+	mm3d.icns
 
 SUBDIRS = src plugins i18n doc desktop man
 
