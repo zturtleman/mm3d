@@ -4,13 +4,19 @@
 # GNU Make required
 #
 
-COMPILE_PLATFORM=$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'|sed -e 's/\//_/g')
+# mingw.org's mingw32-make.exe on Windows doesn't have uname
+ifdef MINGW32_MAKE
+  COMPILE_PLATFORM=mingw32
+  COMPILE_ARCH=x86
+else
+  COMPILE_PLATFORM=$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'|sed -e 's/\//_/g')
 
-COMPILE_ARCH=$(shell uname -m | sed -e s/i.86/x86/)
+  COMPILE_ARCH=$(shell uname -m | sed -e s/i.86/x86/)
 
-ifeq ($(COMPILE_PLATFORM),sunos)
-  # Solaris uname and GNU uname differ
-  COMPILE_ARCH=$(shell uname -p | sed -e s/i.86/x86/)
+  ifeq ($(COMPILE_PLATFORM),sunos)
+    # Solaris uname and GNU uname differ
+    COMPILE_ARCH=$(shell uname -p | sed -e s/i.86/x86/)
+  endif
 endif
 
 #############################################################################
@@ -71,10 +77,15 @@ endif
 
 bin_path=$(shell which $(1) 2> /dev/null)
 
-B=${BUILD}/${PLATFORM}-${ARCH}
+BUILDSUB=${PLATFORM}-${ARCH}
+B=${BUILD}/${BUILDSUB}
 
 INSTALL=install
-MKDIR=mkdir -p
+ifdef MINGW32_MAKE
+  MKDIR=mkdir
+else
+  MKDIR=mkdir -p
+endif
 
 
 #############################################################################
@@ -82,18 +93,40 @@ MKDIR=mkdir -p
 #############################################################################
 
 ifdef MINGW
+  ifndef QTDIR
+    ifneq ($(CROSS_COMPILING),1)
+      QTDIR=C:/Qt/5.11.1/mingw53_32
 
-  ifeq ($(CROSS_COMPILING),1)
+      ifdef MINGW32_MAKE
+        CC=C:\Qt\Tools\mingw530_32\bin\i686-w64-mingw32-gcc.exe
+        CXX=C:\Qt\Tools\mingw530_32\bin\i686-w64-mingw32-g++.exe
+      endif
+    endif
+  endif
+
+  ifdef QTDIR
     ifndef QT_BIN_DIR
-      $(error Need to specify QT_BIN_DIR with native Qt5 executables for uic, moc, and lrelease)
+      QT_BIN_DIR=${QTDIR}/bin
     endif
     ifndef QT_INCLUDE_DIR
-      $(error Need to specify QT_INCLUDE_DIR with MinGW Qt5 headers)
+      QT_INCLUDE_DIR=${QTDIR}/include
     endif
     ifndef QT_LIB_DIR
-      $(error Need to specify QT_LIB_DIR with MinGW Qt5 libs)
+      QT_LIB_DIR=${QTDIR}/lib
     endif
+  endif
 
+  ifndef QT_BIN_DIR
+    $(error Need to specify QT_BIN_DIR with native Qt5 executables for uic, moc, and lrelease)
+  endif
+  ifndef QT_INCLUDE_DIR
+    $(error Need to specify QT_INCLUDE_DIR with MinGW Qt5 headers)
+  endif
+  ifndef QT_LIB_DIR
+    $(error Need to specify QT_LIB_DIR with MinGW Qt5 libs)
+  endif
+
+  ifeq ($(CROSS_COMPILING),1)
     # If CC is already set to something generic, we probably want to use
     # something more specific
     ifneq ($(findstring $(strip $(CC)),cc gcc),)
@@ -105,10 +138,10 @@ ifdef MINGW
 
     # We need to figure out the correct gcc and windres
     ifeq ($(ARCH),x86_64)
-      MINGW_PREFIXES=amd64-mingw32msvc x86_64-w64-mingw32
+      MINGW_PREFIXES=x86_64-w64-mingw32 amd64-mingw32msvc
     endif
     ifeq ($(ARCH),x86)
-      MINGW_PREFIXES=i586-mingw32msvc i686-w64-mingw32 i686-pc-mingw32
+      MINGW_PREFIXES=i686-w64-mingw32 i586-mingw32msvc i686-pc-mingw32
     endif
 
     ifndef CC
@@ -149,17 +182,11 @@ ifdef MINGW
     $(error Cannot find a suitable cross compiler for $(PLATFORM))
   endif
 
-  ifndef QTDIR
-    QTDIR=C:/Qt/5.0.0
-  endif
-  ifndef QT_BIN_DIR
-    QT_BIN_DIR=${QTDIR}/bin
-  endif
-  ifndef QT_INCLUDE_DIR
-    QT_INCLUDE_DIR=${QTDIR}/include
-  endif
-  ifndef QT_LIB_DIR
-    QT_LIB_DIR=${QTDIR}/lib
+  ifdef MINGW32_MAKE
+    # mingw32 windres needs absolute path to compiler for using as a preprocessor
+    ifeq ("$(wildcard $(CC))","")
+    #  $(error CC must be absolute path to gcc)
+    endif
   endif
 
   ifndef QT_LIBS
@@ -167,6 +194,11 @@ ifdef MINGW
   endif
 
   LINK=-L${QT_LIB_DIR} ${QT_LIBS} -mwindows -lopengl32 -lglu32 -static-libgcc -static-libstdc++
+
+  # Qt5 requires C++11
+  BASE_FLAGS+=-std=c++11
+
+  BASE_FLAGS+=-DWIN32
 
   BINEXT=.${ARCH}.exe
 
@@ -299,10 +331,19 @@ endif
 ifndef LRELEASE
   LRELEASE=${QT_BIN_DIR}/lrelease${TOOLS_BINEXT}
 endif
+ifndef WINDEPLOYQT
+  WINDEPLOYQT=${QT_BIN_DIR}/windeployqt${TOOLS_BINEXT}
+endif
 
 
 #CXXFLAGS=-Wall -g3
-CXXFLAGS=-O2 ${BASE_FLAGS} -fno-math-errno -fPIC -I${QT_INCLUDE_DIR} -DMM3D_EDIT -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${B}/depui -I${B}/qtui -I${B}/implui -I${B}/commands
+CXXFLAGS=-O2 -s ${BASE_FLAGS} -fno-math-errno -I${QT_INCLUDE_DIR} -DMM3D_EDIT -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${B}/depui -I${B}/qtui -I${B}/implui -I${B}/commands
+
+ifndef MINGW
+# not for mingw because warning: -fPIC ignored for target (all code is position independent)
+CXXFLAGS+=-fPIC
+endif
+
 DEFS=
 
 BIN=${B}
@@ -384,7 +425,6 @@ MM3D_UI= \
 	${B}/qtui/contextprojection.base.h \
 	${B}/qtui/contextrotation.base.h \
 	${B}/qtui/extrudewin.base.h \
-	${B}/qtui/globalmenubar.base.h \
 	${B}/qtui/groupclean.base.h \
 	${B}/qtui/groupwin.base.h \
 	${B}/qtui/helpwin.base.h \
@@ -747,17 +787,31 @@ endef
 
 all: makedirs mm3d_ui mm3d_moc mm3d qmfiles
 
+# mingw.org's mingw32-make.exe uses Window's command processing and mkdir
 makedirs:
-	@if [ ! -d ${B} ];then ${MKDIR} ${B};fi
-	@if [ ! -d ${B}/src ];then ${MKDIR} ${B}/src;fi
-	@if [ ! -d ${B}/depui ];then ${MKDIR} ${B}/depui;fi
-	@if [ ! -d ${B}/implui ];then ${MKDIR} ${B}/implui;fi
-	@if [ ! -d ${B}/qtui ];then ${MKDIR} ${B}/qtui;fi
-	@if [ ! -d ${B}/tools ];then ${MKDIR} ${B}/tools;fi
-	@if [ ! -d ${B}/libmm3d ];then ${MKDIR} ${B}/libmm3d;fi
-	@if [ ! -d ${B}/mm3dcore ];then ${MKDIR} ${B}/mm3dcore;fi
-	@if [ ! -d ${B}/commands ];then ${MKDIR} ${B}/commands;fi
-	@if [ ! -d ${B}/i18n ];then ${MKDIR} ${B}/i18n;fi
+ifdef MINGW32_MAKE
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}" ${MKDIR} "${BUILD}\${BUILDSUB}"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\src" ${MKDIR} "${BUILD}\${BUILDSUB}\src"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\depui" ${MKDIR} "${BUILD}\${BUILDSUB}\depui"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\implui" ${MKDIR} "${BUILD}\${BUILDSUB}\implui"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\qtui" ${MKDIR} "${BUILD}\${BUILDSUB}\qtui"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\tools" ${MKDIR} "${BUILD}\${BUILDSUB}\tools"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\libmm3d" ${MKDIR} "${BUILD}\${BUILDSUB}\libmm3d"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\mm3dcore" ${MKDIR} "${BUILD}\${BUILDSUB}\mm3dcore"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\commands" ${MKDIR} "${BUILD}\${BUILDSUB}\commands"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\i18n" ${MKDIR} "${BUILD}\${BUILDSUB}\i18n"
+else
+	@${MKDIR} "${B}"
+	@${MKDIR} "${B}/src"
+	@${MKDIR} "${B}/depui"
+	@${MKDIR} "${B}/implui"
+	@${MKDIR} "${B}/qtui"
+	@${MKDIR} "${B}/tools"
+	@${MKDIR} "${B}/libmm3d"
+	@${MKDIR} "${B}/mm3dcore"
+	@${MKDIR} "${B}/commands"
+	@${MKDIR} "${B}/i18n"
+endif
 
 mm3d_ui: ${MM3D_UI}
 
@@ -768,8 +822,12 @@ qmfiles: ${QMFILES}
 $(BIN)/mm3d${BINEXT}: ${MM3D_MOC_OBJ} ${LIB_OBJ} ${MM3D_OBJ}
 	$(echo_cmd) "LINKING $(BIN)/mm3d${BINEXT}"
 ifdef MINGW
-	$(Q)${WINDRES} src/icon.rc ${B}/icon.o
-	$(Q)${CXX} ${CXXFLAGS} ${DEFS} -o $(BIN)/mm3d${BINEXT} ${MM3D_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} ${B}/icon.o ${LINK}
+ifdef MINGW32_MAKE
+	$(Q)${WINDRES} --preprocessor="$(CC) -E -xc-header -DRC_INVOKED" src/icon.rc ${B}/src/icon.o
+else
+	$(Q)${WINDRES} src/icon.rc ${B}/src/icon.o
+endif
+	$(Q)${CXX} ${CXXFLAGS} ${DEFS} -o $(BIN)/mm3d${BINEXT} ${MM3D_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} ${B}/src/icon.o ${LINK}
 else
 	$(Q)${CXX} ${CXXFLAGS} ${DEFS} -o $(BIN)/mm3d${BINEXT} ${MM3D_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} ${LINK}
 endif
@@ -784,9 +842,31 @@ mm3d: $(BIN)/mm3d${BINEXT}
 #${INSTALL} -m 0644 doc/html/olh_images/screencaps/*.png "$(PREFIX)/share/doc/mm3d/html/olh_images/screencaps/"
 #${INSTALL} -m 0644 doc/html/olh_images/tools/*.png "$(PREFIX)/share/doc/mm3d/html/olh_images/tools/"
 #${INSTALL} -m 0644 doc/html/olh_images/tools/*.jpg "$(PREFIX)/share/doc/mm3d/html/olh_images/tools/"
-install:
+
+# make install doesn't work for mingw32-make.exe because it's case insenitive and autotools requires INSTALL file.
+install: deploy
+
+deploy:
 ifdef MINGW
-	$(echo_cmd) "See install.bat"
+ifdef MINGW32_MAKE
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install" ${MKDIR} "${BUILD}\${BUILDSUB}\install"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\doc" ${MKDIR} "${BUILD}\${BUILDSUB}\install\doc"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\doc\html" ${MKDIR} "${BUILD}\${BUILDSUB}\install\doc\html"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\i18n" ${MKDIR} "${BUILD}\${BUILDSUB}\install\i18n"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\plugins" ${MKDIR} "${BUILD}\${BUILDSUB}\install\plugins"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\plugins\1.3" ${MKDIR} "${BUILD}\${BUILDSUB}\install\plugins\1.3"
+	@copy "$(BUILD)\$(BUILDSUB)\mm3d${BINEXT}" "$(BUILD)\$(BUILDSUB)\install"
+	@copy "$(BUILD)\$(BUILDSUB)\i18n\*.qm" "$(BUILD)\$(BUILDSUB)\install\i18n"
+	@$(WINDEPLOYQT) --compiler-runtime "$(BUILD)\$(BUILDSUB)\install"
+else
+	@$(MKDIR) "$(B)/install"
+	@$(MKDIR) "$(B)/install/doc/html"
+	@$(MKDIR) "$(B)/install/i18n"
+	@$(MKDIR) "$(B)/install/plugins/1.3"
+	@$(CP) "$(B)/mm3d${BINEXT}" "$(B)/install"
+	@$(CP) "$(B)/i18n/*.qm" "$(B)/install/i18n"
+	@$(WINDEPLOYQT) --compiler-runtime "$(B)/install"
+endif
 else
 	$(INSTALL) -d "$(PREFIX)/bin"
 	$(INSTALL) -m 0755 $(BIN)/mm3d${BINEXT} "$(PREFIX)/bin/mm3d"
@@ -805,7 +885,6 @@ endif
 installer: mm3d
 	cp -r ../dll .
 	cp -r ../imageformats .
-	strip $(BIN)/mm3d${BINEXT}
 	makensis mm3d-win32-installer.nsi
 
 ${B}/%.o: src/%.c

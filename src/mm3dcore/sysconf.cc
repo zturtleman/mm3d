@@ -29,7 +29,6 @@
 #include <string>
 #include <string.h>
 #include <stdlib.h>
-#include "version.h"
 
 #elif defined(__APPLE__)
 
@@ -43,6 +42,7 @@
 #include "mm3dconfig.h"
 #include "mm3dport.h"
 #include "log.h"
+#include "version.h"
 
 #include <stdlib.h>
 #include <string.h>

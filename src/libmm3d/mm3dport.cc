@@ -41,7 +41,9 @@
 char * PORT_getenv( const char * name )
 {
 #ifdef WIN32
-   return "C:/";  // TODO do registry lookup (if it's ever needed)
+   // TODO do registry lookup (if it's ever needed)
+   static char env[4] = "C:/";
+   return env;
 #else
    return getenv( name );
 #endif // WIN32

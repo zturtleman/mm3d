@@ -23,6 +23,7 @@
 
 #include "objfilter.h"
 
+#include "../mm3dcore/version.h"
 #include "model.h"
 #include "texture.h"
 #include "log.h"
