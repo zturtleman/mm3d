@@ -1,6 +1,8 @@
 #!/usr/bin/perl -w
 
 use HTML::Template;
+use File::Basename;
+my $srcdir = dirname(__FILE__).'/../doc/html';
 
 foreach my $file ( @ARGV )
 {
@@ -10,9 +12,9 @@ foreach my $file ( @ARGV )
 
       my @lt = localtime();
 
-      $vars{ 'SECLEFT' }   = `cat secleft.htm`;
-      $vars{ 'SECRIGHT' }  = `cat secright.htm`;
-      $vars{ 'SECEND' }    = `cat secend.htm`;
+      $vars{ 'SECLEFT' }   = `cat "$srcdir/secleft.htm"`;
+      $vars{ 'SECRIGHT' }  = `cat "$srcdir/secright.htm"`;
+      $vars{ 'SECEND' }    = `cat "$srcdir/secend.htm"`;
       $vars{ 'TIMESTAMP' } = `date`;
       $vars{ 'DATE_YEAR' } = $lt[5] + 1900;
 
@@ -31,13 +33,13 @@ foreach my $file ( @ARGV )
             if ( $value =~ /^<(.*)$/ )
             {
                my $content_file = $1;
-               my $text = `cat $content_file`;
+               my $text = `cat "$srcdir/$content_file"`;
 
                my %vars = ();
 
-               $vars{ 'SECLEFT' }  = `cat secleft.htm`;
-               $vars{ 'SECRIGHT' } = `cat secright.htm`;
-               $vars{ 'SECEND' }   = `cat secend.htm`;
+               $vars{ 'SECLEFT' }  = `cat "$srcdir/secleft.htm"`;
+               $vars{ 'SECRIGHT' } = `cat "$srcdir/secright.htm"`;
+               $vars{ 'SECEND' }   = `cat "$srcdir/secend.htm"`;
                $vars{ 'TIMESTAMP' } = `date`;
                $vars{ 'DATE_YEAR' } = $lt[5] + 1900;
 
@@ -52,7 +54,7 @@ foreach my $file ( @ARGV )
       close( INFILE );
 
       my $template = HTML::Template->new( 
-         filename => "template.htm",
+         filename => "$srcdir/template.htm",
          die_on_bad_params => 0
       );
 

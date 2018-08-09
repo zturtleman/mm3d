@@ -597,7 +597,7 @@ AC_DEFUN([BNV_HAVE_QT],
       # set by configure --host
       bnv_qt_lib_host=$host_alias
     else
-      bnv_qt_lib_host=`sh config.guess | cut -d'-' -f 1,3-4`
+      bnv_qt_lib_host=`$SHELL "$srcdir/config.guess" | cut -d'-' -f 1,3-4`
     fi
     if test x"$QT_UIC" = x; then
       # UIC detection
@@ -802,7 +802,7 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
     # set by configure --host
     bnv_qt_host=$host_alias
   else
-    bnv_qt_host=`sh config.guess | cut -d'-' -f 1,3-4`
+    bnv_qt_host=`$SHELL "$srcdir/config.guess" | cut -d'-' -f 1,3-4`
   fi
 
   ## Binary utilities ##

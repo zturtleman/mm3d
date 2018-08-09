@@ -92,10 +92,10 @@ BUILT_SOURCES = $(libqtui_UIHEADERS)
 
 libqtui_a_SOURCES = $(libqtui_UIFILES) dummy.c
 
-%.base.h: %.ui
-		$(QT_UIC) -o $@ $*.ui
+%.base.h: $(srcdir)/%.ui
+		$(QT_UIC) -o $@ $(srcdir)/$*.ui
 
-AM_CPPFLAGS = $(PROFILE) -Wall -I../libmm3d -I../mm3dcore -I../ -I../depui -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
+AM_CPPFLAGS = $(PROFILE) -Wall -I$(srcdir)/../libmm3d -I$(srcdir)/../mm3dcore -I$(srcdir)/../ -I$(srcdir)/../depui -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
 
 CLEANFILES = $(libqtui_UIHEADERS) *.gcno *.gcda
 

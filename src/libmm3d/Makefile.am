@@ -111,7 +111,7 @@ libmm3d_a_SOURCES = \
 	txtfilter.cc \
 	$(libmm3d_HFILES)
 
-AM_CPPFLAGS = $(CORE_PROFILE) $(COVFLAGS) -Wall -I.. -DMM3D_EDIT $(all_includes) $(GL_CFLAGS)
+AM_CPPFLAGS = $(CORE_PROFILE) $(COVFLAGS) -Wall -I$(srcdir)/.. -DMM3D_EDIT $(all_includes) $(GL_CFLAGS)
 
 wc:
 	wc `ls *.h *.cpp *.cc *.y *.l 2> /dev/null | grep -v moc.cc | grep -v "\.base\." ` | sort -n

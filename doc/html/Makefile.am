@@ -122,13 +122,13 @@ all: docs
 docs: ${PAGES}
 
 %.html: %.page %.htm ${COMMON}
-	$(top_srcdir)/util/hpagemake.pl $*.page > $*.html
+	$(top_srcdir)/util/hpagemake.pl $(srcdir)/$*.page > $*.html
 
 install: all
 	${INSTALL} -d      $(DESTDIR)${DOCDIR}/olh_images/screencaps
 	${INSTALL} -d      $(DESTDIR)${DOCDIR}/olh_images/tools
-	${INSTALL} -m 0644 *.html $(DESTDIR)${DOCDIR}
-	${INSTALL} -m 0644 olh_images/screencaps/*.png $(DESTDIR)${DOCDIR}/olh_images/screencaps
-	${INSTALL} -m 0644 olh_images/tools/*.png $(DESTDIR)${DOCDIR}/olh_images/tools
-	${INSTALL} -m 0644 olh_images/tools/*.jpg $(DESTDIR)${DOCDIR}/olh_images/tools
+	${INSTALL} -m 0644 $(PAGES) $(DESTDIR)${DOCDIR}
+	${INSTALL} -m 0644 $(srcdir)/olh_images/screencaps/*.png $(DESTDIR)${DOCDIR}/olh_images/screencaps
+	${INSTALL} -m 0644 $(srcdir)/olh_images/tools/*.png $(DESTDIR)${DOCDIR}/olh_images/tools
+	${INSTALL} -m 0644 $(srcdir)/olh_images/tools/*.jpg $(DESTDIR)${DOCDIR}/olh_images/tools
 

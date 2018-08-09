@@ -14,11 +14,11 @@ QMFILES = \
 	qt_zh_CN.qm 
 
 TSFILES = \
-	mm3d_ref.ts \
-	mm3d_de.ts \
-	mm3d_fr.ts \
-	mm3d_sk.ts \
-	mm3d_bork.ts 
+	$(srcdir)/mm3d_ref.ts \
+	$(srcdir)/mm3d_de.ts \
+	$(srcdir)/mm3d_fr.ts \
+	$(srcdir)/mm3d_sk.ts \
+	$(srcdir)/mm3d_bork.ts 
 
 QTFILES = \
 	qt_ar.ts \
@@ -41,13 +41,13 @@ BUILT_SOURCES = $(QMFILES)
 all:
 
 tsfiles:
-	lupdate ../src/*.cc ../src/*/*.cc ../src/*.h ../src/*/*.h ../src/qtui/*.ui -ts $(TSFILES)
+	lupdate $(srcdir)/../src/*.cc $(srcdir)/../src/*/*.cc $(srcdir)/../src/*.h $(srcdir)/../src/*/*.h $(srcdir)/../src/qtui/*.ui -ts $(TSFILES)
 
 qmfiles: $(QMFILES)
 
 %.qm: %.ts
-	$(QT_LRELEASE) $<
+	$(QT_LRELEASE) $< -qm $@
 
 install:
 	$(INSTALL) -d $(DESTDIR)$(datadir)/mm3d/i18n
-	${INSTALL} -m 0644 *.qm $(DESTDIR)$(datadir)/mm3d/i18n
+	${INSTALL} -m 0644 $(QMFILES) $(DESTDIR)$(datadir)/mm3d/i18n

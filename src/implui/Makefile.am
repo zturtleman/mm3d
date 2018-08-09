@@ -178,13 +178,13 @@ libimplui_a_SOURCES = \
 		$(QT_MOC) -o $@ $<
 
 %.base.h: %.ui
-		$(QT_UIC) -o $@ $*.ui
+		$(QT_UIC) -o $@ $(srcdir)/$*.ui
 
-%.base.cc: $(mm3d_UIHEADERS) %.ui
-		$(QT_UIC) -o $@ -impl $*.base.h $*.ui
+%.base.cc: $(mm3d_UIHEADERS) $(srcdir)/%.ui
+		$(QT_UIC) -o $@ -impl $(builddir)/$*.base.h $(srcdir)/$*.ui
 
 # -DQT_NO_CAST_ASCII
-AM_CPPFLAGS = $(PROFILE) $(COVFLAGS) -Wall -I../libmm3d -I../mm3dcore -I../depui -I../qtui -I../ -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
+AM_CPPFLAGS = $(PROFILE) $(COVFLAGS) -Wall -I$(srcdir)/../libmm3d -I$(srcdir)/../mm3dcore -I$(srcdir)/../depui -I$(builddir)/../qtui -I$(srcdir)/../ -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
 
 CLEANFILES = $(libimplui_MOC) $(mm3d_UIHEADERS) *.gcno *.gcda
 
