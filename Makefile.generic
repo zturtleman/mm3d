@@ -877,9 +877,11 @@ else
 	$(INSTALL) -d "$(PREFIX)/share/pixmaps/"
 	${INSTALL} -m 0644 desktop/mm3d.desktop "$(PREFIX)/share/applications/"
 	${INSTALL} -m 0644 desktop/x-mm3d.desktop "$(PREFIX)/share/mimelnk/application/"
+	${INSTALL} -m 0644 desktop/*.png "$(PREFIX)/share/pixmaps/"
 	${INSTALL} -m 0644 desktop/*.xpm "$(PREFIX)/share/pixmaps/"
 	$(INSTALL) -d "$(PREFIX)/share/man/man1/"
 	${INSTALL} -m 0644 man/mm3d.1 "$(PREFIX)/share/man/man1/"
+	$(INSTALL) -d "$(PREFIX)/share/mm3d/plugins/1.3"
 endif
 
 installer: mm3d
