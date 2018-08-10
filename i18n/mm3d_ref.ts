@@ -2185,14 +2185,14 @@ Do you wish to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/implui/groupclean.cc" line="85"/>
+        <location filename="../src/implui/groupclean.cc" line="89"/>
         <source>Group Clean-up</source>
         <comment>operation complete</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/implui/groupclean.cc" line="89"/>
-        <source>Removed %1 of %2 groups and %3 of %4 materials</source>
+        <location filename="../src/implui/groupclean.cc" line="90"/>
+        <source>Merged %1 groups, %2 materials; Removed %3 of %4 groups, %5 of %6 materials</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

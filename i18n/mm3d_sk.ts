@@ -2311,14 +2311,14 @@ Chcete pokračovať?</translation>
         <translation></translation>
     </message>
     <message>
-        <location line="+35"/>
+        <location line="+39"/>
         <source>Group Clean-up</source>
         <comment>operation complete</comment>
         <translation>Vyčistiť skupiny</translation>
     </message>
     <message>
-        <location line="+4"/>
-        <source>Removed %1 of %2 groups and %3 of %4 materials</source>
+        <location line="+1"/>
+        <source>Merged %1 groups, %2 materials; Removed %3 of %4 groups, %5 of %6 materials</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
