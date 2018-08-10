@@ -1,16 +1,15 @@
 Misfit Model 3D Installation For Win32
 ======================================
 
-Misfit Model 3D may or may not run on Windows XP. It will not work on
-older versions.
+Misfit Model 3D runs on Windows 7 and later. It may run on
+Windows XP and Vista if you compile Qt 5 with Windows XP support.
+It will not work on older Windows versions.
 
-Misfit Model 3D for Win32 requires the mingw environment and
-the Open Source version of Qt 5 for Win32.  To run binaries
-of mm3d you only need the qt and mingw DLLs, which are provided 
+Misfit Model 3D for Windows requires the MinGW environment and
+the Open Source version of Qt 5 for Windows.  To run binaries
+of mm3d you only need the Qt and MinGW DLLs, which are provided 
 with the binary distribution.  To build from source you must
-have a development environment set up with mingw and qt5.
-
-Note that plugins are not currently available on Windows.
+have a development environment set up with MinGW and Qt 5.
 
 
 Binary Installation
@@ -29,40 +28,46 @@ Prerequisites
 
 You can get Qt 5.x here:
 
-   https://download.qt.io/archive/qt/
+   https://www.qt.io/
 
-You can get mingw using Qt 5's binary installer, or download
-and install mingw yourself from the official website:
+During the Qt 5 installer make you sure you check the box for
+installing Qt 5.11.1 and MinGW 5.3 (or the latest versions).
 
-   http://www.mingw.org/
-
-You must have your QTDIR environment variable set to the root
-Qt directory (for example, C:\Qt\5.0.0).  The Mingw and Qt bin
-directories must be in your path.
+You must set your QTDIR environment variable to the root Qt
+directory (for example, "C:\Qt\5.11.1\mingw53_32").  The Mingw
+bin directory must be added to your PATH environment variable
+(for example, append "C:\Qt\Tools\mingw530_32\bin;").
 
 
 Build Instructions
 ==================
 
-Once you have installed mingw and Qt, do the following steps:
+Once you have installed Qt and MinGW, do the following steps:
 
-1. Make sure QTDIR is set and mingw's bin directory and Qt's bin
-   directory is in your PATH
+1. Make sure QTDIR is set and MinGW's bin directory is in
+   your PATH
 2. Open a cmd prompt and go to the mm3d-X.X.X directory
 3. Copy config.h.generic to config.h
-4. Run 'mingw32-make -f Makefile.generic'
+4. Run 'mingw32-make -f Makefile.generic MINGW32_MAKE=1'
 
 
 Install Instructions
 ====================
 
-1. Run 'install.bat' from the mm3d-X.X.X directory.
+1. Run 'mingw32-make -f Makefile.generic MINGW32_MAKE=1 deploy'
+   from the mm3d-X.X.X directory.
 
-The install.bat file does not create any program menu or desktop 
+2. Copy the build\mingw32-x86\install\ directory to where
+   ever you want. Settings are saved in %APPDATA$\Misfit Model 3D\
+
+`make deploy` does not create any program menu or desktop
 shortcuts.  If you want shortcuts you must create them manually,
 or use the binary installer.
 
-Optionally, you can install NSIS and put the qt and mingw dlls
+NOTE: The installer hasn't been updated for clover.moe fork / Qt 5
+so it doesn't work yet.
+
+Optionally, you can install NSIS and put the Qt and MinGW dlls
 in your mm3d-X.X.X/dll directory and then build the installer.
 This will create shortcuts and some registry keys.
 

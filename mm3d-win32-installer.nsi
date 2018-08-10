@@ -130,7 +130,6 @@ Section "Uninstall"
     RMDir /r /REBOOTOK "$INSTDIR\doc"
     RMDir /r /REBOOTOK "$INSTDIR\i18n"
     RMDir /r /REBOOTOK "$INSTDIR\plugins"
-    RMDir /r /REBOOTOK "$INSTDIR\userhome"
     RMDir /r /REBOOTOK "$INSTDIR\imageformats"
     RMDir $INSTDIR
 

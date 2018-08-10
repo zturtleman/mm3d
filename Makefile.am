@@ -4,8 +4,6 @@ EXTRA_DIST = Makefile.generic \
 	mm3d-win32-installer.nsi \
 	TRANSLATORS \
 	INSTALL.WIN32 \
-	install.bat \
-	mm3d.reg \
 	mm3d.ico \
 	mm3d.icns
 
