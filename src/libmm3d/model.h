@@ -658,7 +658,7 @@ class Model
             JointKeyframeList m_jointKeyframes;
             double   m_fps;  // Frames per second
             double   m_spf;  // Seconds per frame (for convenience, 1.0 / m_fps)
-            bool     m_animationLoop;
+            bool     m_loop; // Whether or not the animation loops
             unsigned m_frameCount;    // Number of frames in the animation
             bool     m_validNormals;  // Whether or not the normals have been calculated for the current animation frame
 
@@ -774,7 +774,7 @@ class Model
             FrameAnimDataList m_frameData;
 
             double m_fps;  // Frames per second
-            bool   m_animationLoop;
+            bool   m_loop; // Whether or not the animation loops
             bool   m_validNormals;  // Whether or not the normals have been calculated
 
             bool propEqual( const FrameAnim & rhs, int propBits = PropAll, double tolerance = 0.00001 ) const;
@@ -1118,9 +1118,6 @@ class Model
       unsigned getCurrentAnimationFrame() const;
       double   getCurrentAnimationTime() const;
 
-      void setAnimationLooping( AnimationModeE mode, unsigned anim, bool loop );
-      bool getAnimationLooping( AnimationModeE mode, unsigned anim ) const;
-
       // Stop animation mode, go back to standard pose editing.
       void setNoAnimation();
 
@@ -1138,6 +1135,9 @@ class Model
 
       double getAnimFPS( AnimationModeE mode, unsigned anim ) const;
       bool setAnimFPS( AnimationModeE mode, unsigned anim, double fps );
+
+      bool getAnimLooping( AnimationModeE mode, unsigned anim ) const;
+      bool setAnimLooping( AnimationModeE mode, unsigned anim, bool loop );
 
       unsigned getAnimFrameCount( AnimationModeE mode, unsigned anim ) const;
       bool setAnimFrameCount( AnimationModeE mode, unsigned anim, unsigned count );

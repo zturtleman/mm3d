@@ -1799,7 +1799,7 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
          unsigned anim = model->addAnimation( Model::ANIMMODE_SKELETAL, name );
          model->setAnimFPS( Model::ANIMMODE_SKELETAL, anim, fps );
          model->setAnimFrameCount( Model::ANIMMODE_SKELETAL, anim, frameCount );
-         model->setAnimationLooping( Model::ANIMMODE_SKELETAL, anim, (flags & MSAF_ANIM_LOOP) != 0 );
+         model->setAnimLooping( Model::ANIMMODE_SKELETAL, anim, (flags & MSAF_ANIM_LOOP) != 0 );
 
          for ( unsigned f = 0; f < frameCount; f++ )
          {
@@ -1885,7 +1885,7 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
          unsigned anim = model->addAnimation( Model::ANIMMODE_FRAME, name );
          model->setAnimFPS( Model::ANIMMODE_FRAME, anim, fps );
          model->setAnimFrameCount( Model::ANIMMODE_FRAME, anim, frameCount );
-         model->setAnimationLooping( Model::ANIMMODE_FRAME, anim, (flags & MFAF_ANIM_LOOP) != 0 );
+         model->setAnimLooping( Model::ANIMMODE_FRAME, anim, (flags & MFAF_ANIM_LOOP) != 0 );
 
          for ( unsigned f = 0; f < frameCount; f++ )
          {
@@ -2982,7 +2982,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
          uint16_t  flags = 0x0000;
          float32_t fps = sa->m_fps;
 
-         if (sa->m_animationLoop)
+         if (sa->m_loop)
          {
             flags |= MSAF_ANIM_LOOP;
          }
@@ -3068,7 +3068,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
          uint16_t  flags = 0x0000;
          float32_t fps = fa->m_fps;
 
-         if (fa->m_animationLoop)
+         if (fa->m_loop)
          {
             flags |= MFAF_ANIM_LOOP;
          }

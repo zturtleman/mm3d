@@ -50,7 +50,7 @@ int Model::addAnimation( AnimationModeE m, const char * name )
                anim->m_name = name;
                anim->m_fps  = 30.0;
                anim->m_spf  = (1.0 / anim->m_fps);
-               anim->m_animationLoop = true;
+               anim->m_loop = true;
                anim->m_frameCount = 1;
                anim->m_validNormals = false;
 
@@ -74,7 +74,7 @@ int Model::addAnimation( AnimationModeE m, const char * name )
                FrameAnim * anim = FrameAnim::get();
                anim->m_name = name;
                anim->m_fps = 10.0;
-               anim->m_animationLoop = true;
+               anim->m_loop = true;
                anim->m_validNormals = false;
 
                MU_AddAnimation * undo = new MU_AddAnimation();
@@ -302,6 +302,39 @@ bool Model::setAnimFPS( AnimationModeE m, unsigned anim, double fps )
             sendUndo( undo );
 
             m_frameAnims[anim]->m_fps = fps;
+            return true;
+         }
+         break;
+      default:
+         break;
+   }
+
+   return false;
+}
+
+bool Model::setAnimLooping( AnimationModeE m, unsigned anim, bool loop )
+{
+   switch ( m )
+   {
+      case ANIMMODE_SKELETAL:
+         if ( anim < m_skelAnims.size() )
+         {
+            MU_SetAnimLoop * undo = new MU_SetAnimLoop();
+            undo->setAnimLoop( m, anim, loop, m_skelAnims[anim]->m_loop );
+            sendUndo( undo );
+
+            m_skelAnims[anim]->m_loop = loop;
+            return true;
+         }
+         break;
+      case ANIMMODE_FRAME:
+         if ( anim < m_frameAnims.size() )
+         {
+            MU_SetAnimLoop * undo = new MU_SetAnimLoop();
+            undo->setAnimLoop( m, anim, loop, m_frameAnims[anim]->m_loop );
+            sendUndo( undo );
+
+            m_frameAnims[anim]->m_loop = loop;
             return true;
          }
          break;
@@ -584,7 +617,7 @@ int Model::copyAnimation( AnimationModeE mode, unsigned anim, const char * newNa
             {
                setAnimFrameCount( mode, num, getAnimFrameCount( mode, anim ) );
                setAnimFPS( mode, num, getAnimFPS( mode, anim ) );
-               setAnimationLooping( mode, num, getAnimationLooping( mode, anim ) );
+               setAnimLooping( mode, num, getAnimLooping( mode, anim ) );
 
                SkelAnim * sa = m_skelAnims[anim];
 
@@ -609,7 +642,7 @@ int Model::copyAnimation( AnimationModeE mode, unsigned anim, const char * newNa
             {
                setAnimFrameCount( mode, num, getAnimFrameCount( mode, anim ) );
                setAnimFPS( mode, num, getAnimFPS( mode, anim ) );
-               setAnimationLooping( mode, num, getAnimationLooping( mode, anim ) );
+               setAnimLooping( mode, num, getAnimLooping( mode, anim ) );
 
                FrameAnim * fa = m_frameAnims[anim];
 
@@ -918,7 +951,7 @@ int Model::convertAnimToFrame( AnimationModeE mode, unsigned anim, const char * 
             if ( num >= 0 )
             {
                setAnimFrameCount( ANIMMODE_FRAME, num, frameCount );
-               setAnimationLooping( ANIMMODE_FRAME, num, getAnimationLooping( ANIMMODE_SKELETAL, anim ) );
+               setAnimLooping( ANIMMODE_FRAME, num, getAnimLooping( ANIMMODE_SKELETAL, anim ) );
 
                if ( frameCount > 0 )
                {
@@ -1699,7 +1732,7 @@ bool Model::setCurrentAnimationTime( double frameTime )
          double totalTime = spf * m_frameAnims[m_currentAnim]->m_frameData.size();
          while ( frameTime >= totalTime )
          {
-            if ( !m_frameAnims[m_currentAnim]->m_animationLoop )
+            if ( !m_frameAnims[m_currentAnim]->m_loop )
             {
                return false;
             }
@@ -1728,7 +1761,7 @@ bool Model::setCurrentAnimationTime( double frameTime )
          double totalTime = sa->m_spf * sa->m_frameCount;
          while ( frameTime > totalTime )
          {
-            if ( !sa->m_animationLoop )
+            if ( !sa->m_loop )
             {
                return false;
             }
@@ -1746,7 +1779,7 @@ bool Model::setCurrentAnimationTime( double frameTime )
       {
          Matrix transform;
          interpSkelAnimKeyframeTime( m_currentAnim, frameTime,
-               sa->m_animationLoop, j, transform );
+               sa->m_loop, j, transform );
 
          Matrix relativeFinal( m_joints[j]->m_relative );
          relativeFinal = transform * relativeFinal;
@@ -2044,59 +2077,6 @@ double Model::getCurrentAnimationTime() const
    return m_currentTime;
 }
 
-void Model::setAnimationLooping( AnimationModeE mode, unsigned anim, bool loop )
-{
-   switch ( mode )
-   {
-      case ANIMMODE_SKELETAL:
-         if ( anim < m_skelAnims.size() )
-         {
-            MU_SetAnimLoop * undo = new MU_SetAnimLoop();
-            undo->setAnimLoop( mode, anim, loop, m_skelAnims[anim]->m_animationLoop );
-            sendUndo( undo );
-
-            m_skelAnims[anim]->m_animationLoop = loop;
-         }
-         break;
-      case ANIMMODE_FRAME:
-         if ( anim < m_frameAnims.size() )
-         {
-            MU_SetAnimLoop * undo = new MU_SetAnimLoop();
-            undo->setAnimLoop( mode, anim, loop, m_frameAnims[anim]->m_animationLoop );
-            sendUndo( undo );
-
-            m_frameAnims[anim]->m_animationLoop = loop;
-         }
-         break;
-      default:
-         break;
-   }
-}
-
-bool Model::getAnimationLooping( AnimationModeE mode, unsigned anim ) const
-{
-   switch ( mode )
-   {
-      case ANIMMODE_SKELETAL:
-         if ( anim < m_skelAnims.size() )
-         {
-            return m_skelAnims[anim]->m_animationLoop;
-         }
-         break;
-      case ANIMMODE_FRAME:
-         if ( anim < m_frameAnims.size() )
-         {
-            return m_frameAnims[anim]->m_animationLoop;
-         }
-         break;
-      default:
-         break;
-   }
-
-   // shouldn't happen
-   return true;
-}
-
 void Model::setNoAnimation()
 {
 #ifdef MM3D_EDIT
@@ -2274,6 +2254,29 @@ double Model::getAnimFPS( AnimationModeE m, unsigned anim ) const
    }
 
    return 0;
+}
+
+bool Model::getAnimLooping( AnimationModeE m, unsigned anim ) const
+{
+   switch ( m )
+   {
+      case ANIMMODE_SKELETAL:
+         if ( anim < m_skelAnims.size() )
+         {
+            return m_skelAnims[anim]->m_loop;
+         }
+         break;
+      case ANIMMODE_FRAME:
+         if ( anim < m_frameAnims.size() )
+         {
+            return m_frameAnims[anim]->m_loop;
+         }
+         break;
+      default:
+         break;
+   }
+
+   return true;
 }
 
 bool Model::getFrameAnimVertexCoords( unsigned anim, unsigned frame, unsigned vertex,

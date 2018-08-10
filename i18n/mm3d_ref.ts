@@ -600,7 +600,7 @@
     <message>
         <location filename="../src/implui/animwidget.cc" line="525"/>
         <source>Set Looping</source>
-        <comment>Looping, operation complete</comment>
+        <comment>Change whether animation loops operation complete</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>

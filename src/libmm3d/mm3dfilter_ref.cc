@@ -1822,7 +1822,7 @@ Model::ModelErrorE MisfitFilterRef::readFile( Model * model, const char * const 
          unsigned anim = model->addAnimation( Model::ANIMMODE_SKELETAL, name );
          model->setAnimFPS( Model::ANIMMODE_SKELETAL, anim, fps );
          model->setAnimFrameCount( Model::ANIMMODE_SKELETAL, anim, frameCount );
-         model->setAnimationLooping( Model::ANIMMODE_SKELETAL, anim, (flags & MSAF_ANIM_LOOP) != 0 );
+         model->setAnimLooping( Model::ANIMMODE_SKELETAL, anim, (flags & MSAF_ANIM_LOOP) != 0 );
 
          for ( unsigned f = 0; f < frameCount; f++ )
          {
@@ -1915,7 +1915,7 @@ Model::ModelErrorE MisfitFilterRef::readFile( Model * model, const char * const 
          unsigned anim = model->addAnimation( Model::ANIMMODE_FRAME, name );
          model->setAnimFPS( Model::ANIMMODE_FRAME, anim, fps );
          model->setAnimFrameCount( Model::ANIMMODE_FRAME, anim, frameCount );
-         model->setAnimationLooping( Model::ANIMMODE_FRAME, anim, (flags & MFAF_ANIM_LOOP) != 0 );
+         model->setAnimLooping( Model::ANIMMODE_FRAME, anim, (flags & MFAF_ANIM_LOOP) != 0 );
 
          for ( unsigned f = 0; f < frameCount; f++ )
          {

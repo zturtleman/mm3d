@@ -380,7 +380,7 @@ Model::ModelErrorE IqeFilter::writeFile( Model * model, const char * const filen
             const char *animName = model->getAnimName( Model::ANIMMODE_SKELETAL, anim );
             float fps = model->getAnimFPS( Model::ANIMMODE_SKELETAL, anim );
             unsigned frameCount = model->getAnimFrameCount( Model::ANIMMODE_SKELETAL, anim );
-            bool loop = model->getAnimationLooping( Model::ANIMMODE_SKELETAL, anim );
+            bool loop = model->getAnimLooping( Model::ANIMMODE_SKELETAL, anim );
 
             if ( frameCount == 0 )
             {

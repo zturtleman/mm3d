@@ -380,7 +380,7 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
                int animIndex = m_model->addAnimation( Model::ANIMMODE_FRAME, "AnimFrames" );
                m_model->setAnimFPS( Model::ANIMMODE_FRAME, animIndex, 15.0);
                m_model->setAnimFrameCount( Model::ANIMMODE_FRAME, 0, fileList.front().numFrames );
-               m_model->setAnimationLooping( Model::ANIMMODE_FRAME, animIndex, false );
+               m_model->setAnimLooping( Model::ANIMMODE_FRAME, animIndex, false );
             }
          }
       }
@@ -788,7 +788,7 @@ bool Md3Filter::readAnimations( bool create )
          for (int animIndex = 0; animIndex < animCount; ++animIndex)
          {
             bool loop = (eliteLoop) ? (animLoop[animIndex] == 0) : (animLoop[animIndex] != 0);
-            m_model->setAnimationLooping( Model::ANIMMODE_FRAME, animIndex, loop );
+            m_model->setAnimLooping( Model::ANIMMODE_FRAME, animIndex, loop );
          }
       }
 
@@ -2585,7 +2585,7 @@ bool Md3Filter::writeAnimations()
          }
 
          // disable looping on non-looping anims
-         if ( count <= 1 || !m_model->getAnimationLooping( Model::ANIMMODE_FRAME, anim ) )
+         if ( count <= 1 || !m_model->getAnimLooping( Model::ANIMMODE_FRAME, anim ) )
          {
             loop = 0;
          }

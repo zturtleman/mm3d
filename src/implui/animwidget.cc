@@ -115,7 +115,7 @@ void AnimWidget::initialize( Model * model, bool isUndo )
 
    m_countSlider->setTickPosition( QSlider::TicksBelow );
 
-   m_loop->setChecked( m_model->getAnimationLooping(m_model->getAnimationMode(), m_model->getCurrentAnimation()) );
+   m_loop->setChecked( m_model->getAnimLooping(m_model->getAnimationMode(), m_model->getCurrentAnimation()) );
 
    m_skelAnimCount = m_model->getAnimCount( Model::ANIMMODE_SKELETAL );
    m_frameAnimCount = m_model->getAnimCount( Model::ANIMMODE_FRAME );
@@ -521,8 +521,8 @@ void AnimWidget::loopToggled( bool o )
    if ( !m_ignoreChange && m_animCount > 0 )
    {
       log_debug( "toggling loop\n" );
-      m_model->setAnimationLooping( m_mode, indexToAnim( m_animName->currentIndex() ), o );
-      m_model->operationComplete( tr( "Set Looping", "Looping, operation complete" ).toUtf8() );
+      m_model->setAnimLooping( m_mode, indexToAnim( m_animName->currentIndex() ), o );
+      m_model->operationComplete( tr( "Set Looping", "Change whether animation loops operation complete" ).toUtf8() );
 
       m_model->setCurrentAnimationFrame( m_countSlider->value() - 1 );
       DecalManager::getInstance()->modelUpdated( m_model );
@@ -683,7 +683,7 @@ void AnimWidget::refreshPage()
          m_ignoreChange = true;  // Qt alerts us even if we're responsible
          m_frameCount->setValue( count );
          m_fps->setText( QString::number(m_model->getAnimFPS( mode, index ) ) );
-         m_loop->setChecked( m_model->getAnimationLooping( mode, index ) );
+         m_loop->setChecked( m_model->getAnimLooping( mode, index ) );
          m_ignoreChange = false;
 
          m_countSlider->setMinimum( 1 );
