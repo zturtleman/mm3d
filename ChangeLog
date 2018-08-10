@@ -1,4 +1,5 @@
 Changes for 1.3.10
+   Display result of Clean Up Groups in status bar
    Improve code integration of animation loop setting
    Fix building for Windows
    Add support for autotools out-of-tree build

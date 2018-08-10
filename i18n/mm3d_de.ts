@@ -2187,9 +2187,14 @@ Wollen sie fortfahren?</translation>
         <translation type="unfinished">F1</translation>
     </message>
     <message>
-        <location filename="../src/implui/groupclean.cc" line="82"/>
+        <location filename="../src/implui/groupclean.cc" line="85"/>
         <source>Group Clean-up</source>
         <comment>operation complete</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/implui/groupclean.cc" line="89"/>
+        <source>Removed %1 of %2 groups and %3 of %4 materials</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

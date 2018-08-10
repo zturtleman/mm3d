@@ -63,6 +63,9 @@ void GroupCleanWin::helpNowEvent()
 
 void GroupCleanWin::accept()
 {
+   int previousGroups = m_model->getGroupCount();
+   int previousMaterials =  m_model->getTextureCount();
+
    if ( m_mergeMaterials->isChecked() )
    {
       m_model->mergeIdenticalMaterials();
@@ -80,6 +83,11 @@ void GroupCleanWin::accept()
       m_model->removeUnusedGroups();
    }
    m_model->operationComplete( tr( "Group Clean-up", "operation complete" ).toUtf8() );
+
+   int groups = m_model->getGroupCount();
+   int materials =  m_model->getTextureCount();
+   model_status( m_model, StatusNormal, STATUSTIME_LONG, (tr( "Removed %1 of %2 groups and %3 of %4 materials" ).arg(previousGroups - groups).arg(previousGroups).arg(previousMaterials - materials).arg(previousMaterials)).toUtf8() );
+
    QDialog::accept();
 }
 
