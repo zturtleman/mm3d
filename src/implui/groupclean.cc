@@ -72,8 +72,8 @@ void GroupCleanWin::accept()
       m_model->removeUnusedMaterials();
    }
    if ( m_mergeGroups->isChecked() )
-      m_model->mergeIdenticalGroups();
    {
+      m_model->mergeIdenticalGroups();
    }
    if ( m_removeGroups->isChecked() )
    {
