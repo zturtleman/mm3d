@@ -38,7 +38,6 @@ struct _PORT_timeval
 };
 typedef struct _PORT_timeval PORT_timeval;
 
-char * PORT_getenv( const char * name );
 int    PORT_lstat( const char * filename, struct stat * buf );
 char * PORT_realpath( const char * path, char * resolved_path, size_t len );
 struct tm * PORT_localtime_r( const time_t * timep, struct tm * result );

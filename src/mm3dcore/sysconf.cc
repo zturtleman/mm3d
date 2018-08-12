@@ -178,7 +178,7 @@ void init_sysconf()
    s_sharedPluginDir += "\\";
    s_sharedPluginDir += majorMinor;
 #elif defined __APPLE__
-   s_mm3dHomeDir = PORT_getenv( "HOME" );
+   s_mm3dHomeDir = getenv( "HOME" );
    s_mm3dHomeDir += HOME_MM3D;
    s_pluginDir = s_mm3dHomeDir + HOME_PLUGINS;
    s_pluginDir += "/";
@@ -200,7 +200,7 @@ void init_sysconf()
       s_sharedPluginDir += majorMinor;
    }
 #else
-   s_mm3dHomeDir = PORT_getenv( "HOME" );
+   s_mm3dHomeDir = getenv( "HOME" );
    s_mm3dHomeDir += HOME_MM3D;
    s_docDir    = DOC_ROOT;
    s_i18nDir   = I18N_ROOT;
