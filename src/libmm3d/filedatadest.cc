@@ -31,25 +31,6 @@
 #include <errno.h>
 #include <sys/types.h>
 
-FileDataDest::FileDataDest( FILE * fp, size_t startOffset )
-   : m_fp( fp ),
-     m_startOffset( startOffset ),
-     m_mustClose( false )
-{
-   if ( m_fp == NULL )
-   {
-      sendErrno( EBADF );
-      return;
-   }
-
-   // Don't count on the caller to put as the starting offset
-   if ( fseek( m_fp, m_startOffset, SEEK_SET ) != 0 )
-   {
-      sendErrno( errno );
-      return;
-   }
-}
-
 FileDataDest::FileDataDest( const char * filename )
    : m_startOffset( 0 ),
      m_mustClose( false )

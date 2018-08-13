@@ -39,10 +39,6 @@
 class FileDataDest : public DataDest
 {
    public:
-      // The FileDataDest does *NOT* take ownership of the FILE pointer.
-      // However, the internalClose() function has the same effect as calling
-      // fclose().
-      FileDataDest( FILE * fp, size_t startOffset = 0 );
       FileDataDest( const char * filename );
       virtual ~FileDataDest();
 

@@ -39,8 +39,6 @@
 class FileDataSource : public DataSource
 {
    public:
-      // fp must be open for read and must be seekable
-      FileDataSource( FILE * fp );
       FileDataSource( const char * filename );
       virtual ~FileDataSource();
 

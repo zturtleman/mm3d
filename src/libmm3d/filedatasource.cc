@@ -25,39 +25,6 @@
 
 #include <errno.h>
 
-FileDataSource::FileDataSource( FILE * fp )
-   : m_fp( fp ),
-     m_mustClose( false )
-{
-   if ( m_fp == NULL )
-   {
-      setErrno( EBADF );
-      return;
-   }
-
-   if ( 0 != fseek( m_fp, 0, SEEK_END ) )
-   {
-      setErrno( errno );
-      return;
-   }
-
-
-   long size = ftell( m_fp );
-   if ( size < 0 )
-   {
-      setErrno( EBADF );
-      return;
-   }
-
-   if ( 0 != fseek( m_fp, 0, SEEK_SET ) )
-   {
-      setErrno( errno );
-      return;
-   }
-
-   setFileSize( size );
-}
-
 FileDataSource::FileDataSource( const char * filename )
    : m_mustClose( false )
 {
