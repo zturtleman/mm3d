@@ -2,7 +2,7 @@ SUBDIRS = libmm3d mm3dcore depui qtui implui tools commands pixmap
 
 bin_PROGRAMS = mm3d
 
-EXTRA_DIST = icon.rc maketags.sh
+EXTRA_DIST = maketags.sh win_resource.rc win_manifest.xml
 
 mm3d_HFILES = \
 	stdcmds.h \

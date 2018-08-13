@@ -823,11 +823,11 @@ $(BIN)/mm3d${BINEXT}: ${MM3D_MOC_OBJ} ${LIB_OBJ} ${MM3D_OBJ}
 	$(echo_cmd) "LINKING $(BIN)/mm3d${BINEXT}"
 ifdef MINGW
 ifdef MINGW32_MAKE
-	$(Q)${WINDRES} --preprocessor="$(CC) -E -xc-header -DRC_INVOKED" src/icon.rc ${B}/src/icon.o
+	$(Q)${WINDRES} --preprocessor="$(CC) -E -xc-header -DRC_INVOKED" src/win_resource.rc ${B}/src/win_resource.o
 else
-	$(Q)${WINDRES} src/icon.rc ${B}/src/icon.o
+	$(Q)${WINDRES} src/win_resource.rc ${B}/src/win_resource.o
 endif
-	$(Q)${CXX} ${CXXFLAGS} ${DEFS} -o $(BIN)/mm3d${BINEXT} ${MM3D_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} ${B}/src/icon.o ${LINK}
+	$(Q)${CXX} ${CXXFLAGS} ${DEFS} -o $(BIN)/mm3d${BINEXT} ${MM3D_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} ${B}/src/win_resource.o ${LINK}
 else
 	$(Q)${CXX} ${CXXFLAGS} ${DEFS} -o $(BIN)/mm3d${BINEXT} ${MM3D_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} ${LINK}
 endif

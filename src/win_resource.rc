@@ -1,0 +1,66 @@
+/*  Misfit Model 3D
+ * 
+ *  Copyright (c) 2004-2007 Kevin Worcester
+ * 
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+ *  USA.
+ *
+ *  See the COPYING file for full license text.
+ */
+
+#include <winresrc.h>
+
+A ICON "mm3d.ico"
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "win_manifest.xml"
+
+#define VER_PRODUCTVERSION          1,3,10,0
+#define VER_PRODUCTVERSION_STR      "1.3.10\0"
+
+#ifndef DEBUG
+#define VER_DEBUG                   0
+#else
+#define VER_DEBUG                   VS_FF_DEBUG
+#endif
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     VER_PRODUCTVERSION
+PRODUCTVERSION  VER_PRODUCTVERSION
+FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+FILEFLAGS       (VER_DEBUG)
+FILEOS          VOS__WINDOWS32
+FILETYPE        VFT_APP
+FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName",      "clover.moe"
+            VALUE "FileDescription",  "Misfit Model 3D (clover.moe fork)"
+            VALUE "FileVersion",      VER_PRODUCTVERSION_STR
+            VALUE "InternalName",     "mm3d.x86"
+            VALUE "LegalCopyright",   "Copyright © 2004-2008 Kevin Worcester, clover.moe fork © 2009-2018 Zack Middleton."
+            VALUE "OriginalFilename", "mm3d.x86.exe"
+            VALUE "ProductName",      "Misfit Model 3D (clover.moe fork)"
+            VALUE "ProductVersion",   VER_PRODUCTVERSION_STR
+        END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        /* English language (0x409) in the Windows ANSI codepage (1252). */
+        VALUE "Translation", 0x409, 1252
+    END
+END
