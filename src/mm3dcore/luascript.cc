@@ -27,6 +27,7 @@
 #include "log.h"
 #include "msg.h"
 #include "mm3dport.h"
+#include "filedatasource.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,7 +41,7 @@ extern "C" {
 typedef struct _ReadChunkData_t
 {
    const char * filename;
-   FILE * fp;
+   FileDataSource * src;
 } ReadChunkDataT;
 
 static const char * _luascript_readchunk( lua_State * L, void * data, size_t * size )
@@ -53,23 +54,30 @@ static const char * _luascript_readchunk( lua_State * L, void * data, size_t * s
    data = malloc( MAX_DATA );
    
    // Open file if it isn't already open
-   if ( rcd->fp == NULL )
+   if ( rcd->src == NULL )
    {
-      if ( NULL == (rcd->fp = fopen( filename, "rb" )) )
+      rcd->src = new FileDataSource( filename );
+      if ( rcd->src->getErrno() != 0 )
       {
          char msg[1024];
-         PORT_snprintf( msg, sizeof(msg), "%s: %s", filename, strerror(errno) );
+         PORT_snprintf( msg, sizeof(msg), "%s: %s", filename, strerror( rcd->src->getErrno() ) );
          msg_error( msg );
          return NULL;
       }
    }
 
-   if ( ( readBytes = fread( data, 1, MAX_DATA, rcd->fp )) <= 0 )
+   readBytes = rcd->src->getRemaining();
+   if ( readBytes > MAX_DATA )
+   {
+      readBytes = MAX_DATA;
+   }
+
+   if ( rcd->src->readBytes( (uint8_t*)data, readBytes ) == false )
    {
       // End of file, clean up
 
-      fclose( rcd->fp );
-      rcd->fp = NULL;
+      delete rcd->src;
+      rcd->src = NULL;
 
       free( data );
       data = NULL;
@@ -100,7 +108,7 @@ int LuaScript::runFile( const char * filename )
    if ( filename )
    {
       ReadChunkDataT rcd;
-      rcd.fp = NULL;
+      rcd.src = NULL;
       rcd.filename = filename;
       rval = lua_load( m_luaState, _luascript_readchunk, (void *) &rcd, filename );
 

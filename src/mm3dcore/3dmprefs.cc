@@ -27,6 +27,8 @@
 #include "mm3dport.h"
 #include "sysconf.h"
 #include "misc.h"
+#include "filedatadest.h"
+#include "filedatasource.h"
 
 #include <string>
 #include <sys/stat.h>
@@ -84,25 +86,30 @@ void prefs_set_pref( const char * key, const char * value )
 
 void prefs_save()
 {
-   FILE * fp = fopen( _getFilename().c_str(), "w" );
-   g_prefs.print( fp );
-   fclose( fp );
+   FileDataDest dst( _getFilename().c_str() );
+
+   if ( dst.errorOccurred() )
+   {
+      // TODO: Use dst.getErrno() for config file save failure.
+      log_warning( "could not save config file\n" );
+      return;
+   }
+
+   g_prefs.write( dst );
 }
 
 bool prefs_load()
 {
-   FILE * fp = fopen( _getFilename().c_str(), "r" );
-   if ( fp )
+   FileDataSource src( _getFilename().c_str() );
+
+   if ( src.errorOccurred() )
    {
-      bool rval = prefparse_do_parse( fp, g_prefs );
-      fclose( fp );
-      return rval;
-   }
-   else
-   {
+      // TODO: Use src.getErrno() for config file load failure.
       log_warning( "no config file\n" );
       return false;
    }
+
+    return prefparse_do_parse( src, g_prefs );
 }
 
 void prefs_recent_model( const std::string & filename )

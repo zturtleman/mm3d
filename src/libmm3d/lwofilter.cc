@@ -56,291 +56,263 @@ LwoFilter::~LwoFilter()
 Model::ModelErrorE LwoFilter::readFile( Model * model, const char * const filename )
 {
    Model::ModelErrorE err = Model::ERROR_NONE;
+   m_src = openInput( filename, err );
+   SourceCloser fc( m_src );
 
-   m_fp = fopen( filename, "rb" );
+   if ( err != Model::ERROR_NONE )
+      return err;
 
-   if ( m_fp )
+   m_src->setEndianness( DataSource::BigEndian );
+
+   m_modelPath = "";
+   m_modelBaseName = "";
+   m_modelFullName = "";
+
+   normalizePath( filename, m_modelFullName, m_modelPath, m_modelBaseName );
+
+   model->setFilename( m_modelFullName.c_str() );
+
+   m_model = model;
+
+   uint32_t chunkLen = 0;
+
+   char id[5];
+   id[4] = '\0';
+
+   m_vertices =  0;
+   m_faces    =  0;
+   m_groups   =  0;
+   m_curGroup = -1;
+
+   m_surfacePolys.clear();
+   m_surfaceTags.clear();
+   m_tags.clear();
+   m_polyMaps.clear();
+   m_clips.clear();
+   m_smoothAngles.clear();
+   m_vertexMaps.clear();
+   m_discVertexMaps.clear();
+
+   m_lastVertexBase = 0;
+   m_lastPolyBase = 0;
+   m_isLWO2 = false;
+
+   readID( id );
+   if ( strncmp( id, "FORM", 4) == 0 )
    {
-      m_modelPath = "";
-      m_modelBaseName = "";
-      m_modelFullName = "";
-
-      normalizePath( filename, m_modelFullName, m_modelPath, m_modelBaseName );
-
-      model->setFilename( m_modelFullName.c_str() );
-
-      fseek( m_fp, 0, SEEK_END );
-      unsigned fileLength = ftell( m_fp );
-      fseek( m_fp, 0, SEEK_SET );
-
-      m_fileBuf = new uint8_t[fileLength];
-      m_bufPos = m_fileBuf;
-
-      fread( m_fileBuf, fileLength, 1, m_fp );
-      fclose( m_fp );
-
-      m_model = model;
-
-      uint32_t chunkLen = 0;
-
-      char id[5];
-      id[4] = '\0';
-
-      m_vertices =  0;
-      m_faces    =  0;
-      m_groups   =  0;
-      m_curGroup = -1;
-
-      m_surfacePolys.clear();
-      m_surfaceTags.clear();
-      m_tags.clear();
-      m_polyMaps.clear();
-      m_clips.clear();
-      m_smoothAngles.clear();
-      m_vertexMaps.clear();
-      m_discVertexMaps.clear();
-
-      m_lastVertexBase = 0;
-      m_lastPolyBase = 0;
-      m_isLWO2 = false;
-
-      readID( id );
-      if ( strncmp( id, "FORM", 4) == 0 )
+      chunkLen = readU4();
+      if ( chunkLen == (m_src->getFileSize() - 8) )
       {
-         chunkLen = readU4();
-         if ( chunkLen == (fileLength - 8) )
+         readID( id );
+         if ( strncmp( id, "LWO2", 4 ) == 0 )
          {
-            readID( id );
-            if ( strncmp( id, "LWO2", 4 ) == 0 )
-            {
-               m_isLWO2 = true;
-            }
+            m_isLWO2 = true;
+         }
 
-            if ( m_isLWO2 || strncmp( id, "LWOB", 4 ) == 0 )
-            {
+         if ( m_isLWO2 || strncmp( id, "LWOB", 4 ) == 0 )
+         {
 
-               while ( (m_bufPos + 8) <= m_fileBuf + fileLength )
+            while ( (m_src->offset() + 8) <= (unsigned)m_src->getFileSize() && !m_src->unexpectedEof() )
+            {
+               readID( id );
+               chunkLen = readU4();
+
+               if ( strncmp( id, "PNTS", 4 ) == 0 )
                {
-                  readID( id );
-                  chunkLen = readU4();
+                  log_debug( "vertex chunk is %d bytes\n", chunkLen );
+                  readVertexChunk( chunkLen );
+               }
+               else if ( strncmp( id, "POLS", 4 ) == 0 )
+               {
+                  if ( m_isLWO2 )
+                  {
+                     readID( id );
+                     chunkLen -= 4;
+                  }
 
-                  if ( strncmp( id, "PNTS", 4 ) == 0 )
+                  if ( !m_isLWO2 || (m_isLWO2 && strncmp( id, "FACE", 4 ) == 0) )
                   {
-                     log_debug( "vertex chunk is %d bytes\n", chunkLen );
-                     readVertexChunk( chunkLen );
-                  }
-                  else if ( strncmp( id, "POLS", 4 ) == 0 )
-                  {
-                     if ( m_isLWO2 )
-                     {
-                        readID( id );
-                        chunkLen -= 4;
-                     }
-
-                     if ( !m_isLWO2 || (m_isLWO2 && strncmp( id, "FACE", 4 ) == 0) )
-                     {
-                        log_debug( "polygon chunk is %d bytes\n", chunkLen );
-                        readPolygonChunk( chunkLen );
-                     }
-                     else
-                     {
-                        log_debug( "ignoring POLS chunk %s of %d bytes\n", id, chunkLen );
-                        m_bufPos += chunkLen;
-                     }
-                  }
-                  else if ( strncmp( id, "SRFS", 4 ) == 0 )
-                  {
-                     log_debug( "surface list chunk is %d bytes\n", chunkLen );
-                     readSurfaceListChunk( chunkLen );
-                  }
-                  else if ( strncmp( id, "SURF", 4 ) == 0 )
-                  {
-                     log_debug( "surface definition chunk is %d bytes\n", chunkLen );
-                     readSurfaceDefinitionChunk( chunkLen );
-                  }
-                  else if ( m_isLWO2 && strncmp( id, "VMAP", 4 ) == 0 )
-                  {
-                     log_debug( "vertex map chunk is %d bytes\n", chunkLen );
-                     readVertexMapChunk( chunkLen );
-                  }
-                  else if ( m_isLWO2 && strncmp( id, "TAGS", 4 ) == 0 )
-                  {
-                     log_debug( "tag chunk is %d bytes\n", chunkLen );
-                     readTagChunk( chunkLen );
-                  }
-                  else if ( m_isLWO2 && strncmp( id, "PTAG", 4 ) == 0 )
-                  {
-                     log_debug( "poly tag chunk is %d bytes\n", chunkLen );
-                     readPolyTagChunk( chunkLen );
-                  }
-                  else if ( m_isLWO2 && strncmp( id, "CLIP", 4 ) == 0 )
-                  {
-                     log_debug( "clip chunk is %d bytes\n", chunkLen );
-                     readClipChunk( chunkLen );
+                     log_debug( "polygon chunk is %d bytes\n", chunkLen );
+                     readPolygonChunk( chunkLen );
                   }
                   else
                   {
-                     log_debug( "ignoring chunk %s of %d bytes\n", id, chunkLen );
-                     m_bufPos += chunkLen;
+                     log_debug( "ignoring POLS chunk %s of %d bytes\n", id, chunkLen );
+                     m_src->seek( m_src->offset() + chunkLen );
                   }
                }
-            }
-            else
-            {
-               err = Model::ERROR_UNSUPPORTED_VERSION;
+               else if ( strncmp( id, "SRFS", 4 ) == 0 )
+               {
+                  log_debug( "surface list chunk is %d bytes\n", chunkLen );
+                  readSurfaceListChunk( chunkLen );
+               }
+               else if ( strncmp( id, "SURF", 4 ) == 0 )
+               {
+                  log_debug( "surface definition chunk is %d bytes\n", chunkLen );
+                  readSurfaceDefinitionChunk( chunkLen );
+               }
+               else if ( m_isLWO2 && strncmp( id, "VMAP", 4 ) == 0 )
+               {
+                  log_debug( "vertex map chunk is %d bytes\n", chunkLen );
+                  readVertexMapChunk( chunkLen );
+               }
+               else if ( m_isLWO2 && strncmp( id, "TAGS", 4 ) == 0 )
+               {
+                  log_debug( "tag chunk is %d bytes\n", chunkLen );
+                  readTagChunk( chunkLen );
+               }
+               else if ( m_isLWO2 && strncmp( id, "PTAG", 4 ) == 0 )
+               {
+                  log_debug( "poly tag chunk is %d bytes\n", chunkLen );
+                  readPolyTagChunk( chunkLen );
+               }
+               else if ( m_isLWO2 && strncmp( id, "CLIP", 4 ) == 0 )
+               {
+                  log_debug( "clip chunk is %d bytes\n", chunkLen );
+                  readClipChunk( chunkLen );
+               }
+               else
+               {
+                  log_debug( "ignoring chunk %s of %d bytes\n", id, chunkLen );
+                  m_src->seek( m_src->offset() + chunkLen );
+               }
             }
          }
          else
          {
-            err = Model::ERROR_BAD_DATA;
+            err = Model::ERROR_UNSUPPORTED_VERSION;
          }
       }
       else
       {
-         err = Model::ERROR_BAD_MAGIC;
+         err = Model::ERROR_BAD_DATA;
       }
+   }
+   else
+   {
+      err = Model::ERROR_BAD_MAGIC;
+   }
 
-      log_debug( "read %d vertices, %d faces, %d groups\n", m_vertices, m_faces, m_groups );
+   log_debug( "read %d vertices, %d faces, %d groups\n", m_vertices, m_faces, m_groups );
 
-      unsigned surf = 0;
-      unsigned poly = 0;
-      unsigned materialId = 0;
-      for ( surf = 0; surf < m_surfacePolys.size(); surf++ )
+   unsigned surf = 0;
+   unsigned poly = 0;
+   unsigned materialId = 0;
+   for ( surf = 0; surf < m_surfacePolys.size(); surf++ )
+   {
+      bool addedGroup = true;
+      PolyList * l = NULL;
+
+      if ( m_isLWO2 )
       {
-         bool addedGroup = true;
-         PolyList * l = NULL;
-
-         if ( m_isLWO2 )
+         if ( m_surfaceTags[surf] < (unsigned) m_model->getTextureCount() )
          {
-            if ( m_surfaceTags[surf] < (unsigned) m_model->getTextureCount() )
-            {
-               log_debug( "adding group %s for tag %d, surface %d\n", 
-                     m_tags[surf].c_str(), surf, materialId );
-               m_model->addGroup( m_tags[surf].c_str() );
-               m_model->setGroupTextureId( materialId, materialId );
-               l = &m_surfacePolys[ surf ];
-            }
-            else
-            {
-               addedGroup = false;
-            }
-
-            log_debug( "setting smoothness on group %d to %f(%d)\n",
-                  materialId, m_smoothAngles[surf], surf );
-            m_model->setGroupAngle( materialId, (uint8_t) m_smoothAngles[surf] );
+            log_debug( "adding group %s for tag %d, surface %d\n", 
+                  m_tags[surf].c_str(), surf, materialId );
+            m_model->addGroup( m_tags[surf].c_str() );
+            m_model->setGroupTextureId( materialId, materialId );
+            l = &m_surfacePolys[ surf ];
          }
          else
          {
-            m_model->addGroup( m_model->getTextureName( materialId ) );
-            m_model->setGroupTextureId( materialId, materialId );
-            l = &m_surfacePolys[ materialId ];
-
-            log_debug( "setting smoothness on group %d to %f(%d)\n",
-                  materialId, m_smoothAngles[materialId], materialId );
-            m_model->setGroupAngle( materialId, (uint8_t) m_smoothAngles[materialId] );
+            addedGroup = false;
          }
 
-         if ( addedGroup )
-         {
-            for ( poly = 0; poly < l->size(); poly++ )
-            {
-               if ( m_isLWO2 )
-               {
-                  unsigned index = m_polyMaps[ (*l)[poly] ].polyIndex;
-                  unsigned count = m_polyMaps[ (*l)[poly] ].polyCount;
+         log_debug( "setting smoothness on group %d to %f(%d)\n",
+               materialId, m_smoothAngles[surf], surf );
+         m_model->setGroupAngle( materialId, (uint8_t) m_smoothAngles[surf] );
+      }
+      else
+      {
+         m_model->addGroup( m_model->getTextureName( materialId ) );
+         m_model->setGroupTextureId( materialId, materialId );
+         l = &m_surfacePolys[ materialId ];
 
-                  for ( unsigned p = 0; p < count; p++ )
-                  {
-                     m_model->addTriangleToGroup( materialId, index + p );
-                  }
-               }
-               else
-               {
-                  m_model->addTriangleToGroup( materialId, (*l)[poly] );
-               }
-            }
-
-            materialId++;
-         }
+         log_debug( "setting smoothness on group %d to %f(%d)\n",
+               materialId, m_smoothAngles[materialId], materialId );
+         m_model->setGroupAngle( materialId, (uint8_t) m_smoothAngles[materialId] );
       }
 
-      // apply vmap texture coordinates
+      if ( addedGroup )
       {
-         unsigned tcount = m_model->getTriangleCount();
-         unsigned count = m_vertexMaps.size();
-         for ( unsigned t = 0; t < count; t++ )
+         for ( poly = 0; poly < l->size(); poly++ )
          {
-            for ( unsigned tri = 0; tri < tcount; tri++ )
+            if ( m_isLWO2 )
             {
-               for ( unsigned i = 0; i < 3; i++ )
+               unsigned index = m_polyMaps[ (*l)[poly] ].polyIndex;
+               unsigned count = m_polyMaps[ (*l)[poly] ].polyCount;
+
+               for ( unsigned p = 0; p < count; p++ )
                {
-                  int vert = m_model->getTriangleVertex( tri, i );
-                  if ( vert == m_vertexMaps[t].vertex )
-                  {
-                     m_model->setTextureCoords( tri, i,
-                           m_vertexMaps[t].s,
-                           m_vertexMaps[t].t );
-                  }
+                  m_model->addTriangleToGroup( materialId, index + p );
                }
             }
-         }
-      }
-
-      // apply vmad texture coordinates
-      // TODO get sample
-#if 0
-      {
-         unsigned count = m_discVertexMaps.size();
-         for ( unsigned t = 0; t < count; t++ )
-         {
-            DiscVertexMapDataT * dvmd = &m_discVertexMaps[t];
-            unsigned polyBase = m_polyMaps[ dvmd->polyIndex ].polyIndex;
-            unsigned count    = m_polyMaps[ dvmd->polyIndex ].polyCount;
-            // TODO confirm vertex is triangle vertex index, not model vertex index
-            if ( dvmd->vertexNumber == 0 )
+            else
             {
-               for ( unsigned n = 0; n < count; n++ )
+               m_model->addTriangleToGroup( materialId, (*l)[poly] );
+            }
+         }
+
+         materialId++;
+      }
+   }
+
+   // apply vmap texture coordinates
+   {
+      unsigned tcount = m_model->getTriangleCount();
+      unsigned count = m_vertexMaps.size();
+      for ( unsigned t = 0; t < count; t++ )
+      {
+         for ( unsigned tri = 0; tri < tcount; tri++ )
+         {
+            for ( unsigned i = 0; i < 3; i++ )
+            {
+               int vert = m_model->getTriangleVertex( tri, i );
+               if ( vert == m_vertexMaps[t].vertex )
                {
-                  m_model->setTextureCoords( polyBase + n, 0,
+                  m_model->setTextureCoords( tri, i,
                         m_vertexMaps[t].s,
                         m_vertexMaps[t].t );
                }
             }
-            else
+         }
+      }
+   }
+
+   // apply vmad texture coordinates
+   // TODO get sample
+#if 0
+   {
+      unsigned count = m_discVertexMaps.size();
+      for ( unsigned t = 0; t < count; t++ )
+      {
+         DiscVertexMapDataT * dvmd = &m_discVertexMaps[t];
+         unsigned polyBase = m_polyMaps[ dvmd->polyIndex ].polyIndex;
+         unsigned count    = m_polyMaps[ dvmd->polyIndex ].polyCount;
+         // TODO confirm vertex is triangle vertex index, not model vertex index
+         if ( dvmd->vertexNumber == 0 )
+         {
+            for ( unsigned n = 0; n < count; n++ )
             {
-               // TODO handle vertex 2 & 3
+               m_model->setTextureCoords( polyBase + n, 0,
+                     m_vertexMaps[t].s,
+                     m_vertexMaps[t].t );
             }
          }
-      }
-#endif // 0
-
-      // Invert normals
-      {
-         unsigned count = m_model->getTriangleCount();
-         for ( unsigned t = 0; t < count; t++ )
+         else
          {
-            m_model->invertNormals( t );
+            // TODO handle vertex 2 & 3
          }
       }
-
-      delete[] m_fileBuf;
-      m_fileBuf = NULL;
-      m_bufPos  = NULL;
-      m_fp = NULL;
    }
-   else
+#endif // 0
+
+   // Invert normals
    {
-      switch ( errno )
+      unsigned count = m_model->getTriangleCount();
+      for ( unsigned t = 0; t < count; t++ )
       {
-         case EACCES:
-         case EPERM:
-            return Model::ERROR_NO_ACCESS;
-         case ENOENT:
-            return Model::ERROR_NO_FILE;
-         case EISDIR:
-            return Model::ERROR_BAD_DATA;
-         default:
-            return Model::ERROR_FILE_OPEN;
+         m_model->invertNormals( t );
       }
    }
 
@@ -665,7 +637,7 @@ bool LwoFilter::readSurfaceDefinitionChunk( size_t chunkLen )
       else
       {
          log_debug( "  *** ignoring sub chunk %s of %d bytes\n", id, subChunkLen );
-         m_bufPos  += subChunkLen;
+         m_src->seek( m_src->offset() + subChunkLen );
          remaining -= subChunkLen;
       }
    }
@@ -726,7 +698,7 @@ bool LwoFilter::readSurfaceBlockChunk( size_t chunkLen, SurfaceBlockDataT & sbd 
 
    // Skip header, it's boring anyway
    remaining -= headerLen;
-   m_bufPos  += headerLen;
+   m_src->seek( m_src->offset() + headerLen );
 
    sbd.textureIndex = -1;
 
@@ -747,7 +719,7 @@ bool LwoFilter::readSurfaceBlockChunk( size_t chunkLen, SurfaceBlockDataT & sbd 
       else
       {
          log_debug( "  *** ignoring block sub chunk %s of %d bytes\n", id, subChunkLen );
-         m_bufPos  += subChunkLen;
+         m_src->seek( m_src->offset() + subChunkLen );
          remaining -= subChunkLen;
       }
       log_debug( "  %d bytes left in block chunk\n", remaining );
@@ -917,74 +889,50 @@ bool LwoFilter::readClipChunk( size_t chunkLen )
 
 uint32_t LwoFilter::readU4()
 {
-   uint32_t val = 0;
-   memcpy( &val, m_bufPos, sizeof(val) );
-   m_bufPos += sizeof(val);
-
-   val = btoh_u32( val );
-
+   uint32_t val;
+   m_src->read( val );
    return val;
 }
 
 uint16_t LwoFilter::readU2()
 {
-   uint16_t val = 0;
-   memcpy( &val, m_bufPos, sizeof(val) );
-   m_bufPos += sizeof(val);
-
-   val = btoh_u16( val );
-
+   uint16_t val;
+   m_src->read( val );
    return val;
 }
 
 uint8_t LwoFilter::readU1()
 {
-   uint8_t val = 0;
-   memcpy( &val, m_bufPos, sizeof(val) );
-   m_bufPos += sizeof(val);
-
+   uint8_t val;
+   m_src->read( val );
    return val;
 }
 
 int32_t LwoFilter::readI4()
 {
-   int32_t val = 0;
-   memcpy( &val, m_bufPos, sizeof(val) );
-   m_bufPos += sizeof(val);
-
-   val = btoh_32( val );
-
+   int32_t val;
+   m_src->read( val );
    return val;
 }
 
 int16_t LwoFilter::readI2()
 {
-   int16_t val = 0;
-   memcpy( &val, m_bufPos, sizeof(val) );
-   m_bufPos += sizeof(val);
-
-   val = btoh_16( val );
-
+   int16_t val;
+   m_src->read( val );
    return val;
 }
 
 int8_t LwoFilter::readI1()
 {
-   int8_t val = 0;
-   memcpy( &val, m_bufPos, sizeof(val) );
-   m_bufPos += sizeof(val);
-
+   int8_t val;
+   m_src->read( val );
    return val;
 }
 
 float LwoFilter::readF4()
 {
-   float val = 0;
-   memcpy( &val, m_bufPos, sizeof(val) );
-   m_bufPos += sizeof(val);
-
-   val = btoh_float( val );
-
+   float val;
+   m_src->read( val );
    return val;
 }
 
@@ -1009,10 +957,14 @@ unsigned LwoFilter::readColor( float & r, float & g, float & b )
 
 unsigned LwoFilter::readVX( unsigned & vx )
 {
-   if ( m_isLWO2 && m_bufPos[0] == 0xFF )
+   off_t pos = m_src->offset();
+   uint8_t firstByte = m_src->readU8();
+   m_src->seek( pos );
+
+   if ( m_isLWO2 && firstByte == 0xFF )
    {
       vx = readU4();
-      vx = vx & 0x00FFFFFF;
+      vx = vx & 0x00FFFFFF; // FIXME: this is probably wrong on big endian?
       return 4;
    }
    else
@@ -1024,29 +976,28 @@ unsigned LwoFilter::readVX( unsigned & vx )
 
 void LwoFilter::readID( char * id )
 {
-   memcpy( id, m_bufPos, 4 );
-   m_bufPos += 4;
+   m_src->readBytes( (uint8_t *) id, 4 );
 }
 
 unsigned LwoFilter::readString( char * dest, size_t len )
 {
-   strncpy( dest, (char *) m_bufPos, len );
+   m_src->readBytes( (uint8_t *) dest, len );
    dest[ len - 1 ]= '\0';
    unsigned readLen = strlen( dest );
    readLen++; // account for null
    if ( (readLen % 2) == 1 )
    {
       // Read length is odd... there's an extra padding null
+      m_src->readU8();
       readLen++;
    }
-      
-   m_bufPos += readLen;
+
    return readLen;
 }
 
 unsigned LwoFilter::readNothing( size_t len )
 {
-   m_bufPos += len;
+   m_src->seek( m_src->offset() + len );
    return len;
 }
 

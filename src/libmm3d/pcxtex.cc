@@ -51,6 +51,7 @@
 #include "mm3dconfig.h"
 #include "endianconfig.h"
 #include "log.h"
+#include "filedatasource.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -125,41 +126,38 @@ static struct
 
 Texture::ErrorE PcxTextureFilter::load_image ( const char * filename ) 
 {
-   FILE *fd;
+   FileDataSource src( filename );
    int offset_x, offset_y;
 
-   fd = fopen (filename, "rb");
-   if (!fd)
+   if ( src.errorOccurred() )
    {
-      return Texture::ERROR_NO_FILE;
+      return errnoToTextureError( src.getErrno(), Texture::ERROR_FILE_OPEN );
    }
 
-   read( pcx_header.manufacturer, fd );
-   read( pcx_header.version, fd );
-   read( pcx_header.compression, fd );
-   read( pcx_header.bpp, fd );
-   read( pcx_header.x1, fd );
-   read( pcx_header.y1, fd );
-   read( pcx_header.x2, fd );
-   read( pcx_header.y2, fd );
-   read( pcx_header.hdpi, fd );
-   read( pcx_header.vdpi, fd );
-   readBytes( pcx_header.colormap, sizeof(pcx_header.colormap), fd );
-   read( pcx_header.reserved, fd );
-   read( pcx_header.planes, fd );
-   read( pcx_header.bytesperline, fd );
-   read( pcx_header.color, fd );
-   readBytes( pcx_header.filler, sizeof(pcx_header.filler), fd );
+   src.read( pcx_header.manufacturer );
+   src.read( pcx_header.version );
+   src.read( pcx_header.compression );
+   src.read( pcx_header.bpp );
+   src.read( pcx_header.x1 );
+   src.read( pcx_header.y1 );
+   src.read( pcx_header.x2 );
+   src.read( pcx_header.y2 );
+   src.read( pcx_header.hdpi );
+   src.read( pcx_header.vdpi );
+   src.readBytes( pcx_header.colormap, sizeof(pcx_header.colormap) );
+   src.read( pcx_header.reserved );
+   src.read( pcx_header.planes );
+   src.read( pcx_header.bytesperline );
+   src.read( pcx_header.color );
+   src.readBytes( pcx_header.filler, sizeof(pcx_header.filler) );
 
-   if ( ftell(fd) != 128 )
+   if ( src.offset() != 128 )
    {
-      fclose( fd );
       return Texture::ERROR_BAD_MAGIC;
    }
 
    if (pcx_header.manufacturer != 10)
    {
-      fclose( fd );
       return Texture::ERROR_BAD_MAGIC;
    }
 
@@ -173,32 +171,35 @@ Texture::ErrorE PcxTextureFilter::load_image ( const char * filename )
    if (pcx_header.planes == 1 && pcx_header.bpp == 1)
    {
       memcpy( m_palette, _mono, (2*3) );
-      load_1 (fd, m_texture->m_width, m_texture->m_height, m_texture->m_data,  (pcx_header.bytesperline));
+      load_1 (src, m_texture->m_width, m_texture->m_height, m_texture->m_data,  (pcx_header.bytesperline));
    }
+#if 0
    else if (pcx_header.planes == 4 && pcx_header.bpp == 1)
    {
       memcpy( m_palette, pcx_header.colormap, (16*3) );
-      load_4(fd, m_texture->m_width, m_texture->m_height, m_texture->m_data,  (pcx_header.bytesperline));
+      load_4(src, m_texture->m_width, m_texture->m_height, m_texture->m_data,  (pcx_header.bytesperline));
    }
+#endif
    else if (pcx_header.planes == 1 && pcx_header.bpp == 8)
    {
-      int pos = ftell( fd );
-      fseek(fd, -(256*3), SEEK_END);
-      fread(m_palette, (256*3), sizeof(uint8_t), fd);
-      fseek( fd, pos, SEEK_SET );
-      load_8(fd, m_texture->m_width, m_texture->m_height, m_texture->m_data,  (pcx_header.bytesperline));
+      off_t pos = src.offset();
+      src.seek( src.getFileSize() - (256*3) );
+      src.readBytes( &m_palette[0][0], (256*3) );
+      src.seek( pos );
+      if ( src.errorOccurred() )
+      {
+         return errnoToTextureError( src.getErrno(), Texture::ERROR_FILE_READ );
+      }
+      load_8(src, m_texture->m_width, m_texture->m_height, m_texture->m_data,  (pcx_header.bytesperline));
    }
    else if (pcx_header.planes == 3 && pcx_header.bpp == 8)
    {
-      load_24(fd, m_texture->m_width, m_texture->m_height, m_texture->m_data,  (pcx_header.bytesperline));
+      load_24(src, m_texture->m_width, m_texture->m_height, m_texture->m_data,  (pcx_header.bytesperline));
    }
    else
    {
-      fclose( fd );
       return Texture::ERROR_UNSUPPORTED_VERSION;
    }
-
-   fclose( fd );
 
    return Texture::ERROR_NONE;
 }
@@ -238,7 +239,7 @@ list<string> PcxTextureFilter::getWriteTypes()
    return rval;
 }
 
-void PcxTextureFilter::load_8 (FILE  *fp, int   m_width, int   m_height, uint8_t *buffer, int   bytes) 
+void PcxTextureFilter::load_8 (DataSource & src, int   m_width, int   m_height, uint8_t *buffer, int   bytes) 
 {
    int x, y;
    uint8_t *line;
@@ -248,7 +249,7 @@ void PcxTextureFilter::load_8 (FILE  *fp, int   m_width, int   m_height, uint8_t
    for (y = m_height - 1; y >= 0; --y) 
    {
       row = &buffer[ y * (m_width*3) ];
-      readline (fp, line, bytes);
+      readline (src, line, bytes);
       for (x = 0; x < m_width; ++x) 
       {
          memcpy( &row[x*3], m_palette[ line[x] ], 3 );
@@ -258,7 +259,7 @@ void PcxTextureFilter::load_8 (FILE  *fp, int   m_width, int   m_height, uint8_t
    free (line);
 }
 
-void PcxTextureFilter::load_24 (FILE  *fp, int   m_width, int   m_height, uint8_t *buffer, int   bytes) 
+void PcxTextureFilter::load_24 (DataSource & src, int   m_width, int   m_height, uint8_t *buffer, int   bytes) 
 {
    int x, y, c;
    uint8_t * line;
@@ -270,7 +271,7 @@ void PcxTextureFilter::load_24 (FILE  *fp, int   m_width, int   m_height, uint8_
       row = &buffer[ y * (m_width*3) ];
       for (c = 0; c < 3; ++c) 
       {
-         readline (fp, line, bytes);
+         readline (src, line, bytes);
          for (x = 0; x < m_width; ++x) 
          {
             row[x * 3 + c] = line[x];
@@ -281,7 +282,7 @@ void PcxTextureFilter::load_24 (FILE  *fp, int   m_width, int   m_height, uint8_
    free (line);
 }
 
-void PcxTextureFilter::load_1 (FILE  *fp, int   m_width, int   m_height, uint8_t *buffer, int   bytes) 
+void PcxTextureFilter::load_1 (DataSource & src, int   m_width, int   m_height, uint8_t *buffer, int   bytes) 
 {
    int x, y;
    uint8_t *line;
@@ -291,7 +292,7 @@ void PcxTextureFilter::load_1 (FILE  *fp, int   m_width, int   m_height, uint8_t
    for (y = m_height - 1; y >= 0; --y) 
    {
       row = &buffer[ y * (m_width*3) ];
-      readline (fp, line, bytes);
+      readline (src, line, bytes);
       for (x = 0; x < m_width; ++x) 
       {
          if (line[x / 8] & (128 >> (x % 8)))
@@ -308,7 +309,7 @@ void PcxTextureFilter::load_1 (FILE  *fp, int   m_width, int   m_height, uint8_t
    free (line);
 }
 
-void PcxTextureFilter::load_4 (FILE  *fp, int   m_width, int   m_height, uint8_t *buffer, int   bytes) 
+void PcxTextureFilter::load_4 (DataSource & src, int   m_width, int   m_height, uint8_t *buffer, int   bytes) 
 {
    // TODO implement this if I ever want it to work
    /*
@@ -336,7 +337,7 @@ void PcxTextureFilter::load_4 (FILE  *fp, int   m_width, int   m_height, uint8_t
    */
 }
 
-void PcxTextureFilter::readline (FILE   *fp, uint8_t *buffer, int    bytes) 
+void PcxTextureFilter::readline (DataSource & src, uint8_t *buffer, int    bytes) 
 {
    static uint8_t count = 0, value = 0;
 
@@ -346,7 +347,7 @@ void PcxTextureFilter::readline (FILE   *fp, uint8_t *buffer, int    bytes)
       {
          if (count == 0) 
          {
-            value = fgetc (fp);
+            src.read(value);
             if (value < 0xc0) 
             {
                count = 1;
@@ -354,33 +355,17 @@ void PcxTextureFilter::readline (FILE   *fp, uint8_t *buffer, int    bytes)
             else 
             {
                count = value - 0xc0;
-               value = fgetc (fp);
+               src.read(value);
             }
          }
          count--;
          *(buffer++) = value;
       }
-   } 
-   else 
-   {
-      fread (buffer, bytes, 1, fp);
    }
-}
-
-void PcxTextureFilter::read( uint8_t & val, FILE * fp )
-{
-   fread( &val, sizeof(val), 1, fp );
-}
-
-void PcxTextureFilter::read( int16_t & val, FILE * fp )
-{
-   fread( &val, sizeof(val), 1, fp );
-   val = ltoh_16( val );
-}
-
-void PcxTextureFilter::readBytes( void * buf, size_t len, FILE * fp )
-{
-   fread( buf, len, 1, fp );
+   else
+   {
+      src.readBytes(buffer, bytes);
+   }
 }
 
 /*

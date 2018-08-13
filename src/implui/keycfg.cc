@@ -26,85 +26,82 @@
 
 #include "log.h"
 #include "qtmain.h"
+#include "misc.h"
+#include "mm3dconfig.h"
+#include "filedatadest.h"
+#include "filedatasource.h"
 
 #include <QtWidgets/QApplication>
 
-static void _chomp( char * str )
-{
-   int len = 0;
-   len = strlen( str ) - 1;
-
-   while ( len >= 0 && isspace( str[len] ) )
-   {
-      str[len] = '\0';
-      len--;
-   }
-}
-
 static void _writeDefaultFile( const char * filename )
 {
-   FILE * fp = fopen( filename, "w" );
-   if ( fp )
+   FileDataDest dst( filename );
+   if ( !dst.errorOccurred() )
    {
-      fprintf( fp, "; This file is used to change key bindings for Misfit Model 3D.\n" );
-      fprintf( fp, ";\n" );
-      fprintf( fp, "; To change keyboard shortcuts, add keyboard shortcuts assignments at the bottom \n" );
-      fprintf( fp, "; of this file. The format for keyboard shortcuts is:\n" );
-      fprintf( fp, ";\n" );
-      fprintf( fp, ";    mm3d_command_name  MODIFIER+Key\n" );
-      fprintf( fp, ";\n" );
-      fprintf( fp, "; For a full list of MM3D command names, see keycfg.out. The keycfg.out file\n" );
-      fprintf( fp, "; is written at the end of every MM3D session and includes all the currently\n" );
-      fprintf( fp, "; assigned shortcuts (including default values and user-specified values).\n" );
-      fprintf( fp, ";\n" );
-      fprintf( fp, "; There can be as many spaces between the command name and the keyboard shortcut\n" );
-      fprintf( fp, "; as you want, but there cannot be any spaces in the keyboard shortcut sequence.\n" );
-      fprintf( fp, ";\n" );
-      fprintf( fp, "; Valid modifiers are:\n" );
-      fprintf( fp, ";\n" );
-      fprintf( fp, ";   Ctrl\n" );
-      fprintf( fp, ";   Alt\n" );
-      fprintf( fp, ";   Shift\n" );
-      fprintf( fp, ";   Meta\n" );
-      fprintf( fp, ";\n" );
-      fprintf( fp, "; Modifiers are not case-sensitive. You can have as many modifiers as you want \n" );
-      fprintf( fp, "; (none, all, or any combination).\n" );
-      fprintf( fp, ";\n" );
-      fprintf( fp, "; Most keys can be entered by typing the actual key (letters, numbers, arithmatic\n" );
-      fprintf( fp, "; operators, etc).\n" );
-      fprintf( fp, ";\n" );
-      fprintf( fp, "; Some special keys:\n" );
-      fprintf( fp, ";\n" );
-      fprintf( fp, ";   Del\n" );
-      fprintf( fp, ";   PgDown\n" );
-      fprintf( fp, ";   PgUp\n" );
-      fprintf( fp, ";   Space\n" );
-      fprintf( fp, ";   Print   (Print Screen key)\n" );
-      fprintf( fp, ";   Up\n" );
-      fprintf( fp, ";   Down\n" );
-      fprintf( fp, ";   Left\n" );
-      fprintf( fp, ";   Right\n" );
-      fprintf( fp, ";   Esc\n" );
-      fprintf( fp, ";   Tab\n" );
-      fprintf( fp, ";   Enter\n" );
-      fprintf( fp, ";   Return\n" );
-      fprintf( fp, ";   Backspace\n" );
-      fprintf( fp, ";   Insert\n" );
-      fprintf( fp, ";   Ins\n" );
-      fprintf( fp, ";   Delete\n" );
-      fprintf( fp, ";   Del\n" );
-      fprintf( fp, ";   Home\n" );
-      fprintf( fp, ";   End\n" );
-      fprintf( fp, ";   F1 through F12\n" );
-      fprintf( fp, ";\n" );
-      fprintf( fp, "\n" );
-      fprintf( fp, "; Uncomment the following line to assign Shift+F1 to the Help->Contents menu item\n" );
-      fprintf( fp, ";viewwin_help_contents    Shift+F1\n" );
-      fprintf( fp, "\n" );
-      fprintf( fp, "; Uncomment the following line to remove the keyboard shortcut for File->Save\n" );
-      fprintf( fp, ";viewwin_file_save \n" );
+      const char *msg =
+         "; This file is used to change key bindings for Misfit Model 3D." FILE_NEWLINE
+         ";" FILE_NEWLINE
+         "; To change keyboard shortcuts, add keyboard shortcuts assignments at the bottom " FILE_NEWLINE
+         "; of this file. The format for keyboard shortcuts is:" FILE_NEWLINE
+         ";" FILE_NEWLINE
+         ";    mm3d_command_name  MODIFIER+Key" FILE_NEWLINE
+         ";" FILE_NEWLINE
+         "; For a full list of MM3D command names, see keycfg.out. The keycfg.out file" FILE_NEWLINE
+         "; is written at the end of every MM3D session and includes all the currently" FILE_NEWLINE
+         "; assigned shortcuts (including default values and user-specified values)." FILE_NEWLINE
+         ";" FILE_NEWLINE
+         "; There can be as many spaces between the command name and the keyboard shortcut" FILE_NEWLINE
+         "; as you want, but there cannot be any spaces in the keyboard shortcut sequence." FILE_NEWLINE
+         ";" FILE_NEWLINE
+         "; Valid modifiers are:" FILE_NEWLINE
+         ";" FILE_NEWLINE
+         ";   Ctrl" FILE_NEWLINE
+         ";   Alt" FILE_NEWLINE
+         ";   Shift" FILE_NEWLINE
+         ";   Meta" FILE_NEWLINE
+         ";" FILE_NEWLINE
+         "; Modifiers are not case-sensitive. You can have as many modifiers as you want " FILE_NEWLINE
+         "; (none, all, or any combination)." FILE_NEWLINE
+         ";" FILE_NEWLINE
+         "; Most keys can be entered by typing the actual key (letters, numbers, arithmatic" FILE_NEWLINE
+         "; operators, etc)." FILE_NEWLINE
+         ";" FILE_NEWLINE
+         "; Some special keys:" FILE_NEWLINE
+         ";" FILE_NEWLINE
+         ";   Del" FILE_NEWLINE
+         ";   PgDown" FILE_NEWLINE
+         ";   PgUp" FILE_NEWLINE
+         ";   Space" FILE_NEWLINE
+         ";   Print   (Print Screen key)" FILE_NEWLINE
+         ";   Up" FILE_NEWLINE
+         ";   Down" FILE_NEWLINE
+         ";   Left" FILE_NEWLINE
+         ";   Right" FILE_NEWLINE
+         ";   Esc" FILE_NEWLINE
+         ";   Tab" FILE_NEWLINE
+         ";   Enter" FILE_NEWLINE
+         ";   Return" FILE_NEWLINE
+         ";   Backspace" FILE_NEWLINE
+         ";   Insert" FILE_NEWLINE
+         ";   Ins" FILE_NEWLINE
+         ";   Delete" FILE_NEWLINE
+         ";   Del" FILE_NEWLINE
+         ";   Home" FILE_NEWLINE
+         ";   End" FILE_NEWLINE
+         ";   F1 through F12" FILE_NEWLINE
+         ";" FILE_NEWLINE
+         FILE_NEWLINE
+         "; Uncomment the following line to assign Shift+F1 to the Help->Contents menu item" FILE_NEWLINE
+         ";viewwin_help_contents    Shift+F1" FILE_NEWLINE
+         FILE_NEWLINE
+         "; Uncomment the following line to remove the keyboard shortcut for File->Save" FILE_NEWLINE
+         ";viewwin_file_save " FILE_NEWLINE;
 
-      fclose( fp );
+      dst.writeString( msg );
+   }
+   else
+   {
+      log_error( "Couldn't write to key config file: %s\n", filename );
    }
 }
 
@@ -202,9 +199,9 @@ void KeyConfig::setDefaultKey( const char * operation, const QKeySequence & key 
 
 bool KeyConfig::saveFile( const char * filename )
 {
-   FILE * fp = fopen( filename, "w" );
+   FileDataDest dst( filename );
 
-   if ( fp )
+   if ( !dst.errorOccurred() )
    {
       KeyDataList::iterator it;
 
@@ -213,20 +210,19 @@ bool KeyConfig::saveFile( const char * filename )
          QString keyStr = (*it).key.toString();
          if ( keyStr.isNull() )
          {
-            fprintf( fp, "%s \n", (*it).operation.c_str() );
+            dst.writePrintf( "%s " FILE_NEWLINE, (*it).operation.c_str() );
          }
          else
          {
-            fprintf( fp, "%s %s\n", (*it).operation.c_str(), (const char *) keyStr.toUtf8() );
+            dst.writePrintf( "%s %s" FILE_NEWLINE, (*it).operation.c_str(), (const char *) keyStr.toUtf8() );
          }
       }
 
-      fclose( fp );
       return true;
    }
    else
    {
-      log_error( "Could write to key config file: %s\n", filename );
+      log_error( "Couldn't write to key config file: %s\n", filename );
    }
 
    return false;
@@ -236,17 +232,17 @@ bool KeyConfig::loadFile( const char * filename )
 {
    log_debug( "loading keyboard shortcut config file:\n" );
    log_debug( "   %s\n", filename );
-   FILE * fp = fopen( filename, "r" );
+   FileDataSource src( filename );
 
-   if ( fp )
+   if ( !src.errorOccurred() )
    {
       log_debug( "reading file...\n" );
       m_list.clear();
 
       char line[1024];
-      while ( fgets( line, sizeof(line), fp ) )
+      while ( src.readLine( line, sizeof(line) ) )
       {
-         _chomp( line );
+         chomp( line );
 
          if ( isspace(line[0]) 
                || line[0] == ';' 
@@ -292,7 +288,6 @@ bool KeyConfig::loadFile( const char * filename )
          }
       }
 
-      fclose( fp );
       return true;
    }
    else

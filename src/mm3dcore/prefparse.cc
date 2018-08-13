@@ -38,7 +38,7 @@ class PrefParser
       PrefParser();
       virtual ~PrefParser();
 
-      bool parseFile ( FILE * fp, Preferences & p );
+      bool parseFile ( DataSource & src, Preferences & p );
 
    protected:
       // Private methods
@@ -67,11 +67,11 @@ class PrefParser
       ItemStack     m_items;
       StateStack    m_states;
 
-      FILE * m_fp;
-      char   m_buffer[ BUFFER_SIZE ];
-      char * m_pos;
-      bool   m_eof;
-      int    m_len;
+      DataSource * m_src;
+      char         m_buffer[ BUFFER_SIZE ];
+      char       * m_pos;
+      bool         m_eof;
+      int          m_len;
 
       int    m_line;
 
@@ -120,10 +120,15 @@ bool PrefParser::readMore()
    //printf( "reading more of the file\n" );
    if ( !m_eof )
    {
-      m_len = fread( m_buffer, 1, sizeof(m_buffer), m_fp );
+      m_len = m_src->getRemaining();
+      if ( m_len > (int)sizeof(m_buffer) )
+      {
+         m_len = sizeof(m_buffer);
+      }
       //printf( "read %d bytes\n", m_len );
       if ( m_len > 0 )
       {
+         m_src->readBytes( (uint8_t*)m_buffer, m_len );
          m_pos = m_buffer;
          return true;
       }
@@ -518,37 +523,35 @@ PrefItem * PrefParser::parseKeyValue( std::string & key )
    return NULL;
 }
 
-bool PrefParser::parseFile( FILE * fp, Preferences & p )
+bool PrefParser::parseFile( DataSource & src, Preferences & p )
 {
    //printf( "parsing file\n" );
    bool rval = false;
-   if ( fp )
+
+   m_src = &src;
+   m_eof = false;
+   m_len = 0;
+   m_str = "";
+   m_line = 1;
+
+   m_items.clear();
+   m_states.clear();
+
+   m_state = PS_None;
+
+   m_current = parseItem();
+
+   if ( m_current )
    {
-      m_fp = fp;
-      m_eof = false;
-      m_len = 0;
-      m_str = "";
-      m_line = 1;
+      p.setRootItem( m_current );
 
-      m_items.clear();
-      m_states.clear();
-
-      m_state = PS_None;
-
-      m_current = parseItem();
-
-      if ( m_current )
-      {
-         p.setRootItem( m_current );
-
-         rval = true;
-      }
+      rval = true;
    }
 
    m_pref    = NULL;
    m_current = NULL;
 
-   m_fp  = NULL;
+   m_src = NULL;
    m_pos = NULL;
    m_eof = true;
    m_len = 0;
@@ -556,10 +559,10 @@ bool PrefParser::parseFile( FILE * fp, Preferences & p )
    return rval;
 }
 
-bool prefparse_do_parse( FILE * fp, Preferences & p )
+bool prefparse_do_parse( DataSource & src, Preferences & p )
 {
    PrefParser parser;
 
-   return parser.parseFile( fp, p );
+   return parser.parseFile( src, p );
 }
 

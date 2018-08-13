@@ -25,6 +25,7 @@
 #define __PCXTEX_H
 
 #include "texmgr.h"
+#include "datasource.h"
 
 #include <stdio.h>
 
@@ -43,15 +44,11 @@ class PcxTextureFilter : public TextureFilter
 
    protected:
       Texture::ErrorE load_image ( const char *filename );
-      void   load_1     (FILE   *fp, int    width, int    height, uint8_t  *buffer, int    bytes);
-      void   load_4     (FILE   *fp, int    width, int    height, uint8_t  *buffer, int    bytes);
-      void   load_8     (FILE   *fp, int    width, int    height, uint8_t  *buffer, int    bytes);
-      void   load_24    (FILE   *fp, int    width, int    height, uint8_t  *buffer, int    bytes);
-      void   readline   (FILE   *fp, uint8_t *buffer, int    bytes);
-
-      void read( uint8_t & val, FILE * fp );
-      void read( int16_t & val, FILE * fp );
-      void readBytes( void * buf, size_t len, FILE * fp );
+      void   load_1     (DataSource & src, int    width, int    height, uint8_t  *buffer, int    bytes);
+      void   load_4     (DataSource & src, int    width, int    height, uint8_t  *buffer, int    bytes);
+      void   load_8     (DataSource & src, int    width, int    height, uint8_t  *buffer, int    bytes);
+      void   load_24    (DataSource & src, int    width, int    height, uint8_t  *buffer, int    bytes);
+      void   readline   (DataSource & src, uint8_t *buffer, int    bytes);
 
       /*
       bool   save_image (char  *filename, int32_t  image, int32_t  layer);

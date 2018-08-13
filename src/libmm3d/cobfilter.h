@@ -25,6 +25,8 @@
 #define __COBFILTER_H
 
 #include "modelfilter.h"
+#include "datadest.h"
+#include "datasource.h"
 
 #include <vector>
 #include <string>
@@ -266,18 +268,19 @@ class CobFilter : public ModelFilter
 
       int32_t getNextChunkId();
 
-      Model      * m_model;
-      FILE       * m_fp;
-      uint8_t    * m_bufPos;
-      uint8_t    * m_fileBuf;
-      uint8_t    * m_chunkStart;
-      uint8_t    * m_chunkEnd;
-      size_t       m_fileLength;
-      size_t       m_lastChunkSizeOffset;
-      int32_t      m_nextChunkId;
+      Model       * m_model;
+      DataSource  * m_src;
+      DataDest    * m_dst;
+      uint8_t     * m_bufPos;
+      uint8_t     * m_fileBuf;
+      uint8_t     * m_chunkStart;
+      uint8_t     * m_chunkEnd;
+      size_t        m_fileLength;
+      size_t        m_lastChunkSizeOffset;
+      int32_t       m_nextChunkId;
 
-      bool         m_isBinary;
-      bool         m_isLittleEndian;
+      bool          m_isBinary;
+      bool          m_isLittleEndian;
 
       std::string  m_modelPath;
       std::string  m_modelBaseName;

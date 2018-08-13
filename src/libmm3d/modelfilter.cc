@@ -62,7 +62,7 @@ DataSource * ModelFilter::openInput( const char * filename, Model::ModelErrorE &
       if ( src->unexpectedEof() )
          err = Model::ERROR_UNEXPECTED_EOF;
       else
-         err = errnoToModelError( src->getErrno() );
+         err = errnoToModelError( src->getErrno(), Model::ERROR_FILE_OPEN );
    }
    return src;
 }
@@ -75,16 +75,20 @@ DataDest * ModelFilter::openOutput( const char * filename, Model::ModelErrorE & 
       if ( dst->atFileLimit() )
          err = Model::ERROR_UNEXPECTED_EOF;
       else
-         err = errnoToModelError( dst->getErrno() );
+         err = errnoToModelError( dst->getErrno(), Model::ERROR_FILE_OPEN );
    }
    return dst;
 }
 
 /* static */
-Model::ModelErrorE ModelFilter::errnoToModelError( int err )
+Model::ModelErrorE ModelFilter::errnoToModelError( int err, Model::ModelErrorE defaultError )
 {
    switch ( err )
    {
+      case 0:
+         return Model::ERROR_NONE;
+      case EINVAL:
+         return Model::ERROR_BAD_ARGUMENT;
       case EACCES:
       case EPERM:
          return Model::ERROR_NO_ACCESS;
@@ -96,6 +100,6 @@ Model::ModelErrorE ModelFilter::errnoToModelError( int err )
       default:
          break;
    }
-   return Model::ERROR_FILE_OPEN;
+   return defaultError;
 }
 

@@ -31,8 +31,6 @@
 #include "misc.h"
 #include "filtermgr.h"
 #include "mm3dport.h"
-#include "datadest.h"
-#include "datasource.h"
 #include "release_ptr.h"
 
 #include <stdio.h>

@@ -24,9 +24,9 @@
 #ifndef __PREFPARSE_H
 #define __PREFPARSE_H
 
-#include <stdio.h>
+#include "datasource.h"
 #include "prefs.h"
 
-bool prefparse_do_parse( FILE * fp, Preferences & p );
+bool prefparse_do_parse( DataSource & src, Preferences & p );
 
 #endif // __PREFPARSE_H

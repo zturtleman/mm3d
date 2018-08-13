@@ -25,6 +25,8 @@
 #define __LWOFILTER_H
 
 #include "modelfilter.h"
+#include "datadest.h"
+#include "datasource.h"
 
 #include <vector>
 #include <string>
@@ -123,9 +125,8 @@ class LwoFilter : public ModelFilter
       unsigned readNothing( size_t len );
 
       Model      * m_model;
-      FILE       * m_fp;
-      uint8_t    * m_bufPos;
-      uint8_t    * m_fileBuf;
+      DataSource * m_src;
+      DataDest   * m_dst;
       int          m_curGroup;
       int          m_vertices;
       int          m_faces;

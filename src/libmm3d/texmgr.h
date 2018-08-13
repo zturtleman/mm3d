@@ -74,6 +74,10 @@ class TextureFilter
             uint8_t * m_data;
       };
 
+      // Default error should be Texture::ERROR_FILE_OPEN, ERROR_FILE_READ, or
+      // ERROR_FILE_WRITE depending on the context of operations being performed.
+      static Texture::ErrorE errnoToTextureError( int err, Texture::ErrorE defaultError );
+
       virtual std::list< std::string > getReadTypes()   = 0;
       virtual std::list< std::string > getWriteTypes() = 0;
 

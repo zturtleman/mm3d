@@ -187,7 +187,9 @@ class ModelFilter
       // openOutput functions.
       void setFactory( FileFactory * factory ) { m_factory = factory; }
 
-      static Model::ModelErrorE errnoToModelError( int err );
+      // Default error should be Model::ERROR_FILE_OPEN, ERROR_FILE_READ, or
+      // ERROR_FILE_WRITE depending on the context of operations being performed.
+      static Model::ModelErrorE errnoToModelError( int err, Model::ModelErrorE defaultError );
 
    protected:
 

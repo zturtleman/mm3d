@@ -30,6 +30,7 @@
 
 #include <string.h>
 #include <time.h>
+#include <errno.h>
 
 #include <ctype.h>
 #include <stdlib.h>
@@ -110,6 +111,29 @@ uint8_t * TextureFilter::ImageData::getDataPtr()
 const uint8_t * TextureFilter::ImageData::getConstDataPtr() const
 {
    return m_data;
+}
+
+/* static */
+Texture::ErrorE TextureFilter::errnoToTextureError( int err, Texture::ErrorE defaultError )
+{
+   switch ( err )
+   {
+      case 0:
+         return Texture::ERROR_NONE;
+      case EINVAL:
+         return Texture::ERROR_BAD_ARGUMENT;
+      case EACCES:
+      case EPERM:
+         return Texture::ERROR_NO_ACCESS;
+      case ENOENT:
+      case EBADF:
+         return Texture::ERROR_NO_FILE;
+      case EISDIR:
+         return Texture::ERROR_BAD_DATA;
+      default:
+         break;
+   }
+   return defaultError;
 }
 
 TextureManager * TextureManager::s_instance = NULL;

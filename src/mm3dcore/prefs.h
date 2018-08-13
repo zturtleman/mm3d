@@ -29,6 +29,8 @@
 #include <map>
 #include <vector>
 
+#include "datadest.h"
+
 class PrefItem;
 
 typedef std::map< std::string, PrefItem > PrefItemHash;
@@ -58,7 +60,7 @@ class PrefItem
       void     remove( unsigned index );
       void     remove( const std::string & key );
       bool     exists( const std::string & key );
-      void     print( int indent = 0, FILE * fp = stdout );
+      void     write( int indent, DataDest & dst );
 
       int    operator=(int rhs);
       double operator=(double rhs);
@@ -101,7 +103,7 @@ class Preferences
       bool setDefault( const std::string & key, const std::string & value );
 
       void setRootItem( PrefItem * i );
-      void print( FILE * fp = stdout );
+      void write( DataDest & dst );
 
       bool exists( const std::string & );
 

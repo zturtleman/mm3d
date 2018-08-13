@@ -93,131 +93,93 @@ Model::ModelErrorE CobFilter::readFile( Model * model, const char * const filena
    // TODO: At some point it would be nice to handle joints and animation, maybe...
 
    Model::ModelErrorE err = Model::ERROR_NONE;
+   m_src = openInput( filename, err );
+   SourceCloser fc( m_src );
 
-   m_fp = fopen( filename, "rb" );
+   if ( err != Model::ERROR_NONE )
+      return err;
 
-   if ( m_fp )
+   m_meshMaterials.clear();
+
+   m_modelPath = "";
+   m_modelBaseName = "";
+   m_modelFullName = "";
+
+   normalizePath( filename, m_modelFullName, m_modelPath, m_modelBaseName );
+
+   model->setFilename( m_modelFullName.c_str() );
+
+   m_fileLength = m_src->getFileSize();
+
+   m_fileBuf = new uint8_t[m_fileLength];
+   m_bufPos = m_fileBuf;
+
+   m_src->readBytes( m_fileBuf, m_fileLength );
+   m_src->close();
+
+   m_model = model;
+
+   err = readFileHeader();
+   if ( err == Model::ERROR_NONE )
    {
-      m_meshMaterials.clear();
-
-      m_modelPath = "";
-      m_modelBaseName = "";
-      m_modelFullName = "";
-
-      normalizePath( filename, m_modelFullName, m_modelPath, m_modelBaseName );
-
-      model->setFilename( m_modelFullName.c_str() );
-
-      fseek( m_fp, 0, SEEK_END );
-      m_fileLength = ftell( m_fp );
-      fseek( m_fp, 0, SEEK_SET );
-
-      m_fileBuf = new uint8_t[m_fileLength];
-      m_bufPos = m_fileBuf;
-
-      fread( m_fileBuf, m_fileLength, 1, m_fp );
-      fclose( m_fp );
-
-      m_model = model;
-
-      err = readFileHeader();
-      if ( err == Model::ERROR_NONE )
+      ChunkHeaderT header;
+      if ( m_isBinary )
       {
-          ChunkHeaderT header;
-          if ( m_isBinary )
-          {
-              while ( readBChunkHeader( header ) && header.type != CT_EOF )
-              {
-                  m_chunkStart = m_bufPos;
-                  m_chunkEnd   = m_chunkStart + header.length;
+         while ( readBChunkHeader( header ) && header.type != CT_EOF )
+         {
+            m_chunkStart = m_bufPos;
+            m_chunkEnd   = m_chunkStart + header.length;
 
-                  switch ( header.type )
-                  {
-                      case CT_Polygon:
-                          readPolygonChunk( header );
-                          break;
-                      case CT_Material:
-                          readMaterialChunk( header );
-                          break;
-                      default:
-                          readBUnknownChunk( header );
-                          break;
-                  }
-              }
-          }
-          else
-          {
-              while ( readAChunkHeader( header ) && header.type != CT_EOF )
-              {
-                  m_chunkStart = m_bufPos;
-                  m_chunkEnd   = m_chunkStart + header.length;
-
-                  switch ( header.type )
-                  {
-                      case CT_Polygon:
-                          readPolygonChunk( header );
-                          break;
-                      case CT_Material:
-                          readMaterialChunk( header );
-                          break;
-                      default:
-                          readAUnknownChunk( header );
-                          break;
-                  }
-              }
-          }
+            switch ( header.type )
+            {
+               case CT_Polygon:
+                  readPolygonChunk( header );
+                  break;
+               case CT_Material:
+                  readMaterialChunk( header );
+                  break;
+               default:
+                  readBUnknownChunk( header );
+                  break;
+            }
+         }
       }
-
-      delete[] m_fileBuf;
-      m_fileBuf = NULL;
-      m_bufPos  = NULL;
-      m_fp = NULL;
-
-      _invertModelNormals( model );
-   }
-   else
-   {
-      switch ( errno )
+      else
       {
-         case EACCES:
-         case EPERM:
-            return Model::ERROR_NO_ACCESS;
-         case ENOENT:
-            return Model::ERROR_NO_FILE;
-         case EISDIR:
-            return Model::ERROR_BAD_DATA;
-         default:
-            return Model::ERROR_FILE_OPEN;
+         while ( readAChunkHeader( header ) && header.type != CT_EOF )
+         {
+            m_chunkStart = m_bufPos;
+            m_chunkEnd   = m_chunkStart + header.length;
+
+            switch ( header.type )
+            {
+               case CT_Polygon:
+                  readPolygonChunk( header );
+                  break;
+               case CT_Material:
+                  readMaterialChunk( header );
+                  break;
+               default:
+                  readAUnknownChunk( header );
+                  break;
+            }
+         }
       }
    }
+
+   _invertModelNormals( model );
 
    return err;
 }
 
 Model::ModelErrorE CobFilter::writeFile( Model * model, const char * const filename, ModelFilter::Options * o  )
 {
-   if ( filename == NULL || filename[0] == '\0' )
-   {
-      return Model::ERROR_BAD_ARGUMENT;
-   }
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   m_dst = openOutput( filename, err );
+   DestCloser fc( m_dst );
 
-   m_fp = fopen( filename, "wb" );
-
-   if ( m_fp == NULL )
-   {
-      switch ( errno )
-      {
-         case EACCES:
-         case EPERM:
-            return Model::ERROR_NO_ACCESS;
-         case ENOENT:
-            return Model::ERROR_NO_FILE;
-         case EISDIR:
-            return Model::ERROR_BAD_DATA;
-         default:
-            return Model::ERROR_FILE_OPEN;
-      }
-   }
+   if ( err != Model::ERROR_NONE )
+      return err;
 
    m_model = model;
 
@@ -232,12 +194,10 @@ Model::ModelErrorE CobFilter::writeFile( Model * model, const char * const filen
    m_lastChunkSizeOffset = 0;
    m_nextChunkId         = 10001;
 
-   fwrite( "Caligari V00.01BLH             \n", 32, 1, m_fp );
+   m_dst->writeString( "Caligari V00.01BLH             \n" );
    writeBUngrouped();
    writeBGrouped();
    writeBEOF();
-
-   fclose( m_fp );
 
    _invertModelNormals( model );
    model->operationComplete( "Invert normals for save" );
@@ -1306,33 +1266,29 @@ bool CobFilter::readBUnknownChunk( const CobFilter::ChunkHeaderT & header )
 
 void CobFilter::writeBLong( int32_t val )
 {
-    int32_t writeVal = htol_u32( val );
-    fwrite( &writeVal, sizeof(writeVal), 1, m_fp );
+    m_dst->write( val );
 }
 
 void CobFilter::writeBShort( int16_t val )
 {
-    int16_t writeVal = htol_u16( val );
-    fwrite( &writeVal, sizeof(writeVal), 1, m_fp );
+    m_dst->write( val );
 }
 
 void CobFilter::writeBChar( char val )
 {
-    int8_t writeVal = (int8_t) val;
-    fwrite( &writeVal, sizeof(writeVal), 1, m_fp );
+    m_dst->write( (int8_t) val );
 }
 
 void CobFilter::writeBFloat( float val )
 {
-    float writeVal = htol_float( val );
-    fwrite( &writeVal, sizeof(writeVal), 1, m_fp );
+    m_dst->write( (float32_t) val );
 }
 
 void CobFilter::writeBString( const std::string & str )
 {
     size_t len = str.size();
     writeBShort( (int16_t) len );
-    fwrite( str.c_str(), len, 1, m_fp );
+    m_dst->writeString( str.c_str() );
 }
 
 void CobFilter::writeBName( const std::string & str )
@@ -1387,17 +1343,17 @@ void CobFilter::writeBChunkHeader( const CobFilter::ChunkHeaderT & header )
     switch ( header.type )
     {
         case CT_EOF:
-            fwrite( "END ", 4, 1, m_fp );
+            m_dst->writeString( "END " );
             break;
         case CT_Polygon:
-            fwrite( "PolH", 4, 1, m_fp );
+            m_dst->writeString( "PolH" );
             break;
         case CT_Material:
-            fwrite( "Mat1", 4, 1, m_fp );
+            m_dst->writeString( "Mat1" );
             break;
         default:
             log_error( "Uknown type %d, file will be corrupt\n", (int) header.type );
-            fwrite( "XXXX", 4, 1, m_fp );
+            m_dst->writeString( "XXXX" );
             break;
     }
 
@@ -1407,7 +1363,7 @@ void CobFilter::writeBChunkHeader( const CobFilter::ChunkHeaderT & header )
     writeBLong( header.parentId );
 
     // save offset of chunk size writeBChunkSize() can update it later
-    m_lastChunkSizeOffset = ftell( m_fp );
+    m_lastChunkSizeOffset = m_dst->offset();
     writeBLong( header.length );
 }
 
@@ -1415,17 +1371,17 @@ void CobFilter::writeBChunkSize()
 {
     if ( m_lastChunkSizeOffset != 0 )
     {
-        size_t currentOffset = ftell( m_fp );
+        off_t currentOffset = m_dst->offset();
 
         // Seek back to chunk size offset
-        fseek( m_fp, m_lastChunkSizeOffset, SEEK_SET );
+        m_dst->seek( m_lastChunkSizeOffset );
 
         // Get chunk size and write it into chunk header
         int32_t chunkSize = currentOffset - m_lastChunkSizeOffset - sizeof(int32_t);
         writeBLong( chunkSize );
 
         // Seek back to where we were in the file
-        fseek( m_fp, currentOffset, SEEK_SET );
+        m_dst->seek( currentOffset );
     }
 }
 
@@ -1659,7 +1615,7 @@ void CobFilter::writeBMaterial( int32_t parentId, size_t materialNumber, int gro
        // write texture filename if exists
        if ( m_model->getMaterialType( materialNumber ) == Model::Material::MATTYPE_TEXTURE )
        {
-          fwrite( "t:", 2, 1, m_fp );
+          m_dst->writeString( "t:" );
           writeBChar( 0x02 );
           std::string texFile = m_model->getTextureFilename( materialNumber );
           texFile = getFileNameFromPath( texFile.c_str() );

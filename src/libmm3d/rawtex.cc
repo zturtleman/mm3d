@@ -28,6 +28,7 @@
 
 #include "mm3dconfig.h"
 #include "log.h"
+#include "filedatasource.h"
 
 using std::list;
 using std::string;
@@ -73,9 +74,12 @@ bool RawTextureFilter::canRead( const char * filename )
 Texture::ErrorE RawTextureFilter::readFile(Texture * texture, const char * filename)
 {
    log_debug( "filename is %s\n", filename );
+   FileDataSource src( filename );
 
-   FILE * fp;
-   fp = fopen(filename, "rb");
+   if ( src.errorOccurred() )
+   {
+      return errnoToTextureError( src.getErrno(), Texture::ERROR_FILE_OPEN );
+   }
 
    const char * name = strrchr( filename, DIR_SLASH );
    if ( name )
@@ -94,11 +98,6 @@ Texture::ErrorE RawTextureFilter::readFile(Texture * texture, const char * filen
 
    texture->m_filename = strdup( filename );
 
-   if ( fp == NULL )
-   {
-      return Texture::ERROR_NO_FILE;
-   }
-
    int32_t width   = 0;
    int32_t height  = 0;
    int32_t bytespp = 0;
@@ -106,9 +105,9 @@ Texture::ErrorE RawTextureFilter::readFile(Texture * texture, const char * filen
    log_debug( "loading uncompressed RAW image file\n" );
    int itemsRead = 0;
 
-   itemsRead += fread(&width,   sizeof(width),   1, fp);
-   itemsRead += fread(&height,  sizeof(height),  1, fp);
-   itemsRead += fread(&bytespp, sizeof(bytespp), 1, fp);
+   itemsRead += (int) src.read( width );
+   itemsRead += (int) src.read( height );
+   itemsRead += (int) src.read( bytespp );
 
    log_debug( "read %d items\n", itemsRead );
 
@@ -118,7 +117,6 @@ Texture::ErrorE RawTextureFilter::readFile(Texture * texture, const char * filen
       {
          fprintf( stderr, "Invalid texture information (%d x %d x %d)\n", 
                width, height, bytespp );
-         fclose(fp);
          return Texture::ERROR_BAD_DATA;
       }
 
@@ -137,25 +135,18 @@ Texture::ErrorE RawTextureFilter::readFile(Texture * texture, const char * filen
 
       for ( int h = height; h > 0; h-- )
       {
-         if( fread( &texture->m_data[ (h-1) * width * bytespp ], 
-                  width * bytespp, 1, fp) != 1 )
+         if( !src.readBytes( &texture->m_data[ (h-1) * width * bytespp ], width * bytespp ) )
          {
             fprintf( stderr, "Could not read image data" );
-            fclose(fp);
             return Texture::ERROR_UNEXPECTED_EOF;
          }
       }
    }
    else
    {
-      if(fp != NULL)
-      {
-         fclose(fp);
-      }
       return Texture::ERROR_BAD_DATA;
    }
 
-   fclose(fp);
    return Texture::ERROR_NONE;
 }
 

@@ -31,7 +31,6 @@
 #include "log.h"
 
 #include "filedatasource.h"
-#include "file_closer.h"
 
 using std::list;
 using std::string;
@@ -97,14 +96,12 @@ bool TgaTextureFilter::canRead( const char * filename )
 
 Texture::ErrorE TgaTextureFilter::readFile(Texture * texture, const char * filename)
 {
-   FILE * fp = fopen(filename, "rb");
+   FileDataSource src( filename );
 
-   if(fp == NULL)
-      return Texture::ERROR_NO_FILE;
-
-   file_closer fc( fp );
-
-   FileDataSource src( fp );
+   if ( src.errorOccurred() )
+   {
+      return errnoToTextureError( src.getErrno(), Texture::ERROR_FILE_OPEN );
+   }
 
    const char * name = strrchr( filename, DIR_SLASH );
    if ( name )
@@ -385,6 +382,11 @@ Texture::ErrorE OldTgaTextureFilter::readFile(Texture * texture, const char * fi
    FILE * fp;
    fp = fopen(filename, "rb");
 
+   if(fp == NULL)
+   {
+      return Texture::ERROR_NO_FILE;
+   }
+
    const char * name = strrchr( filename, DIR_SLASH );
    if ( name )
    {
@@ -401,11 +403,6 @@ Texture::ErrorE OldTgaTextureFilter::readFile(Texture * texture, const char * fi
    }
 
    texture->m_filename = strdup( filename );
-
-   if(fp == NULL)
-   {
-      return Texture::ERROR_NO_FILE;
-   }
 
    if(fread(&tgaheader.Header, sizeof(tgaheader.Header), 1, fp) < 1)
    {

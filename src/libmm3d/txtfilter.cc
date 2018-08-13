@@ -27,6 +27,9 @@
 #include "texture.h"
 #include "log.h"
 #include "misc.h"
+#include "mm3dconfig.h"
+#include "datadest.h"
+#include "datasource.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -113,28 +116,12 @@ TextFilter::~TextFilter()
 
 Model::ModelErrorE TextFilter::readFile( Model * model, const char * const filename )
 {
-   if ( filename == NULL || filename[0] == '\0' )
-   {
-      return Model::ERROR_BAD_ARGUMENT;
-   }
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   DataSource *src = openInput( filename, err );
+   SourceCloser fc( src );
 
-   FILE * fp = fopen( filename, "r" );
-
-   if ( fp == NULL )
-   {
-      switch ( errno )
-      {
-         case EACCES:
-         case EPERM:
-            return Model::ERROR_NO_ACCESS;
-         case ENOENT:
-            return Model::ERROR_NO_FILE;
-         case EISDIR:
-            return Model::ERROR_BAD_DATA;
-         default:
-            return Model::ERROR_FILE_OPEN;
-      }
-   }
+   if ( err != Model::ERROR_NONE )
+      return err;
 
    string modelPath = "";
    string modelBaseName = "";
@@ -147,7 +134,7 @@ Model::ModelErrorE TextFilter::readFile( Model * model, const char * const filen
    std::vector< TextPointT > pointList;
 
    char line[ 512 ];
-   while ( fgets( line, sizeof(line), fp ) != NULL )
+   while ( src->readLine( line, sizeof(line) ) )
    {
        size_t off = 0;
        size_t len = strlen( line );
@@ -188,36 +175,18 @@ Model::ModelErrorE TextFilter::readFile( Model * model, const char * const filen
        }
    }
 
-   fclose( fp );
-      
    model->setupJoints();
    return Model::ERROR_NONE;
 }
 
 Model::ModelErrorE TextFilter::writeFile( Model * model, const char * const filename, ModelFilter::Options * o  )
 {
-   if ( filename == NULL || filename[0] == '\0' )
-   {
-      return Model::ERROR_BAD_ARGUMENT;
-   }
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   DataDest *dst = openOutput( filename, err );
+   DestCloser fc( dst );
 
-   FILE * fp = fopen( filename, "w" );
-
-   if ( fp == NULL )
-   {
-      switch ( errno )
-      {
-         case EACCES:
-         case EPERM:
-            return Model::ERROR_NO_ACCESS;
-         case ENOENT:
-            return Model::ERROR_NO_FILE;
-         case EISDIR:
-            return Model::ERROR_BAD_DATA;
-         default:
-            return Model::ERROR_FILE_OPEN;
-      }
-   }
+   if ( err != Model::ERROR_NONE )
+      return err;
 
    string modelPath = "";
    string modelBaseName = "";
@@ -234,12 +203,10 @@ Model::ModelErrorE TextFilter::writeFile( Model * model, const char * const file
            int vert = model->getTriangleVertex( t, v );
            double coord[3];
            model->getVertexCoords( vert, coord );
-           fprintf( fp, "%f,%f,%f ", coord[0], coord[1], coord[2] );
+           dst->writePrintf( "%f,%f,%f ", coord[0], coord[1], coord[2] );
        }
-       fprintf( fp, "\n" );
+       dst->writeString( FILE_NEWLINE );
    }
-
-   fclose( fp );
 
    return Model::ERROR_NONE;
 }

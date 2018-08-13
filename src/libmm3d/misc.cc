@@ -540,6 +540,18 @@ int mkpath( const char * filename, mode_t mode )
    return 0;
 }
 
+void chomp( char * str )
+{
+   int len = 0;
+   len = strlen( str ) - 1;
+
+   while ( len >= 0 && isspace( str[len] ) )
+   {
+      str[len] = '\0';
+      len--;
+   }
+}
+
 size_t utf8len( const char * str )
 {
    size_t len = 0;

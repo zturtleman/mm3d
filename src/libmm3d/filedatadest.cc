@@ -54,6 +54,12 @@ FileDataDest::FileDataDest( const char * filename )
    : m_startOffset( 0 ),
      m_mustClose( false )
 {
+   if ( filename == NULL || filename[0] == '\0' )
+   {
+      setErrno( EINVAL );
+      return;
+   }
+
    m_fp = fopen( filename, "wb" );
    if ( m_fp == NULL )
    {

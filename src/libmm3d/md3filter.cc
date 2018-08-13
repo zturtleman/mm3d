@@ -482,7 +482,6 @@ unsigned Md3Filter::readString( char * dest, size_t len )
 bool Md3Filter::readAnimations( bool create )
 {
    string animFile = m_modelPath + "animation.cfg";
-   FILE * fp = fopen( animFile.c_str(), "r" );
    int animCount = 0;
    std::vector<std::string> animNames;
    int last_fcount = 0;
@@ -504,11 +503,19 @@ bool Md3Filter::readAnimations( bool create )
    int headStart = -1;
    int headEnd = -1;
 
-   if ( fp != NULL )
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   DataSource *src = openInput( animFile.c_str(), err );
+
+   if ( err != Model::ERROR_NONE )
+   {
+      src->close();
+      return false;
+   }
+   else
    {
       log_debug( "reading animation.cfg\n" );
       char line[256];
-      while ( fgets(line, sizeof(line), fp ) != NULL )
+      while ( src->readLine( line, sizeof(line) ) )
       {
          if ( strncmp( line, "//", 2 ) == 0 )
          {
@@ -778,8 +785,6 @@ bool Md3Filter::readAnimations( bool create )
             }
          }
       }
-
-      fclose( fp );
 
       // Set looping
       if (create)
@@ -1218,7 +1223,8 @@ int32_t Md3Filter::materialsCheck( std::string textureFullName )
 //it will return the default material.
 int32_t Md3Filter::setSkins( char *meshName )
 {
-   if ( strlen(meshName) == 0 )
+   size_t meshNameLength = strlen( meshName );
+   if ( meshNameLength == 0 )
    {
       log_debug( "setSkins() no meshName.\n" );
       return -1;
@@ -1261,70 +1267,51 @@ int32_t Md3Filter::setSkins( char *meshName )
       }
       if ( strcmp( ext, ".skin" ) == 0 )
       {
-         FILE * fp = fopen( fullName.c_str(), "rb" );
-         if ( fp == NULL )
+         Model::ModelErrorE err = Model::ERROR_NONE;
+         DataSource *src = openInput( fileName.c_str(), err );
+
+         if ( err != Model::ERROR_NONE )
          {
-            log_error( "%s: file does not exist\n", fileName.c_str() );
+            log_error( "%s: could not open file (%s)\n", fileName.c_str(), Model::errorToString( err ) );
+            src->close();
             continue;
          }
-         if ( errno == EPERM )
-         {
-            log_error( "%s: access denied\n", fileName.c_str() );
-            continue;
-         }
-         fseek( fp, 0, SEEK_END );
-         unsigned fileLength = ftell( fp );
-         fseek( fp, 0, SEEK_SET );
-         if ( fileLength <= 0 )
+
+         if ( src->getFileSize() <= 0 )
          {
             log_error( "%s: empty file\n", fileName.c_str() );
-            fclose( fp );
             continue;
          }
-         char *skinBuf = (char *)malloc( fileLength );
 
-         if ( fread( skinBuf, fileLength, 1, fp ) != 1 )
+         /* read skin file with format:
+         meshname,shader
+         meshnameN,shaderN
+         tagname,
+         tagnameN,
+         */
+         char linebuf[1024];
+         char *file = NULL;
+         while ( src->readLine( linebuf, sizeof( linebuf ) ) )
          {
-            delete[] skinBuf;
-            log_error( "%s: could not read file\n", fileName.c_str() );
-            fclose( fp );
-            free( skinBuf );
-            continue;
-         }
-         fclose( fp );
-         //XXX: There has got to be a better way to do this, maybe ifstream?
-         char *sep = (char *) malloc( sizeof( char ) * ( strlen( meshName ) + 2 ) );
-         strcpy( sep, meshName );
-         strcat( sep, "," );
-         char * line = (char *) PORT_strcasestr( skinBuf, (char *) meshName);
-         char * file;
-         if ( line )
-         {
-            char *nl = strchr( line, '\n' );
-            if ( nl )
+            char *line = linebuf;
+            chomp( linebuf );
+            if ( strncasecmp( line, meshName, meshNameLength ) == 0 )
             {
-               nl[0] = '\0';
-               nl = strchr( line, '\r' );
-               if ( nl )
+               line += meshNameLength;
+               if ( line[0] == ',' && line[1] != 0 )
                {
-                  nl[0] = '\0';
+                  file = line + 1;
+                  log_debug( "texture file is: %s\n", file );
+                  break;
                }
             }
-            file = strchr( line, ',' );
-            if ( file && strlen( file ) > 1 )
-            {
-               file++;
-               log_debug( "texture file is: %s\n", file );
-            }
-            else
-            {
-               continue;
-            }
          }
-         else
+
+         if ( !file )
          {
             continue;
          }
+
          //Whew! we have the file now lets load it up.
          replaceBackslash( file );
          string textureBaseName = getFileNameFromPath( file );
@@ -1374,7 +1361,6 @@ int32_t Md3Filter::setSkins( char *meshName )
                }
             }
          }
-         free( skinBuf );
       }
    }
 
@@ -2489,15 +2475,22 @@ bool Md3Filter::animSyncWarning(std::string name)
 bool Md3Filter::writeAnimations()
 {
    string animFile = m_modelPath + "/animation.cfg";
-   FILE * fp = fopen( animFile.c_str(), "w" );
    bool eliteLoop = false;
    bool animKeyword = false;
 
-   if ( fp != NULL )
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   DataDest *dst = openOutput( animFile.c_str(), err );
+   DestCloser fc( dst );
+
+   if ( err != Model::ERROR_NONE )
+   {
+      return false;
+   }
+   else
    {
       log_debug( "writing animation.cfg\n" );
 
-      fprintf( fp, "// animation config file\r\n" );
+      dst->writeString( "// animation config file\r\n" );
 
       bool hadKeyword = false;
       char keyword[1024], value[1024];
@@ -2512,12 +2505,12 @@ bool Md3Filter::writeAnimations()
             if (!hadKeyword)
             {
                hadKeyword = true;
-               fprintf( fp, "\r\n" );
+               dst->writeString( "\r\n" );
             }
             if (strlen(value) > 0)
-               fprintf( fp, "%s %s\r\n", &keyword[8], value );
+               dst->writePrintf( "%s %s\r\n", &keyword[8], value );
             else
-               fprintf( fp, "%s\r\n", &keyword[8] );
+               dst->writePrintf( "%s\r\n", &keyword[8] );
          }
          // Support old keywords
          else if (strncasecmp(keyword, "MD3_sex", 7) == 0
@@ -2529,12 +2522,12 @@ bool Md3Filter::writeAnimations()
             if (!hadKeyword)
             {
                hadKeyword = true;
-               fprintf( fp, "\r\n" );
+               dst->writeString( "\r\n" );
             }
             if (strlen(value) > 0)
-               fprintf( fp, "%s %s\r\n", &keyword[4], value );
+               dst->writePrintf( "%s %s\r\n", &keyword[4], value );
             else
-               fprintf( fp, "%s\r\n", &keyword[4] );
+               dst->writePrintf( "%s\r\n", &keyword[4] );
          }
          // animations.cfg format settings
          else if (strncasecmp(keyword, "MD3_EliteLoop", 13) == 0)
@@ -2547,10 +2540,10 @@ bool Md3Filter::writeAnimations()
          }
       }
 
-      fprintf( fp, "\r\n" );
+      dst->writeString( "\r\n" );
 
-      fprintf( fp, "// frame data:\r\n" );
-      fprintf( fp, "//    first   count   looping   fps\r\n\r\n" );
+      dst->writeString( "// frame data:\r\n" );
+      dst->writeString( "//    first   count   looping   fps\r\n\r\n" );
 
       char warning[] = " (MUST NOT CHANGE -- hand animation is synced to this)";
       size_t animCount = m_model->getAnimCount( Model::ANIMMODE_FRAME );
@@ -2610,23 +2603,21 @@ bool Md3Filter::writeAnimations()
             spaces[((name.length() < maxSpaces) ? (maxSpaces - name.length()) : 0)] = '\0';
 
             if (animSyncWarning(name))
-               fprintf( fp, "%s%s\t%d\t%d\t%d\t%d\t\t// %s\r\n", 
+               dst->writePrintf( "%s%s\t%d\t%d\t%d\t%d\t\t// %s\r\n", 
                      name.c_str(), spaces, animFrame, count, loop, fps, warning );
             else
-               fprintf( fp, "%s%s\t%d\t%d\t%d\t%d\r\n", 
+               dst->writePrintf( "%s%s\t%d\t%d\t%d\t%d\r\n", 
                      name.c_str(), spaces, animFrame, count, loop, fps );
          }
          else
          {
-            fprintf( fp, "%d\t%d\t%d\t%d\t\t// %s%s\r\n", 
+            dst->writePrintf( "%d\t%d\t%d\t%d\t\t// %s%s\r\n", 
                   animFrame, count, loop, fps, name.c_str(),
                   (animSyncWarning(name) ? warning : "") );
          }
       }
-      fclose( fp );
       return true;
    }
-   return false;
 }
 
 Matrix Md3Filter::getMatrixFromPoint( int anim, int frame, int point )

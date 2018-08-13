@@ -61,6 +61,12 @@ FileDataSource::FileDataSource( FILE * fp )
 FileDataSource::FileDataSource( const char * filename )
    : m_mustClose( false )
 {
+   if ( filename == NULL || filename[0] == '\0' )
+   {
+      setErrno( EINVAL );
+      return;
+   }
+
    m_fp = fopen( filename, "rb" );
    if ( m_fp == NULL )
    {

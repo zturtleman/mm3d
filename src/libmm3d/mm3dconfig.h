@@ -60,3 +60,9 @@
 
 #define DIR_SLASH             '/'
 
+#ifdef WIN32
+#define FILE_NEWLINE          "\r\n"
+#else
+#define FILE_NEWLINE          "\n"
+#endif // WIN32
+

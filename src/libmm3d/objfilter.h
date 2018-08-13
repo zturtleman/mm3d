@@ -25,14 +25,13 @@
 #define __OBJFILTER_H
 
 #include "modelfilter.h"
+#include "datadest.h"
+#include "datasource.h"
 
 #include <stdint.h>
 #include <stdio.h>
 #include <string>
 #include <vector>
-
-class DataSource;
-class DataDest;
 
 class ObjFilter : public ModelFilter
 {
@@ -129,7 +128,6 @@ class ObjFilter : public ModelFilter
 
       Model       * m_model;
       ObjOptions  * m_options;
-      FILE        * m_fp;
       DataSource  * m_src;
       DataDest    * m_dst;
       int           m_curGroup;

@@ -23,6 +23,8 @@
 
 #include "prefs.h"
 
+#include "mm3dconfig.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,28 +33,19 @@
 using std::map;
 using std::vector;
 
-void chomp(char *s)
+static void _print_escaped( DataDest & dst, const std::string & str )
 {
-   int len = strlen(s) - 1;
-   while ( len >= 0 && ( s[len] =='\n'  || s[len] == '\r' ) )
-   {
-      s[len] = '\0';
-   }
-}
-
-static void _print_escaped( FILE * fp, const std::string & str )
-{
-   fprintf( fp, "\"" );
+   dst.writeString( "\"" );
    size_t len = str.size();
    for ( size_t i = 0; i < len; i++ )
    {
       if ( str[i] == '"' || str[i] == '\\' )
       {
-         fprintf( fp, "\\" );
+         dst.writeString( "\\" );
       }
-      fprintf( fp, "%c", str[i] );
+      dst.writePrintf( "%c", str[i] );
    }
-   fprintf( fp, "\"" );
+   dst.writeString( "\"" );
 }
 
 PrefItem::PrefItem()
@@ -196,64 +189,64 @@ bool PrefItem::exists( const std::string & key )
    }
 }
 
-void PrefItem::print( int indent, FILE * fp )
+void PrefItem::write( int indent, DataDest & dst )
 {
    if ( m_type == PI_Hash )
    {
-      fprintf( fp, "{\n");
+      dst.writeString( "{" FILE_NEWLINE );
       indent += 3;
       PrefItemHash::iterator it;
       for ( it = m_hash.begin(); it != m_hash.end(); it++ )
       {
          for ( int t = 0; t < indent; t++ )
          {
-            fprintf( fp, " " );
+            dst.writeString( " " );
          }
-         fprintf( fp, "\"%s\" => ", (*it).first.c_str());
-         (*it).second.print( indent + 3, fp );
+         dst.writePrintf( "\"%s\" => ", (*it).first.c_str() );
+         (*it).second.write( indent + 3, dst );
          if ( ++it != m_hash.end() )
          {
-            fprintf(fp, ",\n");
+            dst.writeString( "," FILE_NEWLINE );
          }
          else
          {
-            fprintf(fp, "\n");
+            dst.writeString( FILE_NEWLINE );
          }
          it--;
       }
       indent -= 3;
       for ( int i = 0; i < indent; i++ )
       {
-         fprintf( fp, " " );
+         dst.writeString( " " );
       }
-      fprintf( fp, "}");
+      dst.writeString( "}" );
    }
    else if ( m_type == PI_List )
    {
-      fprintf( fp, "(\n");
+      dst.writeString( "(" FILE_NEWLINE );
       indent += 3;
       for ( unsigned t = 0; t < m_list.size(); t++ )
       {
          for ( int i = 0; i < indent; i++ )
          {
-            fprintf( fp, " " );
+            dst.writeString( " " );
          }
-         m_list[t].print( indent +3, fp );
+         m_list[t].write( indent +3, dst );
          if ( t+1 != m_list.size() )
          {
-            fprintf(fp, ",\n");
+            dst.writeString( "," FILE_NEWLINE );
          }
          else
          {
-            fprintf(fp, "\n");
+            dst.writeString( FILE_NEWLINE );
          }
       }
       indent -= 3;
       for ( int i = 0; i < indent; i++ )
       {
-         fprintf( fp, " " );
+         dst.writeString( " " );
       }
-      fprintf( fp, ")");
+      dst.writeString( ")" );
    }
    else
    {
@@ -261,11 +254,11 @@ void PrefItem::print( int indent, FILE * fp )
       if ( m_string.find('"') < m_string.size()
             || m_string.find('/') < m_string.size() )
       {
-         _print_escaped( fp, m_string );
+         _print_escaped( dst, m_string );
       }
       else
       {
-         fprintf( fp, "\"%s\"",  m_string.c_str() );
+         dst.writePrintf( "\"%s\"",  m_string.c_str() );
       }
    }
 }
@@ -416,10 +409,10 @@ PrefItem & Preferences::operator()(const std::string & key)
    return (*m_rootItem)( key );
 }
 
-void Preferences::print( FILE * fp )
+void Preferences::write( DataDest & dst )
 {
-   m_rootItem->print( 0, fp );
-   fprintf( fp, "\n");
+   m_rootItem->write( 0, dst );
+   dst.writeString( FILE_NEWLINE );
 }
 
 bool Preferences::exists( const std::string & key )
