@@ -107,10 +107,13 @@ static void _print_help( const char * progname )
 
 static void _print_sysinfo()
 {
+   printf( "\nMisfit Model 3D, version %s\n\n", VERSION_STRING );
+
+#ifdef WIN32
+   // TODO: Get Windows version
+#else
    FILE * fp = NULL;
    char input[80];
-
-   printf( "\nMisfit Model 3D, version %s\n\n", VERSION_STRING );
 
    printf( "uname output:\n" );
    fp = popen( "uname -a", "r" );
@@ -143,6 +146,7 @@ static void _print_sysinfo()
    }
 
    printf("\n" );
+#endif
 
    exit(0);
 }
