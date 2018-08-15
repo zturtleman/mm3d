@@ -37,7 +37,7 @@ FileDataDest::FileDataDest( const char * filename )
 {
    if ( filename == NULL || filename[0] == '\0' )
    {
-      setErrno( EINVAL );
+      sendErrno( EINVAL );
       return;
    }
 
