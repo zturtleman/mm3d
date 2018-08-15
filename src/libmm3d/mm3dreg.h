@@ -25,6 +25,7 @@
 #ifndef __MM3DREG_H
 #define __MM3DREG_H
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <string>
 #include <vector>
