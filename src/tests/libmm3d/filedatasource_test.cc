@@ -41,31 +41,32 @@ class FileDataSourceTest : public QObject
    Q_OBJECT
 
 private:
-   FILE * openFile( const char * filename )
+   void checkFile( FileDataSource & src, const char *filename )
    {
-      FILE * fp = fopen( filename, "r" );
-      if ( !fp )
+      if ( src.errorOccurred() )
       {
          fprintf( stderr, "Could not open test file: %s\n", filename );
          exit( -1 );
       }
-      return fp;
    }
 
-   FILE * open0k()
+   const char * open0k()
    {
-      return openFile( "data/intfile0k" );
+      return "data/intfile0k";
    }
 
-   FILE * open192k()
+   const char * open192k()
    {
-      return openFile( "data/intfile192k" );
+      return "data/intfile192k";
    }
 
 private slots:
    void testReadEmpty()
    {
-      FileDataSource src( open0k() );
+      const char *fileName = open0k();
+      FileDataSource src( fileName );
+      checkFile( src, fileName );
+
       QVERIFY_EQ( (size_t) 0, src.getFileSize() );
       QVERIFY_TRUE( src.eof() );
       QVERIFY_FALSE( src.unexpectedEof() );
@@ -82,8 +83,10 @@ private slots:
 
    void testReadAllUint32()
    {
-      FileDataSource src( open192k() );
       const size_t fileSize = 192 * 1024;
+      const char *fileName = open192k();
+      FileDataSource src( fileName );
+      checkFile( src, fileName );
 
       QVERIFY_EQ( fileSize, src.getFileSize() );
 
@@ -105,8 +108,11 @@ private slots:
 
    void testReadAllAtOnce()
    {
-      FileDataSource src( open192k() );
       const size_t fileSize = 192 * 1024;
+      const char *fileName = open192k();
+      FileDataSource src( fileName );
+      checkFile( src, fileName );
+
       local_array<uint8_t> buf = new uint8_t[ fileSize ];
 
       QVERIFY_EQ( fileSize, src.getFileSize() );
@@ -129,8 +135,11 @@ private slots:
 
    void testReadError()
    {
-      FILE * fp = open192k();
-      FileDataSource src( fp );
+#if 0 // FIXME: Direct FILE access was removed.
+      const char *fileName = open192k();
+      FileDataSource src( fileName );
+      checkFile( src, fileName );
+
       const size_t fileSize = 192 * 1024 / 2;
       local_array<uint8_t> buf = new uint8_t[ fileSize ];
 
@@ -155,20 +164,23 @@ private slots:
       QVERIFY_FALSE( src.unexpectedEof() );
 
       // Close the file to force an error
-      QVERIFY_EQ( 0, close( fileno(fp) ) );
+      QVERIFY_EQ( 0, close( fileno(src.m_fp) ) );
 
       // Read second half (and expect error)
       QVERIFY_FALSE( src.readBytes( buf.get(), fileSize ) );
       QVERIFY_EQ( (int) EBADF, src.getErrno() );
       QVERIFY_FALSE( src.unexpectedEof() );
 
-      fclose( fp );
+      fclose( src.m_fp );
+#endif
    }
 
    void testBadSeek()
    {
-      FileDataSource src( open192k() );
       const size_t fileSize = 192 * 1024;
+      const char *fileName = open192k();
+      FileDataSource src( fileName );
+      checkFile( src, fileName );
 
       QVERIFY_EQ( fileSize, src.getFileSize() );
       QVERIFY_TRUE( src.seek( 0 ) );
