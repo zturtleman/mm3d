@@ -1,6 +1,11 @@
 #define PACKAGE "mm3d"
-#define BYTEORDER 1234
 #define HAVE_QT5 1
+
+/* Little Endian */
+/* Only define if not already defined, for src/test/libmm3d/big_endian_test.cc */
+#ifndef BYTEORDER
+#define BYTEORDER 1234
+#endif
 
 #ifndef WIN32
 
