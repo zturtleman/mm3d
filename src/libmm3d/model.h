@@ -183,6 +183,7 @@ class Model
          PropDimensions  = 0x100000,  // 
          PropPixels      = 0x200000,  // 
          PropTime        = 0x400000,  // 
+         PropLoop        = 0x800000,  // 
          PropAll         = 0xFFFFFF,  // 
 
          // These are combinations of parts above, for convenience

@@ -1119,6 +1119,16 @@ bool Model::SkelAnim::propEqual(const SkelAnim & rhs, int propBits, double toler
       }
    }
 
+   if ( (propBits & PropLoop) != 0 )
+   {
+      if ( m_loop != rhs.m_loop )
+      {
+         log_warning( "match failed at anim loop, lhs = %d, rhs = %d\n",
+               m_loop, rhs.m_loop );
+         return false;
+      }
+   }
+
    if ( (propBits & PropDimensions) != 0 )
    {
       if ( m_frameCount != rhs.m_frameCount )
@@ -1276,6 +1286,16 @@ bool Model::FrameAnim::propEqual(const FrameAnim & rhs, int propBits, double tol
       {
          log_warning( "match failed at anim fps lhs %f, rhs %f\n",
                (float) m_fps, (float) rhs.m_fps );
+         return false;
+      }
+   }
+
+   if ( (propBits & PropLoop) != 0 )
+   {
+      if ( m_loop != rhs.m_loop )
+      {
+         log_warning( "match failed at anim loop lhs = %d, rhs = %d\n",
+               m_loop, rhs.m_loop );
          return false;
       }
    }
