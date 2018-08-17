@@ -41,6 +41,17 @@
 #include <errno.h>
 #include <unistd.h>
 
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <shlwapi.h>
+
+// FIXME: This requires Windows Vista.
+#ifndef WC_ERR_INVALID_CHARS
+#define WC_ERR_INVALID_CHARS 0x80
+#endif
+#endif
+
 using std::string;
 
 void replaceSlash( char * str )
@@ -119,6 +130,12 @@ string getFileNameFromPath( const char * path )
 
 bool pathIsAbsolute( const char * path )
 {
+#ifdef WIN32
+   std::wstring widePath = utf8PathToWide( path );
+   if ( widePath.empty() )
+      return false;
+   return ( PathIsRelativeW( &widePath[0] ) == FALSE );
+#else
    if ( path == NULL )
    {
       return false;
@@ -128,6 +145,7 @@ bool pathIsAbsolute( const char * path )
       return true;
    }
    return ( path[0] == '/' || path[0] == '\\' );
+#endif
 }
 
 string normalizePath( const char * path, const char * pwd )
@@ -307,6 +325,7 @@ string fixAbsolutePath( const char * base, const char * path )
             if ( temp[0] )
             {
                string rval = temp;
+#ifndef WIN32 // TODO: Use Win32 API
                DIR * dp = opendir( base );
                if ( dp )
                {
@@ -325,6 +344,7 @@ string fixAbsolutePath( const char * base, const char * path )
                {
                   log_error( "%s: %s\n", base, strerror(errno) );
                }
+#endif // WIN32
                return rval;
             }
          }
@@ -401,6 +421,7 @@ string fixFileCase( const char * path, const char * file )
 {
    std::string rval = file;
 
+#ifndef WIN32 // TODO: Use Win32 API
    DIR * dp = opendir( path );
    if ( dp )
    {
@@ -415,6 +436,7 @@ string fixFileCase( const char * path, const char * file )
       }
       closedir( dp );
    }
+#endif
    return rval;
 }
 
@@ -462,6 +484,51 @@ void getFileList( std::list<std::string> & l, const char * const path, const cha
 
    unsigned len = strlen( name );
 
+#ifdef WIN32
+   std::string searchPath;
+   searchPath += path;
+   if ( searchPath[searchPath.size()-1] != DIR_SLASH )
+   {
+      searchPath += DIR_SLASH;
+   }
+   searchPath += '*';
+
+   std::wstring wideSearch = utf8PathToWide( searchPath.c_str() );
+   if ( wideSearch.empty() )
+   {
+      log_warning( "getFileList(%s): utf8PathToWide() failed\n", path );
+      return;
+   }
+
+   WIN32_FIND_DATAW ffd;
+   HANDLE hFind = FindFirstFileW( &wideSearch[0], &ffd );
+   if ( hFind == INVALID_HANDLE_VALUE )
+   {
+      if ( GetLastError() != ERROR_FILE_NOT_FOUND )
+      {
+         log_warning( "getFileList(%s): FindFirstFile() failed, error 0x%x\n", path, GetLastError() );
+      }
+      return;
+   }
+
+   do {
+      DWORD utf8Size = WideCharToMultiByte( CP_UTF8, WC_ERR_INVALID_CHARS, ffd.cFileName, -1, NULL, 0, NULL, NULL );
+
+      std::string filename( utf8Size, '\0' );
+      if ( WideCharToMultiByte( CP_UTF8, WC_ERR_INVALID_CHARS, ffd.cFileName, -1, &filename[0], utf8Size, NULL, NULL ) == 0 )
+      {
+         log_warning( "getFileList(%s): failed to convert filename (name length %d)\n", path, (int)utf8Size );
+         continue;
+      }
+
+      if ( strncasecmp( filename.c_str(), name, len ) == 0 )
+      {
+         sl.insert_sorted( filename );
+      }
+   } while ( FindNextFileW( hFind, &ffd ) != 0 );
+
+   FindClose( hFind );
+#else
    DIR * dp = opendir( path );
    if ( dp )
    {
@@ -475,6 +542,7 @@ void getFileList( std::list<std::string> & l, const char * const path, const cha
       }
       closedir( dp );
    }
+#endif
 
    for ( unsigned t  = 0; t < sl.size(); t++ )
    {
@@ -482,10 +550,63 @@ void getFileList( std::list<std::string> & l, const char * const path, const cha
    }
 }
 
+bool file_modifiedtime( const char * filename, time_t * modifiedtime )
+{
+#ifdef WIN32
+   *modifiedtime = 0;
+
+   std::wstring wideString = utf8PathToWide( filename );
+   if ( wideString.empty() )
+      return false;
+
+   HANDLE handle = CreateFileW( &wideString[0], GENERIC_READ, FILE_SHARE_READ, NULL,
+                                OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
+   if ( handle == INVALID_HANDLE_VALUE )
+      return false;
+
+   FILETIME lastWriteTime;
+   if ( GetFileTime( handle, NULL, NULL, &lastWriteTime ) == FALSE )
+   {
+      CloseHandle( handle );
+      return false;
+   }
+
+   LARGE_INTEGER filetime;
+   filetime.LowPart = lastWriteTime.dwLowDateTime;
+   filetime.HighPart = lastWriteTime.dwHighDateTime;
+
+   // Multiples of 100ns to seconds and subtract seconds between 1601-01-01 (FILETIME Epoch) and 1970-01-01 (time_t Epoch).
+   *modifiedtime = ( filetime.QuadPart / 10000000ULL ) - 11644473600ULL;
+
+   CloseHandle( handle );
+   return true;
+#else
+   struct stat statbuf;
+   if ( lstat( filename, &statbuf ) == 0 )
+   {
+      *modifiedtime = statbuf.st_mtime;
+      return true;
+   }
+   else
+   {
+      *modifiedtime = 0;
+      return false;
+   }
+#endif
+}
+
 bool file_exists( const char * filename )
 {
+#ifdef WIN32
+   std::wstring wideString = utf8PathToWide( filename );
+   if ( wideString.empty() )
+      return false;
+
+   DWORD attr = GetFileAttributesW( &wideString[0] );
+   return attr != INVALID_FILE_ATTRIBUTES && !( attr & FILE_ATTRIBUTE_DIRECTORY );
+#else
    struct stat statbuf;
-   if ( PORT_lstat( filename, &statbuf ) == 0 )
+   if ( lstat( filename, &statbuf ) == 0 )
    {
       return true;
    }
@@ -493,12 +614,21 @@ bool file_exists( const char * filename )
    {
       return false;
    }
+#endif
 }
 
 bool is_directory( const char * filename )
 {
+#ifdef WIN32
+   std::wstring wideString = utf8PathToWide( filename );
+   if ( wideString.empty() )
+      return false;
+
+   DWORD attr = GetFileAttributesW( &wideString[0] );
+   return attr != INVALID_FILE_ATTRIBUTES && ( attr & FILE_ATTRIBUTE_DIRECTORY );
+#else
    struct stat statbuf;
-   if ( PORT_lstat( filename, &statbuf ) == 0 )
+   if ( lstat( filename, &statbuf ) == 0 )
    {
       DIR * dp = opendir( filename ); // Don't check S_ISDIR, could be symlink
       if ( dp )
@@ -508,6 +638,7 @@ bool is_directory( const char * filename )
       }
    }
    return false;
+#endif
 }
 
 int mkpath( const char * filename, mode_t mode )
@@ -660,4 +791,38 @@ void utf8chrtrunc( std::string & str, size_t len )
    if ( len < str.size() )
       str.resize(len);
 }
+
+#ifdef WIN32
+std::wstring utf8PathToWide( const char *filename )
+{
+   size_t wideSize = MultiByteToWideChar( CP_UTF8, MB_ERR_INVALID_CHARS, filename, -1, NULL, 0 );
+   if ( wideSize == 0 )
+   {
+      // GetLastError()
+      // empty string
+      return std::wstring();
+   }
+
+   // Use \\?\ prefix to tell Windows API to use more than MAX_PATH (260) characters.
+   std::wstring wideString( wideSize + 4, '\0' );
+   wcscpy( &wideString[0], L"\\\\?\\" );
+   if ( MultiByteToWideChar( CP_UTF8, MB_ERR_INVALID_CHARS, filename, -1, &wideString[4], wideSize ) == 0 )
+   {
+      // GetLastError()
+      // empty string
+      return std::wstring();
+   }
+
+   // MM3D always uses slash for directory separator
+   for ( size_t n = 0; n < wideString.size(); n++ )
+   {
+     if ( wideString[n] == L'/' )
+     {
+        wideString[n] = L'\\';
+     }
+   }
+
+   return wideString;
+}
+#endif
 

@@ -55,6 +55,7 @@ std::string removeExtension( const char * infile );
 
 extern void getFileList( std::list<std::string> &l, const char * const path, const char * const name );
 
+extern bool file_modifiedtime( const char * filename, time_t * modifiedTime );
 extern bool file_exists( const char * filename );
 extern bool is_directory( const char * filename );
 
@@ -73,5 +74,9 @@ extern void utf8strtrunc( std::string & str, size_t len );
 // Truncate at "len" bytes (C characters)
 extern void utf8chrtrunc( char * str, size_t len );
 extern void utf8chrtrunc( std::string & str, size_t len );
+
+#ifdef WIN32
+std::wstring utf8PathToWide( const char *filename );
+#endif // WIN32
 
 #endif // __MISC_H

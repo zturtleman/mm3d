@@ -193,7 +193,7 @@ ifdef MINGW
     QT_LIBS=-lQt5Core -lQt5Gui -lQt5Widgets -lQt5OpenGL
   endif
 
-  LINK=-L${QT_LIB_DIR} ${QT_LIBS} -mwindows -lopengl32 -lglu32 -static-libgcc -static-libstdc++
+  LINK=-L${QT_LIB_DIR} ${QT_LIBS} -mwindows -lshlwapi -lopengl32 -lglu32 -static-libgcc -static-libstdc++
 
   # Qt5 requires C++11
   BASE_FLAGS+=-std=c++11

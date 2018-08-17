@@ -25,7 +25,7 @@
 #include "log.h"
 #include "msg.h"
 #include "texscale.h"
-#include "mm3dport.h"
+#include "misc.h"
 #include "translate.h"
 
 #include <string.h>
@@ -230,9 +230,9 @@ Texture * TextureManager::getTexture( const char * filename, bool noCache, bool 
             m_lastError = Texture::ERROR_NONE;
             log_debug( "read from image file %s\n", filename );
             newTexture->removeOpaqueAlphaChannel();
-            struct stat statbuf;
-            PORT_lstat( filename, &statbuf );
-            newTexture->m_loadTime = statbuf.st_mtime;
+            time_t mtime;
+            file_modifiedtime( filename, &mtime );
+            newTexture->m_loadTime = mtime;
             newTexture->m_origWidth = newTexture->m_width;
             newTexture->m_origHeight = newTexture->m_height;
             if ( texture_scale_need_scale( newTexture->m_width, newTexture->m_height ) )
@@ -340,9 +340,9 @@ bool TextureManager::reloadTextures()
    
    for( texIter = m_textures.begin(); texIter != m_textures.end(); texIter++ )
    {
-      struct stat buf;
+      time_t mtime;
       
-      if( PORT_lstat( (*texIter)->m_filename, &buf ) == 0 && buf.st_mtime > (*texIter)->m_loadTime )
+      if( file_modifiedtime( (*texIter)->m_filename, &mtime ) && mtime > (*texIter)->m_loadTime )
       {
          Texture *refreshedTexture = getTexture( (*texIter)->m_filename, true );
          if( refreshedTexture )
@@ -358,7 +358,7 @@ bool TextureManager::reloadTextures()
             (*texIter)->m_origHeight = refreshedTexture->m_origHeight;
             (*texIter)->m_format = refreshedTexture->m_format;
             (*texIter)->m_data = refreshedTexture->m_data;
-            (*texIter)->m_loadTime = buf.st_mtime;
+            (*texIter)->m_loadTime = mtime;
 
             // new texture will clean up old data ptr.
             refreshedTexture->m_data = tempPtr;

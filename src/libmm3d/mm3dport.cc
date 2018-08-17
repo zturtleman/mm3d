@@ -21,12 +21,15 @@
  */
 
 #include "mm3dport.h"
+#include "misc.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <ctype.h>
 #include <string.h>
 #include <limits.h>
+#include <errno.h>
+#include <string>
 
 #include "config.h"
 
@@ -38,21 +41,40 @@
 
 #include <unistd.h>
 
-int PORT_lstat( const char * filename, struct stat * buf )
-{
 #ifdef WIN32
-   return stat( filename, buf );
-#else
-   return lstat( filename, buf );
-#endif // WIN32
-}
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+// FIXME: This requires Windows Vista.
+#ifndef WC_ERR_INVALID_CHARS
+#define WC_ERR_INVALID_CHARS 0x80
+#endif
+#endif
 
 // FIXME add thorough testing for the manual part of this (the case where
 // realpath fails because the directories don't exist).
 char * PORT_realpath( const char * path, char * resolved_path, size_t len )
 {
 #ifdef WIN32
-   char * rval = _fullpath( resolved_path, path, len );
+   char * rval = NULL;
+   std::wstring widePath = utf8PathToWide( path );
+   if ( !widePath.empty() )
+   {
+      DWORD requiredSize = GetFullPathNameW( &widePath[0], 0, NULL, NULL );
+      std::wstring realpath( requiredSize, '\0' );
+      if ( GetFullPathNameW( &widePath[0], requiredSize, &realpath[0], NULL ) != 0 )
+      {
+         if ( WideCharToMultiByte( CP_UTF8, WC_ERR_INVALID_CHARS, &realpath[0], -1, resolved_path, len, NULL, NULL ) != 0 ) {
+            // \\?\ is added by utf8PathToWide() for Windows API but don't return it.
+            if ( strncmp( resolved_path, "\\\\?\\", 4 ) == 0 )
+            {
+               memmove( &resolved_path[0], &resolved_path[4], strlen( &resolved_path[4] ) + 1 );
+            }
+
+            rval = resolved_path;
+         }
+      }
+   }
 #else
    char * rval = realpath( path, resolved_path );
 #endif // WIN32
@@ -60,18 +82,20 @@ char * PORT_realpath( const char * path, char * resolved_path, size_t len )
    {
       if ( len > 0 )
       {
-         if ( path[0] == '/' )
+         if ( pathIsAbsolute( path ) )
          {
             strncpy( resolved_path, path, len );
          }
          else
          {
             char pwd[1024];
-            getcwd(pwd, sizeof(pwd));
+            getcwd(pwd, sizeof(pwd)); // TODO: Use Win32 API
             PORT_snprintf( resolved_path, len, "%s/%s", pwd, path );
          }
          resolved_path[ len - 1 ] = '\0';
          rval = resolved_path;
+
+         replaceBackslash( resolved_path );
 
          // Remove "/./" and "//"
          char * end = rval + strlen(rval);
@@ -171,7 +195,21 @@ int PORT_symlink( const char * oldpath, const char * newpath )
 int PORT_mkdir( const char * pathname, mode_t mode )
 {
 #ifdef WIN32
-   return mkdir( pathname );
+   std::wstring widePath = utf8PathToWide( pathname );
+   if ( widePath.empty() )
+   {
+      errno = EINVAL;
+      return -1;
+   }
+
+   if ( CreateDirectoryW( &widePath[0], NULL ) )
+      return 0;
+
+   if ( GetLastError() == ERROR_ALREADY_EXISTS )
+      return 0;
+
+   errno = ENOENT;
+   return -1;
 #else
    return mkdir( pathname, mode );
 #endif // WIN32

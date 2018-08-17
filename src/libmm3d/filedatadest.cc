@@ -22,6 +22,7 @@
 
 
 #include "filedatadest.h"
+#include "misc.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,6 +32,109 @@
 #include <errno.h>
 #include <sys/types.h>
 
+#ifdef WIN32
+FileDataDest::FileDataDest( const char * filename )
+   : m_startOffset( 0 ),
+     m_mustClose( false )
+{
+   if ( filename == NULL || filename[0] == '\0' )
+   {
+      sendErrno( EINVAL );
+      return;
+   }
+
+   std::wstring wideString = utf8PathToWide( filename );
+   if ( wideString.empty() )
+   {
+      setErrno( EINVAL );
+      return;
+   }
+
+   m_handle = CreateFileW( &wideString[0], GENERIC_WRITE, FILE_SHARE_READ, NULL,
+                         CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
+   if ( m_handle == INVALID_HANDLE_VALUE || m_handle == NULL )
+   {
+      m_handle = NULL;
+
+      if ( GetLastError() == ERROR_ACCESS_DENIED )
+      {
+         sendErrno( EACCES );
+      }
+      else
+      {
+         sendErrno( ENOENT );
+      }
+      return;
+   }
+
+   m_mustClose = true;
+}
+
+FileDataDest::~FileDataDest()
+{
+   if ( m_mustClose )
+      close();
+}
+
+void FileDataDest::internalClose()
+{
+   if ( m_handle != NULL )
+   {
+      CloseHandle( m_handle );
+      m_handle = NULL;
+   }
+}
+
+void FileDataDest::sendErrno( int err )
+{
+   setErrno( err );
+}
+
+bool FileDataDest::internalSeek( off_t off )
+{
+   if ( errorOccurred() )
+      return false;
+
+   if ( m_handle == NULL )
+   {
+      sendErrno( EBADF );
+      return false;
+   }
+
+   LARGE_INTEGER li;
+   li.QuadPart = off + m_startOffset;
+
+   li.LowPart = SetFilePointer( m_handle, li.LowPart, &li.HighPart, FILE_BEGIN );
+   if ( li.LowPart == INVALID_SET_FILE_POINTER && GetLastError() != NO_ERROR )
+      return false;
+
+   return true;
+}
+
+bool FileDataDest::internalWrite( const uint8_t * buf, size_t bufLen )
+{
+   if ( errorOccurred() )
+      return false;
+
+   if ( m_handle == NULL )
+   {
+      sendErrno( EBADF );
+      return false;
+   }
+
+   if ( bufLen == 0 )
+      return true;
+
+   DWORD wrote;
+   if ( WriteFile( m_handle, buf, bufLen, &wrote, NULL ) == FALSE || wrote != bufLen )
+   {
+      sendErrno( EPERM );
+      return false;
+   }
+
+   return true;
+}
+#else
 FileDataDest::FileDataDest( const char * filename )
    : m_startOffset( 0 ),
      m_mustClose( false )
@@ -107,4 +211,5 @@ bool FileDataDest::internalWrite( const uint8_t * buf, size_t bufLen )
 
    return true;
 }
+#endif // WIN32
 

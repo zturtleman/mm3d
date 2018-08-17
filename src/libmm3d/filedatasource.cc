@@ -22,9 +22,110 @@
 
 
 #include "filedatasource.h"
+#include "misc.h"
 
 #include <errno.h>
 
+#ifdef WIN32
+FileDataSource::FileDataSource( const char * filename )
+   : m_mustClose( false )
+{
+   if ( filename == NULL || filename[0] == '\0' )
+   {
+      setErrno( EINVAL );
+      return;
+   }
+
+   std::wstring wideString = utf8PathToWide( filename );
+   if ( wideString.empty() )
+   {
+      setErrno( EINVAL );
+      return;
+   }
+
+   m_handle = CreateFileW( &wideString[0], GENERIC_READ, FILE_SHARE_READ, NULL,
+                         OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
+   if ( m_handle == INVALID_HANDLE_VALUE || m_handle == NULL )
+   {
+      m_handle = NULL;
+
+      if ( GetLastError() == ERROR_ACCESS_DENIED )
+      {
+         setErrno( EACCES );
+      }
+      else
+      {
+         setErrno( ENOENT );
+      }
+      return;
+   }
+
+   m_mustClose = true;
+
+   LARGE_INTEGER length;
+   if ( !GetFileSizeEx( m_handle, &length ) )
+   {
+      // GetLastError()
+      setErrno( EPERM );
+      return;
+   }
+
+   // FIXME: what if file size is too large for size_t.
+   setFileSize( length.QuadPart );
+}
+
+FileDataSource::~FileDataSource()
+{
+   if ( m_mustClose )
+      close();
+}
+
+void FileDataSource::internalClose()
+{
+   if ( m_handle != NULL )
+   {
+      CloseHandle( m_handle );
+      m_handle = NULL;
+   }
+}
+
+bool FileDataSource::internalReadAt( off_t offset, const uint8_t ** buf, size_t * bufLen )
+{
+   // TODO should assert on buf and bufLen
+
+   // If we had an error, just keep returning an error
+   if ( errorOccurred() )
+      return false;
+
+   if ( offset > (off_t) getFileSize() )
+   {
+      setUnexpectedEof( true );
+      return false;
+   }
+
+   LARGE_INTEGER li;
+   li.QuadPart = offset;
+
+   li.LowPart = SetFilePointer( m_handle, li.LowPart, &li.HighPart, FILE_BEGIN );
+   if ( li.LowPart == INVALID_SET_FILE_POINTER && GetLastError() != NO_ERROR )
+   {
+      setErrno( EPERM );
+      return false;
+   }
+
+   DWORD read;
+   if ( ReadFile( m_handle, m_buf, BUF_SIZE, &read, NULL ) == FALSE )
+   {
+      // GetLastError()
+      setErrno( EPERM );
+      return false;
+   }
+
+   *buf = m_buf;
+   *bufLen = read;
+   return true;
+}
+#else
 FileDataSource::FileDataSource( const char * filename )
    : m_mustClose( false )
 {
@@ -112,4 +213,5 @@ bool FileDataSource::internalReadAt( off_t offset, const uint8_t ** buf, size_t 
    *bufLen = bytes;
    return true;
 }
+#endif // WIN32
 

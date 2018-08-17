@@ -1,4 +1,5 @@
 Changes for 1.3.10
+   Use Win32 API to support non-ASCII filenames
    RAW images are now loaded as little endian regardless of OS endianness
    Display result of Clean Up Groups in status bar
    Improve code integration of animation loop setting

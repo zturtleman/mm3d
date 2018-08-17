@@ -25,6 +25,7 @@
 #include "sysconf.h"
 #include "log.h"
 #include "mm3dport.h"
+#include "misc.h"
 #include "version.h"
 
 #include <stdio.h>
@@ -40,6 +41,14 @@
 #endif // HAVE_DLOPEN
 
 #ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+// FIXME: This requires Windows Vista.
+#ifndef WC_ERR_INVALID_CHARS
+#define WC_ERR_INVALID_CHARS 0x80
+#endif
+
 #define PLUGINS_ENABLED
 #endif // WIN32
 
@@ -293,6 +302,61 @@ bool PluginManager::loadPluginDir( const char * pluginDir )
 {
    if ( pluginDir && pluginDir[0] )
    {
+#ifdef WIN32
+      std::string searchPath;
+      searchPath += pluginDir;
+      if ( searchPath[searchPath.size()-1] != DIR_SLASH )
+      {
+         searchPath += DIR_SLASH;
+      }
+      searchPath += '*';
+
+      std::wstring wideSearch = utf8PathToWide( searchPath.c_str() );
+      if ( wideSearch.empty() )
+      {
+         log_warning( "loadPluginDir(%s): utf8PathToWide() failed\n", pluginDir );
+         return false;
+      }
+
+      WIN32_FIND_DATAW ffd;
+      HANDLE hFind = FindFirstFileW( &wideSearch[0], &ffd );
+      if ( hFind == INVALID_HANDLE_VALUE )
+      {
+         if ( GetLastError() != ERROR_FILE_NOT_FOUND )
+         {
+            log_warning( "loadPluginDir(%s): FindFirstFile() failed, error 0x%x\n", pluginDir, GetLastError() );
+         }
+         return false;
+      }
+
+      do {
+         DWORD utf8Size = WideCharToMultiByte( CP_UTF8, WC_ERR_INVALID_CHARS, ffd.cFileName, -1, NULL, 0, NULL, NULL );
+
+         std::string file( utf8Size, '\0' );
+         if ( WideCharToMultiByte( CP_UTF8, WC_ERR_INVALID_CHARS, ffd.cFileName, -1, &file[0], utf8Size, NULL, NULL ) == 0 )
+         {
+            log_warning( "loadPluginDir(%s): failed to convert filename (name length %d)\n", pluginDir, (int)utf8Size );
+            continue;
+         }
+
+         if ( strcmp( file.c_str(), "." ) == 0 || strcmp( file.c_str(), ".." ) == 0 )
+         {
+            continue;
+         }
+
+         if ( ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+         {
+            loadPluginDir( file.c_str() );
+         }
+         else
+         {
+            loadPlugin( file.c_str() );
+         }
+      } while ( FindNextFileW( hFind, &ffd ) != 0 );
+
+      FindClose( hFind );
+      return true;
+#else
       DIR * dp = opendir( pluginDir );
       if ( dp )
       {
@@ -309,7 +373,7 @@ bool PluginManager::loadPluginDir( const char * pluginDir )
             file += d->d_name;
 
             struct stat statbuf;
-            if ( PORT_lstat( file.c_str(), &statbuf ) == 0 )
+            if ( lstat( file.c_str(), &statbuf ) == 0 )
             {
                if ( S_ISREG( statbuf.st_mode ) )
                {
@@ -354,6 +418,7 @@ bool PluginManager::loadPluginDir( const char * pluginDir )
             log_warning( "%s: %s\n", pluginDir, strerror(errno) );
          }
       }
+#endif
    }
 
    return false;

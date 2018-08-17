@@ -31,6 +31,11 @@
 #include <stdint.h>
 #include <sys/types.h>
 
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif // WIN32
+
 // This class is a DataSource that uses a FILE* as the underlying input
 // source. See the documentation in datasource.h for the DataSource API.
 // The details below are specific to the FileDataSource and probably not
@@ -55,7 +60,11 @@ class FileDataSource : public DataSource
          BUF_SIZE = 128 * 1024  // Arbitrary
       };
 
+#ifdef WIN32
+      HANDLE m_handle;
+#else
       FILE * m_fp;
+#endif // WIN32
       bool m_mustClose;
       uint8_t m_buf[ BUF_SIZE ];
 };
