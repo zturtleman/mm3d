@@ -60,6 +60,18 @@ int main( int argc, char * argv[] )
 {
    int rval = 0;
    
+#ifdef WIN32
+   // If started from command prompt, print messages there.
+   // TODO: If AttachConsole() returns 0 and specified arguments
+   // --debug, --warnings, or --errors run AllocConsole()
+   //if ( AttachConsole( ATTACH_PARENT_PROCESS ) || ( want log output && AllocConsole() ) )
+   if ( AttachConsole( ATTACH_PARENT_PROCESS ) )
+   {
+      freopen("CONOUT$", "w", stdout);
+      freopen("CONOUT$", "w", stderr);
+   }
+#endif
+
    log_profile_init( "profile_data.txt" );
 
    signal( SIGSEGV, segfault_handler );
