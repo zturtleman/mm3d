@@ -1265,7 +1265,7 @@ int32_t Md3Filter::setSkins( char *meshName )
          log_debug( "is default\n" );
          isDefault = true;
       }
-      if ( strcmp( ext, ".skin" ) == 0 )
+      if ( strcasecmp( ext, ".skin" ) == 0 )
       {
          Model::ModelErrorE err = Model::ERROR_NONE;
          DataSource *src = openInput( fullName.c_str(), err );
