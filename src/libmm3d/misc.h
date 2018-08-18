@@ -63,6 +63,8 @@ extern int  mkpath( const char * filename, mode_t mode );
 
 extern void chomp( char * str );
 
+extern bool filenameEndsWith( const char *filename, const char *tail );
+
 // returns length of string in number of utf8 characters
 size_t utf8len( const char * str );
 size_t utf8len( const std::string & str );

@@ -683,6 +683,14 @@ void chomp( char * str )
    }
 }
 
+bool filenameEndsWith( const char *filename, const char *tail )
+{
+   size_t filenameLength = strlen( filename );
+   size_t tailLength = strlen( tail );
+
+   return ( filenameLength > tailLength+1 && strcasecmp( &filename[filenameLength-tailLength], tail ) == 0 );
+}
+
 size_t utf8len( const char * str )
 {
    size_t len = 0;

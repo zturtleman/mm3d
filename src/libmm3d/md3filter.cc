@@ -1260,7 +1260,7 @@ int32_t Md3Filter::setSkins( char *meshName )
       //Only take the ones with .skin extension
       noext = strdup( fileName.c_str() );
       ext = strrchr( noext, '.' );
-      if ( PORT_strcasestr( fileName.c_str(), "_default.skin" ) != NULL )
+      if ( filenameEndsWith( fileName.c_str(), "_default.skin" ) )
       {
          log_debug( "is default\n" );
          isDefault = true;

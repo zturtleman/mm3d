@@ -238,47 +238,6 @@ int PORT_vsnprintf( char * dest, size_t len, const char * fmt, va_list args )
    return rval;
 }
 
-#ifdef WIN32
-const char * PORT_strcasestr( const char * haystack, const char * needle )
-{
-   bool match;
-
-   size_t hlen = strlen( haystack );
-   size_t nlen = strlen( needle );
-
-   match = false;
-
-   size_t i;
-   size_t j;
-
-   for ( i = 0; !match && i < hlen - nlen; i++ )
-   {
-      match = true;
-      for ( j = 0; match && j < nlen; j++ )
-      {
-         if ( toupper(haystack[i+j]) != toupper(needle[j]) ) 
-         {
-            match = false;
-         }
-      }
-   }
-
-   if ( match )
-   {
-      return (const char *) &haystack[i];
-   }
-   else
-   {
-      return NULL;
-   }
-}
-#else
-const char * PORT_strcasestr( const char * haystack, const char * needle )
-{
-   return strcasestr( haystack, needle );
-}
-#endif // WIN32
-
 char * PORT_basename( const char * path )
 {
    static char rval[ PATH_MAX ] = "";
