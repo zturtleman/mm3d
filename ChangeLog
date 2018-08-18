@@ -1,4 +1,5 @@
 Changes for 1.3.10
+   Create window as maximized if it fills the available screen space
    Load md3 player skins with upper case extension (.SKIN)
    Use Win32 API to support non-ASCII filenames
    RAW images are now loaded as little endian regardless of OS endianness

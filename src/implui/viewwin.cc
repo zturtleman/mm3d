@@ -75,6 +75,7 @@
 #include <QtWidgets/QApplication>
 #include <QtGui/QCloseEvent>
 #include <QtGui/QContextMenuEvent>
+#include <QtWidgets/QDesktopWidget>
 #include <QtWidgets/QDockWidget>
 #include <QtWidgets/QFileDialog>
 #include <QtGui/QIcon>
@@ -710,12 +711,33 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent )
          g_prefs.exists( "ui_viewwin_width")  ? g_prefs( "ui_viewwin_width" )  : 900,
          g_prefs.exists( "ui_viewwin_height") ? g_prefs( "ui_viewwin_height" ) : 700 );
 
+   // If the window size including the title bar etc is the area of the screen
+   // without taskbar etc then set the window to maximized.
+   QRect screenSpace = QApplication::desktop()->availableGeometry( this );
+   bool windowMaximized = false;
+   if ( g_prefs.exists( "ui_viewwin_lastframewidth") && g_prefs.exists( "ui_viewwin_lastframeheight") )
+   {
+      int frameWidth = g_prefs( "ui_viewwin_lastframewidth");
+      int frameHeight = g_prefs( "ui_viewwin_lastframeheight");
+
+      //log_debug( "Window frame size %dx%d, available %dx%d\n", frameWidth, frameHeight, screenSpace.width(), screenSpace.height() );
+
+      windowMaximized = ( frameWidth >= screenSpace.width() && frameHeight >= screenSpace.height() );
+   }
+
    setMinimumSize( 520, 520 );
 
    frameAllEvent();
 
    m_viewPanel->modelUpdatedEvent();
-   show();
+   if ( windowMaximized )
+   {
+      showMaximized();
+   }
+   else
+   {
+      show();
+   }
 
    QTimer * m_savedTimer = new QTimer();
    connect( m_savedTimer, SIGNAL(timeout()), this, SLOT(savedTimeoutCheck()) );
@@ -853,6 +875,11 @@ void ViewWindow::resizeEvent ( QResizeEvent * e )
    g_prefs( "ui_viewwin_height" ) = h;
 
    QMainWindow::resizeEvent(e);
+
+   g_prefs( "ui_viewwin_lastframewidth" )  = frameGeometry().width();
+   g_prefs( "ui_viewwin_lastframeheight" ) = frameGeometry().height();
+
+   //log_debug( "Resize: %dx%d, Window frame size: %dx%d\n", w, h, frameGeometry().width(), frameGeometry().height() );
 }
 
 /*
