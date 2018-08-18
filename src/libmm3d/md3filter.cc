@@ -1268,7 +1268,7 @@ int32_t Md3Filter::setSkins( char *meshName )
       if ( strcmp( ext, ".skin" ) == 0 )
       {
          Model::ModelErrorE err = Model::ERROR_NONE;
-         DataSource *src = openInput( fileName.c_str(), err );
+         DataSource *src = openInput( fullName.c_str(), err );
 
          if ( err != Model::ERROR_NONE )
          {
