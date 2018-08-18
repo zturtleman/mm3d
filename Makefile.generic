@@ -335,9 +335,11 @@ ifndef WINDEPLOYQT
   WINDEPLOYQT=${QT_BIN_DIR}/windeployqt${TOOLS_BINEXT}
 endif
 
+# Use debug or release cflags
+#CXXFLAGS=-Wall -g -ggdb
+CXXFLAGS=-O2 -s
 
-#CXXFLAGS=-Wall -g3
-CXXFLAGS=-O2 -s ${BASE_FLAGS} -fno-math-errno -I${QT_INCLUDE_DIR} -DMM3D_EDIT -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${B}/depui -I${B}/qtui -I${B}/implui -I${B}/commands
+CXXFLAGS+=${BASE_FLAGS} -fno-math-errno -I${QT_INCLUDE_DIR} -DMM3D_EDIT -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${B}/depui -I${B}/qtui -I${B}/implui -I${B}/commands
 
 ifndef MINGW
 # not for mingw because warning: -fPIC ignored for target (all code is position independent)
