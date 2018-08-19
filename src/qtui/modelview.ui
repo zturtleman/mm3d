@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>ModelViewBase</class>
- <widget class="QWidget" name="ModelViewBase" >
-  <property name="geometry" >
+ <widget class="QWidget" name="ModelViewBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,71 +10,87 @@
     <height>315</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>ModelView</string>
   </property>
-  <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>3</number>
-   </property>
-   <property name="spacing" >
+  <layout class="QVBoxLayout">
+   <property name="spacing">
     <number>2</number>
    </property>
+   <property name="leftMargin">
+    <number>3</number>
+   </property>
+   <property name="topMargin">
+    <number>3</number>
+   </property>
+   <property name="rightMargin">
+    <number>3</number>
+   </property>
+   <property name="bottomMargin">
+    <number>3</number>
+   </property>
    <item>
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
+    <layout class="QHBoxLayout">
+     <property name="spacing">
       <number>6</number>
      </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
      <item>
-      <widget class="QComboBox" name="m_viewInput" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>3</hsizetype>
-         <vsizetype>0</vsizetype>
+      <widget class="QComboBox" name="m_viewInput">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <item>
-        <property name="text" >
+        <property name="text">
          <string>Perspective</string>
         </property>
        </item>
        <item>
-        <property name="text" >
+        <property name="text">
          <string>Front</string>
         </property>
        </item>
        <item>
-        <property name="text" >
+        <property name="text">
          <string>Back</string>
         </property>
        </item>
        <item>
-        <property name="text" >
+        <property name="text">
          <string>Left</string>
         </property>
        </item>
        <item>
-        <property name="text" >
+        <property name="text">
          <string>Right</string>
         </property>
        </item>
        <item>
-        <property name="text" >
+        <property name="text">
          <string>Top</string>
         </property>
        </item>
        <item>
-        <property name="text" >
+        <property name="text">
          <string>Bottom</string>
         </property>
        </item>
        <item>
-        <property name="text" >
+        <property name="text">
          <string>Orthographic</string>
         </property>
        </item>
@@ -81,10 +98,10 @@
      </item>
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -93,69 +110,68 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLineEdit" name="m_zoomInput" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>3</hsizetype>
-         <vsizetype>0</vsizetype>
+      <widget class="QLineEdit" name="m_zoomInput">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="maximumSize" >
+       <property name="maximumSize">
         <size>
          <width>90</width>
          <height>32767</height>
         </size>
        </property>
-       <property name="maxLength" >
+       <property name="maxLength">
         <number>6</number>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="m_zoomInButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="m_zoomInButton">
+       <property name="text">
         <string/>
-       </property>
-       <property name="icon" >
-        <pixmap>image0</pixmap>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="m_zoomOutButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="m_zoomOutButton">
+       <property name="text">
         <string/>
-       </property>
-       <property name="icon" >
-        <pixmap>image1</pixmap>
        </property>
       </widget>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="QFrame" name="Frame3" >
-     <property name="frameShape" >
+    <widget class="QFrame" name="Frame3">
+     <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
-     <property name="frameShadow" >
+     <property name="frameShadow">
       <enum>QFrame::Sunken</enum>
      </property>
-     <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>2</number>
-      </property>
-      <property name="spacing" >
+     <layout class="QHBoxLayout">
+      <property name="spacing">
        <number>6</number>
       </property>
+      <property name="leftMargin">
+       <number>2</number>
+      </property>
+      <property name="topMargin">
+       <number>2</number>
+      </property>
+      <property name="rightMargin">
+       <number>2</number>
+      </property>
+      <property name="bottomMargin">
+       <number>2</number>
+      </property>
       <item>
-       <widget class="ModelViewport" native="1" name="m_modelView" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>3</hsizetype>
-          <vsizetype>3</vsizetype>
+       <widget class="ModelViewport" name="m_modelView" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -167,7 +183,7 @@
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
    <class>ModelViewport</class>
@@ -175,16 +191,8 @@
    <header>modelviewport.h</header>
   </customwidget>
  </customwidgets>
- <images>
-  <image name="image0" >
-   <data format="PNG" length="235" >89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000000b249444154388dbd943b128030084489e3a96872761aaea5559c154984f8d94acdf05857b0a82a7da1e5132a11adbd0366def05e554b065c6c141668156d700223d40246679edc8c5b21336f0d988de2004700d8f00eec7e3c5b38e3fadf71b3af9ccd97081c47f2cb3472a340806d2822a769e929b52022725cd75a69e4fee2185ddae70d864d7a462e8e47c238ee9ca7c6ad15479ca7e7380a9f5a90087c7af346f047600f8e4d5253d193f7af7e05ec69076ea88dcdcb33ac120000000049454e44ae426082</data>
-  </image>
-  <image name="image1" >
-   <data format="PNG" length="237" >89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000000b449444154388dbd944112c4200804c7adbc8a8b6fe7c2b7929316aba0906c764e492c9aa9115244046fe8f30a15c0e11d10d1a9df45a464c0658c62048e8a36f8026be808589d593233b60ab351747073b402b4b35d5c8073795e61c6f57fc72d9ba7a5ee38925fe41e26b005b0be313388e8dc5d606a4198b93fd75a01f8ee27c72252bc396e30ddc43332395e49c7b1739e1ab7561c719e9ee328fcd68244e0b7376f057f04b6e0ba496a2a3c59ffea9f802d5dd65480209d1dd5d70000000049454e44ae426082</data>
-  </image>
- </images>
  <includes>
-  <include location="local" >modelviewport.h</include>
+  <include location="local">modelviewport.h</include>
  </includes>
  <resources/>
  <connections>
@@ -194,11 +202,11 @@
    <receiver>m_modelView</receiver>
    <slot>viewChangeEvent(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -210,11 +218,11 @@
    <receiver>ModelViewBase</receiver>
    <slot>zoomLevelEnterEvent()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -226,11 +234,11 @@
    <receiver>m_zoomInput</receiver>
    <slot>setText(QString)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -242,11 +250,11 @@
    <receiver>ModelViewBase</receiver>
    <slot>zoomInEvent()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -258,11 +266,11 @@
    <receiver>ModelViewBase</receiver>
    <slot>zoomOutEvent()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>

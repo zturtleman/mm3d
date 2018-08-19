@@ -1,166 +1,251 @@
-<ui version="4.0" stdsetdef="1" >
-  <author></author>
-  <comment></comment>
-  <exportmacro></exportmacro>
-  <class>PointWinBase</class>
-  <widget class="QDialog" name="PointWinBase" >
-    <property name="geometry" >
-      <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>286</width>
-        <height>265</height>
-      </rect>
-    </property>
-    <property name="windowTitle" >
-      <string>Points</string>
-    </property>
-    <layout class="QVBoxLayout" >
-      <property name="margin" >
-        <number>11</number>
-      </property>
-      <property name="spacing" >
-        <number>6</number>
-      </property>
-      <item>
-        <widget class="QComboBox" name="m_pointName" />
-      </item>
-      <item>
-        <layout class="QHBoxLayout" >
-          <property name="margin" >
-            <number>0</number>
-          </property>
-          <property name="spacing" >
-            <number>6</number>
-          </property>
-          <item>
-            <widget class="QPushButton" name="m_renameButton" >
-              <property name="text" >
-                <string>Rename</string>
-              </property>
-            </widget>
-          </item>
-          <item>
-            <widget class="QPushButton" name="m_deleteButton" >
-              <property name="text" >
-                <string>Delete</string>
-              </property>
-            </widget>
-          </item>
-        </layout>
-      </item>
-      <item>
-        <widget class="QGroupBox" name="GroupBox1" >
-          <property name="title" >
-            <string>Bone Joint</string>
-          </property>
-          <layout class="QVBoxLayout" >
-            <property name="margin" >
-              <number>6</number>
-            </property>
-            <property name="spacing" >
-              <number>6</number>
-            </property>
-            <item>
-              <widget class="QComboBox" name="m_pointJoint" >
-                <item>
-                  <property name="text" >
-                    <string>(none)</string>
-                  </property>
-                </item>
-              </widget>
-            </item>
-          </layout>
-        </widget>
-      </item>
-      <item>
-        <layout class="QHBoxLayout" >
-          <property name="margin" >
-            <number>0</number>
-          </property>
-          <item>
-            <widget class="QLabel" name="textLabel3" >
-              <property name="text" >
-                <string>F1 for help</string>
-              </property>
-              <property name="wordWrap" >
-                <bool>false</bool>
-              </property>
-            </widget>
-          </item>
-          <item>
-            <spacer name="Spacer1" >
-              <property name="sizeHint" >
-                <size>
-                  <width>20</width>
-                  <height>20</height>
-                </size>
-              </property>
-              <property name="sizeType" >
-                <enum>Expanding</enum>
-              </property>
-              <property name="orientation" >
-                <enum>Horizontal</enum>
-              </property>
-            </spacer>
-          </item>
-          <item>
-            <widget class="QPushButton" name="m_okButton" >
-              <property name="text" >
-                <string>Ok</string>
-              </property>
-            </widget>
-          </item>
-          <item>
-            <widget class="QPushButton" name="m_cancelButton" >
-              <property name="text" >
-                <string>Cancel</string>
-              </property>
-            </widget>
-          </item>
-        </layout>
-      </item>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PointWinBase</class>
+ <widget class="QDialog" name="PointWinBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>286</width>
+    <height>265</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Points</string>
+  </property>
+  <layout class="QVBoxLayout">
+   <property name="spacing">
+    <number>6</number>
+   </property>
+   <property name="leftMargin">
+    <number>11</number>
+   </property>
+   <property name="topMargin">
+    <number>11</number>
+   </property>
+   <property name="rightMargin">
+    <number>11</number>
+   </property>
+   <property name="bottomMargin">
+    <number>11</number>
+   </property>
+   <item>
+    <widget class="QComboBox" name="m_pointName"/>
+   </item>
+   <item>
+    <layout class="QHBoxLayout">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="m_renameButton">
+       <property name="text">
+        <string>Rename</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_deleteButton">
+       <property name="text">
+        <string>Delete</string>
+       </property>
+      </widget>
+     </item>
     </layout>
-  </widget>
-  <layoutdefault spacing="6" margin="11" />
-  <tabstops>
-    <tabstop>m_pointName</tabstop>
-    <tabstop>m_renameButton</tabstop>
-    <tabstop>m_deleteButton</tabstop>
-    <tabstop>m_pointJoint</tabstop>
-    <tabstop>m_okButton</tabstop>
-    <tabstop>m_cancelButton</tabstop>
-  </tabstops>
-  <connections>
-    <connection>
-      <sender>m_okButton</sender>
-      <signal>clicked()</signal>
-      <receiver>PointWinBase</receiver>
-      <slot>accept()</slot>
-    </connection>
-    <connection>
-      <sender>m_cancelButton</sender>
-      <signal>clicked()</signal>
-      <receiver>PointWinBase</receiver>
-      <slot>reject()</slot>
-    </connection>
-    <connection>
-      <sender>m_pointName</sender>
-      <signal>activated(int)</signal>
-      <receiver>PointWinBase</receiver>
-      <slot>pointNameSelected(int)</slot>
-    </connection>
-    <connection>
-      <sender>m_renameButton</sender>
-      <signal>clicked()</signal>
-      <receiver>PointWinBase</receiver>
-      <slot>renameClicked()</slot>
-    </connection>
-    <connection>
-      <sender>m_pointJoint</sender>
-      <signal>activated(int)</signal>
-      <receiver>PointWinBase</receiver>
-      <slot>pointJointSelected(int)</slot>
-    </connection>
-  </connections>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="GroupBox1">
+     <property name="title">
+      <string>Bone Joint</string>
+     </property>
+     <layout class="QVBoxLayout">
+      <property name="spacing">
+       <number>6</number>
+      </property>
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QComboBox" name="m_pointJoint">
+        <item>
+         <property name="text">
+          <string>(none)</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="textLabel3">
+       <property name="text">
+        <string>F1 for help</string>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="Spacer1">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_okButton">
+       <property name="text">
+        <string>Ok</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_cancelButton">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>m_pointName</tabstop>
+  <tabstop>m_renameButton</tabstop>
+  <tabstop>m_deleteButton</tabstop>
+  <tabstop>m_pointJoint</tabstop>
+  <tabstop>m_okButton</tabstop>
+  <tabstop>m_cancelButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>m_okButton</sender>
+   <signal>clicked()</signal>
+   <receiver>PointWinBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_cancelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>PointWinBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pointName</sender>
+   <signal>activated(int)</signal>
+   <receiver>PointWinBase</receiver>
+   <slot>pointNameSelected(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_renameButton</sender>
+   <signal>clicked()</signal>
+   <receiver>PointWinBase</receiver>
+   <slot>renameClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pointJoint</sender>
+   <signal>activated(int)</signal>
+   <receiver>PointWinBase</receiver>
+   <slot>pointJointSelected(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

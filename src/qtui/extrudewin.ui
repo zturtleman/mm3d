@@ -1,231 +1,305 @@
-<ui version="4.0" stdsetdef="1" >
-  <author></author>
-  <comment></comment>
-  <exportmacro></exportmacro>
-  <class>ExtrudeWinBase</class>
-  <widget class="QDialog" name="ExtrudeWinBase" >
-    <property name="geometry" >
-      <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>270</width>
-        <height>276</height>
-      </rect>
-    </property>
-    <property name="windowTitle" >
-      <string>Extrude</string>
-    </property>
-    <layout class="QVBoxLayout" >
-      <property name="margin" >
-        <number>11</number>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ExtrudeWinBase</class>
+ <widget class="QDialog" name="ExtrudeWinBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>270</width>
+    <height>276</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Extrude</string>
+  </property>
+  <layout class="QVBoxLayout">
+   <property name="spacing">
+    <number>6</number>
+   </property>
+   <property name="leftMargin">
+    <number>11</number>
+   </property>
+   <property name="topMargin">
+    <number>11</number>
+   </property>
+   <property name="rightMargin">
+    <number>11</number>
+   </property>
+   <property name="bottomMargin">
+    <number>11</number>
+   </property>
+   <item>
+    <widget class="QGroupBox" name="GroupBox3">
+     <property name="title">
+      <string>Extrude options</string>
+     </property>
+     <layout class="QVBoxLayout">
+      <property name="spacing">
+       <number>6</number>
       </property>
-      <property name="spacing" >
-        <number>6</number>
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
       </property>
       <item>
-        <widget class="QGroupBox" name="GroupBox3" >
-          <property name="title" >
-            <string>Extrude options</string>
+       <layout class="QGridLayout">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <property name="spacing">
+         <number>6</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="TextLabel1">
+          <property name="text">
+           <string>X:</string>
           </property>
-          <layout class="QVBoxLayout" >
-            <property name="margin" >
-              <number>6</number>
-            </property>
-            <property name="spacing" >
-              <number>6</number>
-            </property>
-            <item>
-              <layout class="QGridLayout" >
-                <property name="margin" >
-                  <number>0</number>
-                </property>
-                <property name="spacing" >
-                  <number>6</number>
-                </property>
-                <item row="0" column="0" >
-                  <widget class="QLabel" name="TextLabel1" >
-                    <property name="text" >
-                      <string>X:</string>
-                    </property>
-                    <property name="wordWrap" >
-                      <bool>false</bool>
-                    </property>
-                  </widget>
-                </item>
-                <item row="1" column="1" >
-                  <widget class="QLineEdit" name="m_yEdit" >
-                    <property name="text" >
-                      <string>0</string>
-                    </property>
-                  </widget>
-                </item>
-                <item row="2" column="0" >
-                  <widget class="QLabel" name="TextLabel1_3" >
-                    <property name="text" >
-                      <string>Z:</string>
-                    </property>
-                    <property name="wordWrap" >
-                      <bool>false</bool>
-                    </property>
-                  </widget>
-                </item>
-                <item row="2" column="1" >
-                  <widget class="QLineEdit" name="m_zEdit" >
-                    <property name="text" >
-                      <string>0</string>
-                    </property>
-                  </widget>
-                </item>
-                <item row="0" column="1" >
-                  <widget class="QLineEdit" name="m_xEdit" >
-                    <property name="text" >
-                      <string>0</string>
-                    </property>
-                  </widget>
-                </item>
-                <item row="1" column="0" >
-                  <widget class="QLabel" name="TextLabel1_2" >
-                    <property name="text" >
-                      <string>Y:</string>
-                    </property>
-                    <property name="wordWrap" >
-                      <bool>false</bool>
-                    </property>
-                  </widget>
-                </item>
-              </layout>
-            </item>
-            <item>
-              <widget class="QCheckBox" name="m_backFaceCheckbox" >
-                <property name="text" >
-                  <string>Make Back Faces</string>
-                </property>
-              </widget>
-            </item>
-            <item>
-              <spacer name="Spacer10" >
-                <property name="sizeHint" >
-                  <size>
-                    <width>16</width>
-                    <height>16</height>
-                  </size>
-                </property>
-                <property name="sizeType" >
-                  <enum>Expanding</enum>
-                </property>
-                <property name="orientation" >
-                  <enum>Vertical</enum>
-                </property>
-              </spacer>
-            </item>
-            <item>
-              <layout class="QHBoxLayout" >
-                <property name="margin" >
-                  <number>0</number>
-                </property>
-                <property name="spacing" >
-                  <number>6</number>
-                </property>
-                <item>
-                  <spacer name="Spacer2" >
-                    <property name="sizeHint" >
-                      <size>
-                        <width>111</width>
-                        <height>0</height>
-                      </size>
-                    </property>
-                    <property name="sizeType" >
-                      <enum>Expanding</enum>
-                    </property>
-                    <property name="orientation" >
-                      <enum>Horizontal</enum>
-                    </property>
-                  </spacer>
-                </item>
-                <item>
-                  <widget class="QPushButton" name="m_absoluteExtrudeButton" >
-                    <property name="text" >
-                      <string>E&amp;xtrude</string>
-                    </property>
-                  </widget>
-                </item>
-              </layout>
-            </item>
-          </layout>
-        </widget>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="m_yEdit">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="TextLabel1_3">
+          <property name="text">
+           <string>Z:</string>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="m_zEdit">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="m_xEdit">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="TextLabel1_2">
+          <property name="text">
+           <string>Y:</string>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
-        <layout class="QHBoxLayout" >
-          <property name="margin" >
-            <number>0</number>
-          </property>
-          <item>
-            <widget class="QLabel" name="textLabel4" >
-              <property name="text" >
-                <string>Press F1 for help</string>
-              </property>
-              <property name="wordWrap" >
-                <bool>false</bool>
-              </property>
-            </widget>
-          </item>
-          <item>
-            <spacer name="Spacer1" >
-              <property name="sizeHint" >
-                <size>
-                  <width>40</width>
-                  <height>20</height>
-                </size>
-              </property>
-              <property name="sizeType" >
-                <enum>Expanding</enum>
-              </property>
-              <property name="orientation" >
-                <enum>Horizontal</enum>
-              </property>
-            </spacer>
-          </item>
-          <item>
-            <widget class="QPushButton" name="m_closeButton" >
-              <property name="text" >
-                <string>Close</string>
-              </property>
-              <property name="default" >
-                <bool>true</bool>
-              </property>
-            </widget>
-          </item>
-        </layout>
+       <widget class="QCheckBox" name="m_backFaceCheckbox">
+        <property name="text">
+         <string>Make Back Faces</string>
+        </property>
+       </widget>
       </item>
+      <item>
+       <spacer name="Spacer10">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QHBoxLayout">
+        <property name="spacing">
+         <number>6</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <spacer name="Spacer2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>111</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="m_absoluteExtrudeButton">
+          <property name="text">
+           <string>E&amp;xtrude</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="textLabel4">
+       <property name="text">
+        <string>Press F1 for help</string>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="Spacer1">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_closeButton">
+       <property name="text">
+        <string>Close</string>
+       </property>
+       <property name="default">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
     </layout>
-  </widget>
-  <layoutdefault spacing="6" margin="11" />
-  <tabstops>
-    <tabstop>m_xEdit</tabstop>
-    <tabstop>m_yEdit</tabstop>
-    <tabstop>m_zEdit</tabstop>
-    <tabstop>m_backFaceCheckbox</tabstop>
-    <tabstop>m_absoluteExtrudeButton</tabstop>
-    <tabstop>m_closeButton</tabstop>
-  </tabstops>
-  <connections>
-    <connection>
-      <sender>m_closeButton</sender>
-      <signal>clicked()</signal>
-      <receiver>ExtrudeWinBase</receiver>
-      <slot>close()</slot>
-    </connection>
-    <connection>
-      <sender>m_absoluteExtrudeButton</sender>
-      <signal>clicked()</signal>
-      <receiver>ExtrudeWinBase</receiver>
-      <slot>absoluteExtrudeEvent()</slot>
-    </connection>
-    <connection>
-      <sender>m_backFaceCheckbox</sender>
-      <signal>toggled(bool)</signal>
-      <receiver>ExtrudeWinBase</receiver>
-      <slot>backFacesChanged(bool)</slot>
-    </connection>
-  </connections>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>m_xEdit</tabstop>
+  <tabstop>m_yEdit</tabstop>
+  <tabstop>m_zEdit</tabstop>
+  <tabstop>m_backFaceCheckbox</tabstop>
+  <tabstop>m_absoluteExtrudeButton</tabstop>
+  <tabstop>m_closeButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>m_closeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>ExtrudeWinBase</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_absoluteExtrudeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>ExtrudeWinBase</receiver>
+   <slot>absoluteExtrudeEvent()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_backFaceCheckbox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>ExtrudeWinBase</receiver>
+   <slot>backFacesChanged(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

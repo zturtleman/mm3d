@@ -1,225 +1,323 @@
-<ui version="4.0" stdsetdef="1" >
-  <author></author>
-  <comment></comment>
-  <exportmacro></exportmacro>
-  <class>AnimWidgetBase</class>
-  <widget class="QWidget" name="AnimWidgetBase" >
-    <property name="geometry" >
-      <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>748</width>
-        <height>67</height>
-      </rect>
-    </property>
-    <property name="sizePolicy" >
-      <sizepolicy>
-        <hsizetype>3</hsizetype>
-        <vsizetype>1</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-      </sizepolicy>
-    </property>
-    <property name="windowTitle" >
-      <string>Animation</string>
-    </property>
-    <layout class="QVBoxLayout" >
-      <property name="margin" >
-        <number>2</number>
-      </property>
-      <property name="spacing" >
-        <number>3</number>
-      </property>
-      <item>
-        <layout class="QHBoxLayout" >
-          <property name="margin" >
-            <number>0</number>
-          </property>
-          <item>
-            <widget class="QComboBox" name="m_animName" >
-              <property name="sizePolicy" >
-                <sizepolicy>
-                  <hsizetype>7</hsizetype>
-                  <vsizetype>0</vsizetype>
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                </sizepolicy>
-              </property>
-              <property name="minimumSize" >
-                <size>
-                  <width>140</width>
-                  <height>0</height>
-                </size>
-              </property>
-            </widget>
-          </item>
-          <item>
-            <widget class="QPushButton" name="m_deleteButton" >
-              <property name="text" >
-                <string>X</string>
-              </property>
-              <property name="toolTip" stdset="0" >
-                <string>Delete Animation</string>
-              </property>
-            </widget>
-          </item>
-          <item>
-            <widget class="QLabel" name="TextLabel3" >
-              <property name="text" >
-                <string>FPS</string>
-              </property>
-              <property name="wordWrap" >
-                <bool>false</bool>
-              </property>
-            </widget>
-          </item>
-          <item>
-            <widget class="QLineEdit" name="m_fps" >
-              <property name="sizePolicy" >
-                <sizepolicy>
-                  <hsizetype>0</hsizetype>
-                  <vsizetype>0</vsizetype>
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                </sizepolicy>
-              </property>
-            </widget>
-          </item>
-          <item>
-            <widget class="QCheckBox" name="m_loop" >
-              <property name="text" >
-                <string>Loop</string>
-              </property>
-            </widget>
-          </item>
-          <item>
-            <widget class="QPushButton" name="m_play" >
-              <property name="text" >
-                <string>Play</string>
-              </property>
-            </widget>
-          </item>
-          <item>
-            <widget class="QPushButton" name="m_stop" >
-              <property name="text" >
-                <string>Stop</string>
-              </property>
-            </widget>
-          </item>
-        </layout>
-      </item>
-      <item>
-        <layout class="QHBoxLayout" >
-          <property name="margin" >
-            <number>0</number>
-          </property>
-          <item>
-            <widget class="QLabel" name="TextLabel1" >
-              <property name="text" >
-                <string>Frames</string>
-              </property>
-              <property name="wordWrap" >
-                <bool>false</bool>
-              </property>
-            </widget>
-          </item>
-          <item>
-            <widget class="QSpinBox" name="m_frameCount" >
-              <property name="maximum" >
-                <number>999</number>
-              </property>
-            </widget>
-          </item>
-          <item>
-            <widget class="QLabel" name="m_countLabel" >
-              <property name="sizePolicy" >
-                <sizepolicy>
-                  <hsizetype>0</hsizetype>
-                  <vsizetype>5</vsizetype>
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                </sizepolicy>
-              </property>
-              <property name="minimumSize" >
-                <size>
-                  <width>115</width>
-                  <height>0</height>
-                </size>
-              </property>
-              <property name="text" >
-                <string>Frame: 03</string>
-              </property>
-              <property name="wordWrap" >
-                <bool>false</bool>
-              </property>
-            </widget>
-          </item>
-          <item>
-            <widget class="QSlider" name="m_countSlider" >
-              <property name="maximum" >
-                <number>29</number>
-              </property>
-              <property name="orientation" >
-                <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="tickInterval" >
-                <number>1</number>
-              </property>
-            </widget>
-          </item>
-        </layout>
-      </item>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AnimWidgetBase</class>
+ <widget class="QWidget" name="AnimWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>748</width>
+    <height>67</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Animation</string>
+  </property>
+  <layout class="QVBoxLayout">
+   <property name="spacing">
+    <number>3</number>
+   </property>
+   <property name="leftMargin">
+    <number>2</number>
+   </property>
+   <property name="topMargin">
+    <number>2</number>
+   </property>
+   <property name="rightMargin">
+    <number>2</number>
+   </property>
+   <property name="bottomMargin">
+    <number>2</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QComboBox" name="m_animName">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>140</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_deleteButton">
+       <property name="toolTip">
+        <string>Delete Animation</string>
+       </property>
+       <property name="text">
+        <string>X</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="TextLabel3">
+       <property name="text">
+        <string>FPS</string>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="m_fps">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="m_loop">
+       <property name="text">
+        <string>Loop</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_play">
+       <property name="text">
+        <string>Play</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_stop">
+       <property name="text">
+        <string>Stop</string>
+       </property>
+      </widget>
+     </item>
     </layout>
-  </widget>
-  <layoutdefault spacing="6" margin="11" />
-  <connections>
-    <connection>
-      <sender>m_animName</sender>
-      <signal>activated(int)</signal>
-      <receiver>AnimWidgetBase</receiver>
-      <slot>nameSelected(int)</slot>
-    </connection>
-    <connection>
-      <sender>m_fps</sender>
-      <signal>textChanged(QString)</signal>
-      <receiver>AnimWidgetBase</receiver>
-      <slot>changeFPS()</slot>
-    </connection>
-    <connection>
-      <sender>m_loop</sender>
-      <signal>toggled(bool)</signal>
-      <receiver>AnimWidgetBase</receiver>
-      <slot>loopToggled(bool)</slot>
-    </connection>
-    <connection>
-      <sender>m_play</sender>
-      <signal>clicked()</signal>
-      <receiver>AnimWidgetBase</receiver>
-      <slot>playClicked()</slot>
-    </connection>
-    <connection>
-      <sender>m_stop</sender>
-      <signal>clicked()</signal>
-      <receiver>AnimWidgetBase</receiver>
-      <slot>stopClicked()</slot>
-    </connection>
-    <connection>
-      <sender>m_frameCount</sender>
-      <signal>valueChanged(int)</signal>
-      <receiver>AnimWidgetBase</receiver>
-      <slot>changeFrameCount()</slot>
-    </connection>
-    <connection>
-      <sender>m_countSlider</sender>
-      <signal>sliderMoved(int)</signal>
-      <receiver>AnimWidgetBase</receiver>
-      <slot>setCurrentFrame(int)</slot>
-    </connection>
-    <connection>
-      <sender>m_deleteButton</sender>
-      <signal>clicked()</signal>
-      <receiver>AnimWidgetBase</receiver>
-      <slot>deleteClicked()</slot>
-    </connection>
-  </connections>
+   </item>
+   <item>
+    <layout class="QHBoxLayout">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="TextLabel1">
+       <property name="text">
+        <string>Frames</string>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="m_frameCount">
+       <property name="maximum">
+        <number>999</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="m_countLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>115</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Frame: 03</string>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSlider" name="m_countSlider">
+       <property name="maximum">
+        <number>29</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="tickInterval">
+        <number>1</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>m_animName</sender>
+   <signal>activated(int)</signal>
+   <receiver>AnimWidgetBase</receiver>
+   <slot>nameSelected(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_fps</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>AnimWidgetBase</receiver>
+   <slot>changeFPS()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_loop</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>AnimWidgetBase</receiver>
+   <slot>loopToggled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_play</sender>
+   <signal>clicked()</signal>
+   <receiver>AnimWidgetBase</receiver>
+   <slot>playClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_stop</sender>
+   <signal>clicked()</signal>
+   <receiver>AnimWidgetBase</receiver>
+   <slot>stopClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_frameCount</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>AnimWidgetBase</receiver>
+   <slot>changeFrameCount()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_countSlider</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>AnimWidgetBase</receiver>
+   <slot>setCurrentFrame(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_deleteButton</sender>
+   <signal>clicked()</signal>
+   <receiver>AnimWidgetBase</receiver>
+   <slot>deleteClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
