@@ -280,6 +280,10 @@
            <property name="text">
             <string/>
            </property>
+           <property name="icon">
+            <iconset resource="resources.qrc">
+             <normaloff>:/images/zoomin.xpm</normaloff>:/images/zoomin.xpm</iconset>
+           </property>
            <property name="autoDefault">
             <bool>false</bool>
            </property>
@@ -289,6 +293,10 @@
           <widget class="QPushButton" name="m_zoomOutButton">
            <property name="text">
             <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="resources.qrc">
+             <normaloff>:/images/zoomout.xpm</normaloff>:/images/zoomout.xpm</iconset>
            </property>
           </widget>
          </item>
@@ -541,7 +549,9 @@
  <includes>
   <include location="local">textureframe.h</include>
  </includes>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>m_selectButton</sender>

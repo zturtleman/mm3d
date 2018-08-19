@@ -133,12 +133,20 @@
        <property name="text">
         <string/>
        </property>
+       <property name="icon">
+        <iconset resource="resources.qrc">
+         <normaloff>:/images/zoomin.xpm</normaloff>:/images/zoomin.xpm</iconset>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="m_zoomOutButton">
        <property name="text">
         <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="resources.qrc">
+         <normaloff>:/images/zoomout.xpm</normaloff>:/images/zoomout.xpm</iconset>
        </property>
       </widget>
      </item>
@@ -194,7 +202,9 @@
  <includes>
   <include location="local">modelviewport.h</include>
  </includes>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>m_viewInput</sender>

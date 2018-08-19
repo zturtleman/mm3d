@@ -82,6 +82,8 @@ int main( int argc, char * argv[] )
    init_prefs();
    init_cmdline( argc, argv );
 
+   Q_INIT_RESOURCE( qtuiResources );
+
    ui_prep( argc, argv );
 
    {

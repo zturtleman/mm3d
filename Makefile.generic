@@ -117,7 +117,7 @@ ifdef MINGW
   endif
 
   ifndef QT_BIN_DIR
-    $(error Need to specify QT_BIN_DIR with native Qt5 executables for uic, moc, and lrelease)
+    $(error Need to specify QT_BIN_DIR with native Qt5 executables for uic, moc, rcc, and lrelease)
   endif
   ifndef QT_INCLUDE_DIR
     $(error Need to specify QT_INCLUDE_DIR with MinGW Qt5 headers)
@@ -328,6 +328,9 @@ endif
 ifndef MOC
   MOC=${QT_BIN_DIR}/moc${TOOLS_BINEXT}
 endif
+ifndef RCC
+  RCC=${QT_BIN_DIR}/rcc${TOOLS_BINEXT}
+endif
 ifndef LRELEASE
   LRELEASE=${QT_BIN_DIR}/lrelease${TOOLS_BINEXT}
 endif
@@ -452,7 +455,9 @@ MM3D_UI= \
 	${B}/qtui/texwin.base.h \
 	${B}/qtui/transformwin.base.h \
 	${B}/qtui/valuewin.base.h \
-	${B}/qtui/viewportsettings.base.h
+	${B}/qtui/viewportsettings.base.h \
+	\
+	${B}/qtui/resources.cpp
 
 MM3D_MOC= \
 	${B}/implui/alignwin.moc.cc \
@@ -684,6 +689,7 @@ MM3D_OBJ= \
 	${B}/implui/qtmain.o \
 	${B}/implui/qttex.o \
 	${B}/tools/rectangletool.o \
+	${B}/qtui/resources.o \
 	${B}/implui/rgbawin.o \
 	${B}/mm3dcore/rotatepoint.o \
 	${B}/commands/rotatetexcmd.o \
@@ -911,6 +917,10 @@ ${B}/tools/%.moc.cc: src/tools/%.h
 
 ${B}/depui/%.moc.cc: src/depui/%.h
 	$(DO_MOC)
+
+${B}/qtui/resources.cpp: src/qtui/resources.qrc src/qtui/images/zoomin.xpm src/qtui/images/zoomout.xpm
+	$(echo_cmd) "RCC $<"
+	$(Q)${RCC} --name qtuiResources $< -o $@
 
 ${B}/i18n/%.qm: i18n/%.ts
 	$(DO_LRELEASE)

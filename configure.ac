@@ -107,6 +107,7 @@ AC_CONFIG_FILES([ Makefile
           src/mm3dcore/Makefile
           src/depui/Makefile
           src/qtui/Makefile
+          src/qtui/images/Makefile
           src/implui/Makefile
           src/tools/Makefile
           src/commands/Makefile

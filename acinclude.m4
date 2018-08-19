@@ -563,6 +563,10 @@ AC_DEFUN([BNV_HAVE_QT],
       if test -x "$bnv_qt_bin_dir/moc"; then
         QT_MOC="$bnv_qt_bin_dir/moc"
       fi
+      # RCC detection
+      if test -x "$bnv_qt_bin_dir/rcc"; then
+        QT_RCC="$bnv_qt_bin_dir/rcc"
+      fi
       # LRELEASE detection
       if test -x "$bnv_qt_bin_dir/lrelease"; then
         QT_LRELEASE="$bnv_qt_bin_dir/lrelease"
@@ -581,6 +585,10 @@ AC_DEFUN([BNV_HAVE_QT],
       # MOC detection
       if test -x "$bnv_qt_dir/bin/moc"; then
         QT_MOC="$bnv_qt_dir/bin/moc"
+      fi
+      # RCC detection
+      if test -x "$bnv_qt_dir/bin/rcc"; then
+        QT_RCC="$bnv_qt_dir/bin/rcc"
       fi
       # LRELEASE detection
       if test -x "$bnv_qt_dir/bin/lrelease"; then
@@ -611,6 +619,12 @@ AC_DEFUN([BNV_HAVE_QT],
         QT_MOC="/usr/lib/$bnv_qt_lib_host/qt5/bin/moc"
       fi
     fi
+    if test x"$QT_RCC" = x; then
+      # RCC detection
+      if test -x "/usr/lib/$bnv_qt_lib_host/qt5/bin/rcc"; then
+        QT_RCC="/usr/lib/$bnv_qt_lib_host/qt5/bin/rcc"
+      fi
+    fi
     if test x"$QT_LRELEASE" = x; then
       # LRELEASE detection
       if test -x "/usr/lib/$bnv_qt_lib_host/qt5/bin/lrelease"; then
@@ -635,6 +649,12 @@ AC_DEFUN([BNV_HAVE_QT],
       # MOC detection
       if test `which qtchooser 2> /dev/null`; then
         QT_MOC="qtchooser -qt=5 -run-tool=moc"
+      fi
+    fi
+    if test x"$QT_RCC" = x; then
+      # RCC detection
+      if test `which qtchooser 2> /dev/null`; then
+        QT_RCC="qtchooser -qt=5 -run-tool=rcc"
       fi
     fi
     if test x"$QT_LRELEASE" = x; then
@@ -663,6 +683,12 @@ AC_DEFUN([BNV_HAVE_QT],
         QT_MOC=`which moc`
       fi
     fi
+    if test x"$QT_RCC" = x; then
+      # RCC detection
+      if test `which rcc 2> /dev/null`; then
+        QT_RCC=`which rcc`
+      fi
+    fi
     if test x"$QT_LRELEASE" = x; then
       # LRELEASE detection
       if test `which lrelease 2> /dev/null`; then
@@ -682,6 +708,7 @@ AC_DEFUN([BNV_HAVE_QT],
     QT_LIBS=$QT_LIBS
     QT_UIC=$QT_UIC
     QT_MOC=$QT_MOC
+    QT_RCC=$QT_RCC
     QT_LRELEASE=$QT_LRELEASE
     QT_MACDEPLOYQT=$QT_MACDEPLOYQT])
   else
@@ -691,6 +718,7 @@ AC_DEFUN([BNV_HAVE_QT],
     QT_LIBS=
     QT_UIC=
     QT_MOC=
+    QT_RCC=
     QT_LRELEASE=
     QT_MACDEPLOYQT=
     AC_MSG_RESULT($have_qt)
@@ -705,6 +733,7 @@ AC_DEFUN([BNV_HAVE_QT],
   AC_SUBST(QT_LIBS)
   AC_SUBST(QT_UIC)
   AC_SUBST(QT_MOC)
+  AC_SUBST(QT_RCC)
   AC_SUBST(QT_LRELEASE)
   AC_SUBST(QT_MACDEPLOYQT)
 

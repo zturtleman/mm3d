@@ -1,3 +1,4 @@
+SUBDIRS = images
 
 noinst_LIBRARIES = libqtui.a
 
@@ -88,14 +89,19 @@ libqtui_UIHEADERS = \
 	valuewin.base.h \
 	viewportsettings.base.h 
 
-BUILT_SOURCES = $(libqtui_UIHEADERS)
+BUILT_SOURCES = $(libqtui_UIHEADERS) resources.cpp
 
-libqtui_a_SOURCES = $(libqtui_UIFILES) dummy.c
+libqtui_a_SOURCES = dummy.c resources.cpp
+
+EXTRA_DIST = $(libqtui_UIFILES) resources.qrc
 
 %.base.h: $(srcdir)/%.ui
 		$(QT_UIC) -o $@ $(srcdir)/$*.ui
 
+resources.cpp: $(srcdir)/resources.qrc $(srcdir)/images/zoomin.xpm $(srcdir)/images/zoomout.xpm
+		$(QT_RCC) --name qtuiResources -o $@ $(srcdir)/resources.qrc
+
 AM_CPPFLAGS = $(PROFILE) -Wall -I$(srcdir)/../libmm3d -I$(srcdir)/../mm3dcore -I$(srcdir)/../ -I$(srcdir)/../depui -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
 
-CLEANFILES = $(libqtui_UIHEADERS) *.gcno *.gcda
+CLEANFILES = $(libqtui_UIHEADERS) resources.cpp *.gcno *.gcda
 
