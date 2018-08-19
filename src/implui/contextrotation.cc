@@ -162,12 +162,9 @@ void ContextRotation::updateRotation()
                {
                   int anim = m_model->getCurrentAnimation();
                   int frame = m_model->getCurrentAnimationFrame();
-                  if ( m_model->setSkelAnimKeyframe( anim, frame, b, true,
-                           rad[0], rad[1], rad[2] ) )
-                  {
-                     searching = false;
-                     m_model->setCurrentAnimationFrame( frame ); // Force re-animate
-                  }
+                  searching = false;
+                  m_model->setSkelAnimKeyframe( anim, frame, b, true, rad[0], rad[1], rad[2] );
+                  m_model->setCurrentAnimationFrame( frame ); // Force re-animate
                }
                else
                {
