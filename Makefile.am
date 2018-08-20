@@ -34,7 +34,7 @@ define INFOPLIST
         <key>UTTypeIconFile</key>
         <string>mm3d</string>
         <key>UTTypeReferenceURL</key>
-        <string>http://www.misfitcode.com/misfitmodel3d/olh_mm3dformat.html</string>
+        <string>https://clover.moe/mm3d_manual/olh_mm3dformat.html</string>
         <key>UTTypeTagSpecification</key>
         <dict>
             <key>public.filename-extension</key>
