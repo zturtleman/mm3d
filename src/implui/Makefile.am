@@ -23,7 +23,6 @@ libimplui_HFILES = \
 	contextprojection.h \
 	contextrotation.h \
 	extrudewin.h \
-	globalmenubar.h \
 	groupclean.h \
 	groupwin.h \
 	helpwin.h \
@@ -81,7 +80,6 @@ libimplui_MOC = \
 	contextprojection.moc.cc \
 	contextrotation.moc.cc \
 	extrudewin.moc.cc \
-	globalmenubar.moc.cc \
 	groupclean.moc.cc \
 	groupwin.moc.cc \
 	helpwin.moc.cc \
@@ -135,7 +133,6 @@ libimplui_a_SOURCES = \
 	contextprojection.cc \
 	contextrotation.cc \
 	extrudewin.cc \
-	globalmenubar.cc \
 	groupclean.cc \
 	groupwin.cc \
 	helpwin.cc \

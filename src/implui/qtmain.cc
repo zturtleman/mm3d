@@ -22,7 +22,6 @@
 
 
 #include "qtmain.h"
-#include "globalmenubar.h"
 #include "viewwin.h"
 #include "model.h"
 #include "sysconf.h"
@@ -74,7 +73,6 @@ public:
 static MisfitApp    * s_app = NULL;
 static QTranslator  * s_qtXlat = NULL;
 static QTranslator  * s_mm3dXlat = NULL;
-static GlobalMenuBar* s_globalMenuBar = NULL;
 
 static bool _has_gl_support()
 {
@@ -178,12 +176,6 @@ int ui_init( int & argc, char * argv[] )
          return -1;
       }
 
-#ifdef Q_OS_MAC
-      // Keep the program running with no windows on macOS (as programs typically do)
-      s_app->setQuitOnLastWindowClosed( false );
-      s_globalMenuBar = new GlobalMenuBar();
-#endif
-
       bool opened = false;
       unsigned openCount = 0;
 
@@ -242,10 +234,6 @@ int ui_init( int & argc, char * argv[] )
       _cleanup();
    }
 
-   if ( s_globalMenuBar )
-   {
-      delete s_globalMenuBar;
-   }
    delete s_mm3dXlat;
    delete s_qtXlat;
    delete s_app;

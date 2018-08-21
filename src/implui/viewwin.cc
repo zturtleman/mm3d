@@ -777,7 +777,7 @@ ViewWindow::~ViewWindow()
 
    if ( !_shuttingDown )
    {
-      if ( _winList.empty() && qApp->quitOnLastWindowClosed() )
+      if ( _winList.empty() )
       {
          ui_exit();
       }
@@ -2240,18 +2240,7 @@ void ViewWindow::fillMruMenu()
 
 void ViewWindow::openMru( QAction * id )
 {
-#ifdef Q_OS_MAC
-   // Open model in a new window if a model is loaded or default scene is modified
-   // (matches global menu bar behavior when no window is open).
-   if ( !emptyWindow() )
-   {
-      ViewWindow::openModel( id->text().toUtf8() );
-   }
-   else
-#endif
-   {
-      openModelInWindow( id->text().toUtf8() );
-   }
+   openModelInWindow( id->text().toUtf8() );
 }
 
 void ViewWindow::fillScriptMruMenu()
@@ -2270,18 +2259,7 @@ void ViewWindow::openScriptMru( QAction * id )
 
 void ViewWindow::openModelEvent()
 {
-#ifdef Q_OS_MAC
-   // Open model in a new window if a model is loaded or default scene is modified
-   // (matches global menu bar behavior when no window is open).
-   if ( !emptyWindow() )
-   {
-      ViewWindow::openModelDialog();
-   }
-   else
-#endif
-   {
-      openModelDialogInWindow();
-   }
+   openModelDialogInWindow();
 }
 
 bool ViewWindow::openModel( const char * filename )
