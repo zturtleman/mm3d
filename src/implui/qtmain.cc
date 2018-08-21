@@ -134,6 +134,14 @@ int ui_prep( int & argc, char * argv[] )
 {
    s_app = new MisfitApp( argc, argv );
 
+#ifdef Q_OS_MAC
+   // Don't use native mac menu bar as it's misleading (the menu affects
+   // minimized window when it should not). This could be fixed by using
+   // a separate menu when no window is active but I've failed to get
+   // that to work correct with Qt 5.11.1.
+   s_app->setAttribute( Qt::AA_DontUseNativeMenuBar );
+#endif
+
    QString loc = mlocale_get().c_str();
 
    if ( loc == "" )
