@@ -145,7 +145,7 @@
     <message>
         <location filename="../src/qtui/animconvertwin.ui" line="36"/>
         <source>Convert Skeletal to Frame:</source>
-        <translation>Wandle Skelet in Frame um:</translation>
+        <translation>Wandle Skelett in Frame um:</translation>
     </message>
     <message>
         <location filename="../src/qtui/animconvertwin.ui" line="46"/>
@@ -194,7 +194,7 @@
     <message>
         <location filename="../src/implui/animconvertwin.cc" line="53"/>
         <source>Convert Skeletal to Frame:</source>
-        <translation>Wandle Skelet in Frame um:</translation>
+        <translation>Wandle Skelett in Frame um:</translation>
     </message>
     <message>
         <location filename="../src/implui/animconvertwin.cc" line="56"/>
@@ -232,7 +232,7 @@
     <message>
         <location filename="../src/qtui/animexportwin.ui" line="61"/>
         <source>Viewport</source>
-        <translation>Viewport</translation>
+        <translation>Ansicht</translation>
     </message>
     <message>
         <location filename="../src/qtui/animexportwin.ui" line="74"/>
@@ -292,7 +292,7 @@
     <message>
         <location filename="../src/qtui/animexportwin.ui" line="230"/>
         <source>/some/path/name</source>
-        <translation>/irgend/ein/pfad</translation>
+        <translation>/irgendein/pfad/name</translation>
     </message>
     <message>
         <location filename="../src/qtui/animexportwin.ui" line="242"/>
@@ -336,13 +336,13 @@
         <location filename="../src/implui/animexportwin.cc" line="120"/>
         <source>Skeletal - </source>
         <comment>Skeletal Animation prefix</comment>
-        <translation>Skelet -</translation>
+        <translation>Skelett - </translation>
     </message>
     <message>
         <location filename="../src/implui/animexportwin.cc" line="128"/>
         <source>Frame - </source>
         <comment>Frame Animation prefix</comment>
-        <translation>Frame -</translation>
+        <translation>Frame - </translation>
     </message>
     <message>
         <location filename="../src/implui/animexportwin.cc" line="172"/>
@@ -353,7 +353,7 @@
     <message>
         <location filename="../src/implui/animexportwin.cc" line="175"/>
         <source>Viewport %1 - </source>
-        <translation>Viewport %1 -</translation>
+        <translation>Ansicht %1 - </translation>
     </message>
     <message>
         <location filename="../src/implui/animexportwin.cc" line="193"/>
@@ -437,7 +437,7 @@
     <message>
         <location filename="../src/qtui/animsetwin.ui" line="147"/>
         <source>Con&amp;vert To Frame Animation</source>
-        <translation>&amp;In Frame Animation wandeln</translation>
+        <translation>&amp;In Frame Animation umwandeln</translation>
     </message>
     <message>
         <location filename="../src/qtui/animsetwin.ui" line="159"/>
@@ -460,7 +460,7 @@
     <message>
         <location filename="../src/implui/animsetwin.cc" line="49"/>
         <source>Skeletal Animation</source>
-        <translation>Skelet Animation</translation>
+        <translation>Skelett Animation</translation>
     </message>
     <message>
         <location filename="../src/implui/animsetwin.cc" line="50"/>
@@ -507,7 +507,7 @@
         <location filename="../src/implui/animsetwin.cc" line="422"/>
         <source>Cannot Split</source>
         <comment>Cannot split animation window title</comment>
-        <translation>Kann nicht trennen</translation>
+        <translation>Trennen nicht möglich</translation>
     </message>
     <message>
         <location filename="../src/implui/animsetwin.cc" line="422"/>
@@ -525,7 +525,7 @@ Frame Anzahl ist unterschiedlich.</translation>
     <message>
         <location filename="../src/implui/animsetwin.cc" line="551"/>
         <source>Can only merge skeletal animations.</source>
-        <translation>Es können nur Skelet Animationen zusammengefügt werden.</translation>
+        <translation>Es können nur Skelett Animationen zusammengefügt werden.</translation>
     </message>
     <message>
         <location filename="../src/implui/animsetwin.cc" line="593"/>
@@ -635,12 +635,12 @@ Frame Anzahl ist unterschiedlich.</translation>
     <message>
         <location filename="../src/implui/animwidget.cc" line="446"/>
         <source>No frame animation data to paste</source>
-        <translation>Keine Frame Animationsdaten zum einfügen</translation>
+        <translation>Keine Frame Animationsdaten zum Einfügen</translation>
     </message>
     <message>
         <location filename="../src/implui/animwidget.cc" line="477"/>
         <source>No skeletal animation data to paste</source>
-        <translation>Keine Skelet Animationsdaten zum einfügen</translation>
+        <translation>Keine Skelett Animationsdaten zum Einfügen</translation>
     </message>
 </context>
 <context>
@@ -756,7 +756,7 @@ Frame Anzahl ist unterschiedlich.</translation>
     <message>
         <location filename="../src/implui/backgroundselect.cc" line="101"/>
         <source>Open background image</source>
-        <translation>Öffne Hintergrund Bild</translation>
+        <translation>Öffne Hintergrundbild</translation>
     </message>
     <message>
         <location filename="../src/implui/backgroundselect.cc" line="133"/>
@@ -769,7 +769,7 @@ Frame Anzahl ist unterschiedlich.</translation>
     <message>
         <location filename="../src/qtui/backgroundselect.ui" line="16"/>
         <source>BackgroundSelect</source>
-        <translation>HintergrundAuswahl</translation>
+        <translation>Hintergrundauswahl</translation>
     </message>
     <message>
         <location filename="../src/qtui/backgroundselect.ui" line="34"/>
@@ -794,7 +794,7 @@ Frame Anzahl ist unterschiedlich.</translation>
         <location filename="../src/implui/backgroundwin.cc" line="82"/>
         <source>Background Image</source>
         <comment>operation complete</comment>
-        <translation>Hintergrund Bild</translation>
+        <translation>Hintergrundbild</translation>
     </message>
 </context>
 <context>
@@ -802,7 +802,7 @@ Frame Anzahl ist unterschiedlich.</translation>
     <message>
         <location filename="../src/qtui/backgroundwin.ui" line="16"/>
         <source>Select Background Image</source>
-        <translation>Wähle Hintergrund Bild aus</translation>
+        <translation>Wähle Hintergrundbild aus</translation>
     </message>
     <message>
         <location filename="../src/qtui/backgroundwin.ui" line="23"/>
@@ -877,7 +877,7 @@ Frame Anzahl ist unterschiedlich.</translation>
         <location filename="../src/implui/boolwin.cc" line="127"/>
         <source>Intersection</source>
         <comment>boolean operation</comment>
-        <translation>Intersektion</translation>
+        <translation>Schnittpunkt</translation>
     </message>
     <message>
         <location filename="../src/implui/boolwin.cc" line="144"/>
@@ -905,19 +905,19 @@ Frame Anzahl ist unterschiedlich.</translation>
         <location filename="../src/implui/boolwin.cc" line="193"/>
         <source>Intersect With Selected</source>
         <comment>boolean operation</comment>
-        <translation>Intersektion mit Ausgewählten</translation>
+        <translation>Schnittpunkt mit Ausgewählten</translation>
     </message>
     <message>
         <location filename="../src/implui/boolwin.cc" line="198"/>
         <source>Fuse Selected</source>
         <comment>boolean operation</comment>
-        <translation>Verschweiße? Ausgewählte</translation>
+        <translation>Verschweiße Ausgewählte</translation>
     </message>
     <message>
         <location filename="../src/implui/boolwin.cc" line="205"/>
         <source>Select faces to set</source>
         <comment>Select faces to set as &apos;A&apos; Object in boolean operation</comment>
-        <translation>Wähle Flächen zum setzten aus</translation>
+        <translation>Wähle Flächen zum Setzten aus</translation>
     </message>
 </context>
 <context>
@@ -935,7 +935,7 @@ Frame Anzahl ist unterschiedlich.</translation>
     <message>
         <location filename="../src/qtui/boolwin.ui" line="37"/>
         <source>Fuse</source>
-        <translation>Verschweiße?_</translation>
+        <translation>Verschweiße</translation>
     </message>
     <message>
         <location filename="../src/qtui/boolwin.ui" line="47"/>
@@ -950,7 +950,7 @@ Frame Anzahl ist unterschiedlich.</translation>
     <message>
         <location filename="../src/qtui/boolwin.ui" line="61"/>
         <source>Intersection</source>
-        <translation>Intersektion</translation>
+        <translation>Schnittpunkt</translation>
     </message>
     <message>
         <location filename="../src/qtui/boolwin.ui" line="71"/>
@@ -960,7 +960,7 @@ Frame Anzahl ist unterschiedlich.</translation>
     <message>
         <location filename="../src/qtui/boolwin.ui" line="78"/>
         <source>Select faces to set</source>
-        <translation>Wähle Flächen zum setzten aus</translation>
+        <translation>Wähle Flächen zum Setzten aus</translation>
     </message>
     <message>
         <location filename="../src/qtui/boolwin.ui" line="94"/>
@@ -1040,17 +1040,17 @@ Frame Anzahl ist unterschiedlich.</translation>
     <message>
         <location filename="../src/commands/assignjointcmd.cc" line="81"/>
         <source>You must have exactly 1 bone joint selected.</source>
-        <translation>Sie müssen genau ein Knochen Gelenk ausgewählt haben.</translation>
+        <translation>Sie müssen genau 1 Knochengelenk ausgewählt haben.</translation>
     </message>
     <message>
         <location filename="../src/commands/assignjointcmd.cc" line="97"/>
         <source>Assign Selected to Bone Joint</source>
-        <translation>Weise Ausgewählte dem Knochen Gelenk zu</translation>
+        <translation>Weise Ausgewählte dem Knochengelenk zu</translation>
     </message>
     <message>
         <location filename="../src/commands/backgroundcmd.cc" line="48"/>
         <source>Set Background Image...</source>
-        <translation>Setze Hintergrund Bild...</translation>
+        <translation>Setze Hintergrundbild...</translation>
     </message>
     <message>
         <location filename="../src/commands/capcmd.cc" line="89"/>
@@ -1075,12 +1075,12 @@ Frame Anzahl ist unterschiedlich.</translation>
     <message>
         <location filename="../src/commands/copycmd.cc" line="60"/>
         <source>You must have at least 1 face, joint, or point selected to Copy</source>
-        <translation>Sie müssen mindestens eine Fläche, Gelenk oder Punkt zum Kopieren auswählen</translation>
+        <translation>Sie müssen mindestens eine Fläche, ein Gelenk oder eine Punkt zum Kopieren auswählen</translation>
     </message>
     <message>
         <location filename="../src/commands/copycmd.cc" line="85"/>
         <source>Copy Selected to Clipboard</source>
-        <translation>Kopiere Auswahl auf Zwischenablage</translation>
+        <translation>Kopiere Auswahl in Zwischenablage</translation>
     </message>
     <message>
         <location filename="../src/commands/deletecmd.cc" line="45"/>
@@ -1091,7 +1091,7 @@ Frame Anzahl ist unterschiedlich.</translation>
         <location filename="../src/commands/deletecmd.cc" line="78"/>
         <source>Deleting joints may destroy skeletal animations
 Do you wish to continue?</source>
-        <translation>Wenn Sie diese Gelenke Löschen, könnten Skeletanimationen beschädigt werden
+        <translation>Wenn Sie diese Gelenke löschen, könnten Skelettanimationen beschädigt werden
 Wollen sie fortfahren?</translation>
     </message>
     <message>
@@ -1107,7 +1107,7 @@ Wollen sie fortfahren?</translation>
     <message>
         <location filename="../src/commands/dupcmd.cc" line="233"/>
         <source>You must have at least 1 face, joint, or point selected to Duplicate</source>
-        <translation>Sie müssen mindestens eine Fläche, Gelenk oder Punkt zum Duplizieren auswählen</translation>
+        <translation>Sie müssen mindestens eine Fläche, ein Gelenk oder einen Punkt zum Duplizieren auswählen</translation>
     </message>
     <message>
         <location filename="../src/commands/dupcmd.cc" line="238"/>
@@ -1117,12 +1117,12 @@ Wollen sie fortfahren?</translation>
     <message>
         <location filename="../src/commands/dupcmd.cc" line="251"/>
         <source>Duplicate</source>
-        <translation>duplizieren</translation>
+        <translation>Duplizieren</translation>
     </message>
     <message>
         <location filename="../src/commands/edgedivcmd.cc" line="125"/>
         <source>Edge Divide complete</source>
-        <translation>Edge-Trennen komplett</translation>
+        <translation>Kanten trennen komplett</translation>
     </message>
     <message>
         <location filename="../src/commands/edgedivcmd.cc" line="130"/>
@@ -1132,12 +1132,12 @@ Wollen sie fortfahren?</translation>
     <message>
         <location filename="../src/commands/edgedivcmd.cc" line="142"/>
         <source>Edge Divide</source>
-        <translation>Edge-Trennen</translation>
+        <translation>Kanten trennen</translation>
     </message>
     <message>
         <location filename="../src/commands/edgeturncmd.cc" line="105"/>
         <source>Edge Turn complete</source>
-        <translation>Edge Drehung komplett</translation>
+        <translation>Kanten drehen komplett</translation>
     </message>
     <message>
         <location filename="../src/commands/edgeturncmd.cc" line="112"/>
@@ -1147,7 +1147,7 @@ Wollen sie fortfahren?</translation>
     <message>
         <location filename="../src/commands/edgeturncmd.cc" line="215"/>
         <source>Edge Turn</source>
-        <translation>Edge-Drehen</translation>
+        <translation>Kanten drehen</translation>
     </message>
     <message>
         <location filename="../src/commands/extrudecmd.cc" line="49"/>
@@ -1178,7 +1178,7 @@ Wollen sie fortfahren?</translation>
         <location filename="../src/commands/flattencmd.cc" line="86"/>
         <location filename="../src/commands/flipcmd.cc" line="86"/>
         <source>Need at least 1 vertex, joint, point, or face selected</source>
-        <translation>Sie müssen mindestens eine Fläche, Vertex, Gelenk oder Punkt ausgewählt haben</translation>
+        <translation>Sie müssen mindestens eine Fläche, einen Vertex, ein Gelenk oder einen Punkt ausgewählt haben</translation>
     </message>
     <message>
         <location filename="../src/commands/flattencmd.cc" line="111"/>
@@ -1335,7 +1335,7 @@ Wollen sie fortfahren?</translation>
     <message>
         <location filename="../src/commands/selectfreecmd.cc" line="64"/>
         <source>Free-floating vertices selected</source>
-        <translation>Frei-schwebende Vertizes ausgewählt</translation>
+        <translation>Freischwebende Vertizes ausgewählt</translation>
     </message>
     <message>
         <location filename="../src/commands/simplifycmd.cc" line="55"/>
@@ -1350,37 +1350,37 @@ Wollen sie fortfahren?</translation>
     <message>
         <location filename="../src/commands/snapcmd.cc" line="140"/>
         <source>Snap All Selected</source>
-        <translation>Führe Alle Ausgewählten zusammen</translation>
+        <translation>Führe alle ausgewählten Vertizes zusammen</translation>
     </message>
     <message>
         <location filename="../src/commands/snapcmd.cc" line="143"/>
         <source>Snap Nearest Selected</source>
-        <translation>Führe Nächstliegende innerhalb Auswahl zusammen</translation>
+        <translation>Führe nächstliegende Vertizes innerhalb Auswahl zusammen</translation>
     </message>
     <message>
         <location filename="../src/commands/snapcmd.cc" line="146"/>
         <source>Snap All and Weld</source>
-        <translation>Führe alle zusammen und verschmelze</translation>
+        <translation>Führe alle Vertizes zusammen und verschmelze</translation>
     </message>
     <message>
         <location filename="../src/commands/snapcmd.cc" line="149"/>
         <source>Snap Nearest and Weld</source>
-        <translation>Führe Nächstliegende zusammen und verschmelze</translation>
+        <translation>Führe nächstliegende Vertizes zusammen und verschmelze</translation>
     </message>
     <message>
         <location filename="../src/commands/spherifycmd.cc" line="55"/>
         <source>Spherify...</source>
-        <translation type="unfinished"></translation>
+        <translation>In Sphärenform verwandeln...</translation>
     </message>
     <message>
         <location filename="../src/commands/subdividecmd.cc" line="44"/>
         <source>Subdivide complete</source>
-        <translation>Subdivision komplett</translation>
+        <translation>Unterteilung komplett</translation>
     </message>
     <message>
         <location filename="../src/commands/subdividecmd.cc" line="56"/>
         <source>Subdivide Faces</source>
-        <translation>Flächen Subdividieren</translation>
+        <translation>Flächen unterteilen</translation>
     </message>
     <message>
         <location filename="../src/commands/unweldcmd.cc" line="64"/>
@@ -1415,7 +1415,7 @@ Wollen sie fortfahren?</translation>
     <message>
         <location filename="../src/commands/faceoutcmd.cc" line="60"/>
         <source>Normals Face Out</source>
-        <translation>Normale nach Außen ausrichten</translation>
+        <translation>Normale nach außen ausrichten</translation>
     </message>
     <message>
         <location filename="../src/mm3dcore/menuconf.h" line="47"/>
@@ -1482,7 +1482,7 @@ Wollen sie fortfahren?</translation>
         <location filename="../src/implui/contextgroup.cc" line="215"/>
         <source>Unset Group</source>
         <comment>operation complete</comment>
-        <translation>UnSetzte Gruppe</translation>
+        <translation>Gesetze Gruppe aufheben</translation>
     </message>
     <message>
         <location filename="../src/implui/contextgroup.cc" line="236"/>
@@ -1607,7 +1607,7 @@ Wollen sie fortfahren?</translation>
     <message>
         <location filename="../src/qtui/contextinfluences.ui" line="16"/>
         <source>Influences</source>
-        <translation>?Einflüsse</translation>
+        <translation>Einflüsse</translation>
     </message>
     <message>
         <location filename="../src/qtui/contextinfluences.ui" line="27"/>
@@ -2040,27 +2040,27 @@ Wollen sie fortfahren?</translation>
     <message>
         <location filename="../src/qtui/groupclean.ui" line="16"/>
         <source>Group Clean-up Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Säuberung</translation>
     </message>
     <message>
         <location filename="../src/qtui/groupclean.ui" line="22"/>
         <source>Merge identical materials</source>
-        <translation type="unfinished"></translation>
+        <translation>Identische Materialien zusammenführen</translation>
     </message>
     <message>
         <location filename="../src/qtui/groupclean.ui" line="32"/>
         <source>Remove unused materials</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht verwendete Materialien entfernen</translation>
     </message>
     <message>
         <location filename="../src/qtui/groupclean.ui" line="42"/>
         <source>Merge identical groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Identische Gruppen zusammenführen</translation>
     </message>
     <message>
         <location filename="../src/qtui/groupclean.ui" line="52"/>
         <source>Remove unused groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht verwendete Gruppen entfernen</translation>
     </message>
     <message>
         <location filename="../src/qtui/groupclean.ui" line="99"/>
@@ -2128,7 +2128,7 @@ Wollen sie fortfahren?</translation>
     <message>
         <location filename="../src/qtui/groupwin.ui" line="99"/>
         <source>Unselect Faces In Group</source>
-        <translation>Flächen in Gruppe De-Selektieren</translation>
+        <translation>Flächen in Gruppe abwählen</translation>
     </message>
     <message>
         <location filename="../src/qtui/groupwin.ui" line="140"/>
@@ -2218,7 +2218,7 @@ Wollen sie fortfahren?</translation>
         <location filename="../src/implui/groupwin.cc" line="137"/>
         <source>Cannot change</source>
         <comment>cannot change group name, window title</comment>
-        <translation>Kann nicht Änderen</translation>
+        <translation>Ändern nicht möglich</translation>
     </message>
     <message>
         <location filename="../src/implui/groupwin.cc" line="137"/>
@@ -2622,7 +2622,7 @@ Wollen sie fortfahren?</translation>
     <message>
         <location filename="../src/libmm3d/model.cc" line="3281"/>
         <source>Cannot add or delete because you have frame animations.  Try &quot;Merge...&quot; instead.</source>
-        <translation>?Kann nicht hinzufügen oder löschen, da sie Frame Animationen haben.  Versuchen Sie &quot;Zusammenfügen...&quot; stattdessen.</translation>
+        <translation>Hinzufügen oder löschen nicht möglich, da sie Frame Animationen haben.  Versuchen Sie &quot;Zusammenfügen...&quot; stattdessen.</translation>
     </message>
     <message>
         <location filename="../src/libmm3d/model.cc" line="381"/>
@@ -2728,7 +2728,7 @@ Bitte sehen sie unter Hilfe-&gt;Über... nach, um die Entwickler zu kontaktieren
     <message>
         <location filename="../src/libmm3d/texmgr.cc" line="47"/>
         <source>Model has a texture that is not powers of 2</source>
-        <translation>Model hat eine Texturgröße die keine 2er-Potenz ist (128x128, 256x256, ...)</translation>
+        <translation>Modell hat eine Texturgröße die keine 2er-Potenz ist (128x128, 256x256, ...)</translation>
     </message>
     <message>
         <location filename="../src/libmm3d/texmgr.cc" line="348"/>
@@ -2738,7 +2738,7 @@ Bitte sehen sie unter Hilfe-&gt;Über... nach, um die Entwickler zu kontaktieren
     <message>
         <location filename="../src/libmm3d/model_ops.cc" line="1036"/>
         <source>Model contains no skeletal animations</source>
-        <translation>Model enthält keine Skelet Animationen</translation>
+        <translation>Modell enthält keine Skelett Animationen</translation>
     </message>
     <message>
         <location filename="../src/libmm3d/model_ops.cc" line="1044"/>
@@ -3391,7 +3391,7 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/qtui/painttexturewin.ui" line="59"/>
         <source>Edges</source>
-        <translation>Edges</translation>
+        <translation>Kanten</translation>
     </message>
     <message>
         <location filename="../src/qtui/painttexturewin.ui" line="64"/>
@@ -3401,7 +3401,7 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/qtui/painttexturewin.ui" line="69"/>
         <source>Filled and Edges</source>
-        <translation>Gefüllte und Edges</translation>
+        <translation>Gefüllte und Kanten</translation>
     </message>
     <message>
         <location filename="../src/qtui/painttexturewin.ui" line="77"/>
@@ -3411,12 +3411,12 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/qtui/painttexturewin.ui" line="88"/>
         <source>Hidden</source>
-        <translation>Versteckte</translation>
+        <translation>Versteckt</translation>
     </message>
     <message>
         <location filename="../src/qtui/painttexturewin.ui" line="93"/>
         <source>Visible</source>
-        <translation>Sichtbare</translation>
+        <translation>Sichtbar</translation>
     </message>
     <message>
         <location filename="../src/qtui/painttexturewin.ui" line="117"/>
@@ -3472,7 +3472,7 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/qtui/painttexturewin.ui" line="269"/>
         <source>Save Texture...</source>
-        <translation>Speichere Textur...</translation>
+        <translation>Textur speichern unter...</translation>
     </message>
     <message>
         <location filename="../src/qtui/painttexturewin.ui" line="283"/>
@@ -3578,7 +3578,7 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/qtui/pointwin.ui" line="55"/>
         <source>Bone Joint</source>
-        <translation>Knochen Gelenk</translation>
+        <translation>Knochengelenk</translation>
     </message>
     <message>
         <location filename="../src/qtui/pointwin.ui" line="68"/>
@@ -3672,13 +3672,13 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/projectionwin.cc" line="388"/>
         <source>Apply Projection</source>
         <comment>operation complete</comment>
-        <translation>Wende Projektion an</translation>
+        <translation>Projektion anwenden</translation>
     </message>
     <message>
         <location filename="../src/implui/projectionwin.cc" line="396"/>
         <source>Reset UV Coordinates</source>
         <comment>operation complete</comment>
-        <translation>Setze UV-Koordinaten zurück</translation>
+        <translation>UV-Koordinaten zurücksetzen</translation>
     </message>
     <message>
         <location filename="../src/implui/projectionwin.cc" line="408"/>
@@ -3785,7 +3785,7 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/qtui/projectionwin.ui" line="233"/>
         <source>Reset UV Range</source>
-        <translation type="unfinished"></translation>
+        <translation>UV-Weite zurücksetzen</translation>
     </message>
     <message>
         <location filename="../src/qtui/projectionwin.ui" line="253"/>
@@ -3928,7 +3928,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/spherifywin.cc" line="164"/>
         <source>Spherify</source>
         <comment>operation complete</comment>
-        <translation type="unfinished"></translation>
+        <translation>Sphären-Effekt</translation>
     </message>
 </context>
 <context>
@@ -4113,17 +4113,17 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/qtui/texturecoord.ui" line="316"/>
         <source>Scale from center</source>
-        <translation>Von Mitte Skalieren</translation>
+        <translation>Von Mitte skalieren</translation>
     </message>
     <message>
         <location filename="../src/qtui/texturecoord.ui" line="323"/>
         <source>Keep aspect ratio</source>
-        <translation>Aspekt Rate beibehalten</translation>
+        <translation>Seitenverhältnis beibehalten</translation>
     </message>
     <message>
         <location filename="../src/qtui/texturecoord.ui" line="333"/>
         <source>Map Scheme</source>
-        <translation type="unfinished"></translation>
+        <translation>Map Schema</translation>
     </message>
     <message>
         <location filename="../src/qtui/texturecoord.ui" line="345"/>
@@ -4589,7 +4589,7 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/tools/jointtool.cc" line="150"/>
         <source>Create Bone Joint</source>
-        <translation>Erstelle Knochen Gelenk</translation>
+        <translation>Erstelle Knochengelenk</translation>
     </message>
     <message>
         <location filename="../src/tools/movetool.cc" line="56"/>
@@ -4670,12 +4670,12 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/tools/rotatetool.cc" line="341"/>
         <source>Rotate</source>
-        <translation>Rotiere</translation>
+        <translation>Rotieren</translation>
     </message>
     <message>
         <location filename="../src/tools/scaletool.cc" line="46"/>
         <source>Scale</source>
-        <translation>Skaliere</translation>
+        <translation>Skalieren</translation>
     </message>
     <message>
         <location filename="../src/tools/scaletool.cc" line="219"/>
@@ -4717,7 +4717,7 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/tools/selectbonetool.cc" line="177"/>
         <source>Select Bone Joints</source>
-        <translation>Wähle Knochen Gelenke aus</translation>
+        <translation>Wähle Knochengelenke aus</translation>
     </message>
     <message>
         <location filename="../src/tools/selectconnectedtool.cc" line="169"/>
@@ -4752,17 +4752,17 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/tools/sheartool.cc" line="45"/>
         <source>Shear</source>
-        <translation type="unfinished"></translation>
+        <translation>Verzerren</translation>
     </message>
     <message>
         <location filename="../src/tools/sheartool.cc" line="186"/>
         <source>Starting shear on selected primitives</source>
-        <translation type="unfinished"></translation>
+        <translation>Verzerre ausgewählte Primitives</translation>
     </message>
     <message>
         <location filename="../src/tools/sheartool.cc" line="232"/>
         <source>Shear complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Verzerren abgeschlossen</translation>
     </message>
     <message>
         <location filename="../src/tools/torustool.cc" line="152"/>
@@ -4802,7 +4802,7 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/tools/dragvertextool.cc" line="219"/>
         <source>Drag Vertex on Edge</source>
-        <translation>Ziehe Vertex auf Ecke</translation>
+        <translation>Ziehe Vertex auf Kante</translation>
     </message>
     <message>
         <location filename="../src/tools/extrudetool.cc" line="75"/>
@@ -4828,7 +4828,7 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/mm3dcore/menuconf.h" line="42"/>
         <source>Background Image</source>
-        <translation>Hintergrund Bild</translation>
+        <translation>Hintergrundbild</translation>
     </message>
     <message>
         <location filename="../src/mm3dcore/menuconf.h" line="43"/>
@@ -4900,7 +4900,7 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/implui/transformwin.cc" line="161"/>
         <source>Apply Matrix</source>
-        <translation>Wende Matrix an</translation>
+        <translation>Matrix anwenden</translation>
     </message>
     <message>
         <location filename="../src/implui/transformwin.cc" line="176"/>
@@ -4922,7 +4922,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/transformwin.cc" line="177"/>
         <source>Apply Transformation</source>
         <comment>button</comment>
-        <translation>Wende Transformation an</translation>
+        <translation>Transformation anwenden</translation>
     </message>
     <message>
         <location filename="../src/implui/transformwin.cc" line="177"/>
@@ -4942,7 +4942,7 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/qtui/transformwin.ui" line="13"/>
         <source>Transform Model</source>
-        <translation>Transformiere Model</translation>
+        <translation>Transformiere Modell</translation>
     </message>
     <message>
         <location filename="../src/qtui/transformwin.ui" line="49"/>
@@ -5007,7 +5007,7 @@ Do you want to save all sections?</source>
         <location filename="../src/qtui/transformwin.ui" line="253"/>
         <location filename="../src/qtui/transformwin.ui" line="349"/>
         <source>Rotate</source>
-        <translation>Rotiere</translation>
+        <translation>Rotieren</translation>
     </message>
     <message>
         <location filename="../src/qtui/transformwin.ui" line="263"/>
@@ -5048,12 +5048,12 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/qtui/transformwin.ui" line="617"/>
         <source>(bottom row is translation)</source>
-        <translation>(untere Reihe ist Translation)</translation>
+        <translation>(untere Reihe ist Übersetzung)</translation>
     </message>
     <message>
         <location filename="../src/qtui/transformwin.ui" line="643"/>
         <source>Apply Matrix</source>
-        <translation>Wende Matrix an</translation>
+        <translation>Matrix anwenden</translation>
     </message>
     <message>
         <location filename="../src/qtui/transformwin.ui" line="483"/>
@@ -5078,12 +5078,12 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/qtui/transformwin.ui" line="676"/>
         <source>Selected (including animations)</source>
-        <translation>Ausgewählte (inklusive Animationen)</translation>
+        <translation>Ausgewähltem (inklusive Animationen)</translation>
     </message>
     <message>
         <location filename="../src/qtui/transformwin.ui" line="681"/>
         <source>Entire Model (including animations)</source>
-        <translation>Ganzes Model (inklusive Animationen)</translation>
+        <translation>Ganzes Modell (inklusive Animationen)</translation>
     </message>
 </context>
 <context>
@@ -5223,7 +5223,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/viewwin.cc" line="424"/>
         <source>Use Red Error Texture</source>
         <comment>View|Use Red Error Texture</comment>
-        <translation>Benutze Rote Fehler Textur</translation>
+        <translation>Benutze rote Fehler Textur</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="425"/>
@@ -5235,13 +5235,13 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/viewwin.cc" line="442"/>
         <source>Render 3D Lines</source>
         <comment>View|Render 3D Lines</comment>
-        <translation>Linien im 3D View mit rendern</translation>
+        <translation>Zeichne Linien in 3D Ansicht</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="443"/>
         <source>Hide 3D Lines</source>
         <comment>View|Hide 3D Lines</comment>
-        <translation>Verstecke Linien im 3D View</translation>
+        <translation>Verstecke Linien in 3D Ansicht</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="460"/>
@@ -5386,7 +5386,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/viewwin.cc" line="576"/>
         <source>Viewport Settings...</source>
         <comment>View|Viewport Settings</comment>
-        <translation>Viewport Einstellungen...</translation>
+        <translation>Ansichtsfenster Einstellungen...</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="580"/>
@@ -5466,7 +5466,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/viewwin.cc" line="635"/>
         <source>Paint Texture...</source>
         <comment>Groups|Paint Texture</comment>
-        <translation>Erstelle/Male Textur...</translation>
+        <translation>Erstelle Textur...</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="639"/>
@@ -5616,7 +5616,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/viewwin.cc" line="702"/>
         <source>&amp;Influences</source>
         <comment>menu bar</comment>
-        <translation>&amp;?Einflüsse</translation>
+        <translation>&amp;Einflüsse</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="704"/>
@@ -5643,7 +5643,7 @@ Do you want to save all sections?</source>
     <message>
         <location filename="../src/implui/viewwin.cc" line="1003"/>
         <source>Save model file as</source>
-        <translation>Speichere Model Datei als</translation>
+        <translation>Speichere Modell Datei als</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="1092"/>
@@ -5652,7 +5652,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/viewwin.cc" line="2330"/>
         <location filename="../src/implui/viewwin.cc" line="2450"/>
         <source>Open model file</source>
-        <translation>Öffne Model Datei</translation>
+        <translation>Öffne Modell Datei</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="1130"/>
@@ -5688,7 +5688,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/viewwin.cc" line="2359"/>
         <source>Model has been modified
 Do you want to save before closing?</source>
-        <translation>Model wurde geändert
+        <translation>Modell wurde geändert
 Wollen Sie speichern bevor sie schließen?</translation>
     </message>
     <message>
@@ -5699,7 +5699,7 @@ Wollen Sie speichern bevor sie schließen?</translation>
     <message>
         <location filename="../src/implui/viewwin.cc" line="1464"/>
         <source>Cannot hide with selected projections.  Unselect projections now?</source>
-        <translation>Kann nicht mit den ausgewählten Projektionen verstecken.  Projektionen de-selektieren?</translation>
+        <translation>Verstecken mit den ausgewählten Projektionen nicht möglich.  Projektionen de-selektieren?</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="1470"/>
@@ -5709,12 +5709,12 @@ Wollen Sie speichern bevor sie schließen?</translation>
     <message>
         <location filename="../src/implui/viewwin.cc" line="1502"/>
         <source>Cannot hide with selected joints.  Unselect joints now?</source>
-        <translation>Kann nicht mit den ausgewählten Geleken verstecken.  Gelenke de-selektieren?</translation>
+        <translation>Verstecken mit den ausgewählten Geleken nicht möglich.  Gelenke de-selektieren?</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="1508"/>
         <source>Hide bone joints</source>
-        <translation>Verstecke Knochen Gelenke</translation>
+        <translation>Verstecke Knochengelenke</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="1597"/>
@@ -5755,7 +5755,7 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
     <message>
         <location filename="../src/implui/viewwin.cc" line="1800"/>
         <source>This model does not have any animations</source>
-        <translation>Dieses Model hat keine Animationen</translation>
+        <translation>Dieses Modell hat keine Animationen</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="1810"/>
@@ -5791,37 +5791,37 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
     <message>
         <location filename="../src/implui/viewwin_influences.cc" line="83"/>
         <source>You must have at least one bone joint selected.</source>
-        <translation>Sie müssen mindestens ein Knochen Gelenk ausgewählt haben.</translation>
+        <translation>Sie müssen mindestens ein Knochengelenk ausgewählt haben.</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin_influences.cc" line="130"/>
         <source>Remove All Influences from Selected</source>
-        <translation>?Entferne alle Einflüsse von Auswahl</translation>
+        <translation>Entferne alle Einflüsse von Auswahl</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin_influences.cc" line="156"/>
         <source>Remove Joint from Influencing</source>
-        <translation>?Entferne Gelenk von Beeinflussenden</translation>
+        <translation>Gelenk von der Beeinflussung entfernen</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin_influences.cc" line="197"/>
         <source>Convert To Single Influence</source>
-        <translation>?Konvertiere auf eine Influenz</translation>
+        <translation>In Einzeleinfluss umwandeln</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin_influences.cc" line="220"/>
         <source>Select Unassigned Vertices</source>
-        <translation>Wähle nicht-zugewiesene Vertizes</translation>
+        <translation>Wähle nicht zugewiesene Vertizes</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin_influences.cc" line="243"/>
         <source>Select Unassigned Points</source>
-        <translation>Wähle nicht-zugewiesene Punkte</translation>
+        <translation>Wähle nicht zugewiesene Punkte</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin_influences.cc" line="270"/>
         <source>Select Joint Influences</source>
-        <translation>?Wähle Gelenk Einflüsse</translation>
+        <translation>Wähle Gelenk Einflüsse</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin_influences.cc" line="304"/>
@@ -5842,7 +5842,7 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
     <message>
         <location filename="../src/implui/viewwin_influences.cc" line="109"/>
         <source>Auto-Assign Selected to Bone Joints</source>
-        <translation>Automatisch Auswahl zu Knochen Gelenken zuweisen</translation>
+        <translation>Automatisch Auswahl zu Knochengelenken zuweisen</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin_influences.cc" line="115"/>
@@ -5871,13 +5871,13 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
         <location filename="../src/implui/viewwin.cc" line="617"/>
         <source>Edit Model Meta Data...</source>
         <comment>Model|Edit Model Meta Data</comment>
-        <translation>Editiere Model Meta Daten...</translation>
+        <translation>Editiere Modell Meta Daten...</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="618"/>
         <source>Transform Model...</source>
         <comment>Model|Transform Model</comment>
-        <translation>Transformiere Model...</translation>
+        <translation>Transformiere Modell...</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="619"/>
@@ -5889,7 +5889,7 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
         <location filename="../src/implui/viewwin.cc" line="621"/>
         <source>Set Background Image...</source>
         <comment>Model|Set Background Image</comment>
-        <translation>Setze Hintergrund Bild...</translation>
+        <translation>Setze Hintergrundbild...</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="622"/>
@@ -5925,7 +5925,7 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
         <location filename="../src/implui/viewwin.cc" line="696"/>
         <source>&amp;Model</source>
         <comment>menu bar</comment>
-        <translation>&amp;Model</translation>
+        <translation>&amp;Modell</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="698"/>
@@ -5952,7 +5952,7 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
     <message>
         <location filename="../src/implui/viewwin.cc" line="1006"/>
         <source>Export model</source>
-        <translation>Exportiere Model</translation>
+        <translation>Exportiere Modell</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="1067"/>
@@ -5982,13 +5982,13 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
     <message>
         <location filename="../src/implui/viewwin.cc" line="935"/>
         <source>You must have at least 1 face, joint, or point selected to Export Selected</source>
-        <translation>Sie müssen mindestens eine Fläche, Gelenk oder Punkt zum Exportieren Auswählen</translation>
+        <translation>Sie müssen mindestens eine Fläche, ein Gelenk oder einen Punkt zum Exportieren auswählen</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin.cc" line="630"/>
         <source>Clean Up Groups...</source>
         <comment>Groups|Clean Up Groups</comment>
-        <translation type="unfinished"></translation>
+        <translation>Säubern...</translation>
     </message>
 </context>
 <context>
@@ -6005,7 +6005,7 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
     <message>
         <location filename="../src/qtui/viewportsettings.ui" line="13"/>
         <source>Viewport Settings</source>
-        <translation>Viewport Einstellungen</translation>
+        <translation>Ansichtsfenster Einstellungen</translation>
     </message>
     <message>
         <location filename="../src/qtui/viewportsettings.ui" line="34"/>
@@ -6026,7 +6026,7 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
     <message>
         <location filename="../src/qtui/viewportsettings.ui" line="166"/>
         <source>Grid Lines</source>
-        <translation>Gitter Linien</translation>
+        <translation>Gitterlinien</translation>
     </message>
     <message>
         <location filename="../src/qtui/viewportsettings.ui" line="178"/>
