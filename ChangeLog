@@ -1,4 +1,5 @@
 Changes for 1.3.10
+   Make subdivide command fail if no faces are selected
    Fix warning about unknown signal QTabWidget::selected when opening "Model|Background Image..."
    Fix rotating bone joint using properties panel in animation mode
    Fix zoom icons when compiled with newer Qt (worked on Qt 5.3 but not 5.10+)

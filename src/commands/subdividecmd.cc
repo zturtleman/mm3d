@@ -41,9 +41,14 @@ SubdivideCommand::~SubdivideCommand()
 
 bool SubdivideCommand::activated( int arg, Model * model )
 {
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Subdivide complete" ).toUtf8() );
-   model->subdivideSelectedTriangles();
-   return true;
+   if ( model->getSelectedTriangleCount() >= 1 ) {
+      model->subdivideSelectedTriangles();
+      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Subdivide complete" ).toUtf8() );
+      return true;
+   }
+
+   model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have at least 1 face selected to Subdivide Faces" ).toUtf8() );
+   return false;
 }
 
 const char * SubdivideCommand::getPath()
