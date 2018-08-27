@@ -41,30 +41,17 @@ EdgeDivideCommand::~EdgeDivideCommand()
 bool EdgeDivideCommand::activated( int arg, Model * model )
 {
    int split = 0;
+   unsigned int newVertex = ~0U;
 
    list<int> vertList;
    model->getSelectedVertices( vertList );
 
-   if ( vertList.size() >= 2 )
+   if ( vertList.size() == 2 )
    {
       // Only divides one edge, deal with it
       unsigned int v1 = vertList.front();
       vertList.pop_front();
       unsigned int v2 = vertList.front();
-
-      double coord1[3];
-      double coord2[3];
-
-      model->getVertexCoords( v1, coord1 );
-      model->getVertexCoords( v2, coord2 );
-
-      for ( int i = 0; i < 3; i++ )
-      {
-         coord1[i] = (coord1[i] + coord2[i]) / 2.0;
-      }
-
-      unsigned int v3 = model->addVertex( 
-            coord1[0], coord1[1], coord1[2] );
 
       // The triangle count will grow while we're iterating, but that's okay
       // because we know that the new triangles don't need to be split
@@ -95,11 +82,27 @@ bool EdgeDivideCommand::activated( int arg, Model * model )
          // assigned to two corners
          if ( a != INVALID && b != INVALID && c != INVALID )
          {
+            if ( split == 0 )
+            {
+               double coord1[3];
+               double coord2[3];
+
+               model->getVertexCoords( v1, coord1 );
+               model->getVertexCoords( v2, coord2 );
+
+               for ( int i = 0; i < 3; i++ )
+               {
+                  coord1[i] = (coord1[i] + coord2[i]) / 2.0;
+               }
+
+               newVertex = model->addVertex( coord1[0], coord1[1], coord1[2] );
+            }
+
             int g = model->getTriangleGroup( tri );
 
             int vert[3];
 
-            vert[ a ] = v3;
+            vert[ a ] = newVertex;
             vert[ b ] = tv[b];
             vert[ c ] = tv[c];
             int newTri = model->addTriangle( vert[0], vert[1], vert[2] );
@@ -109,25 +112,25 @@ bool EdgeDivideCommand::activated( int arg, Model * model )
             }
 
             vert[ a ] = tv[a];
-            vert[ b ] = v3;
+            vert[ b ] = newVertex;
             vert[ c ] = tv[c];
             model->setTriangleVertices( tri, vert[0], vert[1], vert[2] );
             split++;
          }
       }
-
-      model->unselectAllVertices();
-      model->selectVertex( v3 );
    }
 
    if ( split > 0 )
    {
+      model->unselectAllVertices();
+      model->selectVertex( newVertex );
+
       model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Edge Divide complete" ).toUtf8() );
       return true;
    }
    else
    {
-      model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have at 2 adjacent vertices to Edge Divide" ).toUtf8() );
+      model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have 2 adjacent vertices selected to Edge Divide" ).toUtf8() );
    }
    return false;
 }
