@@ -42,45 +42,38 @@
 <context>
     <name>AlignWinBase</name>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="+13"/>
+        <location filename="../src/qtui/alignwin.ui" line="+14"/>
         <source>Align Selection</source>
         <translation>Zarovnať výber</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+38"/>
         <source>Align X</source>
         <translation>Zarovnať X</translation>
     </message>
     <message>
-        <location line="+12"/>
-        <location line="+56"/>
-        <location line="+56"/>
+        <location line="+21"/>
+        <location line="+65"/>
+        <location line="+65"/>
         <source>Align minimum</source>
         <translation>Zarovnať minimum</translation>
     </message>
     <message>
-        <location line="-105"/>
-        <location line="+56"/>
-        <location line="+56"/>
+        <location line="-123"/>
+        <location line="+65"/>
+        <location line="+65"/>
         <source>Align center</source>
         <translation>Zarovnať stred</translation>
     </message>
     <message>
-        <location line="-102"/>
-        <location line="+56"/>
-        <location line="+56"/>
+        <location line="-120"/>
+        <location line="+65"/>
+        <location line="+65"/>
         <source>Align maximum</source>
         <translation>Zarovnať maximum</translation>
     </message>
     <message>
-        <location line="-105"/>
-        <location line="+56"/>
-        <location line="+56"/>
-        <source>0.0</source>
-        <translation>0.0</translation>
-    </message>
-    <message>
-        <location line="-105"/>
+        <location line="-116"/>
         <source>Align &amp;X Now</source>
         <translation>Zarovnať &amp;X Teraz</translation>
     </message>
@@ -95,7 +88,7 @@
         <translation>Zarovnať Y</translation>
     </message>
     <message>
-        <location line="+43"/>
+        <location line="+52"/>
         <source>Align &amp;Y Now</source>
         <translation>Zarovnať &amp;Y Teraz</translation>
     </message>
@@ -110,7 +103,7 @@
         <translation>Zarovnať Z</translation>
     </message>
     <message>
-        <location line="+43"/>
+        <location line="+52"/>
         <source>Align &amp;Z Now</source>
         <translation>Zarovnať &amp;Z Teraz</translation>
     </message>
@@ -120,7 +113,7 @@
         <translation>Alt+Z</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+29"/>
         <source>Press F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
@@ -138,12 +131,12 @@
 <context>
     <name>AnimConvertWinBase</name>
     <message>
-        <location filename="../src/qtui/animconvertwin.ui" line="+16"/>
+        <location filename="../src/qtui/animconvertwin.ui" line="+14"/>
         <source>Convert To Frame</source>
         <translation>Konvertovať na rámec</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+38"/>
         <source>Convert Skeletal to Frame:</source>
         <translation>Konvertovať kostrovú na rámcovú:</translation>
     </message>
@@ -153,17 +146,17 @@
         <translation>AnimName</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+45"/>
         <source>Frame Anim Name:</source>
         <translation>Názov rámcovej animácie:</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+32"/>
         <source>Frame Count</source>
         <translation>Počet rámcov</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+45"/>
         <source>F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
@@ -219,12 +212,12 @@
         <translation type="obsolete">Export animácie</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="+33"/>
+        <location filename="../src/qtui/animexportwin.ui" line="+52"/>
         <source>Source</source>
         <translation>Zdroj</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+27"/>
         <source>Animation</source>
         <translation>Animácia</translation>
     </message>
@@ -239,7 +232,7 @@
         <translation>Trvanie</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Iterations</source>
         <translation>Cykly</translation>
     </message>
@@ -254,7 +247,7 @@
         <translation>Výstup</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Directory</source>
         <translation>Adresár</translation>
     </message>
@@ -284,27 +277,17 @@
         <translation></translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+31"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location line="+15"/>
-        <source>/some/path/name</source>
-        <translation>/sem/nejaku/cestu/</translation>
-    </message>
-    <message>
-        <location line="+12"/>
-        <source>25.0</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="+7"/>
+        <location line="+32"/>
         <source>Frame Rate</source>
         <translation>Rámcov za sekundu</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+46"/>
         <source>Press F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
@@ -319,19 +302,9 @@
         <translation>Zrušiť</translation>
     </message>
     <message>
-        <location line="-306"/>
+        <location line="-365"/>
         <source>Export Animation</source>
         <translation>Export animácie</translation>
-    </message>
-    <message>
-        <location line="+92"/>
-        <source>1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="+26"/>
-        <source>15</source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -389,12 +362,12 @@
 <context>
     <name>AnimSetWinBase</name>
     <message>
-        <location filename="../src/qtui/animsetwin.ui" line="+16"/>
+        <location filename="../src/qtui/animsetwin.ui" line="+14"/>
         <source>Animation Sets</source>
         <translation>Množina animácií</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+64"/>
         <source>&amp;Down</source>
         <translation>&amp;Dole</translation>
     </message>
@@ -404,7 +377,7 @@
         <translation>&amp;Hore</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+26"/>
         <source>&amp;New</source>
         <translation>&amp;Nový</translation>
     </message>
@@ -419,7 +392,7 @@
         <translation>&amp;Vymazať</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+26"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopírovať</translation>
     </message>
@@ -444,7 +417,7 @@
         <translation>Kon&amp;vertovať na rámcovú animáciu</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Press F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
@@ -650,17 +623,17 @@ počet rámcov sa líši.</translation>
 <context>
     <name>AnimWidgetBase</name>
     <message>
-        <location filename="../src/qtui/animwidget.ui" line="+24"/>
+        <location filename="../src/qtui/animwidget.ui" line="+20"/>
         <source>Animation</source>
         <translation>Animácia</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+61"/>
         <source>FPS</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+27"/>
         <source>Play</source>
         <translation>Spustiť</translation>
     </message>
@@ -675,22 +648,17 @@ počet rámcov sa líši.</translation>
         <translation>Slučka</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+37"/>
         <source>Frames</source>
         <translation>Rámce</translation>
     </message>
     <message>
-        <location line="+31"/>
-        <source>Frame: 03</source>
-        <translation>Rámec: 03</translation>
-    </message>
-    <message>
-        <location line="-91"/>
+        <location line="-64"/>
         <source>X</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-3"/>
         <source>Delete Animation</source>
         <translation>Vymazať animáciu</translation>
     </message>
@@ -794,7 +762,7 @@ počet rámcov sa líši.</translation>
 <context>
     <name>AutoAssignJointWinBase</name>
     <message>
-        <location filename="../src/qtui/autoassignjointwin.ui" line="+16"/>
+        <location filename="../src/qtui/autoassignjointwin.ui" line="+14"/>
         <source>Auto-Assign Bone Joints</source>
         <translation>Automaticky priradiť kĺby</translation>
     </message>
@@ -804,7 +772,7 @@ počet rámcov sa líši.</translation>
         <translation>Iba priradiť k zvoleným kĺbom</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+24"/>
         <source>Single</source>
         <translation>Jeden</translation>
     </message>
@@ -814,7 +782,7 @@ počet rámcov sa líši.</translation>
         <translation>Viac</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+42"/>
         <source>Press F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
@@ -854,12 +822,7 @@ počet rámcov sa líši.</translation>
 <context>
     <name>BackgroundSelectBase</name>
     <message>
-        <location filename="../src/qtui/backgroundselect.ui" line="+16"/>
-        <source>BackgroundSelect</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="+18"/>
+        <location filename="../src/qtui/backgroundselect.ui" line="+30"/>
         <source>None</source>
         <translation>Nič</translation>
     </message>
@@ -887,7 +850,7 @@ počet rámcov sa líši.</translation>
 <context>
     <name>BackgroundWinBase</name>
     <message>
-        <location filename="../src/qtui/backgroundwin.ui" line="+16"/>
+        <location filename="../src/qtui/backgroundwin.ui" line="+14"/>
         <source>Select Background Image</source>
         <translation>Zvoliť obrázok pozadia</translation>
     </message>
@@ -922,7 +885,7 @@ počet rámcov sa líši.</translation>
         <translation>Spodok</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>Press F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
@@ -1011,17 +974,17 @@ počet rámcov sa líši.</translation>
 <context>
     <name>BoolWinBase</name>
     <message>
-        <location filename="../src/qtui/boolwin.ui" line="+13"/>
+        <location filename="../src/qtui/boolwin.ui" line="+14"/>
         <source>Boolean Operation</source>
         <translation>Boolovské operácie</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Operation</source>
         <translation>Operácia</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Fuse</source>
         <translation>Spojiť</translation>
     </message>
@@ -1068,17 +1031,17 @@ počet rámcov sa líši.</translation>
 <context>
     <name>Cal3dPromptBase</name>
     <message>
-        <location filename="../src/qtui/cal3dprompt.ui" line="+13"/>
+        <location filename="../src/qtui/cal3dprompt.ui" line="+14"/>
         <source>Cal3D Filter Options</source>
         <translation>Nastavenia Cal3D filtra</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Save Meshes</source>
         <translation>Uložiť mriežky</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>All meshes in one file</source>
         <translation>Všetky mriežky v jednom súbore</translation>
     </message>
@@ -1093,7 +1056,7 @@ počet rámcov sa líši.</translation>
         <translation>Uložiť materiály</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>CRF (Binary)</source>
         <translation>CRF (Binárny)</translation>
     </message>
@@ -1103,7 +1066,7 @@ počet rámcov sa líši.</translation>
         <translation>XRF (XML Text)</translation>
     </message>
     <message>
-        <location line="+50"/>
+        <location line="+59"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
@@ -1119,26 +1082,6 @@ počet rámcov sa líši.</translation>
         <location filename="../src/commands/aligncmd.cc" line="+56"/>
         <source>Align Selected...</source>
         <translation>Zarovnať označené...</translation>
-    </message>
-    <message>
-        <location filename="../src/commands/assignjointcmd.cc" line="+61"/>
-        <source>Assigning %1 vertices and %2 points to joint %3</source>
-        <translation>Priradujem %1 vrcholov a %2 bodov ku kĺbu %3</translation>
-    </message>
-    <message>
-        <location line="+20"/>
-        <source>You must have exactly 1 bone joint selected.</source>
-        <translation>Musíte zvoliť práve 1 bod kostry.</translation>
-    </message>
-    <message>
-        <location line="+16"/>
-        <source>Assign Selected to Bone Joint</source>
-        <translation>Priradiť označené ku kĺbu kosti</translation>
-    </message>
-    <message>
-        <location filename="../src/commands/backgroundcmd.cc" line="+48"/>
-        <source>Set Background Image...</source>
-        <translation>Nastaviť obrázok pozadia...</translation>
     </message>
     <message>
         <location filename="../src/commands/capcmd.cc" line="+89"/>
@@ -1212,14 +1155,14 @@ Chcete pokračovať?</translation>
         <translation>Zdvojiť</translation>
     </message>
     <message>
-        <location filename="../src/commands/edgedivcmd.cc" line="+125"/>
+        <location filename="../src/commands/edgedivcmd.cc" line="+128"/>
         <source>Edge Divide complete</source>
         <translation>Rozdelenie okraja dokončené</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>You must have at 2 adjacent vertices to Edge Divide</source>
-        <translation>Musíte zvoliť najmenej 2 susedné vrcholy na Rozdelenie plochy</translation>
+        <source>You must have 2 adjacent vertices selected to Edge Divide</source>
+        <translation type="unfinished">Musíte zvoliť najmenej 2 susedné vrcholy na Rozdelenie plochy</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -1358,11 +1301,6 @@ Chcete pokračovať?</translation>
         <translation>Invertovať normály</translation>
     </message>
     <message>
-        <location filename="../src/commands/jointcmd.cc" line="+49"/>
-        <source>Joints...</source>
-        <translation>Kĺby...</translation>
-    </message>
-    <message>
         <location filename="../src/commands/makefacecmd.cc" line="+52"/>
         <source>Make Face From Vertices</source>
         <translation>Vytvoriť plochy z vrcholov</translation>
@@ -1386,11 +1324,6 @@ Chcete pokračovať?</translation>
         <location line="+12"/>
         <source>Paste from Clipboard</source>
         <translation>Vložiť zo schránky</translation>
-    </message>
-    <message>
-        <location filename="../src/commands/pointcmd.cc" line="+50"/>
-        <source>Points...</source>
-        <translation>Body...</translation>
     </message>
     <message>
         <location filename="../src/commands/rotatetexcmd.cc" line="+53"/>
@@ -1465,12 +1398,17 @@ Chcete pokračovať?</translation>
         <translation>Zaguľatiť...</translation>
     </message>
     <message>
-        <location filename="../src/commands/subdividecmd.cc" line="+44"/>
+        <location filename="../src/commands/subdividecmd.cc" line="+46"/>
         <source>Subdivide complete</source>
         <translation>Rozdelenie plôch dokončené</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+4"/>
+        <source>You must have at least 1 face selected to Subdivide Faces</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
         <source>Subdivide Faces</source>
         <translation>Ďalej rozdeliť plochy</translation>
     </message>
@@ -1537,7 +1475,7 @@ Chcete pokračovať?</translation>
 <context>
     <name>CommandWidget</name>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="+146"/>
+        <location filename="../src/implui/viewwin.cc" line="+147"/>
         <source>You are in animation mode, but there are no animations</source>
         <translation>Ste v režime animácie, ale nie sú tu žiadne animácie</translation>
     </message>
@@ -1596,25 +1534,24 @@ Chcete pokračovať?</translation>
 <context>
     <name>ContextGroupBase</name>
     <message>
-        <location filename="../src/qtui/contextgroup.ui" line="+24"/>
-        <location line="+62"/>
+        <location filename="../src/qtui/contextgroup.ui" line="+87"/>
         <source>Group</source>
         <translation>Skupina</translation>
     </message>
     <message>
-        <location line="-42"/>
+        <location line="-40"/>
         <source>Projection Name</source>
         <translation>Meno premietania</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+44"/>
-        <location line="+24"/>
+        <location line="+42"/>
+        <location line="+22"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location line="-52"/>
+        <location line="-50"/>
         <source>Material Name</source>
         <translation>Meno materiálu</translation>
     </message>
@@ -1624,7 +1561,7 @@ Chcete pokračovať?</translation>
         <translation>Materiál skupiny:</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+34"/>
         <source>Group Name</source>
         <translation>Meno skupiny</translation>
     </message>
@@ -1705,12 +1642,7 @@ Chcete pokračovať?</translation>
 <context>
     <name>ContextInfluencesBase</name>
     <message>
-        <location filename="../src/qtui/contextinfluences.ui" line="+16"/>
-        <source>Influences</source>
-        <translation>Pôsobenie</translation>
-    </message>
-    <message>
-        <location line="+11"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="+34"/>
         <source>Weight</source>
         <translation>Hmotnosť</translation>
     </message>
@@ -1772,8 +1704,7 @@ Chcete pokračovať?</translation>
 <context>
     <name>ContextNameBase</name>
     <message>
-        <location filename="../src/qtui/contextname.ui" line="+24"/>
-        <location line="+6"/>
+        <location filename="../src/qtui/contextname.ui" line="+26"/>
         <source>Name</source>
         <translation>Meno</translation>
     </message>
@@ -1799,13 +1730,12 @@ Chcete pokračovať?</translation>
 <context>
     <name>ContextPositionBase</name>
     <message>
-        <location filename="../src/qtui/contextposition.ui" line="+24"/>
-        <location line="+6"/>
+        <location filename="../src/qtui/contextposition.ui" line="+26"/>
         <source>Position</source>
         <translation>Poloha</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+24"/>
         <source>Z</source>
         <translation></translation>
     </message>
@@ -1837,17 +1767,12 @@ Chcete pokračovať?</translation>
 <context>
     <name>ContextProjectionBase</name>
     <message>
-        <location filename="../src/qtui/contextprojection.ui" line="+16"/>
-        <source>Projection</source>
-        <translation>Premietanie</translation>
-    </message>
-    <message>
-        <location line="+6"/>
+        <location filename="../src/qtui/contextprojection.ui" line="+20"/>
         <source>Projection Type</source>
         <translation>Typ premietania</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+31"/>
         <source>Cylinder</source>
         <translation>Valec</translation>
     </message>
@@ -1870,7 +1795,7 @@ Chcete pokračovať?</translation>
 <context>
     <name>ContextRotation</name>
     <message>
-        <location filename="../src/implui/contextrotation.cc" line="+184"/>
+        <location filename="../src/implui/contextrotation.cc" line="+181"/>
         <source>Set Rotation</source>
         <comment>operation complete</comment>
         <translation>Nastaviť otočenie</translation>
@@ -1879,13 +1804,12 @@ Chcete pokračovať?</translation>
 <context>
     <name>ContextRotationBase</name>
     <message>
-        <location filename="../src/qtui/contextrotation.ui" line="+16"/>
-        <location line="+6"/>
+        <location filename="../src/qtui/contextrotation.ui" line="+20"/>
         <source>Rotation</source>
         <translation>Otočenie</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+24"/>
         <source>Z</source>
         <translation></translation>
     </message>
@@ -2107,29 +2031,22 @@ Chcete pokračovať?</translation>
 <context>
     <name>ExtrudeWinBase</name>
     <message>
-        <location filename="../src/qtui/extrudewin.ui" line="+16"/>
+        <location filename="../src/qtui/extrudewin.ui" line="+14"/>
         <source>Extrude</source>
         <translation>Vysunutie</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Extrude options</source>
         <translation>Nastavenie vysunutia</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+38"/>
         <source>X:</source>
         <translation>X:</translation>
     </message>
     <message>
-        <location line="+10"/>
         <location line="+17"/>
-        <location line="+7"/>
-        <source>0</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="-17"/>
         <source>Z:</source>
         <translation>Z:</translation>
     </message>
@@ -2144,12 +2061,12 @@ Chcete pokračovať?</translation>
         <translation>Vytvoriť zadné plochy</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+56"/>
         <source>E&amp;xtrude</source>
         <translation>Vys&amp;unutie</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+26"/>
         <source>Press F1 for help</source>
         <translation>Stlač F1 pre help</translation>
     </message>
@@ -2162,9 +2079,13 @@ Chcete pokračovať?</translation>
 <context>
     <name>GroupCleanBase</name>
     <message>
-        <location filename="../src/qtui/groupclean.ui" line="+16"/>
         <source>Group Clean-up Window</source>
-        <translation>Okno vyčistenia skupín</translation>
+        <translation type="obsolete">Okno vyčistenia skupín</translation>
+    </message>
+    <message>
+        <location filename="../src/qtui/groupclean.ui" line="+14"/>
+        <source>Clean Up</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2187,7 +2108,7 @@ Chcete pokračovať?</translation>
         <translation>Odstrániť nepoužité skupiny</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+56"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
@@ -2220,17 +2141,17 @@ Chcete pokračovať?</translation>
 <context>
     <name>GroupWinBase</name>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="+16"/>
+        <location filename="../src/qtui/groupwin.ui" line="+14"/>
         <source>Groups</source>
         <translation>Skupiny</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>No group</source>
         <translation>Žiadna skupina</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+25"/>
         <source>New</source>
         <translation>Nový</translation>
     </message>
@@ -2245,7 +2166,7 @@ Chcete pokračovať?</translation>
         <translation>Vymazať</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+42"/>
         <source>Select Faces In Group</source>
         <translation>Zvoliť plochy v skupine</translation>
     </message>
@@ -2255,22 +2176,12 @@ Chcete pokračovať?</translation>
         <translation>Odznačiť plochy v skupine</translation>
     </message>
     <message>
-        <location line="+41"/>
-        <source>Smoothness: 100</source>
-        <translation>Hladkosť: 100</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>Max Angle: 000</source>
-        <translation>Max. uhol: 000</translation>
-    </message>
-    <message>
-        <location line="+58"/>
+        <location line="+145"/>
         <source>Faces</source>
         <translation>Plochy</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Assign As Group</source>
         <translation>Priradiť ako skupinu</translation>
     </message>
@@ -2285,12 +2196,12 @@ Chcete pokračovať?</translation>
         <translation>Textúra</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>No texture</source>
         <translation>Žiadna textúra</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+37"/>
         <source>Press F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
@@ -2369,12 +2280,12 @@ Chcete pokračovať?</translation>
 <context>
     <name>HelpWinBase</name>
     <message>
-        <location filename="../src/qtui/helpwin.ui" line="+16"/>
+        <location filename="../src/qtui/helpwin.ui" line="+14"/>
         <source>Help</source>
         <translation>Pomoc</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+38"/>
         <source>Contents</source>
         <translation>Obsah</translation>
     </message>
@@ -2389,7 +2300,7 @@ Chcete pokračovať?</translation>
         <translation>Dopredu</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+61"/>
         <source>Ok</source>
         <translation></translation>
     </message>
@@ -2406,7 +2317,7 @@ Chcete pokračovať?</translation>
 <context>
     <name>IqePromptBase</name>
     <message>
-        <location filename="../src/qtui/iqeprompt.ui" line="+16"/>
+        <location filename="../src/qtui/iqeprompt.ui" line="+14"/>
         <source>IQE Filter Options</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2436,7 +2347,7 @@ Chcete pokračovať?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+31"/>
         <source>Press F1 for help</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2480,12 +2391,12 @@ Chcete pokračovať?</translation>
 <context>
     <name>JointWinBase</name>
     <message>
-        <location filename="../src/qtui/jointwin.ui" line="+16"/>
+        <location filename="../src/qtui/jointwin.ui" line="+14"/>
         <source>Joints</source>
         <translation>Kĺby</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+41"/>
         <source>Rename</source>
         <translation>Premenovať</translation>
     </message>
@@ -2500,7 +2411,7 @@ Chcete pokračovať?</translation>
         <translation>Výber</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Select Joint Vertices</source>
         <translation>Zvoliť vrcholy kĺbu</translation>
     </message>
@@ -2520,7 +2431,7 @@ Chcete pokračovať?</translation>
         <translation>Pridať zvolené ku kĺbu</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+24"/>
         <source>F1 for help</source>
         <translation>F1 pre pomoc</translation>
     </message>
@@ -2538,7 +2449,7 @@ Chcete pokračovať?</translation>
 <context>
     <name>KeyConfig</name>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="+353"/>
+        <location filename="../src/implui/keycfg.cc" line="+348"/>
         <source>V</source>
         <comment>Select Vertices Tool Shortcut</comment>
         <translation></translation>
@@ -2586,7 +2497,7 @@ Chcete pokračovať?</translation>
         <translation></translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+23"/>
         <source>H</source>
         <comment>Hide Unselected Command Shortcut</comment>
         <translation></translation>
@@ -2639,7 +2550,7 @@ Chcete pokračovať?</translation>
         <translation></translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+20"/>
         <source>Ctrl+N</source>
         <comment>File | New Window Shortcut</comment>
         <translation></translation>
@@ -2657,13 +2568,13 @@ Chcete pokračovať?</translation>
         <translation></translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>Ctrl+Q</source>
         <comment>File | Quit Shortcut</comment>
         <translation></translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+12"/>
         <source>Home</source>
         <comment>View | Frame All Shortcut</comment>
         <translation></translation>
@@ -2675,7 +2586,7 @@ Chcete pokračovať?</translation>
         <translation></translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+26"/>
         <source>Ctrl+G</source>
         <comment>Groups | Edit Groups Shortcut</comment>
         <translation></translation>
@@ -2687,19 +2598,19 @@ Chcete pokračovať?</translation>
         <translation></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+4"/>
         <source>Ctrl+E</source>
         <comment>Groups | Edit Texture Coordinates Shortcut</comment>
         <translation></translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+3"/>
         <source>Ctrl+B</source>
         <comment>Joints | Assign Selected Shortcut</comment>
         <translation></translation>
     </message>
     <message>
-        <location line="-87"/>
+        <location line="-92"/>
         <source>Shift+U</source>
         <comment>Unhide All Command Shortcut</comment>
         <translation></translation>
@@ -2708,12 +2619,12 @@ Chcete pokračovať?</translation>
 <context>
     <name>KeyValueWindowBase</name>
     <message>
-        <location filename="../src/qtui/keyvaluewin.ui" line="+16"/>
+        <location filename="../src/qtui/keyvaluewin.ui" line="+14"/>
         <source>Edit Meta Data</source>
         <translation>Editovať meta dáta</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+20"/>
         <source>Name</source>
         <translation>Meno</translation>
     </message>
@@ -2723,7 +2634,7 @@ Chcete pokračovať?</translation>
         <translation>Hodnota</translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+58"/>
         <source>Ok</source>
         <translation></translation>
     </message>
@@ -2859,12 +2770,12 @@ See Help-&gt;About to contact the developers</source>
 Pozrite Pomoc-&gt;O programe na kontakt s vývojármi</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/texmgr.cc" line="+47"/>
-        <source>Model has a texture that is not powers of 2</source>
-        <translation>Model má textúru ktorá nie je mocninou 2</translation>
+        <location filename="../src/libmm3d/texmgr.cc" line="+48"/>
+        <source>The model has a texture that&apos;s width or height is not a power of two (2, 4, 8, .., 64, 128, 256, ..).</source>
+        <translation type="unfinished">Model má textúru ktorá nie je mocninou 2</translation>
     </message>
     <message>
-        <location line="+301"/>
+        <location line="+324"/>
         <source>Could not load</source>
         <translation>Nemožno načítať</translation>
     </message>
@@ -2911,7 +2822,7 @@ Chcete načítať všetky sekcie?</translation>
         <translation>MD2 export vyžaduje aby všetky plochy boli v jednej skupine.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="+1560"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="+1546"/>
         <source>MD3 export requires all faces to be grouped.</source>
         <translation>MD3 export  vyžaduje aby všetky plochy boli v nejakej skupine.</translation>
     </message>
@@ -2995,12 +2906,12 @@ Do you want to save all sections?</source>
 <context>
     <name>MapDirectionBase</name>
     <message>
-        <location filename="../src/qtui/mapdirection.ui" line="+16"/>
+        <location filename="../src/qtui/mapdirection.ui" line="+14"/>
         <source>Which direction?</source>
         <translation>Ktorý smer?</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+27"/>
         <source>Set new texture coordinates from which direction?</source>
         <translation>Z ktorej strany nastaviť nové súradnice textúry?</translation>
     </message>
@@ -3035,7 +2946,7 @@ Do you want to save all sections?</source>
         <translation>Spodok</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+41"/>
         <source>Ok</source>
         <translation></translation>
     </message>
@@ -3048,27 +2959,17 @@ Do you want to save all sections?</source>
 <context>
     <name>MergeWinBase</name>
     <message>
-        <location filename="../src/qtui/mergewin.ui" line="+13"/>
+        <location filename="../src/qtui/mergewin.ui" line="+14"/>
         <source>Merge Model</source>
         <translation>Zlúčiť model</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Merge location</source>
         <translation>Zlúčiť polohu</translation>
     </message>
     <message>
-        <location line="+20"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+17"/>
-        <location line="+7"/>
-        <source>0.0</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="-17"/>
+        <location line="+66"/>
         <source>Rotation</source>
         <translation>Otočenie</translation>
     </message>
@@ -3078,12 +2979,12 @@ Do you want to save all sections?</source>
         <translation>Posunutie</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+32"/>
         <source>Merge Options</source>
         <translation>Zlúčiť nastavenia</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Include textures</source>
         <translation>Zahrnúť textúry</translation>
     </message>
@@ -3098,7 +2999,7 @@ Do you want to save all sections?</source>
         <translation>Možnosti animácie</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Append animations</source>
         <translation>Pridaná animácia</translation>
     </message>
@@ -3108,7 +3009,7 @@ Do you want to save all sections?</source>
         <translation>Zlúčiť ak je to možné</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+32"/>
         <source>Press F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
@@ -3168,7 +3069,7 @@ Do you want to save all sections?</source>
 <context>
     <name>MetaWindowBase</name>
     <message>
-        <location filename="../src/qtui/metawin.ui" line="+32"/>
+        <location filename="../src/qtui/metawin.ui" line="+42"/>
         <source>Name</source>
         <translation>Meno</translation>
     </message>
@@ -3178,12 +3079,12 @@ Do you want to save all sections?</source>
         <translation>Hodnota</translation>
     </message>
     <message>
-        <location line="-24"/>
+        <location line="-33"/>
         <source>Model Meta Data</source>
         <translation>Metadáta modelu</translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+74"/>
         <source>New</source>
         <translation>Nový</translation>
     </message>
@@ -3193,7 +3094,7 @@ Do you want to save all sections?</source>
         <translation>Vymazať</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+29"/>
         <source>Press F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
@@ -3211,12 +3112,12 @@ Do you want to save all sections?</source>
 <context>
     <name>ModelViewBase</name>
     <message>
-        <location filename="../src/qtui/modelview.ui" line="+13"/>
+        <location filename="../src/qtui/modelview.ui" line="+14"/>
         <source>ModelView</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+45"/>
         <source>Perspective</source>
         <translation>Perspektíva</translation>
     </message>
@@ -3316,17 +3217,17 @@ Do you want to save all sections?</source>
 <context>
     <name>Ms3dPromptBase</name>
     <message>
-        <location filename="../src/qtui/ms3dprompt.ui" line="+13"/>
+        <location filename="../src/qtui/ms3dprompt.ui" line="+14"/>
         <source>MS3D Filter Options</source>
         <translation>Nastavenie MS3D filtra</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Format Subversion</source>
         <translation>Podverzia filtra</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Subversion 0</source>
         <translation>Podverzia 0</translation>
     </message>
@@ -3346,17 +3247,12 @@ Do you want to save all sections?</source>
         <translation>Nastavenie podverzie</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Vertex Extra</source>
         <translation>Vrchol zvlášť</translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>FFFFFFFF</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="+50"/>
+        <location line="+69"/>
         <source>Ok</source>
         <translation></translation>
     </message>
@@ -3369,12 +3265,12 @@ Do you want to save all sections?</source>
 <context>
     <name>NewAnimBase</name>
     <message>
-        <location filename="../src/qtui/newanim.ui" line="+16"/>
+        <location filename="../src/qtui/newanim.ui" line="+14"/>
         <source>New Animation</source>
         <translation>Nová animácia</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+20"/>
         <source>&amp;Name</source>
         <translation>&amp;Meno</translation>
     </message>
@@ -3384,7 +3280,7 @@ Do you want to save all sections?</source>
         <translation>Typ animácie</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+18"/>
         <source>&amp;Skeletal</source>
         <translation>&amp;Kostrová</translation>
     </message>
@@ -3404,7 +3300,7 @@ Do you want to save all sections?</source>
         <translation>Alt+R</translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+40"/>
         <source>&amp;Ok</source>
         <translation>&amp;Ok</translation>
     </message>
@@ -3436,7 +3332,7 @@ Do you want to save all sections?</source>
 <context>
     <name>ObjPromptBase</name>
     <message>
-        <location filename="../src/qtui/objprompt.ui" line="+16"/>
+        <location filename="../src/qtui/objprompt.ui" line="+14"/>
         <source>OBJ Filter Options</source>
         <translation>Nastavenie filtra OBJ</translation>
     </message>
@@ -3455,7 +3351,7 @@ Do you want to save all sections?</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+24"/>
         <source>&amp;Normal Decimal Places</source>
         <translation>Desatinné miesta &amp;normál</translation>
     </message>
@@ -3470,7 +3366,7 @@ Do you want to save all sections?</source>
         <translation>Desatinné miesta &amp;vrcholov</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+45"/>
         <source>Press F1 for help</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3512,12 +3408,12 @@ Do you want to save all sections?</source>
 <context>
     <name>PaintTextureWinBase</name>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="+16"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="+14"/>
         <source>Paint Texture</source>
         <translation>Nakresliť textúru</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+39"/>
         <source>Polygons:</source>
         <translation>Mnohoúholníky: </translation>
     </message>
@@ -3557,58 +3453,58 @@ Do you want to save all sections?</source>
         <translation>Vymazať pozadie</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+37"/>
         <source>Save Size:</source>
         <translation>Uložiť veľkost: </translation>
     </message>
     <message>
-        <location line="+19"/>
-        <location line="+63"/>
+        <location line="+17"/>
+        <location line="+59"/>
         <source>64</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-58"/>
-        <location line="+63"/>
+        <location line="-54"/>
+        <location line="+59"/>
         <source>128</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-58"/>
-        <location line="+63"/>
+        <location line="-54"/>
+        <location line="+59"/>
         <source>256</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-58"/>
-        <location line="+63"/>
+        <location line="-54"/>
+        <location line="+59"/>
         <source>512</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-58"/>
-        <location line="+63"/>
+        <location line="-54"/>
+        <location line="+59"/>
         <source>1024</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-58"/>
-        <location line="+63"/>
+        <location line="-54"/>
+        <location line="+59"/>
         <source>2048</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-47"/>
+        <location line="-45"/>
         <source>x</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+73"/>
+        <location line="+71"/>
         <source>Save Texture...</source>
         <translation>Uložiť textúru...</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+23"/>
         <source>Press F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
@@ -3621,7 +3517,7 @@ Do you want to save all sections?</source>
 <context>
     <name>PluginWinBase</name>
     <message>
-        <location filename="../src/qtui/pluginwin.ui" line="+32"/>
+        <location filename="../src/qtui/pluginwin.ui" line="+42"/>
         <source>Plugin</source>
         <translation>Plugin</translation>
     </message>
@@ -3641,12 +3537,12 @@ Do you want to save all sections?</source>
         <translation>Stav</translation>
     </message>
     <message>
-        <location line="-34"/>
+        <location line="-43"/>
         <source>Plugins</source>
         <translation>Pluginy</translation>
     </message>
     <message>
-        <location line="+50"/>
+        <location line="+68"/>
         <source>Press F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
@@ -3694,12 +3590,12 @@ Do you want to save all sections?</source>
 <context>
     <name>PointWinBase</name>
     <message>
-        <location filename="../src/qtui/pointwin.ui" line="+16"/>
+        <location filename="../src/qtui/pointwin.ui" line="+14"/>
         <source>Points</source>
         <translation>Body</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+41"/>
         <source>Rename</source>
         <translation>Premenovať</translation>
     </message>
@@ -3714,12 +3610,12 @@ Do you want to save all sections?</source>
         <translation>Kĺb kosti</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>(none)</source>
         <translation>(nič)</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+25"/>
         <source>F1 for help</source>
         <translation>F1 pre pomoc</translation>
     </message>
@@ -3850,12 +3746,12 @@ Do you want to save all sections?</source>
 <context>
     <name>ProjectionWinBase</name>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="+13"/>
+        <location filename="../src/qtui/projectionwin.ui" line="+14"/>
         <source>Texture Projection</source>
         <translation>Projekcia textúry</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+59"/>
         <source>Material</source>
         <translation>Materiál</translation>
     </message>
@@ -3890,22 +3786,17 @@ Do you want to save all sections?</source>
         <translation>Typ:</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+29"/>
         <source>Rename</source>
         <translation>Premenovať</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+27"/>
         <source>Zoom:</source>
         <translation>Zväčšenie: </translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>1.0</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="+68"/>
+        <location line="+87"/>
         <source>Remove Faces</source>
         <translation>Odstrániť plochy</translation>
     </message>
@@ -3925,7 +3816,7 @@ Do you want to save all sections?</source>
         <translation>Vynulovať UV rozsah</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+29"/>
         <source>Press F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
@@ -3947,25 +3838,17 @@ Do you want to save all sections?</source>
 <context>
     <name>RgbaWinBase</name>
     <message>
-        <location filename="../src/qtui/rgbawin.ui" line="+16"/>
+        <location filename="../src/qtui/rgbawin.ui" line="+14"/>
         <source>RGBA Window</source>
         <translation>RGBA Okno</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+41"/>
         <source>Light Property</source>
         <translation>Parametre svetla</translation>
     </message>
     <message>
-        <location line="+37"/>
-        <location line="+52"/>
-        <location line="+16"/>
-        <location line="+49"/>
-        <source>0.00</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="-107"/>
+        <location line="+56"/>
         <source>Red</source>
         <translation>Červená</translation>
     </message>
@@ -3985,7 +3868,7 @@ Do you want to save all sections?</source>
         <translation>Priehľadnosť</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+61"/>
         <source>Close</source>
         <translation>Zatvoriť</translation>
     </message>
@@ -4108,57 +3991,9 @@ Do you want to save all sections?</source>
     </message>
 </context>
 <context>
-    <name>StatusBarBase</name>
-    <message>
-        <location filename="../src/qtui/statusbar.ui" line="+13"/>
-        <source>Form1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="+35"/>
-        <source>Status text</source>
-        <translation>Stavový text</translation>
-    </message>
-    <message>
-        <location line="+39"/>
-        <source>V:0</source>
-        <translation>V:0</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>F:0</source>
-        <translation>P:0</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>G:0</source>
-        <translation>S:0</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>B:0</source>
-        <translation>K:0</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>P:0</source>
-        <translation>B:0</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>T:0</source>
-        <translation></translation>
-    </message>
-</context>
-<context>
     <name>TextWinBase</name>
     <message>
-        <location filename="../src/qtui/textwin.ui" line="+16"/>
-        <source>Text Window</source>
-        <translation>Textové okno</translation>
-    </message>
-    <message>
-        <location line="+43"/>
+        <location filename="../src/qtui/textwin.ui" line="+79"/>
         <source>Ok</source>
         <translation></translation>
     </message>
@@ -4208,27 +4043,22 @@ Do you want to save all sections?</source>
 <context>
     <name>TextureCoordBase</name>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="+13"/>
+        <location filename="../src/qtui/texturecoord.ui" line="+14"/>
         <source>Texture Coordinates</source>
         <translation>Poloha textúry</translation>
     </message>
     <message>
-        <location line="+196"/>
+        <location line="+250"/>
         <source>Zoom:</source>
         <translation>Zväčšenie:</translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>1.0</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="+42"/>
+        <location line="+63"/>
         <source>Mouse Tool</source>
         <translation>Nástroj myši</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Select</source>
         <translation>Zvoliť</translation>
     </message>
@@ -4248,7 +4078,7 @@ Do you want to save all sections?</source>
         <translation>Nastavenie mierky</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Scale from center</source>
         <translation>Mierka od stredu</translation>
     </message>
@@ -4283,7 +4113,7 @@ Do you want to save all sections?</source>
         <translation>Vynulovať koordináty</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+28"/>
         <source>Press F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
@@ -4293,12 +4123,12 @@ Do you want to save all sections?</source>
         <translation>Zatvoriť</translation>
     </message>
     <message>
-        <location line="-137"/>
+        <location line="-155"/>
         <source>Rotate</source>
         <translation>Otočiť</translation>
     </message>
     <message>
-        <location line="-228"/>
+        <location line="-266"/>
         <source>Lines</source>
         <translation>Čiary</translation>
     </message>
@@ -4356,7 +4186,7 @@ Do you want to save all sections?</source>
         <translation>Výber</translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+70"/>
         <source>Rotate CCW</source>
         <translation>Otočiť proti</translation>
     </message>
@@ -4467,17 +4297,17 @@ Do you want to save all sections?</source>
 <context>
     <name>TextureWindowBase</name>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="+16"/>
+        <location filename="../src/qtui/texwin.ui" line="+14"/>
         <source>Materials</source>
         <translation>Materiály</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>None</source>
         <translation>Nič</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>New Material...</source>
         <translation>Nový materiál...</translation>
     </message>
@@ -4492,7 +4322,7 @@ Do you want to save all sections?</source>
         <translation>Vymazať</translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+40"/>
         <source>Wrap X</source>
         <translation>Zalomiť X</translation>
     </message>
@@ -4512,22 +4342,22 @@ Do you want to save all sections?</source>
         <translation>Prichytiť Y</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+72"/>
         <source>Change Texture...</source>
         <translation>Zmeniť textúru...</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+16"/>
         <source>X</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-3"/>
         <source>Remove texture</source>
         <translation>Odstrániť textúru</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+13"/>
         <source>Flat Preview</source>
         <translation>Plochý náhľad</translation>
     </message>
@@ -4537,15 +4367,7 @@ Do you want to save all sections?</source>
         <translation>3D náhľad</translation>
     </message>
     <message>
-        <location line="+26"/>
-        <location line="+75"/>
-        <location line="+16"/>
-        <location line="+16"/>
-        <source>0.00</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="-58"/>
+        <location line="+93"/>
         <source>Alpha</source>
         <translation>Priehľadnosť</translation>
     </message>
@@ -4590,7 +4412,7 @@ Do you want to save all sections?</source>
         <translation>Lesk</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+27"/>
         <source>Press F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
@@ -5081,82 +4903,56 @@ Do you want to save all sections?</source>
 <context>
     <name>TransformWindowBase</name>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="+13"/>
+        <location filename="../src/qtui/transformwin.ui" line="+14"/>
         <source>Transform Model</source>
         <translation>Transformovať model</translation>
     </message>
     <message>
-        <location line="+36"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+121"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+95"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+17"/>
-        <location line="+179"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+28"/>
-        <location line="+14"/>
-        <source>0</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="-538"/>
-        <location line="+135"/>
-        <location line="+196"/>
+        <location line="+84"/>
+        <location line="+171"/>
+        <location line="+232"/>
         <source>X</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-321"/>
-        <location line="+135"/>
-        <location line="+196"/>
+        <location line="-393"/>
+        <location line="+171"/>
+        <location line="+232"/>
         <source>Y</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-321"/>
-        <location line="+135"/>
-        <location line="+196"/>
+        <location line="-393"/>
+        <location line="+171"/>
+        <location line="+232"/>
         <source>Z</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-392"/>
-        <location line="+113"/>
+        <location line="-482"/>
+        <location line="+140"/>
         <source>Translate</source>
         <translation>Posunúť</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+31"/>
         <source>Euler Angles</source>
         <translation>Eulerove uhly</translation>
     </message>
     <message>
-        <location line="-12"/>
-        <location line="+101"/>
-        <location line="+96"/>
+        <location line="-21"/>
+        <location line="+128"/>
+        <location line="+114"/>
         <source>Rotate</source>
         <translation>Otočiť</translation>
     </message>
     <message>
-        <location line="-86"/>
+        <location line="-104"/>
         <source>Quaternion</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+38"/>
         <source>Angle</source>
         <translation>Uhol</translation>
     </message>
@@ -5166,28 +4962,13 @@ Do you want to save all sections?</source>
         <translation>Osi</translation>
     </message>
     <message>
-        <location line="+66"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <source>1.0</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="-34"/>
-        <location line="+113"/>
+        <location line="+46"/>
+        <location line="+140"/>
         <source>Scale</source>
         <translation>Zmena mierky</translation>
     </message>
     <message>
-        <location line="+100"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+14"/>
-        <source>1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+162"/>
         <source>(bottom row is translation)</source>
         <translation>(spodný riadok je posunutie)</translation>
     </message>
@@ -5197,12 +4978,12 @@ Do you want to save all sections?</source>
         <translation>Aplikovať maticu</translation>
     </message>
     <message>
-        <location line="-160"/>
+        <location line="-178"/>
         <source>Matrix</source>
         <translation>Matica</translation>
     </message>
     <message>
-        <location line="+179"/>
+        <location line="+206"/>
         <source>Apply to:</source>
         <translation>Aplikovať na:</translation>
     </message>
@@ -5211,7 +4992,7 @@ Do you want to save all sections?</source>
         <translation type="obsolete">Celý model a animácie</translation>
     </message>
     <message>
-        <location line="+53"/>
+        <location line="+62"/>
         <source>Press F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
@@ -5221,7 +5002,7 @@ Do you want to save all sections?</source>
         <translation>Zatvoriť</translation>
     </message>
     <message>
-        <location line="-65"/>
+        <location line="-74"/>
         <source>Selected (including animations)</source>
         <translation>Zvolené (vrátanie animácií)</translation>
     </message>
@@ -5243,18 +5024,18 @@ Do you want to save all sections?</source>
 <context>
     <name>ValueWinBase</name>
     <message>
-        <location filename="../src/qtui/valuewin.ui" line="+16"/>
+        <location filename="../src/qtui/valuewin.ui" line="+14"/>
         <source>Value Window</source>
         <translation>Okno hodnoty</translation>
     </message>
     <message>
-        <location line="+17"/>
-        <location line="+18"/>
+        <location line="+27"/>
+        <location line="+27"/>
         <source>Value</source>
         <translation>Hodnota</translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+65"/>
         <source>Press F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
@@ -5443,13 +5224,13 @@ Do you want to save all sections?</source>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+1441"/>
+        <location line="+1467"/>
         <source>Show Properties</source>
         <comment>View|Show Properties</comment>
         <translation>Ukázať parametre</translation>
     </message>
     <message>
-        <location line="-1439"/>
+        <location line="-1465"/>
         <source>Render Options</source>
         <comment>View|Render Options</comment>
         <translation>Parametre kreslenia</translation>
@@ -5607,42 +5388,6 @@ Do you want to save all sections?</source>
         <translation>Nástroje</translation>
     </message>
     <message>
-        <location line="+21"/>
-        <source>Edit Groups...</source>
-        <comment>Groups|Edit Groups</comment>
-        <translation>Editovať skupiny...</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Edit Materials...</source>
-        <comment>Groups|Edit Materials</comment>
-        <translation>Editovať materiály...</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Reload Textures</source>
-        <comment>Groups|Reload Textures</comment>
-        <translation>Znovu načítať textúry</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Edit Projection...</source>
-        <comment>Groups|Edit Projection</comment>
-        <translation>Editovať premietanie...</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Edit Texture Coordinates...</source>
-        <comment>Groups|Edit Texture Coordinates</comment>
-        <translation>Editovať súradnice textúry...</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Paint Texture...</source>
-        <comment>Groups|Paint Texture</comment>
-        <translation>Namaľovať textúru...</translation>
-    </message>
-    <message>
         <source>Boolean Operation...</source>
         <comment>Groups|Boolean Operation</comment>
         <translation type="obsolete">Booleovské operácie...</translation>
@@ -5658,7 +5403,7 @@ Do you want to save all sections?</source>
         <translation type="obsolete">Transformovať model...</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+32"/>
         <source>Edit Joints...</source>
         <comment>Joints|Edit Joints</comment>
         <translation>Upraviť kĺby...</translation>
@@ -5844,17 +5589,17 @@ Do you want to save all sections?</source>
         <translation type="obsolete">;; Všetky súbory (*)</translation>
     </message>
     <message>
-        <location line="+290"/>
+        <location line="+316"/>
         <location line="+94"/>
         <location line="+89"/>
         <location line="+48"/>
-        <location line="+1101"/>
+        <location line="+1079"/>
         <location line="+120"/>
         <source>All Files (*)</source>
         <translation>Všetky súbory (*)</translation>
     </message>
     <message>
-        <location line="-1445"/>
+        <location line="-1423"/>
         <source>Save model file as</source>
         <translation>Uložiť model ako</translation>
     </message>
@@ -5871,13 +5616,13 @@ Do you want to save all sections?</source>
         <location line="+89"/>
         <location line="+89"/>
         <location line="+48"/>
-        <location line="+1101"/>
+        <location line="+1079"/>
         <location line="+120"/>
         <source>Open model file</source>
         <translation>Otvoriť súbor modelu</translation>
     </message>
     <message>
-        <location line="-1320"/>
+        <location line="-1298"/>
         <source>Merge models</source>
         <translation>Zlúčiť modely</translation>
     </message>
@@ -5901,20 +5646,20 @@ Do you want to save all sections?</source>
     </message>
     <message>
         <location line="+23"/>
-        <location line="+1058"/>
+        <location line="+1036"/>
         <source>Save first?</source>
         <translation>Uložiť prvý?</translation>
     </message>
     <message>
-        <location line="-1058"/>
-        <location line="+1058"/>
+        <location line="-1036"/>
+        <location line="+1036"/>
         <source>Model has been modified
 Do you want to save before closing?</source>
         <translation>Model bol zmenený
 Chcete ho uložiť pred zatvorením?</translation>
     </message>
     <message>
-        <location line="-1039"/>
+        <location line="-1017"/>
         <source>Unknown response: %1, Canceling close request</source>
         <translation>Neznáma odpoveď: %1, Prerušujem zatvorenie </translation>
     </message>
@@ -5995,7 +5740,7 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
         <translation>Nastaviť kĺučový rámec posunutia</translation>
     </message>
     <message>
-        <location line="+559"/>
+        <location line="+537"/>
         <source>Unknown response: Canceling operation</source>
         <translation>Neznáma odozva: Ruším operáciu</translation>
     </message>
@@ -6007,8 +5752,8 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin_influences.cc" line="+57"/>
-        <source>assigning %1 vertices and %2 points to joints</source>
-        <translation>priraďujem %1 vrcholov a %2 bodov ku kĺbu</translation>
+        <source>Assigning %1 vertices and %2 points to joints</source>
+        <translation>Priraďujem %1 vrcholov a %2 bodov ku kĺbu</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -6061,7 +5806,7 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
         <translation>Zvoliť body pôsobenia</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="-1936"/>
+        <location filename="../src/implui/viewwin.cc" line="-1940"/>
         <source>Auto-Assign Selected...</source>
         <comment>Joints|Auto-Assign Selected</comment>
         <translation>Automaticky priradiť zvolené...</translation>
@@ -6131,7 +5876,49 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
         <translation>Import animácií...</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+5"/>
+        <source>Edit Groups...</source>
+        <comment>Materials|Edit Groups</comment>
+        <translation>Editovať skupiny...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Edit Materials...</source>
+        <comment>Materials|Edit Materials</comment>
+        <translation>Editovať materiály...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Clean Up...</source>
+        <comment>Materials|Clean Up</comment>
+        <translation type="unfinished">Vyčistiť skupiny...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Reload Textures</source>
+        <comment>Materials|Reload Textures</comment>
+        <translation>Znovu načítať textúry</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Edit Projection...</source>
+        <comment>Materials|Edit Projection</comment>
+        <translation>Editovať premietanie...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Edit Texture Coordinates...</source>
+        <comment>Materials|Edit Texture Coordinates</comment>
+        <translation>Editovať súradnice textúry...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Paint Texture...</source>
+        <comment>Materials|Paint Texture</comment>
+        <translation>Namaľovať textúru...</translation>
+    </message>
+    <message>
+        <location line="+27"/>
         <source>Save Animation Images...</source>
         <comment>Animation|Save Animation Images</comment>
         <translation>Uložiť obrázky animácií...</translation>
@@ -6161,7 +5948,7 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
         <translation>Mate&amp;riály</translation>
     </message>
     <message>
-        <location line="+254"/>
+        <location line="+280"/>
         <source>All Exportable Formats</source>
         <translation>Všetky exportovateľné formáty</translation>
     </message>
@@ -6183,13 +5970,13 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
         <translation>Všetky podporované formáty</translation>
     </message>
     <message>
-        <location line="+1144"/>
+        <location line="+1122"/>
         <location line="+120"/>
         <source>All Supported Formats</source>
         <translation>Všetky podporované formáty</translation>
     </message>
     <message>
-        <location line="-2118"/>
+        <location line="-2122"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>
@@ -6201,19 +5988,13 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
         <translation>Exportovať zvolené...</translation>
     </message>
     <message>
-        <location line="+566"/>
+        <location line="+592"/>
         <source>You must have at least 1 face, joint, or point selected to Export Selected</source>
         <translation>Musíte zvoliť aspoň 1 plochu alebo bod na Exportovanie zvoleného</translation>
     </message>
     <message>
         <source>You are in animation mode, but there are no animations</source>
         <translation type="obsolete">Ste v režime animácie, ale nie sú tu žiadne animácie</translation>
-    </message>
-    <message>
-        <location line="-305"/>
-        <source>Clean Up Groups...</source>
-        <comment>Groups|Clean Up Groups</comment>
-        <translation>Vyčistiť skupiny...</translation>
     </message>
 </context>
 <context>
@@ -6228,7 +6009,7 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
 <context>
     <name>ViewportSettingsBase</name>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="+13"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="+14"/>
         <source>Viewport Settings</source>
         <translation>Nastavenie výrezu</translation>
     </message>
@@ -6239,17 +6020,17 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
     </message>
     <message>
         <location line="+23"/>
-        <location line="+96"/>
+        <location line="+93"/>
         <source>Default Grid Unit</source>
         <translation>Predvolená jednotka mriežky</translation>
     </message>
     <message>
-        <location line="-44"/>
+        <location line="-41"/>
         <source>3D Grid</source>
         <translation>3D mriežka</translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="+54"/>
         <source>Grid Lines</source>
         <translation>Čiary mriežky</translation>
     </message>
@@ -6294,7 +6075,7 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
         <translation>Alt+Z</translation>
     </message>
     <message>
-        <location line="-179"/>
+        <location line="-176"/>
         <source>Decimal Grid</source>
         <translation>Desiatková mriežka</translation>
     </message>

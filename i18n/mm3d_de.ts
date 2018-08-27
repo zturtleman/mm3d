@@ -42,95 +42,88 @@
 <context>
     <name>AlignWinBase</name>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="13"/>
+        <location filename="../src/qtui/alignwin.ui" line="14"/>
         <source>Align Selection</source>
         <translation>Auswahl ausrichten</translation>
     </message>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="33"/>
+        <location filename="../src/qtui/alignwin.ui" line="52"/>
         <source>Align X</source>
         <translation>Ausrichten X</translation>
     </message>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="45"/>
-        <location filename="../src/qtui/alignwin.ui" line="101"/>
-        <location filename="../src/qtui/alignwin.ui" line="157"/>
+        <location filename="../src/qtui/alignwin.ui" line="73"/>
+        <location filename="../src/qtui/alignwin.ui" line="138"/>
+        <location filename="../src/qtui/alignwin.ui" line="203"/>
         <source>Align minimum</source>
         <translation>Ausrichten Minimum</translation>
     </message>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="52"/>
-        <location filename="../src/qtui/alignwin.ui" line="108"/>
-        <location filename="../src/qtui/alignwin.ui" line="164"/>
+        <location filename="../src/qtui/alignwin.ui" line="80"/>
+        <location filename="../src/qtui/alignwin.ui" line="145"/>
+        <location filename="../src/qtui/alignwin.ui" line="210"/>
         <source>Align center</source>
         <translation>Ausrichten Zentrum</translation>
     </message>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="62"/>
-        <location filename="../src/qtui/alignwin.ui" line="118"/>
-        <location filename="../src/qtui/alignwin.ui" line="174"/>
+        <location filename="../src/qtui/alignwin.ui" line="90"/>
+        <location filename="../src/qtui/alignwin.ui" line="155"/>
+        <location filename="../src/qtui/alignwin.ui" line="220"/>
         <source>Align maximum</source>
         <translation>Ausrichten Maximum</translation>
     </message>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="69"/>
-        <location filename="../src/qtui/alignwin.ui" line="125"/>
-        <location filename="../src/qtui/alignwin.ui" line="181"/>
-        <source>0.0</source>
-        <translation>0.0</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/alignwin.ui" line="76"/>
+        <location filename="../src/qtui/alignwin.ui" line="104"/>
         <source>Align &amp;X Now</source>
         <translation>Richte &amp;X jetzt aus</translation>
     </message>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="79"/>
+        <location filename="../src/qtui/alignwin.ui" line="107"/>
         <source>Alt+X</source>
         <translation>Alt+X</translation>
     </message>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="89"/>
+        <location filename="../src/qtui/alignwin.ui" line="117"/>
         <source>Align Y</source>
         <translation>Ausrichten Y</translation>
     </message>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="132"/>
+        <location filename="../src/qtui/alignwin.ui" line="169"/>
         <source>Align &amp;Y Now</source>
         <translation>Richte &amp;Y jetzt aus</translation>
     </message>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="135"/>
+        <location filename="../src/qtui/alignwin.ui" line="172"/>
         <source>Alt+Y</source>
         <translation>Alt+Y</translation>
     </message>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="145"/>
+        <location filename="../src/qtui/alignwin.ui" line="182"/>
         <source>Align Z</source>
         <translation>Ausrichten Z</translation>
     </message>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="188"/>
+        <location filename="../src/qtui/alignwin.ui" line="234"/>
         <source>Align &amp;Z Now</source>
         <translation>Richte &amp;Z jetzt aus</translation>
     </message>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="191"/>
+        <location filename="../src/qtui/alignwin.ui" line="237"/>
         <source>Alt+Z</source>
         <translation>Alt+Z</translation>
     </message>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="211"/>
+        <location filename="../src/qtui/alignwin.ui" line="266"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="237"/>
+        <location filename="../src/qtui/alignwin.ui" line="292"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="247"/>
+        <location filename="../src/qtui/alignwin.ui" line="302"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -138,47 +131,47 @@
 <context>
     <name>AnimConvertWinBase</name>
     <message>
-        <location filename="../src/qtui/animconvertwin.ui" line="16"/>
+        <location filename="../src/qtui/animconvertwin.ui" line="14"/>
         <source>Convert To Frame</source>
         <translation>In Frame umwandeln</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animconvertwin.ui" line="36"/>
+        <location filename="../src/qtui/animconvertwin.ui" line="52"/>
         <source>Convert Skeletal to Frame:</source>
         <translation>Wandle Skelett in Frame um:</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animconvertwin.ui" line="46"/>
+        <location filename="../src/qtui/animconvertwin.ui" line="62"/>
         <source>AnimName</source>
         <translation>Animationsname</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animconvertwin.ui" line="82"/>
+        <location filename="../src/qtui/animconvertwin.ui" line="107"/>
         <source>Frame Anim Name:</source>
         <translation>Frame Animationsname:</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animconvertwin.ui" line="105"/>
+        <location filename="../src/qtui/animconvertwin.ui" line="139"/>
         <source>Frame Count</source>
         <translation>Frame Anzahl</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animconvertwin.ui" line="141"/>
+        <location filename="../src/qtui/animconvertwin.ui" line="184"/>
         <source>F1 for help</source>
         <translation>F1 für Hilfe</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animconvertwin.ui" line="167"/>
+        <location filename="../src/qtui/animconvertwin.ui" line="210"/>
         <source>Continue</source>
         <translation>Fortsetzen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animconvertwin.ui" line="174"/>
+        <location filename="../src/qtui/animconvertwin.ui" line="217"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animconvertwin.ui" line="181"/>
+        <location filename="../src/qtui/animconvertwin.ui" line="224"/>
         <source>Cancel All</source>
         <translation>Alles abbrechen</translation>
     </message>
@@ -215,119 +208,99 @@
 <context>
     <name>AnimExportWinBase</name>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="13"/>
+        <location filename="../src/qtui/animexportwin.ui" line="14"/>
         <source>Export Animation</source>
         <translation>Animation exportieren</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="33"/>
+        <location filename="../src/qtui/animexportwin.ui" line="52"/>
         <source>Source</source>
         <translation>Quelle</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="51"/>
+        <location filename="../src/qtui/animexportwin.ui" line="79"/>
         <source>Animation</source>
         <translation>Animation</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="61"/>
+        <location filename="../src/qtui/animexportwin.ui" line="89"/>
         <source>Viewport</source>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="74"/>
+        <location filename="../src/qtui/animexportwin.ui" line="102"/>
         <source>Duration</source>
         <translation>Dauer</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="86"/>
+        <location filename="../src/qtui/animexportwin.ui" line="123"/>
         <source>Iterations</source>
         <translation>Schritte</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="112"/>
+        <location filename="../src/qtui/animexportwin.ui" line="149"/>
         <source>Seconds</source>
         <translation>Sekunden</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="143"/>
+        <location filename="../src/qtui/animexportwin.ui" line="180"/>
         <source>Output</source>
         <translation>Ausgabe</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="155"/>
+        <location filename="../src/qtui/animexportwin.ui" line="201"/>
         <source>Directory</source>
         <translation>Verzeichnis</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="165"/>
+        <location filename="../src/qtui/animexportwin.ui" line="211"/>
         <source>Format</source>
         <translation>Format</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="176"/>
+        <location filename="../src/qtui/animexportwin.ui" line="222"/>
         <source>anim_0001.jpg</source>
         <translation>anim_0001.jpg</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="181"/>
+        <location filename="../src/qtui/animexportwin.ui" line="227"/>
         <source>anim_1.jpg</source>
         <translation>anim_1.jpg</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="186"/>
+        <location filename="../src/qtui/animexportwin.ui" line="232"/>
         <source>anim_0001.png</source>
         <translation>anim_0001.png</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="191"/>
+        <location filename="../src/qtui/animexportwin.ui" line="237"/>
         <source>anim_1.png</source>
         <translation>anim_1.png</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="215"/>
+        <location filename="../src/qtui/animexportwin.ui" line="268"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="230"/>
-        <source>/some/path/name</source>
-        <translation>/irgendein/pfad/name</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/animexportwin.ui" line="242"/>
-        <source>25.0</source>
-        <translation>25.0</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/animexportwin.ui" line="249"/>
+        <location filename="../src/qtui/animexportwin.ui" line="300"/>
         <source>Frame Rate</source>
         <translation>Frame Rate</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="286"/>
+        <location filename="../src/qtui/animexportwin.ui" line="346"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="312"/>
+        <location filename="../src/qtui/animexportwin.ui" line="372"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="319"/>
+        <location filename="../src/qtui/animexportwin.ui" line="379"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/animexportwin.ui" line="105"/>
-        <source>1</source>
-        <translation>1</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/animexportwin.ui" line="131"/>
-        <source>15</source>
-        <translation>15</translation>
     </message>
 </context>
 <context>
@@ -385,72 +358,72 @@
 <context>
     <name>AnimSetWinBase</name>
     <message>
-        <location filename="../src/qtui/animsetwin.ui" line="16"/>
+        <location filename="../src/qtui/animsetwin.ui" line="14"/>
         <source>Animation Sets</source>
         <translation>Animations Sets</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animsetwin.ui" line="62"/>
+        <location filename="../src/qtui/animsetwin.ui" line="78"/>
         <source>&amp;Down</source>
         <translation>&amp;Runter</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animsetwin.ui" line="69"/>
+        <location filename="../src/qtui/animsetwin.ui" line="85"/>
         <source>&amp;Up</source>
         <translation>&amp;Hoch</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animsetwin.ui" line="86"/>
+        <location filename="../src/qtui/animsetwin.ui" line="111"/>
         <source>&amp;New</source>
         <translation>&amp;Neu</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animsetwin.ui" line="93"/>
+        <location filename="../src/qtui/animsetwin.ui" line="118"/>
         <source>&amp;Rename</source>
         <translation>&amp;Umbennen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animsetwin.ui" line="100"/>
+        <location filename="../src/qtui/animsetwin.ui" line="125"/>
         <source>D&amp;elete</source>
         <translation>&amp;Löschen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animsetwin.ui" line="117"/>
+        <location filename="../src/qtui/animsetwin.ui" line="151"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopieren</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animsetwin.ui" line="124"/>
+        <location filename="../src/qtui/animsetwin.ui" line="158"/>
         <source>&amp;Split</source>
         <translation>&amp;Trennen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animsetwin.ui" line="131"/>
+        <location filename="../src/qtui/animsetwin.ui" line="165"/>
         <source>&amp;Join</source>
         <translation>&amp;Zusammenführen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animsetwin.ui" line="138"/>
+        <location filename="../src/qtui/animsetwin.ui" line="172"/>
         <source>&amp;Merge</source>
         <translation>&amp;Vereinen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animsetwin.ui" line="147"/>
+        <location filename="../src/qtui/animsetwin.ui" line="181"/>
         <source>Con&amp;vert To Frame Animation</source>
         <translation>&amp;In Frame Animation umwandeln</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animsetwin.ui" line="159"/>
+        <location filename="../src/qtui/animsetwin.ui" line="202"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animsetwin.ui" line="185"/>
+        <location filename="../src/qtui/animsetwin.ui" line="228"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animsetwin.ui" line="195"/>
+        <location filename="../src/qtui/animsetwin.ui" line="238"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -646,47 +619,42 @@ Frame Anzahl ist unterschiedlich.</translation>
 <context>
     <name>AnimWidgetBase</name>
     <message>
-        <location filename="../src/qtui/animwidget.ui" line="24"/>
+        <location filename="../src/qtui/animwidget.ui" line="20"/>
         <source>Animation</source>
         <translation>Animation</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animwidget.ui" line="69"/>
+        <location filename="../src/qtui/animwidget.ui" line="81"/>
         <source>FPS</source>
         <translation>FPS</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animwidget.ui" line="98"/>
+        <location filename="../src/qtui/animwidget.ui" line="108"/>
         <source>Play</source>
         <translation>Abspielen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animwidget.ui" line="105"/>
+        <location filename="../src/qtui/animwidget.ui" line="115"/>
         <source>Stop</source>
         <translation>Stop</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animwidget.ui" line="91"/>
+        <location filename="../src/qtui/animwidget.ui" line="101"/>
         <source>Loop</source>
         <translation>Wiederholen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animwidget.ui" line="119"/>
+        <location filename="../src/qtui/animwidget.ui" line="138"/>
         <source>Frames</source>
         <translation>Frames</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animwidget.ui" line="150"/>
-        <source>Frame: 03</source>
-        <translation>Frame: 03</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/animwidget.ui" line="59"/>
+        <location filename="../src/qtui/animwidget.ui" line="74"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="../src/qtui/animwidget.ui" line="62"/>
+        <location filename="../src/qtui/animwidget.ui" line="71"/>
         <source>Delete Animation</source>
         <translation>Lösche Animation</translation>
     </message>
@@ -711,37 +679,37 @@ Frame Anzahl ist unterschiedlich.</translation>
 <context>
     <name>AutoAssignJointWinBase</name>
     <message>
-        <location filename="../src/qtui/autoassignjointwin.ui" line="16"/>
+        <location filename="../src/qtui/autoassignjointwin.ui" line="14"/>
         <source>Auto-Assign Bone Joints</source>
         <translation>Verknüpfe Knochengelenke automatisch</translation>
     </message>
     <message>
-        <location filename="../src/qtui/autoassignjointwin.ui" line="22"/>
+        <location filename="../src/qtui/autoassignjointwin.ui" line="20"/>
         <source>Only assign to selected joints</source>
         <translation>Weise nur den ausgewählten Gelenken zu</translation>
     </message>
     <message>
-        <location filename="../src/qtui/autoassignjointwin.ui" line="37"/>
+        <location filename="../src/qtui/autoassignjointwin.ui" line="44"/>
         <source>Single</source>
         <translation>Einzel</translation>
     </message>
     <message>
-        <location filename="../src/qtui/autoassignjointwin.ui" line="60"/>
+        <location filename="../src/qtui/autoassignjointwin.ui" line="67"/>
         <source>Multiple</source>
         <translation>Multi</translation>
     </message>
     <message>
-        <location filename="../src/qtui/autoassignjointwin.ui" line="93"/>
+        <location filename="../src/qtui/autoassignjointwin.ui" line="109"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/autoassignjointwin.ui" line="119"/>
+        <location filename="../src/qtui/autoassignjointwin.ui" line="135"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/autoassignjointwin.ui" line="126"/>
+        <location filename="../src/qtui/autoassignjointwin.ui" line="142"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -767,17 +735,12 @@ Frame Anzahl ist unterschiedlich.</translation>
 <context>
     <name>BackgroundSelectBase</name>
     <message>
-        <location filename="../src/qtui/backgroundselect.ui" line="16"/>
-        <source>BackgroundSelect</source>
-        <translation>Hintergrundauswahl</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/backgroundselect.ui" line="34"/>
+        <location filename="../src/qtui/backgroundselect.ui" line="30"/>
         <source>None</source>
         <translation>Kein</translation>
     </message>
     <message>
-        <location filename="../src/qtui/backgroundselect.ui" line="41"/>
+        <location filename="../src/qtui/backgroundselect.ui" line="37"/>
         <source>File...</source>
         <translation>Datei...</translation>
     </message>
@@ -800,52 +763,52 @@ Frame Anzahl ist unterschiedlich.</translation>
 <context>
     <name>BackgroundWinBase</name>
     <message>
-        <location filename="../src/qtui/backgroundwin.ui" line="16"/>
+        <location filename="../src/qtui/backgroundwin.ui" line="14"/>
         <source>Select Background Image</source>
         <translation>Wähle Hintergrundbild aus</translation>
     </message>
     <message>
-        <location filename="../src/qtui/backgroundwin.ui" line="23"/>
+        <location filename="../src/qtui/backgroundwin.ui" line="21"/>
         <source>Front</source>
         <translation>Vorne</translation>
     </message>
     <message>
-        <location filename="../src/qtui/backgroundwin.ui" line="28"/>
+        <location filename="../src/qtui/backgroundwin.ui" line="26"/>
         <source>Back</source>
         <translation>Hinten</translation>
     </message>
     <message>
-        <location filename="../src/qtui/backgroundwin.ui" line="33"/>
+        <location filename="../src/qtui/backgroundwin.ui" line="31"/>
         <source>Left</source>
         <translation>Links</translation>
     </message>
     <message>
-        <location filename="../src/qtui/backgroundwin.ui" line="38"/>
+        <location filename="../src/qtui/backgroundwin.ui" line="36"/>
         <source>Right</source>
         <translation>Rechts</translation>
     </message>
     <message>
-        <location filename="../src/qtui/backgroundwin.ui" line="43"/>
+        <location filename="../src/qtui/backgroundwin.ui" line="41"/>
         <source>Top</source>
         <translation>Oben</translation>
     </message>
     <message>
-        <location filename="../src/qtui/backgroundwin.ui" line="48"/>
+        <location filename="../src/qtui/backgroundwin.ui" line="46"/>
         <source>Bottom</source>
         <translation>Unten</translation>
     </message>
     <message>
-        <location filename="../src/qtui/backgroundwin.ui" line="61"/>
+        <location filename="../src/qtui/backgroundwin.ui" line="68"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/backgroundwin.ui" line="87"/>
+        <location filename="../src/qtui/backgroundwin.ui" line="94"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/backgroundwin.ui" line="94"/>
+        <location filename="../src/qtui/backgroundwin.ui" line="101"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -923,47 +886,47 @@ Frame Anzahl ist unterschiedlich.</translation>
 <context>
     <name>BoolWinBase</name>
     <message>
-        <location filename="../src/qtui/boolwin.ui" line="13"/>
+        <location filename="../src/qtui/boolwin.ui" line="14"/>
         <source>Boolean Operation</source>
         <translation>Boolsche Operation</translation>
     </message>
     <message>
-        <location filename="../src/qtui/boolwin.ui" line="25"/>
+        <location filename="../src/qtui/boolwin.ui" line="35"/>
         <source>Operation</source>
         <translation>Operation</translation>
     </message>
     <message>
-        <location filename="../src/qtui/boolwin.ui" line="37"/>
+        <location filename="../src/qtui/boolwin.ui" line="56"/>
         <source>Fuse</source>
         <translation>Verschweiße</translation>
     </message>
     <message>
-        <location filename="../src/qtui/boolwin.ui" line="47"/>
+        <location filename="../src/qtui/boolwin.ui" line="66"/>
         <source>Union</source>
         <translation>Union</translation>
     </message>
     <message>
-        <location filename="../src/qtui/boolwin.ui" line="54"/>
+        <location filename="../src/qtui/boolwin.ui" line="73"/>
         <source>Subtraction</source>
         <translation>Subtraktion</translation>
     </message>
     <message>
-        <location filename="../src/qtui/boolwin.ui" line="61"/>
+        <location filename="../src/qtui/boolwin.ui" line="80"/>
         <source>Intersection</source>
         <translation>Schnittpunkt</translation>
     </message>
     <message>
-        <location filename="../src/qtui/boolwin.ui" line="71"/>
+        <location filename="../src/qtui/boolwin.ui" line="90"/>
         <source>Set Object A</source>
         <translation>Setze Objekt A</translation>
     </message>
     <message>
-        <location filename="../src/qtui/boolwin.ui" line="78"/>
+        <location filename="../src/qtui/boolwin.ui" line="97"/>
         <source>Select faces to set</source>
         <translation>Wähle Flächen zum Setzten aus</translation>
     </message>
     <message>
-        <location filename="../src/qtui/boolwin.ui" line="94"/>
+        <location filename="../src/qtui/boolwin.ui" line="113"/>
         <source>Subtract Selected</source>
         <translation>Subtrahiere Ausgewählte</translation>
     </message>
@@ -980,47 +943,47 @@ Frame Anzahl ist unterschiedlich.</translation>
 <context>
     <name>Cal3dPromptBase</name>
     <message>
-        <location filename="../src/qtui/cal3dprompt.ui" line="13"/>
+        <location filename="../src/qtui/cal3dprompt.ui" line="14"/>
         <source>Cal3D Filter Options</source>
         <translation>Cal3D Filter Optionen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/cal3dprompt.ui" line="25"/>
+        <location filename="../src/qtui/cal3dprompt.ui" line="35"/>
         <source>Save Meshes</source>
         <translation>Meshes speichern</translation>
     </message>
     <message>
-        <location filename="../src/qtui/cal3dprompt.ui" line="37"/>
+        <location filename="../src/qtui/cal3dprompt.ui" line="56"/>
         <source>All meshes in one file</source>
         <translation>Alle Meshes in einer Datei</translation>
     </message>
     <message>
-        <location filename="../src/qtui/cal3dprompt.ui" line="47"/>
+        <location filename="../src/qtui/cal3dprompt.ui" line="66"/>
         <source>Group meshes by name</source>
         <translation>Gruppiere Meshes nach Name</translation>
     </message>
     <message>
-        <location filename="../src/qtui/cal3dprompt.ui" line="60"/>
+        <location filename="../src/qtui/cal3dprompt.ui" line="79"/>
         <source>Save Materials</source>
         <translation>Speichere Materialien</translation>
     </message>
     <message>
-        <location filename="../src/qtui/cal3dprompt.ui" line="72"/>
+        <location filename="../src/qtui/cal3dprompt.ui" line="100"/>
         <source>CRF (Binary)</source>
         <translation>CRF (Binary)</translation>
     </message>
     <message>
-        <location filename="../src/qtui/cal3dprompt.ui" line="82"/>
+        <location filename="../src/qtui/cal3dprompt.ui" line="110"/>
         <source>XRF (XML Text)</source>
         <translation>XRF (XML Text)</translation>
     </message>
     <message>
-        <location filename="../src/qtui/cal3dprompt.ui" line="132"/>
+        <location filename="../src/qtui/cal3dprompt.ui" line="169"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/cal3dprompt.ui" line="142"/>
+        <location filename="../src/qtui/cal3dprompt.ui" line="179"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -1031,26 +994,6 @@ Frame Anzahl ist unterschiedlich.</translation>
         <location filename="../src/commands/aligncmd.cc" line="56"/>
         <source>Align Selected...</source>
         <translation>Ausgewählte ausrichten...</translation>
-    </message>
-    <message>
-        <location filename="../src/commands/assignjointcmd.cc" line="61"/>
-        <source>Assigning %1 vertices and %2 points to joint %3</source>
-        <translation>Verknüpfe %1 Vertizes und %2 Punkte mit Gelenk %3</translation>
-    </message>
-    <message>
-        <location filename="../src/commands/assignjointcmd.cc" line="81"/>
-        <source>You must have exactly 1 bone joint selected.</source>
-        <translation>Sie müssen genau 1 Knochengelenk ausgewählt haben.</translation>
-    </message>
-    <message>
-        <location filename="../src/commands/assignjointcmd.cc" line="97"/>
-        <source>Assign Selected to Bone Joint</source>
-        <translation>Weise Ausgewählte dem Knochengelenk zu</translation>
-    </message>
-    <message>
-        <location filename="../src/commands/backgroundcmd.cc" line="48"/>
-        <source>Set Background Image...</source>
-        <translation>Setze Hintergrundbild...</translation>
     </message>
     <message>
         <location filename="../src/commands/capcmd.cc" line="89"/>
@@ -1120,17 +1063,17 @@ Wollen sie fortfahren?</translation>
         <translation>Duplizieren</translation>
     </message>
     <message>
-        <location filename="../src/commands/edgedivcmd.cc" line="125"/>
+        <location filename="../src/commands/edgedivcmd.cc" line="128"/>
         <source>Edge Divide complete</source>
         <translation>Kanten trennen komplett</translation>
     </message>
     <message>
-        <location filename="../src/commands/edgedivcmd.cc" line="130"/>
-        <source>You must have at 2 adjacent vertices to Edge Divide</source>
+        <location filename="../src/commands/edgedivcmd.cc" line="133"/>
+        <source>You must have 2 adjacent vertices selected to Edge Divide</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/commands/edgedivcmd.cc" line="142"/>
+        <location filename="../src/commands/edgedivcmd.cc" line="145"/>
         <source>Edge Divide</source>
         <translation>Kanten trennen</translation>
     </message>
@@ -1266,11 +1209,6 @@ Wollen sie fortfahren?</translation>
         <translation>Invertiere Normale</translation>
     </message>
     <message>
-        <location filename="../src/commands/jointcmd.cc" line="49"/>
-        <source>Joints...</source>
-        <translation>Gelenke...</translation>
-    </message>
-    <message>
         <location filename="../src/commands/makefacecmd.cc" line="52"/>
         <source>Make Face From Vertices</source>
         <translation>Mache Fläche aus Vertizes</translation>
@@ -1294,11 +1232,6 @@ Wollen sie fortfahren?</translation>
         <location filename="../src/commands/pastecmd.cc" line="79"/>
         <source>Paste from Clipboard</source>
         <translation>Einfügen aus Zwischenablage</translation>
-    </message>
-    <message>
-        <location filename="../src/commands/pointcmd.cc" line="50"/>
-        <source>Points...</source>
-        <translation>Punkte...</translation>
     </message>
     <message>
         <location filename="../src/commands/rotatetexcmd.cc" line="53"/>
@@ -1373,12 +1306,17 @@ Wollen sie fortfahren?</translation>
         <translation>In Sphärenform verwandeln...</translation>
     </message>
     <message>
-        <location filename="../src/commands/subdividecmd.cc" line="44"/>
+        <location filename="../src/commands/subdividecmd.cc" line="46"/>
         <source>Subdivide complete</source>
         <translation>Unterteilung komplett</translation>
     </message>
     <message>
-        <location filename="../src/commands/subdividecmd.cc" line="56"/>
+        <location filename="../src/commands/subdividecmd.cc" line="50"/>
+        <source>You must have at least 1 face selected to Subdivide Faces</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/commands/subdividecmd.cc" line="61"/>
         <source>Subdivide Faces</source>
         <translation>Flächen unterteilen</translation>
     </message>
@@ -1441,7 +1379,7 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>CommandWidget</name>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="146"/>
+        <location filename="../src/implui/viewwin.cc" line="147"/>
         <source>You are in animation mode, but there are no animations</source>
         <translation>Sie befinden sich im Animationsmodus, aber es gibt keine Animationen</translation>
     </message>
@@ -1500,40 +1438,39 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>ContextGroupBase</name>
     <message>
-        <location filename="../src/qtui/contextgroup.ui" line="24"/>
-        <location filename="../src/qtui/contextgroup.ui" line="86"/>
+        <location filename="../src/qtui/contextgroup.ui" line="87"/>
         <source>Group</source>
         <translation>Gruppe</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextgroup.ui" line="44"/>
+        <location filename="../src/qtui/contextgroup.ui" line="47"/>
         <source>Projection Name</source>
         <translation>Projektionsname</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextgroup.ui" line="52"/>
-        <location filename="../src/qtui/contextgroup.ui" line="96"/>
-        <location filename="../src/qtui/contextgroup.ui" line="120"/>
+        <location filename="../src/qtui/contextgroup.ui" line="55"/>
+        <location filename="../src/qtui/contextgroup.ui" line="97"/>
+        <location filename="../src/qtui/contextgroup.ui" line="119"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextgroup.ui" line="68"/>
+        <location filename="../src/qtui/contextgroup.ui" line="69"/>
         <source>Material Name</source>
         <translation>Material Name</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextgroup.ui" line="76"/>
+        <location filename="../src/qtui/contextgroup.ui" line="77"/>
         <source>Group Material:</source>
         <translation>Gruppen Material:</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextgroup.ui" line="112"/>
+        <location filename="../src/qtui/contextgroup.ui" line="111"/>
         <source>Group Name</source>
         <translation>Gruppen Name</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextgroup.ui" line="127"/>
+        <location filename="../src/qtui/contextgroup.ui" line="126"/>
         <source>Texture Projection</source>
         <translation>Textur Projektion</translation>
     </message>
@@ -1605,57 +1542,52 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>ContextInfluencesBase</name>
     <message>
-        <location filename="../src/qtui/contextinfluences.ui" line="16"/>
-        <source>Influences</source>
-        <translation>Einflüsse</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/contextinfluences.ui" line="27"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="34"/>
         <source>Weight</source>
         <translation>Gewicht</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextinfluences.ui" line="46"/>
-        <location filename="../src/qtui/contextinfluences.ui" line="73"/>
-        <location filename="../src/qtui/contextinfluences.ui" line="128"/>
-        <location filename="../src/qtui/contextinfluences.ui" line="155"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="53"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="80"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="135"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="162"/>
         <source>Custom</source>
         <translation>Manuell</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextinfluences.ui" line="51"/>
-        <location filename="../src/qtui/contextinfluences.ui" line="78"/>
-        <location filename="../src/qtui/contextinfluences.ui" line="133"/>
-        <location filename="../src/qtui/contextinfluences.ui" line="160"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="58"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="85"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="140"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="167"/>
         <source>Auto</source>
         <translation>Automatisch</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextinfluences.ui" line="56"/>
-        <location filename="../src/qtui/contextinfluences.ui" line="83"/>
-        <location filename="../src/qtui/contextinfluences.ui" line="138"/>
-        <location filename="../src/qtui/contextinfluences.ui" line="165"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="63"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="90"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="145"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="172"/>
         <source>Remaining</source>
         <translation>Verbleibend</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextinfluences.ui" line="92"/>
-        <location filename="../src/qtui/contextinfluences.ui" line="111"/>
-        <location filename="../src/qtui/contextinfluences.ui" line="174"/>
-        <location filename="../src/qtui/contextinfluences.ui" line="183"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="99"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="118"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="181"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="190"/>
         <source>&lt;None&gt;</source>
         <translation>&lt;Kein&gt;</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextinfluences.ui" line="100"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="107"/>
         <source>Joint</source>
         <translation>Gelenk</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextinfluences.ui" line="41"/>
-        <location filename="../src/qtui/contextinfluences.ui" line="68"/>
-        <location filename="../src/qtui/contextinfluences.ui" line="123"/>
-        <location filename="../src/qtui/contextinfluences.ui" line="150"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="48"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="75"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="130"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="157"/>
         <source>&lt;Mixed&gt;</source>
         <translation>&lt;Gemischt&gt;</translation>
     </message>
@@ -1672,8 +1604,7 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>ContextNameBase</name>
     <message>
-        <location filename="../src/qtui/contextname.ui" line="24"/>
-        <location filename="../src/qtui/contextname.ui" line="30"/>
+        <location filename="../src/qtui/contextname.ui" line="26"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
@@ -1699,28 +1630,27 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>ContextPositionBase</name>
     <message>
-        <location filename="../src/qtui/contextposition.ui" line="24"/>
-        <location filename="../src/qtui/contextposition.ui" line="30"/>
+        <location filename="../src/qtui/contextposition.ui" line="26"/>
         <source>Position</source>
         <translation>Position</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextposition.ui" line="45"/>
+        <location filename="../src/qtui/contextposition.ui" line="50"/>
         <source>Z</source>
         <translation>Z</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextposition.ui" line="61"/>
+        <location filename="../src/qtui/contextposition.ui" line="66"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextposition.ui" line="74"/>
+        <location filename="../src/qtui/contextposition.ui" line="79"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextposition.ui" line="86"/>
+        <location filename="../src/qtui/contextposition.ui" line="91"/>
         <source>Dimensions</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1737,32 +1667,27 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>ContextProjectionBase</name>
     <message>
-        <location filename="../src/qtui/contextprojection.ui" line="16"/>
-        <source>Projection</source>
-        <translation>Projektion</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/contextprojection.ui" line="22"/>
+        <location filename="../src/qtui/contextprojection.ui" line="20"/>
         <source>Projection Type</source>
         <translation>Projektions Typ</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextprojection.ui" line="46"/>
+        <location filename="../src/qtui/contextprojection.ui" line="51"/>
         <source>Cylinder</source>
         <translation>Zylinder</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextprojection.ui" line="51"/>
+        <location filename="../src/qtui/contextprojection.ui" line="56"/>
         <source>Sphere</source>
         <translation>Sphäre</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextprojection.ui" line="56"/>
+        <location filename="../src/qtui/contextprojection.ui" line="61"/>
         <source>Plane</source>
         <translation>Ebene</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextprojection.ui" line="64"/>
+        <location filename="../src/qtui/contextprojection.ui" line="69"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -1770,7 +1695,7 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>ContextRotation</name>
     <message>
-        <location filename="../src/implui/contextrotation.cc" line="184"/>
+        <location filename="../src/implui/contextrotation.cc" line="181"/>
         <source>Set Rotation</source>
         <comment>operation complete</comment>
         <translation>Setze Rotation</translation>
@@ -1779,23 +1704,22 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>ContextRotationBase</name>
     <message>
-        <location filename="../src/qtui/contextrotation.ui" line="16"/>
-        <location filename="../src/qtui/contextrotation.ui" line="22"/>
+        <location filename="../src/qtui/contextrotation.ui" line="20"/>
         <source>Rotation</source>
         <translation>Rotation</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextrotation.ui" line="37"/>
+        <location filename="../src/qtui/contextrotation.ui" line="44"/>
         <source>Z</source>
         <translation>Z</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextrotation.ui" line="53"/>
+        <location filename="../src/qtui/contextrotation.ui" line="60"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location filename="../src/qtui/contextrotation.ui" line="66"/>
+        <location filename="../src/qtui/contextrotation.ui" line="73"/>
         <source>X</source>
         <translation>X</translation>
     </message>
@@ -1983,54 +1907,47 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>ExtrudeWinBase</name>
     <message>
-        <location filename="../src/qtui/extrudewin.ui" line="16"/>
+        <location filename="../src/qtui/extrudewin.ui" line="14"/>
         <source>Extrude</source>
         <translation>Extrudieren</translation>
     </message>
     <message>
-        <location filename="../src/qtui/extrudewin.ui" line="28"/>
+        <location filename="../src/qtui/extrudewin.ui" line="35"/>
         <source>Extrude options</source>
         <translation>Extrudieren Optionen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/extrudewin.ui" line="48"/>
+        <location filename="../src/qtui/extrudewin.ui" line="73"/>
         <source>X:</source>
         <translation>X:</translation>
     </message>
     <message>
-        <location filename="../src/qtui/extrudewin.ui" line="58"/>
-        <location filename="../src/qtui/extrudewin.ui" line="75"/>
-        <location filename="../src/qtui/extrudewin.ui" line="82"/>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/extrudewin.ui" line="65"/>
+        <location filename="../src/qtui/extrudewin.ui" line="90"/>
         <source>Z:</source>
         <translation>Z:</translation>
     </message>
     <message>
-        <location filename="../src/qtui/extrudewin.ui" line="89"/>
+        <location filename="../src/qtui/extrudewin.ui" line="114"/>
         <source>Y:</source>
         <translation>Y:</translation>
     </message>
     <message>
-        <location filename="../src/qtui/extrudewin.ui" line="101"/>
+        <location filename="../src/qtui/extrudewin.ui" line="126"/>
         <source>Make Back Faces</source>
         <translation>Erstelle Rückseiten von Flächen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/extrudewin.ui" line="148"/>
+        <location filename="../src/qtui/extrudewin.ui" line="182"/>
         <source>E&amp;xtrude</source>
         <translation>&amp;Extrudieren</translation>
     </message>
     <message>
-        <location filename="../src/qtui/extrudewin.ui" line="165"/>
+        <location filename="../src/qtui/extrudewin.ui" line="208"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/extrudewin.ui" line="191"/>
+        <location filename="../src/qtui/extrudewin.ui" line="234"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
@@ -2038,37 +1955,37 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>GroupCleanBase</name>
     <message>
-        <location filename="../src/qtui/groupclean.ui" line="16"/>
-        <source>Group Clean-up Window</source>
+        <location filename="../src/qtui/groupclean.ui" line="14"/>
+        <source>Clean Up</source>
         <translation>Säuberung</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupclean.ui" line="22"/>
+        <location filename="../src/qtui/groupclean.ui" line="20"/>
         <source>Merge identical materials</source>
         <translation>Identische Materialien zusammenführen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupclean.ui" line="32"/>
+        <location filename="../src/qtui/groupclean.ui" line="30"/>
         <source>Remove unused materials</source>
         <translation>Nicht verwendete Materialien entfernen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupclean.ui" line="42"/>
+        <location filename="../src/qtui/groupclean.ui" line="40"/>
         <source>Merge identical groups</source>
         <translation>Identische Gruppen zusammenführen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupclean.ui" line="52"/>
+        <location filename="../src/qtui/groupclean.ui" line="50"/>
         <source>Remove unused groups</source>
         <translation>Nicht verwendete Gruppen entfernen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupclean.ui" line="99"/>
+        <location filename="../src/qtui/groupclean.ui" line="106"/>
         <source>Ok</source>
         <translation type="unfinished">Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupclean.ui" line="109"/>
+        <location filename="../src/qtui/groupclean.ui" line="116"/>
         <source>Cancel</source>
         <translation type="unfinished">Abbrechen</translation>
     </message>
@@ -2096,87 +2013,77 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>GroupWinBase</name>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="16"/>
+        <location filename="../src/qtui/groupwin.ui" line="14"/>
         <source>Groups</source>
         <translation>Gruppen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="29"/>
+        <location filename="../src/qtui/groupwin.ui" line="36"/>
         <source>No group</source>
         <translation>Keine Gruppe</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="45"/>
+        <location filename="../src/qtui/groupwin.ui" line="61"/>
         <source>New</source>
         <translation>Neu</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="52"/>
+        <location filename="../src/qtui/groupwin.ui" line="68"/>
         <source>Rename</source>
         <translation>Umbenennen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="59"/>
+        <location filename="../src/qtui/groupwin.ui" line="75"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="92"/>
+        <location filename="../src/qtui/groupwin.ui" line="117"/>
         <source>Select Faces In Group</source>
         <translation>Wähle Flächen in Gruppe aus</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="99"/>
+        <location filename="../src/qtui/groupwin.ui" line="124"/>
         <source>Unselect Faces In Group</source>
         <translation>Flächen in Gruppe abwählen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="140"/>
-        <source>Smoothness: 100</source>
-        <translation>Glätte: 100</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/groupwin.ui" line="150"/>
-        <source>Max Angle: 000</source>
-        <translation>Maximaler Winkel: 000</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/groupwin.ui" line="208"/>
+        <location filename="../src/qtui/groupwin.ui" line="269"/>
         <source>Faces</source>
         <translation>Flächen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="220"/>
+        <location filename="../src/qtui/groupwin.ui" line="290"/>
         <source>Assign As Group</source>
         <translation>Als Gruppe zuweisen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="227"/>
+        <location filename="../src/qtui/groupwin.ui" line="297"/>
         <source>Add To Group</source>
         <translation>zu Gruppe hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="237"/>
+        <location filename="../src/qtui/groupwin.ui" line="307"/>
         <source>Texture</source>
         <translation>Textur</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="250"/>
+        <location filename="../src/qtui/groupwin.ui" line="329"/>
         <source>No texture</source>
         <translation>Keine Textur</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="280"/>
+        <location filename="../src/qtui/groupwin.ui" line="366"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="306"/>
+        <location filename="../src/qtui/groupwin.ui" line="392"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="313"/>
+        <location filename="../src/qtui/groupwin.ui" line="399"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -2245,27 +2152,27 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>HelpWinBase</name>
     <message>
-        <location filename="../src/qtui/helpwin.ui" line="16"/>
+        <location filename="../src/qtui/helpwin.ui" line="14"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
     <message>
-        <location filename="../src/qtui/helpwin.ui" line="36"/>
+        <location filename="../src/qtui/helpwin.ui" line="52"/>
         <source>Contents</source>
         <translation>Inhalt</translation>
     </message>
     <message>
-        <location filename="../src/qtui/helpwin.ui" line="43"/>
+        <location filename="../src/qtui/helpwin.ui" line="59"/>
         <source>Back</source>
         <translation>Zurück</translation>
     </message>
     <message>
-        <location filename="../src/qtui/helpwin.ui" line="50"/>
+        <location filename="../src/qtui/helpwin.ui" line="66"/>
         <source>Forward</source>
         <translation>Vorwärts</translation>
     </message>
     <message>
-        <location filename="../src/qtui/helpwin.ui" line="102"/>
+        <location filename="../src/qtui/helpwin.ui" line="127"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
@@ -2282,47 +2189,47 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>IqePromptBase</name>
     <message>
-        <location filename="../src/qtui/iqeprompt.ui" line="16"/>
+        <location filename="../src/qtui/iqeprompt.ui" line="14"/>
         <source>IQE Filter Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/iqeprompt.ui" line="22"/>
+        <location filename="../src/qtui/iqeprompt.ui" line="20"/>
         <source>Save Meshes</source>
         <translation type="unfinished">Meshes speichern</translation>
     </message>
     <message>
-        <location filename="../src/qtui/iqeprompt.ui" line="32"/>
+        <location filename="../src/qtui/iqeprompt.ui" line="30"/>
         <source>Save Points as Bone Joints</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/iqeprompt.ui" line="42"/>
+        <location filename="../src/qtui/iqeprompt.ui" line="40"/>
         <source>Save Points in Animations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/iqeprompt.ui" line="52"/>
+        <location filename="../src/qtui/iqeprompt.ui" line="50"/>
         <source>Save Skeleton</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/iqeprompt.ui" line="62"/>
+        <location filename="../src/qtui/iqeprompt.ui" line="60"/>
         <source>Save Animations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/iqeprompt.ui" line="84"/>
+        <location filename="../src/qtui/iqeprompt.ui" line="91"/>
         <source>Press F1 for help</source>
         <translation type="unfinished">Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/iqeprompt.ui" line="110"/>
+        <location filename="../src/qtui/iqeprompt.ui" line="117"/>
         <source>Ok</source>
         <translation type="unfinished">Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/iqeprompt.ui" line="120"/>
+        <location filename="../src/qtui/iqeprompt.ui" line="127"/>
         <source>Cancel</source>
         <translation type="unfinished">Abbrechen</translation>
     </message>
@@ -2356,57 +2263,57 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>JointWinBase</name>
     <message>
-        <location filename="../src/qtui/jointwin.ui" line="16"/>
+        <location filename="../src/qtui/jointwin.ui" line="14"/>
         <source>Joints</source>
         <translation>Gelenke</translation>
     </message>
     <message>
-        <location filename="../src/qtui/jointwin.ui" line="39"/>
+        <location filename="../src/qtui/jointwin.ui" line="55"/>
         <source>Rename</source>
         <translation>Umbenennen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/jointwin.ui" line="46"/>
+        <location filename="../src/qtui/jointwin.ui" line="62"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/jointwin.ui" line="55"/>
+        <location filename="../src/qtui/jointwin.ui" line="71"/>
         <source>Selection</source>
         <translation>Auswahl</translation>
     </message>
     <message>
-        <location filename="../src/qtui/jointwin.ui" line="67"/>
+        <location filename="../src/qtui/jointwin.ui" line="92"/>
         <source>Select Joint Vertices</source>
         <translation>Wähle Gelenk Vertizes aus</translation>
     </message>
     <message>
-        <location filename="../src/qtui/jointwin.ui" line="74"/>
+        <location filename="../src/qtui/jointwin.ui" line="99"/>
         <source>Select Unassigned Vertices</source>
         <translation>Wähle nicht-zugewiesene Vertizes</translation>
     </message>
     <message>
-        <location filename="../src/qtui/jointwin.ui" line="81"/>
+        <location filename="../src/qtui/jointwin.ui" line="106"/>
         <source>Assign Selected to Joint</source>
         <translation>Weise Auswahl Gelenk zu</translation>
     </message>
     <message>
-        <location filename="../src/qtui/jointwin.ui" line="88"/>
+        <location filename="../src/qtui/jointwin.ui" line="113"/>
         <source>Add Selected to Joint</source>
         <translation>Füge Auswahl zu Gelenk hinzu</translation>
     </message>
     <message>
-        <location filename="../src/qtui/jointwin.ui" line="103"/>
+        <location filename="../src/qtui/jointwin.ui" line="137"/>
         <source>F1 for help</source>
         <translation>F1 für Hilfe</translation>
     </message>
     <message>
-        <location filename="../src/qtui/jointwin.ui" line="129"/>
+        <location filename="../src/qtui/jointwin.ui" line="163"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/jointwin.ui" line="136"/>
+        <location filename="../src/qtui/jointwin.ui" line="170"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -2414,163 +2321,163 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>KeyConfig</name>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="353"/>
+        <location filename="../src/implui/keycfg.cc" line="348"/>
         <source>V</source>
         <comment>Select Vertices Tool Shortcut</comment>
         <translation>V</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="354"/>
+        <location filename="../src/implui/keycfg.cc" line="349"/>
         <source>F</source>
         <comment>Select Faces Tool Shortcut</comment>
         <translation>F</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="355"/>
+        <location filename="../src/implui/keycfg.cc" line="350"/>
         <source>C</source>
         <comment>Select Connected Mesh Tool Shortcut</comment>
         <translation>C</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="356"/>
+        <location filename="../src/implui/keycfg.cc" line="351"/>
         <source>G</source>
         <comment>Select Groups Tool Shortcut</comment>
         <translation>G</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="357"/>
+        <location filename="../src/implui/keycfg.cc" line="352"/>
         <source>B</source>
         <comment>Select Bone Joints Tool Shortcut</comment>
         <translation>B</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="358"/>
+        <location filename="../src/implui/keycfg.cc" line="353"/>
         <source>T</source>
         <comment>Select Points Tool Shortcut</comment>
         <translation>T</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="360"/>
+        <location filename="../src/implui/keycfg.cc" line="355"/>
         <source>M</source>
         <comment>Move Tool Shortcut</comment>
         <translation>M</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="361"/>
+        <location filename="../src/implui/keycfg.cc" line="356"/>
         <source>R</source>
         <comment>Rotate Tool Shortcut</comment>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="382"/>
+        <location filename="../src/implui/keycfg.cc" line="379"/>
         <source>H</source>
         <comment>Hide Unselected Command Shortcut</comment>
         <translation>H</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="383"/>
+        <location filename="../src/implui/keycfg.cc" line="380"/>
         <source>Shift+H</source>
         <comment>Hide Selected Command Shortcut</comment>
         <translation>Shift+H</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="386"/>
+        <location filename="../src/implui/keycfg.cc" line="383"/>
         <source>Delete</source>
         <comment>Delete Command Shortcut</comment>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="387"/>
+        <location filename="../src/implui/keycfg.cc" line="384"/>
         <source>Ctrl+D</source>
         <comment>Duplicate Command Shortcut</comment>
         <translation>Strg+D</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="388"/>
+        <location filename="../src/implui/keycfg.cc" line="385"/>
         <source>Ctrl+C</source>
         <comment>Copy to Clipboard Command Shortcut</comment>
         <translation>Strg+C</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="389"/>
+        <location filename="../src/implui/keycfg.cc" line="386"/>
         <source>Ctrl+V</source>
         <comment>Paste from Clipboard Command Shortcut</comment>
         <translation>Strg+V</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="398"/>
+        <location filename="../src/implui/keycfg.cc" line="395"/>
         <source>Insert</source>
         <comment>Extrude Command Shortcut</comment>
         <translation>Einfügen</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="400"/>
+        <location filename="../src/implui/keycfg.cc" line="397"/>
         <source>Ctrl+W</source>
         <comment>Weld Command Shortcut</comment>
         <translation>Strg+W</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="421"/>
+        <location filename="../src/implui/keycfg.cc" line="417"/>
         <source>Ctrl+N</source>
         <comment>File | New Window Shortcut</comment>
         <translation>Strg+N</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="422"/>
+        <location filename="../src/implui/keycfg.cc" line="418"/>
         <source>Ctrl+O</source>
         <comment>File | Open Shortcut</comment>
         <translation>Strg+O</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="423"/>
+        <location filename="../src/implui/keycfg.cc" line="419"/>
         <source>Ctrl+S</source>
         <comment>File | Save Shortcut</comment>
         <translation>Strg+S</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="431"/>
+        <location filename="../src/implui/keycfg.cc" line="426"/>
         <source>Ctrl+Q</source>
         <comment>File | Quit Shortcut</comment>
         <translation>Strg+Q</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="441"/>
+        <location filename="../src/implui/keycfg.cc" line="438"/>
         <source>Home</source>
         <comment>View | Frame All Shortcut</comment>
         <translation>Pos1</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="442"/>
+        <location filename="../src/implui/keycfg.cc" line="439"/>
         <source>Shift+Home</source>
         <comment>View | Frame Selected Shortcut</comment>
         <translation>Shift+Pos1</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="462"/>
+        <location filename="../src/implui/keycfg.cc" line="465"/>
         <source>Ctrl+G</source>
         <comment>Groups | Edit Groups Shortcut</comment>
         <translation>Strg+G</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="463"/>
+        <location filename="../src/implui/keycfg.cc" line="466"/>
         <source>Ctrl+M</source>
         <comment>Groups | Edit Materials Shortcut</comment>
         <translation>Strg+M</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="464"/>
+        <location filename="../src/implui/keycfg.cc" line="470"/>
         <source>Ctrl+E</source>
         <comment>Groups | Edit Texture Coordinates Shortcut</comment>
         <translation>Strg+E</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="471"/>
+        <location filename="../src/implui/keycfg.cc" line="473"/>
         <source>Ctrl+B</source>
         <comment>Joints | Assign Selected Shortcut</comment>
         <translation>Strg+B</translation>
     </message>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="384"/>
+        <location filename="../src/implui/keycfg.cc" line="381"/>
         <source>Shift+U</source>
         <comment>Unhide All Command Shortcut</comment>
         <translation>Shift+U</translation>
@@ -2579,27 +2486,27 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>KeyValueWindowBase</name>
     <message>
-        <location filename="../src/qtui/keyvaluewin.ui" line="16"/>
+        <location filename="../src/qtui/keyvaluewin.ui" line="14"/>
         <source>Edit Meta Data</source>
         <translation>Editiere Meta Daten</translation>
     </message>
     <message>
-        <location filename="../src/qtui/keyvaluewin.ui" line="27"/>
+        <location filename="../src/qtui/keyvaluewin.ui" line="34"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/qtui/keyvaluewin.ui" line="43"/>
+        <location filename="../src/qtui/keyvaluewin.ui" line="50"/>
         <source>Value</source>
         <translation>Wert</translation>
     </message>
     <message>
-        <location filename="../src/qtui/keyvaluewin.ui" line="92"/>
+        <location filename="../src/qtui/keyvaluewin.ui" line="108"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/keyvaluewin.ui" line="99"/>
+        <location filename="../src/qtui/keyvaluewin.ui" line="115"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -2726,12 +2633,12 @@ See Help-&gt;About to contact the developers</source>
 Bitte sehen sie unter Hilfe-&gt;Über... nach, um die Entwickler zu kontaktieren</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/texmgr.cc" line="47"/>
-        <source>Model has a texture that is not powers of 2</source>
-        <translation>Modell hat eine Texturgröße die keine 2er-Potenz ist (128x128, 256x256, ...)</translation>
+        <location filename="../src/libmm3d/texmgr.cc" line="48"/>
+        <source>The model has a texture that&apos;s width or height is not a power of two (2, 4, 8, .., 64, 128, 256, ..).</source>
+        <translation type="unfinished">Modell hat eine Texturgröße die keine 2er-Potenz ist (128x128, 256x256, ...)</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/texmgr.cc" line="348"/>
+        <location filename="../src/libmm3d/texmgr.cc" line="372"/>
         <source>Could not load</source>
         <translation>Konnte nicht laden</translation>
     </message>
@@ -2778,58 +2685,58 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>MD2 Export erfordert, dass alle Flächen einer Gruppe zugeordnet sind.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="1728"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="1714"/>
         <source>MD3 export requires all faces to be grouped.</source>
         <translation>MD3 Export erfordert, dass alle Flächen einer Gruppe zugeordnet sind.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="1809"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="1795"/>
         <source>This looks like a player model.
 Do you want to save all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="1914"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="1900"/>
         <source>MD3_PATH+filename is to long.</source>
         <translation>MD3_PATH+Dateiname ist zu lang.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="1937"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="1923"/>
         <source>Too many animation frames for MD3 export.</source>
         <translation>Zu viele Animations Frames für MD3 export.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="1993"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="1979"/>
         <source>Too many points for MD3 export.</source>
         <translation>Zu viele Punkte für MD3 Export.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="1999"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="1985"/>
         <source>Too many groups for MD3 export.</source>
         <translation>Zu viele Gruppen für MD3 Export.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="2012"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="1998"/>
         <source>Too many faces in a single group for MD3 export</source>
         <translation>Zu viele Flächen in einzelner Gruppe für MD3 Export</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="2018"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="2004"/>
         <source>Too many vertices in a single group for MD3 export</source>
         <translation>Zu viele Vertizes in einzelner Gruppe für MD3 export</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="2171"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="2157"/>
         <source>Point name is too large for MD3 export.</source>
         <translation>Punkt name ist zu lang für MD3 export.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="2233"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="2219"/>
         <source>Group name is too large for MD3 export.</source>
         <translation>Gruppen name ist zu lang für MD3 export.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="2327"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="2313"/>
         <source>Texture filename is too long.</source>
         <translation>Dateiname der Textur ist zu lang.</translation>
     </message>
@@ -2862,52 +2769,52 @@ Do you want to save all sections?</source>
 <context>
     <name>MapDirectionBase</name>
     <message>
-        <location filename="../src/qtui/mapdirection.ui" line="16"/>
+        <location filename="../src/qtui/mapdirection.ui" line="14"/>
         <source>Which direction?</source>
         <translation>Welche Richtung?</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mapdirection.ui" line="34"/>
+        <location filename="../src/qtui/mapdirection.ui" line="41"/>
         <source>Set new texture coordinates from which direction?</source>
         <translation>Setzte neue Textur Koordinaten von welcher Richtung aus?</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mapdirection.ui" line="51"/>
+        <location filename="../src/qtui/mapdirection.ui" line="58"/>
         <source>Front</source>
         <translation>Vorne</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mapdirection.ui" line="56"/>
+        <location filename="../src/qtui/mapdirection.ui" line="63"/>
         <source>Back</source>
         <translation>Hinten</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mapdirection.ui" line="61"/>
+        <location filename="../src/qtui/mapdirection.ui" line="68"/>
         <source>Left</source>
         <translation>Links</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mapdirection.ui" line="66"/>
+        <location filename="../src/qtui/mapdirection.ui" line="73"/>
         <source>Right</source>
         <translation>Rechts</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mapdirection.ui" line="71"/>
+        <location filename="../src/qtui/mapdirection.ui" line="78"/>
         <source>Top</source>
         <translation>Oben</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mapdirection.ui" line="76"/>
+        <location filename="../src/qtui/mapdirection.ui" line="83"/>
         <source>Bottom</source>
         <translation>Unten</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mapdirection.ui" line="108"/>
+        <location filename="../src/qtui/mapdirection.ui" line="124"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mapdirection.ui" line="115"/>
+        <location filename="../src/qtui/mapdirection.ui" line="131"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -2915,77 +2822,67 @@ Do you want to save all sections?</source>
 <context>
     <name>MergeWinBase</name>
     <message>
-        <location filename="../src/qtui/mergewin.ui" line="13"/>
+        <location filename="../src/qtui/mergewin.ui" line="14"/>
         <source>Merge Model</source>
         <translation>Modelle zusammenfügen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mergewin.ui" line="25"/>
+        <location filename="../src/qtui/mergewin.ui" line="35"/>
         <source>Merge location</source>
         <translation>?Zusammenfügungs Koordinaten</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mergewin.ui" line="45"/>
-        <location filename="../src/qtui/mergewin.ui" line="52"/>
-        <location filename="../src/qtui/mergewin.ui" line="59"/>
-        <location filename="../src/qtui/mergewin.ui" line="66"/>
-        <location filename="../src/qtui/mergewin.ui" line="83"/>
-        <location filename="../src/qtui/mergewin.ui" line="90"/>
-        <source>0.0</source>
-        <translation>0.0</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/mergewin.ui" line="73"/>
+        <location filename="../src/qtui/mergewin.ui" line="101"/>
         <source>Rotation</source>
         <translation>Rotation</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mergewin.ui" line="97"/>
+        <location filename="../src/qtui/mergewin.ui" line="125"/>
         <source>Translation</source>
         <translation>Translation</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mergewin.ui" line="120"/>
+        <location filename="../src/qtui/mergewin.ui" line="157"/>
         <source>Merge Options</source>
         <translation>Zusammenfügungs Optionen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mergewin.ui" line="132"/>
+        <location filename="../src/qtui/mergewin.ui" line="178"/>
         <source>Include textures</source>
         <translation>Texturen einbeziehen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mergewin.ui" line="142"/>
+        <location filename="../src/qtui/mergewin.ui" line="188"/>
         <source>Include animations</source>
         <translation>Animationen einbeziehen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mergewin.ui" line="155"/>
+        <location filename="../src/qtui/mergewin.ui" line="201"/>
         <source>Animation Options</source>
         <translation>Animations Optionen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mergewin.ui" line="167"/>
+        <location filename="../src/qtui/mergewin.ui" line="222"/>
         <source>Append animations</source>
         <translation>Animationen anhängen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mergewin.ui" line="174"/>
+        <location filename="../src/qtui/mergewin.ui" line="229"/>
         <source>Merge if possible</source>
         <translation>Zusammenfügen falls möglich</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mergewin.ui" line="197"/>
+        <location filename="../src/qtui/mergewin.ui" line="261"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mergewin.ui" line="223"/>
+        <location filename="../src/qtui/mergewin.ui" line="287"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/mergewin.ui" line="230"/>
+        <location filename="../src/qtui/mergewin.ui" line="294"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -3035,42 +2932,42 @@ Do you want to save all sections?</source>
 <context>
     <name>MetaWindowBase</name>
     <message>
-        <location filename="../src/qtui/metawin.ui" line="32"/>
+        <location filename="../src/qtui/metawin.ui" line="42"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/qtui/metawin.ui" line="37"/>
+        <location filename="../src/qtui/metawin.ui" line="47"/>
         <source>Value</source>
         <translation>Wert</translation>
     </message>
     <message>
-        <location filename="../src/qtui/metawin.ui" line="13"/>
+        <location filename="../src/qtui/metawin.ui" line="14"/>
         <source>Model Meta Data</source>
         <translation>Modell Meta Daten</translation>
     </message>
     <message>
-        <location filename="../src/qtui/metawin.ui" line="69"/>
+        <location filename="../src/qtui/metawin.ui" line="88"/>
         <source>New</source>
         <translation>Neu</translation>
     </message>
     <message>
-        <location filename="../src/qtui/metawin.ui" line="79"/>
+        <location filename="../src/qtui/metawin.ui" line="98"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/metawin.ui" line="99"/>
+        <location filename="../src/qtui/metawin.ui" line="127"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/metawin.ui" line="125"/>
+        <location filename="../src/qtui/metawin.ui" line="153"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/metawin.ui" line="135"/>
+        <location filename="../src/qtui/metawin.ui" line="163"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -3078,47 +2975,47 @@ Do you want to save all sections?</source>
 <context>
     <name>ModelViewBase</name>
     <message>
-        <location filename="../src/qtui/modelview.ui" line="13"/>
+        <location filename="../src/qtui/modelview.ui" line="14"/>
         <source>ModelView</source>
         <translation>Modell Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/qtui/modelview.ui" line="42"/>
+        <location filename="../src/qtui/modelview.ui" line="59"/>
         <source>Perspective</source>
         <translation>Perspektive</translation>
     </message>
     <message>
-        <location filename="../src/qtui/modelview.ui" line="47"/>
+        <location filename="../src/qtui/modelview.ui" line="64"/>
         <source>Front</source>
         <translation>Vorne</translation>
     </message>
     <message>
-        <location filename="../src/qtui/modelview.ui" line="52"/>
+        <location filename="../src/qtui/modelview.ui" line="69"/>
         <source>Back</source>
         <translation>Hinten</translation>
     </message>
     <message>
-        <location filename="../src/qtui/modelview.ui" line="57"/>
+        <location filename="../src/qtui/modelview.ui" line="74"/>
         <source>Left</source>
         <translation>Links</translation>
     </message>
     <message>
-        <location filename="../src/qtui/modelview.ui" line="62"/>
+        <location filename="../src/qtui/modelview.ui" line="79"/>
         <source>Right</source>
         <translation>Rechts</translation>
     </message>
     <message>
-        <location filename="../src/qtui/modelview.ui" line="67"/>
+        <location filename="../src/qtui/modelview.ui" line="84"/>
         <source>Top</source>
         <translation>Oben</translation>
     </message>
     <message>
-        <location filename="../src/qtui/modelview.ui" line="72"/>
+        <location filename="../src/qtui/modelview.ui" line="89"/>
         <source>Bottom</source>
         <translation>Unten</translation>
     </message>
     <message>
-        <location filename="../src/qtui/modelview.ui" line="77"/>
+        <location filename="../src/qtui/modelview.ui" line="94"/>
         <source>Orthographic</source>
         <translation>Orthographisch</translation>
     </message>
@@ -3183,52 +3080,47 @@ Do you want to save all sections?</source>
 <context>
     <name>Ms3dPromptBase</name>
     <message>
-        <location filename="../src/qtui/ms3dprompt.ui" line="13"/>
+        <location filename="../src/qtui/ms3dprompt.ui" line="14"/>
         <source>MS3D Filter Options</source>
         <translation>MS3D Filter Optionen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/ms3dprompt.ui" line="25"/>
+        <location filename="../src/qtui/ms3dprompt.ui" line="35"/>
         <source>Format Subversion</source>
         <translation>Format Subversion</translation>
     </message>
     <message>
-        <location filename="../src/qtui/ms3dprompt.ui" line="37"/>
+        <location filename="../src/qtui/ms3dprompt.ui" line="56"/>
         <source>Subversion 0</source>
         <translation>Subversion 0</translation>
     </message>
     <message>
-        <location filename="../src/qtui/ms3dprompt.ui" line="47"/>
+        <location filename="../src/qtui/ms3dprompt.ui" line="66"/>
         <source>Subversion 1</source>
         <translation>Subversion 1</translation>
     </message>
     <message>
-        <location filename="../src/qtui/ms3dprompt.ui" line="54"/>
+        <location filename="../src/qtui/ms3dprompt.ui" line="73"/>
         <source>Subversion 2</source>
         <translation>Subversion 2</translation>
     </message>
     <message>
-        <location filename="../src/qtui/ms3dprompt.ui" line="64"/>
+        <location filename="../src/qtui/ms3dprompt.ui" line="83"/>
         <source>Subversion Options</source>
         <translation>Subversion Optionen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/ms3dprompt.ui" line="76"/>
+        <location filename="../src/qtui/ms3dprompt.ui" line="104"/>
         <source>Vertex Extra</source>
         <translation>Vertex Extra</translation>
     </message>
     <message>
-        <location filename="../src/qtui/ms3dprompt.ui" line="86"/>
-        <source>FFFFFFFF</source>
-        <translation>FFFFFFFF</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/ms3dprompt.ui" line="136"/>
+        <location filename="../src/qtui/ms3dprompt.ui" line="173"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/ms3dprompt.ui" line="146"/>
+        <location filename="../src/qtui/ms3dprompt.ui" line="183"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -3236,57 +3128,57 @@ Do you want to save all sections?</source>
 <context>
     <name>NewAnimBase</name>
     <message>
-        <location filename="../src/qtui/newanim.ui" line="16"/>
+        <location filename="../src/qtui/newanim.ui" line="14"/>
         <source>New Animation</source>
         <translation>Neue Animation</translation>
     </message>
     <message>
-        <location filename="../src/qtui/newanim.ui" line="27"/>
+        <location filename="../src/qtui/newanim.ui" line="34"/>
         <source>&amp;Name</source>
         <translation>&amp;Name</translation>
     </message>
     <message>
-        <location filename="../src/qtui/newanim.ui" line="45"/>
+        <location filename="../src/qtui/newanim.ui" line="52"/>
         <source>Animation Type</source>
         <translation>Animations Typ</translation>
     </message>
     <message>
-        <location filename="../src/qtui/newanim.ui" line="54"/>
+        <location filename="../src/qtui/newanim.ui" line="70"/>
         <source>&amp;Skeletal</source>
         <translation>&amp;Skelet</translation>
     </message>
     <message>
-        <location filename="../src/qtui/newanim.ui" line="57"/>
+        <location filename="../src/qtui/newanim.ui" line="73"/>
         <source>Alt+S</source>
         <translation>Alt+S</translation>
     </message>
     <message>
-        <location filename="../src/qtui/newanim.ui" line="67"/>
+        <location filename="../src/qtui/newanim.ui" line="83"/>
         <source>&amp;Frame</source>
         <translation>&amp;Frame</translation>
     </message>
     <message>
-        <location filename="../src/qtui/newanim.ui" line="70"/>
+        <location filename="../src/qtui/newanim.ui" line="86"/>
         <source>Alt+F</source>
         <translation>Alt+F</translation>
     </message>
     <message>
-        <location filename="../src/qtui/newanim.ui" line="101"/>
+        <location filename="../src/qtui/newanim.ui" line="126"/>
         <source>&amp;Ok</source>
         <translation>&amp;Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/newanim.ui" line="104"/>
+        <location filename="../src/qtui/newanim.ui" line="129"/>
         <source>Alt+O</source>
         <translation>Alt+O</translation>
     </message>
     <message>
-        <location filename="../src/qtui/newanim.ui" line="114"/>
+        <location filename="../src/qtui/newanim.ui" line="139"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/newanim.ui" line="117"/>
+        <location filename="../src/qtui/newanim.ui" line="142"/>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
     </message>
@@ -3303,7 +3195,7 @@ Do you want to save all sections?</source>
 <context>
     <name>ObjPromptBase</name>
     <message>
-        <location filename="../src/qtui/objprompt.ui" line="16"/>
+        <location filename="../src/qtui/objprompt.ui" line="14"/>
         <source>OBJ Filter Options</source>
         <translation>OBJ Filter Optionen</translation>
     </message>
@@ -3312,42 +3204,42 @@ Do you want to save all sections?</source>
         <translation type="obsolete">&amp;Normale speichern</translation>
     </message>
     <message>
-        <location filename="../src/qtui/objprompt.ui" line="22"/>
+        <location filename="../src/qtui/objprompt.ui" line="20"/>
         <source>&amp;Save Normals</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/objprompt.ui" line="25"/>
+        <location filename="../src/qtui/objprompt.ui" line="23"/>
         <source>Alt+S</source>
         <translation>Alt+S</translation>
     </message>
     <message>
-        <location filename="../src/qtui/objprompt.ui" line="40"/>
+        <location filename="../src/qtui/objprompt.ui" line="47"/>
         <source>&amp;Normal Decimal Places</source>
         <translation>&amp;?Normale Dezimal Plätze</translation>
     </message>
     <message>
-        <location filename="../src/qtui/objprompt.ui" line="92"/>
+        <location filename="../src/qtui/objprompt.ui" line="99"/>
         <source>&amp;Texture Decimal Places</source>
         <translation>&amp;?Textur Dezimal Plätze</translation>
     </message>
     <message>
-        <location filename="../src/qtui/objprompt.ui" line="105"/>
+        <location filename="../src/qtui/objprompt.ui" line="112"/>
         <source>&amp;Vertex Decimal Places</source>
         <translation>&amp;Vertex Dezimal Plätze</translation>
     </message>
     <message>
-        <location filename="../src/qtui/objprompt.ui" line="141"/>
+        <location filename="../src/qtui/objprompt.ui" line="157"/>
         <source>Press F1 for help</source>
         <translation type="unfinished">Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/objprompt.ui" line="167"/>
+        <location filename="../src/qtui/objprompt.ui" line="183"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/objprompt.ui" line="177"/>
+        <location filename="../src/qtui/objprompt.ui" line="193"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -3379,108 +3271,108 @@ Do you want to save all sections?</source>
 <context>
     <name>PaintTextureWinBase</name>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="16"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="14"/>
         <source>Paint Texture</source>
         <translation>Erstelle Texture</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="48"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="53"/>
         <source>Polygons:</source>
         <translation>Polygone:</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="59"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="64"/>
         <source>Edges</source>
         <translation>Kanten</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="64"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="69"/>
         <source>Filled</source>
         <translation>Gefüllte</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="69"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="74"/>
         <source>Filled and Edges</source>
         <translation>Gefüllte und Kanten</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="77"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="82"/>
         <source>Vertices</source>
         <translation>Vertizes</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="88"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="93"/>
         <source>Hidden</source>
         <translation>Versteckt</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="93"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="98"/>
         <source>Visible</source>
         <translation>Sichtbar</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="117"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="122"/>
         <source>Clear Background</source>
         <translation>Lösche Hintergrund</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="136"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="159"/>
         <source>Save Size:</source>
         <translation>Größe beim Speichern:</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="155"/>
-        <location filename="../src/qtui/painttexturewin.ui" line="218"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="176"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="235"/>
         <source>64</source>
         <translation>64</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="160"/>
-        <location filename="../src/qtui/painttexturewin.ui" line="223"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="181"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="240"/>
         <source>128</source>
         <translation>128</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="165"/>
-        <location filename="../src/qtui/painttexturewin.ui" line="228"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="186"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="245"/>
         <source>256</source>
         <translation>256</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="170"/>
-        <location filename="../src/qtui/painttexturewin.ui" line="233"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="191"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="250"/>
         <source>512</source>
         <translation>512</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="175"/>
-        <location filename="../src/qtui/painttexturewin.ui" line="238"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="196"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="255"/>
         <source>1024</source>
         <translation>1024</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="180"/>
-        <location filename="../src/qtui/painttexturewin.ui" line="243"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="201"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="260"/>
         <source>2048</source>
         <translation>2048</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="196"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="215"/>
         <source>x</source>
         <translation>x</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="269"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="286"/>
         <source>Save Texture...</source>
         <translation>Textur speichern unter...</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="283"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="309"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="309"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="335"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
@@ -3488,37 +3380,37 @@ Do you want to save all sections?</source>
 <context>
     <name>PluginWinBase</name>
     <message>
-        <location filename="../src/qtui/pluginwin.ui" line="32"/>
+        <location filename="../src/qtui/pluginwin.ui" line="42"/>
         <source>Plugin</source>
         <translation>Plugin</translation>
     </message>
     <message>
-        <location filename="../src/qtui/pluginwin.ui" line="37"/>
+        <location filename="../src/qtui/pluginwin.ui" line="47"/>
         <source>Version</source>
         <translation>Version</translation>
     </message>
     <message>
-        <location filename="../src/qtui/pluginwin.ui" line="42"/>
+        <location filename="../src/qtui/pluginwin.ui" line="52"/>
         <source>Description</source>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="../src/qtui/pluginwin.ui" line="47"/>
+        <location filename="../src/qtui/pluginwin.ui" line="57"/>
         <source>Status</source>
         <translation>Status</translation>
     </message>
     <message>
-        <location filename="../src/qtui/pluginwin.ui" line="13"/>
+        <location filename="../src/qtui/pluginwin.ui" line="14"/>
         <source>Plugins</source>
         <translation>Plugins</translation>
     </message>
     <message>
-        <location filename="../src/qtui/pluginwin.ui" line="63"/>
+        <location filename="../src/qtui/pluginwin.ui" line="82"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/pluginwin.ui" line="89"/>
+        <location filename="../src/qtui/pluginwin.ui" line="108"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
@@ -3561,42 +3453,42 @@ Do you want to save all sections?</source>
 <context>
     <name>PointWinBase</name>
     <message>
-        <location filename="../src/qtui/pointwin.ui" line="16"/>
+        <location filename="../src/qtui/pointwin.ui" line="14"/>
         <source>Points</source>
         <translation>Punkte</translation>
     </message>
     <message>
-        <location filename="../src/qtui/pointwin.ui" line="39"/>
+        <location filename="../src/qtui/pointwin.ui" line="55"/>
         <source>Rename</source>
         <translation>Umbenennen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/pointwin.ui" line="46"/>
+        <location filename="../src/qtui/pointwin.ui" line="62"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/pointwin.ui" line="55"/>
+        <location filename="../src/qtui/pointwin.ui" line="71"/>
         <source>Bone Joint</source>
         <translation>Knochengelenk</translation>
     </message>
     <message>
-        <location filename="../src/qtui/pointwin.ui" line="68"/>
+        <location filename="../src/qtui/pointwin.ui" line="93"/>
         <source>(none)</source>
         <translation>(kein)</translation>
     </message>
     <message>
-        <location filename="../src/qtui/pointwin.ui" line="84"/>
+        <location filename="../src/qtui/pointwin.ui" line="118"/>
         <source>F1 for help</source>
         <translation>F1 für Hilfe</translation>
     </message>
     <message>
-        <location filename="../src/qtui/pointwin.ui" line="110"/>
+        <location filename="../src/qtui/pointwin.ui" line="144"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/pointwin.ui" line="117"/>
+        <location filename="../src/qtui/pointwin.ui" line="151"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -3713,87 +3605,82 @@ Do you want to save all sections?</source>
 <context>
     <name>ProjectionWinBase</name>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="13"/>
+        <location filename="../src/qtui/projectionwin.ui" line="14"/>
         <source>Texture Projection</source>
         <translation>Textur Projektion</translation>
     </message>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="45"/>
+        <location filename="../src/qtui/projectionwin.ui" line="73"/>
         <source>Material</source>
         <translation>Material</translation>
     </message>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="50"/>
+        <location filename="../src/qtui/projectionwin.ui" line="78"/>
         <source>Test Pattern</source>
         <translation>Test Muster</translation>
     </message>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="59"/>
+        <location filename="../src/qtui/projectionwin.ui" line="87"/>
         <source>Cylinder</source>
         <translation>Zylinder</translation>
     </message>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="64"/>
+        <location filename="../src/qtui/projectionwin.ui" line="92"/>
         <source>Sphere</source>
         <translation>Sphäre</translation>
     </message>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="69"/>
+        <location filename="../src/qtui/projectionwin.ui" line="97"/>
         <source>Plane</source>
         <translation>Ebene</translation>
     </message>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="77"/>
+        <location filename="../src/qtui/projectionwin.ui" line="105"/>
         <source>Show:</source>
         <translation>Zeige:</translation>
     </message>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="87"/>
+        <location filename="../src/qtui/projectionwin.ui" line="115"/>
         <source>Type:</source>
         <translation>Typ:</translation>
     </message>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="107"/>
+        <location filename="../src/qtui/projectionwin.ui" line="144"/>
         <source>Rename</source>
         <translation>Umbenennen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="125"/>
+        <location filename="../src/qtui/projectionwin.ui" line="171"/>
         <source>Zoom:</source>
         <translation>Zoom:</translation>
     </message>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="135"/>
-        <source>1.0</source>
-        <translation>1.0</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/projectionwin.ui" line="203"/>
+        <location filename="../src/qtui/projectionwin.ui" line="258"/>
         <source>Remove Faces</source>
         <translation>Flächen löschen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="213"/>
+        <location filename="../src/qtui/projectionwin.ui" line="268"/>
         <source>Add Faces to Projection</source>
         <translation>Füge Flächen zu Projektion hinzu</translation>
     </message>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="223"/>
+        <location filename="../src/qtui/projectionwin.ui" line="278"/>
         <source>Apply Projection</source>
         <translation>Projektion anwenden</translation>
     </message>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="233"/>
+        <location filename="../src/qtui/projectionwin.ui" line="288"/>
         <source>Reset UV Range</source>
         <translation>UV-Weite zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="253"/>
+        <location filename="../src/qtui/projectionwin.ui" line="317"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="279"/>
+        <location filename="../src/qtui/projectionwin.ui" line="343"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
@@ -3810,45 +3697,37 @@ Do you want to save all sections?</source>
 <context>
     <name>RgbaWinBase</name>
     <message>
-        <location filename="../src/qtui/rgbawin.ui" line="16"/>
+        <location filename="../src/qtui/rgbawin.ui" line="14"/>
         <source>RGBA Window</source>
         <translation>RGBA Fenster</translation>
     </message>
     <message>
-        <location filename="../src/qtui/rgbawin.ui" line="38"/>
+        <location filename="../src/qtui/rgbawin.ui" line="55"/>
         <source>Light Property</source>
         <translation>Light Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/qtui/rgbawin.ui" line="75"/>
-        <location filename="../src/qtui/rgbawin.ui" line="127"/>
-        <location filename="../src/qtui/rgbawin.ui" line="143"/>
-        <location filename="../src/qtui/rgbawin.ui" line="192"/>
-        <source>0.00</source>
-        <translation>0.00</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/rgbawin.ui" line="85"/>
+        <location filename="../src/qtui/rgbawin.ui" line="111"/>
         <source>Red</source>
         <translation>Rot</translation>
     </message>
     <message>
-        <location filename="../src/qtui/rgbawin.ui" line="166"/>
+        <location filename="../src/qtui/rgbawin.ui" line="192"/>
         <source>Green</source>
         <translation>Grün</translation>
     </message>
     <message>
-        <location filename="../src/qtui/rgbawin.ui" line="176"/>
+        <location filename="../src/qtui/rgbawin.ui" line="202"/>
         <source>Blue</source>
         <translation>Blau</translation>
     </message>
     <message>
-        <location filename="../src/qtui/rgbawin.ui" line="202"/>
+        <location filename="../src/qtui/rgbawin.ui" line="228"/>
         <source>Alpha</source>
         <translation>Alpha</translation>
     </message>
     <message>
-        <location filename="../src/qtui/rgbawin.ui" line="254"/>
+        <location filename="../src/qtui/rgbawin.ui" line="289"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
@@ -3971,57 +3850,9 @@ Do you want to save all sections?</source>
     </message>
 </context>
 <context>
-    <name>StatusBarBase</name>
-    <message>
-        <location filename="../src/qtui/statusbar.ui" line="13"/>
-        <source>Form1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/statusbar.ui" line="48"/>
-        <source>Status text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/statusbar.ui" line="87"/>
-        <source>V:0</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/statusbar.ui" line="97"/>
-        <source>F:0</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/statusbar.ui" line="107"/>
-        <source>G:0</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/statusbar.ui" line="117"/>
-        <source>B:0</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/statusbar.ui" line="127"/>
-        <source>P:0</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/statusbar.ui" line="137"/>
-        <source>T:0</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>TextWinBase</name>
     <message>
-        <location filename="../src/qtui/textwin.ui" line="16"/>
-        <source>Text Window</source>
-        <translation>Text Fenster</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/textwin.ui" line="59"/>
+        <location filename="../src/qtui/textwin.ui" line="79"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
@@ -4071,170 +3902,165 @@ Do you want to save all sections?</source>
 <context>
     <name>TextureCoordBase</name>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="13"/>
+        <location filename="../src/qtui/texturecoord.ui" line="14"/>
         <source>Texture Coordinates</source>
         <translation>Textur Koordinaten</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="209"/>
+        <location filename="../src/qtui/texturecoord.ui" line="264"/>
         <source>Zoom:</source>
         <translation>Zoom:</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="219"/>
-        <source>1.0</source>
-        <translation>1.0</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/texturecoord.ui" line="261"/>
+        <location filename="../src/qtui/texturecoord.ui" line="327"/>
         <source>Mouse Tool</source>
         <translation>Maus Werkzeug</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="273"/>
+        <location filename="../src/qtui/texturecoord.ui" line="348"/>
         <source>Select</source>
         <translation>Auswählen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="280"/>
+        <location filename="../src/qtui/texturecoord.ui" line="355"/>
         <source>Move</source>
         <translation>Bewegen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="294"/>
+        <location filename="../src/qtui/texturecoord.ui" line="369"/>
         <source>Scale</source>
         <translation>Skalieren</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="304"/>
+        <location filename="../src/qtui/texturecoord.ui" line="379"/>
         <source>Scale Options</source>
         <translation>Skalierungs Optionen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="316"/>
+        <location filename="../src/qtui/texturecoord.ui" line="400"/>
         <source>Scale from center</source>
         <translation>Von Mitte skalieren</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="323"/>
+        <location filename="../src/qtui/texturecoord.ui" line="407"/>
         <source>Keep aspect ratio</source>
         <translation>Seitenverhältnis beibehalten</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="333"/>
+        <location filename="../src/qtui/texturecoord.ui" line="417"/>
         <source>Map Scheme</source>
         <translation>Map Schema</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="345"/>
+        <location filename="../src/qtui/texturecoord.ui" line="429"/>
         <source>Triangle</source>
         <translation>Dreieck</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="358"/>
+        <location filename="../src/qtui/texturecoord.ui" line="442"/>
         <source>Quad</source>
         <translation>Quadrat</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="371"/>
+        <location filename="../src/qtui/texturecoord.ui" line="455"/>
         <source>Group</source>
         <translation>Gruppe</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="379"/>
+        <location filename="../src/qtui/texturecoord.ui" line="463"/>
         <source>Reset Coordinates</source>
         <translation>Setze Koordinaten zurück</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="398"/>
+        <location filename="../src/qtui/texturecoord.ui" line="491"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="424"/>
+        <location filename="../src/qtui/texturecoord.ui" line="517"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="287"/>
+        <location filename="../src/qtui/texturecoord.ui" line="362"/>
         <source>Rotate</source>
         <translation>Rotieren</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="59"/>
+        <location filename="../src/qtui/texturecoord.ui" line="96"/>
         <source>Lines</source>
         <translation>Linien</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="67"/>
-        <location filename="../src/qtui/texturecoord.ui" line="118"/>
+        <location filename="../src/qtui/texturecoord.ui" line="104"/>
+        <location filename="../src/qtui/texturecoord.ui" line="155"/>
         <source>Black</source>
         <translation>Schwarz</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="72"/>
-        <location filename="../src/qtui/texturecoord.ui" line="123"/>
+        <location filename="../src/qtui/texturecoord.ui" line="109"/>
+        <location filename="../src/qtui/texturecoord.ui" line="160"/>
         <source>Blue</source>
         <translation>Blau</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="77"/>
-        <location filename="../src/qtui/texturecoord.ui" line="128"/>
+        <location filename="../src/qtui/texturecoord.ui" line="114"/>
+        <location filename="../src/qtui/texturecoord.ui" line="165"/>
         <source>Green</source>
         <translation>Grün</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="82"/>
-        <location filename="../src/qtui/texturecoord.ui" line="133"/>
+        <location filename="../src/qtui/texturecoord.ui" line="119"/>
+        <location filename="../src/qtui/texturecoord.ui" line="170"/>
         <source>Cyan</source>
         <translation>Türkis</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="87"/>
-        <location filename="../src/qtui/texturecoord.ui" line="138"/>
+        <location filename="../src/qtui/texturecoord.ui" line="124"/>
+        <location filename="../src/qtui/texturecoord.ui" line="175"/>
         <source>Red</source>
         <translation>Rot</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="92"/>
-        <location filename="../src/qtui/texturecoord.ui" line="143"/>
+        <location filename="../src/qtui/texturecoord.ui" line="129"/>
+        <location filename="../src/qtui/texturecoord.ui" line="180"/>
         <source>Magenta</source>
         <translation>Magenta</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="97"/>
-        <location filename="../src/qtui/texturecoord.ui" line="148"/>
+        <location filename="../src/qtui/texturecoord.ui" line="134"/>
+        <location filename="../src/qtui/texturecoord.ui" line="185"/>
         <source>Yellow</source>
         <translation>Gelb</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="102"/>
-        <location filename="../src/qtui/texturecoord.ui" line="153"/>
+        <location filename="../src/qtui/texturecoord.ui" line="139"/>
+        <location filename="../src/qtui/texturecoord.ui" line="190"/>
         <source>White</source>
         <translation>Weiß</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="110"/>
+        <location filename="../src/qtui/texturecoord.ui" line="147"/>
         <source>Selection</source>
         <translation>Auswahl</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="171"/>
+        <location filename="../src/qtui/texturecoord.ui" line="217"/>
         <source>Rotate CCW</source>
         <translation>Rotiere CCW</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="178"/>
+        <location filename="../src/qtui/texturecoord.ui" line="224"/>
         <source>Rotate CW</source>
         <translation>Rotiere CW</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="185"/>
+        <location filename="../src/qtui/texturecoord.ui" line="231"/>
         <source>V Flip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="192"/>
+        <location filename="../src/qtui/texturecoord.ui" line="238"/>
         <source>H Flip</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4326,140 +4152,132 @@ Do you want to save all sections?</source>
 <context>
     <name>TextureWindowBase</name>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="16"/>
+        <location filename="../src/qtui/texwin.ui" line="14"/>
         <source>Materials</source>
         <translation>Materialien</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="29"/>
+        <location filename="../src/qtui/texwin.ui" line="36"/>
         <source>None</source>
         <translation>Kein</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="42"/>
+        <location filename="../src/qtui/texwin.ui" line="58"/>
         <source>New Material...</source>
         <translation>Neues Material...</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="49"/>
+        <location filename="../src/qtui/texwin.ui" line="65"/>
         <source>Rename</source>
         <translation>Umbenennen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="56"/>
+        <location filename="../src/qtui/texwin.ui" line="72"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="87"/>
+        <location filename="../src/qtui/texwin.ui" line="112"/>
         <source>Wrap X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="92"/>
+        <location filename="../src/qtui/texwin.ui" line="117"/>
         <source>Clamp X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="101"/>
+        <location filename="../src/qtui/texwin.ui" line="126"/>
         <source>Wrap Y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="106"/>
+        <location filename="../src/qtui/texwin.ui" line="131"/>
         <source>Clamp Y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="153"/>
+        <location filename="../src/qtui/texwin.ui" line="203"/>
         <source>Change Texture...</source>
         <translation>Textur ändern...</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="165"/>
+        <location filename="../src/qtui/texwin.ui" line="219"/>
         <source>X</source>
         <translation type="unfinished">X</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="168"/>
+        <location filename="../src/qtui/texwin.ui" line="216"/>
         <source>Remove texture</source>
         <translation>Textur entfernen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="178"/>
+        <location filename="../src/qtui/texwin.ui" line="229"/>
         <source>Flat Preview</source>
         <translation>Flache Vorschau</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="183"/>
+        <location filename="../src/qtui/texwin.ui" line="234"/>
         <source>3D Preview</source>
         <translation>3D Vorschau</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="209"/>
-        <location filename="../src/qtui/texwin.ui" line="284"/>
-        <location filename="../src/qtui/texwin.ui" line="300"/>
-        <location filename="../src/qtui/texwin.ui" line="316"/>
-        <source>0.00</source>
-        <translation>0.00</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/texwin.ui" line="258"/>
+        <location filename="../src/qtui/texwin.ui" line="327"/>
         <source>Alpha</source>
         <translation>Alpha</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="268"/>
+        <location filename="../src/qtui/texwin.ui" line="337"/>
         <source>Green</source>
         <translation>Grün</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="326"/>
+        <location filename="../src/qtui/texwin.ui" line="395"/>
         <source>Blue</source>
         <translation>Blau</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="349"/>
+        <location filename="../src/qtui/texwin.ui" line="418"/>
         <source>Red</source>
         <translation>Rot</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="378"/>
+        <location filename="../src/qtui/texwin.ui" line="447"/>
         <source>Ambient</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="383"/>
+        <location filename="../src/qtui/texwin.ui" line="452"/>
         <source>Diffuse</source>
         <translation>Diffus</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="388"/>
+        <location filename="../src/qtui/texwin.ui" line="457"/>
         <source>Specular</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="393"/>
+        <location filename="../src/qtui/texwin.ui" line="462"/>
         <source>Emissive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="398"/>
+        <location filename="../src/qtui/texwin.ui" line="467"/>
         <source>Shininess</source>
         <translation>Glanz</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="416"/>
+        <location filename="../src/qtui/texwin.ui" line="494"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="442"/>
+        <location filename="../src/qtui/texwin.ui" line="520"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="452"/>
+        <location filename="../src/qtui/texwin.ui" line="530"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -4940,148 +4758,107 @@ Do you want to save all sections?</source>
 <context>
     <name>TransformWindowBase</name>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="13"/>
+        <location filename="../src/qtui/transformwin.ui" line="14"/>
         <source>Transform Model</source>
         <translation>Transformiere Modell</translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="49"/>
-        <location filename="../src/qtui/transformwin.ui" line="56"/>
-        <location filename="../src/qtui/transformwin.ui" line="63"/>
-        <location filename="../src/qtui/transformwin.ui" line="184"/>
-        <location filename="../src/qtui/transformwin.ui" line="191"/>
-        <location filename="../src/qtui/transformwin.ui" line="198"/>
-        <location filename="../src/qtui/transformwin.ui" line="293"/>
-        <location filename="../src/qtui/transformwin.ui" line="300"/>
-        <location filename="../src/qtui/transformwin.ui" line="307"/>
-        <location filename="../src/qtui/transformwin.ui" line="324"/>
-        <location filename="../src/qtui/transformwin.ui" line="503"/>
-        <location filename="../src/qtui/transformwin.ui" line="510"/>
-        <location filename="../src/qtui/transformwin.ui" line="517"/>
-        <location filename="../src/qtui/transformwin.ui" line="524"/>
-        <location filename="../src/qtui/transformwin.ui" line="531"/>
-        <location filename="../src/qtui/transformwin.ui" line="538"/>
-        <location filename="../src/qtui/transformwin.ui" line="545"/>
-        <location filename="../src/qtui/transformwin.ui" line="552"/>
-        <location filename="../src/qtui/transformwin.ui" line="559"/>
-        <location filename="../src/qtui/transformwin.ui" line="566"/>
-        <location filename="../src/qtui/transformwin.ui" line="594"/>
-        <location filename="../src/qtui/transformwin.ui" line="608"/>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/transformwin.ui" line="70"/>
-        <location filename="../src/qtui/transformwin.ui" line="205"/>
-        <location filename="../src/qtui/transformwin.ui" line="401"/>
+        <location filename="../src/qtui/transformwin.ui" line="98"/>
+        <location filename="../src/qtui/transformwin.ui" line="269"/>
+        <location filename="../src/qtui/transformwin.ui" line="501"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="80"/>
-        <location filename="../src/qtui/transformwin.ui" line="215"/>
-        <location filename="../src/qtui/transformwin.ui" line="411"/>
+        <location filename="../src/qtui/transformwin.ui" line="108"/>
+        <location filename="../src/qtui/transformwin.ui" line="279"/>
+        <location filename="../src/qtui/transformwin.ui" line="511"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="90"/>
-        <location filename="../src/qtui/transformwin.ui" line="225"/>
-        <location filename="../src/qtui/transformwin.ui" line="421"/>
+        <location filename="../src/qtui/transformwin.ui" line="118"/>
+        <location filename="../src/qtui/transformwin.ui" line="289"/>
+        <location filename="../src/qtui/transformwin.ui" line="521"/>
         <source>Z</source>
         <translation>Z</translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="29"/>
-        <location filename="../src/qtui/transformwin.ui" line="142"/>
+        <location filename="../src/qtui/transformwin.ui" line="39"/>
+        <location filename="../src/qtui/transformwin.ui" line="179"/>
         <source>Translate</source>
         <translation>Übersetze</translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="164"/>
+        <location filename="../src/qtui/transformwin.ui" line="210"/>
         <source>Euler Angles</source>
         <translation>Eulersche Winkel</translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="152"/>
-        <location filename="../src/qtui/transformwin.ui" line="253"/>
-        <location filename="../src/qtui/transformwin.ui" line="349"/>
+        <location filename="../src/qtui/transformwin.ui" line="189"/>
+        <location filename="../src/qtui/transformwin.ui" line="317"/>
+        <location filename="../src/qtui/transformwin.ui" line="431"/>
         <source>Rotate</source>
         <translation>Rotieren</translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="263"/>
+        <location filename="../src/qtui/transformwin.ui" line="327"/>
         <source>Quaternion</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="283"/>
+        <location filename="../src/qtui/transformwin.ui" line="365"/>
         <source>Angle</source>
         <translation>Winkel</translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="314"/>
+        <location filename="../src/qtui/transformwin.ui" line="396"/>
         <source>Axis</source>
         <translation>Achse</translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="380"/>
-        <location filename="../src/qtui/transformwin.ui" line="387"/>
-        <location filename="../src/qtui/transformwin.ui" line="394"/>
-        <source>1.0</source>
-        <translation>1.0</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/transformwin.ui" line="360"/>
-        <location filename="../src/qtui/transformwin.ui" line="473"/>
+        <location filename="../src/qtui/transformwin.ui" line="442"/>
+        <location filename="../src/qtui/transformwin.ui" line="582"/>
         <source>Scale</source>
         <translation>Skalieren</translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="573"/>
-        <location filename="../src/qtui/transformwin.ui" line="580"/>
-        <location filename="../src/qtui/transformwin.ui" line="587"/>
-        <location filename="../src/qtui/transformwin.ui" line="601"/>
-        <source>1</source>
-        <translation>1</translation>
-    </message>
-    <message>
-        <location filename="../src/qtui/transformwin.ui" line="617"/>
+        <location filename="../src/qtui/transformwin.ui" line="744"/>
         <source>(bottom row is translation)</source>
         <translation>(untere Reihe ist Übersetzung)</translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="643"/>
+        <location filename="../src/qtui/transformwin.ui" line="770"/>
         <source>Apply Matrix</source>
         <translation>Matrix anwenden</translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="483"/>
+        <location filename="../src/qtui/transformwin.ui" line="592"/>
         <source>Matrix</source>
         <translation>Matrix</translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="662"/>
+        <location filename="../src/qtui/transformwin.ui" line="798"/>
         <source>Apply to:</source>
         <translation>Wende an auf:</translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="715"/>
+        <location filename="../src/qtui/transformwin.ui" line="860"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="741"/>
+        <location filename="../src/qtui/transformwin.ui" line="886"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="676"/>
+        <location filename="../src/qtui/transformwin.ui" line="812"/>
         <source>Selected (including animations)</source>
         <translation>Ausgewähltem (inklusive Animationen)</translation>
     </message>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="681"/>
+        <location filename="../src/qtui/transformwin.ui" line="817"/>
         <source>Entire Model (including animations)</source>
         <translation>Ganzes Modell (inklusive Animationen)</translation>
     </message>
@@ -5098,28 +4875,28 @@ Do you want to save all sections?</source>
 <context>
     <name>ValueWinBase</name>
     <message>
-        <location filename="../src/qtui/valuewin.ui" line="16"/>
+        <location filename="../src/qtui/valuewin.ui" line="14"/>
         <source>Value Window</source>
         <translation>Werte Fenster</translation>
     </message>
     <message>
-        <location filename="../src/qtui/valuewin.ui" line="33"/>
-        <location filename="../src/qtui/valuewin.ui" line="51"/>
+        <location filename="../src/qtui/valuewin.ui" line="41"/>
+        <location filename="../src/qtui/valuewin.ui" line="68"/>
         <source>Value</source>
         <translation>Wert</translation>
     </message>
     <message>
-        <location filename="../src/qtui/valuewin.ui" line="107"/>
+        <location filename="../src/qtui/valuewin.ui" line="133"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/valuewin.ui" line="133"/>
+        <location filename="../src/qtui/valuewin.ui" line="159"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/valuewin.ui" line="140"/>
+        <location filename="../src/qtui/valuewin.ui" line="166"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -5127,597 +4904,561 @@ Do you want to save all sections?</source>
 <context>
     <name>ViewWindow</name>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="173"/>
+        <location filename="../src/implui/viewwin.cc" line="174"/>
         <source>Some models are unsaved.  Save before exiting?</source>
         <translation>Einige Modelle sind noch nicht gespeichert.  Speichern vor Beenden?</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="316"/>
+        <location filename="../src/implui/viewwin.cc" line="317"/>
         <source>Press F1 for help using any window</source>
         <translation>Drücken Sie F1 um zur Hilfe für jedes Fenster zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="331"/>
+        <location filename="../src/implui/viewwin.cc" line="332"/>
         <source>Properties</source>
         <translation>Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="364"/>
+        <location filename="../src/implui/viewwin.cc" line="365"/>
         <source>New</source>
         <comment>File|New</comment>
         <translation>Neu</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="366"/>
+        <location filename="../src/implui/viewwin.cc" line="367"/>
         <source>Save</source>
         <comment>File|Save</comment>
         <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="371"/>
+        <location filename="../src/implui/viewwin.cc" line="372"/>
         <source>Run Script...</source>
         <comment>File|Run Script</comment>
         <translation>Starte Skript...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="372"/>
+        <location filename="../src/implui/viewwin.cc" line="373"/>
         <source>Recent Scripts</source>
         <comment>File|Recent Script</comment>
         <translation>Zuletzt benutzte Skripte</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="376"/>
+        <location filename="../src/implui/viewwin.cc" line="377"/>
         <source>Recent Models</source>
         <comment>File|Recent Models</comment>
         <translation>Zuletzt benutzte Modelle</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="379"/>
+        <location filename="../src/implui/viewwin.cc" line="380"/>
         <source>Plugins...</source>
         <comment>File|Plugins</comment>
         <translation>Plugins...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="381"/>
+        <location filename="../src/implui/viewwin.cc" line="382"/>
         <source>Close</source>
         <comment>File|Close</comment>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="382"/>
+        <location filename="../src/implui/viewwin.cc" line="383"/>
         <source>Quit</source>
         <comment>File|Quit</comment>
         <translation>Beenden</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="389"/>
+        <location filename="../src/implui/viewwin.cc" line="390"/>
         <source>Hide Joints</source>
         <comment>View|Hide Joints</comment>
         <translation>Verstecke Gelenke</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="390"/>
+        <location filename="../src/implui/viewwin.cc" line="391"/>
         <source>Draw Joint Lines</source>
         <comment>View|Draw Joint Lines</comment>
         <translation>Zeichne Gelenk-Linien</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="391"/>
+        <location filename="../src/implui/viewwin.cc" line="392"/>
         <source>Draw Joint Bones</source>
         <comment>View|Draw Joint Bones</comment>
         <translation>Zeichne Gelenk-Knochen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="410"/>
+        <location filename="../src/implui/viewwin.cc" line="411"/>
         <source>Draw Texture Projections</source>
         <comment>View|Draw Texture Projections</comment>
         <translation>Zeichne Textur Projektionen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="411"/>
+        <location filename="../src/implui/viewwin.cc" line="412"/>
         <source>Hide Texture Projections</source>
         <comment>View|Hide Texture Projections</comment>
         <translation>Verstecke Textur Projektionen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="424"/>
+        <location filename="../src/implui/viewwin.cc" line="425"/>
         <source>Use Red Error Texture</source>
         <comment>View|Use Red Error Texture</comment>
         <translation>Benutze rote Fehler Textur</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="425"/>
+        <location filename="../src/implui/viewwin.cc" line="426"/>
         <source>Use Blank Error Texture</source>
         <comment>View|Use Blank Error Texture</comment>
         <translation>Benutze leere Fehler Textur</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="442"/>
+        <location filename="../src/implui/viewwin.cc" line="443"/>
         <source>Render 3D Lines</source>
         <comment>View|Render 3D Lines</comment>
         <translation>Zeichne Linien in 3D Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="443"/>
+        <location filename="../src/implui/viewwin.cc" line="444"/>
         <source>Hide 3D Lines</source>
         <comment>View|Hide 3D Lines</comment>
         <translation>Verstecke Linien in 3D Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="460"/>
+        <location filename="../src/implui/viewwin.cc" line="461"/>
         <source>Draw Back-facing Triangles</source>
         <comment>View|Draw Back-facing Triangles</comment>
         <translation>Zeichne Rückseiten von Dreiecken</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="461"/>
+        <location filename="../src/implui/viewwin.cc" line="462"/>
         <source>Hide Back-facing Triangles</source>
         <comment>View|Hide Back-facing Triangles</comment>
         <translation>Verstecke Rückseiten von Dreiecken</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="475"/>
+        <location filename="../src/implui/viewwin.cc" line="476"/>
         <source>Frame All</source>
         <comment>View|Frame</comment>
         <translation>Alle Frames</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="476"/>
+        <location filename="../src/implui/viewwin.cc" line="477"/>
         <source>Frame Selected</source>
         <comment>View|Frame</comment>
         <translation>Ausgewählte Frames</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="478"/>
-        <location filename="../src/implui/viewwin.cc" line="1919"/>
+        <location filename="../src/implui/viewwin.cc" line="479"/>
+        <location filename="../src/implui/viewwin.cc" line="1946"/>
         <source>Show Properties</source>
         <comment>View|Show Properties</comment>
         <translation>Zeige Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="480"/>
+        <location filename="../src/implui/viewwin.cc" line="481"/>
         <source>Render Options</source>
         <comment>View|Render Options</comment>
         <translation>Render Optionen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="486"/>
+        <location filename="../src/implui/viewwin.cc" line="487"/>
         <source>3D Wireframe</source>
         <comment>View|3D</comment>
         <translation>3D Gitter</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="487"/>
+        <location filename="../src/implui/viewwin.cc" line="488"/>
         <source>3D Flat</source>
         <comment>View|3D</comment>
         <translation>3D Flächen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="488"/>
+        <location filename="../src/implui/viewwin.cc" line="489"/>
         <source>3D Smooth</source>
         <comment>View|3D</comment>
         <translation>3D Geglättet</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="489"/>
+        <location filename="../src/implui/viewwin.cc" line="490"/>
         <source>3D Texture</source>
         <comment>View|3D</comment>
         <translation>3D Texturiert</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="490"/>
+        <location filename="../src/implui/viewwin.cc" line="491"/>
         <source>3D Alpha Blend</source>
         <comment>View|3D</comment>
         <translation>3D mit Alpha Blending</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="495"/>
+        <location filename="../src/implui/viewwin.cc" line="496"/>
         <source>Canvas Wireframe</source>
         <comment>View|Canvas</comment>
         <translation>Zeichenfläche Gitter</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="496"/>
+        <location filename="../src/implui/viewwin.cc" line="497"/>
         <source>Canvas Flat</source>
         <comment>View|Canvas</comment>
         <translation>Zeichenfläche Flächen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="497"/>
+        <location filename="../src/implui/viewwin.cc" line="498"/>
         <source>Canvas Smooth</source>
         <comment>View|Canvas</comment>
         <translation>Zeichenfläche Geglättet</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="498"/>
+        <location filename="../src/implui/viewwin.cc" line="499"/>
         <source>Canvas Texture</source>
         <comment>View|Canvas</comment>
         <translation>Zeichenfläche Texturiert</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="499"/>
+        <location filename="../src/implui/viewwin.cc" line="500"/>
         <source>Canvas Alpha Blend</source>
         <comment>View|Canvas</comment>
         <translation>Zeichenfläche mit Alpha Blending</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="504"/>
+        <location filename="../src/implui/viewwin.cc" line="505"/>
         <source>1 View</source>
         <comment>View|Viewports</comment>
         <translation>1 Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="505"/>
+        <location filename="../src/implui/viewwin.cc" line="506"/>
         <source>1x2 View</source>
         <comment>View|Viewports</comment>
         <translation>1x2 Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="506"/>
+        <location filename="../src/implui/viewwin.cc" line="507"/>
         <source>2x1 View</source>
         <comment>View|Viewports</comment>
         <translation>2x1 Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="507"/>
+        <location filename="../src/implui/viewwin.cc" line="508"/>
         <source>2x2 View</source>
         <comment>View|Viewports</comment>
         <translation>2x2 Ansichten</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="508"/>
+        <location filename="../src/implui/viewwin.cc" line="509"/>
         <source>2x3 View</source>
         <comment>View|Viewports</comment>
         <translation>2x3 Ansichten</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="509"/>
+        <location filename="../src/implui/viewwin.cc" line="510"/>
         <source>3x2 View</source>
         <comment>View|Viewports</comment>
         <translation>3x2 Ansichten</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="510"/>
+        <location filename="../src/implui/viewwin.cc" line="511"/>
         <source>3x3 View</source>
         <comment>View|Viewports</comment>
         <translation>3x3 Ansichten</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="576"/>
+        <location filename="../src/implui/viewwin.cc" line="577"/>
         <source>Viewport Settings...</source>
         <comment>View|Viewport Settings</comment>
         <translation>Ansichtsfenster Einstellungen...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="580"/>
+        <location filename="../src/implui/viewwin.cc" line="581"/>
         <source>Grid</source>
         <comment>Tools|Snap to Grid</comment>
         <translation>Gitter</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="583"/>
+        <location filename="../src/implui/viewwin.cc" line="584"/>
         <source>Vertex</source>
         <comment>Tools|Snap to Vertex</comment>
         <translation>Vertex</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="614"/>
+        <location filename="../src/implui/viewwin.cc" line="615"/>
         <source>Undo</source>
         <translation>Rückgängig</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="614"/>
+        <location filename="../src/implui/viewwin.cc" line="615"/>
         <source>Ctrl+Z</source>
         <comment>Undo shortcut</comment>
         <translation>STRG+Z</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="615"/>
+        <location filename="../src/implui/viewwin.cc" line="616"/>
         <source>Redo</source>
         <translation>Wiederholen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="615"/>
+        <location filename="../src/implui/viewwin.cc" line="616"/>
         <source>Ctrl+Y</source>
         <comment>Redo shortcut</comment>
         <translation>STRG+Y</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="599"/>
+        <location filename="../src/implui/viewwin.cc" line="600"/>
         <source>Snap To</source>
         <translation>Schnappe auf</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="607"/>
+        <location filename="../src/implui/viewwin.cc" line="608"/>
         <source>Tools</source>
         <translation>Werkzeuge</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="628"/>
-        <source>Edit Groups...</source>
-        <comment>Groups|Edit Groups</comment>
-        <translation>Editiere Gruppen...</translation>
-    </message>
-    <message>
-        <location filename="../src/implui/viewwin.cc" line="629"/>
-        <source>Edit Materials...</source>
-        <comment>Groups|Edit Materials</comment>
-        <translation>Editiere Materialien...</translation>
-    </message>
-    <message>
-        <location filename="../src/implui/viewwin.cc" line="631"/>
-        <source>Reload Textures</source>
-        <comment>Groups|Reload Textures</comment>
-        <translation>Texuren neu laden</translation>
-    </message>
-    <message>
-        <location filename="../src/implui/viewwin.cc" line="633"/>
-        <source>Edit Projection...</source>
-        <comment>Groups|Edit Projection</comment>
-        <translation>Editiere Projektion...</translation>
-    </message>
-    <message>
-        <location filename="../src/implui/viewwin.cc" line="634"/>
-        <source>Edit Texture Coordinates...</source>
-        <comment>Groups|Edit Texture Coordinates</comment>
-        <translation>Editiere Textur Koordinaten...</translation>
-    </message>
-    <message>
-        <location filename="../src/implui/viewwin.cc" line="635"/>
-        <source>Paint Texture...</source>
-        <comment>Groups|Paint Texture</comment>
-        <translation>Erstelle Textur...</translation>
-    </message>
-    <message>
-        <location filename="../src/implui/viewwin.cc" line="639"/>
+        <location filename="../src/implui/viewwin.cc" line="640"/>
         <source>Edit Joints...</source>
         <comment>Joints|Edit Joints</comment>
         <translation>Editiere Gelenke...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="640"/>
+        <location filename="../src/implui/viewwin.cc" line="641"/>
         <source>Assign Selected to Joint</source>
         <comment>Joints|Assign Selected to Joint</comment>
         <translation>Ausgewähltem Gelenk zuweisen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="642"/>
+        <location filename="../src/implui/viewwin.cc" line="643"/>
         <source>Remove All Influences from Selected</source>
         <comment>Joints|Remove All Influences from Selected</comment>
         <translation>Alle Einflüsse von Auswahl entfernen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="643"/>
+        <location filename="../src/implui/viewwin.cc" line="644"/>
         <source>Remove Selected Joint from Influencing</source>
         <comment>Joints|Remove Selected Joint from Influencing</comment>
         <translation>?Entferne Ausgewähltes Gelenk von Anliegenden</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="645"/>
+        <location filename="../src/implui/viewwin.cc" line="646"/>
         <source>Convert Multiple Influences to Single</source>
         <comment>Joints|Convert Multiple Influences to Single</comment>
         <translation>?Konvertiere Mehrere Einflüsse auf Einzelnen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="647"/>
+        <location filename="../src/implui/viewwin.cc" line="648"/>
         <source>Select Joint Influences</source>
         <comment>Joints|Select Joint Influences</comment>
         <translation>?Wähle Gelenk Einflüsse</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="648"/>
+        <location filename="../src/implui/viewwin.cc" line="649"/>
         <source>Select Influenced Vertices</source>
         <comment>Joints|Select Influenced Vertices</comment>
         <translation>Wähle beeinflusste Vertizes</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="649"/>
+        <location filename="../src/implui/viewwin.cc" line="650"/>
         <source>Select Influenced Points</source>
         <comment>Joints|Select Influenced Points</comment>
         <translation>Wähle beeinflusste Punkte</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="650"/>
+        <location filename="../src/implui/viewwin.cc" line="651"/>
         <source>Select Unassigned Vertices</source>
         <comment>Joints|Select Unassigned Vertices</comment>
         <translation>Wähle nicht-zugewiesene Vertizes</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="651"/>
+        <location filename="../src/implui/viewwin.cc" line="652"/>
         <source>Select Unassigned Points</source>
         <comment>Joints|Select Unassigned Points</comment>
         <translation>Wähle nicht-zugewiesene Punkte</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="658"/>
+        <location filename="../src/implui/viewwin.cc" line="659"/>
         <source>Start Animation Mode...</source>
         <comment>Animation|Start Animation Mode</comment>
         <translation>Starte Animationsmodus...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="659"/>
+        <location filename="../src/implui/viewwin.cc" line="660"/>
         <source>Stop Animation Mode</source>
         <comment>Animation|Stop Animation Mode</comment>
         <translation>Beende Animationsmodus</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="661"/>
+        <location filename="../src/implui/viewwin.cc" line="662"/>
         <source>Animation Sets...</source>
         <comment>Animation|Animation Sets</comment>
         <translation>Animations Sets...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="664"/>
+        <location filename="../src/implui/viewwin.cc" line="665"/>
         <source>Copy Animation Frame</source>
         <comment>Animation|Copy Animation Frame</comment>
         <translation>Kopiere Animations Frame</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="665"/>
+        <location filename="../src/implui/viewwin.cc" line="666"/>
         <source>Paste Animation Frame</source>
         <comment>Animation|Paste Animation Frame</comment>
         <translation>Animations Frame einfügen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="666"/>
+        <location filename="../src/implui/viewwin.cc" line="667"/>
         <source>Clear Animation Frame</source>
         <comment>Animation|Clear Animation Frame</comment>
         <translation>?Animationsframe löschen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="671"/>
+        <location filename="../src/implui/viewwin.cc" line="672"/>
         <source>Set Rotation Keyframe</source>
         <comment>Animation|Set Rotation Keyframe</comment>
         <translation>Setze Rotations Keyframe</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="672"/>
+        <location filename="../src/implui/viewwin.cc" line="673"/>
         <source>Set Translation Keyframe</source>
         <comment>Animation|Set Translation Keyframe</comment>
         <translation>Setze Translations Keyframe</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="685"/>
+        <location filename="../src/implui/viewwin.cc" line="686"/>
         <source>Contents...</source>
         <comment>Help|Contents</comment>
         <translation>Inhalt...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="686"/>
+        <location filename="../src/implui/viewwin.cc" line="687"/>
         <source>License...</source>
         <comment>Help|License</comment>
         <translation>Lizenz...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="687"/>
+        <location filename="../src/implui/viewwin.cc" line="688"/>
         <source>About...</source>
         <comment>Help|About</comment>
         <translation>Über...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="690"/>
+        <location filename="../src/implui/viewwin.cc" line="691"/>
         <source>&amp;File</source>
         <comment>menu bar</comment>
         <translation>&amp;Datei</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="692"/>
+        <location filename="../src/implui/viewwin.cc" line="693"/>
         <source>&amp;View</source>
         <comment>menu bar</comment>
         <translation>&amp;Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="694"/>
+        <location filename="../src/implui/viewwin.cc" line="695"/>
         <source>&amp;Tools</source>
         <comment>menu bar</comment>
         <translation>&amp;Werkzeuge</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="702"/>
+        <location filename="../src/implui/viewwin.cc" line="703"/>
         <source>&amp;Influences</source>
         <comment>menu bar</comment>
         <translation>&amp;Einflüsse</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="704"/>
+        <location filename="../src/implui/viewwin.cc" line="705"/>
         <source>&amp;Animation</source>
         <comment>menu bar</comment>
         <translation>&amp;Animation</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="706"/>
+        <location filename="../src/implui/viewwin.cc" line="707"/>
         <source>&amp;Help</source>
         <comment>menu bar</comment>
         <translation>&amp;Hilfe</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="996"/>
-        <location filename="../src/implui/viewwin.cc" line="1090"/>
-        <location filename="../src/implui/viewwin.cc" line="1179"/>
-        <location filename="../src/implui/viewwin.cc" line="1227"/>
-        <location filename="../src/implui/viewwin.cc" line="2328"/>
-        <location filename="../src/implui/viewwin.cc" line="2448"/>
+        <location filename="../src/implui/viewwin.cc" line="1023"/>
+        <location filename="../src/implui/viewwin.cc" line="1117"/>
+        <location filename="../src/implui/viewwin.cc" line="1206"/>
+        <location filename="../src/implui/viewwin.cc" line="1254"/>
+        <location filename="../src/implui/viewwin.cc" line="2333"/>
+        <location filename="../src/implui/viewwin.cc" line="2453"/>
         <source>All Files (*)</source>
         <translation>Alle Dateien (*)</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1003"/>
+        <location filename="../src/implui/viewwin.cc" line="1030"/>
         <source>Save model file as</source>
         <translation>Speichere Modell Datei als</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1092"/>
-        <location filename="../src/implui/viewwin.cc" line="1181"/>
-        <location filename="../src/implui/viewwin.cc" line="1229"/>
-        <location filename="../src/implui/viewwin.cc" line="2330"/>
-        <location filename="../src/implui/viewwin.cc" line="2450"/>
+        <location filename="../src/implui/viewwin.cc" line="1119"/>
+        <location filename="../src/implui/viewwin.cc" line="1208"/>
+        <location filename="../src/implui/viewwin.cc" line="1256"/>
+        <location filename="../src/implui/viewwin.cc" line="2335"/>
+        <location filename="../src/implui/viewwin.cc" line="2455"/>
         <source>Open model file</source>
         <translation>Öffne Modell Datei</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1130"/>
+        <location filename="../src/implui/viewwin.cc" line="1157"/>
         <source>Merge models</source>
         <translation>Modelle zusammenfügen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1144"/>
-        <location filename="../src/implui/viewwin.cc" line="1209"/>
+        <location filename="../src/implui/viewwin.cc" line="1171"/>
+        <location filename="../src/implui/viewwin.cc" line="1236"/>
         <source>:
 </source>
         <translation>:
 </translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1272"/>
+        <location filename="../src/implui/viewwin.cc" line="1299"/>
         <source>Script %1 complete</source>
         <translation>Skript %1 komplett</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1278"/>
+        <location filename="../src/implui/viewwin.cc" line="1305"/>
         <source>Script %1 error %2</source>
         <translation>Skript %1 Fehler %2</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1301"/>
-        <location filename="../src/implui/viewwin.cc" line="2359"/>
+        <location filename="../src/implui/viewwin.cc" line="1328"/>
+        <location filename="../src/implui/viewwin.cc" line="2364"/>
         <source>Save first?</source>
         <translation>Zuerst speichern?</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1301"/>
-        <location filename="../src/implui/viewwin.cc" line="2359"/>
+        <location filename="../src/implui/viewwin.cc" line="1328"/>
+        <location filename="../src/implui/viewwin.cc" line="2364"/>
         <source>Model has been modified
 Do you want to save before closing?</source>
         <translation>Modell wurde geändert
 Wollen Sie speichern bevor sie schließen?</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1320"/>
+        <location filename="../src/implui/viewwin.cc" line="1347"/>
         <source>Unknown response: %1, Canceling close request</source>
         <translation>Unbekannte Antwort: %1, Abbruch der Close-Anweisung</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1464"/>
+        <location filename="../src/implui/viewwin.cc" line="1491"/>
         <source>Cannot hide with selected projections.  Unselect projections now?</source>
         <translation>Verstecken mit den ausgewählten Projektionen nicht möglich.  Projektionen de-selektieren?</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1470"/>
+        <location filename="../src/implui/viewwin.cc" line="1497"/>
         <source>Hide projections</source>
         <translation>Projektionen verstecken</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1502"/>
+        <location filename="../src/implui/viewwin.cc" line="1529"/>
         <source>Cannot hide with selected joints.  Unselect joints now?</source>
         <translation>Verstecken mit den ausgewählten Geleken nicht möglich.  Gelenke de-selektieren?</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1508"/>
+        <location filename="../src/implui/viewwin.cc" line="1535"/>
         <source>Hide bone joints</source>
         <translation>Verstecke Knochengelenke</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1597"/>
+        <location filename="../src/implui/viewwin.cc" line="1624"/>
         <source>You must select faces first.
 Use the &apos;Select Faces&apos; tool.</source>
         <comment>Notice that user must have faces selected to open &apos;edit texture coordinates&apos; window</comment>
@@ -5725,7 +5466,7 @@ Use the &apos;Select Faces&apos; tool.</source>
 Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1610"/>
+        <location filename="../src/implui/viewwin.cc" line="1637"/>
         <source>You must select faces first.
 Use the &apos;Select Faces&apos; tool.</source>
         <comment>Notice that user must have faces selected to open &apos;paint texture&apos; window</comment>
@@ -5733,55 +5474,55 @@ Use the &apos;Select Faces&apos; tool.</source>
 Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1692"/>
+        <location filename="../src/implui/viewwin.cc" line="1719"/>
         <source>Undo %1</source>
         <translation>Ruckgängig %1</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1705"/>
+        <location filename="../src/implui/viewwin.cc" line="1732"/>
         <source>Nothing to undo</source>
         <translation>Es gibt nichts rückgängig zu machen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1744"/>
+        <location filename="../src/implui/viewwin.cc" line="1771"/>
         <source>Redo %1</source>
         <translation>Wiederhole %1</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1750"/>
+        <location filename="../src/implui/viewwin.cc" line="1777"/>
         <source>Nothing to redo</source>
         <translation>Es gibt nichts zu wiederholen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1800"/>
+        <location filename="../src/implui/viewwin.cc" line="1827"/>
         <source>This model does not have any animations</source>
         <translation>Dieses Modell hat keine Animationen</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1810"/>
+        <location filename="../src/implui/viewwin.cc" line="1837"/>
         <source>Set rotation keframe</source>
         <translation>Setze Rotations Keyframe</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1818"/>
+        <location filename="../src/implui/viewwin.cc" line="1845"/>
         <source>Set translation keframe</source>
         <translation>Setzte Translations Keyframe</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="2377"/>
+        <location filename="../src/implui/viewwin.cc" line="2382"/>
         <source>Unknown response: Canceling operation</source>
         <translation>Unbekannte Anwort: Breche Operation ab</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="2577"/>
+        <location filename="../src/implui/viewwin.cc" line="2582"/>
         <source>[unnamed]</source>
         <comment>For filename in title bar (if not set)</comment>
         <translation>[unbenannt]</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin_influences.cc" line="57"/>
-        <source>assigning %1 vertices and %2 points to joints</source>
-        <translation>weise %1 Vertizes und %2 Punkte Gelenken zu</translation>
+        <source>Assigning %1 vertices and %2 points to joints</source>
+        <translation>Weise %1 Vertizes und %2 Punkte Gelenken zu</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin_influences.cc" line="78"/>
@@ -5834,7 +5575,7 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
         <translation>Wähle beeinflusste Punkte</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="641"/>
+        <location filename="../src/implui/viewwin.cc" line="642"/>
         <source>Auto-Assign Selected...</source>
         <comment>Joints|Auto-Assign Selected</comment>
         <translation>Auswahl Automatisch zuweisen... </translation>
@@ -5850,145 +5591,181 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
         <translation>Sie müssen mindestens einen Vertex oder einen Punkt ausgewählt haben.</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="365"/>
+        <location filename="../src/implui/viewwin.cc" line="366"/>
         <source>Open...</source>
         <comment>File|Open</comment>
         <translation>Öffnen...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="367"/>
+        <location filename="../src/implui/viewwin.cc" line="368"/>
         <source>Save As...</source>
         <comment>File|Save As</comment>
         <translation>Speichern unter...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="368"/>
+        <location filename="../src/implui/viewwin.cc" line="369"/>
         <source>Export...</source>
         <comment>File|Export</comment>
         <translation>Exportieren...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="617"/>
+        <location filename="../src/implui/viewwin.cc" line="618"/>
         <source>Edit Model Meta Data...</source>
         <comment>Model|Edit Model Meta Data</comment>
         <translation>Editiere Modell Meta Daten...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="618"/>
+        <location filename="../src/implui/viewwin.cc" line="619"/>
         <source>Transform Model...</source>
         <comment>Model|Transform Model</comment>
         <translation>Transformiere Modell...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="619"/>
+        <location filename="../src/implui/viewwin.cc" line="620"/>
         <source>Boolean Operation...</source>
         <comment>Model|Boolean Operation</comment>
         <translation>Boolsche Operation...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="621"/>
+        <location filename="../src/implui/viewwin.cc" line="622"/>
         <source>Set Background Image...</source>
         <comment>Model|Set Background Image</comment>
         <translation>Setze Hintergrundbild...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="622"/>
+        <location filename="../src/implui/viewwin.cc" line="623"/>
         <source>Merge...</source>
         <comment>Model|Merge</comment>
         <translation>Vereinen...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="623"/>
+        <location filename="../src/implui/viewwin.cc" line="624"/>
         <source>Import Animations...</source>
         <comment>Model|Import Animations</comment>
         <translation>Importiere Animationen...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="662"/>
+        <location filename="../src/implui/viewwin.cc" line="629"/>
+        <source>Edit Groups...</source>
+        <comment>Materials|Edit Groups</comment>
+        <translation>Editiere Gruppen...</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/viewwin.cc" line="630"/>
+        <source>Edit Materials...</source>
+        <comment>Materials|Edit Materials</comment>
+        <translation>Editiere Materialien...</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/viewwin.cc" line="631"/>
+        <source>Clean Up...</source>
+        <comment>Materials|Clean Up</comment>
+        <translation>Säubern...</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/viewwin.cc" line="632"/>
+        <source>Reload Textures</source>
+        <comment>Materials|Reload Textures</comment>
+        <translation>Texuren neu laden</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/viewwin.cc" line="634"/>
+        <source>Edit Projection...</source>
+        <comment>Materials|Edit Projection</comment>
+        <translation>Editiere Projektion...</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/viewwin.cc" line="635"/>
+        <source>Edit Texture Coordinates...</source>
+        <comment>Materials|Edit Texture Coordinates</comment>
+        <translation>Editiere Textur Koordinaten...</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/viewwin.cc" line="636"/>
+        <source>Paint Texture...</source>
+        <comment>Materials|Paint Texture</comment>
+        <translation>Erstelle Textur...</translation>
+    </message>
+    <message>
+        <location filename="../src/implui/viewwin.cc" line="663"/>
         <source>Save Animation Images...</source>
         <comment>Animation|Save Animation Images</comment>
         <translation>Speichere Animationsbilder...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="668"/>
+        <location filename="../src/implui/viewwin.cc" line="669"/>
         <source>Copy Selected Keyframes</source>
         <comment>Animation|Copy Animation Frame</comment>
         <translation>Kopiere Ausgewählte Keyframes</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="669"/>
+        <location filename="../src/implui/viewwin.cc" line="670"/>
         <source>Paste Selected Keyframes</source>
         <comment>Animation|Paste Animation Frame</comment>
         <translation>Füge Ausgewählte Keyframes ein</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="696"/>
+        <location filename="../src/implui/viewwin.cc" line="697"/>
         <source>&amp;Model</source>
         <comment>menu bar</comment>
         <translation>&amp;Modell</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="698"/>
+        <location filename="../src/implui/viewwin.cc" line="699"/>
         <source>&amp;Geometry</source>
         <comment>menu bar</comment>
         <translation>&amp;Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="700"/>
+        <location filename="../src/implui/viewwin.cc" line="701"/>
         <source>Mate&amp;rials</source>
         <comment>menu bar</comment>
         <translation>&amp;Materialien</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="954"/>
+        <location filename="../src/implui/viewwin.cc" line="981"/>
         <source>All Exportable Formats</source>
         <translation>Alle exportierbaren Formate</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="954"/>
+        <location filename="../src/implui/viewwin.cc" line="981"/>
         <source>All Writable Formats</source>
         <translation>Alle schreibbaren Formate</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1006"/>
+        <location filename="../src/implui/viewwin.cc" line="1033"/>
         <source>Export model</source>
         <translation>Exportiere Modell</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="1067"/>
-        <location filename="../src/implui/viewwin.cc" line="1156"/>
+        <location filename="../src/implui/viewwin.cc" line="1094"/>
+        <location filename="../src/implui/viewwin.cc" line="1183"/>
         <source>All Supported Formats</source>
         <comment>model formats</comment>
         <translation>Alle unterstützten Formate</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="2300"/>
-        <location filename="../src/implui/viewwin.cc" line="2420"/>
+        <location filename="../src/implui/viewwin.cc" line="2305"/>
+        <location filename="../src/implui/viewwin.cc" line="2425"/>
         <source>All Supported Formats</source>
         <translation>Alle unterstützten Formate</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="302"/>
+        <location filename="../src/implui/viewwin.cc" line="303"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="369"/>
+        <location filename="../src/implui/viewwin.cc" line="370"/>
         <source>Export Selected...</source>
         <comment>File|Export Selected</comment>
         <translation>Exportiere Auswahl...</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="935"/>
+        <location filename="../src/implui/viewwin.cc" line="962"/>
         <source>You must have at least 1 face, joint, or point selected to Export Selected</source>
         <translation>Sie müssen mindestens eine Fläche, ein Gelenk oder einen Punkt zum Exportieren auswählen</translation>
-    </message>
-    <message>
-        <location filename="../src/implui/viewwin.cc" line="630"/>
-        <source>Clean Up Groups...</source>
-        <comment>Groups|Clean Up Groups</comment>
-        <translation>Säubern...</translation>
     </message>
 </context>
 <context>
@@ -6003,83 +5780,83 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
 <context>
     <name>ViewportSettingsBase</name>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="13"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="14"/>
         <source>Viewport Settings</source>
         <translation>Ansichtsfenster Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="34"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="35"/>
         <source>Canvas Grid</source>
         <translation>Zeichenflächen Gitter</translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="57"/>
-        <location filename="../src/qtui/viewportsettings.ui" line="153"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="58"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="151"/>
         <source>Default Grid Unit</source>
         <translation>Standard Gitter Einheit</translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="109"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="110"/>
         <source>3D Grid</source>
         <translation>3D Gitter</translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="166"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="164"/>
         <source>Grid Lines</source>
         <translation>Gitterlinien</translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="178"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="176"/>
         <source>X/Y Plane</source>
         <translation>X/Y Ebene</translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="185"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="183"/>
         <source>X/Z Plane</source>
         <translation>X/Z Ebene</translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="192"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="190"/>
         <source>Y/Z Plane</source>
         <translation>Y/Z Ebene</translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="219"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="217"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="245"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="243"/>
         <source>&amp;Ok</source>
         <translation>&amp;Ok</translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="248"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="246"/>
         <source>Alt+O</source>
         <translation>Alt+O</translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="255"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="253"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="258"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="256"/>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="79"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="80"/>
         <source>Decimal Grid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="72"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="73"/>
         <source>Binary Grid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="86"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="87"/>
         <source>Fixed Grid</source>
         <translation type="unfinished"></translation>
     </message>

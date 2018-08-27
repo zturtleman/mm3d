@@ -42,45 +42,38 @@
 <context>
     <name>AlignWinBase</name>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="+13"/>
+        <location filename="../src/qtui/alignwin.ui" line="+14"/>
         <source>Align Selection</source>
         <translation>Aligner la selection</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+38"/>
         <source>Align X</source>
         <translation>Aligner X</translation>
     </message>
     <message>
-        <location line="+12"/>
-        <location line="+56"/>
-        <location line="+56"/>
+        <location line="+21"/>
+        <location line="+65"/>
+        <location line="+65"/>
         <source>Align minimum</source>
         <translation>Aligner au minimum</translation>
     </message>
     <message>
-        <location line="-105"/>
-        <location line="+56"/>
-        <location line="+56"/>
+        <location line="-123"/>
+        <location line="+65"/>
+        <location line="+65"/>
         <source>Align center</source>
         <translation>Aligner au centre</translation>
     </message>
     <message>
-        <location line="-102"/>
-        <location line="+56"/>
-        <location line="+56"/>
+        <location line="-120"/>
+        <location line="+65"/>
+        <location line="+65"/>
         <source>Align maximum</source>
         <translation>Aligner au maximum</translation>
     </message>
     <message>
-        <location line="-105"/>
-        <location line="+56"/>
-        <location line="+56"/>
-        <source>0.0</source>
-        <translation>0.0</translation>
-    </message>
-    <message>
-        <location line="-105"/>
+        <location line="-116"/>
         <source>Align &amp;X Now</source>
         <translation>Aligner &amp;X Maintenant</translation>
     </message>
@@ -95,7 +88,7 @@
         <translation>Aligner X</translation>
     </message>
     <message>
-        <location line="+43"/>
+        <location line="+52"/>
         <source>Align &amp;Y Now</source>
         <translation>Aligner &amp;Y Maintenant</translation>
     </message>
@@ -110,7 +103,7 @@
         <translation>Aligner Z</translation>
     </message>
     <message>
-        <location line="+43"/>
+        <location line="+52"/>
         <source>Align &amp;Z Now</source>
         <translation>Aligner &amp;Z Maintenant</translation>
     </message>
@@ -120,7 +113,7 @@
         <translation>Alt+Z</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+29"/>
         <source>Press F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -138,12 +131,12 @@
 <context>
     <name>AnimConvertWinBase</name>
     <message>
-        <location filename="../src/qtui/animconvertwin.ui" line="+16"/>
+        <location filename="../src/qtui/animconvertwin.ui" line="+14"/>
         <source>Convert To Frame</source>
         <translation>Convertir en pose (Morph Frame)</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+38"/>
         <source>Convert Skeletal to Frame:</source>
         <translation>Convertir Squelette en Pose (Morph frame):</translation>
     </message>
@@ -153,17 +146,17 @@
         <translation>Nom de l&apos;animation</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+45"/>
         <source>Frame Anim Name:</source>
         <translation>Nom de la pose (Morph Frame) de l&apos;animation:</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+32"/>
         <source>Frame Count</source>
         <translation>Nombre de poses (Morph frames)</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+45"/>
         <source>F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -215,17 +208,17 @@
 <context>
     <name>AnimExportWinBase</name>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="+13"/>
+        <location filename="../src/qtui/animexportwin.ui" line="+14"/>
         <source>Export Animation</source>
         <translation>Exporter l&apos;Animation</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+38"/>
         <source>Source</source>
         <translation>Source</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+27"/>
         <source>Animation</source>
         <translation>Animation</translation>
     </message>
@@ -240,7 +233,7 @@
         <translation>Durée</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Iterations</source>
         <translation>Itérations</translation>
     </message>
@@ -255,7 +248,7 @@
         <translation>Sortie</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Directory</source>
         <translation>Répertoire</translation>
     </message>
@@ -285,27 +278,17 @@
         <translation>anim_1.png</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+31"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location line="+15"/>
-        <source>/some/path/name</source>
-        <translation>/un/nom/de/chemin</translation>
-    </message>
-    <message>
-        <location line="+12"/>
-        <source>25.0</source>
-        <translation>25.0</translation>
-    </message>
-    <message>
-        <location line="+7"/>
+        <location line="+32"/>
         <source>Frame Rate</source>
         <translation>Taux d&apos;images par secondes</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+46"/>
         <source>Press F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -318,16 +301,6 @@
         <location line="+7"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
-    </message>
-    <message>
-        <location line="-214"/>
-        <source>1</source>
-        <translation>1</translation>
-    </message>
-    <message>
-        <location line="+26"/>
-        <source>15</source>
-        <translation>15</translation>
     </message>
 </context>
 <context>
@@ -385,12 +358,12 @@
 <context>
     <name>AnimSetWinBase</name>
     <message>
-        <location filename="../src/qtui/animsetwin.ui" line="+16"/>
+        <location filename="../src/qtui/animsetwin.ui" line="+14"/>
         <source>Animation Sets</source>
         <translation>Ensemble d&apos;Animation</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+64"/>
         <source>&amp;Down</source>
         <translation>&amp;Bas</translation>
     </message>
@@ -400,7 +373,7 @@
         <translation>&amp;Haut</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+26"/>
         <source>&amp;New</source>
         <translation>&amp;Nouveau</translation>
     </message>
@@ -415,7 +388,7 @@
         <translation>&amp;Effacer</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+26"/>
         <source>&amp;Copy</source>
         <translation>&amp;Copier</translation>
     </message>
@@ -440,7 +413,7 @@
         <translation>Con&amp;vertir en Animation de pose (Frame)</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Press F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -651,17 +624,17 @@ Le nombre d&apos;images diffère.</translation>
 <context>
     <name>AnimWidgetBase</name>
     <message>
-        <location filename="../src/qtui/animwidget.ui" line="+24"/>
+        <location filename="../src/qtui/animwidget.ui" line="+20"/>
         <source>Animation</source>
         <translation>Animation</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+61"/>
         <source>FPS</source>
         <translation>Images Par Seconde</translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+27"/>
         <source>Play</source>
         <translation>Jouer</translation>
     </message>
@@ -676,22 +649,17 @@ Le nombre d&apos;images diffère.</translation>
         <translation>Boucle</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+37"/>
         <source>Frames</source>
         <translation>Images</translation>
     </message>
     <message>
-        <location line="+31"/>
-        <source>Frame: 03</source>
-        <translation>Image: 03</translation>
-    </message>
-    <message>
-        <location line="-91"/>
+        <location line="-64"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-3"/>
         <source>Delete Animation</source>
         <translation>Effacer l&apos;animation</translation>
     </message>
@@ -716,7 +684,7 @@ Le nombre d&apos;images diffère.</translation>
 <context>
     <name>AutoAssignJointWinBase</name>
     <message>
-        <location filename="../src/qtui/autoassignjointwin.ui" line="+16"/>
+        <location filename="../src/qtui/autoassignjointwin.ui" line="+14"/>
         <source>Auto-Assign Bone Joints</source>
         <translation>Assigner automatiquement les joints os</translation>
     </message>
@@ -726,7 +694,7 @@ Le nombre d&apos;images diffère.</translation>
         <translation>Assigner seulement au joints selectionnés</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+24"/>
         <source>Single</source>
         <translation>Simple</translation>
     </message>
@@ -736,7 +704,7 @@ Le nombre d&apos;images diffère.</translation>
         <translation>Plusieurs</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+42"/>
         <source>Press F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -776,12 +744,7 @@ Le nombre d&apos;images diffère.</translation>
 <context>
     <name>BackgroundSelectBase</name>
     <message>
-        <location filename="../src/qtui/backgroundselect.ui" line="+16"/>
-        <source>BackgroundSelect</source>
-        <translation>Selection du fond</translation>
-    </message>
-    <message>
-        <location line="+18"/>
+        <location filename="../src/qtui/backgroundselect.ui" line="+30"/>
         <source>None</source>
         <translation>Aucun</translation>
     </message>
@@ -809,7 +772,7 @@ Le nombre d&apos;images diffère.</translation>
 <context>
     <name>BackgroundWinBase</name>
     <message>
-        <location filename="../src/qtui/backgroundwin.ui" line="+16"/>
+        <location filename="../src/qtui/backgroundwin.ui" line="+14"/>
         <source>Select Background Image</source>
         <translation>Selectionner l&apos;image de fond</translation>
     </message>
@@ -844,7 +807,7 @@ Le nombre d&apos;images diffère.</translation>
         <translation>Bas</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>Press F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -932,17 +895,17 @@ Le nombre d&apos;images diffère.</translation>
 <context>
     <name>BoolWinBase</name>
     <message>
-        <location filename="../src/qtui/boolwin.ui" line="+13"/>
+        <location filename="../src/qtui/boolwin.ui" line="+14"/>
         <source>Boolean Operation</source>
         <translation>Opération booléene</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Operation</source>
         <translation>Opération</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Fuse</source>
         <translation>Fusionner</translation>
     </message>
@@ -989,17 +952,17 @@ Le nombre d&apos;images diffère.</translation>
 <context>
     <name>Cal3dPromptBase</name>
     <message>
-        <location filename="../src/qtui/cal3dprompt.ui" line="+13"/>
+        <location filename="../src/qtui/cal3dprompt.ui" line="+14"/>
         <source>Cal3D Filter Options</source>
         <translation>Options du filtre Cal3D </translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Save Meshes</source>
         <translation>Sauvegarder les Meshes</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>All meshes in one file</source>
         <translation>Tous les meshes dans un seul fichier</translation>
     </message>
@@ -1014,7 +977,7 @@ Le nombre d&apos;images diffère.</translation>
         <translation>Sauver les materiaux</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>CRF (Binary)</source>
         <translation>CRF (binaire)</translation>
     </message>
@@ -1024,7 +987,7 @@ Le nombre d&apos;images diffère.</translation>
         <translation>XRF (texte xml)</translation>
     </message>
     <message>
-        <location line="+50"/>
+        <location line="+59"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
@@ -1040,26 +1003,6 @@ Le nombre d&apos;images diffère.</translation>
         <location filename="../src/commands/aligncmd.cc" line="+56"/>
         <source>Align Selected...</source>
         <translation>Aligner la selection...</translation>
-    </message>
-    <message>
-        <location filename="../src/commands/assignjointcmd.cc" line="+61"/>
-        <source>Assigning %1 vertices and %2 points to joint %3</source>
-        <translation>Assigner %1 vertex et %2 points au joint %3</translation>
-    </message>
-    <message>
-        <location line="+20"/>
-        <source>You must have exactly 1 bone joint selected.</source>
-        <translation>Vous devez avoir exactement 1 joint d&apos;os selectionné.</translation>
-    </message>
-    <message>
-        <location line="+16"/>
-        <source>Assign Selected to Bone Joint</source>
-        <translation>Assigner la selection au joint d&apos;os</translation>
-    </message>
-    <message>
-        <location filename="../src/commands/backgroundcmd.cc" line="+48"/>
-        <source>Set Background Image...</source>
-        <translation>Fixer l&apos;image de fond...</translation>
     </message>
     <message>
         <location filename="../src/commands/capcmd.cc" line="+89"/>
@@ -1133,14 +1076,14 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Dupliquer</translation>
     </message>
     <message>
-        <location filename="../src/commands/edgedivcmd.cc" line="+125"/>
+        <location filename="../src/commands/edgedivcmd.cc" line="+128"/>
         <source>Edge Divide complete</source>
         <translation>Division des bords terminée</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>You must have at 2 adjacent vertices to Edge Divide</source>
-        <translation>Vous devez avoir 2 vertex adjacent pour diviser un bord</translation>
+        <source>You must have 2 adjacent vertices selected to Edge Divide</source>
+        <translation type="unfinished">Vous devez avoir 2 vertex adjacent pour diviser un bord</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -1279,11 +1222,6 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Inversion des normales</translation>
     </message>
     <message>
-        <location filename="../src/commands/jointcmd.cc" line="+49"/>
-        <source>Joints...</source>
-        <translation>Joints...</translation>
-    </message>
-    <message>
         <location filename="../src/commands/makefacecmd.cc" line="+52"/>
         <source>Make Face From Vertices</source>
         <translation>Construire un Face depuis les vertex</translation>
@@ -1307,11 +1245,6 @@ Etes vous sûr de vouloir continuer?</translation>
         <location line="+12"/>
         <source>Paste from Clipboard</source>
         <translation>Coller depuis le presse-papiers</translation>
-    </message>
-    <message>
-        <location filename="../src/commands/pointcmd.cc" line="+50"/>
-        <source>Points...</source>
-        <translation>Points...</translation>
     </message>
     <message>
         <location filename="../src/commands/rotatetexcmd.cc" line="+53"/>
@@ -1386,12 +1319,17 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Arrondir...</translation>
     </message>
     <message>
-        <location filename="../src/commands/subdividecmd.cc" line="+44"/>
+        <location filename="../src/commands/subdividecmd.cc" line="+46"/>
         <source>Subdivide complete</source>
         <translation>Sousdivision terminée</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+4"/>
+        <source>You must have at least 1 face selected to Subdivide Faces</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
         <source>Subdivide Faces</source>
         <translation>Sousdiviser les Faces</translation>
     </message>
@@ -1454,7 +1392,7 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>CommandWidget</name>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="+146"/>
+        <location filename="../src/implui/viewwin.cc" line="+147"/>
         <source>You are in animation mode, but there are no animations</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1513,25 +1451,24 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>ContextGroupBase</name>
     <message>
-        <location filename="../src/qtui/contextgroup.ui" line="+24"/>
-        <location line="+62"/>
+        <location filename="../src/qtui/contextgroup.ui" line="+87"/>
         <source>Group</source>
         <translation>Group</translation>
     </message>
     <message>
-        <location line="-42"/>
+        <location line="-40"/>
         <source>Projection Name</source>
         <translation>Nom de la Projection</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+44"/>
-        <location line="+24"/>
+        <location line="+42"/>
+        <location line="+22"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location line="-52"/>
+        <location line="-50"/>
         <source>Material Name</source>
         <translation>Nom du Materiau</translation>
     </message>
@@ -1541,7 +1478,7 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Matériau du Group:</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+34"/>
         <source>Group Name</source>
         <translation>Nom du Groupe</translation>
     </message>
@@ -1618,12 +1555,7 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>ContextInfluencesBase</name>
     <message>
-        <location filename="../src/qtui/contextinfluences.ui" line="+16"/>
-        <source>Influences</source>
-        <translation>Influences</translation>
-    </message>
-    <message>
-        <location line="+11"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="+34"/>
         <source>Weight</source>
         <translation>Poids</translation>
     </message>
@@ -1685,8 +1617,7 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>ContextNameBase</name>
     <message>
-        <location filename="../src/qtui/contextname.ui" line="+24"/>
-        <location line="+6"/>
+        <location filename="../src/qtui/contextname.ui" line="+26"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
@@ -1712,13 +1643,12 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>ContextPositionBase</name>
     <message>
-        <location filename="../src/qtui/contextposition.ui" line="+24"/>
-        <location line="+6"/>
+        <location filename="../src/qtui/contextposition.ui" line="+26"/>
         <source>Position</source>
         <translation>Choisir la position</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+24"/>
         <source>Z</source>
         <translation>Z</translation>
     </message>
@@ -1750,17 +1680,12 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>ContextProjectionBase</name>
     <message>
-        <location filename="../src/qtui/contextprojection.ui" line="+16"/>
-        <source>Projection</source>
-        <translation>Projection</translation>
-    </message>
-    <message>
-        <location line="+6"/>
+        <location filename="../src/qtui/contextprojection.ui" line="+20"/>
         <source>Projection Type</source>
         <translation>Type de Projection</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+31"/>
         <source>Cylinder</source>
         <translation>Cylindre</translation>
     </message>
@@ -1783,7 +1708,7 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>ContextRotation</name>
     <message>
-        <location filename="../src/implui/contextrotation.cc" line="+184"/>
+        <location filename="../src/implui/contextrotation.cc" line="+181"/>
         <source>Set Rotation</source>
         <comment>operation complete</comment>
         <translation>Choisir la rotation</translation>
@@ -1792,13 +1717,12 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>ContextRotationBase</name>
     <message>
-        <location filename="../src/qtui/contextrotation.ui" line="+16"/>
-        <location line="+6"/>
+        <location filename="../src/qtui/contextrotation.ui" line="+20"/>
         <source>Rotation</source>
         <translation>Rotation</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+24"/>
         <source>Z</source>
         <translation>Z</translation>
     </message>
@@ -1996,29 +1920,22 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>ExtrudeWinBase</name>
     <message>
-        <location filename="../src/qtui/extrudewin.ui" line="+16"/>
+        <location filename="../src/qtui/extrudewin.ui" line="+14"/>
         <source>Extrude</source>
         <translation>Extrusion</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Extrude options</source>
         <translation>Options d&apos;extrusions</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+38"/>
         <source>X:</source>
         <translation>X:</translation>
     </message>
     <message>
-        <location line="+10"/>
         <location line="+17"/>
-        <location line="+7"/>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <location line="-17"/>
         <source>Z:</source>
         <translation>Z:</translation>
     </message>
@@ -2033,12 +1950,12 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Fabriquer les Faces Arrières</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+56"/>
         <source>E&amp;xtrude</source>
         <translation>E&amp;xtrusion</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+26"/>
         <source>Press F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -2051,8 +1968,8 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>GroupCleanBase</name>
     <message>
-        <location filename="../src/qtui/groupclean.ui" line="+16"/>
-        <source>Group Clean-up Window</source>
+        <location filename="../src/qtui/groupclean.ui" line="+14"/>
+        <source>Clean Up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2076,7 +1993,7 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+56"/>
         <source>Ok</source>
         <translation type="unfinished">Ok</translation>
     </message>
@@ -2109,17 +2026,17 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>GroupWinBase</name>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="+16"/>
+        <location filename="../src/qtui/groupwin.ui" line="+14"/>
         <source>Groups</source>
         <translation>Goupes</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>No group</source>
         <translation>Pas de groupe</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+25"/>
         <source>New</source>
         <translation>Nouveau</translation>
     </message>
@@ -2134,7 +2051,7 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Effacer</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+42"/>
         <source>Select Faces In Group</source>
         <translation>Selectionner les faces dans le Groupe</translation>
     </message>
@@ -2144,22 +2061,12 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Déselectionner les faces dans le Groupe</translation>
     </message>
     <message>
-        <location line="+41"/>
-        <source>Smoothness: 100</source>
-        <translation>Lissage: 100</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>Max Angle: 000</source>
-        <translation>Angle Maximum : 000</translation>
-    </message>
-    <message>
-        <location line="+58"/>
+        <location line="+145"/>
         <source>Faces</source>
         <translation>Faces</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Assign As Group</source>
         <translation>Assigner comme Groupe</translation>
     </message>
@@ -2174,12 +2081,12 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Texture</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>No texture</source>
         <translation>Pas de Texture</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+37"/>
         <source>Press F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -2258,12 +2165,12 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>HelpWinBase</name>
     <message>
-        <location filename="../src/qtui/helpwin.ui" line="+16"/>
+        <location filename="../src/qtui/helpwin.ui" line="+14"/>
         <source>Help</source>
         <translation>Aide</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+38"/>
         <source>Contents</source>
         <translation>Contenu</translation>
     </message>
@@ -2278,7 +2185,7 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Avant</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+61"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
@@ -2295,7 +2202,7 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>IqePromptBase</name>
     <message>
-        <location filename="../src/qtui/iqeprompt.ui" line="+16"/>
+        <location filename="../src/qtui/iqeprompt.ui" line="+14"/>
         <source>IQE Filter Options</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2325,7 +2232,7 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+31"/>
         <source>Press F1 for help</source>
         <translation type="unfinished">Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -2369,12 +2276,12 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>JointWinBase</name>
     <message>
-        <location filename="../src/qtui/jointwin.ui" line="+16"/>
+        <location filename="../src/qtui/jointwin.ui" line="+14"/>
         <source>Joints</source>
         <translation>joints</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+41"/>
         <source>Rename</source>
         <translation>Renommer</translation>
     </message>
@@ -2389,7 +2296,7 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Selection</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Select Joint Vertices</source>
         <translation>Selectionner les vertex du joint</translation>
     </message>
@@ -2409,7 +2316,7 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Ajouter la selection au joint</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+24"/>
         <source>F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -2427,7 +2334,7 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>KeyConfig</name>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="+353"/>
+        <location filename="../src/implui/keycfg.cc" line="+348"/>
         <source>V</source>
         <comment>Select Vertices Tool Shortcut</comment>
         <translation>V</translation>
@@ -2475,7 +2382,7 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>R</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+23"/>
         <source>H</source>
         <comment>Hide Unselected Command Shortcut</comment>
         <translation>H</translation>
@@ -2528,7 +2435,7 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+20"/>
         <source>Ctrl+N</source>
         <comment>File | New Window Shortcut</comment>
         <translation>Ctrl+N</translation>
@@ -2546,13 +2453,13 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>Ctrl+Q</source>
         <comment>File | Quit Shortcut</comment>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+12"/>
         <source>Home</source>
         <comment>View | Frame All Shortcut</comment>
         <translation>Home (début)</translation>
@@ -2564,7 +2471,7 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Shift+Home (Début)</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+26"/>
         <source>Ctrl+G</source>
         <comment>Groups | Edit Groups Shortcut</comment>
         <translation>Ctrl+G</translation>
@@ -2576,19 +2483,19 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+4"/>
         <source>Ctrl+E</source>
         <comment>Groups | Edit Texture Coordinates Shortcut</comment>
         <translation>Ctrl+E</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+3"/>
         <source>Ctrl+B</source>
         <comment>Joints | Assign Selected Shortcut</comment>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location line="-87"/>
+        <location line="-92"/>
         <source>Shift+U</source>
         <comment>Unhide All Command Shortcut</comment>
         <translation type="unfinished"></translation>
@@ -2597,12 +2504,12 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>KeyValueWindowBase</name>
     <message>
-        <location filename="../src/qtui/keyvaluewin.ui" line="+16"/>
+        <location filename="../src/qtui/keyvaluewin.ui" line="+14"/>
         <source>Edit Meta Data</source>
         <translation>Editer les meta-données</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+20"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
@@ -2612,7 +2519,7 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Valeur</translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+58"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
@@ -2744,12 +2651,12 @@ See Help-&gt;About to contact the developers</source>
 Voir &quot;Aide-&gt;A Propos&quot; pour contacter les développeurs</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/texmgr.cc" line="+47"/>
-        <source>Model has a texture that is not powers of 2</source>
-        <translation>Le modèles a une texture qui n&apos;est pas une puissance de 2</translation>
+        <location filename="../src/libmm3d/texmgr.cc" line="+48"/>
+        <source>The model has a texture that&apos;s width or height is not a power of two (2, 4, 8, .., 64, 128, 256, ..).</source>
+        <translation type="unfinished">Le modèles a une texture qui n&apos;est pas une puissance de 2</translation>
     </message>
     <message>
-        <location line="+301"/>
+        <location line="+324"/>
         <source>Could not load</source>
         <translation>Impossible de charger</translation>
     </message>
@@ -2806,7 +2713,7 @@ Voulez-vous charger toutes les sections ?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="+1560"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="+1546"/>
         <source>MD3 export requires all faces to be grouped.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2880,12 +2787,12 @@ Do you want to save all sections?</source>
 <context>
     <name>MapDirectionBase</name>
     <message>
-        <location filename="../src/qtui/mapdirection.ui" line="+16"/>
+        <location filename="../src/qtui/mapdirection.ui" line="+14"/>
         <source>Which direction?</source>
         <translation>Quelle direction ?</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+27"/>
         <source>Set new texture coordinates from which direction?</source>
         <translation>Quelle direction pour le nouveau jeu de coordonnées de texture ?</translation>
     </message>
@@ -2920,7 +2827,7 @@ Do you want to save all sections?</source>
         <translation>Bas</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+41"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
@@ -2933,27 +2840,17 @@ Do you want to save all sections?</source>
 <context>
     <name>MergeWinBase</name>
     <message>
-        <location filename="../src/qtui/mergewin.ui" line="+13"/>
+        <location filename="../src/qtui/mergewin.ui" line="+14"/>
         <source>Merge Model</source>
         <translation>Fusionner le modèle</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Merge location</source>
         <translation>Fusionner les lieux</translation>
     </message>
     <message>
-        <location line="+20"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+17"/>
-        <location line="+7"/>
-        <source>0.0</source>
-        <translation>0.0</translation>
-    </message>
-    <message>
-        <location line="-17"/>
+        <location line="+66"/>
         <source>Rotation</source>
         <translation>Rotation</translation>
     </message>
@@ -2963,12 +2860,12 @@ Do you want to save all sections?</source>
         <translation>Translation</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+32"/>
         <source>Merge Options</source>
         <translation>Options de Fusion</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Include textures</source>
         <translation>Inclure les textures</translation>
     </message>
@@ -2983,7 +2880,7 @@ Do you want to save all sections?</source>
         <translation>Options d&apos;Animation </translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Append animations</source>
         <translation>Ajouter les Animations</translation>
     </message>
@@ -2993,7 +2890,7 @@ Do you want to save all sections?</source>
         <translation>Fusionner si possible</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+32"/>
         <source>Press F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -3055,7 +2952,7 @@ Opération Terminée</translation>
 <context>
     <name>MetaWindowBase</name>
     <message>
-        <location filename="../src/qtui/metawin.ui" line="+32"/>
+        <location filename="../src/qtui/metawin.ui" line="+42"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
@@ -3065,12 +2962,12 @@ Opération Terminée</translation>
         <translation>Valeur</translation>
     </message>
     <message>
-        <location line="-24"/>
+        <location line="-33"/>
         <source>Model Meta Data</source>
         <translation>Meta Données du Modèle</translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+74"/>
         <source>New</source>
         <translation>Nouveau</translation>
     </message>
@@ -3080,7 +2977,7 @@ Opération Terminée</translation>
         <translation>Effacer</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+29"/>
         <source>Press F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -3098,12 +2995,12 @@ Opération Terminée</translation>
 <context>
     <name>ModelViewBase</name>
     <message>
-        <location filename="../src/qtui/modelview.ui" line="+13"/>
+        <location filename="../src/qtui/modelview.ui" line="+14"/>
         <source>ModelView</source>
         <translation>Vue du Modèle</translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+45"/>
         <source>Perspective</source>
         <translation>Perspective</translation>
     </message>
@@ -3203,17 +3100,17 @@ Opération Terminée</translation>
 <context>
     <name>Ms3dPromptBase</name>
     <message>
-        <location filename="../src/qtui/ms3dprompt.ui" line="+13"/>
+        <location filename="../src/qtui/ms3dprompt.ui" line="+14"/>
         <source>MS3D Filter Options</source>
         <translation>Options des filtres MS3D</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Format Subversion</source>
         <translation>Format Subversion</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Subversion 0</source>
         <translation>Subversion 0</translation>
     </message>
@@ -3233,17 +3130,12 @@ Opération Terminée</translation>
         <translation>Options Subversion </translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Vertex Extra</source>
         <translation>Extra Vertex</translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>FFFFFFFF</source>
-        <translation>FFFFFFFF</translation>
-    </message>
-    <message>
-        <location line="+50"/>
+        <location line="+69"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
@@ -3256,12 +3148,12 @@ Opération Terminée</translation>
 <context>
     <name>NewAnimBase</name>
     <message>
-        <location filename="../src/qtui/newanim.ui" line="+16"/>
+        <location filename="../src/qtui/newanim.ui" line="+14"/>
         <source>New Animation</source>
         <translation>Nouvelle Animation</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+20"/>
         <source>&amp;Name</source>
         <translation>&amp;Nom</translation>
     </message>
@@ -3271,7 +3163,7 @@ Opération Terminée</translation>
         <translation>Type d&apos;animation</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+18"/>
         <source>&amp;Skeletal</source>
         <translation>&amp;Squelette</translation>
     </message>
@@ -3291,7 +3183,7 @@ Opération Terminée</translation>
         <translation>Atl+F</translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+40"/>
         <source>&amp;Ok</source>
         <translation>&amp;Ok</translation>
     </message>
@@ -3323,7 +3215,7 @@ Opération Terminée</translation>
 <context>
     <name>ObjPromptBase</name>
     <message>
-        <location filename="../src/qtui/objprompt.ui" line="+16"/>
+        <location filename="../src/qtui/objprompt.ui" line="+14"/>
         <source>OBJ Filter Options</source>
         <translation>Options du filtre OBJ</translation>
     </message>
@@ -3342,7 +3234,7 @@ Opération Terminée</translation>
         <translation>Alt+S</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+24"/>
         <source>&amp;Normal Decimal Places</source>
         <translation>Position Décimale de la &amp;Normale</translation>
     </message>
@@ -3357,7 +3249,7 @@ Opération Terminée</translation>
         <translation>Position Décimale des &amp;Vertex</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+45"/>
         <source>Press F1 for help</source>
         <translation type="unfinished">Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -3399,12 +3291,12 @@ Opération Terminée</translation>
 <context>
     <name>PaintTextureWinBase</name>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="+16"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="+14"/>
         <source>Paint Texture</source>
         <translation>Peindre la Texture</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+39"/>
         <source>Polygons:</source>
         <translation>Polygones:</translation>
     </message>
@@ -3444,58 +3336,58 @@ Opération Terminée</translation>
         <translation>Effacer l&apos;image de fond</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+37"/>
         <source>Save Size:</source>
         <translation>Sauvegarder la Dimension:</translation>
     </message>
     <message>
-        <location line="+19"/>
-        <location line="+63"/>
+        <location line="+17"/>
+        <location line="+59"/>
         <source>64</source>
         <translation>64</translation>
     </message>
     <message>
-        <location line="-58"/>
-        <location line="+63"/>
+        <location line="-54"/>
+        <location line="+59"/>
         <source>128</source>
         <translation>128</translation>
     </message>
     <message>
-        <location line="-58"/>
-        <location line="+63"/>
+        <location line="-54"/>
+        <location line="+59"/>
         <source>256</source>
         <translation>256</translation>
     </message>
     <message>
-        <location line="-58"/>
-        <location line="+63"/>
+        <location line="-54"/>
+        <location line="+59"/>
         <source>512</source>
         <translation>512</translation>
     </message>
     <message>
-        <location line="-58"/>
-        <location line="+63"/>
+        <location line="-54"/>
+        <location line="+59"/>
         <source>1024</source>
         <translation>1024</translation>
     </message>
     <message>
-        <location line="-58"/>
-        <location line="+63"/>
+        <location line="-54"/>
+        <location line="+59"/>
         <source>2048</source>
         <translation>2048</translation>
     </message>
     <message>
-        <location line="-47"/>
+        <location line="-45"/>
         <source>x</source>
         <translation>x</translation>
     </message>
     <message>
-        <location line="+73"/>
+        <location line="+71"/>
         <source>Save Texture...</source>
         <translation>Sauvegarder la texture...</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+23"/>
         <source>Press F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -3508,7 +3400,7 @@ Opération Terminée</translation>
 <context>
     <name>PluginWinBase</name>
     <message>
-        <location filename="../src/qtui/pluginwin.ui" line="+32"/>
+        <location filename="../src/qtui/pluginwin.ui" line="+42"/>
         <source>Plugin</source>
         <translation>Plugins (greffons)</translation>
     </message>
@@ -3528,12 +3420,12 @@ Opération Terminée</translation>
         <translation>Statut</translation>
     </message>
     <message>
-        <location line="-34"/>
+        <location line="-43"/>
         <source>Plugins</source>
         <translation>Plugins (greffons)</translation>
     </message>
     <message>
-        <location line="+50"/>
+        <location line="+68"/>
         <source>Press F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -3581,12 +3473,12 @@ Opération Terminée</translation>
 <context>
     <name>PointWinBase</name>
     <message>
-        <location filename="../src/qtui/pointwin.ui" line="+16"/>
+        <location filename="../src/qtui/pointwin.ui" line="+14"/>
         <source>Points</source>
         <translation>Points</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+41"/>
         <source>Rename</source>
         <translation>Renommer</translation>
     </message>
@@ -3601,12 +3493,12 @@ Opération Terminée</translation>
         <translation>Joints d&apos;Os</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>(none)</source>
         <translation>(Aucun)</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+25"/>
         <source>F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -3747,12 +3639,12 @@ Opération Terminée</translation>
 <context>
     <name>ProjectionWinBase</name>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="+13"/>
+        <location filename="../src/qtui/projectionwin.ui" line="+14"/>
         <source>Texture Projection</source>
         <translation>Projection de Texture</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+59"/>
         <source>Material</source>
         <translation>Matériau</translation>
     </message>
@@ -3787,22 +3679,17 @@ Opération Terminée</translation>
         <translation>Type:</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+29"/>
         <source>Rename</source>
         <translation>Renommer</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+27"/>
         <source>Zoom:</source>
         <translation>Zoom:</translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>1.0</source>
-        <translation>1.0</translation>
-    </message>
-    <message>
-        <location line="+68"/>
+        <location line="+87"/>
         <source>Remove Faces</source>
         <translation>Enlever les Faces</translation>
     </message>
@@ -3822,7 +3709,7 @@ Opération Terminée</translation>
         <translation>Remettre à zéro l&apos;intevalle des UV</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+29"/>
         <source>Press F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -3844,25 +3731,17 @@ Opération Terminée</translation>
 <context>
     <name>RgbaWinBase</name>
     <message>
-        <location filename="../src/qtui/rgbawin.ui" line="+16"/>
+        <location filename="../src/qtui/rgbawin.ui" line="+14"/>
         <source>RGBA Window</source>
         <translation>Fenêtre RGBA</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+41"/>
         <source>Light Property</source>
         <translation>Propriété de la Lumière</translation>
     </message>
     <message>
-        <location line="+37"/>
-        <location line="+52"/>
-        <location line="+16"/>
-        <location line="+49"/>
-        <source>0.00</source>
-        <translation>0.00</translation>
-    </message>
-    <message>
-        <location line="-107"/>
+        <location line="+56"/>
         <source>Red</source>
         <translation>Rouge</translation>
     </message>
@@ -3882,7 +3761,7 @@ Opération Terminée</translation>
         <translation>Alpha</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+61"/>
         <source>Close</source>
         <translation>Fermer</translation>
     </message>
@@ -4005,57 +3884,9 @@ Opération Terminée</translation>
     </message>
 </context>
 <context>
-    <name>StatusBarBase</name>
-    <message>
-        <location filename="../src/qtui/statusbar.ui" line="+13"/>
-        <source>Form1</source>
-        <translation>Formulaire1</translation>
-    </message>
-    <message>
-        <location line="+35"/>
-        <source>Status text</source>
-        <translation>Texte de statut</translation>
-    </message>
-    <message>
-        <location line="+39"/>
-        <source>V:0</source>
-        <translation>V:0</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>F:0</source>
-        <translation>F:0</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>G:0</source>
-        <translation>G:0</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>B:0</source>
-        <translation>B:0</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>P:0</source>
-        <translation>P:0</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>T:0</source>
-        <translation>T:0</translation>
-    </message>
-</context>
-<context>
     <name>TextWinBase</name>
     <message>
-        <location filename="../src/qtui/textwin.ui" line="+16"/>
-        <source>Text Window</source>
-        <translation>Fenetre de texte</translation>
-    </message>
-    <message>
-        <location line="+43"/>
+        <location filename="../src/qtui/textwin.ui" line="+79"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
@@ -4105,27 +3936,22 @@ Opération Terminée</translation>
 <context>
     <name>TextureCoordBase</name>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="+13"/>
+        <location filename="../src/qtui/texturecoord.ui" line="+14"/>
         <source>Texture Coordinates</source>
         <translation>Coordonnées de texture</translation>
     </message>
     <message>
-        <location line="+196"/>
+        <location line="+250"/>
         <source>Zoom:</source>
         <translation>Zoom:</translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>1.0</source>
-        <translation>1.0</translation>
-    </message>
-    <message>
-        <location line="+42"/>
+        <location line="+63"/>
         <source>Mouse Tool</source>
         <translation>Outil de Pointage</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Select</source>
         <translation>Selectionner</translation>
     </message>
@@ -4145,7 +3971,7 @@ Opération Terminée</translation>
         <translation>Options d&apos;échelle</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Scale from center</source>
         <translation>Mise à l&apos;échelle depuis le centre</translation>
     </message>
@@ -4180,7 +4006,7 @@ Opération Terminée</translation>
         <translation>Remettre les coordonnées à zéro</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+28"/>
         <source>Press F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -4190,12 +4016,12 @@ Opération Terminée</translation>
         <translation>Fermer</translation>
     </message>
     <message>
-        <location line="-137"/>
+        <location line="-155"/>
         <source>Rotate</source>
         <translation>Rotation</translation>
     </message>
     <message>
-        <location line="-228"/>
+        <location line="-266"/>
         <source>Lines</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4253,7 +4079,7 @@ Opération Terminée</translation>
         <translation type="unfinished">Selection</translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+70"/>
         <source>Rotate CCW</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4364,17 +4190,17 @@ Opération Terminée</translation>
 <context>
     <name>TextureWindowBase</name>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="+16"/>
+        <location filename="../src/qtui/texwin.ui" line="+14"/>
         <source>Materials</source>
         <translation>Matériaux</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>None</source>
         <translation>Aucun</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>New Material...</source>
         <translation>Nouveau Materiau...</translation>
     </message>
@@ -4389,7 +4215,7 @@ Opération Terminée</translation>
         <translation>Effacer</translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+40"/>
         <source>Wrap X</source>
         <translation>Allonger X</translation>
     </message>
@@ -4409,22 +4235,22 @@ Opération Terminée</translation>
         <translation>Borner Y</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+72"/>
         <source>Change Texture...</source>
         <translation>Changer de Texture...</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+16"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-3"/>
         <source>Remove texture</source>
         <translation>Enlever la texture</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+13"/>
         <source>Flat Preview</source>
         <translation>Prévisualisation Plate</translation>
     </message>
@@ -4434,15 +4260,7 @@ Opération Terminée</translation>
         <translation>Prévisualisation 3D</translation>
     </message>
     <message>
-        <location line="+26"/>
-        <location line="+75"/>
-        <location line="+16"/>
-        <location line="+16"/>
-        <source>0.00</source>
-        <translation>0.00</translation>
-    </message>
-    <message>
-        <location line="-58"/>
+        <location line="+93"/>
         <source>Alpha</source>
         <translation>Alpha</translation>
     </message>
@@ -4487,7 +4305,7 @@ Opération Terminée</translation>
         <translation>Brillance</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+27"/>
         <source>Press F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -4979,82 +4797,56 @@ bouton</translation>
 <context>
     <name>TransformWindowBase</name>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="+13"/>
+        <location filename="../src/qtui/transformwin.ui" line="+14"/>
         <source>Transform Model</source>
         <translation>Transformer le modèle</translation>
     </message>
     <message>
-        <location line="+36"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+121"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+95"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+17"/>
-        <location line="+179"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+28"/>
-        <location line="+14"/>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <location line="-538"/>
-        <location line="+135"/>
-        <location line="+196"/>
+        <location line="+84"/>
+        <location line="+171"/>
+        <location line="+232"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location line="-321"/>
-        <location line="+135"/>
-        <location line="+196"/>
+        <location line="-393"/>
+        <location line="+171"/>
+        <location line="+232"/>
         <source>Y</source>
         <translation>1</translation>
     </message>
     <message>
-        <location line="-321"/>
-        <location line="+135"/>
-        <location line="+196"/>
+        <location line="-393"/>
+        <location line="+171"/>
+        <location line="+232"/>
         <source>Z</source>
         <translation>1</translation>
     </message>
     <message>
-        <location line="-392"/>
-        <location line="+113"/>
+        <location line="-482"/>
+        <location line="+140"/>
         <source>Translate</source>
         <translation>Translation</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+31"/>
         <source>Euler Angles</source>
         <translation>Angles d&apos;Euleur</translation>
     </message>
     <message>
-        <location line="-12"/>
-        <location line="+101"/>
-        <location line="+96"/>
+        <location line="-21"/>
+        <location line="+128"/>
+        <location line="+114"/>
         <source>Rotate</source>
         <translation>Rotation</translation>
     </message>
     <message>
-        <location line="-86"/>
+        <location line="-104"/>
         <source>Quaternion</source>
         <translation>Quaternion</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+38"/>
         <source>Angle</source>
         <translation>Angle</translation>
     </message>
@@ -5064,28 +4856,13 @@ bouton</translation>
         <translation>Axe</translation>
     </message>
     <message>
-        <location line="+66"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <source>1.0</source>
-        <translation>1.0</translation>
-    </message>
-    <message>
-        <location line="-34"/>
-        <location line="+113"/>
+        <location line="+46"/>
+        <location line="+140"/>
         <source>Scale</source>
         <translation>Mise à l&apos;échelle</translation>
     </message>
     <message>
-        <location line="+100"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+14"/>
-        <source>1</source>
-        <translation>1</translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+162"/>
         <source>(bottom row is translation)</source>
         <translation>(La rangée du bas est la translation)</translation>
     </message>
@@ -5095,12 +4872,12 @@ bouton</translation>
         <translation>Applique la Matrice</translation>
     </message>
     <message>
-        <location line="-160"/>
+        <location line="-178"/>
         <source>Matrix</source>
         <translation>Matrice</translation>
     </message>
     <message>
-        <location line="+179"/>
+        <location line="+206"/>
         <source>Apply to:</source>
         <translation>Appliquer à :</translation>
     </message>
@@ -5109,7 +4886,7 @@ bouton</translation>
         <translation type="obsolete">Tout le Modèle et Animations</translation>
     </message>
     <message>
-        <location line="+53"/>
+        <location line="+62"/>
         <source>Press F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -5119,7 +4896,7 @@ bouton</translation>
         <translation>Fermer</translation>
     </message>
     <message>
-        <location line="-65"/>
+        <location line="-74"/>
         <source>Selected (including animations)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5141,18 +4918,18 @@ bouton</translation>
 <context>
     <name>ValueWinBase</name>
     <message>
-        <location filename="../src/qtui/valuewin.ui" line="+16"/>
+        <location filename="../src/qtui/valuewin.ui" line="+14"/>
         <source>Value Window</source>
         <translation>Fenêtre de valeur</translation>
     </message>
     <message>
-        <location line="+17"/>
-        <location line="+18"/>
+        <location line="+27"/>
+        <location line="+27"/>
         <source>Value</source>
         <translation>Valeur</translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+65"/>
         <source>Press F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
@@ -5316,13 +5093,13 @@ bouton</translation>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+1441"/>
+        <location line="+1467"/>
         <source>Show Properties</source>
         <comment>View|Show Properties</comment>
         <translation>Afficher les Propriétés</translation>
     </message>
     <message>
-        <location line="-1439"/>
+        <location line="-1465"/>
         <source>Render Options</source>
         <comment>View|Render Options</comment>
         <translation>Options de Rendu</translation>
@@ -5480,43 +5257,7 @@ bouton</translation>
         <translation>Outils</translation>
     </message>
     <message>
-        <location line="+21"/>
-        <source>Edit Groups...</source>
-        <comment>Groups|Edit Groups</comment>
-        <translation>Editer les Groupes...</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Edit Materials...</source>
-        <comment>Groups|Edit Materials</comment>
-        <translation>Editer les Matérieaux...</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Reload Textures</source>
-        <comment>Groups|Reload Textures</comment>
-        <translation>Recharger les Textures</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Edit Projection...</source>
-        <comment>Groups|Edit Projection</comment>
-        <translation>Editer la Projection...</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Edit Texture Coordinates...</source>
-        <comment>Groups|Edit Texture Coordinates</comment>
-        <translation>Editer les Coordonnées de texture...</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Paint Texture...</source>
-        <comment>Groups|Paint Texture</comment>
-        <translation>Peindre la Texture...</translation>
-    </message>
-    <message>
-        <location line="+4"/>
+        <location line="+32"/>
         <source>Edit Joints...</source>
         <comment>Joints|Edit Joints</comment>
         <translation>Editer les Joints...</translation>
@@ -5678,17 +5419,17 @@ bouton</translation>
         <translation>&amp;Aide</translation>
     </message>
     <message>
-        <location line="+290"/>
+        <location line="+316"/>
         <location line="+94"/>
         <location line="+89"/>
         <location line="+48"/>
-        <location line="+1101"/>
+        <location line="+1079"/>
         <location line="+120"/>
         <source>All Files (*)</source>
         <translation>Tous les Fichiers (*)</translation>
     </message>
     <message>
-        <location line="-1445"/>
+        <location line="-1423"/>
         <source>Save model file as</source>
         <translation>Sauver le ficher sous</translation>
     </message>
@@ -5700,13 +5441,13 @@ bouton</translation>
         <location line="+89"/>
         <location line="+89"/>
         <location line="+48"/>
-        <location line="+1101"/>
+        <location line="+1079"/>
         <location line="+120"/>
         <source>Open model file</source>
         <translation>Ouvrir le fichier modèle</translation>
     </message>
     <message>
-        <location line="-1320"/>
+        <location line="-1298"/>
         <source>Merge models</source>
         <translation>Fusionner les modèles</translation>
     </message>
@@ -5730,20 +5471,20 @@ bouton</translation>
     </message>
     <message>
         <location line="+23"/>
-        <location line="+1058"/>
+        <location line="+1036"/>
         <source>Save first?</source>
         <translation>Sauvegarder avant ?</translation>
     </message>
     <message>
-        <location line="-1058"/>
-        <location line="+1058"/>
+        <location line="-1036"/>
+        <location line="+1036"/>
         <source>Model has been modified
 Do you want to save before closing?</source>
         <translation>Le modèle a été modifié
 Voulez vous sauver avant de fermer ?</translation>
     </message>
     <message>
-        <location line="-1039"/>
+        <location line="-1017"/>
         <source>Unknown response: %1, Canceling close request</source>
         <translation>Réponse inconnue : %1, Annulation de la requête de fermeture</translation>
     </message>
@@ -5824,7 +5565,7 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
         <translation>Fixe l&apos;image clée de translation</translation>
     </message>
     <message>
-        <location line="+559"/>
+        <location line="+537"/>
         <source>Unknown response: Canceling operation</source>
         <translation>Réponses inconnues : Annuler l&apos;opération</translation>
     </message>
@@ -5836,7 +5577,7 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
     </message>
     <message>
         <location filename="../src/implui/viewwin_influences.cc" line="+57"/>
-        <source>assigning %1 vertices and %2 points to joints</source>
+        <source>Assigning %1 vertices and %2 points to joints</source>
         <translation>Assigner %1 vertex and %2 points au joints</translation>
     </message>
     <message>
@@ -5890,7 +5631,7 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
         <translation>Selectionner les Points influencés</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="-1936"/>
+        <location filename="../src/implui/viewwin.cc" line="-1940"/>
         <source>Auto-Assign Selected...</source>
         <comment>Joints|Auto-Assign Selected</comment>
         <translation>Assigner automatiquement la selection...</translation>
@@ -5960,7 +5701,49 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
         <translation>Importer les Animations...</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+5"/>
+        <source>Edit Groups...</source>
+        <comment>Materials|Edit Groups</comment>
+        <translation>Editer les Groupes...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Edit Materials...</source>
+        <comment>Materials|Edit Materials</comment>
+        <translation>Editer les Matérieaux...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Clean Up...</source>
+        <comment>Materials|Clean Up</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Reload Textures</source>
+        <comment>Materials|Reload Textures</comment>
+        <translation>Recharger les Textures</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Edit Projection...</source>
+        <comment>Materials|Edit Projection</comment>
+        <translation>Editer la Projection...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Edit Texture Coordinates...</source>
+        <comment>Materials|Edit Texture Coordinates</comment>
+        <translation>Editer les Coordonnées de texture...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Paint Texture...</source>
+        <comment>Materials|Paint Texture</comment>
+        <translation>Peindre la Texture...</translation>
+    </message>
+    <message>
+        <location line="+27"/>
         <source>Save Animation Images...</source>
         <comment>Animation|Save Animation Images</comment>
         <translation>Sauver les images des animations...</translation>
@@ -5996,7 +5779,7 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
         <translation>&amp;Matériaux</translation>
     </message>
     <message>
-        <location line="+254"/>
+        <location line="+280"/>
         <source>All Exportable Formats</source>
         <translation>Tous les formats exportables</translation>
     </message>
@@ -6018,13 +5801,13 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
         <translation>Tous les formats supportés</translation>
     </message>
     <message>
-        <location line="+1144"/>
+        <location line="+1122"/>
         <location line="+120"/>
         <source>All Supported Formats</source>
         <translation>Tous les formats supportés</translation>
     </message>
     <message>
-        <location line="-2118"/>
+        <location line="-2122"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation type="unfinished"></translation>
@@ -6036,14 +5819,8 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+566"/>
+        <location line="+592"/>
         <source>You must have at least 1 face, joint, or point selected to Export Selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-305"/>
-        <source>Clean Up Groups...</source>
-        <comment>Groups|Clean Up Groups</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6059,7 +5836,7 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
 <context>
     <name>ViewportSettingsBase</name>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="+13"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="+14"/>
         <source>Viewport Settings</source>
         <translation>Configuration de la visualisation</translation>
     </message>
@@ -6070,17 +5847,17 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
     </message>
     <message>
         <location line="+23"/>
-        <location line="+96"/>
+        <location line="+93"/>
         <source>Default Grid Unit</source>
         <translation>Unité de la grille de défaut</translation>
     </message>
     <message>
-        <location line="-44"/>
+        <location line="-41"/>
         <source>3D Grid</source>
         <translation>Grille 3D</translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="+54"/>
         <source>Grid Lines</source>
         <translation>Lignes de la Grille</translation>
     </message>
@@ -6125,7 +5902,7 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location line="-179"/>
+        <location line="-176"/>
         <source>Decimal Grid</source>
         <translation type="unfinished"></translation>
     </message>

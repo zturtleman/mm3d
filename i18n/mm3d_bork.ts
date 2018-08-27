@@ -42,45 +42,38 @@
 <context>
     <name>AlignWinBase</name>
     <message>
-        <location filename="../src/qtui/alignwin.ui" line="+13"/>
+        <location filename="../src/qtui/alignwin.ui" line="+14"/>
         <source>Align Selection</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+38"/>
         <source>Align X</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+12"/>
-        <location line="+56"/>
-        <location line="+56"/>
+        <location line="+21"/>
+        <location line="+65"/>
+        <location line="+65"/>
         <source>Align minimum</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-105"/>
-        <location line="+56"/>
-        <location line="+56"/>
+        <location line="-123"/>
+        <location line="+65"/>
+        <location line="+65"/>
         <source>Align center</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-102"/>
-        <location line="+56"/>
-        <location line="+56"/>
+        <location line="-120"/>
+        <location line="+65"/>
+        <location line="+65"/>
         <source>Align maximum</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-105"/>
-        <location line="+56"/>
-        <location line="+56"/>
-        <source>0.0</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="-105"/>
+        <location line="-116"/>
         <source>Align &amp;X Now</source>
         <translation>Bork!</translation>
     </message>
@@ -95,7 +88,7 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+43"/>
+        <location line="+52"/>
         <source>Align &amp;Y Now</source>
         <translation>Bork!</translation>
     </message>
@@ -110,7 +103,7 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+43"/>
+        <location line="+52"/>
         <source>Align &amp;Z Now</source>
         <translation>Bork!</translation>
     </message>
@@ -120,7 +113,7 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+29"/>
         <source>Press F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -138,12 +131,12 @@
 <context>
     <name>AnimConvertWinBase</name>
     <message>
-        <location filename="../src/qtui/animconvertwin.ui" line="+16"/>
+        <location filename="../src/qtui/animconvertwin.ui" line="+14"/>
         <source>Convert To Frame</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+38"/>
         <source>Convert Skeletal to Frame:</source>
         <translation>Bork!</translation>
     </message>
@@ -153,17 +146,17 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+45"/>
         <source>Frame Anim Name:</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+32"/>
         <source>Frame Count</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+45"/>
         <source>F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -215,17 +208,17 @@
 <context>
     <name>AnimExportWinBase</name>
     <message>
-        <location filename="../src/qtui/animexportwin.ui" line="+13"/>
+        <location filename="../src/qtui/animexportwin.ui" line="+14"/>
         <source>Export Animation</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+38"/>
         <source>Source</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+27"/>
         <source>Animation</source>
         <translation>Bork!</translation>
     </message>
@@ -240,7 +233,7 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Iterations</source>
         <translation>Bork!</translation>
     </message>
@@ -263,7 +256,7 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Directory</source>
         <translation>Bork!</translation>
     </message>
@@ -293,27 +286,17 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+31"/>
         <source>...</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+15"/>
-        <source>/some/path/name</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+12"/>
-        <source>25.0</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+7"/>
+        <location line="+32"/>
         <source>Frame Rate</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+46"/>
         <source>Press F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -326,16 +309,6 @@
         <location line="+7"/>
         <source>Cancel</source>
         <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="-214"/>
-        <source>1</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+26"/>
-        <source>15</source>
-        <translation>Bork! {15?}</translation>
     </message>
 </context>
 <context>
@@ -393,12 +366,12 @@
 <context>
     <name>AnimSetWinBase</name>
     <message>
-        <location filename="../src/qtui/animsetwin.ui" line="+16"/>
+        <location filename="../src/qtui/animsetwin.ui" line="+14"/>
         <source>Animation Sets</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+64"/>
         <source>&amp;Down</source>
         <translation>Bork!</translation>
     </message>
@@ -408,7 +381,7 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+26"/>
         <source>&amp;New</source>
         <translation>Bork!</translation>
     </message>
@@ -423,7 +396,7 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+26"/>
         <source>&amp;Copy</source>
         <translation>Bork!</translation>
     </message>
@@ -448,7 +421,7 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Press F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -658,17 +631,17 @@
 <context>
     <name>AnimWidgetBase</name>
     <message>
-        <location filename="../src/qtui/animwidget.ui" line="+24"/>
+        <location filename="../src/qtui/animwidget.ui" line="+20"/>
         <source>Animation</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+61"/>
         <source>FPS</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+27"/>
         <source>Play</source>
         <translation>Bork!</translation>
     </message>
@@ -683,22 +656,17 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+37"/>
         <source>Frames</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+31"/>
-        <source>Frame: 03</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="-91"/>
+        <location line="-64"/>
         <source>X</source>
         <translation type="unfinished">Bork!</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-3"/>
         <source>Delete Animation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -811,7 +779,7 @@
 <context>
     <name>AutoAssignJointWinBase</name>
     <message>
-        <location filename="../src/qtui/autoassignjointwin.ui" line="+16"/>
+        <location filename="../src/qtui/autoassignjointwin.ui" line="+14"/>
         <source>Auto-Assign Bone Joints</source>
         <translation>Bork!</translation>
     </message>
@@ -821,7 +789,7 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+24"/>
         <source>Single</source>
         <translation>Bork!</translation>
     </message>
@@ -831,7 +799,7 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+42"/>
         <source>Press F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -871,12 +839,7 @@
 <context>
     <name>BackgroundSelectBase</name>
     <message>
-        <location filename="../src/qtui/backgroundselect.ui" line="+16"/>
-        <source>BackgroundSelect</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+18"/>
+        <location filename="../src/qtui/backgroundselect.ui" line="+30"/>
         <source>None</source>
         <translation>Bork!</translation>
     </message>
@@ -904,7 +867,7 @@
 <context>
     <name>BackgroundWinBase</name>
     <message>
-        <location filename="../src/qtui/backgroundwin.ui" line="+16"/>
+        <location filename="../src/qtui/backgroundwin.ui" line="+14"/>
         <source>Select Background Image</source>
         <translation>Bork!</translation>
     </message>
@@ -939,7 +902,7 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>Press F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -1027,17 +990,17 @@
 <context>
     <name>BoolWinBase</name>
     <message>
-        <location filename="../src/qtui/boolwin.ui" line="+13"/>
+        <location filename="../src/qtui/boolwin.ui" line="+14"/>
         <source>Boolean Operation</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Operation</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Fuse</source>
         <translation>Bork!</translation>
     </message>
@@ -1084,17 +1047,17 @@
 <context>
     <name>Cal3dPromptBase</name>
     <message>
-        <location filename="../src/qtui/cal3dprompt.ui" line="+13"/>
+        <location filename="../src/qtui/cal3dprompt.ui" line="+14"/>
         <source>Cal3D Filter Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Save Meshes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>All meshes in one file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1109,7 +1072,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>CRF (Binary)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1119,7 +1082,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+50"/>
+        <location line="+59"/>
         <source>Ok</source>
         <translation type="unfinished">Bork!</translation>
     </message>
@@ -1134,26 +1097,6 @@
     <message>
         <location filename="../src/commands/aligncmd.cc" line="+56"/>
         <source>Align Selected...</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location filename="../src/commands/assignjointcmd.cc" line="+61"/>
-        <source>Assigning %1 vertices and %2 points to joint %3</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+20"/>
-        <source>You must have exactly 1 bone joint selected.</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+16"/>
-        <source>Assign Selected to Bone Joint</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location filename="../src/commands/backgroundcmd.cc" line="+48"/>
-        <source>Set Background Image...</source>
         <translation>Bork!</translation>
     </message>
     <message>
@@ -1227,13 +1170,13 @@ Do you wish to continue?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location filename="../src/commands/edgedivcmd.cc" line="+125"/>
+        <location filename="../src/commands/edgedivcmd.cc" line="+128"/>
         <source>Edge Divide complete</source>
         <translation>Bork!</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>You must have at 2 adjacent vertices to Edge Divide</source>
+        <source>You must have 2 adjacent vertices selected to Edge Divide</source>
         <translation>Bork!</translation>
     </message>
     <message>
@@ -1373,11 +1316,6 @@ Do you wish to continue?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location filename="../src/commands/jointcmd.cc" line="+49"/>
-        <source>Joints...</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
         <location filename="../src/commands/makefacecmd.cc" line="+52"/>
         <source>Make Face From Vertices</source>
         <translation>Bork!</translation>
@@ -1400,11 +1338,6 @@ Do you wish to continue?</source>
     <message>
         <location line="+12"/>
         <source>Paste from Clipboard</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location filename="../src/commands/pointcmd.cc" line="+50"/>
-        <source>Points...</source>
         <translation>Bork!</translation>
     </message>
     <message>
@@ -1480,12 +1413,17 @@ Do you wish to continue?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location filename="../src/commands/subdividecmd.cc" line="+44"/>
+        <location filename="../src/commands/subdividecmd.cc" line="+46"/>
         <source>Subdivide complete</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+4"/>
+        <source>You must have at least 1 face selected to Subdivide Faces</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
         <source>Subdivide Faces</source>
         <translation>Bork!</translation>
     </message>
@@ -1552,7 +1490,7 @@ Do you wish to continue?</source>
 <context>
     <name>CommandWidget</name>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="+146"/>
+        <location filename="../src/implui/viewwin.cc" line="+147"/>
         <source>You are in animation mode, but there are no animations</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1611,25 +1549,24 @@ Do you wish to continue?</source>
 <context>
     <name>ContextGroupBase</name>
     <message>
-        <location filename="../src/qtui/contextgroup.ui" line="+24"/>
-        <location line="+62"/>
+        <location filename="../src/qtui/contextgroup.ui" line="+87"/>
         <source>Group</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-42"/>
+        <location line="-40"/>
         <source>Projection Name</source>
         <translation>Bork!</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+44"/>
-        <location line="+24"/>
+        <location line="+42"/>
+        <location line="+22"/>
         <source>...</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-52"/>
+        <location line="-50"/>
         <source>Material Name</source>
         <translation>Bork!</translation>
     </message>
@@ -1639,7 +1576,7 @@ Do you wish to continue?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+34"/>
         <source>Group Name</source>
         <translation>Bork!</translation>
     </message>
@@ -1720,12 +1657,7 @@ Do you wish to continue?</source>
 <context>
     <name>ContextInfluencesBase</name>
     <message>
-        <location filename="../src/qtui/contextinfluences.ui" line="+16"/>
-        <source>Influences</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+11"/>
+        <location filename="../src/qtui/contextinfluences.ui" line="+34"/>
         <source>Weight</source>
         <translation>Bork!</translation>
     </message>
@@ -1787,8 +1719,7 @@ Do you wish to continue?</source>
 <context>
     <name>ContextNameBase</name>
     <message>
-        <location filename="../src/qtui/contextname.ui" line="+24"/>
-        <location line="+6"/>
+        <location filename="../src/qtui/contextname.ui" line="+26"/>
         <source>Name</source>
         <translation>Bork!</translation>
     </message>
@@ -1814,13 +1745,12 @@ Do you wish to continue?</source>
 <context>
     <name>ContextPositionBase</name>
     <message>
-        <location filename="../src/qtui/contextposition.ui" line="+24"/>
-        <location line="+6"/>
+        <location filename="../src/qtui/contextposition.ui" line="+26"/>
         <source>Position</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+24"/>
         <source>Z</source>
         <translation>Bork!</translation>
     </message>
@@ -1852,17 +1782,12 @@ Do you wish to continue?</source>
 <context>
     <name>ContextProjectionBase</name>
     <message>
-        <location filename="../src/qtui/contextprojection.ui" line="+16"/>
-        <source>Projection</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+6"/>
+        <location filename="../src/qtui/contextprojection.ui" line="+20"/>
         <source>Projection Type</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+31"/>
         <source>Cylinder</source>
         <translation>Bork!</translation>
     </message>
@@ -1885,7 +1810,7 @@ Do you wish to continue?</source>
 <context>
     <name>ContextRotation</name>
     <message>
-        <location filename="../src/implui/contextrotation.cc" line="+184"/>
+        <location filename="../src/implui/contextrotation.cc" line="+181"/>
         <source>Set Rotation</source>
         <comment>operation complete</comment>
         <translation>Bork!</translation>
@@ -1894,13 +1819,12 @@ Do you wish to continue?</source>
 <context>
     <name>ContextRotationBase</name>
     <message>
-        <location filename="../src/qtui/contextrotation.ui" line="+16"/>
-        <location line="+6"/>
+        <location filename="../src/qtui/contextrotation.ui" line="+20"/>
         <source>Rotation</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+24"/>
         <source>Z</source>
         <translation>Bork!</translation>
     </message>
@@ -2121,29 +2045,22 @@ Do you wish to continue?</source>
 <context>
     <name>ExtrudeWinBase</name>
     <message>
-        <location filename="../src/qtui/extrudewin.ui" line="+16"/>
+        <location filename="../src/qtui/extrudewin.ui" line="+14"/>
         <source>Extrude</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Extrude options</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+38"/>
         <source>X:</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+10"/>
         <location line="+17"/>
-        <location line="+7"/>
-        <source>0</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="-17"/>
         <source>Z:</source>
         <translation>Bork!</translation>
     </message>
@@ -2158,12 +2075,12 @@ Do you wish to continue?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+56"/>
         <source>E&amp;xtrude</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+26"/>
         <source>Press F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -2176,8 +2093,8 @@ Do you wish to continue?</source>
 <context>
     <name>GroupCleanBase</name>
     <message>
-        <location filename="../src/qtui/groupclean.ui" line="+16"/>
-        <source>Group Clean-up Window</source>
+        <location filename="../src/qtui/groupclean.ui" line="+14"/>
+        <source>Clean Up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2201,7 +2118,7 @@ Do you wish to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+56"/>
         <source>Ok</source>
         <translation type="unfinished">Bork!</translation>
     </message>
@@ -2234,17 +2151,17 @@ Do you wish to continue?</source>
 <context>
     <name>GroupWinBase</name>
     <message>
-        <location filename="../src/qtui/groupwin.ui" line="+16"/>
+        <location filename="../src/qtui/groupwin.ui" line="+14"/>
         <source>Groups</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>No group</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+25"/>
         <source>New</source>
         <translation>Bork!</translation>
     </message>
@@ -2259,7 +2176,7 @@ Do you wish to continue?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+42"/>
         <source>Select Faces In Group</source>
         <translation>Bork!</translation>
     </message>
@@ -2269,22 +2186,12 @@ Do you wish to continue?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+41"/>
-        <source>Smoothness: 100</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>Max Angle: 000</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+58"/>
+        <location line="+145"/>
         <source>Faces</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Assign As Group</source>
         <translation>Bork!</translation>
     </message>
@@ -2299,12 +2206,12 @@ Do you wish to continue?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>No texture</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+37"/>
         <source>Press F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -2383,12 +2290,12 @@ Do you wish to continue?</source>
 <context>
     <name>HelpWinBase</name>
     <message>
-        <location filename="../src/qtui/helpwin.ui" line="+16"/>
+        <location filename="../src/qtui/helpwin.ui" line="+14"/>
         <source>Help</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+38"/>
         <source>Contents</source>
         <translation>Bork!</translation>
     </message>
@@ -2403,7 +2310,7 @@ Do you wish to continue?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+61"/>
         <source>Ok</source>
         <translation>Bork!</translation>
     </message>
@@ -2420,7 +2327,7 @@ Do you wish to continue?</source>
 <context>
     <name>IqePromptBase</name>
     <message>
-        <location filename="../src/qtui/iqeprompt.ui" line="+16"/>
+        <location filename="../src/qtui/iqeprompt.ui" line="+14"/>
         <source>IQE Filter Options</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2450,7 +2357,7 @@ Do you wish to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+31"/>
         <source>Press F1 for help</source>
         <translation type="unfinished">Bork!</translation>
     </message>
@@ -2494,12 +2401,12 @@ Do you wish to continue?</source>
 <context>
     <name>JointWinBase</name>
     <message>
-        <location filename="../src/qtui/jointwin.ui" line="+16"/>
+        <location filename="../src/qtui/jointwin.ui" line="+14"/>
         <source>Joints</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+41"/>
         <source>Rename</source>
         <translation>Bork!</translation>
     </message>
@@ -2514,7 +2421,7 @@ Do you wish to continue?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Select Joint Vertices</source>
         <translation>Bork!</translation>
     </message>
@@ -2534,7 +2441,7 @@ Do you wish to continue?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+24"/>
         <source>F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -2552,7 +2459,7 @@ Do you wish to continue?</source>
 <context>
     <name>KeyConfig</name>
     <message>
-        <location filename="../src/implui/keycfg.cc" line="+353"/>
+        <location filename="../src/implui/keycfg.cc" line="+348"/>
         <source>V</source>
         <comment>Select Vertices Tool Shortcut</comment>
         <translation>V</translation>
@@ -2600,7 +2507,7 @@ Do you wish to continue?</source>
         <translation>R</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+23"/>
         <source>H</source>
         <comment>Hide Unselected Command Shortcut</comment>
         <translation>H</translation>
@@ -2653,7 +2560,7 @@ Do you wish to continue?</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+20"/>
         <source>Ctrl+N</source>
         <comment>File | New Window Shortcut</comment>
         <translation>Ctrl+N</translation>
@@ -2671,13 +2578,13 @@ Do you wish to continue?</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>Ctrl+Q</source>
         <comment>File | Quit Shortcut</comment>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+12"/>
         <source>Home</source>
         <comment>View | Frame All Shortcut</comment>
         <translation>Home</translation>
@@ -2689,7 +2596,7 @@ Do you wish to continue?</source>
         <translation>Shift+Home</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+26"/>
         <source>Ctrl+G</source>
         <comment>Groups | Edit Groups Shortcut</comment>
         <translation>Ctrl+G</translation>
@@ -2701,19 +2608,19 @@ Do you wish to continue?</source>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+4"/>
         <source>Ctrl+E</source>
         <comment>Groups | Edit Texture Coordinates Shortcut</comment>
         <translation>Ctrl+E</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+3"/>
         <source>Ctrl+B</source>
         <comment>Joints | Assign Selected Shortcut</comment>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location line="-87"/>
+        <location line="-92"/>
         <source>Shift+U</source>
         <comment>Unhide All Command Shortcut</comment>
         <translation type="unfinished"></translation>
@@ -2722,12 +2629,12 @@ Do you wish to continue?</source>
 <context>
     <name>KeyValueWindowBase</name>
     <message>
-        <location filename="../src/qtui/keyvaluewin.ui" line="+16"/>
+        <location filename="../src/qtui/keyvaluewin.ui" line="+14"/>
         <source>Edit Meta Data</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+20"/>
         <source>Name</source>
         <translation>Bork!</translation>
     </message>
@@ -2737,7 +2644,7 @@ Do you wish to continue?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+58"/>
         <source>Ok</source>
         <translation>Bork!</translation>
     </message>
@@ -2872,12 +2779,12 @@ See Help-&gt;About to contact the developers</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/texmgr.cc" line="+47"/>
-        <source>Model has a texture that is not powers of 2</source>
+        <location filename="../src/libmm3d/texmgr.cc" line="+48"/>
+        <source>The model has a texture that&apos;s width or height is not a power of two (2, 4, 8, .., 64, 128, 256, ..).</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+301"/>
+        <location line="+324"/>
         <source>Could not load</source>
         <translation>Bork!</translation>
     </message>
@@ -2923,7 +2830,7 @@ Do you want to load all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="+1560"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="+1546"/>
         <source>MD3 export requires all faces to be grouped.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3007,12 +2914,12 @@ Do you want to save all sections?</source>
 <context>
     <name>MapDirectionBase</name>
     <message>
-        <location filename="../src/qtui/mapdirection.ui" line="+16"/>
+        <location filename="../src/qtui/mapdirection.ui" line="+14"/>
         <source>Which direction?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+27"/>
         <source>Set new texture coordinates from which direction?</source>
         <translation>Bork!</translation>
     </message>
@@ -3047,7 +2954,7 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+41"/>
         <source>Ok</source>
         <translation>Bork!</translation>
     </message>
@@ -3060,27 +2967,17 @@ Do you want to save all sections?</source>
 <context>
     <name>MergeWinBase</name>
     <message>
-        <location filename="../src/qtui/mergewin.ui" line="+13"/>
+        <location filename="../src/qtui/mergewin.ui" line="+14"/>
         <source>Merge Model</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Merge location</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+20"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+17"/>
-        <location line="+7"/>
-        <source>0.0</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="-17"/>
+        <location line="+66"/>
         <source>Rotation</source>
         <translation>Bork!</translation>
     </message>
@@ -3090,12 +2987,12 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+32"/>
         <source>Merge Options</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Include textures</source>
         <translation>Bork!</translation>
     </message>
@@ -3110,7 +3007,7 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Append animations</source>
         <translation>Bork!</translation>
     </message>
@@ -3120,7 +3017,7 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+32"/>
         <source>Press F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -3180,7 +3077,7 @@ Do you want to save all sections?</source>
 <context>
     <name>MetaWindowBase</name>
     <message>
-        <location filename="../src/qtui/metawin.ui" line="+32"/>
+        <location filename="../src/qtui/metawin.ui" line="+42"/>
         <source>Name</source>
         <translation>Bork!</translation>
     </message>
@@ -3190,12 +3087,12 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-24"/>
+        <location line="-33"/>
         <source>Model Meta Data</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+74"/>
         <source>New</source>
         <translation>Bork!</translation>
     </message>
@@ -3205,7 +3102,7 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+29"/>
         <source>Press F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -3223,12 +3120,12 @@ Do you want to save all sections?</source>
 <context>
     <name>ModelViewBase</name>
     <message>
-        <location filename="../src/qtui/modelview.ui" line="+13"/>
+        <location filename="../src/qtui/modelview.ui" line="+14"/>
         <source>ModelView</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+45"/>
         <source>Perspective</source>
         <translation>Bork!</translation>
     </message>
@@ -3328,17 +3225,17 @@ Do you want to save all sections?</source>
 <context>
     <name>Ms3dPromptBase</name>
     <message>
-        <location filename="../src/qtui/ms3dprompt.ui" line="+13"/>
+        <location filename="../src/qtui/ms3dprompt.ui" line="+14"/>
         <source>MS3D Filter Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Format Subversion</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Subversion 0</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3358,17 +3255,12 @@ Do you want to save all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Vertex Extra</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>FFFFFFFF</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+50"/>
+        <location line="+69"/>
         <source>Ok</source>
         <translation type="unfinished">Bork!</translation>
     </message>
@@ -3381,12 +3273,12 @@ Do you want to save all sections?</source>
 <context>
     <name>NewAnimBase</name>
     <message>
-        <location filename="../src/qtui/newanim.ui" line="+16"/>
+        <location filename="../src/qtui/newanim.ui" line="+14"/>
         <source>New Animation</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+20"/>
         <source>&amp;Name</source>
         <translation>Bork!</translation>
     </message>
@@ -3396,7 +3288,7 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+18"/>
         <source>&amp;Skeletal</source>
         <translation>Bork!</translation>
     </message>
@@ -3416,7 +3308,7 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+40"/>
         <source>&amp;Ok</source>
         <translation>Bork!</translation>
     </message>
@@ -3448,7 +3340,7 @@ Do you want to save all sections?</source>
 <context>
     <name>ObjPromptBase</name>
     <message>
-        <location filename="../src/qtui/objprompt.ui" line="+16"/>
+        <location filename="../src/qtui/objprompt.ui" line="+14"/>
         <source>OBJ Filter Options</source>
         <translation>Bork!</translation>
     </message>
@@ -3467,7 +3359,7 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+24"/>
         <source>&amp;Normal Decimal Places</source>
         <translation>Bork!</translation>
     </message>
@@ -3482,7 +3374,7 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+45"/>
         <source>Press F1 for help</source>
         <translation type="unfinished">Bork!</translation>
     </message>
@@ -3524,12 +3416,12 @@ Do you want to save all sections?</source>
 <context>
     <name>PaintTextureWinBase</name>
     <message>
-        <location filename="../src/qtui/painttexturewin.ui" line="+16"/>
+        <location filename="../src/qtui/painttexturewin.ui" line="+14"/>
         <source>Paint Texture</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+39"/>
         <source>Polygons:</source>
         <translation>Bork!</translation>
     </message>
@@ -3569,58 +3461,58 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+37"/>
         <source>Save Size:</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+19"/>
-        <location line="+63"/>
+        <location line="+17"/>
+        <location line="+59"/>
         <source>64</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-58"/>
-        <location line="+63"/>
+        <location line="-54"/>
+        <location line="+59"/>
         <source>128</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-58"/>
-        <location line="+63"/>
+        <location line="-54"/>
+        <location line="+59"/>
         <source>256</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-58"/>
-        <location line="+63"/>
+        <location line="-54"/>
+        <location line="+59"/>
         <source>512</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-58"/>
-        <location line="+63"/>
+        <location line="-54"/>
+        <location line="+59"/>
         <source>1024</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-58"/>
-        <location line="+63"/>
+        <location line="-54"/>
+        <location line="+59"/>
         <source>2048</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-47"/>
+        <location line="-45"/>
         <source>x</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+73"/>
+        <location line="+71"/>
         <source>Save Texture...</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+23"/>
         <source>Press F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -3633,7 +3525,7 @@ Do you want to save all sections?</source>
 <context>
     <name>PluginWinBase</name>
     <message>
-        <location filename="../src/qtui/pluginwin.ui" line="+32"/>
+        <location filename="../src/qtui/pluginwin.ui" line="+42"/>
         <source>Plugin</source>
         <translation>Bork!</translation>
     </message>
@@ -3653,12 +3545,12 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-34"/>
+        <location line="-43"/>
         <source>Plugins</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+50"/>
+        <location line="+68"/>
         <source>Press F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -3706,12 +3598,12 @@ Do you want to save all sections?</source>
 <context>
     <name>PointWinBase</name>
     <message>
-        <location filename="../src/qtui/pointwin.ui" line="+16"/>
+        <location filename="../src/qtui/pointwin.ui" line="+14"/>
         <source>Points</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+41"/>
         <source>Rename</source>
         <translation>Bork!</translation>
     </message>
@@ -3726,12 +3618,12 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>(none)</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+25"/>
         <source>F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -3872,12 +3764,12 @@ Do you want to save all sections?</source>
 <context>
     <name>ProjectionWinBase</name>
     <message>
-        <location filename="../src/qtui/projectionwin.ui" line="+13"/>
+        <location filename="../src/qtui/projectionwin.ui" line="+14"/>
         <source>Texture Projection</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+59"/>
         <source>Material</source>
         <translation>Bork!</translation>
     </message>
@@ -3912,22 +3804,17 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+29"/>
         <source>Rename</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+27"/>
         <source>Zoom:</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>1.0</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+68"/>
+        <location line="+87"/>
         <source>Remove Faces</source>
         <translation>Bork!</translation>
     </message>
@@ -3947,7 +3834,7 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+29"/>
         <source>Press F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -3969,25 +3856,17 @@ Do you want to save all sections?</source>
 <context>
     <name>RgbaWinBase</name>
     <message>
-        <location filename="../src/qtui/rgbawin.ui" line="+16"/>
+        <location filename="../src/qtui/rgbawin.ui" line="+14"/>
         <source>RGBA Window</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+41"/>
         <source>Light Property</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+37"/>
-        <location line="+52"/>
-        <location line="+16"/>
-        <location line="+49"/>
-        <source>0.00</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="-107"/>
+        <location line="+56"/>
         <source>Red</source>
         <translation>Bork!</translation>
     </message>
@@ -4007,7 +3886,7 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+61"/>
         <source>Close</source>
         <translation>Bork!</translation>
     </message>
@@ -4138,57 +4017,9 @@ Do you want to save all sections?</source>
     </message>
 </context>
 <context>
-    <name>StatusBarBase</name>
-    <message>
-        <location filename="../src/qtui/statusbar.ui" line="+13"/>
-        <source>Form1</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+35"/>
-        <source>Status text</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+39"/>
-        <source>V:0</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>F:0</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>G:0</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>B:0</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>P:0</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>T:0</source>
-        <translation>Bork!</translation>
-    </message>
-</context>
-<context>
     <name>TextWinBase</name>
     <message>
-        <location filename="../src/qtui/textwin.ui" line="+16"/>
-        <source>Text Window</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+43"/>
+        <location filename="../src/qtui/textwin.ui" line="+79"/>
         <source>Ok</source>
         <translation>Bork!</translation>
     </message>
@@ -4238,27 +4069,22 @@ Do you want to save all sections?</source>
 <context>
     <name>TextureCoordBase</name>
     <message>
-        <location filename="../src/qtui/texturecoord.ui" line="+13"/>
+        <location filename="../src/qtui/texturecoord.ui" line="+14"/>
         <source>Texture Coordinates</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+196"/>
+        <location line="+250"/>
         <source>Zoom:</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>1.0</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+42"/>
+        <location line="+63"/>
         <source>Mouse Tool</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Select</source>
         <translation>Bork!</translation>
     </message>
@@ -4278,7 +4104,7 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Scale from center</source>
         <translation>Bork!</translation>
     </message>
@@ -4313,7 +4139,7 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+28"/>
         <source>Press F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -4323,12 +4149,12 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-137"/>
+        <location line="-155"/>
         <source>Rotate</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-228"/>
+        <location line="-266"/>
         <source>Lines</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4386,7 +4212,7 @@ Do you want to save all sections?</source>
         <translation type="unfinished">Bork!</translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+70"/>
         <source>Rotate CCW</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4497,17 +4323,17 @@ Do you want to save all sections?</source>
 <context>
     <name>TextureWindowBase</name>
     <message>
-        <location filename="../src/qtui/texwin.ui" line="+16"/>
+        <location filename="../src/qtui/texwin.ui" line="+14"/>
         <source>Materials</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>None</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+22"/>
         <source>New Material...</source>
         <translation>Bork!</translation>
     </message>
@@ -4522,7 +4348,7 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+40"/>
         <source>Wrap X</source>
         <translation>Bork!</translation>
     </message>
@@ -4542,22 +4368,22 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+72"/>
         <source>Change Texture...</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+16"/>
         <source>X</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-3"/>
         <source>Remove texture</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+13"/>
         <source>Flat Preview</source>
         <translation>Bork!</translation>
     </message>
@@ -4567,15 +4393,7 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+26"/>
-        <location line="+75"/>
-        <location line="+16"/>
-        <location line="+16"/>
-        <source>0.00</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="-58"/>
+        <location line="+93"/>
         <source>Alpha</source>
         <translation>Bork!</translation>
     </message>
@@ -4620,7 +4438,7 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+27"/>
         <source>Press F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -5111,82 +4929,56 @@ Do you want to save all sections?</source>
 <context>
     <name>TransformWindowBase</name>
     <message>
-        <location filename="../src/qtui/transformwin.ui" line="+13"/>
+        <location filename="../src/qtui/transformwin.ui" line="+14"/>
         <source>Transform Model</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+36"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+121"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+95"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+17"/>
-        <location line="+179"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+28"/>
-        <location line="+14"/>
-        <source>0</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="-538"/>
-        <location line="+135"/>
-        <location line="+196"/>
+        <location line="+84"/>
+        <location line="+171"/>
+        <location line="+232"/>
         <source>X</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-321"/>
-        <location line="+135"/>
-        <location line="+196"/>
+        <location line="-393"/>
+        <location line="+171"/>
+        <location line="+232"/>
         <source>Y</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-321"/>
-        <location line="+135"/>
-        <location line="+196"/>
+        <location line="-393"/>
+        <location line="+171"/>
+        <location line="+232"/>
         <source>Z</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-392"/>
-        <location line="+113"/>
+        <location line="-482"/>
+        <location line="+140"/>
         <source>Translate</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+31"/>
         <source>Euler Angles</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-12"/>
-        <location line="+101"/>
-        <location line="+96"/>
+        <location line="-21"/>
+        <location line="+128"/>
+        <location line="+114"/>
         <source>Rotate</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-86"/>
+        <location line="-104"/>
         <source>Quaternion</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+38"/>
         <source>Angle</source>
         <translation>Bork!</translation>
     </message>
@@ -5196,28 +4988,13 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+66"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <source>1.0</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="-34"/>
-        <location line="+113"/>
+        <location line="+46"/>
+        <location line="+140"/>
         <source>Scale</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+100"/>
-        <location line="+7"/>
-        <location line="+7"/>
-        <location line="+14"/>
-        <source>1</source>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+162"/>
         <source>(bottom row is translation)</source>
         <translation>Bork!</translation>
     </message>
@@ -5227,12 +5004,12 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-160"/>
+        <location line="-178"/>
         <source>Matrix</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+179"/>
+        <location line="+206"/>
         <source>Apply to:</source>
         <translation>Bork!</translation>
     </message>
@@ -5241,7 +5018,7 @@ Do you want to save all sections?</source>
         <translation type="obsolete">Bork!</translation>
     </message>
     <message>
-        <location line="+53"/>
+        <location line="+62"/>
         <source>Press F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -5251,7 +5028,7 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-65"/>
+        <location line="-74"/>
         <source>Selected (including animations)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5273,18 +5050,18 @@ Do you want to save all sections?</source>
 <context>
     <name>ValueWinBase</name>
     <message>
-        <location filename="../src/qtui/valuewin.ui" line="+16"/>
+        <location filename="../src/qtui/valuewin.ui" line="+14"/>
         <source>Value Window</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+17"/>
-        <location line="+18"/>
+        <location line="+27"/>
+        <location line="+27"/>
         <source>Value</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+65"/>
         <source>Press F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -5473,13 +5250,13 @@ Do you want to save all sections?</source>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+1441"/>
+        <location line="+1467"/>
         <source>Show Properties</source>
         <comment>View|Show Properties</comment>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-1439"/>
+        <location line="-1465"/>
         <source>Render Options</source>
         <comment>View|Render Options</comment>
         <translation>Bork!</translation>
@@ -5637,42 +5414,6 @@ Do you want to save all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+21"/>
-        <source>Edit Groups...</source>
-        <comment>Groups|Edit Groups</comment>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Edit Materials...</source>
-        <comment>Groups|Edit Materials</comment>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Reload Textures</source>
-        <comment>Groups|Reload Textures</comment>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Edit Projection...</source>
-        <comment>Groups|Edit Projection</comment>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Edit Texture Coordinates...</source>
-        <comment>Groups|Edit Texture Coordinates</comment>
-        <translation>Bork!</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Paint Texture...</source>
-        <comment>Groups|Paint Texture</comment>
-        <translation>Bork!</translation>
-    </message>
-    <message>
         <source>Boolean Operation...</source>
         <comment>Groups|Boolean Operation</comment>
         <translation type="obsolete">Bork!</translation>
@@ -5688,7 +5429,7 @@ Do you want to save all sections?</source>
         <translation type="obsolete">Bork!</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+32"/>
         <source>Edit Joints...</source>
         <comment>Joints|Edit Joints</comment>
         <translation>Bork!</translation>
@@ -5873,17 +5614,17 @@ Do you want to save all sections?</source>
         <translation type="obsolete">;; All Bork! (*)</translation>
     </message>
     <message>
-        <location line="+290"/>
+        <location line="+316"/>
         <location line="+94"/>
         <location line="+89"/>
         <location line="+48"/>
-        <location line="+1101"/>
+        <location line="+1079"/>
         <location line="+120"/>
         <source>All Files (*)</source>
         <translation>All Bork! (*)</translation>
     </message>
     <message>
-        <location line="-1445"/>
+        <location line="-1423"/>
         <source>Save model file as</source>
         <translation>Bork!</translation>
     </message>
@@ -5900,13 +5641,13 @@ Do you want to save all sections?</source>
         <location line="+89"/>
         <location line="+89"/>
         <location line="+48"/>
-        <location line="+1101"/>
+        <location line="+1079"/>
         <location line="+120"/>
         <source>Open model file</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-1320"/>
+        <location line="-1298"/>
         <source>Merge models</source>
         <translation>Bork!</translation>
     </message>
@@ -5929,19 +5670,19 @@ Do you want to save all sections?</source>
     </message>
     <message>
         <location line="+23"/>
-        <location line="+1058"/>
+        <location line="+1036"/>
         <source>Save first?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-1058"/>
-        <location line="+1058"/>
+        <location line="-1036"/>
+        <location line="+1036"/>
         <source>Model has been modified
 Do you want to save before closing?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-1039"/>
+        <location line="-1017"/>
         <source>Unknown response: %1, Canceling close request</source>
         <translation>Bork!</translation>
     </message>
@@ -6020,7 +5761,7 @@ Use the &apos;Select Faces&apos; tool.</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+559"/>
+        <location line="+537"/>
         <source>Unknown response: Canceling operation</source>
         <translation>Bork!</translation>
     </message>
@@ -6032,7 +5773,7 @@ Use the &apos;Select Faces&apos; tool.</source>
     </message>
     <message>
         <location filename="../src/implui/viewwin_influences.cc" line="+57"/>
-        <source>assigning %1 vertices and %2 points to joints</source>
+        <source>Assigning %1 vertices and %2 points to joints</source>
         <translation>Bork!</translation>
     </message>
     <message>
@@ -6086,7 +5827,7 @@ Use the &apos;Select Faces&apos; tool.</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="-1936"/>
+        <location filename="../src/implui/viewwin.cc" line="-1940"/>
         <source>Auto-Assign Selected...</source>
         <comment>Joints|Auto-Assign Selected</comment>
         <translation>Bork!</translation>
@@ -6156,7 +5897,49 @@ Use the &apos;Select Faces&apos; tool.</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+5"/>
+        <source>Edit Groups...</source>
+        <comment>Materials|Edit Groups</comment>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Edit Materials...</source>
+        <comment>Materials|Edit Materials</comment>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Clean Up...</source>
+        <comment>Materials|Clean Up</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Reload Textures</source>
+        <comment>Materials|Reload Textures</comment>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Edit Projection...</source>
+        <comment>Materials|Edit Projection</comment>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Edit Texture Coordinates...</source>
+        <comment>Materials|Edit Texture Coordinates</comment>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Paint Texture...</source>
+        <comment>Materials|Paint Texture</comment>
+        <translation type="unfinished">Bork!</translation>
+    </message>
+    <message>
+        <location line="+27"/>
         <source>Save Animation Images...</source>
         <comment>Animation|Save Animation Images</comment>
         <translation>Bork!</translation>
@@ -6192,7 +5975,7 @@ Use the &apos;Select Faces&apos; tool.</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+254"/>
+        <location line="+280"/>
         <source>All Exportable Formats</source>
         <translation>Bork!</translation>
     </message>
@@ -6214,13 +5997,13 @@ Use the &apos;Select Faces&apos; tool.</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+1144"/>
+        <location line="+1122"/>
         <location line="+120"/>
         <source>All Supported Formats</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-2118"/>
+        <location line="-2122"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation type="unfinished">Bork!</translation>
@@ -6232,14 +6015,8 @@ Use the &apos;Select Faces&apos; tool.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+566"/>
+        <location line="+592"/>
         <source>You must have at least 1 face, joint, or point selected to Export Selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-305"/>
-        <source>Clean Up Groups...</source>
-        <comment>Groups|Clean Up Groups</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6255,7 +6032,7 @@ Use the &apos;Select Faces&apos; tool.</source>
 <context>
     <name>ViewportSettingsBase</name>
     <message>
-        <location filename="../src/qtui/viewportsettings.ui" line="+13"/>
+        <location filename="../src/qtui/viewportsettings.ui" line="+14"/>
         <source>Viewport Settings</source>
         <translation>Bork!</translation>
     </message>
@@ -6266,17 +6043,17 @@ Use the &apos;Select Faces&apos; tool.</source>
     </message>
     <message>
         <location line="+23"/>
-        <location line="+96"/>
+        <location line="+93"/>
         <source>Default Grid Unit</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-44"/>
+        <location line="-41"/>
         <source>3D Grid</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="+54"/>
         <source>Grid Lines</source>
         <translation>Bork!</translation>
     </message>
@@ -6321,7 +6098,7 @@ Use the &apos;Select Faces&apos; tool.</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-179"/>
+        <location line="-176"/>
         <source>Decimal Grid</source>
         <translation type="unfinished"></translation>
     </message>
