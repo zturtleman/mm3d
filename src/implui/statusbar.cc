@@ -78,19 +78,19 @@ void StatusBar::setModel( Model * model )
 
 void StatusBar::setText( const char * str )
 {
-   setToolTip("");
-   if ( utf8len( str ) > 72 )
+   QFontMetrics metrics( m_statusLabel->font() );
+   QString message = QString::fromUtf8( str );
+   QString visibleMessage = metrics.elidedText( message , Qt::ElideRight, m_statusLabel->width() );
+
+   m_statusLabel->setText( visibleMessage );
+
+   if ( visibleMessage != message )
    {
-      char * temp = strdup( str );
-      setToolTip( QString::fromUtf8(temp) );
-      utf8strtrunc( temp, 69 );
-      strcat( temp, "..." );
-      m_statusLabel->setText( QString::fromUtf8(temp) );
-      free( temp );
+      setToolTip( message );
    }
    else
    {
-      m_statusLabel->setText( QString::fromUtf8(str) );
+      setToolTip( "" );
    }
 }
 
