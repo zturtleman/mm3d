@@ -54,7 +54,7 @@ void ViewWindow::jointAssignSelectedToJoint()
       m_model->getSelectedPoints( pointList );
 
       log_debug( "assigning %d vertices and %d points to joints\n", vertList.size(), pointList.size() );
-      QString str = tr( "assigning %1 vertices and %2 points to joints").arg(vertList.size()).arg( pointList.size() );
+      QString str = tr( "Assigning %1 vertices and %2 points to joints").arg(vertList.size()).arg( pointList.size() );
       model_status( m_model, StatusNormal, STATUSTIME_SHORT, "%s", (const char *) str.toUtf8() );
 
       for ( it = vertList.begin(); it != vertList.end(); it++ )
