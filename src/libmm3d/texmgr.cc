@@ -45,7 +45,7 @@ void texture_manager_do_warning()
 {
    if ( _doWarning )
    {
-      msg_warning( transll( QT_TRANSLATE_NOOP( "LowLevel", "Model has a texture that is not powers of 2" )).c_str() );
+      msg_warning( transll( QT_TRANSLATE_NOOP( "LowLevel", "The model has a texture that's width or height is not a power of two (2, 4, 8, .., 64, 128, 256, ..)." )).c_str() );
       _alreadyWarned = true;
       _doWarning = false;
    }
