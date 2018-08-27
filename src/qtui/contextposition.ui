@@ -45,7 +45,7 @@
       <number>0</number>
      </property>
      <item row="2" column="0">
-      <widget class="QLabel" name="textLabel1_2_2_2">
+      <widget class="QLabel" name="textLabel1_3">
        <property name="text">
         <string>Z</string>
        </property>
@@ -61,7 +61,7 @@
       <widget class="QLineEdit" name="m_zValue"/>
      </item>
      <item row="1" column="0">
-      <widget class="QLabel" name="textLabel1_2_2">
+      <widget class="QLabel" name="textLabel1_2">
        <property name="text">
         <string>Y</string>
        </property>
@@ -74,7 +74,7 @@
       <widget class="QLineEdit" name="m_xValue"/>
      </item>
      <item row="0" column="0">
-      <widget class="QLabel" name="textLabel1_2">
+      <widget class="QLabel" name="textLabel1_1">
        <property name="text">
         <string>X</string>
        </property>
@@ -86,7 +86,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="textLabel1">
+    <widget class="QLabel" name="textLabel2">
      <property name="text">
       <string>Dimensions</string>
      </property>
