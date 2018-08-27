@@ -2,8 +2,6 @@ noinst_LIBRARIES = libcommands.a
 
 libcommands_HFILES = \
 	aligncmd.h \
-	assignjointcmd.h \
-	backgroundcmd.h \
 	capcmd.h \
 	copycmd.h \
 	deletecmd.h \
@@ -17,10 +15,8 @@ libcommands_HFILES = \
 	hidecmd.h \
 	invertcmd.h \
 	invnormalcmd.h \
-	jointcmd.h \
 	makefacecmd.h \
 	pastecmd.h \
-	pointcmd.h \
 	rotatetexcmd.h \
 	selectfreecmd.h \
 	simplifycmd.h \
@@ -33,8 +29,6 @@ libcommands_HFILES = \
 
 libcommands_a_SOURCES = \
 	aligncmd.cc \
-	assignjointcmd.cc \
-	backgroundcmd.cc \
 	capcmd.cc \
 	copycmd.cc \
 	deletecmd.cc \
@@ -48,10 +42,8 @@ libcommands_a_SOURCES = \
 	hidecmd.cc \
 	invertcmd.cc \
 	invnormalcmd.cc \
-	jointcmd.cc \
 	makefacecmd.cc \
 	pastecmd.cc \
-	pointcmd.cc \
 	rotatetexcmd.cc \
 	selectfreecmd.cc \
 	simplifycmd.cc \

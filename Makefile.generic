@@ -599,7 +599,6 @@ MM3D_OBJ= \
 	${B}/implui/animwin.o \
 	${B}/tools/atrfartool.o \
 	${B}/tools/atrneartool.o \
-	${B}/commands/backgroundcmd.o \
 	${B}/implui/autoassignjointwin.o \
 	${B}/implui/backgroundselect.o \
 	${B}/implui/backgroundwin.o \
@@ -647,9 +646,6 @@ MM3D_OBJ= \
 	${B}/commands/hidecmd.o \
 	${B}/commands/invertcmd.o \
 	${B}/commands/invnormalcmd.o \
-	${B}/commands/jointcmd.o \
-	${B}/commands/pointcmd.o \
-	${B}/commands/assignjointcmd.o \
 	${B}/tools/jointtool.o \
 	${B}/tools/pointtool.o \
 	${B}/tools/projtool.o \

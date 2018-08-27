@@ -39,9 +39,6 @@
 #include "selectfreecmd.h"
 #include "invertcmd.h"
 #include "invnormalcmd.h"
-//#include "jointcmd.h"
-#include "pointcmd.h"
-//#include "assignjointcmd.h"
 #include "subdividecmd.h"
 #include "makefacecmd.h"
 #include "rotatetexcmd.h"
@@ -154,12 +151,6 @@ int init_std_cmds( CommandManager * cmdMgr )
 
    cmd = new InvertSelectionCommand();
    cmdMgr->registerCommand( cmd );
-
-   // ----------------------
-
-   // This doesn't really do anything any more (use properties to rename)
-   //cmd = new PointCommand();
-   //cmdMgr->registerCommand( cmd );
 
    return 0;
 }
