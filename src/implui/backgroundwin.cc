@@ -71,7 +71,7 @@ void BackgroundWin::helpNowEvent()
    win->show();
 }
 
-void BackgroundWin::selectedPageEvent( const QString & str )
+void BackgroundWin::selectedPageEvent( int index )
 {
    QWidget * widget = m_tabs->currentWidget();
    widget->repaint();

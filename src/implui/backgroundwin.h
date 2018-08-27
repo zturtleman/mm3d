@@ -40,7 +40,7 @@ class BackgroundWin : public QDialog, public Ui::BackgroundWinBase
       virtual ~BackgroundWin();
 
    public slots:
-      void selectedPageEvent( const QString & str );
+      void selectedPageEvent( int index );
       void accept();
       void reject();
 
