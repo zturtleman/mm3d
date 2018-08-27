@@ -1,4 +1,5 @@
 Changes for 1.3.10
+   Rename Materials|Clean Up Groups to Materials|Clean up
    Make subdivide command fail if no faces are selected
    Fix warning about unknown signal QTabWidget::selected when opening "Model|Background Image..."
    Fix rotating bone joint using properties panel in animation mode
