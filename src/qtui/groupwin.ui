@@ -180,7 +180,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Smoothness: 100</string>
+          <string notr="true">Smoothness: 100</string>
          </property>
          <property name="wordWrap">
           <bool>false</bool>
@@ -190,7 +190,7 @@
        <item>
         <widget class="QLabel" name="m_angleLabel">
          <property name="text">
-          <string>Max Angle: 000</string>
+          <string notr="true">Max Angle: 000</string>
          </property>
          <property name="wordWrap">
           <bool>false</bool>

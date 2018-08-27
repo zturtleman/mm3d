@@ -139,7 +139,7 @@
            </size>
           </property>
           <property name="text">
-           <string>1</string>
+           <string notr="true">1</string>
           </property>
          </widget>
         </item>
@@ -165,7 +165,7 @@
            </size>
           </property>
           <property name="text">
-           <string>15</string>
+           <string notr="true">15</string>
           </property>
          </widget>
         </item>
@@ -278,7 +278,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>/some/path/name</string>
+           <string notr="true">/some/path/name</string>
           </property>
           <property name="wordWrap">
            <bool>false</bool>
@@ -290,7 +290,7 @@
       <item row="0" column="1">
        <widget class="QLineEdit" name="m_frameRateValue">
         <property name="text">
-         <string>25.0</string>
+         <string notr="true">25.0</string>
         </property>
        </widget>
       </item>

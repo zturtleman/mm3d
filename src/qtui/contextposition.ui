@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Position</string>
+   <string notr="true">Position</string>
   </property>
   <layout class="QVBoxLayout">
    <item>

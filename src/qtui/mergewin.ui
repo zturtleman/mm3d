@@ -70,28 +70,28 @@
         <item row="0" column="3">
          <widget class="QLineEdit" name="m_rotZ">
           <property name="text">
-           <string>0.0</string>
+           <string notr="true">0.0</string>
           </property>
          </widget>
         </item>
         <item row="1" column="1">
          <widget class="QLineEdit" name="m_transX">
           <property name="text">
-           <string>0.0</string>
+           <string notr="true">0.0</string>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
          <widget class="QLineEdit" name="m_rotX">
           <property name="text">
-           <string>0.0</string>
+           <string notr="true">0.0</string>
           </property>
          </widget>
         </item>
         <item row="1" column="2">
          <widget class="QLineEdit" name="m_transY">
           <property name="text">
-           <string>0.0</string>
+           <string notr="true">0.0</string>
           </property>
          </widget>
         </item>
@@ -108,14 +108,14 @@
         <item row="0" column="2">
          <widget class="QLineEdit" name="m_rotY">
           <property name="text">
-           <string>0.0</string>
+           <string notr="true">0.0</string>
           </property>
          </widget>
         </item>
         <item row="1" column="3">
          <widget class="QLineEdit" name="m_transZ">
           <property name="text">
-           <string>0.0</string>
+           <string notr="true">0.0</string>
           </property>
          </widget>
         </item>

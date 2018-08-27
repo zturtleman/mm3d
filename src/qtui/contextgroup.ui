@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Group</string>
+   <string notr="true">Group</string>
   </property>
   <layout class="QVBoxLayout">
    <item>

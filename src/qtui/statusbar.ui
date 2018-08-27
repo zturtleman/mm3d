@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form1</string>
+   <string notr="true">StatusBar</string>
   </property>
   <layout class="QHBoxLayout">
    <property name="spacing">
@@ -62,7 +62,7 @@
       <item>
        <widget class="QLabel" name="m_statusLabel">
         <property name="text">
-         <string>Status text</string>
+         <string notr="true">Status text</string>
         </property>
         <property name="textFormat">
          <enum>Qt::PlainText</enum>
@@ -108,7 +108,7 @@
       <item>
        <widget class="QLabel" name="m_vertexLabel">
         <property name="text">
-         <string>V:0</string>
+         <string notr="true">V:0</string>
         </property>
         <property name="wordWrap">
          <bool>false</bool>
@@ -118,7 +118,7 @@
       <item>
        <widget class="QLabel" name="m_faceLabel">
         <property name="text">
-         <string>F:0</string>
+         <string notr="true">F:0</string>
         </property>
         <property name="wordWrap">
          <bool>false</bool>
@@ -128,7 +128,7 @@
       <item>
        <widget class="QLabel" name="m_groupLabel">
         <property name="text">
-         <string>G:0</string>
+         <string notr="true">G:0</string>
         </property>
         <property name="wordWrap">
          <bool>false</bool>
@@ -138,7 +138,7 @@
       <item>
        <widget class="QLabel" name="m_boneLabel">
         <property name="text">
-         <string>B:0</string>
+         <string notr="true">B:0</string>
         </property>
         <property name="wordWrap">
          <bool>false</bool>
@@ -148,7 +148,7 @@
       <item>
        <widget class="QLabel" name="m_pointLabel">
         <property name="text">
-         <string>P:0</string>
+         <string notr="true">P:0</string>
         </property>
         <property name="wordWrap">
          <bool>false</bool>
@@ -158,7 +158,7 @@
       <item>
        <widget class="QLabel" name="m_textureLabel">
         <property name="text">
-         <string>T:0</string>
+         <string notr="true">T:0</string>
         </property>
         <property name="wordWrap">
          <bool>false</bool>

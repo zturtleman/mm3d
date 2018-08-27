@@ -94,7 +94,7 @@
         <item>
          <widget class="QLineEdit" name="m_xValue">
           <property name="text">
-           <string>0.0</string>
+           <string notr="true">0.0</string>
           </property>
          </widget>
         </item>
@@ -159,7 +159,7 @@
         <item>
          <widget class="QLineEdit" name="m_yValue">
           <property name="text">
-           <string>0.0</string>
+           <string notr="true">0.0</string>
           </property>
          </widget>
         </item>
@@ -224,7 +224,7 @@
         <item>
          <widget class="QLineEdit" name="m_zValue">
           <property name="text">
-           <string>0.0</string>
+           <string notr="true">0.0</string>
           </property>
          </widget>
         </item>

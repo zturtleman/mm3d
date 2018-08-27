@@ -275,7 +275,7 @@
              </size>
             </property>
             <property name="text">
-             <string>0.00</string>
+             <string notr="true">0.00</string>
             </property>
             <property name="maxLength">
              <number>4</number>
@@ -350,7 +350,7 @@
              </size>
             </property>
             <property name="text">
-             <string>0.00</string>
+             <string notr="true">0.00</string>
             </property>
             <property name="maxLength">
              <number>4</number>
@@ -366,7 +366,7 @@
              </size>
             </property>
             <property name="text">
-             <string>0.00</string>
+             <string notr="true">0.00</string>
             </property>
             <property name="maxLength">
              <number>4</number>
@@ -382,7 +382,7 @@
              </size>
             </property>
             <property name="text">
-             <string>0.00</string>
+             <string notr="true">0.00</string>
             </property>
             <property name="maxLength">
              <number>4</number>
