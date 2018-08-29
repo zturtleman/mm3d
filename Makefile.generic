@@ -864,15 +864,15 @@ else
 	@$(MKDIR) "$(B)/install/doc/html"
 	@$(MKDIR) "$(B)/install/i18n"
 	@$(MKDIR) "$(B)/install/plugins/1.3"
-	@$(CP) "$(B)/mm3d${BINEXT}" "$(B)/install"
-	@$(CP) "$(B)/i18n/*.qm" "$(B)/install/i18n"
+	@cp "$(B)/mm3d${BINEXT}" "$(B)/install"
+	@cp $(QMFILES) "$(B)/install/i18n"
 	@$(WINDEPLOYQT) --compiler-runtime "$(B)/install"
 endif
 else
 	$(INSTALL) -d "$(PREFIX)/bin"
 	$(INSTALL) -m 0755 $(BIN)/mm3d${BINEXT} "$(PREFIX)/bin/mm3d"
 	$(INSTALL) -d "$(PREFIX)/share/mm3d/i18n/"
-	${INSTALL} -m 0644 ${B}/i18n/*.qm "$(PREFIX)/share/mm3d/i18n/"
+	${INSTALL} -m 0644 $(QMFILES) "$(PREFIX)/share/mm3d/i18n/"
 	$(INSTALL) -d "$(PREFIX)/share/applications/"
 	$(INSTALL) -d "$(PREFIX)/share/mimelnk/application/"
 	$(INSTALL) -d "$(PREFIX)/share/pixmaps/"
