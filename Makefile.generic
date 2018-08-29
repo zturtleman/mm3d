@@ -886,8 +886,6 @@ else
 endif
 
 installer: mm3d
-	cp -r ../dll .
-	cp -r ../imageformats .
 	makensis mm3d-win32-installer.nsi
 
 ${B}/%.o: src/%.c

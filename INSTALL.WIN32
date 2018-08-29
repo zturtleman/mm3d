@@ -64,14 +64,13 @@ Install Instructions
 shortcuts.  If you want shortcuts you must create them manually,
 or use the binary installer.
 
-NOTE: The installer hasn't been updated for clover.moe fork / Qt 5
-so it doesn't work yet.
-
-Optionally, you can install NSIS and put the Qt and MinGW dlls
-in your mm3d-X.X.X/dll directory and then build the installer.
+Optionally, you can install NSIS and then build the installer.
 This will create shortcuts and some registry keys.
 
 You can get NSIS here:
 
    http://nsis.sourceforge.net/
+
+3. Run 'mingw32-make -f Makefile.generic MINGW32_MAKE=1 installer'
+   from the mm3d-X.X.X directory.
 

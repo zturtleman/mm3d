@@ -52,17 +52,59 @@ Section "Misfit Model 3D"
 
     ; Create file type
     WriteRegStr HKCR "MisfitCode.Mm3dModelFile" "" "MM3D Model File"
-    WriteRegStr HKCR "MisfitCode.Mm3dModelFile\shell\open\command" "" '"$INSTDIR\mm3d.exe" "%1"'
+    WriteRegStr HKCR "MisfitCode.Mm3dModelFile\shell\open\command" "" '"$INSTDIR\mm3d.x86.exe" "%1"'
     WriteRegStr HKCR "MisfitCode.Mm3dModelFile\shell\edit" "" "Edit Model"
-    WriteRegStr HKCR "MisfitCode.Mm3dModelFile\shell\edit\command" "" '"$INSTDIR\mm3d.exe" "%1"'
+    WriteRegStr HKCR "MisfitCode.Mm3dModelFile\shell\edit\command" "" '"$INSTDIR\mm3d.x86.exe" "%1"'
 
     SetOutPath "$INSTDIR"
     WriteRegStr HKCU "Software\Misfit Code\Misfit Model 3D" "INSTDIR" "$INSTDIR"
 
-    File COPYING
-    File mm3d.exe
-    File /r /x .svn /x *.htm /x Makefile /x Makefile.* /x *.ts doc imageformats i18n
-    File dll\*.dll
+    File /oname=COPYING.txt COPYING
+    File build\mingw32-x86\install\mm3d.x86.exe
+    File /r build\mingw32-x86\install\doc
+
+    SetOutPath "$INSTDIR\i18n"
+    File build\mingw32-x86\install\i18n\*.qm
+
+    SetOutPath "$INSTDIR"
+    CreateDirectory "$INSTDIR\plugins"
+    CreateDirectory "$INSTDIR\plugins\1.3"
+
+    ; Qt dlls
+    File build\mingw32-x86\install\Qt5Core.dll
+    File build\mingw32-x86\install\Qt5Gui.dll
+    File build\mingw32-x86\install\Qt5OpenGL.dll
+    File build\mingw32-x86\install\Qt5Svg.dll
+    File build\mingw32-x86\install\Qt5Widgets.dll
+
+    SetOutPath "$INSTDIR\iconengines"
+    File build\mingw32-x86\install\iconengines\*.dll
+
+    SetOutPath "$INSTDIR\imageformats"
+    File build\mingw32-x86\install\imageformats\*.dll
+
+    SetOutPath "$INSTDIR\platforms"
+    File build\mingw32-x86\install\platforms\*.dll
+
+    SetOutPath "$INSTDIR\styles"
+    File build\mingw32-x86\install\styles\*.dll
+
+    ; Qt translations
+    SetOutPath "$INSTDIR\translations"
+    File build\mingw32-x86\install\translations\*.qm
+
+    SetOutPath "$INSTDIR"
+
+    ; Qt MinGW compiler run-time
+    File build\mingw32-x86\install\libgcc_s_dw2-1.dll
+    File build\mingw32-x86\install\libstdc++-6.dll
+    File build\mingw32-x86\install\libwinpthread-1.dll
+
+    ; Additional dlls used by Qt
+    File build\mingw32-x86\install\D3Dcompiler_47.dll
+    File build\mingw32-x86\install\libEGL.dll
+    File build\mingw32-x86\install\libGLESV2.dll
+    File build\mingw32-x86\install\opengl32sw.dll
 
     WriteUninstaller "Uninstall.exe"
 
@@ -122,15 +164,49 @@ SubSectionEnd
 
 Section "Uninstall"
 
-    Delete "$INSTDIR\mm3d.exe"
-    Delete "$INSTDIR\mingw*.dll"
-    Delete "$INSTDIR\qt*.dll"
-    Delete "$INSTDIR\COPYING"
+    Delete "$INSTDIR\COPYING.txt"
+    Delete "$INSTDIR\mm3d.x86.exe"
+    Delete "$INSTDIR\i18n\*.qm"
+
+    ; Qt dlls
+    Delete "$INSTDIR\Qt5Core.dll"
+    Delete "$INSTDIR\Qt5Gui.dll"
+    Delete "$INSTDIR\Qt5OpenGL.dll"
+    Delete "$INSTDIR\Qt5Svg.dll"
+    Delete "$INSTDIR\Qt5Widgets.dll"
+    Delete "$INSTDIR\iconengines\*.dll"
+    Delete "$INSTDIR\imageformats\*.dll"
+    Delete "$INSTDIR\platforms\*.dll"
+    Delete "$INSTDIR\styles\*.dll"
+
+    ; Qt translations
+    Delete "$INSTDIR\translations\*.qm"
+
+    ; Qt MinGW compiler run-time
+    Delete "$INSTDIR\libgcc_s_dw2-1.dll"
+    Delete "$INSTDIR\libstdc++-6.dll"
+    Delete "$INSTDIR\libwinpthread-1.dll"
+
+    ; Additional dlls used by Qt
+    Delete "$INSTDIR\D3Dcompiler_47.dll"
+    Delete "$INSTDIR\libEGL.dll"
+    Delete "$INSTDIR\libGLESV2.dll"
+    Delete "$INSTDIR\opengl32sw.dll"
+
     Delete "$INSTDIR\Uninstall.exe"
+
     RMDir /r /REBOOTOK "$INSTDIR\doc"
-    RMDir /r /REBOOTOK "$INSTDIR\i18n"
-    RMDir /r /REBOOTOK "$INSTDIR\plugins"
-    RMDir /r /REBOOTOK "$INSTDIR\imageformats"
+    RMDir /REBOOTOK "$INSTDIR\i18n"
+    RMDir /REBOOTOK "$INSTDIR\plugins\1.3"
+    RMDir /REBOOTOK "$INSTDIR\plugins"
+
+    ; Qt directories
+    RMDir /REBOOTOK "$INSTDIR\iconengines"
+    RMDir /REBOOTOK "$INSTDIR\imageformats"
+    RMDir /REBOOTOK "$INSTDIR\platforms"
+    RMDir /REBOOTOK "$INSTDIR\styles"
+    RMDir /REBOOTOK "$INSTDIR\translations"
+
     RMDir $INSTDIR
 
     ; SetShellVarContext all
