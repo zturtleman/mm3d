@@ -741,15 +741,7 @@ QMFILES = \
 	${B}/i18n/mm3d_fr.qm \
 	${B}/i18n/mm3d_sk.qm \
 	${B}/i18n/mm3d_ref.qm \
-	${B}/i18n/mm3d_bork.qm \
-	${B}/i18n/qt_ar.qm \
-	${B}/i18n/qt_cs.qm \
-	${B}/i18n/qt_de.qm \
-	${B}/i18n/qt_fr.qm \
-	${B}/i18n/qt_iw.qm \
-	${B}/i18n/qt_ru.qm \
-	${B}/i18n/qt_sk.qm \
-	${B}/i18n/qt_zh_CN.qm
+	${B}/i18n/mm3d_bork.qm
 
 ifeq (${V},1)
 echo_cmd=@:
