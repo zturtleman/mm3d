@@ -235,6 +235,12 @@ void TextureCoord::setModel( Model * model )
    }
 }
 
+void TextureCoord::closeEvent( QCloseEvent * e )
+{
+   e->ignore();
+   hide();
+}
+
 void TextureCoord::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_texturecoordwin.html", true );

@@ -64,6 +64,7 @@ class TextureCoord : public QDialog, public Ui::TextureCoordBase, public Model::
 
    public slots:
       void show();
+      void closeEvent( QCloseEvent * e );
       void helpNowEvent();
       void toolSelectEvent();
       void toolMoveEvent();

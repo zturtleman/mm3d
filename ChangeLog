@@ -1,4 +1,5 @@
 Changes for 1.3.10
+   Fix Texture Coordinates window being empty after closing it using title bar close button (Windows/macOS)
    Only create vertex in Edge Divide if selected vertexes share a common face edge
    Rename Materials|Clean Up Groups to Materials|Clean up
    Make subdivide command fail if no faces are selected
