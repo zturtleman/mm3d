@@ -1069,11 +1069,9 @@ dnl Check for Mesa first, unless we were asked not to.
     if test x"$use_Mesa" = xyes; then
        GL_search_list="MesaGL   GL"
       GLU_search_list="MesaGLU GLU"
-      GLX_search_list="MesaGLX GLX"
     else
        GL_search_list="GL  MesaGL"
       GLU_search_list="GLU MesaGLU"
-      GLX_search_list="GLX MesaGLX"
     fi
 
     AC_LANG_SAVE
@@ -1109,7 +1107,6 @@ fi
 
     AC_SEARCH_LIBS(glAccum,          $GL_search_list, have_GL=yes,   have_GL=no)
     AC_SEARCH_LIBS(gluBeginCurve,   $GLU_search_list, have_GLU=yes,  have_GLU=no)
-    AC_SEARCH_LIBS(glXChooseVisual, $GLX_search_list, have_GLX=yes,  have_GLX=no)
     AC_SEARCH_LIBS(glutInit,        glut,             have_glut=yes, have_glut=no)
 
 
@@ -1141,14 +1138,12 @@ dnl bugfix: dont forget to cache this variables, too
     mdl_cv_GL_LIBS="$GL_LIBS"
     mdl_cv_have_GL="$have_GL"
     mdl_cv_have_GLU="$have_GLU"
-    mdl_cv_have_GLX="$have_GLX"
     mdl_cv_have_glut="$have_glut"
   ])
   GL_CFLAGS="$mdl_cv_GL_CFLAGS"
   GL_LIBS="$mdl_cv_GL_LIBS"
   have_GL="$mdl_cv_have_GL"
   have_GLU="$mdl_cv_have_GLU"
-  have_GLX="$mdl_cv_have_GLX"
   have_glut="$mdl_cv_have_glut"
 ])
 dnl endof bugfix -ainan
@@ -1387,39 +1382,6 @@ AC_DEFINE_UNQUOTED(BYTEORDER, $BYTEORDER, [1234 = LIL_ENDIAN, 4321 = BIGENDIAN])
 if test $ac_cv_c_bigendian = unknown; then
   AC_MSG_ERROR(unknown endianess - sorry, please pre-set ac_cv_c_bigendian)
 fi
-])
-
-
-AC_DEFUN([KSW_HAVE_X11FONT],
-[
-  AC_REQUIRE([AC_PROG_CC])
-
-  AC_CACHE_CHECK([for x11 fonts], ksw_cv_have_x11font,
-  [
-    cat > ksw_have_x11font_test.c << EOF
-#include <stdio.h>
-#include <GL/glx.h>
-
-int main( int argc, char * argv[] )
-{
-   glXUseXFont( 0, 0, 0, 0 );
-   return 0;
-}
-EOF
-    if ${CC} -c ksw_have_x11font_test.c 2> /dev/null > /dev/null; then
-       have_x11font=yes
-    else
-       have_x11font=no
-    fi
-
-   rm -f ksw_have_x11font*
-
-    ksw_cv_have_x11font="$have_x11font"
-  ])
-  have_x11font="$ksw_cv_have_x11font"
-  if test x"$have_x11font" = "xyes"; then
-    AC_DEFINE( [HAVE_XFONT], [], [Define when you have xfont] )
-  fi
 ])
 
 
