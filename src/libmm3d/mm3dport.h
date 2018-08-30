@@ -38,6 +38,7 @@ struct _PORT_timeval
 };
 typedef struct _PORT_timeval PORT_timeval;
 
+char * PORT_get_current_dir_name( void );
 char * PORT_realpath( const char * path, char * resolved_path, size_t len );
 struct tm * PORT_localtime_r( const time_t * timep, struct tm * result );
 void   PORT_gettimeofday( PORT_timeval * tv );

@@ -51,6 +51,94 @@
 #endif
 #endif
 
+// TODO: Cache this instead of mallocing each time but still have some way to free it at shutdown.
+char * PORT_get_current_dir_name( void )
+{
+#ifdef WIN32
+	DWORD length = GetCurrentDirectoryW( 0, NULL );
+	if ( length == 0 )
+	{
+		return NULL;
+	}
+
+	wchar_t *wbuf = (wchar_t *)malloc( length * sizeof( wchar_t ) );
+	if ( !wbuf )
+	{
+		return NULL;
+	}
+
+	if ( GetCurrentDirectoryW( length, wbuf ) == 0 )
+	{
+		free( wbuf );
+		return NULL;
+	}
+
+	DWORD utf8Size = WideCharToMultiByte( CP_UTF8, WC_ERR_INVALID_CHARS, wbuf, length, NULL, 0, NULL, NULL );
+
+	char * buf = (char *)malloc( utf8Size );
+	if ( !buf )
+	{
+		free( wbuf );
+		return NULL;
+	}
+
+	if ( WideCharToMultiByte( CP_UTF8, WC_ERR_INVALID_CHARS, wbuf, length, buf, utf8Size, NULL, NULL ) == 0 )
+	{
+		free( wbuf );
+		free( buf );
+		return NULL;
+	}
+
+	return buf;
+#else
+	// malloc'ing buffer when passed NULL is a non-standard extension to POSIX.
+	// It's supported by glibc, FreeBSD, and probably others.
+	char * buf = getcwd( NULL, 0 );
+	if ( buf )
+	{
+		return buf;
+	}
+
+	size_t size = 64;
+	buf = (char*)malloc( size );
+	while ( buf )
+	{
+		if ( getcwd( buf, size ) )
+		{
+			break;
+		}
+		else
+		{
+			if ( errno == ERANGE )
+			{
+				if ( size >= 1024 )
+					size = size + 1024;
+				else
+					size = size + size;
+
+				char * newbuf = (char*)realloc( buf, size );
+				if ( newbuf )
+				{
+					buf = newbuf;
+				}
+				else
+				{
+					free( buf );
+					buf = NULL;
+				}
+			}
+			else
+			{
+				// unhandled error
+				free( buf );
+				buf = NULL;
+			}
+		}
+	}
+	return buf;
+#endif
+}
+
 // FIXME add thorough testing for the manual part of this (the case where
 // realpath fails because the directories don't exist).
 char * PORT_realpath( const char * path, char * resolved_path, size_t len )
@@ -88,9 +176,16 @@ char * PORT_realpath( const char * path, char * resolved_path, size_t len )
          }
          else
          {
-            char pwd[1024];
-            getcwd(pwd, sizeof(pwd)); // TODO: Use Win32 API
-            PORT_snprintf( resolved_path, len, "%s/%s", pwd, path );
+            char *pwd = PORT_get_current_dir_name();
+            if ( pwd )
+            {
+               PORT_snprintf( resolved_path, len, "%s/%s", pwd, path );
+               free( pwd );
+            }
+            else
+            {
+               PORT_snprintf( resolved_path, len, "./%s", path );
+            }
          }
          resolved_path[ len - 1 ] = '\0';
          rval = resolved_path;

@@ -150,13 +150,12 @@ AnimExportWindow::AnimExportWindow( Model * model, ViewPanel * viewPanel, QWidge
 
    if ( path.isNull() || path.isEmpty() )
    {
-      char cwd[ PATH_MAX ] = "/";
-//#ifdef WIN32
-//      _getcwd( cwd, sizeof( cwd ) );
-//#else
-      getcwd( cwd, sizeof( cwd ) );
-//#endif
-      path = cwd;
+      char * cwd = PORT_get_current_dir_name();
+      if ( cwd )
+      {
+         path = cwd;
+         free( cwd );
+      }
    }
 
    m_directoryLabel->setText( path );

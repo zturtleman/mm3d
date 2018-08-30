@@ -193,16 +193,19 @@ int ui_init( int & argc, char * argv[] )
 
       if ( openCount == 0 )
       {
+         char * pwd = ( argc > 1 ) ? PORT_get_current_dir_name() : NULL;
          for ( int t = 1; t < argc; t++ )
          {
-            char pwd[ PATH_MAX ];
-            getcwd( pwd, PATH_MAX );
             std::string file = normalizePath( argv[t], pwd );
             if ( ViewWindow::openModel( file.c_str() ) )
             {
                openCount++;
                opened = true;
             }
+         }
+         if ( pwd )
+         {
+            free( pwd );
          }
       }
       else

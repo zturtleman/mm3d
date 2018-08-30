@@ -167,14 +167,22 @@ string normalizePath( const char * path, const char * pwd )
       }
       else
       {
-         char * tempPwd = new char[PATH_MAX];
-         getcwd( tempPwd, PATH_MAX );
+         char * tempPwd = PORT_get_current_dir_name();
 
-         fullPath  = tempPwd;
-         fullPath += DIR_SLASH;
-         fullPath += path;
+         if ( tempPwd )
+         {
+            fullPath  = tempPwd;
+            fullPath += DIR_SLASH;
+            fullPath += path;
 
-         delete[] tempPwd;
+            free( tempPwd );
+         }
+         else
+         {
+            fullPath  = ".";
+            fullPath += DIR_SLASH;
+            fullPath += path;
+         }
       }
    }
 
