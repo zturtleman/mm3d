@@ -139,21 +139,6 @@ ModelViewport::ModelViewport( QWidget * parent )
    setAcceptDrops( true );
    setMouseTracking( true );
 
-   QPixmap arrow( arrow_xpm );
-   QPixmap cross( crosshairrow_xpm );
-
-   QImage img;
-
-   makeCurrent();
-
-   glGenTextures( 2, m_scrollTextures );
-
-   img = arrow.toImage();
-   makeTextureFromImage( img, m_scrollTextures[0] );
-
-   img = cross.toImage();
-   makeTextureFromImage( img, m_scrollTextures[1] );
-
    connect( m_scrollTimer, SIGNAL(timeout()), this, SLOT(scrollTimeout()));
 
    setCursor( Qt::ArrowCursor );
@@ -163,10 +148,13 @@ ModelViewport::~ModelViewport()
 {
    log_debug( "deleting model viewport\n" );
 
-   makeCurrent();
+   if ( isValid() )
+   {
+      makeCurrent();
 
-   glDeleteTextures( 1, &m_backgroundTexture );
-   glDeleteTextures( 2, m_scrollTextures );
+      glDeleteTextures( 1, &m_backgroundTexture );
+      glDeleteTextures( 2, m_scrollTextures );
+   }
 
    freeTextures();
 
@@ -185,6 +173,25 @@ void ModelViewport::freeTextures()
 
 void ModelViewport::initializeGL()
 {
+   if ( !isValid() )
+   {
+      log_error( "model viewport does not have a valid OpenGL context\n" );
+      return;
+   }
+
+   QPixmap arrow( arrow_xpm );
+   QPixmap cross( crosshairrow_xpm );
+
+   QImage img;
+
+   glGenTextures( 2, m_scrollTextures );
+
+   img = arrow.toImage();
+   makeTextureFromImage( img, m_scrollTextures[0] );
+
+   img = cross.toImage();
+   makeTextureFromImage( img, m_scrollTextures[1] );
+
    glShadeModel( GL_SMOOTH );
    glClearColor( m_backColor.red() / 256.0, 
          m_backColor.green() / 256.0, 
@@ -255,6 +262,9 @@ void ModelViewport::resizeGL( int w, int h )
 
 void ModelViewport::paintGL()
 {
+   if ( !isValid() )
+      return;
+
    //LOG_PROFILE();
 
    if ( m_inOverlay )
@@ -1128,6 +1138,9 @@ void ModelViewport::adjustViewport()
 
 void ModelViewport::setViewportDraw()
 {
+   if ( !isValid() )
+      return;
+
    makeCurrent();
 
    m_inOverlay = false;
@@ -2324,6 +2337,8 @@ void ModelViewport::scrollTimeout()
 
 void ModelViewport::focusInEvent( QFocusEvent * e )
 {
+   if ( !isValid() )
+      return;
    m_backColor.setRgb( 150, 210, 210 );
    makeCurrent();
    glClearColor( m_backColor.red() / 256.0, 
@@ -2334,6 +2349,8 @@ void ModelViewport::focusInEvent( QFocusEvent * e )
 
 void ModelViewport::focusOutEvent( QFocusEvent * e )
 {
+   if ( !isValid() )
+      return;
    m_backColor.setRgb( 130, 200, 200 );
    makeCurrent();
    glClearColor( m_backColor.red() / 256.0, 
@@ -3041,6 +3058,9 @@ void ModelViewport::checkGlErrors()
 
 void ModelViewport::copyContentsToTexture( Texture * tex )
 {
+   if ( !isValid() )
+      return;
+
    makeCurrent();
 
    m_capture = true;

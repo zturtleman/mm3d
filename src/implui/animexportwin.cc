@@ -218,6 +218,12 @@ void AnimExportWindow::accept()
       return;
    }
 
+   if ( !v->m_modelView->isValid() )
+   {
+      // invalid opengl context
+      return;
+   }
+
    Model::AnimationModeE mode = Model::ANIMMODE_SKELETAL;
    unsigned a = m_animValue->currentIndex();
    if ( a >= m_model->getAnimCount( mode ) )

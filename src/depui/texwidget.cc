@@ -113,11 +113,6 @@ TextureWidget::TextureWidget( QWidget * parent )
 
    connect( m_scrollTimer, SIGNAL(timeout()), this, SLOT(scrollTimeout()));
    setCursor( QCursor( Qt::ArrowCursor ) );
-
-   // set up GL textures
-   makeCurrent();
-   glGenTextures( 2, m_scrollTextures );
-   glGenTextures( 1, &m_glTexture );
 }
 
 TextureWidget::~TextureWidget()
@@ -126,11 +121,14 @@ TextureWidget::~TextureWidget()
    delete m_animTimer;
    m_animTimer = NULL;
 
-   makeCurrent();
-   glDeleteTextures( 1, (GLuint *) &m_glTexture );
-   // Do NOT free m_texture.  TextureManager does that.
+   if ( isValid() )
+   {
+      makeCurrent();
+      glDeleteTextures( 1, (GLuint *) &m_glTexture );
+      // Do NOT free m_texture.  TextureManager does that.
 
-   glDeleteTextures( 2, m_scrollTextures );
+      glDeleteTextures( 2, m_scrollTextures );
+   }
 
    m_scrollTimer->stop();
    delete m_scrollTimer;
@@ -138,6 +136,12 @@ TextureWidget::~TextureWidget()
 
 void TextureWidget::initializeGL()
 {
+   if ( !isValid() )
+   {
+      log_error( "texture widget does not have a valid OpenGL context\n" );
+      return;
+   }
+
    // general set-up
    glEnable( GL_TEXTURE_2D );
 
@@ -153,6 +157,9 @@ void TextureWidget::initializeGL()
    QPixmap cross( crosshairrow_xpm );
 
    QImage img;
+
+   glGenTextures( 2, m_scrollTextures );
+   glGenTextures( 1, &m_glTexture );
 
    img = arrow.toImage();
    makeTextureFromImage( img, m_scrollTextures[0] );

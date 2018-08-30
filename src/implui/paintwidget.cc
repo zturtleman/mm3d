@@ -38,6 +38,12 @@ PaintWidget::~PaintWidget()
 
 void PaintWidget::initializeGL()
 {
+   if ( !isValid() )
+   {
+      log_error( "paint widget does not have a valid OpenGL context\n" );
+      return;
+   }
+
    glEnable( GL_TEXTURE_2D );
 
    setAutoBufferSwap( false );
