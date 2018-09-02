@@ -2213,10 +2213,12 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                   // Seems whenver we have a nan its from a identity matrix
                   if ( rotVector[0] != rotVector[0] || rotVector[1] != rotVector[1] || rotVector[2] != rotVector[2] )
                   {
-                     writeIdentity();
-                     continue;
+                     rotMatrix.loadIdentity();
                   }
-                  rotMatrix.setRotation( rotVector );
+                  else
+                  {
+                     rotMatrix.setRotation( rotVector );
+                  }
                   rotMatrix = rotMatrix*saveMatrix;
 
                   // orientation
@@ -2776,28 +2778,6 @@ bool Md3Filter::getExportAnimData( int modelAnim,
    }
 
    return false;
-}
-
-size_t Md3Filter::writeIdentity()
-{
-   size_t count = 0;
-   float z = 0.0;
-   float o = 1.0;
-   for ( int i = 0; i < 3; i++ )
-   {
-      for ( int j = 0; j < 3; j++ )
-      {
-         if ( i == j )
-         {
-            count += m_dst->write( o );
-         }
-         else
-         {
-            count += m_dst->write( z );
-         }
-      }
-   }
-   return count;
 }
 
 std::string Md3Filter::extractPath( const char * md3DataPath )

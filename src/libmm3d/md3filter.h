@@ -180,7 +180,6 @@ class Md3Filter : public ModelFilter
       //writes
       Model::ModelErrorE writeSectionFile( const char * filename, MeshSectionE section, MeshList & meshes );
       bool     writeAnimations();
-      size_t   writeIdentity();
       DataDest * m_dst;
 
       //writes util
