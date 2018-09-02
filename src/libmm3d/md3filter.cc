@@ -2426,15 +2426,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                      {
                         // force unanimated coordinates for head
                         m_model->getVertexCoords( (*vit).v, meshVec );
-                     }
-                     else
-                     {
-                        //getFrameAnimVertexCoords will get non frame coords if no anim
-                        m_model->getFrameAnimVertexCoords( a, t, (*vit).v, meshVec[0], meshVec[1], meshVec[2] );
-                     }
 
-                     if ( aFrameCount == 1 && animCount == 1 )
-                     {
                         float meshNorF[3];
                         if ( getVertexNormal( m_model, (*mlit).group, (*vit).v, meshNorF ) )
                         {
@@ -2445,6 +2437,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                      }
                      else
                      {
+                        m_model->getFrameAnimVertexCoords( a, t, (*vit).v, meshVec[0], meshVec[1], meshVec[2] );
                         m_model->getFrameAnimVertexNormal( a, t, (*vit).v, meshNor[0], meshNor[1], meshNor[2] );
                      }
                      saveMatrix.apply( meshVec );
