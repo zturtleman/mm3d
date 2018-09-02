@@ -2063,7 +2063,15 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
          std::string animName = getSafeName( a );
          for ( unsigned t = 0; t < aFrameCount; t++ )
          {
-            Matrix saveMatrix = getMatrixFromPoint( a, t, rootTag ).getInverse();
+            Matrix saveMatrix;
+            if ( numAnims == 0 )
+            {
+               saveMatrix = getMatrixFromPoint( -1, -1, rootTag ).getInverse();
+            }
+            else
+            {
+               saveMatrix = getMatrixFromPoint( a, t, rootTag ).getInverse();
+            }
             list<int>::iterator vit;
             double dmax[4] = { DBL_MIN, DBL_MIN, DBL_MIN, 1 };
             double dmin[4] = { DBL_MAX, DBL_MAX, DBL_MAX, 1 };
@@ -2080,7 +2088,14 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                      {
                         int vertex = m_model->getTriangleVertex( *it, n );
                         double cords[3];
-                        m_model->getFrameAnimVertexCoords( a, t, vertex, cords[0], cords[1], cords[2] );
+                        if ( numAnims == 0 )
+                        {
+                           m_model->getVertexCoords( vertex, cords );
+                        }
+                        else
+                        {
+                           m_model->getFrameAnimVertexCoords( a, t, vertex, cords[0], cords[1], cords[2] );
+                        }
                         dmax[0] = greater( dmax[0], cords[0] );
                         dmax[1] = greater( dmax[1], cords[1] );
                         dmax[2] = greater( dmax[2], cords[2] );
@@ -2144,7 +2159,15 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
          }
          for ( unsigned t = 0; t < aFrameCount; t++ )
          {
-            Matrix saveMatrix = getMatrixFromPoint( a, t, rootTag ).getInverse();
+            Matrix saveMatrix;
+            if ( numAnims == 0 )
+            {
+               saveMatrix = getMatrixFromPoint( -1, -1, rootTag ).getInverse();
+            }
+            else
+            {
+               saveMatrix = getMatrixFromPoint( a, t, rootTag ).getInverse();
+            }
             for ( unsigned j = 0; j < pcount; j++ )
             {
                if ( tagInSection( m_model->getPointName( j ), section ) )
@@ -2161,7 +2184,14 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
 
                   // origin
                   double origin[4] = { 0, 0, 0, 1 };
-                  m_model->getFrameAnimPointCoords( a, t, j, origin[0], origin[1], origin[2] );
+                  if ( numAnims == 0 )
+                  {
+                     m_model->getPointTranslation( j, origin );
+                  }
+                  else
+                  {
+                     m_model->getFrameAnimPointCoords( a, t, j, origin[0], origin[1], origin[2] );
+                  }
 
                   saveMatrix.apply( origin );
 
@@ -2171,7 +2201,14 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
 
                   Matrix rotMatrix;
                   double rotVector[3];
-                  m_model->getFrameAnimPointRotation( a, t, j, rotVector[0], rotVector[1], rotVector[2] );
+                  if ( numAnims == 0 )
+                  {
+                     m_model->getPointRotation( j, rotVector );
+                  }
+                  else
+                  {
+                     m_model->getFrameAnimPointRotation( a, t, j, rotVector[0], rotVector[1], rotVector[2] );
+                  }
 
                   // Seems whenver we have a nan its from a identity matrix
                   if ( rotVector[0] != rotVector[0] || rotVector[1] != rotVector[1] || rotVector[2] != rotVector[2] )
