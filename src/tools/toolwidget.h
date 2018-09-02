@@ -33,7 +33,7 @@ class ToolWidget : public QDockWidget
    Q_OBJECT
 
    public:
-      ToolWidget( QMainWindow * window );
+      ToolWidget( QMainWindow * window, const QString & title = "" );
       virtual ~ToolWidget();
 
    protected:

@@ -22,13 +22,16 @@
 
 #include "toolwidget.h"
 
-ToolWidget::ToolWidget( QMainWindow * window )
-   : QDockWidget( window ),
+ToolWidget::ToolWidget( QMainWindow * window, const QString & title )
+   : QDockWidget( title, window ),
      m_mainWidget( new QWidget( window ) ),
      m_layout( new QBoxLayout( QBoxLayout::LeftToRight, m_mainWidget ) )
 {
+   if ( title.isEmpty() )
+      setTitleBarWidget( new QWidget() );
+
    setObjectName( "mainwin_toolwin" );
-   m_layout->setMargin(0);
+   m_layout->setMargin( 5 );
    setWidget( m_mainWidget );
    window->addDockWidget( Qt::TopDockWidgetArea, this );
    setFeatures( QDockWidget::NoDockWidgetFeatures );
