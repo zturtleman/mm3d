@@ -27,6 +27,7 @@
 #include "sysconf.h"
 #include "config.h"
 
+#include <QtCore/QtGlobal>
 #include <QtCore/QLocale>
 #include <QtCore/QTranslator>
 #include <QtWidgets/QApplication>
@@ -133,6 +134,11 @@ QApplication * ui_getapp()
 int ui_prep( int & argc, char * argv[] )
 {
    s_app = new MisfitApp( argc, argv );
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
+   // Disable "?" button (What's this?) on Windows QDialogs
+   s_app->setAttribute( Qt::AA_DisableWindowContextHelpButton );
+#endif
 
 #ifdef Q_OS_MAC
    // Don't use native mac menu bar as it's misleading (the menu affects
