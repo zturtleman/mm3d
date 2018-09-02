@@ -2411,7 +2411,8 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
                         m_model->getFrameAnimVertexNormal( a, t, (*vit).v, meshNor[0], meshNor[1], meshNor[2] );
                      }
                      saveMatrix.apply( meshVec );
-                     saveMatrix.apply( meshNor );
+                     saveMatrix.apply3( meshNor ); // only apply rotation
+                     normalize3( meshNor );
                      m_dst->write( (int16_t) ( meshVec[0] / MD3_XYZ_SCALE + 0.5 ) );
                      m_dst->write( (int16_t) ( meshVec[1] / MD3_XYZ_SCALE + 0.5 ) );
                      m_dst->write( (int16_t) ( meshVec[2] / MD3_XYZ_SCALE + 0.5 ) );
