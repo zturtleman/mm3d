@@ -2611,7 +2611,7 @@ bool Md3Filter::writeAnimations()
          }
 
          // disable looping on non-looping anims
-         if ( count <= 1 || !m_model->getAnimLooping( Model::ANIMMODE_FRAME, anim ) )
+         if ( !m_model->getAnimLooping( Model::ANIMMODE_FRAME, anim ) )
          {
             loop = 0;
          }
