@@ -15,11 +15,11 @@
 <h2> Overview </h2>
 
 <p>
-This document describes version 1.7 of the MM3D file format.  Data
-that is available only in specific versions will be noted below.  All other data
-is common to every version of the file format.  Previous releases of 
-Misfit Model 3D that do not read all data segments should still be able to
-load model files, though some information may be lost.
+This document describes version 1.7 of the MM3D (Misfit Model 3D) file format.
+Data that is available only in specific versions will be noted below.  All other
+data is common to every version of the file format.  Previous releases of 
+Misfit Model 3D and Maverick Model 3D that do not read all data segments should
+still be able to load model files, though some information may be lost.
 </p>
 
 <!--
@@ -173,7 +173,7 @@ the file is complete.  There is no data at the end of file offset.
 <h3> User Defined Blocks </h3>
 
 <p>
-Types 0x0000 through 0x1fff are reserved for Misfit Model 3D defined types.  
+Types 0x0000 through 0x1fff are reserved for Maverick Model 3D defined types.  
 0x4000 through 0xffff are reserved for the uniform and dirty bit versions of each type.
 If you want to add a type for
 your own use it is recommended that you use a value in the 0x2000 through 0x2fff
@@ -198,7 +198,7 @@ is important to note if the size of the element is different from the expected
 size.  If it is smaller, data at the end of the element has been omitted.  If larger,
 data has been appended to the end of the element's data type and must be skipped
 over during data parsing.  These situations may happen if your filter is reading
-a file written by a newer or older version of Misfit Model 3D.  Data size changes
+a file written by a newer or older version of Maverick Model 3D.  Data size changes
 will be rare but should be accounted for.
 </p>
 
@@ -515,7 +515,7 @@ Group flags:
 The weighted influences section describes how vertices and points are assigned
 to bone joints. Objects can be assigned to multiple bone joints. This is the
 preferred method to save and load bone joint assignments for vertices and
-points. New versions of Misfit Model 3D will use this data if it is present
+points. New versions of Maverick Model 3D will use this data if it is present
 and the deprecated data sections if this data is not present.
 </p>
 

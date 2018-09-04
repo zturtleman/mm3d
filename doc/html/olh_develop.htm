@@ -8,7 +8,7 @@
       <h1>Contributing</h1>
 
       <p>
-      Contributions to Misfit Model 3D are encouraged.  There are several
+      Contributions to Maverick Model 3D are encouraged.  There are several
       ways (both coding and non-coding) that you can help this project
       continue.  The easiest thing is simply to send me an encouraging email.
       Bug reports and feature requests are also appreciated.
@@ -28,8 +28,8 @@
          repository or the most recent development version.</li>
          <li> Contact me before starting a complex feature.  I may be close to
          finishing a similar feature myself, or the feature you wish to add may
-         conflict with Misfit Model 3D's design goals.  If you are interested
-         in contributing code to Misfit Model 3D, I certainly do not want your
+         conflict with Maverick Model 3D's design goals.  If you are interested
+         in contributing code to Maverick Model 3D, I certainly do not want your
          efforts to be wasted.</li>
       </ul>
       </p>
@@ -53,7 +53,7 @@
 
       <p>
       Plugins can be created to add new tools, commands, texture filters and
-      model filters.  Currently Misfit development is done in C++.  If you
+      model filters.  Maverick Model 3D development is done in C++.  If you
       have a compelling reason to implement a plugin in another language,
       contact me and I may be able to arrange C bindings which can be extended
       to support other languages.
@@ -62,21 +62,23 @@
       <p>
       The details of the plugin system may change.  The discussion below details
       the plugin system as of 1.4, but the development source code is always
-      the most up-to-date source of documentation.  Check the plugins directory
-      in the misfit model distribution for an example.  The ImLib2 Texture plugin
-      contains a documented, non-trivial example.
+      the most up-to-date source of documentation.  Check the
+      <a href="http://misfitcode.com/misfitmodel3d/plugins.html">Misfit Model 3D
+      plugins webpage</a> for examples.  The ImLib2 Texture plugin contains a
+      documented, non-trivial example.
       </p>
 
       <p>
-      A Misfit plugin is a dynamic library which contains three required functions
-      and two optional functions, declared as <code>PLUGIN_API</code> (defined in src/mm3dcore/pluginapi.h).  
+      A Maverick Model 3D plugin is a dynamic library which contains three required
+      functions and two optional functions, declared as <code>PLUGIN_API</code>
+      (defined in src/mm3dcore/pluginapi.h).
       Functions marked with a <b>*</b> are optional.
       </p>
 
       <ul>
          <li> <b>plugin_init</b> - Initialize the plugin
          <li> <b>plugin_uninit</b> - Uninitialize the plugin
-         <li> <b>plugin_mm3d_version</b> - Provide Misfit Model 3D version string the
+         <li> <b>plugin_mm3d_version</b> - Provide Maverick Model 3D version string the
          plugin was compiled for
          <li> <b>plugin_version *</b> - Provide plugin version string
          <li> <b>plugin_desc *</b> - Provide plugin description string
