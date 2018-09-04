@@ -1,6 +1,6 @@
 #ifdef WIN32
 
-/*  Misfit Model 3D
+/*  Maverick Model 3D
  * 
  *  Copyright (c) 2004-2007 Kevin Worcester
  * 

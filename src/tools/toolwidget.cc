@@ -1,4 +1,4 @@
-/*  Misfit Model 3D
+/*  Maverick Model 3D
  * 
  *  Copyright (c) 2008 Kevin Worcester
  * 

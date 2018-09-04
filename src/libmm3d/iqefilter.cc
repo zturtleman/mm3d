@@ -1,4 +1,4 @@
-/*  IqeFilter plugin for Misfit Model 3D
+/*  IqeFilter plugin for Maverick Model 3D
  *
  *  Copyright (c) 2018 Zack Middleton
  *

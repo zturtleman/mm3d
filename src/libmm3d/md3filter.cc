@@ -1,4 +1,4 @@
-/*  Md3Filter plugin for Misfit Model 3D
+/*  Md3Filter plugin for Maverick Model 3D
  *
  *  Copyright (c) 2005-2007 Russell Valentine and Kevin Worcester
  *  Copyright (c) 2009-2015 Zack Middleton

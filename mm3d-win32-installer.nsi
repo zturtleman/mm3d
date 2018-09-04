@@ -1,4 +1,4 @@
-; Misfit Model 3D - NSI Script (Installer Script)
+; Maverick Model 3D - NSI Script (Installer Script)
 ;
 ; Copyright (c) 2004-2007 Kevin Worcester
 ;
