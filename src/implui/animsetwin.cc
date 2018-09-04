@@ -244,7 +244,7 @@ void AnimSetWindow::newClicked()
    bool ok = false;
 
    QString name = QInputDialog::getText( this,
-         tr( "Misfit 3D" ),
+         tr( "New Animation" ),
          tr( "New name:" ),
          QLineEdit::Normal, QString(""), &ok );
 
@@ -282,7 +282,7 @@ void AnimSetWindow::renameClicked()
       bool ok = false;
 
       QString name = QInputDialog::getText( this,
-            tr( "Misfit 3D" ),
+            tr( "Rename Animation" ),
             tr( "New name:" ),
             QLineEdit::Normal, m_animList->item( firstSelection )->text(), &ok );
 

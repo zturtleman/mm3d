@@ -298,7 +298,7 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent )
 
 
    setWindowIcon( QPixmap((const char **) mm3dlogo_32x32_xpm) );
-   setWindowIconText( QString("Misfit Model 3D") );
+   setWindowIconText( QString("Maverick Model 3D") );
 
    QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
    connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
@@ -2562,7 +2562,7 @@ void ViewWindow::loadDockPositions()
 
 void ViewWindow::updateCaption()
 {
-   QString caption = QString( "Misfit Model 3D: " );
+   QString caption = QString( "Maverick Model 3D: " );
    if ( m_model )
    {
       caption += m_model->getSaved() ? QString("") : QString("* ");

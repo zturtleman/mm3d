@@ -1,11 +1,11 @@
-Misfit Model 3D Installation For Win32
-======================================
+Maverick Model 3D Installation For Win32
+========================================
 
-Misfit Model 3D runs on Windows 7 and later. It may run on
+Maverick Model 3D runs on Windows 7 and later. It may run on
 Windows XP and Vista if you compile Qt 5 with Windows XP support.
 It will not work on older Windows versions.
 
-Misfit Model 3D for Windows requires the MinGW environment and
+Maverick Model 3D for Windows requires the MinGW environment and
 the Open Source version of Qt 5 for Windows.  To run binaries
 of mm3d you only need the Qt and MinGW DLLs, which are provided 
 with the binary distribution.  To build from source you must
@@ -20,7 +20,7 @@ a filename like 'mm3d-X_X_X-win32-installer.exe'.  Run
 the installer and select an install location.
 
 Optionally you may choose to enable file assciations with
-Misfit Model 3D.  By default only .mm3d is associated.
+Maverick Model 3D.  By default only .mm3d is associated.
 
 
 Prerequisites
@@ -58,7 +58,7 @@ Install Instructions
    from the mm3d-X.X.X directory.
 
 2. Copy the build\mingw32-x86\install\ directory to where
-   ever you want. Settings are saved in %APPDATA$\Misfit Model 3D\
+   ever you want. Settings are saved in %APPDATA$\Maverick Model 3D\
 
 `make deploy` does not create any program menu or desktop
 shortcuts.  If you want shortcuts you must create them manually,

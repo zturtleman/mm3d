@@ -39,9 +39,9 @@
 //   CommandManager::getInstance()->registerCommand( myCommand );
 //
 // This will add myCommand to the command list and it will be available in
-// Misfit's menu system.  Commands which are statically linked to Misfit
+// MM3D's menu system.  Commands which are statically linked to MM3D
 // are registered in stdcmd.cc.  Commands which are dynamically added to
-// Misfit via plugins can be registered in the plugin_init function of a
+// MM3D via plugins can be registered in the plugin_init function of a
 // plugin.
 //
 // See command.h for instructions on creating a class derived from Command.

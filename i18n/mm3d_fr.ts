@@ -5,8 +5,8 @@
     <name>AboutWin</name>
     <message>
         <location filename="../src/implui/aboutwin.cc" line="+46"/>
-        <source>Misfit Model 3D - About</source>
-        <translation>Misfit Model 3D - A Propos</translation>
+        <source>Maverick Model 3D - About</source>
+        <translation>Maverick Model 3D - A Propos</translation>
     </message>
 </context>
 <context>
@@ -318,7 +318,7 @@
         <translation>Pose (Frame) - </translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+43"/>
         <source>[None]</source>
         <comment>No viewport for animation image export</comment>
         <translation>[Aucun]</translation>
@@ -335,7 +335,7 @@
         <translation>F1</translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+50"/>
         <source>Must have more than 0 frames per second</source>
         <translation>Il est obligatoire d&apos;avoir plus de 0 images par seconde</translation>
     </message>
@@ -448,18 +448,22 @@
     </message>
     <message>
         <location line="+195"/>
-        <location line="+38"/>
-        <source>Misfit 3D</source>
-        <translation>Misfit 3D</translation>
+        <source>New Animation</source>
+        <translation>Nouvelle Animation</translation>
     </message>
     <message>
-        <location line="-37"/>
+        <location line="+1"/>
         <location line="+38"/>
         <source>New name:</source>
         <translation>Nouveau Nom :</translation>
     </message>
     <message>
-        <location line="+121"/>
+        <location line="-1"/>
+        <source>Rename Animation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+122"/>
         <source>Split at frame</source>
         <comment>Split animation frame window title</comment>
         <translation>Séparer l&apos;animation à cette image</translation>
@@ -2754,12 +2758,12 @@ Do you want to save all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+153"/>
+        <location line="+176"/>
         <source>Point name is too large for MD3 export.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+62"/>
+        <location line="+78"/>
         <source>Group name is too large for MD3 export.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3043,17 +3047,17 @@ Opération Terminée</translation>
 <context>
     <name>ModelViewport</name>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="+1105"/>
+        <location filename="../src/depui/modelviewport.cc" line="+1115"/>
         <source>Could not load background %1</source>
         <translation>Impossible de charger l&apos;image de fond %1</translation>
     </message>
     <message>
-        <location line="+483"/>
+        <location line="+486"/>
         <source>Use the middle mouse button to drag/pan the viewport</source>
         <translation>Utiliser le boutoun du milieu de la souris pour faire glisser la visualisation</translation>
     </message>
     <message>
-        <location line="+1430"/>
+        <location line="+1434"/>
         <source>OpenGL error = Invalid Value</source>
         <translation>Erreur OpenGL = Valeur Invalide</translation>
     </message>
@@ -3894,7 +3898,7 @@ Opération Terminée</translation>
 <context>
     <name>TextureCoord</name>
     <message>
-        <location filename="../src/implui/texturecoord.cc" line="+308"/>
+        <location filename="../src/implui/texturecoord.cc" line="+314"/>
         <source>Reset coordinates?</source>
         <comment>window title</comment>
         <translation>Remettre les coordonnées à zéro ?</translation>
@@ -3910,7 +3914,7 @@ Opération Terminée</translation>
         <translation>Bouger les Coordonnées de texture</translation>
     </message>
     <message>
-        <location line="-265"/>
+        <location line="-271"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation type="unfinished"></translation>
@@ -3928,7 +3932,7 @@ Opération Terminée</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+266"/>
+        <location line="+272"/>
         <source>Select texture coordinates</source>
         <translation type="unfinished"></translation>
     </message>

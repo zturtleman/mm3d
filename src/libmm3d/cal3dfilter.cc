@@ -2004,7 +2004,7 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
 
    m_dst->writeString( "#\n# cal3d model configuration file\n#\n" );
 
-   m_dst->writeString( "# File written by Misfit Model 3D\n" );
+   m_dst->writeString( "# File written by Maverick Model 3D\n" );
    m_dst->writeString( "# https://clover.com/mm3d\n\n" );
 
    m_dst->writeString( "[model]\n" );

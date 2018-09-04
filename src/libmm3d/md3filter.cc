@@ -2134,7 +2134,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
             }
             //log_debug( "Frame radius: %f\n", ( (float) radius ) );
             m_dst->write( (float) radius );
-            char name[16] = "Misfit Model 3D"; // this is what other exporters do
+            char name[16] = "MaverickModel3D"; // this is what other exporters do
             PORT_snprintf( name, sizeof(name), "%s%02d", animName.c_str(), t);
             m_dst->writeBytes( (uint8_t*) name, sizeof(name) );
          }

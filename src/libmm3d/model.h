@@ -1057,7 +1057,7 @@ class Model
       void pushError( const std::string & err );
       std::string popError();
 
-      // Use these functions to preserve data that Misfit doesn't support natively
+      // Use these functions to preserve data that MM3D doesn't support natively
       int  addFormatData( FormatData * fd );
       bool deleteFormatData( unsigned index );
       unsigned getFormatDataCount() const;

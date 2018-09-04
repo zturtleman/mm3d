@@ -71,7 +71,7 @@ static ModelList _models;
 
 static void _print_version( const char * progname )
 {
-   printf( "\nMisfit Model 3D, version %s\n\n", VERSION_STRING );
+   printf( "\nMaverick Model 3D, version %s\n\n", VERSION_STRING );
 }
 
 static void _print_help( const char * progname )
@@ -107,7 +107,7 @@ static void _print_help( const char * progname )
 
 static void _print_sysinfo()
 {
-   printf( "\nMisfit Model 3D, version %s\n\n", VERSION_STRING );
+   printf( "\nMaverick Model 3D, version %s\n\n", VERSION_STRING );
 
 #ifdef WIN32
    // TODO: Get Windows version

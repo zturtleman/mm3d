@@ -28,17 +28,17 @@
 
 extern "C" void msgqt_info( const char * str )
 {
-   QMessageBox::information( NULL, QString("Misfit 3D"), QString::fromUtf8(str), QMessageBox::Ok, 0 );
+   QMessageBox::information( NULL, QString("Maverick Model 3D"), QString::fromUtf8(str), QMessageBox::Ok, 0 );
 }
 
 extern "C" void msgqt_warning( const char * str )
 {
-   QMessageBox::warning( NULL, QString("Misfit 3D"), QString::fromUtf8(str), QMessageBox::Ok, 0 );
+   QMessageBox::warning( NULL, QString("Maverick Model 3D"), QString::fromUtf8(str), QMessageBox::Ok, 0 );
 }
 
 extern "C" void msgqt_error( const char * str )
 {
-   QMessageBox::critical( NULL, QString("Misfit 3D"), QString::fromUtf8(str), QMessageBox::Ok, 0 );
+   QMessageBox::critical( NULL, QString("Maverick Model 3D"), QString::fromUtf8(str), QMessageBox::Ok, 0 );
 }
 
 typedef enum {
@@ -100,14 +100,14 @@ static char _msgqt_info_common( MessageType type, const QString & str, const cha
    switch ( type )
    {
       case MsgError:
-         result = QMessageBox::critical( NULL, QString("Misfit 3D"), str, button[0], button[1], button[2] );
+         result = QMessageBox::critical( NULL, QString("Maverick Model 3D"), str, button[0], button[1], button[2] );
          break;
       case MsgWarning:
-         result = QMessageBox::warning( NULL, QString("Misfit 3D"), str, button[0], button[1], button[2] );
+         result = QMessageBox::warning( NULL, QString("Maverick Model 3D"), str, button[0], button[1], button[2] );
          break;
       case MsgInfo:
       default:
-         result = QMessageBox::information( NULL, QString("Misfit 3D"), str, button[0], button[1], button[2] );
+         result = QMessageBox::information( NULL, QString("Maverick Model 3D"), str, button[0], button[1], button[2] );
          break;
    }
 

@@ -5,8 +5,8 @@
     <name>AboutWin</name>
     <message>
         <location filename="../src/implui/aboutwin.cc" line="+46"/>
-        <source>Misfit Model 3D - About</source>
-        <translation>Misfit Model 3D - O programe</translation>
+        <source>Maverick Model 3D - About</source>
+        <translation>Maverick Model 3D - O programe</translation>
     </message>
 </context>
 <context>
@@ -322,7 +322,7 @@
         <translation>Rámec - </translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+43"/>
         <source>[None]</source>
         <comment>No viewport for animation image export</comment>
         <translation>[Nie je]</translation>
@@ -339,7 +339,7 @@
         <translation></translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+50"/>
         <source>Must have more than 0 frames per second</source>
         <translation>Musí mať viac ako 0 rámcov za sekundu</translation>
     </message>
@@ -452,18 +452,22 @@
     </message>
     <message>
         <location line="+195"/>
-        <location line="+38"/>
-        <source>Misfit 3D</source>
-        <translation></translation>
+        <source>New Animation</source>
+        <translation>Nová animácia</translation>
     </message>
     <message>
-        <location line="-37"/>
+        <location line="+1"/>
         <location line="+38"/>
         <source>New name:</source>
         <translation>Nové meno: </translation>
     </message>
     <message>
-        <location line="+121"/>
+        <location line="-1"/>
+        <source>Rename Animation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+122"/>
         <source>Split at frame</source>
         <comment>Split animation frame window title</comment>
         <translation>Rozdeľ na rámeci</translation>
@@ -2863,12 +2867,12 @@ Do you want to save all sections?</source>
         <translation>Príliš veľa vrcholov v jednej skupine pre MD3 export</translation>
     </message>
     <message>
-        <location line="+153"/>
+        <location line="+176"/>
         <source>Point name is too large for MD3 export.</source>
         <translation>Meno bodu je príliš dlhé pre MD3 export.</translation>
     </message>
     <message>
-        <location line="+62"/>
+        <location line="+78"/>
         <source>Group name is too large for MD3 export.</source>
         <translation>Meno skupiny je príliš dlhé pre MD3 export.</translation>
     </message>
@@ -3160,17 +3164,17 @@ Do you want to save all sections?</source>
 <context>
     <name>ModelViewport</name>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="+1105"/>
+        <location filename="../src/depui/modelviewport.cc" line="+1115"/>
         <source>Could not load background %1</source>
         <translation>Nemožno načítať pozadie %1</translation>
     </message>
     <message>
-        <location line="+483"/>
+        <location line="+486"/>
         <source>Use the middle mouse button to drag/pan the viewport</source>
         <translation>Použite stredné tlačidlo myši na posunutie/naklonenie výrezu</translation>
     </message>
     <message>
-        <location line="+1430"/>
+        <location line="+1434"/>
         <source>OpenGL error = Invalid Value</source>
         <translation>Chyba OpenGL = Chybná hodnota</translation>
     </message>
@@ -4001,7 +4005,7 @@ Do you want to save all sections?</source>
 <context>
     <name>TextureCoord</name>
     <message>
-        <location filename="../src/implui/texturecoord.cc" line="+308"/>
+        <location filename="../src/implui/texturecoord.cc" line="+314"/>
         <source>Reset coordinates?</source>
         <comment>window title</comment>
         <translation>Vynulovať koordináty?</translation>
@@ -4017,7 +4021,7 @@ Do you want to save all sections?</source>
         <translation>Presunúť súradnice textúry</translation>
     </message>
     <message>
-        <location line="-265"/>
+        <location line="-271"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>
@@ -4035,7 +4039,7 @@ Do you want to save all sections?</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+266"/>
+        <location line="+272"/>
         <source>Select texture coordinates</source>
         <translation>Zvoľte súradnice textúry</translation>
     </message>

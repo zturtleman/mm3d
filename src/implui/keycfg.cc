@@ -39,7 +39,7 @@ static void _writeDefaultFile( const char * filename )
    if ( !dst.errorOccurred() )
    {
       const char *msg =
-         "; This file is used to change key bindings for Misfit Model 3D." FILE_NEWLINE
+         "; This file is used to change key bindings for Maverick Model 3D." FILE_NEWLINE
          ";" FILE_NEWLINE
          "; To change keyboard shortcuts, add keyboard shortcuts assignments at the bottom " FILE_NEWLINE
          "; of this file. The format for keyboard shortcuts is:" FILE_NEWLINE

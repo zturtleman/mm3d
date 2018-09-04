@@ -28,7 +28,8 @@
 // About the Command class
 //------------------------------------------------------------------
 //
-// The Command class is a virtual base class for all Misfit commands.
+// The Command class is a virtual base class for all Maverick Model 3D
+// commands.
 //
 // The methods you need to implement in order to add a new command are 
 // noted below.
@@ -42,7 +43,7 @@
 // example.  Dialog boxes must be modal.  Non-modal dialogs will not
 // be notified of model changes so they cannot update themselves 
 // accordingly.  Also non-modal dialogs are inconsistent with 
-// Misfit Model's general behavior and may be confusing to the user.
+// Maverick Model 3D's general behavior and may be confusing to the user.
 
 #include <stdlib.h>
 

@@ -48,12 +48,12 @@ BEGIN
         BLOCK "040904E4"
         BEGIN
             VALUE "CompanyName",      "clover.moe"
-            VALUE "FileDescription",  "Misfit Model 3D (clover.moe fork)"
+            VALUE "FileDescription",  "Maverick Model 3D"
             VALUE "FileVersion",      VER_PRODUCTVERSION_STR
             VALUE "InternalName",     "mm3d.x86"
-            VALUE "LegalCopyright",   "Copyright © 2004-2008 Kevin Worcester, clover.moe fork © 2009-2018 Zack Middleton."
+            VALUE "LegalCopyright",   "Copyright © 2004-2008 Kevin Worcester, Copyright © 2009-2018 Zack Middleton."
             VALUE "OriginalFilename", "mm3d.x86.exe"
-            VALUE "ProductName",      "Misfit Model 3D (clover.moe fork)"
+            VALUE "ProductName",      "Maverick Model 3D"
             VALUE "ProductVersion",   VER_PRODUCTVERSION_STR
         END
     END

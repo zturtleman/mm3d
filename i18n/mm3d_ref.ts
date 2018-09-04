@@ -5,7 +5,7 @@
     <name>AboutWin</name>
     <message>
         <location filename="../src/implui/aboutwin.cc" line="+46"/>
-        <source>Misfit Model 3D - About</source>
+        <source>Maverick Model 3D - About</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -318,7 +318,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+43"/>
         <source>[None]</source>
         <comment>No viewport for animation image export</comment>
         <translation type="unfinished"></translation>
@@ -335,7 +335,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+50"/>
         <source>Must have more than 0 frames per second</source>
         <translation type="unfinished"></translation>
     </message>
@@ -448,18 +448,22 @@
     </message>
     <message>
         <location line="+195"/>
-        <location line="+38"/>
-        <source>Misfit 3D</source>
+        <source>New Animation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-37"/>
+        <location line="+1"/>
         <location line="+38"/>
         <source>New name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+121"/>
+        <location line="-1"/>
+        <source>Rename Animation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+122"/>
         <source>Split at frame</source>
         <comment>Split animation frame window title</comment>
         <translation type="unfinished"></translation>
@@ -2722,12 +2726,12 @@ Do you want to save all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+153"/>
+        <location line="+176"/>
         <source>Point name is too large for MD3 export.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+62"/>
+        <location line="+78"/>
         <source>Group name is too large for MD3 export.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3019,17 +3023,17 @@ Do you want to save all sections?</source>
 <context>
     <name>ModelViewport</name>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="+1105"/>
+        <location filename="../src/depui/modelviewport.cc" line="+1115"/>
         <source>Could not load background %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+483"/>
+        <location line="+486"/>
         <source>Use the middle mouse button to drag/pan the viewport</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1430"/>
+        <location line="+1434"/>
         <source>OpenGL error = Invalid Value</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3852,7 +3856,7 @@ Do you want to save all sections?</source>
 <context>
     <name>TextureCoord</name>
     <message>
-        <location filename="../src/implui/texturecoord.cc" line="+308"/>
+        <location filename="../src/implui/texturecoord.cc" line="+314"/>
         <source>Reset coordinates?</source>
         <comment>window title</comment>
         <translation type="unfinished"></translation>
@@ -3868,7 +3872,7 @@ Do you want to save all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-265"/>
+        <location line="-271"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation type="unfinished"></translation>
@@ -3886,7 +3890,7 @@ Do you want to save all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+266"/>
+        <location line="+272"/>
         <source>Select texture coordinates</source>
         <translation type="unfinished"></translation>
     </message>

@@ -44,7 +44,7 @@ class QMainWindow;
 //
 // Note that commands (non-interactive model operations) are much easier to
 // implement.  There are also many similarities in how they are used by 
-// Misfit Model.  You should see the documentation in command.h before 
+// Maverick Model 3D.  You should see the documentation in command.h before 
 // reading this.
 //
 // Note that middle mouse button events are used by ModelViewport and

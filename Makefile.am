@@ -11,7 +11,7 @@ SUBDIRS = src plugins i18n doc desktop man
 
 DESTDIR = src
 
-MAC_APP = Misfit Model 3D.app
+MAC_APP = Maverick Model 3D.app
 
 define INFOPLIST
 <?xml version=\"1.0\" encoding=\"UTF-8\"?>
@@ -114,7 +114,7 @@ define INFOPLIST
 <key>CFBundleInfoDictionaryVersion</key>
 <string>6.0</string>
 <key>CFBundleName</key>
-<string>Misfit Model 3D</string>
+<string>Maverick Model 3D</string>
 <key>CFBundlePackageType</key>
 <string>APPL</string>
 <key>CFBundleShortVersionString</key>
@@ -128,7 +128,7 @@ define INFOPLIST
 <key>LSMinimumSystemVersion</key>
 <string>${MACOSX_DEPLOYMENT_TARGET}</string>
 <key>NSHumanReadableCopyright</key>
-<string>Copyright © 2004-2008 Kevin Worcester, clover.moe fork © 2009-2018 Zack Middleton.</string>
+<string>Copyright © 2004-2008 Kevin Worcester, Copyright © 2009-2018 Zack Middleton.</string>
 <key>NSPrincipalClass</key>
 <string>NSApplication</string>
 </dict>

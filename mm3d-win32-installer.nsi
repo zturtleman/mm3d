@@ -23,18 +23,18 @@
 !define VERSION "1.3.10"
 !define FILE_VERSION "1_3_10"
 
-Name "Misfit Model 3D ${VERSION}"
+Name "Maverick Model 3D ${VERSION}"
 OutFile "mm3d-${FILE_VERSION}-win32-installer.exe"
 
 SetCompressor lzma
 Icon mm3d.ico
 UninstallIcon mm3d.ico
-BrandingText "Misfit Model 3D"
+BrandingText "Maverick Model 3D"
 CRCCheck on
 XPStyle on
 
-InstallDir "$PROGRAMFILES\Misfit Model 3D"
-InstallDirRegKey HKCU "Software\Misfit Code\Misfit Model 3D" "INSTDIR"
+InstallDir "$PROGRAMFILES\Maverick Model 3D"
+InstallDirRegKey HKCU "Software\MaverickModel\Maverick Model 3D" "INSTDIR"
 
 LicenseData COPYING
 
@@ -46,18 +46,18 @@ Page instfiles
 UninstPage uninstConfirm
 UninstPage instfiles
 
-Section "Misfit Model 3D"
+Section "Maverick Model 3D"
 
     SectionIn RO
 
     ; Create file type
-    WriteRegStr HKCR "MisfitCode.Mm3dModelFile" "" "MM3D Model File"
-    WriteRegStr HKCR "MisfitCode.Mm3dModelFile\shell\open\command" "" '"$INSTDIR\mm3d.x86.exe" "%1"'
-    WriteRegStr HKCR "MisfitCode.Mm3dModelFile\shell\edit" "" "Edit Model"
-    WriteRegStr HKCR "MisfitCode.Mm3dModelFile\shell\edit\command" "" '"$INSTDIR\mm3d.x86.exe" "%1"'
+    WriteRegStr HKCR "MaverickModel.Mm3dModelFile" "" "MM3D Model File"
+    WriteRegStr HKCR "MaverickModel.Mm3dModelFile\shell\open\command" "" '"$INSTDIR\mm3d.x86.exe" "%1"'
+    WriteRegStr HKCR "MaverickModel.Mm3dModelFile\shell\edit" "" "Edit Model"
+    WriteRegStr HKCR "MaverickModel.Mm3dModelFile\shell\edit\command" "" '"$INSTDIR\mm3d.x86.exe" "%1"'
 
     SetOutPath "$INSTDIR"
-    WriteRegStr HKCU "Software\Misfit Code\Misfit Model 3D" "INSTDIR" "$INSTDIR"
+    WriteRegStr HKCU "Software\MaverickModel\Maverick Model 3D" "INSTDIR" "$INSTDIR"
 
     File /oname=COPYING.txt COPYING
     File build\mingw32-x86\install\mm3d.x86.exe
@@ -113,51 +113,51 @@ SectionEnd
 Section "Start Menu Shortcuts"
 
     ; SetShellVarContext all
-    CreateDirectory "$SMPROGRAMS\Misfit Model 3D"
-    CreateShortcut "$SMPROGRAMS\Misfit Model 3D\Misfit Model 3D.lnk"    "$INSTDIR\mm3d.x86.exe"
-    CreateShortcut "$SMPROGRAMS\Misfit Model 3D\Help Documentation.lnk" "$INSTDIR\doc\html\olh_index.html"
-    CreateShortcut "$SMPROGRAMS\Misfit Model 3D\License.lnk"            "$INSTDIR\doc\html\olh_license.html"
-    CreateShortcut "$SMPROGRAMS\Misfit Model 3D\MM3D Web Page.lnk"      "https://clover.moe/mm3d"
-    CreateShortcut "$SMPROGRAMS\Misfit Model 3D\Uninstall.lnk"          "$INSTDIR\Uninstall.exe"
+    CreateDirectory "$SMPROGRAMS\Maverick Model 3D"
+    CreateShortcut "$SMPROGRAMS\Maverick Model 3D\Maverick Model 3D.lnk"    "$INSTDIR\mm3d.x86.exe"
+    CreateShortcut "$SMPROGRAMS\Maverick Model 3D\Help Documentation.lnk" "$INSTDIR\doc\html\olh_index.html"
+    CreateShortcut "$SMPROGRAMS\Maverick Model 3D\License.lnk"            "$INSTDIR\doc\html\olh_license.html"
+    CreateShortcut "$SMPROGRAMS\Maverick Model 3D\MM3D Web Page.lnk"      "https://clover.moe/mm3d"
+    CreateShortcut "$SMPROGRAMS\Maverick Model 3D\Uninstall.lnk"          "$INSTDIR\Uninstall.exe"
 
 SectionEnd
 
 SubSection /e "Associate file types"
 
     Section "MM3D (Misfit Model 3D)"
-        WriteRegStr HKCR ".mm3d" "" "MisfitCode.Mm3dModelFile"
+        WriteRegStr HKCR ".mm3d" "" "MaverickModel.Mm3dModelFile"
     SectionEnd
 
     Section /o "Cal3d"
-        WriteRegStr HKCR ".cal" "" "MisfitCode.Mm3dModelFile"
+        WriteRegStr HKCR ".cal" "" "MaverickModel.Mm3dModelFile"
     SectionEnd
 
     Section /o "COB (Truespace)"
-        WriteRegStr HKCR ".cob" "" "MisfitCode.Mm3dModelFile"
+        WriteRegStr HKCR ".cob" "" "MaverickModel.Mm3dModelFile"
     SectionEnd
 
     Section /o "DXF (Autocad DXF)"
-        WriteRegStr HKCR ".dxf" "" "MisfitCode.Mm3dModelFile"
+        WriteRegStr HKCR ".dxf" "" "MaverickModel.Mm3dModelFile"
     SectionEnd
 
     Section /o "LWO (Lightwave)"
-        WriteRegStr HKCR ".lwo" "" "MisfitCode.Mm3dModelFile"
+        WriteRegStr HKCR ".lwo" "" "MaverickModel.Mm3dModelFile"
     SectionEnd
 
     Section /o "MS3D (Milkshape)"
-        WriteRegStr HKCR ".ms3d" "" "MisfitCode.Mm3dModelFile"
+        WriteRegStr HKCR ".ms3d" "" "MaverickModel.Mm3dModelFile"
     SectionEnd
 
     Section /o "MD2 (Quake)"
-        WriteRegStr HKCR ".md2" "" "MisfitCode.Mm3dModelFile"
+        WriteRegStr HKCR ".md2" "" "MaverickModel.Mm3dModelFile"
     SectionEnd
 
     Section /o "MD3 (Quake)"
-        WriteRegStr HKCR ".md3" "" "MisfitCode.Mm3dModelFile"
+        WriteRegStr HKCR ".md3" "" "MaverickModel.Mm3dModelFile"
     SectionEnd
 
     Section /o "OBJ (Alias Wavefront)"
-        WriteRegStr HKCR ".obj" "" "MisfitCode.Mm3dModelFile"
+        WriteRegStr HKCR ".obj" "" "MaverickModel.Mm3dModelFile"
     SectionEnd
 
 SubSectionEnd
@@ -210,9 +210,9 @@ Section "Uninstall"
     RMDir $INSTDIR
 
     ; SetShellVarContext all
-    RMDir /r /REBOOTOK "$SMPROGRAMS\Misfit Model 3D"
+    RMDir /r /REBOOTOK "$SMPROGRAMS\Maverick Model 3D"
 
-    DeleteRegKey HKCR "MisfitCode.Mm3dModelFile"
+    DeleteRegKey HKCR "MaverickModel.Mm3dModelFile"
 
 SectionEnd
 

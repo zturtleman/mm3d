@@ -51,10 +51,10 @@
 
 // Handle macOS opening file in finder or dropping file on dock icon.
 // File types must be listed in AppBundle.app/Contents/Info.plist.
-class MisfitApp : public QApplication
+class ModelApp : public QApplication
 {
 public:
-   MisfitApp(int &argc, char **argv)
+   ModelApp(int &argc, char **argv)
        : QApplication(argc, argv)
    {
    }
@@ -71,7 +71,7 @@ public:
    }
 };
 
-static MisfitApp    * s_app = NULL;
+static ModelApp     * s_app = NULL;
 static QTranslator  * s_qtXlat = NULL;
 static QTranslator  * s_mm3dXlat = NULL;
 
@@ -133,7 +133,7 @@ QApplication * ui_getapp()
 
 int ui_prep( int & argc, char * argv[] )
 {
-   s_app = new MisfitApp( argc, argv );
+   s_app = new ModelApp( argc, argv );
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
    // Disable "?" button (What's this?) on Windows QDialogs

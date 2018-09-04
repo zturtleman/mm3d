@@ -341,7 +341,7 @@ bool ObjFilter::writeHeader()
 {
    writeLine( "# Wavefront OBJ file" );
 
-   writeLine( "# Exported by Misfit Model 3D %s", VERSION );
+   writeLine( "# Exported by Maverick Model 3D %s", VERSION );
 
    time_t tval;
    struct tm tmval;

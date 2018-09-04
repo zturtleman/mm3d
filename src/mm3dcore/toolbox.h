@@ -53,9 +53,9 @@
 //    }
 //
 // This will add myTool to the tool list and it will be available in
-// the toolbar as well as through Misfit Model's menu system.  Tools that 
-// are statically linked to Misfit are registered in stdtools.cc.  Tools 
-// that are dynamically added to Misfit via plugins can be registered 
+// the toolbar as well as through Maverick Model 3D's menu system.  Tools
+// that are statically linked to MM3D are registered in stdtools.cc.  Tools
+// that are dynamically added to MM3D via plugins can be registered
 // in the plugin_init function of a plugin.
 //
 // See tool.h for instructions on creating a class derived from Tool.

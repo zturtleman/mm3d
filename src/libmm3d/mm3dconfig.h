@@ -23,9 +23,9 @@
 #include "config.h"
 
 #ifdef WIN32
-#define HOME_MM3D             "\\Misfit Model 3D"
+#define HOME_MM3D             "\\Maverick Model 3D"
 #elif defined __APPLE__
-#define HOME_MM3D             "/Library/Application Support/Misfit Model 3D"
+#define HOME_MM3D             "/Library/Application Support/Maverick Model 3D"
 #else
 #define HOME_MM3D             "/.mm3d"
 #endif // WIN32

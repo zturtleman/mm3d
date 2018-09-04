@@ -1,10 +1,10 @@
-Misfit Model 3D Installation
-============================
+Maverick Model 3D Installation
+==============================
 
 If you are running on Windows see INSTALL.WIN32.  If you are running
 on a Unix-like system, installation instructions follow.
 
-Misfit Model 3D requires the following packages for proper operation.  
+Maverick Model 3D requires the following packages for proper operation.
 They are most likely already installed if you have a modern working 
 Linux system.
 
@@ -15,7 +15,7 @@ Linux system.
 
 Even if you have these packages installed you may need to install
 development packages as well.  These include header files which are
-needed to compile Misfit Model 3D.  Often such packages are marked
+needed to compile Maverick Model 3D.  Often such packages are marked
 as -dev or -devel by your distribution.  For example, sometimes
 Qt is broken up into a qt rpm and qt-devel rpm.  In this case, you
 must have both installed.
@@ -64,10 +64,6 @@ you want to force the multi-threaded Qt library, you would use
 --with-Qt-lib=qt-mt
 
 Use ./configure --help for a complete list of options.
-
-If you need installation help you can post on the discussion forum:
-
-   https://forum.clover.moe
 
 Below are generic instructions for installing programs using autoconf
 and automake.  They are provided for reference if you need more help
