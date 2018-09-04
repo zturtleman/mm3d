@@ -31,7 +31,8 @@
 //   configure.ac (for x.x.x)
 //   mm3d-win32-installer.nsi (for x.x.x)
 //   Makefile.am (for Contents/PlugIns/mm3d/x.x)
-//   plugins/Makefile.am (for mm3d/plugins/x.x)
+//   Makefile.generic (for plugins/x.x)
+//   plugins/Makefile.am (for plugins/x.x)
 
 #ifndef VERSION
 #define VERSION "1.3.10"

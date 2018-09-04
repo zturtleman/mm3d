@@ -4,12 +4,13 @@ dnl If you change the version, also change the following files
 dnl    src/mm3dcore/version.h (for x.x.x)
 dnl    mm3d-win32-installer.nsi (for x.x.x)
 dnl    Makefile.am (for Contents/PlugIns/mm3d/x.x)
-dnl    plugins/Makefile.am (for mm3d/plugins/x.x)
+dnl    Makefile.generic (for plugins/x.x)
+dnl    plugins/Makefile.am (for plugins/x.x)
 
-AC_INIT(mm3d, 1.3.10, zturtleman@gmail.com)
-AM_INIT_AUTOMAKE( mm3d, 1.3.10 )
+AC_INIT([mm3d], [1.3.10])
+AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([config.h.in])
-AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
 AC_PROG_CXX
