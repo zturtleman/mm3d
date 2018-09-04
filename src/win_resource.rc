@@ -47,14 +47,20 @@ BEGIN
     BEGIN
         BLOCK "040904E4"
         BEGIN
-            VALUE "CompanyName",      "clover.moe"
-            VALUE "FileDescription",  "Maverick Model 3D"
-            VALUE "FileVersion",      VER_PRODUCTVERSION_STR
-            VALUE "InternalName",     "mm3d.x86"
-            VALUE "LegalCopyright",   "Copyright © 2004-2008 Kevin Worcester, Copyright © 2009-2018 Zack Middleton."
-            VALUE "OriginalFilename", "mm3d.x86.exe"
             VALUE "ProductName",      "Maverick Model 3D"
             VALUE "ProductVersion",   VER_PRODUCTVERSION_STR
+            VALUE "FileVersion",      VER_PRODUCTVERSION_STR
+#ifdef _WIN64
+            VALUE "FileDescription",  "Maverick Model 3D (x86_64)"
+            VALUE "OriginalFilename", "mm3d.x86_64.exe"
+            VALUE "InternalName",     "mm3d.x86_64"
+#else
+            VALUE "FileDescription",  "Maverick Model 3D (x86)"
+            VALUE "OriginalFilename", "mm3d.x86.exe"
+            VALUE "InternalName",     "mm3d.x86"
+#endif
+            // Copyright symbol (©) in Windows codepage 1252 is \xA9
+            VALUE "LegalCopyright",   "Copyright \xA9 2004-2008 Kevin Worcester, Copyright \xA9 2009-2018 Zack Middleton."
         END
     END
 
