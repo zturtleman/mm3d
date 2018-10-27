@@ -62,7 +62,7 @@ AnimSetWindow::AnimSetWindow( Model * model, QWidget * parent )
    }
    else if ( frameCount > 0 )
    {
-      m_animType->setCurrentIndex(2);
+      m_animType->setCurrentIndex(1);
    }
    else if ( relativeCount > 0 )
    {
