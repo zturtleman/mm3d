@@ -15,7 +15,7 @@
         <location filename="../src/implui/alignwin.cc" line="+57"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+20"/>
@@ -182,7 +182,7 @@
         <location filename="../src/implui/animconvertwin.cc" line="+40"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+13"/>
@@ -332,7 +332,7 @@
         <location line="+18"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+50"/>
@@ -444,7 +444,7 @@
         <location line="+2"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+195"/>
@@ -677,7 +677,7 @@ Frame Anzahl ist unterschiedlich.</translation>
         <location filename="../src/implui/autoassignjointwin.cc" line="+50"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -755,7 +755,7 @@ Frame Anzahl ist unterschiedlich.</translation>
         <location filename="../src/implui/backgroundwin.cc" line="+60"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+22"/>
@@ -941,7 +941,7 @@ Frame Anzahl ist unterschiedlich.</translation>
         <location filename="../src/implui/cal3dprompt.cc" line="+39"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1894,7 +1894,7 @@ Wollen sie fortfahren?</translation>
         <location filename="../src/implui/extrudewin.cc" line="+60"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+19"/>
@@ -2000,7 +2000,7 @@ Wollen sie fortfahren?</translation>
         <location filename="../src/implui/groupclean.cc" line="+50"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished">F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+39"/>
@@ -2098,7 +2098,7 @@ Wollen sie fortfahren?</translation>
         <location filename="../src/implui/groupwin.cc" line="+53"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+50"/>
@@ -2187,7 +2187,7 @@ Wollen sie fortfahren?</translation>
         <location filename="../src/implui/iqeprompt.cc" line="+40"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished">F1</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2244,7 +2244,7 @@ Wollen sie fortfahren?</translation>
         <location filename="../src/implui/jointwin.cc" line="+52"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+68"/>
@@ -2328,163 +2328,163 @@ Wollen sie fortfahren?</translation>
         <location filename="../src/implui/keycfg.cc" line="+348"/>
         <source>V</source>
         <comment>Select Vertices Tool Shortcut</comment>
-        <translation>V</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>F</source>
         <comment>Select Faces Tool Shortcut</comment>
-        <translation>F</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>C</source>
         <comment>Select Connected Mesh Tool Shortcut</comment>
-        <translation>C</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>G</source>
         <comment>Select Groups Tool Shortcut</comment>
-        <translation>G</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B</source>
         <comment>Select Bone Joints Tool Shortcut</comment>
-        <translation>B</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>T</source>
         <comment>Select Points Tool Shortcut</comment>
-        <translation>T</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+2"/>
         <source>M</source>
         <comment>Move Tool Shortcut</comment>
-        <translation>M</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R</source>
         <comment>Rotate Tool Shortcut</comment>
-        <translation>R</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+23"/>
         <source>H</source>
         <comment>Hide Unselected Command Shortcut</comment>
-        <translation>H</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Shift+H</source>
         <comment>Hide Selected Command Shortcut</comment>
-        <translation>Shift+H</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Delete</source>
         <comment>Delete Command Shortcut</comment>
-        <translation>Löschen</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Ctrl+D</source>
         <comment>Duplicate Command Shortcut</comment>
-        <translation>Strg+D</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Ctrl+C</source>
         <comment>Copy to Clipboard Command Shortcut</comment>
-        <translation>Strg+C</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Ctrl+V</source>
         <comment>Paste from Clipboard Command Shortcut</comment>
-        <translation>Strg+V</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Insert</source>
         <comment>Extrude Command Shortcut</comment>
-        <translation>Einfügen</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Ctrl+W</source>
         <comment>Weld Command Shortcut</comment>
-        <translation>Strg+W</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Ctrl+N</source>
         <comment>File | New Window Shortcut</comment>
-        <translation>Strg+N</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Ctrl+O</source>
         <comment>File | Open Shortcut</comment>
-        <translation>Strg+O</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Ctrl+S</source>
         <comment>File | Save Shortcut</comment>
-        <translation>Strg+S</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Ctrl+Q</source>
         <comment>File | Quit Shortcut</comment>
-        <translation>Strg+Q</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Home</source>
         <comment>View | Frame All Shortcut</comment>
-        <translation>Pos1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Shift+Home</source>
         <comment>View | Frame Selected Shortcut</comment>
-        <translation>Shift+Pos1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Ctrl+G</source>
         <comment>Groups | Edit Groups Shortcut</comment>
-        <translation>Strg+G</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Ctrl+M</source>
         <comment>Groups | Edit Materials Shortcut</comment>
-        <translation>Strg+M</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Ctrl+E</source>
         <comment>Groups | Edit Texture Coordinates Shortcut</comment>
-        <translation>Strg+E</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+B</source>
         <comment>Joints | Assign Selected Shortcut</comment>
-        <translation>Strg+B</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="-92"/>
         <source>Shift+U</source>
         <comment>Unhide All Command Shortcut</comment>
-        <translation>Shift+U</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2897,7 +2897,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/mergewin.cc" line="+47"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+42"/>
@@ -2912,7 +2912,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/metawin.cc" line="+65"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+17"/>
@@ -3078,7 +3078,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/ms3dprompt.cc" line="+41"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -3193,7 +3193,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/objprompt.cc" line="+40"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -3254,7 +3254,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/painttexturewin.cc" line="+66"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+140"/>
@@ -3425,7 +3425,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/pluginwin.cc" line="+42"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -3434,7 +3434,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/pointwin.cc" line="+52"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+85"/>
@@ -3549,7 +3549,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/projectionwin.cc" line="+72"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+265"/>
@@ -3597,13 +3597,13 @@ Do you want to save all sections?</source>
         <location line="-338"/>
         <source>CTRL+Z</source>
         <comment>Undo shortcut</comment>
-        <translation>STRG+Z</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+2"/>
         <source>CTRL+Y</source>
         <comment>Redo shortcut</comment>
-        <translation>STRG+Y</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -3695,7 +3695,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/rgbawin.cc" line="+42"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -3883,19 +3883,19 @@ Do you want to save all sections?</source>
         <location line="-271"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>CTRL+Z</source>
         <comment>Undo shortcut</comment>
-        <translation>STRG+Z</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+2"/>
         <source>CTRL+Y</source>
         <comment>Redo shortcut</comment>
-        <translation>STRG+Y</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+272"/>
@@ -4150,7 +4150,7 @@ Do you want to save all sections?</source>
         <location line="-521"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -4756,7 +4756,7 @@ Do you want to save all sections?</source>
         <location line="-119"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -4873,7 +4873,7 @@ Do you want to save all sections?</source>
         <location filename="../src/implui/valuewin.cc" line="+44"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -5190,7 +5190,7 @@ Do you want to save all sections?</source>
         <location line="+0"/>
         <source>Ctrl+Z</source>
         <comment>Undo shortcut</comment>
-        <translation>STRG+Z</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5201,7 +5201,7 @@ Do you want to save all sections?</source>
         <location line="+0"/>
         <source>Ctrl+Y</source>
         <comment>Redo shortcut</comment>
-        <translation>STRG+Y</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="-16"/>
@@ -5758,7 +5758,7 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
         <location line="-2122"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+67"/>
@@ -5778,7 +5778,7 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
         <location filename="../src/implui/viewportsettings.cc" line="+40"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
 </context>
 <context>

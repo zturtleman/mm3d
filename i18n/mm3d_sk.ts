@@ -15,7 +15,7 @@
         <location filename="../src/implui/alignwin.cc" line="+57"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+20"/>
@@ -182,7 +182,7 @@
         <location filename="../src/implui/animconvertwin.cc" line="+40"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation>F1</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+13"/>
@@ -2315,7 +2315,7 @@ Chcete pokračovať?</translation>
         <location filename="../src/implui/iqeprompt.cc" line="+40"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
-        <translation type="unfinished">F1</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
