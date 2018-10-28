@@ -159,7 +159,6 @@ void TextureWidget::initializeGL()
    QImage img;
 
    glGenTextures( 2, m_scrollTextures );
-   glGenTextures( 1, &m_glTexture );
 
    img = arrow.toImage();
    makeTextureFromImage( img, m_scrollTextures[0] );
@@ -770,6 +769,10 @@ void TextureWidget::setTexture( int materialId, Texture * texture )
       makeCurrent();
 
       glEnable( GL_TEXTURE_2D );
+
+      if ( m_glTexture == 0 ) {
+         glGenTextures( 1, &m_glTexture );
+      }
 
       glBindTexture( GL_TEXTURE_2D, m_glTexture );
 
