@@ -2234,13 +2234,13 @@ void ViewWindow::fillMruMenu()
    m_mruMenu->clear();
    for ( unsigned i = 0; i < g_prefs("mru").count(); i++ )
    {
-      m_mruMenu->addAction( QString::fromUtf8( g_prefs("mru")[i].stringValue().c_str() ) );
+      m_mruMenu->addAction( QDir::toNativeSeparators( QString::fromUtf8( g_prefs("mru")[i].stringValue().c_str() ) ) );
    }
 }
 
 void ViewWindow::openMru( QAction * id )
 {
-   openModelInWindow( id->text().toUtf8() );
+   openModelInWindow( QDir::fromNativeSeparators( id->text() ).toUtf8() );
 }
 
 void ViewWindow::fillScriptMruMenu()
@@ -2248,13 +2248,13 @@ void ViewWindow::fillScriptMruMenu()
    m_scriptMruMenu->clear();
    for ( unsigned i = 0; i < g_prefs("script_mru").count(); i++ )
    {
-      m_scriptMruMenu->addAction( QString::fromUtf8( g_prefs("script_mru")[i].stringValue().c_str() ) );
+      m_scriptMruMenu->addAction( QDir::toNativeSeparators( QString::fromUtf8( g_prefs("script_mru")[i].stringValue().c_str() ) ) );
    }
 }
 
 void ViewWindow::openScriptMru( QAction * id )
 {
-   runScript( id->text().toUtf8() );
+   runScript( QDir::fromNativeSeparators( id->text() ).toUtf8() );
 }
 
 void ViewWindow::openModelEvent()
