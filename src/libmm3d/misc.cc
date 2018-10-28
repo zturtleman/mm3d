@@ -130,7 +130,8 @@ string getFileNameFromPath( const char * path )
 
 bool pathIsAbsolute( const char * path )
 {
-#ifdef WIN32
+#if 0 //#ifdef WIN32
+   // FIXME?: PathIsRelativeW() returns FALSE for files without path.
    std::wstring widePath = utf8PathToWide( path );
    if ( widePath.empty() )
       return false;
