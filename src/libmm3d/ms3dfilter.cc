@@ -33,11 +33,14 @@
 #include "datadest.h"
 #include "datasource.h"
 
+#include "translate.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
 #include <stdint.h>
+#include <limits.h>
 
 #include <string>
 #include <vector>
@@ -305,8 +308,8 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
       {
          if ( curTriangle->m_vertexIndices[i] >= numVertices )
          {
-            //log_debug( "vertex: %d/%d\n", curTriangle->m_vertexIndices[i],
-            //      modelVertices.size() );
+            log_error( "vertex out of range: %d/%d\n", curTriangle->m_vertexIndices[i],
+                  modelVertices.size() );
             return Model::ERROR_BAD_DATA;
          }
       }
@@ -358,16 +361,17 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
          m_src->read( triIndex );
          if ( triIndex >= modelTriangles.size() )
          {
-            log_error( "TRIANGLE OUT OF RANGE %d/%d\n",
+            log_error( "triangle out of range: %d/%d\n",
                   triIndex, modelTriangles.size() );
             return Model::ERROR_BAD_DATA;
          }
          group->m_triangleIndices.insert( triIndex );
       }
 
-      int8_t material = 0;
+      uint8_t material = 0;
       m_src->read( material );
       group->m_materialIndex = material;
+      // FIXME: materialIndex -1 (static_cast<uint8_t>(~0)) means no material
 
       // Already added group to m_groups
    }
@@ -379,7 +383,11 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
    for ( t = 0; t < numGroups; t++ )
    {
       if ( modelGroups[t]->m_materialIndex >= numMaterials )
+      {
+         log_error( "material out of range: %d/%d\n",
+               modelGroups[t]->m_materialIndex, numMaterials );
          return Model::ERROR_BAD_DATA;
+      }
    }
 
    for ( t = 0; t < numMaterials; t++ )
@@ -658,6 +666,31 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
       return Model::ERROR_BAD_ARGUMENT;
    }
 
+   if ( model->getVertexCount() > USHRT_MAX ) {
+      model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many vertexes for MS3D export (max 65,536)." ) ).c_str() );
+      return Model::ERROR_FILTER_SPECIFIC;
+   }
+
+   if ( model->getTriangleCount() > USHRT_MAX ) {
+      model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many faces for MS3D export (max 65,536)." ) ).c_str() );
+      return Model::ERROR_FILTER_SPECIFIC;
+   }
+
+   if ( model->getGroupCount() > 255 ) {
+      model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many groups for MS3D export (max 255)." ) ).c_str() );
+      return Model::ERROR_FILTER_SPECIFIC;
+   }
+
+   if ( model->getTextureCount() > 128 ) {
+      model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many materials for MS3D export (max 128)." ) ).c_str() );
+      return Model::ERROR_FILTER_SPECIFIC;
+   }
+
+   if ( model->getBoneJointCount() > 128 ) {
+      model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many bone joints for MS3D export (max 128)." ) ).c_str() );
+      return Model::ERROR_FILTER_SPECIFIC;
+   }
+
    // Check for identical bone joint names
    {
       unsigned c = model->getBoneJointCount();
@@ -667,11 +700,29 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
          {
             if ( strcmp( model->getBoneJointName( i ), model->getBoneJointName( j ) ) == 0 )
             {
-               model->setFilterSpecificError( "Bone joints must have unique names." );
+               model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Bone joints must have unique names for MS3D export." ) ).c_str() );
                return Model::ERROR_FILTER_SPECIFIC;
             }
          }
       }
+   }
+
+   // Groups don't share vertices with Milk Shape 3D. Create mesh list
+   // that has unique vertices for each group. UVs/normals are per-face
+   // vertex rather than per-vertex, so vertices do not have to have
+   // unique UVs or normals.
+
+   MeshList ml;
+   mesh_create_list( ml, model, Mesh::MO_Group | Mesh::MO_Material );
+
+   if ( mesh_list_vertex_count( ml ) > USHRT_MAX ) {
+      model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many vertexes for MS3D export (max 65,536) after duplicating vertexes used by multiple groups or materials." ) ).c_str() );
+      return Model::ERROR_FILTER_SPECIFIC;
+   }
+
+   if ( mesh_list_face_count( ml ) > USHRT_MAX ) {
+      model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many faces for MS3D export (max 65,536) after duplicating vertexes used by multiple groups or materials." ) ).c_str() );
+      return Model::ERROR_FILTER_SPECIFIC;
    }
 
    Model::ModelErrorE rval = Model::ERROR_NONE;
@@ -704,14 +755,6 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
 
    if ( err != Model::ERROR_NONE )
       return err;
-
-   // Groups don't share vertices with Milk Shape 3D. Create mesh list
-   // that has unique vertices for each group. UVs/normals are per-face
-   // vertex rather than per-vertex, so vertices do not have to have
-   // unique UVs or normals.
-
-   MeshList ml;
-   mesh_create_list( ml, model, Mesh::MO_Group | Mesh::MO_Material );
 
    vector<Model::Vertex *>   & modelVertices  = getVertexList( model );
    vector<Model::Triangle *> & modelTriangles = getTriangleList( model );
