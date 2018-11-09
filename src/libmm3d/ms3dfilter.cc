@@ -1220,7 +1220,7 @@ void Ms3dFilter::writeVertexWeightSection( const MeshList & ml )
 
 void Ms3dFilter::writeJointColorSection()
 {
-   int32_t subVersion = m_options->m_subVersion;
+   int32_t subVersion = 1;
    m_dst->write( subVersion );
 
    log_debug( "writing joint color subversion %d\n", subVersion );

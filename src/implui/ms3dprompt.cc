@@ -125,7 +125,7 @@ void Ms3dPrompt::updateExtraEnabled()
    m_vertexExtra->setEnabled( subVersion >= 2 );
    m_vertexExtra2->setEnabled( subVersion >= 3 );
    // TODO joint color
-   //m_jointColor->setEnabled( !m_subVersion0->isChecked() );
+   //m_jointColor->setEnabled( !m_jointSubVersion0->isChecked() );
 }
 
 // This function takes a ModelFilter::Options argument, downcasts it
