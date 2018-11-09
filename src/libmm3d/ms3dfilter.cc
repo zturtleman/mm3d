@@ -141,6 +141,7 @@ typedef struct _JointNameListRec_t JointNameListRecT;
 Ms3dFilter::Ms3dOptions::Ms3dOptions()
    : m_subVersion( 0 ),
      m_vertexExtra( 0xffffffff ),
+     m_vertexExtra2( 0xffffffff ),
      m_jointColor( 0xffffffff )
 {
 }
@@ -155,7 +156,7 @@ void Ms3dFilter::Ms3dOptions::setOptionsFromModel( Model * m )
    if ( m->getMetaData( "ms3d_sub_version", value, sizeof(value) ) )
    {
       m_subVersion = atoi( value );
-      m_subVersion = util_clamp( m_subVersion, 0, 2 );
+      m_subVersion = util_clamp( m_subVersion, 0, 3 );
    }
    else
    {
@@ -177,6 +178,11 @@ void Ms3dFilter::Ms3dOptions::setOptionsFromModel( Model * m )
    if ( m->getMetaData( "ms3d_vertex_extra", value, sizeof(value) ) )
    {
       sscanf( value, "%x", &m_vertexExtra );
+   }
+
+   if ( m->getMetaData( "ms3d_vertex_extra2", value, sizeof(value) ) )
+   {
+      sscanf( value, "%x", &m_vertexExtra2 );
    }
 
    // TODO joint color
@@ -1132,17 +1138,23 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
    }
 
    int32_t subVersion = m_options->m_subVersion;
-   if ( subVersion == 1 || subVersion == 2 )
+   if ( subVersion >= 1 )
    {
       // Remember some values in meta data
       char value[128];
       sprintf( value, "%d", subVersion );
       m_model->updateMetaData( "ms3d_sub_version", value );
 
-      if ( subVersion == 2 )
+      if ( subVersion >= 2 )
       {
          sprintf( value, "%x", m_options->m_vertexExtra );
          m_model->updateMetaData( "ms3d_vertex_extra", value );
+      }
+
+      if ( subVersion >= 3 )
+      {
+         sprintf( value, "%x", m_options->m_vertexExtra2 );
+         m_model->updateMetaData( "ms3d_vertex_extra2", value );
       }
 
       writeCommentSection();
@@ -1177,7 +1189,7 @@ void Ms3dFilter::writeCommentSection()
 void Ms3dFilter::writeVertexWeightSection( const MeshList & ml )
 {
    int32_t subVersion = m_options->m_subVersion;
-   if ( subVersion < 1 || subVersion > 2 )
+   if ( subVersion < 1 || subVersion > 3 )
    {
       subVersion = 1;
    }
@@ -1271,10 +1283,15 @@ void Ms3dFilter::writeVertexWeight( int subVersion,
    m_dst->write( weight[1] );
    m_dst->write( weight[2] );
 
-   if ( subVersion == 2 )
+   if ( subVersion >= 2 )
    {
       uint32_t extra = m_options->m_vertexExtra;
       m_dst->write( extra );
+   }
+   if ( subVersion >= 3 )
+   {
+      uint32_t extra2 = m_options->m_vertexExtra2;
+      m_dst->write( extra2 );
    }
 }
 
@@ -1340,7 +1357,11 @@ bool Ms3dFilter::readVertexWeightSection()
    int32_t subVersion = 0;
    m_src->read( subVersion );
 
-   subVersion = util_clamp( subVersion, 1, 2 );
+   if ( subVersion < 1 || subVersion > 3 )
+   {
+      log_debug( "  sub version: %d (unknown)\n", subVersion );
+      return false;
+   }
 
    char value[128];
    sprintf( value, "%d", subVersion );
@@ -1379,8 +1400,8 @@ bool Ms3dFilter::readVertexWeight( int subVersion,
    int8_t boneIds[4]  = { -1, -1, -1, -1 };
    uint8_t weights[4] = {  0,  0,  0,  0 };
 
-   size_t size = (subVersion == 2) ? 10 : 6;
-   if ( size > m_src->getRemaining() )
+   size_t size[4] = { 0, 6, 10, 14 };
+   if ( size[subVersion] > m_src->getRemaining() )
    {
       return false;
    }
@@ -1400,18 +1421,27 @@ bool Ms3dFilter::readVertexWeight( int subVersion,
       {
          weights[i] = (uint8_t) ((int) weights[i] * 100 / 255);
       }
-      //log_debug( "      read weights %d\n", boneIds[i+1] );
+      //log_debug( "      read weights %d\n", weights[i] );
    }
-   if ( subVersion == 2 )
+   if ( subVersion >= 2 )
    {
       int32_t extra = 0;
       m_src->read( extra ); // don't do anything with this
    }
+   if ( subVersion >= 3 )
+   {
+      int32_t extra2 = 0;
+      m_src->read( extra2 ); // don't do anything with this
+   }
+
+   //log_debug( "      vtx %d: b %d, %d, %d, %d; w %d, %d, %d, %d\n", vertex,
+   //   (int)boneIds[0], (int)boneIds[1], (int)boneIds[2], (int)boneIds[3],
+   //   (int)weights[0], (int)weights[1], (int)weights[2], (int)weights[3] );
 
    VertexWeightT vw;
 
    int total = 0;
-   for ( i = 0; boneIds[i] >= 0 && i < 4; i++ )
+   for ( i = 0; i < 4 && boneIds[i] >= 0; i++ )
    {
       vw.boneId = boneIds[i];
       if ( i < 3 )

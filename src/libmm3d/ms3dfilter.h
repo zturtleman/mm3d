@@ -39,6 +39,7 @@ class Ms3dFilter : public ModelFilter
 
             int m_subVersion;
             uint32_t m_vertexExtra;
+            uint32_t m_vertexExtra2;
             uint32_t m_jointColor;
 
             void setOptionsFromModel( Model * m );

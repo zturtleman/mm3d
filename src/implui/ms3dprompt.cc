@@ -60,10 +60,16 @@ void Ms3dPrompt::setOptions( Ms3dFilter::Ms3dOptions * opts )
       case 2:
          m_subVersion2->setChecked( true );
          break;
+      case 3:
+         m_subVersion3->setChecked( true );
+         break;
    }
    char str[20];
    PORT_snprintf( str, sizeof(str), "%X", opts->m_vertexExtra );
    m_vertexExtra->setText( str );
+
+   PORT_snprintf( str, sizeof(str), "%X", opts->m_vertexExtra2 );
+   m_vertexExtra2->setText( str );
 
    // TODO joint color
    //PORT_snprintf( str, sizeof(str), "%X", opts->m_jointColor );
@@ -79,10 +85,16 @@ void Ms3dPrompt::getOptions( Ms3dFilter::Ms3dOptions * opts )
       opts->m_subVersion = 1;
    if ( m_subVersion2->isChecked() )
       opts->m_subVersion = 2;
+   if ( m_subVersion3->isChecked() )
+      opts->m_subVersion = 3;
 
    uint32_t val = 0xffffffff;
    sscanf( m_vertexExtra->text().toUtf8(), "%X", &val);
    opts->m_vertexExtra   = val;
+
+   val = 0xffffffff;
+   sscanf( m_vertexExtra2->text().toUtf8(), "%X", &val);
+   opts->m_vertexExtra2   = val;
 
    // TODO joint color
    //val = 0xffffffff;
@@ -103,7 +115,15 @@ void Ms3dPrompt::subVersionChangedEvent()
 
 void Ms3dPrompt::updateExtraEnabled()
 {
-   m_vertexExtra->setEnabled( m_subVersion2->isChecked() );
+   int subVersion = 0;
+   if ( m_subVersion1->isChecked() )
+      subVersion = 1;
+   if ( m_subVersion2->isChecked() )
+      subVersion = 2;
+   if ( m_subVersion3->isChecked() )
+      subVersion = 3;
+   m_vertexExtra->setEnabled( subVersion >= 2 );
+   m_vertexExtra2->setEnabled( subVersion >= 3 );
    // TODO joint color
    //m_jointColor->setEnabled( !m_subVersion0->isChecked() );
 }
