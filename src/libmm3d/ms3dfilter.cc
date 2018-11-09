@@ -269,7 +269,14 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
          vert->m_coord[v] = vertex.m_vertex[ v ];
       }
       modelVertices.push_back( vert );
-      vertexJoints.push_back( vertex.m_boneId );
+      if ( vertex.m_boneId == 0xFF )
+      {
+         vertexJoints.push_back( -1 );
+      }
+      else
+      {
+         vertexJoints.push_back( vertex.m_boneId );
+      }
    }
 
    uint16_t numTriangles = 0;
@@ -692,8 +699,8 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
       return Model::ERROR_FILTER_SPECIFIC;
    }
 
-   if ( model->getBoneJointCount() > 128 ) {
-      model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many bone joints for MS3D export (max 128)." ) ).c_str() );
+   if ( model->getBoneJointCount() > 255 ) {
+      model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many bone joints for MS3D export (max 255)." ) ).c_str() );
       return Model::ERROR_FILTER_SPECIFIC;
    }
 
@@ -1240,7 +1247,7 @@ void Ms3dFilter::writeJointColorSection()
 void Ms3dFilter::writeVertexWeight( int subVersion,
       const Model::InfluenceList & ilist )
 {
-   int8_t boneId[4]  = { -1, -1, -1, -1 };
+   uint8_t boneId[4] = { 0xFF, 0xFF, 0xFF, 0xFF };
    uint8_t weight[4] = { 0, 0, 0, 0 };
    int rawWeight[4]  = { 0, 0, 0, 0 };
 
@@ -1397,8 +1404,8 @@ bool Ms3dFilter::readVertexWeight( int subVersion,
 {
    weightList.clear();
 
-   int8_t boneIds[4]  = { -1, -1, -1, -1 };
-   uint8_t weights[4] = {  0,  0,  0,  0 };
+   uint8_t boneIds[4] = { 0xFF, 0xFF, 0xFF, 0xFF };
+   uint8_t weights[4] = { 0, 0, 0, 0 };
 
    size_t size[4] = { 0, 6, 10, 14 };
    if ( size[subVersion] > m_src->getRemaining() )
@@ -1441,7 +1448,7 @@ bool Ms3dFilter::readVertexWeight( int subVersion,
    VertexWeightT vw;
 
    int total = 0;
-   for ( i = 0; i < 4 && boneIds[i] >= 0; i++ )
+   for ( i = 0; i < 4 && boneIds[i] != 0xFF; i++ )
    {
       vw.boneId = boneIds[i];
       if ( i < 3 )
