@@ -32,7 +32,7 @@
    <item>
     <widget class="QGroupBox" name="buttonGroup1">
      <property name="title">
-      <string>Format Subversion</string>
+      <string>Vertex Format</string>
      </property>
      <layout class="QVBoxLayout">
       <property name="spacing">
@@ -63,21 +63,21 @@
       <item>
        <widget class="QRadioButton" name="m_subVersion1">
         <property name="text">
-         <string>Subversion 1</string>
+         <string>Subversion 1 (Multiple bone joints per-vertex)</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QRadioButton" name="m_subVersion2">
         <property name="text">
-         <string>Subversion 2</string>
+         <string>Subversion 2 (One extra 32-bit value per-vertex)</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QRadioButton" name="m_subVersion3">
         <property name="text">
-         <string>Subversion 3</string>
+         <string>Subversion 3 (Two extra 32-bit values per-vertex)</string>
         </property>
        </widget>
       </item>
