@@ -1320,7 +1320,7 @@ void Ms3dFilter::writeVertexWeight( int subVersion,
    m_dst->write( boneId[3] );
 
    // Yes, this needs to start at 0 (zero), weight[3] is implicit
-   log_debug( "write weights: %d, %d, %d\n", weight[0], weight[1], weight[2] );
+   //log_debug( "write weights: %d, %d, %d\n", weight[0], weight[1], weight[2] );
    m_dst->write( weight[0] );
    m_dst->write( weight[1] );
    m_dst->write( weight[2] );
