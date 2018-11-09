@@ -383,8 +383,14 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
 
       uint8_t material = 0;
       m_src->read( material );
-      group->m_materialIndex = material;
-      // FIXME: materialIndex -1 (static_cast<uint8_t>(~0)) means no material
+      if ( material == 0xFF )
+      {
+         group->m_materialIndex = -1;
+      }
+      else
+      {
+         group->m_materialIndex = material;
+      }
 
       // Already added group to m_groups
    }
@@ -694,8 +700,8 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
       return Model::ERROR_FILTER_SPECIFIC;
    }
 
-   if ( model->getTextureCount() > 128 ) {
-      model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many materials for MS3D export (max 128)." ) ).c_str() );
+   if ( model->getTextureCount() > 255 ) {
+      model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many materials for MS3D export (max 255)." ) ).c_str() );
       return Model::ERROR_FILTER_SPECIFIC;
    }
 
@@ -918,8 +924,8 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
          m_dst->write( index );
       }
 
-      uint8_t material = static_cast<uint8_t>(~0);
-      if ( grp )
+      uint8_t material = 0xFF;
+      if ( grp && grp->m_materialIndex >= 0 )
          material = grp->m_materialIndex;
       m_dst->write( material );
 
