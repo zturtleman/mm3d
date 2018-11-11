@@ -7,10 +7,10 @@
       </p>
 
       <p>
-      The <b>Format Subversion</b> options specify which MS3D subversion
+      The <b>Vertex Format</b> options specify which MS3D vertex subversion
       you want to save as. If no vertices in your model are assigned to
       more than one bone joint, select <b>Subversion 0</b>. Otherwise,
-      select <b>Subversion 1</b> or <b>2</b>.
+      select <b>Subversion 1</b>, <b>2</b>, or <b>3</b>.
       </p>
 
       <ul>
@@ -18,17 +18,19 @@
          only be assigned to one bone joint.</li>
          <li> <b>Subversion 1</b> - A vertex may be assigned to multiple
          bone joints, the weight range is 0 to 255.</li>
-         <li> <b>Subversion 2</b> - A vertex may be assigned to multiple
-         bone joints, the weight range is 0 to 100.</li>
+         <li> <b>Subversion 2</b> and <b>3</b> - A vertex may be assigned
+         to multiple bone joints, the weight range is 0 to 100.</li>
       </ul>
 
       <p>
       The <b>Subversion Options</b> section includes options that
       only apply to specific subversions. The <b>Vertex Extra</b>
       option is a 32-bit number that is saved with the vertex data
-      in <b>Subversion 2</b>. The number is specified in hexadecimal.
-      The number supplied is used for all vertices. There is no
-      way to set this value for individual vertices.
+      in <b>Subversion 2</b> and <b>3</b>. The <b>Vertex Extra 2</b>
+      option is a 32-bit number that is saved with the vertex data
+      in <b>Subversion 3</b>. The numbers are specified in hexadecimal.
+      The numbers supplied is used for all vertices. There is no
+      way to set these values for individual vertices.
       </p>
 
       <p>
