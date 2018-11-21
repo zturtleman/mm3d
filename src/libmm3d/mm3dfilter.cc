@@ -2843,7 +2843,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
             fileWi.posIndex  = v;
             fileWi.infType   = (*it).m_type;
             fileWi.infIndex  = (*it).m_boneId;
-            fileWi.infWeight = (int) ((*it).m_weight * 100.1); // round up slightly to prevent loss
+            fileWi.infWeight = (int) lround( (*it).m_weight * 100.0 );
 
             m_dst->write( fileWi.posType );
             m_dst->write( fileWi.posIndex );
@@ -2863,7 +2863,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
             fileWi.posIndex  = p;
             fileWi.infType   = (*it).m_type;
             fileWi.infIndex  = (*it).m_boneId;
-            fileWi.infWeight = (int) ((*it).m_weight * 100.1); // round up slightly to prevent loss
+            fileWi.infWeight = (int) lround( (*it).m_weight * 100.0 );
 
             m_dst->write( fileWi.posType );
             m_dst->write( fileWi.posIndex );

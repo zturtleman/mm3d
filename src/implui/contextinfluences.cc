@@ -140,7 +140,7 @@ void ContextInfluences::modelChanged( int changeBits )
             {
                int bone = (*iit).m_boneId;
                m_jclist[ bone ].count  += 1;
-               m_jclist[ bone ].weight += (int) ((*iit).m_weight * 100.0);
+               m_jclist[ bone ].weight += (int) lround( (*iit).m_weight * 100.0 );
                m_jclist[ bone ].typeCount[ (*iit).m_type ] += 1;
             }
          }
@@ -162,7 +162,7 @@ void ContextInfluences::modelChanged( int changeBits )
             if ( typeIndex >= 0 )
             {
                m_jclist[ joint ].typeIndex = typeIndex;
-               m_jclist[ joint ].weight /= m_jclist[ joint ].count;
+               m_jclist[ joint ].weight = (int) lround( m_jclist[ joint ].weight / (double) m_jclist[ joint ].count );
             }
             else
             {
@@ -301,12 +301,12 @@ void ContextInfluences::jointChanged( int index, int oldJoint, int newJoint )
 
             m_model->addPositionInfluence( *it, newJoint, Model::IT_Auto, w );
 
-            weight += (int) (w * 100.0);
+            weight += (int) lround( w * 100.0 );
          }
 
          if ( !l.empty() )
          {
-            m_jclist[ newJoint ].weight = weight / l.size();
+            m_jclist[ newJoint ].weight = (int) lround( weight / (double) l.size() );
          }
          m_jclist[ newJoint ].typeIndex = Model::IT_Auto + 1;
       }
@@ -439,7 +439,7 @@ void ContextInfluences::typeChanged( int index )
             double w = m_model->calculatePositionInfluenceWeight( *it, joint );
             m_model->setPositionInfluenceWeight( *it, joint, 
                   w );
-            weight += (int) (w * 100.0);
+            weight += (int) lround( w * 100.0 );
          }
          else
          {
@@ -450,7 +450,7 @@ void ContextInfluences::typeChanged( int index )
 
       if ( type == Model::IT_Auto )
       {
-         m_jclist[ joint ].weight = weight / m_jclist[ joint ].count;
+         m_jclist[ joint ].weight = (int) lround( weight / (double) m_jclist[ joint ].count );
       }
 
       m_jclist[ joint ].typeIndex = type + 1;
@@ -687,7 +687,7 @@ int ContextInfluences::getRemainderWeight( int joint )
          {
             if ( (*iit).m_type == Model::IT_Remainder && (*iit).m_boneId == joint )
             {
-               weight += (*iit).m_weight;
+               weight += (int) lround( (*iit).m_weight * 100.0 );
                count++;
             }
          }
@@ -695,7 +695,7 @@ int ContextInfluences::getRemainderWeight( int joint )
 
       if ( count > 0 )
       {
-         return (int) ((weight * 100.0) / (double) count);
+         return (int) lround( weight / (double) count );
       }
    }
    return 0;

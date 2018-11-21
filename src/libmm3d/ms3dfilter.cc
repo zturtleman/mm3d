@@ -1293,9 +1293,9 @@ void Ms3dFilter::writeVertexWeight( int subVersion,
 
    for ( it = ilist.rbegin(); index < 4 && it != ilist.rend(); it++ )
    {
-      totalWeight += static_cast<int>(it->m_weight * 100.0);
       boneId[ index ] = it->m_boneId;
-      rawWeight[ index ] = static_cast<int>(it->m_weight * 100.0);
+      rawWeight[ index ] = (int) lround( it->m_weight * 100.0 );
+      totalWeight += rawWeight[ index ];
 
       index++;
    }
@@ -1306,11 +1306,16 @@ void Ms3dFilter::writeVertexWeight( int subVersion,
    for ( it = ilist.rbegin(); index < 4 && it != ilist.rend(); it++ )
    {
       if ( totalWeight > 0 )
-         weight[ index ] = (uint8_t) (rawWeight[ index ] * (double) maxWeight
-               / (double) totalWeight);
+         weight[ index ] = (uint8_t) lround( rawWeight[ index ] * (double) maxWeight
+               / (double) totalWeight );
       else
-         weight[ index ] = maxWeight / ilist.size();
+         weight[ index ] = (uint8_t) lround( maxWeight / (double) ilist.size() );
+
       index++;
+   }
+
+   if ( weight[0] + weight[1] + weight[2] + weight[3] != maxWeight ) {
+      log_debug( "write weights: %d, %d, %d, %d (total: %d != %d)\n", weight[0], weight[1], weight[2], weight[3], weight[0] + weight[1] + weight[2] + weight[3], maxWeight );
    }
 
    // Yes, this needs to start at 1 (one), boneId[0] is stored

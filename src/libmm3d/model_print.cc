@@ -68,7 +68,7 @@ void Model::Vertex::sprint( std::string & dest )
             typeChar = 'R';
 
          sprintf( tempstr, "%d-%c%d", it->m_boneId, typeChar,
-               (int) (it->m_weight * 100.0 + 0.5) );
+               (int) lround( it->m_weight * 100.0 ) );
          dest += tempstr;
 
          ++it;
@@ -216,7 +216,7 @@ void Model::Point::sprint( std::string & dest )
             typeChar = 'R';
 
          sprintf( tempstr, "%d-%c%d", it->m_boneId, typeChar,
-               (int) (it->m_weight * 100.0 + 0.5) );
+               (int) lround( it->m_weight * 100.0 ) );
          dest += tempstr;
 
          ++it;
