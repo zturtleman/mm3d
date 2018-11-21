@@ -1309,7 +1309,7 @@ void Ms3dFilter::writeVertexWeight( int subVersion,
          weight[ index ] = (uint8_t) lround( rawWeight[ index ] * (double) maxWeight
                / (double) totalWeight );
       else
-         weight[ index ] = (uint8_t) lround( maxWeight / (double) ilist.size() );
+         weight[ index ] = 0;
 
       index++;
    }
