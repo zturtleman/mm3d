@@ -1314,8 +1314,27 @@ void Ms3dFilter::writeVertexWeight( int subVersion,
       index++;
    }
 
+   // Fix weights if they adding up to maxWeight + 1 (and while I haven't seen it happen also handle up to 4 too many)
+   if ( weight[0] + weight[1] + weight[2] + weight[3] > maxWeight ) {
+      int index, extraWeight = ( weight[0] + weight[1] + weight[2] + weight[3] ) - maxWeight;
+
+      log_debug( "fixing vertex weights: %d, %d, %d, %d (total: %d != %d)\n", weight[0], weight[1], weight[2], weight[3], weight[0] + weight[1] + weight[2] + weight[3], maxWeight );
+      log_debug( "          raw weights: %d, %d, %d, %d\n", rawWeight[0], rawWeight[1], rawWeight[2], rawWeight[3] );
+
+      for ( index = 3; index >= 0; index-- )
+      {
+         if ( extraWeight > 0 && weight[index] > 0 )
+         {
+            weight[index] -= 1;
+            extraWeight -= 1;
+         }
+      }
+
+      log_debug( "          new weights: %d, %d, %d, %d (total: %d)\n", weight[0], weight[1], weight[2], weight[3], weight[0] + weight[1] + weight[2] + weight[3] );
+   }
+
    if ( weight[0] + weight[1] + weight[2] + weight[3] != maxWeight ) {
-      log_debug( "write weights: %d, %d, %d, %d (total: %d != %d)\n", weight[0], weight[1], weight[2], weight[3], weight[0] + weight[1] + weight[2] + weight[3], maxWeight );
+      log_warning( "write ms3d vertex weights: %d, %d, %d, %d (total: %d != %d)\n", weight[0], weight[1], weight[2], weight[3], weight[0] + weight[1] + weight[2] + weight[3], maxWeight );
    }
 
    // Yes, this needs to start at 1 (one), boneId[0] is stored
