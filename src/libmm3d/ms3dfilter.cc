@@ -170,7 +170,7 @@ void Ms3dFilter::Ms3dOptions::setOptionsFromModel( Model * m )
          m->getVertexInfluences( v, il );
          if ( il.size() > 1 )
          {
-            m_subVersion = 1;
+            m_subVersion = 2;
          }
       }
    }
