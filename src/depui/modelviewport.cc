@@ -412,23 +412,31 @@ void ModelViewport::paintGL()
 
          opt |= ( (g_prefs( "ui_render_backface_cull" ).intValue() == 0) ? 0 : Model::DO_BACKFACECULL);
 
+         if ( opt != Model::DO_WIREFRAME )
+         {
+            glEnable( GL_LIGHTING );
+
+            if ( drawSelections )
+            {
+               glEnable( GL_POLYGON_OFFSET_FILL );
+               glPolygonOffset( 1, 0 );
+            }
+
+            m_model->draw( opt, static_cast<ContextT>( this) , viewPoint );
+
+            if ( drawSelections )
+            {
+               glDisable( GL_POLYGON_OFFSET_FILL );
+               glPolygonOffset( 0, 0 );
+            }
+         }
+
          if ( drawSelections )
          {
             glDisable( GL_LIGHTING );
             m_model->drawLines();
             m_model->drawVertices();
-         }
 
-         if ( opt != Model::DO_WIREFRAME )
-         {
-            glEnable( GL_LIGHTING );
-            m_model->draw( opt, static_cast<ContextT>( this) , viewPoint );
-
-         }
-
-         if ( drawSelections )
-         {
-            glDisable( GL_LIGHTING );
             glDisable( GL_DEPTH_TEST );
             m_model->drawJoints();
          }
@@ -445,14 +453,13 @@ void ModelViewport::paintGL()
 
          glClear( GL_DEPTH_BUFFER_BIT );
 
-         m_model->drawLines();
-         m_model->drawVertices();
-
          int drawMode = m_model->getCanvasDrawMode();
          if ( drawMode != ViewWireframe )
          {
             glEnable( GL_LIGHTING );
             glEnable( GL_LIGHT0 );
+            glEnable( GL_POLYGON_OFFSET_FILL );
+            glPolygonOffset( 1, 0 );
 
             int opt = Model::DO_TEXTURE | Model::DO_SMOOTHING 
                | ( (g_prefs( "ui_render_bad_textures" ).intValue() == 0) ? 0 : Model::DO_BADTEX);
@@ -474,7 +481,12 @@ void ModelViewport::paintGL()
             m_model->draw( opt, static_cast<ContextT>( this ), viewPoint );
 
             glDisable( GL_LIGHTING );
+            glDisable( GL_POLYGON_OFFSET_FILL );
+            glPolygonOffset( 0, 0 );
          }
+
+         m_model->drawLines();
+         m_model->drawVertices();
 
          glDisable( GL_DEPTH_TEST );
          m_model->drawJoints();
