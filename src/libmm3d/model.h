@@ -1224,8 +1224,6 @@ class Model
       // the model has frame animations.
       void displayFrameAnimPrimitiveError();
 
-      int getNumFrames() const;  // Deprecated
-
       // ------------------------------------------------------------------
       // Normal functions
       // ------------------------------------------------------------------
@@ -1874,8 +1872,6 @@ class Model
       bool m_validJoints;
 
       bool m_forceAddOrDelete;
-
-      int    m_numFrames;  // Deprecated
 
       AnimationModeE m_animationMode;
       unsigned m_currentFrame;

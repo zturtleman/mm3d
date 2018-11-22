@@ -208,12 +208,6 @@ class ModelFilter
       vector<Model::SkelAnim *>           & getSkelList( Model * m )       { return m->m_skelAnims;    };
       vector<Model::FrameAnim *>          & getFrameList( Model * m )      { return m->m_frameAnims;   };
 
-      // These functions are deprecated.  Don't use them.  Really.  They're
-      // probably going to go away when I have some time to clean up the
-      // Milkshape filter.
-      void setModelInitialized( Model * m, bool o ) { m->m_initialized = o; };
-      void setModelNumFrames( Model * m, int numFrames ) { m->m_numFrames = numFrames; };
-
       OptionsFuncF m_optionsFunc;
 
       FileFactory   m_defaultFactory;

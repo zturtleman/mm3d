@@ -3350,17 +3350,6 @@ Model::FormatData * Model::getFormatDataByFormat( const char * format, unsigned 
    return NULL;
 }
 
-int Model::getNumFrames() const
-{
-   int count = 0;
-   for ( unsigned anim = 0; anim < m_skelAnims.size(); anim++ )
-   {
-      count += m_skelAnims[ anim ]->m_frameCount;
-   }
-
-   return count;
-}
-
 int Model::getBoneJointParent( unsigned j ) const
 {
    if ( j < m_joints.size() )

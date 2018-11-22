@@ -489,8 +489,6 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
       modelMaterials.push_back( mat );
    }
 
-   setModelInitialized( model, true );
-
    float32_t fps = 0;
    m_src->read( fps );
 
@@ -500,8 +498,6 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
 
    int32_t numFrames = 0;
    m_src->read( numFrames );
-
-   setModelNumFrames( model, numFrames );
 
    if ( numFrames > 0 )
    {
@@ -1005,7 +1001,13 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
    }
 
    float32_t currentTime = 1.0;
-   int32_t numFrames = model->getNumFrames();
+   int32_t numFrames = 0;
+
+   unsigned animcount = model->getAnimCount( Model::ANIMMODE_SKELETAL );
+   for ( unsigned anim = 0; anim < animcount; anim++ )
+   {
+      numFrames += model->getAnimFrameCount( Model::ANIMMODE_SKELETAL, anim );
+   }
 
    double spf = 1.0 / fps;
 
