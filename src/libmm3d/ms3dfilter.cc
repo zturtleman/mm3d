@@ -612,7 +612,7 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
             mkeyframe->m_parameter[i] = keyframe.m_parameter[i];
          }
 
-         unsigned frame = (unsigned) (keyframe.m_time / (1.0 / fps)) - 1;
+         unsigned frame = (unsigned) lround(keyframe.m_time / (1.0 / fps)) - 1;
 
          model->setSkelAnimKeyframe( 0, frame, t, true,
                mkeyframe->m_parameter[0], mkeyframe->m_parameter[1], mkeyframe->m_parameter[2] );
@@ -637,7 +637,7 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
             mkeyframe->m_parameter[i] = keyframe.m_parameter[i];
          }
 
-         unsigned frame = (unsigned) (keyframe.m_time / (1.0 / fps)) - 1;
+         unsigned frame = (unsigned) lround(keyframe.m_time / (1.0 / fps)) - 1;
 
          model->setSkelAnimKeyframe( 0, frame, t, false,
                mkeyframe->m_parameter[0], mkeyframe->m_parameter[1], mkeyframe->m_parameter[2] );
@@ -1045,11 +1045,7 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
       unsigned animcount = model->getAnimCount( Model::ANIMMODE_SKELETAL );
       unsigned framecount = 0;
       unsigned prevcount = 0;
-//#define FIX_MS3D_ANIM_KEYFRAMES // Adds keyframes to beginning and end of animations so they don't affect each other.
-                                  // Something is still wrong because animations translation is wrong with this enabled.
-#ifdef FIX_MS3D_ANIM_KEYFRAMES
       bool loop;
-#endif // FIX_MS3D_ANIM_KEYFRAMES
 
       unsigned a = 0;
       unsigned f = 0;
@@ -1067,19 +1063,14 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
 
          for ( f = 0; f < framecount; f++ )
          {
+            // force keyframes at beginning and end of animation
             if ( model->getSkelAnimKeyframe( a, f, t, true, x, y, z )
-#ifdef FIX_MS3D_ANIM_KEYFRAMES
-				|| ( f == 0 || f == framecount-1 )
-#endif
-				)
+               || ( f == 0 || f == framecount-1 ) )
             {
                rotcount++;
             }
             if ( model->getSkelAnimKeyframe( a, f, t, false, x, y, z )
-#ifdef FIX_MS3D_ANIM_KEYFRAMES
-				|| ( f == 0 || f == framecount-1 )
-#endif
-				)
+               || ( f == 0 || f == framecount-1 ) )
             {
                transcount++;
             }
@@ -1109,18 +1100,13 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
       for ( a = 0; a < animcount; a++ )
       {
          framecount = model->getAnimFrameCount( Model::ANIMMODE_SKELETAL, a );
-#ifdef FIX_MS3D_ANIM_KEYFRAMES
          loop = model->getAnimLooping( Model::ANIMMODE_SKELETAL, a );
-#endif // FIX_MS3D_ANIM_KEYFRAMES
 
          for ( f = 0; f < framecount; f++ )
          {
             // force keyframes at beginning and end of animation
             if ( model->getSkelAnimKeyframe( a, f, t, true, x, y, z )
-#ifdef FIX_MS3D_ANIM_KEYFRAMES
-				|| ( ( f == 0 || f == framecount-1 ) && model->interpSkelAnimKeyframe( a, f, loop, t, true, x, y, z ) )
-#endif // FIX_MS3D_ANIM_KEYFRAMES
-				)
+               || ( ( f == 0 || f == framecount-1 ) && model->interpSkelAnimKeyframe( a, f, loop, t, true, x, y, z ) ) )
             {
                MS3DKeyframe keyframe;
                keyframe.m_time = ((double) (prevcount + f + 1)) * spf;
@@ -1146,18 +1132,13 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
       for ( a = 0; a < animcount; a++ )
       {
          framecount = model->getAnimFrameCount( Model::ANIMMODE_SKELETAL, a );
-#ifdef FIX_MS3D_ANIM_KEYFRAMES
          loop = model->getAnimLooping( Model::ANIMMODE_SKELETAL, a );
-#endif // FIX_MS3D_ANIM_KEYFRAMES
 
          for ( f = 0; f < framecount; f++ )
          {
             // force keyframes at beginning and end of animation
             if ( model->getSkelAnimKeyframe( a, f, t, false, x, y, z )
-#ifdef FIX_MS3D_ANIM_KEYFRAMES
-				|| ( ( f == 0 || f == framecount-1 ) && model->interpSkelAnimKeyframe( a, f, loop, t, false, x, y, z ) )
-#endif // FIX_MS3D_ANIM_KEYFRAMES
-				)
+               || ( ( f == 0 || f == framecount-1 ) && model->interpSkelAnimKeyframe( a, f, loop, t, false, x, y, z ) ) )
             {
                MS3DKeyframe keyframe;
                keyframe.m_time = ((double) (prevcount + f + 1)) * spf;
@@ -1174,9 +1155,9 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
                m_dst->write( keyframe.m_parameter[2] );
             }
          }
-      }
 
-      prevcount += framecount;
+         prevcount += framecount;
+      }
    }
 
    int32_t subVersion = m_options->m_subVersion;
