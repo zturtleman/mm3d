@@ -785,6 +785,8 @@ void Model::invalidateTextures()
    {
       (*it)->m_valid = false;
    }
+
+   m_validBspTree = false;
 }
 
 void Model::deleteGlTextures( ContextT context )
