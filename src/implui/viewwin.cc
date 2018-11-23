@@ -750,6 +750,12 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent )
    m_model->setUndoEnabled( true );
    m_model->clearUndo();
 
+   // FIXME hack if toolbar was hidden by loadDockPositions(), restore it.
+   // https://github.com/zturtleman/mm3d/issues/28
+   if ( m_toolBar->isHidden() ) {
+      m_toolBar->show();
+   }
+
    // This is a hack to prevent a minimized bool panel from blocking the left
    // side of the menu bar.
    if ( !m_boolPanel->isVisible() )
