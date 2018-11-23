@@ -1403,6 +1403,8 @@ bool Model::setCurrentAnimation( AnimationModeE m, const char * name )
       m_changeBits |= AnimationMode;
    }
 
+   m_validBspTree = false;
+
    unsigned t;
    switch ( m )
    {
@@ -1551,6 +1553,8 @@ bool Model::setCurrentAnimation( AnimationModeE m, unsigned index )
       m_changeBits |= AnimationMode;
    }
 
+   m_validBspTree = false;
+
    log_debug( "Changing animation from %d to %d\n", oldMode, m );
 
    switch ( m )
@@ -1683,6 +1687,8 @@ bool Model::setCurrentAnimationFrame( unsigned frame )
 {
    m_changeBits |= AnimationFrame;
 
+   m_validBspTree = false;
+
    if ( m_animationMode == ANIMMODE_FRAME 
          && m_currentAnim < m_frameAnims.size() 
          && frame < m_frameAnims[m_currentAnim]->m_frameData.size() )
@@ -1716,6 +1722,8 @@ bool Model::setCurrentAnimationTime( double frameTime )
    m_currentTime = 0;
 
    m_changeBits |= AnimationFrame;
+
+   m_validBspTree = false;
 
    if ( m_animationMode == ANIMMODE_FRAME && m_currentAnim < m_frameAnims.size() )
    {
@@ -2094,6 +2102,8 @@ void Model::setNoAnimation()
    if ( m_animationMode != ANIMMODE_NONE )
    {
       m_changeBits |= AnimationMode;
+
+      m_validBspTree = false;
    }
 
    unsigned vcount = m_vertices.size();

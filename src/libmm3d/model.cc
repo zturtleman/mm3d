@@ -4420,6 +4420,15 @@ void Model::calculateBspTree()
    log_debug( "calculating BSP tree\n" );
    m_bspTree.clear();
 
+   if ( m_animationMode == ANIMMODE_SKELETAL && m_currentAnim >= m_skelAnims.size() )
+   {
+      return;
+   }
+   else if ( m_animationMode == ANIMMODE_FRAME && m_currentAnim >= m_frameAnims.size() )
+   {
+      return;
+   }
+
    for ( unsigned m = 0; m < m_groups.size(); m++ )
    {
       Group * grp = m_groups[m];
@@ -4427,8 +4436,8 @@ void Model::calculateBspTree()
       {
          int index = grp->m_materialIndex;
 
-         Texture * tex = m_materials[index]->m_textureData;
-         if ( tex && tex->m_format == Texture::FORMAT_RGBA )
+         if ( m_materials[ index ]->m_type == Model::Material::MATTYPE_TEXTURE
+               && m_materials[ index ]->m_textureData->m_format == Texture::FORMAT_RGBA )
          {
             for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
                   it != grp->m_triangleIndices.end();
@@ -4438,20 +4447,84 @@ void Model::calculateBspTree()
                triangle->m_marked = true;
 
                BspTree::Poly * poly = BspTree::Poly::get();
+
+               if ( m_animationMode == ANIMMODE_SKELETAL )
+               {
+                  for (int i = 0; i < 3; i++ )
+                  {
+                     poly->coord[0][i] = m_vertices[ triangle->m_vertexIndices[0] ]->m_drawSource[i];
+                     poly->coord[1][i] = m_vertices[ triangle->m_vertexIndices[1] ]->m_drawSource[i];
+                     poly->coord[2][i] = m_vertices[ triangle->m_vertexIndices[2] ]->m_drawSource[i];
+
+                     poly->drawNormals[0][i] = triangle->m_normalSource[0][i];
+                     poly->drawNormals[1][i] = triangle->m_normalSource[1][i];
+                     poly->drawNormals[2][i] = triangle->m_normalSource[2][i];
+
+                     poly->norm[i] = triangle->m_flatSource[i];
+                  }
+               }
+               else if ( m_animationMode == ANIMMODE_FRAME )
+               {
+                  FrameAnimVertex * vertex0 = ((*m_frameAnims[m_currentAnim]->m_frameData[m_currentFrame]->m_frameVertices)[ triangle->m_vertexIndices[0] ]);
+                  FrameAnimVertex * vertex1 = ((*m_frameAnims[m_currentAnim]->m_frameData[m_currentFrame]->m_frameVertices)[ triangle->m_vertexIndices[1] ]);
+                  FrameAnimVertex * vertex2 = ((*m_frameAnims[m_currentAnim]->m_frameData[m_currentFrame]->m_frameVertices)[ triangle->m_vertexIndices[2] ]);
+
+                  for (int i = 0; i < 3; i++ )
+                  {
+                     poly->coord[0][i] = vertex0->m_coord[i];
+                     poly->coord[1][i] = vertex1->m_coord[i];
+                     poly->coord[2][i] = vertex2->m_coord[i];
+
+                     poly->drawNormals[0][i] = vertex0->m_normal[i];
+                     poly->drawNormals[1][i] = vertex1->m_normal[i];
+                     poly->drawNormals[2][i] = vertex2->m_normal[i];
+                  }
+
+                  float x1 = vertex0->m_coord[0];
+                  float y1 = vertex0->m_coord[1];
+                  float z1 = vertex0->m_coord[2];
+                  float x2 = vertex1->m_coord[0];
+                  float y2 = vertex1->m_coord[1];
+                  float z2 = vertex1->m_coord[2];
+                  float x3 = vertex2->m_coord[0];
+                  float y3 = vertex2->m_coord[1];
+                  float z3 = vertex2->m_coord[2];
+
+                  float A = y1 * (z2 - z3) + y2 * (z3 - z1) + y3 * (z1 - z2);
+                  float B = z1 * (x2 - x3) + z2 * (x3 - x1) + z3 * (x1 - x2);
+                  float C = x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2);
+
+                  // Get flat normal
+                  float len = sqrt((A * A) + (B * B) + (C * C));
+
+                  A = A / len;
+                  B = B / len;
+                  C = C / len;
+
+                  poly->norm[0] = A;
+                  poly->norm[1] = B;
+                  poly->norm[2] = C;
+               }
+               else
+               {
+                  for (int i = 0; i < 3; i++ )
+                  {
+                     poly->coord[0][i] = m_vertices[ triangle->m_vertexIndices[0] ]->m_coord[i];
+                     poly->coord[1][i] = m_vertices[ triangle->m_vertexIndices[1] ]->m_coord[i];
+                     poly->coord[2][i] = m_vertices[ triangle->m_vertexIndices[2] ]->m_coord[i];
+
+                     poly->drawNormals[0][i] = triangle->m_finalNormals[0][i];
+                     poly->drawNormals[1][i] = triangle->m_finalNormals[1][i];
+                     poly->drawNormals[2][i] = triangle->m_finalNormals[2][i];
+
+                     poly->norm[i] = triangle->m_flatNormals[i];
+                  }
+               }
+
                for (int i = 0; i < 3; i++ )
                {
-                  poly->coord[0][i] = m_vertices[ triangle->m_vertexIndices[0] ]->m_coord[i];
-                  poly->coord[1][i] = m_vertices[ triangle->m_vertexIndices[1] ]->m_coord[i];
-                  poly->coord[2][i] = m_vertices[ triangle->m_vertexIndices[2] ]->m_coord[i];
-
                   poly->s[i] = triangle->m_s[i];
                   poly->t[i] = triangle->m_t[i];
-
-                  poly->drawNormals[0][i] = triangle->m_finalNormals[0][i];
-                  poly->drawNormals[1][i] = triangle->m_finalNormals[1][i];
-                  poly->drawNormals[2][i] = triangle->m_finalNormals[2][i];
-
-                  poly->norm[i] = triangle->m_flatNormals[i];
                }
                poly->texture = index;
                poly->material = static_cast< void *>( m_materials[ index ] );

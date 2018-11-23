@@ -513,15 +513,10 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
 
       if ( drawOptions & DO_ALPHA )
       {
-         glEnable( GL_BLEND );
          if ( !m_validBspTree )
          {
             calculateBspTree();
          }
-      }
-      else
-      {
-         glDisable( GL_BLEND );
       }
 
       for ( unsigned t = 0; t < m_triangles.size(); t++ )
@@ -529,6 +524,7 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
          m_triangles[t]->m_marked = false;
       }
 
+      glDisable( GL_BLEND );
       glEnable( GL_LIGHT0 );
       glDisable( GL_LIGHT1 );
       _defaultMaterial();
@@ -536,7 +532,6 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
 
       if ( m_animationMode )
       {
-         glDisable( GL_BLEND ); // TODO: alpha blending on animations is not implemented
          if ( m_animationMode == ANIMMODE_SKELETAL && m_currentAnim < m_skelAnims.size() )
          {
             for ( unsigned m = 0; m < m_groups.size(); m++ )
@@ -549,6 +544,22 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                   if ( grp->m_materialIndex >= 0 )
                   {
                      int index = grp->m_materialIndex;
+
+                     if ( (drawOptions & DO_ALPHA)
+                           && m_materials[ index ]->m_type == Model::Material::MATTYPE_TEXTURE
+                           && m_materials[ index ]->m_textureData->m_format == Texture::FORMAT_RGBA )
+                     {
+                        // Alpha blended groups are drawn by bspTree later
+                        for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+                              it != grp->m_triangleIndices.end();
+                              ++it )
+                        {
+                           unsigned triIndex = *it;
+                           Triangle * triangle = m_triangles[ triIndex ];
+                           triangle->m_marked = true;
+                        }
+                        continue;
+                     }
 
                      glMaterialfv( GL_FRONT, GL_AMBIENT,
                            m_materials[ index ]->m_ambient );
@@ -711,6 +722,14 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                }
                glEnd();
             }
+
+            // Draw depth-sorted alpha blended polys last
+            if ( (drawOptions & DO_ALPHA) && viewPoint )
+            {
+               glEnable( GL_BLEND );
+               m_bspTree.render( viewPoint, drawContext );
+               glDisable( GL_BLEND );
+            }
          }
          else if ( m_animationMode == ANIMMODE_FRAME && m_currentAnim < m_frameAnims.size() )
          {
@@ -721,6 +740,7 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                for ( unsigned m = 0; m < m_groups.size(); m++ )
                {
                   Group * grp = m_groups[m];
+
                   if ( drawOptions & DO_TEXTURE )
                   {
                      glColor3f( 1.0, 1.0, 1.0 );
@@ -728,6 +748,22 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                      if ( grp->m_materialIndex >= 0 )
                      {
                         int index = grp->m_materialIndex;
+
+                        if ( (drawOptions & DO_ALPHA)
+                              && m_materials[ index ]->m_type == Model::Material::MATTYPE_TEXTURE
+                              && m_materials[ index ]->m_textureData->m_format == Texture::FORMAT_RGBA )
+                        {
+                           // Alpha blended groups are drawn by bspTree later
+                           for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+                                 it != grp->m_triangleIndices.end();
+                                 ++it )
+                           {
+                               unsigned triIndex = *it;
+                               Triangle * triangle = m_triangles[ triIndex ];
+                               triangle->m_marked = true;
+                           }
+                           continue;
+                        }
 
                         glMaterialfv( GL_FRONT, GL_AMBIENT,
                               m_materials[ index ]->m_ambient );
@@ -884,6 +920,14 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                   }
                   glEnd();
                }
+
+               // Draw depth-sorted alpha blended polys last
+               if ( (drawOptions & DO_ALPHA) && viewPoint )
+               {
+                  glEnable( GL_BLEND );
+                  m_bspTree.render( viewPoint, drawContext );
+                  glDisable( GL_BLEND );
+               }
             }
             else
             {
@@ -893,11 +937,9 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
       }
       else
       {
-         bool skipAlphaGroup = false;
          for ( unsigned m = 0; m < m_groups.size(); m++ )
          {
             Group * grp = m_groups[m];
-            skipAlphaGroup = false;
 
             if ( drawOptions & DO_TEXTURE )
             {
@@ -906,11 +948,20 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                {
                   int index = grp->m_materialIndex;
 
-                  if ( (drawOptions & DO_ALPHA) 
+                  if ( (drawOptions & DO_ALPHA)
                         && m_materials[ index ]->m_type == Model::Material::MATTYPE_TEXTURE
                         && m_materials[ index ]->m_textureData->m_format == Texture::FORMAT_RGBA )
                   {
-                     skipAlphaGroup = true;
+                     // Alpha blended groups are drawn by bspTree later
+                     for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+                           it != grp->m_triangleIndices.end();
+                           ++it )
+                     {
+                        unsigned triIndex = *it;
+                        Triangle * triangle = m_triangles[ triIndex ];
+                        triangle->m_marked = true;
+                     }
+                     continue;
                   }
 
                   glMaterialfv( GL_FRONT, GL_AMBIENT,
@@ -965,77 +1016,65 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
 
             colorSelected = false;
 
-            if ( skipAlphaGroup == false )
+            glBegin( GL_TRIANGLES );
+            for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
+                  it != grp->m_triangleIndices.end();
+                  ++it )
             {
-               glBegin( GL_TRIANGLES );
-               for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
-                     it != grp->m_triangleIndices.end();
-                     ++it )
-               {
-                  Triangle * triangle = m_triangles[ *it ];
-                  triangle->m_marked = true;
+               Triangle * triangle = m_triangles[ *it ];
+               triangle->m_marked = true;
 
-                  if ( triangle->m_visible )
+               if ( triangle->m_visible )
+               {
+                  if ( triangle->m_selected )
                   {
-                     if ( triangle->m_selected )
+                     if ( colorSelected == false )
                      {
-                        if ( colorSelected == false )
+                        if ( !(drawOptions & DO_TEXTURE) )
                         {
-                           if ( !(drawOptions & DO_TEXTURE) )
-                           {
-                              glColor3f( 1.0, 0.0, 0.0 );
-                           }
-                           glEnd();
-                           glDisable( GL_LIGHT0 );
-                           glEnable( GL_LIGHT1 );
-                           glBegin( GL_TRIANGLES );
+                           glColor3f( 1.0, 0.0, 0.0 );
                         }
-                        colorSelected = true;
+                        glEnd();
+                        glDisable( GL_LIGHT0 );
+                        glEnable( GL_LIGHT1 );
+                        glBegin( GL_TRIANGLES );
+                     }
+                     colorSelected = true;
+                  }
+                  else
+                  {
+                     if ( colorSelected == true )
+                     {
+                        if ( !(drawOptions & DO_TEXTURE) )
+                        {
+                           glColor3f( 0.9, 0.9, 0.9 );
+                        }
+                     }
+                     glEnd();
+                     glDisable( GL_LIGHT1 );
+                     glEnable( GL_LIGHT0 );
+                     glBegin( GL_TRIANGLES );
+                     colorSelected = false;
+                  }
+
+                  for ( int v = 0; v < 3; v++ )
+                  {
+                     Vertex * vertex = (m_vertices[ triangle->m_vertexIndices[v] ]);
+
+                     glTexCoord2f( triangle->m_s[ v ], triangle->m_t[ v ] );
+                     if ( (drawOptions & DO_SMOOTHING) )
+                     {
+                        glNormal3dv( triangle->m_finalNormals[v] );
                      }
                      else
                      {
-                        if ( colorSelected == true )
-                        {
-                           if ( !(drawOptions & DO_TEXTURE) )
-                           {
-                              glColor3f( 0.9, 0.9, 0.9 );
-                           }
-                        }
-                        glEnd();
-                        glDisable( GL_LIGHT1 );
-                        glEnable( GL_LIGHT0 );
-                        glBegin( GL_TRIANGLES );
-                        colorSelected = false;
+                        glNormal3dv( triangle->m_flatNormals );
                      }
-
-                     for ( int v = 0; v < 3; v++ )
-                     {
-                        Vertex * vertex = (m_vertices[ triangle->m_vertexIndices[v] ]);
-
-                        glTexCoord2f( triangle->m_s[ v ], triangle->m_t[ v ] );
-                        if ( (drawOptions & DO_SMOOTHING) )
-                        {
-                           glNormal3dv( triangle->m_finalNormals[v] );
-                        }
-                        else
-                        {
-                           glNormal3dv( triangle->m_flatNormals );
-                        }
-                        glVertex3dv( vertex->m_coord );
-                     }
+                     glVertex3dv( vertex->m_coord );
                   }
                }
-               glEnd();
             }
-            else
-            {
-               for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
-                     it != grp->m_triangleIndices.end();
-                     ++it )
-               {
-                  m_triangles[ *it ]->m_marked = true;
-               }
-            }
+            glEnd();
          }
 
          // Draw ungrouped triangles
@@ -1110,9 +1149,10 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
          // Draw depth-sorted alpha blended polys last
          if ( (drawOptions & DO_ALPHA) && viewPoint )
          {
+            glEnable( GL_BLEND );
             m_bspTree.render( viewPoint, drawContext );
+            glDisable( GL_BLEND );
          }
-
       }
 
       glDisable( GL_TEXTURE_2D );
