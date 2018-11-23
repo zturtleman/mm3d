@@ -2787,6 +2787,46 @@ Do you want to save all sections?</source>
         <source>IQE requires points to only have one bone influence.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/libmm3d/ms3dfilter.cc" line="+685"/>
+        <source>Too many vertexes for MS3D export (max 65,536).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Too many faces for MS3D export (max 65,536).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Too many groups for MS3D export (max 255).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Too many materials for MS3D export (max 255).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Too many bone joints for MS3D export (max 255).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Bone joints must have unique names for MS3D export.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>Too many vertexes for MS3D export (max 65,536) after duplicating vertexes used by multiple groups or materials.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Too many faces for MS3D export (max 65,536) after duplicating vertexes used by multiple groups or materials.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MapDirectionBase</name>
@@ -3046,7 +3086,7 @@ Opération Terminée</translation>
 <context>
     <name>ModelViewport</name>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="+1115"/>
+        <location filename="../src/depui/modelviewport.cc" line="+1127"/>
         <source>Could not load background %1</source>
         <translation>Impossible de charger l&apos;image de fond %1</translation>
     </message>
@@ -3109,23 +3149,28 @@ Opération Terminée</translation>
     </message>
     <message>
         <location line="+21"/>
-        <source>Format Subversion</source>
-        <translation>Format Subversion</translation>
+        <source>Vertex Format</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+21"/>
-        <source>Subversion 0</source>
-        <translation>Subversion 0</translation>
+        <source>Subversion 0 (Single bone joint influence)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+10"/>
-        <source>Subversion 1</source>
-        <translation>Subversion 1</translation>
+        <source>Subversion 1 (Multiple bone joints influences, weight scale 255)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>Subversion 2</source>
-        <translation>Subversion 2</translation>
+        <source>Subversion 2 (Multiple bone joints influences, weight scale 100)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Subversion 3 (Multiple bone joints influences, weight scale 100)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3138,7 +3183,17 @@ Opération Terminée</translation>
         <translation>Extra Vertex</translation>
     </message>
     <message>
-        <location line="+69"/>
+        <location line="+23"/>
+        <source>Vertex Extra 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+59"/>
+        <source>Press F1 for help</source>
+        <translation>Appuyer sur F1 pour l&apos;aide</translation>
+    </message>
+    <message>
+        <location line="+26"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
@@ -3286,7 +3341,7 @@ Opération Terminée</translation>
         <translation>Le Fichier existe.  Ecraser ?</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+28"/>
         <source>Could not write file: </source>
         <translation>Impossible d&apos;écrire le fichier: </translation>
     </message>
@@ -5086,13 +5141,13 @@ bouton</translation>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+1467"/>
+        <location line="+1473"/>
         <source>Show Properties</source>
         <comment>View|Show Properties</comment>
         <translation>Afficher les Propriétés</translation>
     </message>
     <message>
-        <location line="-1465"/>
+        <location line="-1471"/>
         <source>Render Options</source>
         <comment>View|Render Options</comment>
         <translation>Options de Rendu</translation>
@@ -5412,7 +5467,7 @@ bouton</translation>
         <translation>&amp;Aide</translation>
     </message>
     <message>
-        <location line="+316"/>
+        <location line="+322"/>
         <location line="+94"/>
         <location line="+89"/>
         <location line="+48"/>
@@ -5624,7 +5679,7 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
         <translation>Selectionner les Points influencés</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="-1940"/>
+        <location filename="../src/implui/viewwin.cc" line="-1946"/>
         <source>Auto-Assign Selected...</source>
         <comment>Joints|Auto-Assign Selected</comment>
         <translation>Assigner automatiquement la selection...</translation>
@@ -5772,7 +5827,7 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
         <translation>&amp;Matériaux</translation>
     </message>
     <message>
-        <location line="+280"/>
+        <location line="+286"/>
         <source>All Exportable Formats</source>
         <translation>Tous les formats exportables</translation>
     </message>
@@ -5800,7 +5855,7 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
         <translation>Tous les formats supportés</translation>
     </message>
     <message>
-        <location line="-2122"/>
+        <location line="-2128"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>
@@ -5812,7 +5867,7 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+592"/>
+        <location line="+598"/>
         <source>You must have at least 1 face, joint, or point selected to Export Selected</source>
         <translation type="unfinished"></translation>
     </message>
