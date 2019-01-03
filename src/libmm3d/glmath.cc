@@ -167,30 +167,28 @@ void Matrix::getRotation( double & x, double & y, double & z ) const
    double sinYaw;
    double cosYaw;
    double sinPitch = -m_val[2];
-   double cosPitch = sqrt( 1 - sinPitch*sinPitch );
+   double cosPitch;
    double sinRoll;
    double cosRoll;
 
-   // if cosPitch is NaN, it's because sinPitch^2 was slightly greater than 1.0
-   // in that case, cosPitch should be 0.0, so detect and correct it here
-   if ( cosPitch != cosPitch )
+   // if sinPitch is close to 1.0 or -1.0 it's a gimbal lock
+   if ( fabs( sinPitch ) + EQ_TOLERANCE > 1.0 )
    {
       cosPitch = 0.0;
-   }
 
-   if ( fabs( cosPitch ) > 0.0001 )
-   {
-      sinRoll = m_val[6]  / cosPitch;
-      cosRoll = m_val[10] / cosPitch;
-      sinYaw  = m_val[1]  / cosPitch;
-      cosYaw  = m_val[0]  / cosPitch;
-   }
-   else
-   {
       sinRoll = -m_val[9];
       cosRoll = m_val[5];
       sinYaw  = 0;
       cosYaw  = 1;
+   }
+   else
+   {
+      cosPitch = sqrt( 1 - sinPitch*sinPitch );
+
+      sinRoll = m_val[6]  / cosPitch;
+      cosRoll = m_val[10] / cosPitch;
+      sinYaw  = m_val[1]  / cosPitch;
+      cosYaw  = m_val[0]  / cosPitch;
    }
 
    z = atan2( sinYaw, cosYaw );
@@ -205,30 +203,28 @@ void Matrix::getRotation( double * radians ) const
       double sinYaw;
       double cosYaw;
       double sinPitch = -m_val[2];
-      double cosPitch = sqrt( 1 - sinPitch*sinPitch );
+      double cosPitch;
       double sinRoll;
       double cosRoll;
 
-      // if cosPitch is NaN, it's because sinPitch^2 was slightly greater than 1.0
-      // in that case, cosPitch should be 0.0, so detect and correct it here
-      if ( cosPitch != cosPitch )
+      // if sinPitch is close to 1.0 or -1.0 it's a gimbal lock
+      if ( fabs( sinPitch ) + EQ_TOLERANCE > 1.0 )
       {
          cosPitch = 0.0;
-      }
 
-      if ( fabs( cosPitch ) > 0.0001 )
-      {
-         sinRoll = m_val[6]  / cosPitch;
-         cosRoll = m_val[10] / cosPitch;
-         sinYaw  = m_val[1]  / cosPitch;
-         cosYaw  = m_val[0]  / cosPitch;
-      }
-      else
-      {
          sinRoll = -m_val[9];
          cosRoll = m_val[5];
          sinYaw  = 0;
          cosYaw  = 1;
+      }
+      else
+      {
+         cosPitch = sqrt( 1 - sinPitch*sinPitch );
+
+         sinRoll = m_val[6]  / cosPitch;
+         cosRoll = m_val[10] / cosPitch;
+         sinYaw  = m_val[1]  / cosPitch;
+         cosYaw  = m_val[0]  / cosPitch;
       }
 
       radians[2] = atan2( sinYaw, cosYaw );
