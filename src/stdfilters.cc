@@ -38,6 +38,8 @@
 #include "txtfilter.h"
 #include "iqefilter.h"
 #include "iqeprompt.h"
+#include "smdfilter.h"
+#include "smdprompt.h"
 #include "log.h"
 
 int init_std_filters()
@@ -84,6 +86,10 @@ int init_std_filters()
    
    filter = new IqeFilter();
    filter->setOptionsPrompt( iqeprompt_show );
+   mgr->registerFilter( filter );
+   
+   filter = new SmdFilter();
+   filter->setOptionsPrompt( smdprompt_show );
    mgr->registerFilter( filter );
    
    return 0;

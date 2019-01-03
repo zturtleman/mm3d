@@ -49,6 +49,7 @@ libmm3d_HFILES = \
 	raii.h \
 	rawtex.h \
 	release_ptr.h \
+	smdfilter.h \
 	sorted_list.h \
 	texmgr.h \
 	texscale.h \
@@ -97,6 +98,7 @@ libmm3d_a_SOURCES = \
 	ms3dfilter.cc \
 	msg.cc \
 	objfilter.cc \
+	smdfilter.cc \
 	texmgr.cc \
 	texscale.cc \
 	texture.cc \

@@ -40,6 +40,7 @@ SPAGES =  \
 	olh_ms3dprompt.htm \
 	olh_objprompt.htm \
 	olh_iqeprompt.htm \
+	olh_smdprompt.htm \
 	olh_painttexturewin.htm \
 	olh_pointwin.htm \
 	olh_pluginwin.htm \
@@ -96,6 +97,7 @@ PAGES =  \
 	olh_ms3dprompt.html \
 	olh_objprompt.html \
 	olh_iqeprompt.html \
+	olh_smdprompt.html \
 	olh_painttexturewin.html \
 	olh_pointwin.html \
 	olh_pluginwin.html \

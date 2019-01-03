@@ -403,6 +403,7 @@ LIB_OBJ= \
 	${B}/libmm3d/objfilter.o \
 	${B}/libmm3d/pcxtex.o \
 	${B}/libmm3d/rawtex.o \
+	${B}/libmm3d/smdfilter.o \
 	${B}/libmm3d/texmgr.o \
 	${B}/libmm3d/texscale.o \
 	${B}/libmm3d/texture.o \
@@ -447,6 +448,7 @@ MM3D_UI= \
 	${B}/qtui/iqeprompt.base.h \
 	${B}/qtui/ms3dprompt.base.h \
 	${B}/qtui/objprompt.base.h \
+	${B}/qtui/smdprompt.base.h \
 	${B}/qtui/pluginwin.base.h \
 	${B}/qtui/rgbawin.base.h \
 	${B}/qtui/statusbar.base.h \
@@ -501,6 +503,7 @@ MM3D_MOC= \
 	${B}/implui/iqeprompt.moc.cc \
 	${B}/implui/ms3dprompt.moc.cc \
 	${B}/implui/objprompt.moc.cc \
+	${B}/implui/smdprompt.moc.cc \
 	${B}/implui/pluginwin.moc.cc \
 	${B}/tools/polytoolwidget.moc.cc \
 	${B}/tools/projtoolwidget.moc.cc \
@@ -566,6 +569,7 @@ MM3D_MOC_OBJ= \
 	${B}/implui/iqeprompt.moc.o \
 	${B}/implui/ms3dprompt.moc.o \
 	${B}/implui/objprompt.moc.o \
+	${B}/implui/smdprompt.moc.o \
 	${B}/implui/pluginwin.moc.o \
 	${B}/tools/polytoolwidget.moc.o \
 	${B}/tools/projtoolwidget.moc.o \
@@ -673,6 +677,7 @@ MM3D_OBJ= \
 	${B}/implui/iqeprompt.o \
 	${B}/implui/ms3dprompt.o \
 	${B}/implui/objprompt.o \
+	${B}/implui/smdprompt.o \
 	${B}/implui/pluginwin.o \
 	${B}/tools/polytool.o \
 	${B}/tools/polytoolwidget.o \

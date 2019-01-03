@@ -2827,6 +2827,16 @@ Do you want to save all sections?</source>
         <source>Too many faces for MS3D export (max 65,536) after duplicating vertexes used by multiple groups or materials.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/libmm3d/smdfilter.cc" line="+129"/>
+        <source>Bone joints must have unique names for SMD export.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>SMD export requires points to only have one bone influence.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MapDirectionBase</name>
@@ -3881,6 +3891,74 @@ Opération Terminée</translation>
         <location filename="../src/tools/selectfacetoolwidget.cc" line="+43"/>
         <source>Include Back-facing</source>
         <translation>Inclure les faces arrières</translation>
+    </message>
+</context>
+<context>
+    <name>SmdPrompt</name>
+    <message>
+        <location filename="../src/implui/smdprompt.cc" line="+40"/>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished">F1</translation>
+    </message>
+</context>
+<context>
+    <name>SmdPromptBase</name>
+    <message>
+        <location filename="../src/qtui/smdprompt.ui" line="+14"/>
+        <source>SMD Filter Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Model Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <location line="+52"/>
+        <source>Animation</source>
+        <translation type="unfinished">Animation</translation>
+    </message>
+    <message>
+        <location line="-39"/>
+        <source>Save Points as Bone Joints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Vertex Format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>GoldSrc (Single bone joint influence)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Source (Multiple bone joint influences)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+41"/>
+        <source>Press F1 for help</source>
+        <translation type="unfinished">Appuyer sur F1 pour l&apos;aide</translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>Ok</source>
+        <translation type="unfinished">Ok</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Annuler</translation>
     </message>
 </context>
 <context>

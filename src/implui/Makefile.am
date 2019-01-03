@@ -47,6 +47,7 @@ libimplui_HFILES = \
 	qtmain.h \
 	qttex.h \
 	rgbawin.h \
+	smdprompt.h \
 	spherifywin.h \
 	statusbar.h \
 	texturecoord.h \
@@ -98,6 +99,7 @@ libimplui_MOC = \
 	objprompt.moc.cc \
 	pluginwin.moc.cc \
 	rgbawin.moc.cc \
+	smdprompt.moc.cc \
 	spherifywin.moc.cc \
 	statusbar.moc.cc \
 	texturecoord.moc.cc \
@@ -157,6 +159,7 @@ libimplui_a_SOURCES = \
 	qtmain.cc \
 	qttex.cc \
 	rgbawin.cc \
+	smdprompt.cc \
 	spherifywin.cc \
 	statusbar.cc \
 	texturecoord.cc \
