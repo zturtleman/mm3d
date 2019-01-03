@@ -327,6 +327,7 @@ private:
 
       sa->m_fps = 30.0;
       sa->m_spf = 1.0 / sa->m_fps;
+      sa->m_loop = true;
       sa->m_frameCount = 5;
 
       Model::Keyframe * kf = Model::Keyframe::get();
