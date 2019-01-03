@@ -180,11 +180,14 @@ Model::ModelErrorE IqeFilter::writeFile( Model * model, const char * const filen
             rot[2] = -rot[2];
             rot[3] = -rot[3];
 
-            writeLine( dst, "\tpq %.8f %.8f %.8f %.8f %.8f %.8f %.8f", trans[0], trans[1], trans[2], rot[0], rot[1], rot[2], rot[3] );
-            //writeLine( dst, "\tpm %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f", trans[0], trans[1], trans[2],
-            //      lm.get( 0, 0 ), lm.get( 0, 1 ), lm.get( 0, 2 ),
-            //      lm.get( 1, 0 ), lm.get( 1, 1 ), lm.get( 1, 2 ),
-            //      lm.get( 2, 0 ), lm.get( 2, 1 ), lm.get( 2, 2 ) );
+            writeLine( dst, "\tpq %.8f %.8f %.8f %.8f %.8f %.8f %.8f",
+                       (float)trans[0], (float)trans[1], (float)trans[2],
+                       (float)rot[0], (float)rot[1], (float)rot[2], (float)rot[3] );
+            //writeLine( dst, "\tpm %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f",
+            //           (float)trans[0], (float)trans[1], (float)trans[2],
+            //           (float)lm.get( 0, 0 ), (float)lm.get( 0, 1 ), (float)lm.get( 0, 2 ),
+            //           (float)lm.get( 1, 0 ), (float)lm.get( 1, 1 ), (float)lm.get( 1, 2 ),
+            //           (float)lm.get( 2, 0 ), (float)lm.get( 2, 1 ), (float)lm.get( 2, 2 ) );
          }
 
          writeLine( dst, "" );
@@ -230,11 +233,14 @@ Model::ModelErrorE IqeFilter::writeFile( Model * model, const char * const filen
             rot[2] = -rot[2];
             rot[3] = -rot[3];
 
-            writeLine( dst, "\tpq %.8f %.8f %.8f %.8f %.8f %.8f %.8f", trans[0], trans[1], trans[2], rot[0], rot[1], rot[2], rot[3] );
-            //writeLine( dst, "\tpm %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f", trans[0], trans[1], trans[2],
-            //      lm.get( 0, 0 ), lm.get( 0, 1 ), lm.get( 0, 2 ),
-            //      lm.get( 1, 0 ), lm.get( 1, 1 ), lm.get( 1, 2 ),
-            //      lm.get( 2, 0 ), lm.get( 2, 1 ), lm.get( 2, 2 ) );
+            writeLine( dst, "\tpq %.8f %.8f %.8f %.8f %.8f %.8f %.8f",
+                       (float)trans[0], (float)trans[1], (float)trans[2],
+                       (float)rot[0], (float)rot[1], (float)rot[2], (float)rot[3] );
+            //writeLine( dst, "\tpm %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f",
+            //           (float)trans[0], (float)trans[1], (float)trans[2],
+            //           (float)lm.get( 0, 0 ), (float)lm.get( 0, 1 ), (float)lm.get( 0, 2 ),
+            //           (float)lm.get( 1, 0 ), (float)lm.get( 1, 1 ), (float)lm.get( 1, 2 ),
+            //           (float)lm.get( 2, 0 ), (float)lm.get( 2, 1 ), (float)lm.get( 2, 2 ) );
          }
 
          writeLine( dst, "" );
@@ -299,7 +305,7 @@ Model::ModelErrorE IqeFilter::writeFile( Model * model, const char * const filen
                 saveMatrix.apply( meshVec );
                 saveMatrix.apply( meshNor );
 
-                writeLine( dst, "vp %.8lf %.8lf %.8lf", meshVec[0], meshVec[1], meshVec[2] );
+                writeLine( dst, "vp %.8f %.8f %.8f", (float)meshVec[0], (float)meshVec[1], (float)meshVec[2] );
                 writeLine( dst, "\tvt %.8f %.8f", (*vit).uv[0], (float) (1.0f - (*vit).uv[1]) );
                 writeLine( dst, "\tvn %.8f %.8f %.8f", meshNor[0], meshNor[1], meshNor[2] );
 
@@ -336,7 +342,7 @@ Model::ModelErrorE IqeFilter::writeFile( Model * model, const char * const filen
                          break;
                       }
 
-                      dst->writePrintf( " %d %.8lf", it->m_boneId, weight );
+                      dst->writePrintf( " %d %.8f", it->m_boneId, (float)weight );
                    }
                    dst->writePrintf( "\r\n" );
                 }
@@ -441,11 +447,14 @@ Model::ModelErrorE IqeFilter::writeFile( Model * model, const char * const filen
                   rot[2] = -rot[2];
                   rot[3] = -rot[3];
 
-                  writeLine( dst, "pq %.8f %.8f %.8f %.8f %.8f %.8f %.8f", trans[0], trans[1], trans[2], rot[0], rot[1], rot[2], rot[3] );
-                  //writeLine( dst, "pm %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f", trans[0], trans[1], trans[2],
-                  //      lm.get( 0, 0 ), lm.get( 0, 1 ), lm.get( 0, 2 ),
-                  //      lm.get( 1, 0 ), lm.get( 1, 1 ), lm.get( 1, 2 ),
-                  //      lm.get( 2, 0 ), lm.get( 2, 1 ), lm.get( 2, 2 ) );
+                  writeLine( dst, "pq %.8f %.8f %.8f %.8f %.8f %.8f %.8f",
+                                  (float)trans[0], (float)trans[1], (float)trans[2],
+                                  (float)rot[0], (float)rot[1], (float)rot[2], (float)rot[3] );
+                  //writeLine( dst, "pm %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f",
+                  //           (float)trans[0], (float)trans[1], (float)trans[2],
+                  //           (float)lm.get( 0, 0 ), (float)lm.get( 0, 1 ), (float)lm.get( 0, 2 ),
+                  //           (float)lm.get( 1, 0 ), (float)lm.get( 1, 1 ), (float)lm.get( 1, 2 ),
+                  //           (float)lm.get( 2, 0 ), (float)lm.get( 2, 1 ), (float)lm.get( 2, 2 ) );
                }
 
                // This is the same as point joint matricies. There is
@@ -483,11 +492,14 @@ Model::ModelErrorE IqeFilter::writeFile( Model * model, const char * const filen
                      rot[2] = -rot[2];
                      rot[3] = -rot[3];
 
-                     writeLine( dst, "pq %.8f %.8f %.8f %.8f %.8f %.8f %.8f", trans[0], trans[1], trans[2], rot[0], rot[1], rot[2], rot[3] );
-                     //writeLine( dst, "pm %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f", trans[0], trans[1], trans[2],
-                     //      lm.get( 0, 0 ), lm.get( 0, 1 ), lm.get( 0, 2 ),
-                     //      lm.get( 1, 0 ), lm.get( 1, 1 ), lm.get( 1, 2 ),
-                     //      lm.get( 2, 0 ), lm.get( 2, 1 ), lm.get( 2, 2 ) );
+                     writeLine( dst, "pq %.8f %.8f %.8f %.8f %.8f %.8f %.8f",
+                                (float)trans[0], (float)trans[1], (float)trans[2],
+                                (float)rot[0], (float)rot[1], (float)rot[2], (float)rot[3] );
+                     //writeLine( dst, "pm %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f %.8f",
+                     //           (float)trans[0], (float)trans[1], (float)trans[2],
+                     //           (float)lm.get( 0, 0 ), (float)lm.get( 0, 1 ), (float)lm.get( 0, 2 ),
+                     //           (float)lm.get( 1, 0 ), (float)lm.get( 1, 1 ), (float)lm.get( 1, 2 ),
+                     //           (float)lm.get( 2, 0 ), (float)lm.get( 2, 1 ), (float)lm.get( 2, 2 ) );
                   }
                }
 
