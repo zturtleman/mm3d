@@ -338,11 +338,7 @@ Model::ModelErrorE IqeFilter::writeFile( Model * model, const char * const filen
 
                       dst->writePrintf( " %d %.8lf", it->m_boneId, weight );
                    }
-#ifdef WIN32
-                   dst->writePrintf( "\n" );
-#else // WIN32
                    dst->writePrintf( "\r\n" );
-#endif // WIN32
                 }
              }
 
@@ -515,11 +511,7 @@ bool IqeFilter::writeLine( DataDest *dst, const char * line, ... )
    va_start( ap, line );
    dst->writeVPrintf( line, ap );
    va_end( ap );
-#ifdef WIN32
-   dst->writePrintf( "\n" );
-#else // WIN32
    dst->writePrintf( "\r\n" );
-#endif // WIN32
    return true;
 }
 

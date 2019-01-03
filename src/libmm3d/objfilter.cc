@@ -183,11 +183,7 @@ bool ObjFilter::writeLine( const char * line, ... )
    va_start( ap, line );
    m_dst->writeVPrintf( line, ap );
    va_end( ap );
-#ifdef WIN32
-   m_dst->writePrintf( "\n" );
-#else // WIN32
    m_dst->writePrintf( "\r\n" );
-#endif // WIN32
    return true;
 }
 
@@ -328,11 +324,7 @@ bool ObjFilter::writeStripped( const char * fmt, ... )
    }
    line2[ d ] = '\0';
 
-#ifdef WIN32
-   m_dst->writePrintf( "%s\n", line2 );
-#else // WIN32
    m_dst->writePrintf( "%s\r\n", line2 );
-#endif // WIN32
 
    return true;
 }

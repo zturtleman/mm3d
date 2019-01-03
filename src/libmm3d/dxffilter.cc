@@ -481,11 +481,7 @@ bool DxfFilter::writeLine( const char * line, ... )
    va_start( ap, line );
    m_dst->writeVPrintf( line, ap );
    va_end( ap );
-#ifdef WIN32
-   m_dst->writeString( "\n" );
-#else // WIN32
    m_dst->writeString( "\r\n" );
-#endif // WIN32
    return true;
 }
 
