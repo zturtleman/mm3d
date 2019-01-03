@@ -705,7 +705,7 @@ bool ObjFilter::readLine( char * line )
       replace( str, ',', '.' );
       readVertex( str );
    }
-   if ( strncmp( str, "vt ", 3 ) == 0 )
+   else if ( strncmp( str, "vt ", 3 ) == 0 )
    {
       replace( str, ',', '.' );
       readTextureCoord( str );
