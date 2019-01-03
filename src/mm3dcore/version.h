@@ -29,18 +29,19 @@
 // If you change the version, also change the following files
 // (relative to top source directory)
 //   configure.ac (for x.x.x)
+//   src/win_resource.rc (for x.x.x)
 //   mm3d-win32-installer.nsi (for x.x.x)
 //   Makefile.am (for Contents/PlugIns/mm3d/x.x)
 //   Makefile.generic (for plugins/x.x)
 //   plugins/Makefile.am (for plugins/x.x)
 
 #ifndef VERSION
-#define VERSION "1.3.10"
+#define VERSION "1.3.11"
 #endif
 
 #define VERSION_MAJOR 1
 #define VERSION_MINOR 3
-#define VERSION_PATCH 10
+#define VERSION_PATCH 11
 
 // Set to 0 for stable releases (even minor version) and 1 for
 // development versions (odd minor version)

@@ -1,3 +1,32 @@
+Changes for 1.3.11 (2019-01-02)
+   Add support for exporting Studiomdl Data (SMD) models
+   Add support for texture alpha blending in animation mode
+   Add workaround to force toolbar to be visible even if it's hidden in dock.dat
+   Improve decimal accuracy for rotation on properties panel
+   Improve decimal accuracy in exported IQE models
+   Improve MS3D model support
+      Add support for loading/saving Milkshape 3D 1.8.5 BETA 1 MS3D models
+      Add descriptions for vertex subversions to MS3D export prompt
+      Only allow typing hexdecimal in MS3D Vertex Extra export prompt
+      Don't allow exporting invalid MS3D models; too many vertexes, triangles, bone joints, groups, or materials
+      Don't convert vertex bone weights of 0 to average for MS3D export
+      Fix reading/writing MS3D animation bone joint keyframes
+      Fix written MS3D bone joint weights not adding up to 100
+      Fix loading MS3D bone influences for more than 128 bones
+      Fix loading MS3D when a group has no material
+   Use Windows path separators in recent models list on Windows
+   Fix writing line endings in OBJ/DXF/IQE on Windows (regression)
+   Fix loading OBJ textures on Windows (regression)
+   Fix Paint Texture window writing a blank black image (regression)
+   Fix not loading texture the first time Texture Coordinates window is shown (regression)
+   Fix some vertex bone joint weights being rounded down on properties panel and calculated auto weight
+   Fix missing meta data undo event after Cal3D/MD3/MS3D export
+   Fix wireframe Z-fighting with model meshes
+   Fix new transparent texture set for material not being drawn
+   Fix frame animated models default to blank animation type in Animation Sets window
+   Fix gimbal lock detection when converting matrix to Euler angles (affected writing SMD models)
+   Fix keyboard shortcuts in German and French translations
+
 Changes for 1.3.10 (2018-09-05)
    Rename application to Maverick Model 3D
    Add bone joint rotation to properties panel in non-animation mode

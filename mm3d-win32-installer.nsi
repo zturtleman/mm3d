@@ -20,8 +20,8 @@
 ; See the COPYING file for full license text.
 
 
-!define VERSION "1.3.10"
-!define FILE_VERSION "1_3_10"
+!define VERSION "1.3.11"
+!define FILE_VERSION "1_3_11"
 
 Name "Maverick Model 3D ${VERSION}"
 OutFile "mm3d-${FILE_VERSION}-win32-installer.exe"

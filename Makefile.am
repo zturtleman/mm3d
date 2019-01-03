@@ -128,7 +128,7 @@ define INFOPLIST
 <key>LSMinimumSystemVersion</key>
 <string>${MACOSX_DEPLOYMENT_TARGET}</string>
 <key>NSHumanReadableCopyright</key>
-<string>Copyright © 2004-2008 Kevin Worcester, Copyright © 2009-2018 Zack Middleton.</string>
+<string>Copyright © 2004-2008 Kevin Worcester, Copyright © 2009-2019 Zack Middleton.</string>
 <key>NSPrincipalClass</key>
 <string>NSApplication</string>
 </dict>
