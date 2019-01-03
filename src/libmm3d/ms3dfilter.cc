@@ -1182,6 +1182,8 @@ Model::ModelErrorE Ms3dFilter::writeFile( Model * model, const char * const file
          m_model->updateMetaData( "ms3d_vertex_extra2", value );
       }
 
+      model->operationComplete( transll( QT_TRANSLATE_NOOP( "LowLevel", "Set meta data for MS3D export" ) ).c_str() );
+
       writeCommentSection();
       writeVertexWeightSection( ml );
 

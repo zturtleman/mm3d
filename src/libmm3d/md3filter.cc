@@ -1832,6 +1832,8 @@ Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filen
 
          writeAnimations();
 
+         model->operationComplete( transll( QT_TRANSLATE_NOOP( "LowLevel", "Set meta data for MD3 export" ) ).c_str() );
+
          return Model::ERROR_NONE;
       }
       else

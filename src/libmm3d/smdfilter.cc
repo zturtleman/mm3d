@@ -579,6 +579,8 @@ Model::ModelErrorE SmdFilter::writeFile( Model * model, const char * const filen
          model->updateMetaData( "smd_points_as_joints", "0" );
       }
 
+      model->operationComplete( transll( QT_TRANSLATE_NOOP( "LowLevel", "Set meta data for SMD export" ) ).c_str() );
+
       return Model::ERROR_NONE;
    }
    else

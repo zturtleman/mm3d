@@ -2160,6 +2160,8 @@ Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * m
 
    m_options = NULL;
 
+   model->operationComplete( transll( QT_TRANSLATE_NOOP( "LowLevel", "Set meta data for Cal3D export" ) ).c_str() );
+
    return err;
 }
 
