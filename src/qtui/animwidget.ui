@@ -289,7 +289,7 @@
   </connection>
   <connection>
    <sender>m_countSlider</sender>
-   <signal>sliderMoved(int)</signal>
+   <signal>valueChanged(int)</signal>
    <receiver>AnimWidgetBase</receiver>
    <slot>setCurrentFrame(int)</slot>
    <hints>
