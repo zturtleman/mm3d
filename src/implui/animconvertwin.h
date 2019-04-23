@@ -27,44 +27,49 @@
 
 #include "model.h"
 
+#include <QtWidgets/QStyledItemDelegate>
 #include <QtWidgets/QDialog>
 
-class Q3Accel;
+class AnimConvertFrameCountDelegate : public QStyledItemDelegate
+{
+   Q_OBJECT
+
+   public:
+      AnimConvertFrameCountDelegate( QObject *parent = NULL );
+
+      QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
+                          const QModelIndex &index ) const override;
+
+      void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+      void setModelData( QWidget *editor, QAbstractItemModel *model,
+                         const QModelIndex &index ) const override;
+
+      void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option,
+                                 const QModelIndex &index ) const override;
+};
 
 class AnimConvertWindow : public QDialog, public Ui::AnimConvertWinBase
 {
    Q_OBJECT
 
    public:
-      enum _Operation_e
-      {
-         OP_CONTINUE,
-         OP_CANCEL,
-         OP_CANCEL_ALL
-      };
-      typedef enum _Operation_e OperationE;
-
       AnimConvertWindow( QWidget * parent = NULL );
       virtual ~AnimConvertWindow();
 
-      void setAnimationData( Model * model, Model::AnimationModeE mode, unsigned animIndex );
-
-      QString getNewName();
-      unsigned getNewFrameCount();
-
-      OperationE requestedOperation();
+      void setAnimationData( Model * model, Model::AnimationModeE mode, const std::list<unsigned> & animIndicies );
 
    public slots:
       void helpNowEvent();
 
-      void continueClicked();
+      void convertClicked();
       void cancelClicked();
-      void cancelAllClicked();
 
    protected:
-      Q3Accel * m_accel;
+      AnimConvertFrameCountDelegate *m_frameCountDelegate;
 
-      OperationE m_operation;
+      Model *m_model;
+      Model::AnimationModeE m_mode;
+      std::list<unsigned> m_animIndicies;
 };
 
 #endif // __ANIMCONVERTWIN_H

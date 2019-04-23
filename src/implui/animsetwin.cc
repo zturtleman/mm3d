@@ -555,37 +555,21 @@ void AnimSetWindow::mergeClicked()
 void AnimSetWindow::convertClicked()
 {
    Model::AnimationModeE mode = indexToMode( m_animType->currentIndex() );
-   bool cancelled = false;
-
    unsigned count = m_animList->count();
+   std::list<unsigned> animIndicies;
 
-   for ( unsigned t = 0; !cancelled && t < count; t++ )
+   for ( unsigned t = 0; t < count; t++ )
    {
       if ( m_animList->item(t)->isSelected() )
       {
-         AnimConvertWindow acw( this );
-
-         acw.setAnimationData( m_model, mode, t );
-         acw.exec();
-
-         switch ( acw.requestedOperation() )
-         {
-            case AnimConvertWindow::OP_CONTINUE:
-               {
-                  QString name = acw.getNewName();
-                  unsigned frameCount = acw.getNewFrameCount();
-
-                  m_model->convertAnimToFrame( mode, t, name.toUtf8(), frameCount );
-               }
-               break;
-            case AnimConvertWindow::OP_CANCEL:
-               break;
-            case AnimConvertWindow::OP_CANCEL_ALL:
-               cancelled = true;
-               break;
-         }
+         animIndicies.push_back( t );
       }
    }
+
+   AnimConvertWindow acw( this );
+
+   acw.setAnimationData( m_model, mode, animIndicies );
+   acw.exec();
 }
 
 void AnimSetWindow::accept()
