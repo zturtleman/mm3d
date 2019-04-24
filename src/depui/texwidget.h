@@ -226,6 +226,8 @@ class TextureWidget : public QGLWidget
       double distance( const double &, const double &, const double &, const double & );
       double max( const double &, const double & );
 
+      double adjustToNearest( double angle );
+
       void useLinesColor();
       void useSelectionColor();
 
@@ -281,6 +283,10 @@ class TextureWidget : public QGLWidget
       double m_xMax;
       double m_yMin;
       double m_yMax;
+
+      // For move and scale
+      bool   m_allowX;
+      bool   m_allowY;
 
       // For select
       double m_xSel1;

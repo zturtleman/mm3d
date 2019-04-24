@@ -894,6 +894,23 @@ int TextureWidget::addTriangle( int v1, int v2, int v3 )
    return -1;
 }
 
+double TextureWidget::adjustToNearest( double angle )
+{
+   double f = angle / PIOVER180; // Change to degrees
+   if ( f < 0.0 )
+   {
+      int n = (int) (f / 15.0 - 0.5);
+      f = n * 15.0;
+   }
+   else
+   {
+      int n = (int) (f / 15.0 + 0.5);
+      f = n * 15.0;
+   }
+   log_debug( "nearest angle is %f\n", f );
+   return f * PIOVER180;
+}
+
 void TextureWidget::mousePressEvent( QMouseEvent * e )
 {
    if ( m_interactive )
@@ -976,8 +993,12 @@ void TextureWidget::mousePressEvent( QMouseEvent * e )
                   m_drawBounding = true;
                   break;
                case MouseMove:
+                  m_allowX = true;
+                  m_allowY = true;
                   break;
                case MouseScale:
+                  m_allowX = true;
+                  m_allowY = true;
                   startScale(
                         (m_lastXPos / (double) this->width()) * (m_xMax - m_xMin) + m_xMin , 
                         (1.0 - (m_lastYPos / (double) this->height())) * (m_yMax - m_yMin) + m_yMin );
@@ -1021,6 +1042,11 @@ void TextureWidget::mousePressEvent( QMouseEvent * e )
                            {
                               angle = (quad) + ( (quad) + angle );
                            }
+                        }
+
+                        if ( e->modifiers() & Qt::ShiftModifier )
+                        {
+                           angle = adjustToNearest( angle );
                         }
 
                         m_startAngle = angle;
@@ -1094,6 +1120,33 @@ void TextureWidget::mouseReleaseEvent( QMouseEvent * e )
                   emit updateSelectionDoneSignal();
                   break;
                case MouseMove:
+                  if ( e->modifiers() & Qt::ShiftModifier )
+                  {
+                     if ( m_allowX && m_allowY )
+                     {
+                        double ax = fabs( x - m_lastXPos );
+                        double ay = fabs( y - m_lastYPos );
+
+                        if ( ax > ay )
+                        {
+                           m_allowY = false;
+                        }
+                        if ( ay > ax )
+                        {
+                           m_allowX = false;
+                        }
+                     }
+                  }
+
+                  if ( !m_allowX )
+                  {
+                     x = m_lastXPos;
+                  }
+                  if ( !m_allowY )
+                  {
+                     y = m_lastYPos;
+                  }
+
                   moveSelectedVertices( 
                         ((x - m_lastXPos) / (double) this->width()) * (m_xMax - m_xMin), 
                         (-(y - m_lastYPos) / (double) this->height()) * (m_yMax - m_yMin) );
@@ -1187,6 +1240,33 @@ void TextureWidget::mouseMoveEvent( QMouseEvent * e )
                            (1.0 - (y / (double) this->height())) * m_zoom + m_yMin );
                      break;
                   case MouseMove:
+                     if ( e->modifiers() & Qt::ShiftModifier )
+                     {
+                        if ( m_allowX && m_allowY )
+                        {
+                           double ax = fabs( x - m_lastXPos );
+                           double ay = fabs( y - m_lastYPos );
+
+                           if ( ax > ay )
+                           {
+                              m_allowY = false;
+                           }
+                           if ( ay > ax )
+                           {
+                              m_allowX = false;
+                           }
+                        }
+                     }
+
+                     if ( !m_allowX )
+                     {
+                        x = m_lastXPos;
+                     }
+                     if ( !m_allowY )
+                     {
+                        y = m_lastYPos;
+                     }
+
                      moveSelectedVertices( 
                            ((x - m_lastXPos) / (double) this->width()) * m_zoom, 
                            (-(y - m_lastYPos) / (double) this->height()) * m_zoom);
@@ -1226,12 +1306,44 @@ void TextureWidget::mouseMoveEvent( QMouseEvent * e )
                            }
                         }
 
+                        if ( e->modifiers() & Qt::ShiftModifier )
+                        {
+                           angle = adjustToNearest( angle );
+                        }
+
                         rotateSelectedVertices( angle - m_startAngle );
 
                         emit updateCoordinatesSignal();
                      }
                      break;
                   case MouseScale:
+                     if ( e->modifiers() & Qt::ShiftModifier )
+                     {
+                        if ( m_allowX && m_allowY )
+                        {
+                           double ax = fabs( x - m_lastXPos );
+                           double ay = fabs( y - m_lastYPos );
+
+                           if ( ax > ay )
+                           {
+                              m_allowY = false;
+                           }
+                           if ( ay > ax )
+                           {
+                              m_allowX = false;
+                           }
+                        }
+                     }
+
+                     if ( !m_allowX )
+                     {
+                        x = m_lastXPos;
+                     }
+                     if ( !m_allowY )
+                     {
+                        y = m_lastYPos;
+                     }
+
                      scaleSelectedVertices(
                            (x / (double) this->width()) * m_zoom + m_xMin, 
                            (1.0 - (y / (double) this->height())) * m_zoom + m_yMin );
