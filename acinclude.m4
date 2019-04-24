@@ -47,13 +47,13 @@ AC_DEFUN([KSW_IS_DEBUG],
     COVFLAGS=""
     COVLFLAGS=""
     CFLAGS="-g -fPIC"
-    CXXFLAGS="${CFLAGS}"
+    CXXFLAGS="-std=c++11 ${CFLAGS}"
     LDFLAGS=""
   elif test x"$enable_debug" = xcov; then
     COVFLAGS="-coverage"
     COVLFLAGS="-lgcov"
     CFLAGS="-g -fPIC"
-    CXXFLAGS="${CFLAGS}"
+    CXXFLAGS="-std=c++11 ${CFLAGS}"
     LDFLAGS=""
     is_debug=coverage
   else
@@ -65,7 +65,7 @@ AC_DEFUN([KSW_IS_DEBUG],
     COVFLAGS=""
     COVLFLAGS=""
     CFLAGS="-O2 ${omit_frame} -fno-math-errno -fPIC"
-    CXXFLAGS="${CFLAGS}"
+    CXXFLAGS="-std=c++11 ${CFLAGS}"
     LDFLAGS="${omit_frame} -fno-math-errno"
   fi
 

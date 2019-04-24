@@ -35,7 +35,7 @@ commands.
    cpan App::cpanminus # choose sudo in the interactive command
    cpanm HTML::Template --sudo
    ./autosetup.sh
-   CXX='clang++ -std=c++11 -stdlib=libc++' ./configure --with-Qt-dir=/usr/local/Cellar/qt/5.11.1 --with-macosx-version-min=10.11
+   CXX='clang++ -stdlib=libc++' ./configure --with-Qt-dir=/usr/local/Cellar/qt/5.11.1 --with-macosx-version-min=10.11
    make
    make mm3d.app
 
