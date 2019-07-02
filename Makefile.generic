@@ -447,7 +447,6 @@ MM3D_UI= \
 	${B}/qtui/objprompt.base.h \
 	${B}/qtui/smdprompt.base.h \
 	${B}/qtui/pluginwin.base.h \
-	${B}/qtui/rgbawin.base.h \
 	${B}/qtui/statusbar.base.h \
 	${B}/qtui/texturecoord.base.h \
 	${B}/qtui/textwin.base.h \
@@ -504,7 +503,6 @@ MM3D_MOC= \
 	${B}/implui/pluginwin.moc.cc \
 	${B}/tools/polytoolwidget.moc.cc \
 	${B}/tools/projtoolwidget.moc.cc \
-	${B}/implui/rgbawin.moc.cc \
 	${B}/tools/scaletoolwidget.moc.cc \
 	${B}/tools/selectfacetoolwidget.moc.cc \
 	${B}/implui/spherifywin.moc.cc \
@@ -570,7 +568,6 @@ MM3D_MOC_OBJ= \
 	${B}/implui/pluginwin.moc.o \
 	${B}/tools/polytoolwidget.moc.o \
 	${B}/tools/projtoolwidget.moc.o \
-	${B}/implui/rgbawin.moc.o \
 	${B}/tools/scaletoolwidget.moc.o \
 	${B}/tools/selectfacetoolwidget.moc.o \
 	${B}/implui/spherifywin.moc.o \
@@ -685,7 +682,6 @@ MM3D_OBJ= \
 	${B}/implui/qttex.o \
 	${B}/tools/rectangletool.o \
 	${B}/qtui/resources.o \
-	${B}/implui/rgbawin.o \
 	${B}/mm3dcore/rotatepoint.o \
 	${B}/commands/rotatetexcmd.o \
 	${B}/tools/rotatetool.o \

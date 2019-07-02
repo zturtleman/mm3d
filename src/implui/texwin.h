@@ -29,7 +29,6 @@
 #include <QtWidgets/QDialog>
 
 class Model;
-class RgbaWin;
 
 class TextureWindow : public QDialog, public Ui::TextureWindowBase
 {

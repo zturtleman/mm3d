@@ -36,7 +36,6 @@ libqtui_UIFILES = alignwin.ui \
 	newanim.ui \
 	objprompt.ui \
 	pluginwin.ui \
-	rgbawin.ui \
 	smdprompt.ui \
 	statusbar.ui \
 	texturecoord.ui \
@@ -81,7 +80,6 @@ libqtui_UIHEADERS = \
 	newanim.base.h    \
 	objprompt.base.h \
 	pluginwin.base.h    \
-	rgbawin.base.h      \
 	smdprompt.base.h    \
 	statusbar.base.h    \
 	texturecoord.base.h \

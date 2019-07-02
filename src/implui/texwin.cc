@@ -28,8 +28,6 @@
 #include "texture.h"
 #include "texmgr.h"
 #include "log.h"
-#include "rgbawin.h"
-#include "valuewin.h"
 #include "decalmgr.h"
 #include "msg.h"
 #include "3dmprefs.h"
@@ -263,34 +261,6 @@ void TextureWindow::clampTChangedEvent( int index )
    }
 }
 
-/*
-void TextureWindow::shininessClickedEvent()
-{
-   int id = (unsigned) m_textureComboBox->currentIndex() - 1;
-   float val;
-
-   if ( m_model->getTextureShininess( id, val) )
-   {
-      ValueWin value;
-
-      value.setLabel( "Shininess" );
-
-      value.setValue( val );
-
-      if ( value.exec() )
-      {
-         val = value.getValue();
-         m_model->setTextureShininess( id, val );
-         DecalManager::getInstance()->modelUpdated( m_model );
-      }
-   }
-   else
-   {
-      log_error( "could not get shininess values for %d\n", id );
-   }
-}
-*/
-
 void TextureWindow::textureChangedEvent( int id )
 {
    m_textureFrame->textureChangedEvent( id );
@@ -464,8 +434,6 @@ void TextureWindow::lightValueChanged( int index )
 
    if ( haveLighting )
    {
-      RgbaWin rgba;
-
       m_setting = true;
       m_redSlider->setValue( (int) (val[0] * 100) );
       m_greenSlider->setValue( (int) (val[1] * 100) );

@@ -46,7 +46,6 @@ libimplui_HFILES = \
 	projectionwin.h \
 	qtmain.h \
 	qttex.h \
-	rgbawin.h \
 	smdprompt.h \
 	spherifywin.h \
 	statusbar.h \
@@ -98,7 +97,6 @@ libimplui_MOC = \
 	newanim.moc.cc \
 	objprompt.moc.cc \
 	pluginwin.moc.cc \
-	rgbawin.moc.cc \
 	smdprompt.moc.cc \
 	spherifywin.moc.cc \
 	statusbar.moc.cc \
@@ -158,7 +156,6 @@ libimplui_a_SOURCES = \
 	projectionwin.cc \
 	qtmain.cc \
 	qttex.cc \
-	rgbawin.cc \
 	smdprompt.cc \
 	spherifywin.cc \
 	statusbar.cc \

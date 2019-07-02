@@ -28,8 +28,6 @@
 #include "texture.h"
 #include "texmgr.h"
 #include "log.h"
-#include "rgbawin.h"
-#include "valuewin.h"
 #include "decalmgr.h"
 #include "msg.h"
 #include "3dmprefs.h"

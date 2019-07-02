@@ -31,7 +31,6 @@
 #include <QtWidgets/QDialog>
 
 class Model;
-class RgbaWin;
 
 class TransformWindow : public QDialog, public Ui::TransformWindowBase
 {
