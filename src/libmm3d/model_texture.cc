@@ -232,14 +232,18 @@ int Model::addColorMaterial( const char * name )
    return num;
 }
 
-void Model::deleteTexture( unsigned textureNum )
+bool Model::deleteTexture( unsigned textureNum )
 {
    LOG_PROFILE();
    if ( m_animationMode )
    {
-      return;
+      return false;
    }
 
+   if ( textureNum >= m_materials.size() )
+   {
+      return false;
+   }
 
    for ( unsigned g = 0; g < m_groups.size(); g++ )
    {
@@ -258,6 +262,7 @@ void Model::deleteTexture( unsigned textureNum )
    sendUndo( undo );
 
    removeTexture( textureNum );
+   return true;
 }
 
 bool Model::setGroupTextureId( unsigned groupNumber, int textureId )

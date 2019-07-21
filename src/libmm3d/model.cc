@@ -834,22 +834,22 @@ bool Model::getTriangleVertices( unsigned triangleNum, unsigned & vert1, unsigne
    }
 }
 
-void Model::deleteVertex( unsigned vertexNum )
+bool Model::deleteVertex( unsigned vertexNum )
 {
    LOG_PROFILE();
    if ( m_animationMode )
    {
-      return;
+      return false;
    }
    if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
    {
       displayFrameAnimPrimitiveError();
-      return;
+      return false;
    }
 
    if ( vertexNum >= m_vertices.size() )
    {
-      return;
+      return false;
    }
 
    MU_DeleteVertex * undo = new MU_DeleteVertex();
@@ -857,24 +857,25 @@ void Model::deleteVertex( unsigned vertexNum )
    sendUndo( undo );
 
    removeVertex( vertexNum );
+   return true;
 }
 
-void Model::deleteTriangle( unsigned triangleNum )
+bool Model::deleteTriangle( unsigned triangleNum )
 {
    LOG_PROFILE();
    if ( m_animationMode )
    {
-      return;
+      return false;
    }
    if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
    {
       displayFrameAnimPrimitiveError();
-      return;
+      return false;
    }
 
    if ( triangleNum >= m_triangles.size() )
    {
-      return;
+      return false;
    }
 
    // remove it from any groups
@@ -889,125 +890,136 @@ void Model::deleteTriangle( unsigned triangleNum )
    sendUndo( undo );
 
    removeTriangle( triangleNum );
+   return true;
 }
 
-void Model::deleteBoneJoint( unsigned joint )
+bool Model::deleteBoneJoint( unsigned joint )
 {
-   if ( joint < m_joints.size() )
+   if ( joint >= m_joints.size() )
    {
-      unsigned count = m_joints.size();
+      return false;
+   }
 
-      // Break out early if this is a root joint and it has a child
-      if ( m_joints[joint]->m_parent < 0 )
+   unsigned count = m_joints.size();
+
+   // Break out early if this is a root joint and it has a child
+   if ( m_joints[joint]->m_parent < 0 )
+   {
+      for ( unsigned j = 0; j < count; j++ )
       {
-         for ( unsigned j = 0; j < count; j++ )
+         if ( j != joint )
          {
-            if ( j != joint )
+            if ( m_joints[j]->m_parent == (int) joint )
             {
-               if ( m_joints[j]->m_parent == (int) joint )
-               {
-                  model_status( this, StatusError, STATUSTIME_LONG, transll( QT_TRANSLATE_NOOP( "LowLevel", "Cannot delete root joint" )).c_str() );
-                  return;
-               }
+               model_status( this, StatusError, STATUSTIME_LONG, transll( QT_TRANSLATE_NOOP( "LowLevel", "Cannot delete root joint" )).c_str() );
+               return false;
             }
          }
       }
-
-      for ( unsigned v = 0; v < m_vertices.size(); v++ )
-      {
-         removeVertexInfluence( v, joint );
-      }
-
-      for ( unsigned p = 0; p < m_points.size(); p++ )
-      {
-         removePointInfluence( p, joint );
-      }
-
-      Matrix m;
-      int parent = joint;
-      do
-      {
-         parent = m_joints[ parent ]->m_parent;
-      } while ( parent >= 0 && m_joints[ parent ]->m_selected );
-
-      if ( parent >= 0 )
-      {
-         m = m_joints[ m_joints[joint]->m_parent ]->m_absolute.getInverse();
-      }
-
-      for ( unsigned j = 0; j < m_joints.size(); j++ )
-      {
-         if ( m_joints[j]->m_parent == (int) joint )
-         {
-            setBoneJointParent( j, m_joints[joint]->m_parent );
-
-            m_joints[j]->m_absolute = m_joints[j]->m_absolute * m;
-            double rot[3];
-            double trans[3];
-
-            m_joints[j]->m_absolute.getRotation( rot );
-            m_joints[j]->m_absolute.getTranslation( trans );
-
-            setBoneJointRotation( j, rot );
-            setBoneJointTranslation( j, trans );
-         }
-      }
-
-      Joint * ptr = m_joints[joint];
-      removeBoneJoint( joint );
-      m_validJoints = false;
-
-      MU_DeleteBoneJoint * undo = new MU_DeleteBoneJoint();
-      undo->deleteBoneJoint( joint, ptr );
-      sendUndo( undo );
-
-      log_debug( "parent was %d\n", parent );
-
-      setupJoints();
    }
+
+   for ( unsigned v = 0; v < m_vertices.size(); v++ )
+   {
+      removeVertexInfluence( v, joint );
+   }
+
+   for ( unsigned p = 0; p < m_points.size(); p++ )
+   {
+      removePointInfluence( p, joint );
+   }
+
+   Matrix m;
+   int parent = joint;
+   do
+   {
+      parent = m_joints[ parent ]->m_parent;
+   } while ( parent >= 0 && m_joints[ parent ]->m_selected );
+
+   if ( parent >= 0 )
+   {
+      m = m_joints[ m_joints[joint]->m_parent ]->m_absolute.getInverse();
+   }
+
+   for ( unsigned j = 0; j < m_joints.size(); j++ )
+   {
+      if ( m_joints[j]->m_parent == (int) joint )
+      {
+         setBoneJointParent( j, m_joints[joint]->m_parent );
+
+         m_joints[j]->m_absolute = m_joints[j]->m_absolute * m;
+         double rot[3];
+         double trans[3];
+
+         m_joints[j]->m_absolute.getRotation( rot );
+         m_joints[j]->m_absolute.getTranslation( trans );
+
+         setBoneJointRotation( j, rot );
+         setBoneJointTranslation( j, trans );
+      }
+   }
+
+   Joint * ptr = m_joints[joint];
+   removeBoneJoint( joint );
+   m_validJoints = false;
+
+   MU_DeleteBoneJoint * undo = new MU_DeleteBoneJoint();
+   undo->deleteBoneJoint( joint, ptr );
+   sendUndo( undo );
+
+   log_debug( "parent was %d\n", parent );
+
+   setupJoints();
+
+   return true;
 }
 
-void Model::deletePoint( unsigned point )
+bool Model::deletePoint( unsigned point )
 {
    if ( m_animationMode )
    {
-      return;
+      return false;
    }
    if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
    {
       displayFrameAnimPrimitiveError();
-      return;
+      return false;
    }
 
-   if ( point < m_points.size() )
+   if ( point >= m_points.size() )
    {
-      Point * ptr = m_points[point];
-      removePoint( point );
-
-      MU_DeletePoint * undo = new MU_DeletePoint();
-      undo->deletePoint( point, ptr );
-      sendUndo( undo );
-
-      setupJoints();
+      return false;
    }
+
+   Point * ptr = m_points[point];
+   removePoint( point );
+
+   MU_DeletePoint * undo = new MU_DeletePoint();
+   undo->deletePoint( point, ptr );
+   sendUndo( undo );
+
+   setupJoints();
+   return true;
 }
 
-void Model::deleteProjection( unsigned proj )
+bool Model::deleteProjection( unsigned proj )
 {
    if ( m_animationMode )
    {
-      return;
+      return false;
    }
 
-   if ( proj < m_projections.size() )
+   if ( proj >= m_projections.size() )
    {
-      TextureProjection * ptr = m_projections[ proj ];
-      removeProjection( proj );
-
-      MU_DeleteProjection * undo = new MU_DeleteProjection();
-      undo->deleteProjection( proj, ptr );
-      sendUndo( undo );
+      return false;
    }
+
+   TextureProjection * ptr = m_projections[ proj ];
+   removeProjection( proj );
+
+   MU_DeleteProjection * undo = new MU_DeleteProjection();
+   undo->deleteProjection( proj, ptr );
+   sendUndo( undo );
+   return true;
 }
 
 void Model::deleteOrphanedVertices()

@@ -1127,7 +1127,7 @@ class Model
 
       // Common animation properties
       int addAnimation( AnimationModeE mode, const char * name );
-      void deleteAnimation( AnimationModeE mode, unsigned index );
+      bool deleteAnimation( AnimationModeE mode, unsigned index );
 
       unsigned getAnimCount( AnimationModeE m ) const;
 
@@ -1255,8 +1255,8 @@ class Model
       int addVertex( double x, double y, double z );
       int addTriangle( unsigned vert1, unsigned vert2, unsigned vert3 );
 
-      void deleteVertex( unsigned vertex );
-      void deleteTriangle( unsigned triangle );
+      bool deleteVertex( unsigned vertex );
+      bool deleteTriangle( unsigned triangle );
 
       // No undo on this one
       void setVertexFree( unsigned v, bool o );
@@ -1335,8 +1335,8 @@ class Model
 
       bool setGroupTextureId( unsigned groupNumber, int textureId );
 
-      void deleteGroup( unsigned group );
-      void deleteTexture( unsigned texture );
+      bool deleteGroup( unsigned group );
+      bool deleteTexture( unsigned texture );
 
       const char * getGroupName( unsigned groupNum ) const;
       bool setGroupName( unsigned groupNum, const char * groupName );
@@ -1409,7 +1409,7 @@ class Model
             double xrot, double yrot, double zrot,
             int parent = -1 );
 
-      void deleteBoneJoint( unsigned joint );
+      bool deleteBoneJoint( unsigned joint );
 
       const char * getBoneJointName( unsigned joint ) const;
       int getBoneJointParent( unsigned joint ) const;
@@ -1491,7 +1491,7 @@ class Model
             double xrot, double yrot, double zrot,
             int boneId = -1 );
 
-      void deletePoint( unsigned point );
+      bool deletePoint( unsigned point );
 
       int getPointByName( const char * name ) const;
 
@@ -1516,7 +1516,7 @@ class Model
       // ------------------------------------------------------------------
 
       int addProjection( const char * name, int type, double x, double y, double z );
-      void deleteProjection( unsigned proj );
+      bool deleteProjection( unsigned proj );
 
       const char * getProjectionName( unsigned proj ) const;
 

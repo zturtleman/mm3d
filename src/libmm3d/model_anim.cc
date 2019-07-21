@@ -92,7 +92,7 @@ int Model::addAnimation( AnimationModeE m, const char * name )
    return num;
 }
 
-void Model::deleteAnimation( AnimationModeE m, unsigned index )
+bool Model::deleteAnimation( AnimationModeE m, unsigned index )
 {
    LOG_PROFILE();
 
@@ -106,6 +106,7 @@ void Model::deleteAnimation( AnimationModeE m, unsigned index )
             sendUndo( undo );
 
             removeSkelAnim( index );
+            return true;
          }
          break;
       case ANIMMODE_FRAME:
@@ -116,11 +117,14 @@ void Model::deleteAnimation( AnimationModeE m, unsigned index )
             sendUndo( undo );
 
             removeFrameAnim( index );
+            return true;
          }
          break;
       default:
          break;
    }
+
+   return false;
 }
 
 bool Model::setAnimName( AnimationModeE m, unsigned anim, const char * name )

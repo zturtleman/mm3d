@@ -68,17 +68,22 @@ int Model::addGroup( const char * name )
    }
 }
 
-void Model::deleteGroup( unsigned groupNum )
+bool Model::deleteGroup( unsigned groupNum )
 {
    LOG_PROFILE();
    if ( m_animationMode )
    {
-      return;
+      return false;
    }
    if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
    {
       displayFrameAnimPrimitiveError();
-      return;
+      return false;
+   }
+
+   if ( groupNum >= m_groups.size()  )
+   {
+      return false;
    }
 
    MU_DeleteGroup * undo = new MU_DeleteGroup();
@@ -86,6 +91,8 @@ void Model::deleteGroup( unsigned groupNum )
    sendUndo( undo );
 
    removeGroup( groupNum );
+
+   return true;
 }
 
 bool Model::setGroupSmooth( unsigned groupNum, uint8_t smooth )
