@@ -30,7 +30,13 @@
     <number>11</number>
    </property>
    <item>
-    <widget class="QComboBox" name="m_jointName"/>
+    <widget class="QComboBox" name="m_jointName">
+     <item>
+      <property name="text">
+       <string>None</string>
+      </property>
+     </item>
+    </widget>
    </item>
    <item>
     <layout class="QHBoxLayout">
@@ -313,6 +319,22 @@
     <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_deleteButton</sender>
+   <signal>clicked()</signal>
+   <receiver>JointWinBase</receiver>
+   <slot>deleteClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>229</x>
+     <y>70</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>155</x>
+     <y>170</y>
     </hint>
    </hints>
   </connection>

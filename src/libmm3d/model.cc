@@ -895,6 +895,11 @@ bool Model::deleteTriangle( unsigned triangleNum )
 
 bool Model::deleteBoneJoint( unsigned joint )
 {
+   if ( m_animationMode )
+   {
+      return false;
+   }
+
    if ( joint >= m_joints.size() )
    {
       return false;

@@ -54,7 +54,7 @@ JointWin::JointWin( Model * model, QWidget * parent )
 
    for ( int t = 0; t < m_model->getBoneJointCount(); t++ )
    {
-      m_jointName->insertItem( t, QString::fromUtf8( m_model->getBoneJointName(t) ) );
+      m_jointName->insertItem( 1 + t, QString::fromUtf8( m_model->getBoneJointName(t) ) );
    }
 
    list<int> joints;
@@ -83,16 +83,19 @@ void JointWin::helpNowEvent()
 
 void JointWin::jointNameSelected( int index )
 {
-   if ( index < m_jointName->count() )
+   int jointNum = index - 1;
+
+   m_model->unselectAllBoneJoints();
+
+   if ( jointNum >= 0 )
    {
-      m_model->unselectAllBoneJoints();
-      m_model->selectBoneJoint( index );
+      m_model->selectBoneJoint( jointNum );
 
       m_deleteButton->setEnabled( true );
       m_renameButton->setEnabled( true );
       m_selectVerticesButton->setEnabled( true );
       m_assignVerticesButton->setEnabled( true );
-      DecalManager::getInstance()->modelUpdated( m_model );
+      m_addVerticesButton->setEnabled( true );
    }
    else
    {
@@ -100,38 +103,43 @@ void JointWin::jointNameSelected( int index )
       m_renameButton->setEnabled( false );
       m_selectVerticesButton->setEnabled( false );
       m_assignVerticesButton->setEnabled( false );
+      m_addVerticesButton->setEnabled( false );
    }
+
+   DecalManager::getInstance()->modelUpdated( m_model );
 }
 
 void JointWin::deleteClicked()
 {
-   if ( m_jointName->count() )
+   int jointNum = m_jointName->currentIndex() - 1;
+   if ( jointNum >= 0 && m_model->deleteBoneJoint( jointNum ) )
    {
-      m_model->deleteBoneJoint( m_jointName->currentIndex() );
+      m_jointName->removeItem( 1 + jointNum );
+      m_jointName->setCurrentIndex( 0 );
+      jointNameSelected( 0 );
    }
 }
 
 void JointWin::renameClicked()
 {
-   if ( m_jointName->count() )
+   int jointNum = m_jointName->currentIndex() - 1;
+   if ( jointNum >= 0 )
    {
       bool ok = false;
-      int jointNum = m_jointName->currentIndex();
       QString jointName = QInputDialog::getText( this, tr("Rename joint", "window title"), tr("Enter new joint name:"), QLineEdit::Normal, QString::fromUtf8( m_model->getBoneJointName( jointNum ) ), &ok );
       if ( ok )
       {
          m_model->setBoneJointName( jointNum, jointName.toUtf8() );
-         m_jointName->setItemText( jointNum, jointName );
+         m_jointName->setItemText( 1 + jointNum, jointName );
       }
    }
 }
 
 void JointWin::selectVerticesClicked()
 {
-   if ( m_jointName->count() )
+   int jointNum = m_jointName->currentIndex() - 1;
+   if ( jointNum >= 0 )
    {
-      int joint = m_jointName->currentIndex();
-
       m_model->unselectAllVertices();
 
       unsigned vcount = m_model->getVertexCount();
@@ -143,7 +151,7 @@ void JointWin::selectVerticesClicked()
          Model::InfluenceList::iterator it;
          for ( it = l.begin(); it != l.end(); it++ )
          {
-            if ( (*it).m_boneId == joint )
+            if ( (*it).m_boneId == jointNum )
             {
                m_model->selectVertex( v );
                break;
@@ -160,7 +168,7 @@ void JointWin::selectVerticesClicked()
          Model::InfluenceList::iterator it;
          for ( it = l.begin(); it != l.end(); it++ )
          {
-            if ( (*it).m_boneId == joint )
+            if ( (*it).m_boneId == jointNum )
             {
                m_model->selectPoint( p );
                break;
@@ -201,34 +209,34 @@ void JointWin::selectUnassignedClicked()
 
 void JointWin::assignVerticesClicked()
 {
+   int jointNum = m_jointName->currentIndex() - 1;
    log_debug( "assignVerticesClicked()\n" );
-   if ( m_jointName->count() )
+   if ( jointNum >= 0 )
    {
-      unsigned joint = m_jointName->currentIndex();
       list<Model::Position> posList;
       m_model->getSelectedPositions( posList );
       list<Model::Position>::iterator it;
-      log_debug( "assigning %d objects to joint %d\n", posList.size(), joint );
+      log_debug( "assigning %d objects to joint %d\n", posList.size(), jointNum );
       for ( it = posList.begin(); it != posList.end(); it++ )
       {
-         m_model->setPositionBoneJoint( *it, joint );
+         m_model->setPositionBoneJoint( *it, jointNum );
       }
    }
 }
 
 void JointWin::addVerticesClicked()
 {
+   int jointNum = m_jointName->currentIndex() - 1;
    log_debug( "addVerticesClicked()\n" );
-   if ( m_jointName->count() )
+   if ( jointNum >= 0 )
    {
-      unsigned joint = m_jointName->currentIndex();
       list<Model::Position> posList;
       m_model->getSelectedPositions( posList );
       list<Model::Position>::iterator it;
-      log_debug( "adding %d objects to joint %d\n", posList.size(), joint );
+      log_debug( "adding %d objects to joint %d\n", posList.size(), jointNum );
       for ( it = posList.begin(); it != posList.end(); it++ )
       {
-         m_model->addPositionInfluence( *it, joint, Model::IT_Custom, 1.0 );
+         m_model->addPositionInfluence( *it, jointNum, Model::IT_Custom, 1.0 );
       }
    }
 }
