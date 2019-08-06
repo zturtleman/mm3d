@@ -1953,8 +1953,8 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    MeshList::iterator mlit;
 
    int32_t numMeshes = 0;
-   int numTris = 0;
-   int numVerts = 0;
+   size_t maxMeshTris = 0;
+   size_t maxMeshVerts = 0;
 
    std::string groupName;
 
@@ -1968,8 +1968,12 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
          if ( groupInSection( m_model->getGroupName( (*mlit).group ), section ) )
          {
             numMeshes++;
-            numTris += (*mlit).faces.size();
-            numVerts += (*mlit).vertices.size();
+            if ( (*mlit).faces.size() > maxMeshTris ) {
+               maxMeshTris = (*mlit).faces.size();
+            }
+            if ( (*mlit).vertices.size() > maxMeshVerts ) {
+               maxMeshVerts = (*mlit).vertices.size();
+            }
          }
       }
    }
@@ -1994,15 +1998,15 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    int32_t offsetEnd = offsetMeshes;
 
    // MD3 limit tests
-   if ( numTris > MD3_MAX_TRIANGLES )
+   if ( maxMeshTris > MD3_MAX_TRIANGLES )
    {
-      log_error( "Number of triangles(%d) is larger than %d\n.\n", numTris, MD3_MAX_TRIANGLES );
+      log_error( "Number of triangles(%d) is larger than %d\n.\n", maxMeshTris, MD3_MAX_TRIANGLES );
       m_model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many faces in a single group for MD3 export" ) ).c_str() );
       return Model::ERROR_FILTER_SPECIFIC;
    }
-   if ( numVerts > MD3_MAX_VERTS )
+   if ( maxMeshVerts > MD3_MAX_VERTS )
    {
-      log_error( "Number of verticies(%d) is larger than %d\n.\n", numVerts, MD3_MAX_VERTS );
+      log_error( "Number of verticies(%d) is larger than %d\n.\n", maxMeshVerts, MD3_MAX_VERTS );
       m_model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "Too many vertices in a single group for MD3 export" ) ).c_str() );
       return Model::ERROR_FILTER_SPECIFIC;
    }
