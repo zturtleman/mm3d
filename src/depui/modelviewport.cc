@@ -136,7 +136,7 @@ ModelViewport::ModelViewport( QWidget * parent )
 
    m_backColor.setRgb( 130, 200, 200 );
 
-   setAcceptDrops( true );
+   //setAcceptDrops( true ); // Drag and drop is not implemented, see ModelViewport::dragEnterEvent.
    setMouseTracking( true );
 
    connect( m_scrollTimer, SIGNAL(timeout()), this, SLOT(scrollTimeout()));
