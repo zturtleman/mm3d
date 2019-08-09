@@ -28,6 +28,23 @@ easy steps:
 This will build a 'mm3d' executable and install it in /usr/local/bin.
 Documentation will be in /usr/local/share/doc/mm3d.
 
+For more detailed installation instructions, see the INSTALL file.
+See INSTALL.WIN32 for Windows-specific instructions.
+
+## Debian/Ubuntu
+
+Build dependencies:
+
+    sudo apt-get install autoconf automake make g++ qtbase5-dev qtbase5-dev-tools qttools5-dev-tools libqt5opengl5-dev libgl1-mesa-dev libhtml-template-perl
+
+## Fedora
+
+Build dependencies:
+
+    sudo dnf install autoconf automake make gcc-c++ qt5-devel mesa-libGLU-devel perl-HTML-Template
+
+## macOS
+
 On macOS 10.11+, install homebrew from http://brew.sh and run the following
 commands.
 
@@ -41,6 +58,3 @@ commands.
 
 This will build a 'Maverick Model 3D.app' AppBundle. (macosx-version-min is
 copied from /usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang/qmake.conf)
-
-For more detailed installation instructions, see the INSTALL file.
-See INSTALL.WIN32 for Windows-specific instructions.

@@ -638,6 +638,38 @@ AC_DEFUN([BNV_HAVE_QT],
       fi
     fi
 
+    # If binaries are still not set, try -qt5 suffix (Fedora)
+    if test x"$QT_UIC" = x; then
+      # UIC detection
+      if test `which uic-qt5 2> /dev/null`; then
+        QT_UIC="uic-qt5"
+      fi
+    fi
+    if test x"$QT_MOC" = x; then
+      # MOC detection
+      if test `which moc-qt5 2> /dev/null`; then
+        QT_MOC="moc-qt5"
+      fi
+    fi
+    if test x"$QT_RCC" = x; then
+      # RCC detection
+      if test `which rcc-qt5 2> /dev/null`; then
+        QT_RCC="rcc-qt5"
+      fi
+    fi
+    if test x"$QT_LRELEASE" = x; then
+      # LRELEASE detection
+      if test `which lrelease-qt5 2> /dev/null`; then
+        QT_LRELEASE="lrelease-qt5"
+      fi
+    fi
+    if test x"$QT_MACDEPLOYQT" = x; then
+      # MACDEPLOYQT detection
+      if test `which macdeployqt-qt5 2> /dev/null`; then
+        QT_MACDEPLOYQT="macdeployqt-qt5"
+      fi
+    fi
+
     # If binaries are still not set, try qtchooser
     if test x"$QT_UIC" = x; then
       # UIC detection
@@ -842,8 +874,9 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
   if test x"$with_Qt_include_dir" != x; then
     bnv_qt_include_dir="$with_Qt_include_dir"
   else
-    # The following header file is expected to define QT_VERSION.
-    # Look for the header file in a standard set of common directories.
+    # Before Qt 5.7.0 use QT_VERSION define in qglobal.h
+    # Qt 5.7.0 and later use QT_VERSION_* defines in qconfig.h (Debian) or qconfig-32.h and qconfig-64.h (Fedora)
+    # Look for the header files in a standard set of common directories.
     bnv_include_path_list="
       /usr/include/$bnv_qt_host/qt5
       /usr/include/qt5
@@ -853,40 +886,43 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
       /usr/local/qt5/include
       `ls -dr /usr/local/Cellar/qt/5*/include 2>/dev/null`
     "
-    for bnv_dir in $bnv_include_path_list; do
-      if test -r "$bnv_dir/QtCore/qconfig.h"; then
-        bnv_dirs="$bnv_dirs $bnv_dir"
-      fi
-    done
     # Now look for the newest in this list
     bnv_prev_ver=0x04FFFF
-    for bnv_dir in $bnv_dirs; do
-      # Qt 5.7.0 and later use separate defines in qconfig.h
-      if test -r "$bnv_dir/QtCore/qconfig.h"; then
-        ztm_qt_ver_major=`egrep -w '#define QT_VERSION_MAJOR' $bnv_dir/QtCore/qconfig.h | sed s/'#define QT_VERSION_MAJOR'//`
-        if test x"$ztm_qt_ver_major" != x; then
-          ztm_qt_ver_minor=`egrep -w '#define QT_VERSION_MINOR' $bnv_dir/QtCore/qconfig.h | sed s/'#define QT_VERSION_MINOR'//`
-          ztm_qt_ver_patch=`egrep -w '#define QT_VERSION_PATCH' $bnv_dir/QtCore/qconfig.h | sed s/'#define QT_VERSION_PATCH'//`
-          bnv_this_ver=`printf "0x%02X%02X%02X" $ztm_qt_ver_major $ztm_qt_ver_minor $ztm_qt_ver_patch`
+    for bnv_dir in $bnv_include_path_list; do
+      # Qt 5.7.0 and later
+      ztm_qconfig_list="
+        $bnv_dir/QtCore/qconfig.h
+        $bnv_dir/QtCore/qconfig-32.h
+        $bnv_dir/QtCore/qconfig-64.h
+      "
+      for ztm_qconfig in $ztm_qconfig_list; do
+        if test -r "$ztm_qconfig"; then
+          ztm_qt_ver_major=`egrep -w '^#define[[:space:]]*QT_VERSION_MAJOR[[:space:]]*' "$ztm_qconfig" | sed s/'^#define[[:space:]]*QT_VERSION_MAJOR[[:space:]]*'//`
+          ztm_qt_ver_minor=`egrep -w '^#define[[:space:]]*QT_VERSION_MINOR[[:space:]]*' "$ztm_qconfig" | sed s/'^#define[[:space:]]*QT_VERSION_MINOR[[:space:]]*'//`
+          ztm_qt_ver_patch=`egrep -w '^#define[[:space:]]*QT_VERSION_PATCH[[:space:]]*' "$ztm_qconfig" | sed s/'^#define[[:space:]]*QT_VERSION_PATCH[[:space:]]*'//`
+          if test x"$ztm_qt_ver_major" != x -a x"$ztm_qt_ver_minor" != x -a x"$ztm_qt_ver_patch" != x; then
+            bnv_this_ver=`printf "0x%02X%02X%02X" $ztm_qt_ver_major $ztm_qt_ver_minor $ztm_qt_ver_patch`
+            if expr $bnv_this_ver '>' $bnv_prev_ver > /dev/null; then
+              bnv_is_qt5=yes
+              bnv_qt_include_dir=$bnv_dir
+              bnv_prev_ver=$bnv_this_ver
+            fi
+
+            break
+          fi
+        fi
+      done
+
+      # Before Qt 5.7.0 the version was a constant (i.e., 0x050600 for 5.6.0) in qglobal.h
+      if test -r "$bnv_dir/QtCore/qglobal.h"; then
+        bnv_this_ver=`egrep -w '^#define[[:space:]]*QT_VERSION[[:space:]]*' $bnv_dir/QtCore/qglobal.h | sed s/'^#define[[:space:]]*QT_VERSION[[:space:]]*'//`
+        if case "$bnv_this_ver" in 0x* ) true;; *) false;; esac; then
           if expr $bnv_this_ver '>' $bnv_prev_ver > /dev/null; then
             bnv_is_qt5=yes
             bnv_qt_include_dir=$bnv_dir
             bnv_prev_ver=$bnv_this_ver
           fi
-
-          # don't check qglobal.h
-          continue
         fi
-      fi
-
-      # Before Qt 5.7.0 the version was a constant (i.e., 0x050600 for 5.6.0) in qglobal.h
-      if test -r "$bnv_dir/QtCore/qglobal.h"; then
-         bnv_this_ver=`egrep -w '#define QT_VERSION' $bnv_dir/QtCore/qglobal.h | sed s/'#define QT_VERSION'//`
-         if expr $bnv_this_ver '>' $bnv_prev_ver > /dev/null; then
-           bnv_is_qt5=yes
-           bnv_qt_include_dir=$bnv_dir
-           bnv_prev_ver=$bnv_this_ver
-         fi
       fi
     done
   fi dnl Found header files.
