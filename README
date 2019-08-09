@@ -41,7 +41,7 @@ Build dependencies:
 
 Build dependencies:
 
-    sudo dnf install autoconf automake make gcc-c++ qt5-devel mesa-libGLU-devel perl-HTML-Template
+    sudo dnf install autoconf automake make gcc-c++ qt5-qtbase-devel qt5-linguist mesa-libGLU-devel perl-HTML-Template
 
 ## macOS
 
