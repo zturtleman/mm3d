@@ -52,10 +52,10 @@ SnapCommand::~SnapCommand()
 
 
 // set the coordinates of all the selected vertices to their arithmetic mean.
-static void snap_together(Model *model, list<int> selection)
+static void snap_together(Model *model, const list<int> & selection)
 {
    double coord[3]= { 0, 0, 0 }, coord_temp[3];
-   list<int>::iterator iter;
+   list<int>::const_iterator iter;
 
    for(iter= selection.begin(); iter!=selection.end(); iter++)
    {
@@ -92,12 +92,12 @@ static void snap_together_two(Model *model, int v0, int v1)
 
 // find the nearest vertex in the selection which is not contained in the exclude (already processed) list.
 #define DISTANCE(x, y, z) sqrt( (x)*(x) + (y)*(y) + (z)*(z) )
-int find_nearest_vertex(Model *model, int vertex, list<int> selection, list<int> exclude)
+int find_nearest_vertex(Model *model, int vertex, const list<int> & selection, const list<int> & exclude)
 {
    double smallest_distance= 0xdeadbeef;
    int nearest_vertex= -1;
    double coord[3], coord_temp[3];
-   list<int>::iterator iter;
+   list<int>::const_iterator iter;
 
    model->getVertexCoords(vertex, coord);
 
@@ -105,7 +105,7 @@ int find_nearest_vertex(Model *model, int vertex, list<int> selection, list<int>
    {
       if(*iter!=vertex)
       {
-         list<int>::iterator it= exclude.begin();
+         list<int>::const_iterator it= exclude.begin();
          while(it!=exclude.end() && *it != *iter) it++;
          if( *it != *iter )
          {
