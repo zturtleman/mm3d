@@ -66,6 +66,8 @@ bool PasteCommand::activated( int arg, Model * model )
 
       model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Paste complete" ).toUtf8() );
 
+      delete m;
+
       return true;
    }
    else
