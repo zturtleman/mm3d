@@ -31,6 +31,7 @@
 #include "modelstatus.h"
 #include "sysconf.h"
 #include "misc.h"
+#include "errorobj.h"
 
 #include <list>
 #include <map>
@@ -52,19 +53,32 @@ bool PasteCommand::activated( int arg, Model * model )
 {
    if ( model )
    {
-      Model * m = new Model;
-
       std::string clipfile = getMm3dHomeDirectory();
 
       clipfile += "/clipboard";
       mkpath( clipfile.c_str(), 0755 );
       clipfile += "/clipboard.mm3d";
 
-      FilterManager::getInstance()->readFile( m, clipfile.c_str() );
+      Model * m = new Model;
+      Model::ModelErrorE err = FilterManager::getInstance()->readFile( m, clipfile.c_str() );
+      if ( err == Model::ERROR_NONE )
+      {
+         model->mergeModels( m, true, Model::AM_NONE, false );
 
-      model->mergeModels( m, true, Model::AM_NONE, false );
-
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Paste complete" ).toUtf8() );
+         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Paste complete" ).toUtf8() );
+      }
+      else
+      {
+         if ( err == Model::ERROR_NO_FILE )
+         {
+            model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Nothing to paste" ).toUtf8() );
+         }
+         else if ( Model::operationFailed( err ) )
+         {
+            QString reason = modelErrStr( err, m );
+            msg_error( (const char *) qApp->translate( "Command", "Paste failed: %1\n%2" ).arg( reason ).arg( clipfile.c_str() ).toUtf8() );
+         }
+      }
 
       delete m;
 
