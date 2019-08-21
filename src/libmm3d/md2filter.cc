@@ -541,7 +541,6 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
    }
 }
 
-// FIXME test this!
 Model::ModelErrorE Md2Filter::writeFile( Model * model, const char * const filename, ModelFilter::Options * o )
 {
    if ( model && filename && filename[0] )
