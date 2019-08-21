@@ -56,7 +56,7 @@ class PaintTextureWin : public QDialog, public Ui::PaintTextureWinBase
 
    protected:
       void updateDisplay();
-      void addTriangles();
+      void addTriangles( const list<int> & triangles );
 
       TextureWidget * m_textureWidget;
       Model * m_model;

@@ -91,7 +91,7 @@ PaintTextureWin::PaintTextureWin( Model * model, QWidget * parent )
       log_error( "no group selected\n" );
    }
 
-   addTriangles();
+   addTriangles( triangles );
 
    m_polygonsButton->setCurrentIndex( 2 );
    m_verticesButton->setCurrentIndex( 0 );
@@ -255,14 +255,11 @@ void PaintTextureWin::saveEvent()
    }
 }
 
-void PaintTextureWin::addTriangles()
+void PaintTextureWin::addTriangles( const list<int> & triangles )
 {
    m_textureWidget->clearCoordinates();
 
-   list<int> triangles;
-   m_model->getSelectedTriangles( triangles );
-
-   list<int>::iterator it;
+   list<int>::const_iterator it;
 
    float u = 0.0f;
    float v = 0.0f;
