@@ -76,7 +76,7 @@ PaintTextureWin::PaintTextureWin( Model * model, QWidget * parent )
    list<int>::iterator it;
    for ( it = triangles.begin(); !foundTexture && it != triangles.end(); it++ )
    {
-      int g = m_model->getTriangleGroup( triangles.front() );
+      int g = m_model->getTriangleGroup( *it );
       int m = m_model->getGroupTextureId( g );
       if ( m >= 0 )
       {
