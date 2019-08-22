@@ -24,14 +24,14 @@
 #ifndef __PAINTWIDGET_H
 #define __PAINTWIDGET_H
 
-#include <QtOpenGL/QGLWidget>
+#include <QtWidgets/QOpenGLWidget>
 
 #include <vector>
 #include <list>
 
 class TextureWidget;
 
-class PaintWidget : public QGLWidget
+class PaintWidget : public QOpenGLWidget
 {
    public:
       PaintWidget( TextureWidget * drawBuddy, QWidget * parent = NULL );

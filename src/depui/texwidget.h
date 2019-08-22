@@ -26,7 +26,7 @@
 
 #include <stdint.h>
 
-#include <QtOpenGL/QGLWidget>
+#include <QtWidgets/QOpenGLWidget>
 #include <QtGui/QWheelEvent>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QKeyEvent>
@@ -38,7 +38,7 @@ class Texture;
 class Model;
 class QTimer;
 
-class TextureWidget : public QGLWidget
+class TextureWidget : public QOpenGLWidget
 {
    Q_OBJECT
 
@@ -152,7 +152,7 @@ class TextureWidget : public QGLWidget
       void getRange( double & xMin, double & yMin, double & xMax, double & yMax );
 
       // paint my scene on another OpenGL widget
-      void paintOnGlWidget( QGLWidget * w );
+      void paintOnGlWidget( QOpenGLWidget * w );
 
    public slots:
       void animationTimeout();
@@ -198,6 +198,7 @@ class TextureWidget : public QGLWidget
       void drawOverlay();
 
       void makeTextureFromImage( const QImage & i, GLuint & t );
+      void updateGLTexture();
 
       void selectDone();
       void drawSelectBox();

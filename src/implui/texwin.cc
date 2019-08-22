@@ -343,7 +343,7 @@ void TextureWindow::updateEvent()
          break;
    }
    DecalManager::getInstance()->modelUpdated( m_model );
-   m_textureFrame->getTextureWidget()->updateGL();
+   m_textureFrame->getTextureWidget()->update();
 }
 
 void TextureWindow::accept()

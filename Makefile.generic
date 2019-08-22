@@ -190,7 +190,7 @@ ifdef MINGW
   endif
 
   ifndef QT_LIBS
-    QT_LIBS=-lQt5Core -lQt5Gui -lQt5Widgets -lQt5OpenGL
+    QT_LIBS=-lQt5Core -lQt5Gui -lQt5Widgets
   endif
 
   LINK=-L${QT_LIB_DIR} ${QT_LIBS} -mwindows -lshlwapi -lopengl32 -lglu32 -static-libgcc -static-libstdc++
@@ -228,7 +228,7 @@ ifeq ($(PLATFORM),darwin)
   endif
 
   ifndef QT_LIBS
-    QT_LIBS=-framework QtCore -framework QtGui -framework QtWidgets -framework QtOpenGL
+    QT_LIBS=-framework QtCore -framework QtGui -framework QtWidgets
   endif
 
   LINK=-F${QT_FRAMEWORKS_DIR} -L${QT_LIB_DIR} ${QT_LIBS} -framework OpenGl
@@ -290,7 +290,7 @@ else # ifeq darwin
   endif
 
   ifndef QT_LIBS
-    QT_LIBS=-lQt5Core -lQt5Gui -lQt5Widgets -lQt5OpenGL
+    QT_LIBS=-lQt5Core -lQt5Gui -lQt5Widgets
   endif
 
   LINK=-L${QT_LIB_DIR} ${QT_LIBS} -lGLU -lGL -ldl

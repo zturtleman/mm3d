@@ -140,7 +140,7 @@ void TextureCoord::undoEvent()
       m_undoCount--;
       m_inUndo = false;
       m_textureWidget->restoreSelectedUv();
-      m_textureWidget->updateGL();
+      m_textureWidget->update();
    }
 }
 
@@ -152,7 +152,7 @@ void TextureCoord::redoEvent()
       m_model->redo();
       m_undoCount++;
       m_inUndo = false;
-      m_textureWidget->updateGL();
+      m_textureWidget->update();
    }
 }
 
@@ -213,7 +213,7 @@ void TextureCoord::initWindow()
       m_textureWidget->restoreSelectedUv();
    else
       m_textureWidget->saveSelectedUv();
-   m_textureWidget->updateGL();
+   m_textureWidget->update();
 }
 
 void TextureCoord::setModel( Model * model )
@@ -251,28 +251,28 @@ void TextureCoord::toolSelectEvent()
 {
    m_selectButton->setChecked( true );
    m_textureWidget->setMouseOperation( TextureWidget::MouseSelect );
-   m_textureWidget->updateGL();
+   m_textureWidget->update();
 }
 
 void TextureCoord::toolMoveEvent()
 {
    m_moveButton->setChecked( true );
    m_textureWidget->setMouseOperation( TextureWidget::MouseMove );
-   m_textureWidget->updateGL();
+   m_textureWidget->update();
 }
 
 void TextureCoord::toolRotateEvent()
 {
    m_rotateButton->setChecked( true );
    m_textureWidget->setMouseOperation( TextureWidget::MouseRotate );
-   m_textureWidget->updateGL();
+   m_textureWidget->update();
 }
 
 void TextureCoord::toolScaleEvent()
 {
    m_scaleButton->setChecked( true );
    m_textureWidget->setMouseOperation( TextureWidget::MouseScale );
-   m_textureWidget->updateGL();
+   m_textureWidget->update();
 }
 
 void TextureCoord::mapGroupEvent()
@@ -293,7 +293,7 @@ void TextureCoord::mapGroupEvent()
       cancelMapChange();
       return;
    }
-   m_textureWidget->updateGL();
+   m_textureWidget->update();
 }
 
 void TextureCoord::resetClickedEvent()
@@ -305,7 +305,7 @@ void TextureCoord::resetClickedEvent()
       if ( dir.exec() )
       {
          mapGroup( dir.getMapDirection() );
-         m_textureWidget->updateGL();
+         m_textureWidget->update();
          log_debug( "reset texture coordinates and map from direction %d\n", dir.getMapDirection() );
       }
    }
@@ -444,7 +444,7 @@ void TextureCoord::selectionColorChangedEvent( int newColor )
    rgb |= (newColor & 2) ? 0x00ff00 : 0;
    rgb |= (newColor & 4) ? 0xff0000 : 0;
    m_textureWidget->setSelectionColor( rgb );
-   m_textureWidget->updateGL();
+   m_textureWidget->update();
    g_prefs( "ui_texcoord_selection_color" ) = (int) rgb;
 }
 
@@ -455,7 +455,7 @@ void TextureCoord::linesColorChangedEvent( int newColor )
    rgb |= (newColor & 2) ? 0x00ff00 : 0;
    rgb |= (newColor & 4) ? 0xff0000 : 0;
    m_textureWidget->setLinesColor( rgb );
-   m_textureWidget->updateGL();
+   m_textureWidget->update();
    g_prefs( "ui_texcoord_lines_color" ) = (int) rgb;
 }
 
@@ -506,7 +506,7 @@ void TextureCoord::mapTriangle()
    m_triangles.push_back( m_textureWidget->addTriangle( v1, v2, v3 ) );
    updateTextureCoordsEvent();
    updateDoneEvent();
-   m_textureWidget->updateGL();
+   m_textureWidget->update();
 }
 
 void TextureCoord::mapQuad()
@@ -533,7 +533,7 @@ void TextureCoord::mapQuad()
    m_triangles.push_back( m_textureWidget->addTriangle( v1, v3, v4 ) );
    updateTextureCoordsEvent();
    updateDoneEvent();
-   m_textureWidget->updateGL();
+   m_textureWidget->update();
 }
 
 void TextureCoord::mapGroup( int direction )
@@ -656,7 +656,7 @@ void TextureCoord::mapGroup( int direction )
 
    updateTextureCoordsEvent();
    updateDoneEvent();
-   m_textureWidget->updateGL();
+   m_textureWidget->update();
 }
 
 void TextureCoord::clearTriangles()

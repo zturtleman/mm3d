@@ -15,6 +15,5 @@ addons:
     - qtbase5-dev
     - qtbase5-dev-tools
     - qttools5-dev-tools
-    - libqt5opengl5-dev
     - libhtml-template-perl
 

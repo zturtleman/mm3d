@@ -73,7 +73,6 @@ Section "Maverick Model 3D"
     ; Qt dlls
     File build\mingw32-x86\install\Qt5Core.dll
     File build\mingw32-x86\install\Qt5Gui.dll
-    File build\mingw32-x86\install\Qt5OpenGL.dll
     File build\mingw32-x86\install\Qt5Svg.dll
     File build\mingw32-x86\install\Qt5Widgets.dll
 
@@ -171,7 +170,6 @@ Section "Uninstall"
     ; Qt dlls
     Delete "$INSTDIR\Qt5Core.dll"
     Delete "$INSTDIR\Qt5Gui.dll"
-    Delete "$INSTDIR\Qt5OpenGL.dll"
     Delete "$INSTDIR\Qt5Svg.dll"
     Delete "$INSTDIR\Qt5Widgets.dll"
     Delete "$INSTDIR\iconengines\*.dll"

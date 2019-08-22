@@ -85,7 +85,7 @@ static ScrollButtonT s_buttons[ ModelViewport::ScrollButtonMAX ] =
 static Matrix s_mat;
 
 ModelViewport::ModelViewport( QWidget * parent )
-   : QGLWidget( parent ),
+   : QOpenGLWidget( parent ),
      m_model( NULL ),
      m_operation( MO_None ),
      m_activeButton( Qt::NoButton ),
@@ -125,8 +125,6 @@ ModelViewport::ModelViewport( QWidget * parent )
    g_prefs.setDefault( "ui_3dgrid_xy", 0 );
    g_prefs.setDefault( "ui_3dgrid_xz", 1 );
    g_prefs.setDefault( "ui_3dgrid_yz", 0 );
-
-   setAutoBufferSwap( false );
 
    setFocusPolicy( Qt::WheelFocus );
    setMinimumSize( 220, 180 );
@@ -365,9 +363,7 @@ void ModelViewport::paintGL()
             break;
          default:
             log_error( "Unknown ViewDirection: %d\n", m_viewDirection );
-            swapBuffers();
             return;
-            break;
       }
 
       m.apply( viewPoint );
@@ -518,8 +514,6 @@ void ModelViewport::paintGL()
    }
 
    checkGlErrors();
-
-   swapBuffers();
 }
 
 void ModelViewport::drawGridLines()
@@ -775,6 +769,7 @@ void ModelViewport::drawGridLines()
             break;
       }
 
+#if 0 // FIXME: renderText() exists in QGLWidget but not QOpenGLWidget
       g_prefs.setDefault( "ui_render_text", 0 );
       if ( g_prefs( "ui_render_text" ).intValue() != 0 )
       {
@@ -785,6 +780,7 @@ void ModelViewport::drawGridLines()
          text.sprintf( "%g", m_unitWidth );
          renderText( 2, this->height() - 12, text, QFont( "Sans", 10 ) );
       }
+#endif
    }
 }
 
@@ -1145,7 +1141,7 @@ void ModelViewport::adjustViewport()
 {
    setViewportDraw();
 
-   updateGL();
+   update();
 }
 
 void ModelViewport::setViewportDraw()
@@ -2063,7 +2059,7 @@ void ModelViewport::keyPressEvent( QKeyEvent * e )
             break;
 
          default:
-            QGLWidget::keyPressEvent( e );
+            QOpenGLWidget::keyPressEvent( e );
             return;
             break;
       }
@@ -2356,7 +2352,7 @@ void ModelViewport::focusInEvent( QFocusEvent * e )
    glClearColor( m_backColor.red() / 256.0, 
          m_backColor.green() / 256.0, 
          m_backColor.blue() / 256.0, 1.0f );
-   updateGL();
+   update();
 }
 
 void ModelViewport::focusOutEvent( QFocusEvent * e )
@@ -2368,7 +2364,7 @@ void ModelViewport::focusOutEvent( QFocusEvent * e )
    glClearColor( m_backColor.red() / 256.0, 
          m_backColor.green() / 256.0, 
          m_backColor.blue() / 256.0, 1.0f );
-   updateGL();
+   update();
 }
 
 /*
@@ -2794,7 +2790,7 @@ int ModelViewport::constructButtonState( QMouseEvent * e )
 
 void ModelViewport::updateView()
 {
-   updateGL();
+   update();
    StatusObject * bar = model_status_get_object( m_model );
    bar->setVertices(   m_model->getVertexCount(),    m_model->getSelectedVertexCount() );
    bar->setFaces(      m_model->getTriangleCount(),  m_model->getSelectedTriangleCount() );
@@ -2815,13 +2811,13 @@ void ModelViewport::update3dView()
 void ModelViewport::addDecal( Decal * decal )
 {
    m_decals.push_back( decal );
-   updateGL();
+   update();
 }
 
 void ModelViewport::removeDecal( Decal * decal )
 {
    m_decals.remove( decal );
-   updateGL();
+   update();
 }
 
 void ModelViewport::frameArea( double x1, double y1, double z1, double x2, double y2, double z2 )
@@ -3103,7 +3099,7 @@ void ModelViewport::copyContentsToTexture( Texture * tex )
       tex->m_format = Texture::FORMAT_RGBA;
 
       makeCurrent();
-      updateGL();
+      update();
 
       glReadPixels( 0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex->m_data );
    }
@@ -3120,7 +3116,7 @@ void ModelViewport::updateCaptureGL()
 {
    m_capture = true;
    makeCurrent();
-   updateGL();
+   update();
    m_capture = false;
 }
 

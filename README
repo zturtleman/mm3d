@@ -13,7 +13,7 @@ The home page is here:
 The original project's home page is here:
    http://www.misfitcode.com/misfitmodel3d/
 
-Maverick Model 3D requires Qt (5.x) with OpenGL support.  See the INSTALL file
+Maverick Model 3D requires Qt (5.x) and OpenGL support.  See the INSTALL file
 for details on where to get these packages.
 
 This program uses autoconf and automake for building from source.  What this
@@ -35,7 +35,7 @@ See INSTALL.WIN32 for Windows-specific instructions.
 
 Build dependencies:
 
-    sudo apt-get install autoconf automake make g++ qtbase5-dev qtbase5-dev-tools qttools5-dev-tools libqt5opengl5-dev libgl1-mesa-dev libhtml-template-perl
+    sudo apt-get install autoconf automake make g++ qtbase5-dev qtbase5-dev-tools qttools5-dev-tools libgl1-mesa-dev libhtml-template-perl
 
 ## Fedora
 

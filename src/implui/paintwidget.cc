@@ -27,7 +27,7 @@
 #include "log.h"
 
 PaintWidget::PaintWidget( TextureWidget * drawBuddy, QWidget * parent )
-   : QGLWidget( parent ),
+   : QOpenGLWidget( parent ),
      m_drawBuddy( drawBuddy )
 {
 }
@@ -45,8 +45,6 @@ void PaintWidget::initializeGL()
    }
 
    glEnable( GL_TEXTURE_2D );
-
-   setAutoBufferSwap( false );
 
    glShadeModel( GL_SMOOTH );
    glDepthFunc( GL_LEQUAL );
@@ -86,6 +84,5 @@ void PaintWidget::paintGL()
    // I don't draw on myself
    log_debug( "PaintWidget::paintGL\n" );
    m_drawBuddy->paintOnGlWidget( this );
-   swapBuffers();
 }
 

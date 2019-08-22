@@ -32,7 +32,7 @@
 #include <QtCore/QTranslator>
 #include <QtWidgets/QApplication>
 #include <QtGui/QFileOpenEvent>
-#include <QtOpenGL/QGLFormat>
+#include <QtGui/QSurfaceFormat>
 
 #include <list>
 #include <string>
@@ -74,29 +74,6 @@ public:
 static ModelApp     * s_app = NULL;
 static QTranslator  * s_qtXlat = NULL;
 static QTranslator  * s_mm3dXlat = NULL;
-
-static bool _has_gl_support()
-{
-   if ( ! QGLFormat::hasOpenGL() )
-   {
-      log_error( "No openGL support, exiting...\n" );
-      return false;
-   }
-
-   QGLFormat format = QGLFormat::defaultFormat();
-
-   format.setDoubleBuffer( true );
-   format.setRgba( true );
-   format.setAlpha( true );
-
-   QGLFormat::setDefaultFormat( format );
-
-   format = QGLFormat::defaultFormat();
-
-   log_debug( "qt says alpha is%s enabled\n", (format.alpha() ? "" : " not" ) );
-
-   return true;
-}
 
 static void _cleanup()
 {
@@ -148,6 +125,13 @@ int ui_prep( int & argc, char * argv[] )
    s_app->setAttribute( Qt::AA_DontUseNativeMenuBar );
 #endif
 
+   // Set default format for QOpenGLWidget.
+   QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+   format.setRenderableType( QSurfaceFormat::OpenGL );
+   format.setVersion( 1, 1 );
+   format.setSwapBehavior( QSurfaceFormat::DoubleBuffer );
+   QSurfaceFormat::setDefaultFormat( format );
+
    QString loc = mlocale_get().c_str();
 
    if ( loc == "" )
@@ -185,11 +169,6 @@ int ui_init( int & argc, char * argv[] )
    }
    if ( cmdline_runui )
    {
-      if ( ! _has_gl_support() )
-      {
-         return -1;
-      }
-
       bool opened = false;
       unsigned openCount = 0;
 
