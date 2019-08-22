@@ -127,8 +127,8 @@ void ModelView::updateCaptureGL()
    m_modelView->updateCaptureGL();
 }
 
-QImage ModelView::grabFrameBuffer( bool withAlpha )
+QImage ModelView::grabFramebuffer()
 {
-   return m_modelView->grabFrameBuffer( withAlpha );
+   return m_modelView->grabFramebuffer();
 }
 

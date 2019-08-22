@@ -313,7 +313,7 @@ void AnimExportWindow::accept()
          QString file;
          file.sprintf( formatStr, (const char *) path.toUtf8(), frameNum );
 
-         QImage img = v->grabFrameBuffer( false );
+         QImage img = v->grabFramebuffer();
 
          if ( !img.save( file, saveFormat.toUtf8(), 100 ) && prompt )
          {

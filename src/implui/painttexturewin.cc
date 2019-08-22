@@ -180,7 +180,7 @@ void PaintTextureWin::displayChangedEvent()
 void PaintTextureWin::clearEvent()
 {
    m_textureWidget->setSolidBackground( true );
-   m_textureWidget->updateGL();
+   m_textureWidget->update();
 }
 
 void PaintTextureWin::saveEvent()
@@ -232,9 +232,9 @@ void PaintTextureWin::saveEvent()
          {
             int h = atoi( m_hSize->currentText().toLatin1() );
 
-            m_textureWidget->updateGL();
+            m_textureWidget->update();
 
-            QImage img = m_textureWidget->grabFrameBuffer( false );
+            QImage img = m_textureWidget->grabFramebuffer();
             img = img.scaledToWidth( h, Qt::SmoothTransformation );
 
             if ( !img.save( filename, "PNG", 100 ) )
@@ -291,6 +291,6 @@ void PaintTextureWin::updateDisplay()
    m_textureFrame->sizeOverride( atoi( m_hSize->currentText().toLatin1() ),
          atoi( m_vSize->currentText().toLatin1() ) );
 
-   m_textureWidget->updateGL();
+   m_textureWidget->update();
 }
 

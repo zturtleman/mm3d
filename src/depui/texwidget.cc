@@ -73,7 +73,7 @@ using std::vector;
 using std::list;
 
 TextureWidget::TextureWidget( QWidget * parent )
-   : QGLWidget( parent ),
+   : QOpenGLWidget( parent ),
      m_sClamp( false ),
      m_tClamp( false ),
      m_zoom( 1.0 ),
@@ -145,12 +145,13 @@ void TextureWidget::initializeGL()
    // general set-up
    glEnable( GL_TEXTURE_2D );
 
-   setAutoBufferSwap( false );
-
    glShadeModel( GL_SMOOTH );
    glDepthFunc( GL_LEQUAL );
    glClearColor( 0.80, 0.80, 0.80, 1.0 );
    glClearDepth( 1.0f );
+
+   // set up texture if setTexture() was called before initializeGL()
+   updateGLTexture();
 
    // set up overlay arrows
    QPixmap arrow( arrow_xpm );
@@ -198,7 +199,7 @@ void TextureWidget::updateViewport()
    m_yMin = m_yCenter - (m_zoom / 2.0);
    m_yMax = m_yCenter + (m_zoom / 2.0);
 
-   updateGL();
+   update();
 }
 
 void TextureWidget::paintGL()
@@ -207,7 +208,7 @@ void TextureWidget::paintGL()
    paintInternal();
 }
 
-void TextureWidget::paintOnGlWidget( QGLWidget * w )
+void TextureWidget::paintOnGlWidget( QOpenGLWidget * w )
 {
    w->makeCurrent();
    paintInternal();
@@ -614,8 +615,6 @@ void TextureWidget::paintInternal()
    {
       drawOverlay();
    }
-
-   swapBuffers();
 }
 
 void TextureWidget::drawTriangles()
@@ -705,7 +704,7 @@ void TextureWidget::drawTriangles()
 
 void TextureWidget::animationTimeout()
 {
-   updateGL();
+   update();
 }
 
 void TextureWidget::setModel( Model * model )
@@ -735,7 +734,7 @@ void TextureWidget::set3d( bool o )
 void TextureWidget::setInteractive( bool o )
 {
    m_interactive = o;
-   updateGL();
+   update();
 }
 
 void TextureWidget::setTexture( int materialId, Texture * texture )
@@ -751,58 +750,33 @@ void TextureWidget::setTexture( int materialId, Texture * texture )
       m_tClamp = m_model->getTextureTClamp( materialId );
    }
 
+   m_zoom    = 1.0;
+   m_xCenter = 0.5;
+   m_yCenter = 0.5;
+
+   updateViewport();
+
    if ( m_texture )
    {
-      m_zoom    = 1.0;
-      m_xCenter = 0.5;
-      m_yCenter = 0.5;
-
-      updateViewport();
-
       /*
       m_xMin = m_xCenter - w;
       m_xMax = m_xCenter + w;
       m_yMin = m_yCenter - w;
       m_yMax = m_yCenter + w;
       */
-
-      makeCurrent();
-
-      glEnable( GL_TEXTURE_2D );
-
-      if ( m_glTexture == 0 ) {
-         glGenTextures( 1, &m_glTexture );
-      }
-
-      glBindTexture( GL_TEXTURE_2D, m_glTexture );
-
-      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-            GL_NEAREST );
-      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-            GL_NEAREST );
-
-      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
-            (m_sClamp ? GL_CLAMP : GL_REPEAT) );
-      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 
-            (m_tClamp ? GL_CLAMP : GL_REPEAT) );
-
-      GLuint format = m_texture->m_format == Texture::FORMAT_RGBA ? GL_RGBA : GL_RGB;
-      gluBuild2DMipmaps( GL_TEXTURE_2D, format,
-            m_texture->m_width, m_texture->m_height,
-            format, GL_UNSIGNED_BYTE,
-            m_texture->m_data );
    }
-   else
+
+   if ( !isValid() )
    {
-      m_zoom    = 1.0;
-      m_xCenter = 0.5;
-      m_yCenter = 0.5;
-
-      updateViewport();
+      // initializeGL() hasn't run yet
+      return;
    }
+
+   makeCurrent();
+   updateGLTexture();
 
    resizeGL( this->width(), this->height() );
-   updateGL();
+   update();
 }
 
 void TextureWidget::vFlipCoordinates()
@@ -814,7 +788,7 @@ void TextureWidget::vFlipCoordinates()
          m_vertices[v]->t = 1.0 - m_vertices[v]->t;
       }
    }
-   updateGL();
+   update();
 }
 
 void TextureWidget::hFlipCoordinates()
@@ -826,7 +800,7 @@ void TextureWidget::hFlipCoordinates()
          m_vertices[v]->s = 1.0 - m_vertices[v]->s;
       }
    }
-   updateGL();
+   update();
 }
 
 void TextureWidget::rotateCoordinatesCcw()
@@ -841,7 +815,7 @@ void TextureWidget::rotateCoordinatesCcw()
          m_vertices[v]->s = 1.0 - temp;
       }
    }
-   updateGL();
+   update();
 }
 
 void TextureWidget::rotateCoordinatesCw()
@@ -856,7 +830,7 @@ void TextureWidget::rotateCoordinatesCw()
          m_vertices[v]->s = temp;
       }
    }
-   updateGL();
+   update();
 }
 
 int TextureWidget::addVertex( double s, double t )
@@ -1065,7 +1039,7 @@ void TextureWidget::mousePressEvent( QMouseEvent * e )
                         }
                      }
 
-                     updateGL();
+                     update();
                   }
                   break;
                case MouseRange:
@@ -1594,13 +1568,13 @@ void TextureWidget::keyPressEvent( QKeyEvent * e )
             scrollRight();
             break;
          default:
-            QGLWidget::keyPressEvent( e );
+            QOpenGLWidget::keyPressEvent( e );
             break;
       }
    }
    else
    {
-      QGLWidget::keyPressEvent( e );
+      QOpenGLWidget::keyPressEvent( e );
    }
 }
 
@@ -1707,14 +1681,14 @@ void TextureWidget::moveSelectedVertices( double x, double y )
          m_vertices[t]->t += y;
       }
    }
-   updateGL();
+   update();
 }
 
 void TextureWidget::updateSelectRegion( double x, double y )
 {
    m_xSel2 = x;
    m_ySel2 = y;
-   updateGL();
+   update();
 }
 
 void TextureWidget::setViewportDraw()
@@ -1831,6 +1805,39 @@ void TextureWidget::makeTextureFromImage( const QImage & i, GLuint & t )
    delete[] data;
 }
 
+void TextureWidget::updateGLTexture()
+{
+   if ( !m_texture )
+   {
+      return;
+   }
+
+   glEnable( GL_TEXTURE_2D );
+
+   if ( m_glTexture == 0 )
+   {
+      glGenTextures( 1, &m_glTexture );
+   }
+
+   glBindTexture( GL_TEXTURE_2D, m_glTexture );
+
+   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+         GL_NEAREST );
+   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+         GL_NEAREST );
+
+   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
+            (m_sClamp ? GL_CLAMP : GL_REPEAT) );
+   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
+         (m_tClamp ? GL_CLAMP : GL_REPEAT) );
+
+   GLuint format = m_texture->m_format == Texture::FORMAT_RGBA ? GL_RGBA : GL_RGB;
+   gluBuild2DMipmaps( GL_TEXTURE_2D, format,
+         m_texture->m_width, m_texture->m_height,
+         format, GL_UNSIGNED_BYTE,
+         m_texture->m_data );
+}
+
 void TextureWidget::selectDone()
 {
    if ( m_xSel1 > m_xSel2 )
@@ -1853,7 +1860,7 @@ void TextureWidget::selectDone()
          m_vertices[v]->selected = m_selecting;
       }
    }
-   updateGL();
+   update();
 }
 
 void TextureWidget::setTextureCount( unsigned c )
@@ -2378,7 +2385,7 @@ void TextureWidget::rotateSelectedVertices( double angle )
       m_vertices[index]->t = vec[1] + m_yRotPoint;
    }
 
-   updateGL();
+   update();
 }
 
 void TextureWidget::scaleSelectedVertices( double x, double y )
@@ -2431,7 +2438,7 @@ void TextureWidget::scaleSelectedVertices( double x, double y )
       m_vertices[(*it).index]->t = y;
    }
 
-   updateGL();
+   update();
 }
 
 void TextureWidget::freeRotateVertices()

@@ -51,7 +51,7 @@ class ModelView : public QWidget, public Ui::ModelViewBase
       QString getViewDirectionLabel();
       void copyContentsToTexture( Texture * tex );
       void updateCaptureGL();
-      QImage grabFrameBuffer( bool withAlpha );
+      QImage grabFramebuffer();
 
       ModelViewport * getModelViewport() { return m_modelView; };
 

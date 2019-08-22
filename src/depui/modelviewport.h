@@ -25,7 +25,7 @@
 #define __MVIEWPORT_H
 
 #include <QtCore/QtGlobal>
-#include <QtOpenGL/QGLWidget>
+#include <QtWidgets/QOpenGLWidget>
 #include <QtGui/QWheelEvent>
 #include <QtGui/QFocusEvent>
 #include <QtGui/QMouseEvent>
@@ -48,7 +48,7 @@ class QTimer;
 
 typedef list<Decal *> DecalList;
 
-class ModelViewport : public QGLWidget, public Tool::Parent
+class ModelViewport : public QOpenGLWidget, public Tool::Parent
 {
    Q_OBJECT
    public:

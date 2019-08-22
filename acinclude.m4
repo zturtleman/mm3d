@@ -464,9 +464,9 @@ AC_DEFUN([BNV_HAVE_QT],
 
   bnv_is_qt5=no
   if test x"$is_osx" = xyes; then
-    bnv_qt5_libs="-framework QtCore -framework QtGui -framework QtWidgets -framework QtOpenGL"
+    bnv_qt5_libs="-framework QtCore -framework QtGui -framework QtWidgets"
   else
-    bnv_qt5_libs="-lQt5Core -lQt5Gui -lQt5Widgets -lQt5OpenGL"
+    bnv_qt5_libs="-lQt5Core -lQt5Gui -lQt5Widgets"
   fi
   if test x"$with_Qt_dir" = x"no" ||
      test x"$with_Qt_include_dir" = x"no" ||
@@ -1009,68 +1009,6 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
 
   fi dnl Done setting up for non-traditional Trolltech installation
 
-])
-
-dnl for -lqglviewer (KSW was here)
-AC_DEFUN([KSW_HAVE_QGL],
-[
-  AC_REQUIRE([AC_PROG_CC])
-  AC_REQUIRE([BNV_HAVE_QT])
-
-  AC_LANG_SAVE
-  AC_LANG_CPLUSPLUS
-
-  AC_MSG_CHECKING(Qt OpenGL)
-
-    AC_CACHE_VAL(ksw_cv_qgl_test_result,
-    [
-      cat > ksw_qgl_test.${ac_ext} << EOF
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QWidget>
-#include <QtOpenGL/QGLWidget>
-
-int main( int argc, char ** argv )
-{
-   QApplication app( argc, argv );
-   QGLWidget w;
-   w.show();
-   return app.exec();
-}
-EOF
-
-      ksw_cv_qgl_test_result="failure"
-        ksw_try_1="$CXX $QT_CXXFLAGS $CXXFLAGS $GL_CFLAGS -Wno-uninitialized -o ksw_qgl_test ksw_qgl_test.${ac_ext} $QT_LIBS $GL_LIBS >/dev/null 2>ksw_qgl_test_1.out"
-        AC_TRY_EVAL(ksw_try_1)
-        ksw_err_1=`grep -v '^ *+' ksw_qgl_test_1.out | grep -v "^ksw_qgl_test.{$ac_ext}\$"`
-        if test x"$ksw_err_1" != x; then
-           ksw_try_2="$CXX $QT_CXXFLAGS $CXXFLAGS $GL_CFLAGS -Wno-uninitialized -o ksw_qgl_test ksw_qgl_test.${ac_ext} $QT_LIBS -lqglviewer $GL_LIBS  >/dev/null 2>ksw_qgl_test_2.out"
-           AC_TRY_EVAL(ksw_try_2)
-           ksw_err_2=`grep -v '^ *+' ksw_qgl_test_2.out | grep -v "^ksw_qgl_test.{$ac_ext}\$"`
-           if test x"$ksw_err_2" != x; then
-             echo "$ksw_err_2" >&AC_FD_CC
-             echo "configure: could not compile:" >&AC_FD_CC
-             cat ksw_qgl_test.${ac_ext} >&AC_FD_CC
-           else
-             ksw_cv_qgl_test_result="success"
-             QGL_LIBS=-lqglviewer
-           fi
-        else
-         ksw_cv_qgl_test_result="success"
-         QGL_LIBS=
-        fi
-    ])dnl AC_CACHE_VAL ksw_cv_qgl_test_result
-    AC_MSG_RESULT([$ksw_cv_qgl_test_result]);
-    if test x"$ksw_cv_qgl_test_result" = "xfailure"; then
-      AC_MSG_ERROR([Failed to link Qt with OpenGL support.])
-    fi
-
-    rm -f ksw_qgl_test.h \
-          ksw_qgl_test.${ac_ext} ksw_qgl_test.o ksw_qgl_test \
-          ksw_qgl_test_1.out ksw_qgl_test_2.out
-
-    AC_SUBST(QGL_LIBS)
-
-    AC_LANG_RESTORE
 ])
 
 AC_DEFUN([MDL_HAVE_OPENGL],

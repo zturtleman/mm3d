@@ -113,7 +113,7 @@ void ProjectionWin::refreshProjectionDisplay()
          }
       }
    }
-   m_textureWidget->updateGL();
+   m_textureWidget->update();
    m_textureFrame->textureChangedEvent( -1 );
    DecalManager::getInstance()->modelUpdated( m_model );
 }
@@ -182,7 +182,7 @@ void ProjectionWin::addProjectionTriangles()
                verts[0], verts[1], verts[2] );
       }
    }
-   m_textureWidget->updateGL();
+   m_textureWidget->update();
    DecalManager::getInstance()->modelUpdated( m_model );
 }
 
