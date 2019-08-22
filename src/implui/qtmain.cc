@@ -132,7 +132,7 @@ int ui_prep( int & argc, char * argv[] )
    // Set default format for QOpenGLWidget.
    QSurfaceFormat format = QSurfaceFormat::defaultFormat();
    format.setRenderableType( QSurfaceFormat::OpenGL );
-   format.setVersion( 1, 1 );
+   format.setVersion( 1, 2 );
    format.setSwapBehavior( QSurfaceFormat::DoubleBuffer );
    QSurfaceFormat::setDefaultFormat( format );
 

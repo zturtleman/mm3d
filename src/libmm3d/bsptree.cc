@@ -93,9 +93,9 @@ static void _setMaterial( DrawingContext * context, int texture, Model::Material
             context->m_matTextures[ context->m_currentTexture ] );
 
       glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
-            material->m_sClamp ? GL_CLAMP : GL_REPEAT);
+            material->m_sClamp ? GL_CLAMP_TO_EDGE : GL_REPEAT);
       glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 
-            material->m_tClamp ? GL_CLAMP : GL_REPEAT);
+            material->m_tClamp ? GL_CLAMP_TO_EDGE : GL_REPEAT);
    }
 }
 
