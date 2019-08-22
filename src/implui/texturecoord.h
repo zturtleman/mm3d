@@ -71,14 +71,14 @@ class TextureCoord : public QDialog, public Ui::TextureCoordBase, public Model::
       void toolRotateEvent();
       void toolScaleEvent();
       void setModel( Model * m );
-      virtual void resetClickedEvent();
-      virtual void zoomLevelChangedEvent(QString);
-      virtual void zoomChangeEvent();
-      virtual void scaleSettingsChangedEvent();
+      void resetClickedEvent();
+      void zoomLevelChangedEvent(QString);
+      void zoomChangeEvent();
+      void scaleSettingsChangedEvent();
 
-      virtual void updateTextureCoordsEvent();
-      virtual void updateSelectionDoneEvent();
-      virtual void updateDoneEvent();
+      void updateTextureCoordsEvent();
+      void updateSelectionDoneEvent();
+      void updateDoneEvent();
 
       void rotateCcwEvent();
       void rotateCwEvent();

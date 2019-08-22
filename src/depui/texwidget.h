@@ -180,11 +180,11 @@ class TextureWidget : public QGLWidget
       void zoomLevelChanged( QString zoomStr );
 
    protected:
-      virtual void mousePressEvent( QMouseEvent * e );
-      virtual void mouseReleaseEvent( QMouseEvent * e );
-      virtual void mouseMoveEvent( QMouseEvent * e );
-      virtual void wheelEvent( QWheelEvent * e );
-      virtual void keyPressEvent( QKeyEvent * e );
+      void mousePressEvent( QMouseEvent * e ) override;
+      void mouseReleaseEvent( QMouseEvent * e ) override;
+      void mouseMoveEvent( QMouseEvent * e ) override;
+      void wheelEvent( QWheelEvent * e ) override;
+      void keyPressEvent( QKeyEvent * e ) override;
 
       void moveSelectedVertices( double x, double y );
       void updateSelectRegion( double x, double y );
@@ -213,9 +213,9 @@ class TextureWidget : public QGLWidget
             bool & all, bool & top, bool & bottom, bool & left, bool & right );
       void setDragCursor( bool all, bool top, bool bottom, bool left, bool right );
 
-      void initializeGL();
-      void paintGL();
-      void resizeGL( int w, int h );
+      void initializeGL() override;
+      void paintGL() override;
+      void resizeGL( int w, int h ) override;
 
       void paintInternal();
 

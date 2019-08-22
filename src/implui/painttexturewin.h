@@ -47,10 +47,10 @@ class PaintTextureWin : public QDialog, public Ui::PaintTextureWinBase
 
    public slots:
       void helpNowEvent();
-      virtual void textureSizeChangeEvent();
-      virtual void displayChangedEvent();
-      virtual void clearEvent();
-      virtual void saveEvent();
+      void textureSizeChangeEvent();
+      void displayChangedEvent();
+      void clearEvent();
+      void saveEvent();
 
       void accept();
 

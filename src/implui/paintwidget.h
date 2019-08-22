@@ -38,9 +38,9 @@ class PaintWidget : public QGLWidget
       virtual ~PaintWidget();
 
    protected:
-      void initializeGL();
-      void paintGL();
-      void resizeGL( int w, int h );
+      void initializeGL() override;
+      void paintGL() override;
+      void resizeGL( int w, int h ) override;
 
       TextureWidget * m_drawBuddy;
 };

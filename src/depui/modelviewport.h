@@ -168,19 +168,19 @@ class ModelViewport : public QGLWidget, public Tool::Parent
       void scrollTimeout();
 
    protected slots:
-      void wheelEvent( QWheelEvent * e );
-      void mouseMoveEvent( QMouseEvent * e );
-      void mousePressEvent( QMouseEvent * e );
-      void mouseReleaseEvent( QMouseEvent * e );
-      void keyPressEvent( QKeyEvent * e );
-      void focusInEvent( QFocusEvent * e );
-      void focusOutEvent( QFocusEvent * e );
-      //void dragEnterEvent( QDragMoveEvent * e );
+      void wheelEvent( QWheelEvent * e ) override;
+      void mouseMoveEvent( QMouseEvent * e ) override;
+      void mousePressEvent( QMouseEvent * e ) override;
+      void mouseReleaseEvent( QMouseEvent * e ) override;
+      void keyPressEvent( QKeyEvent * e ) override;
+      void focusInEvent( QFocusEvent * e ) override;
+      void focusOutEvent( QFocusEvent * e ) override;
+      //void dragEnterEvent( QDragMoveEvent * e ) override;
 
    protected:
-      void initializeGL();
-      void paintGL();
-      void resizeGL( int w, int h );
+      void initializeGL() override;
+      void paintGL() override;
+      void resizeGL( int w, int h ) override;
 
       void checkGlErrors();
 
