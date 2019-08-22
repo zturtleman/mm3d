@@ -587,9 +587,9 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                         }
 
                         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
-                              (m_materials[ grp->m_materialIndex ]->m_sClamp ? GL_CLAMP : GL_REPEAT) );
+                              (m_materials[ grp->m_materialIndex ]->m_sClamp ? GL_CLAMP_TO_EDGE : GL_REPEAT) );
                         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 
-                              (m_materials[ grp->m_materialIndex ]->m_tClamp ? GL_CLAMP : GL_REPEAT) );
+                              (m_materials[ grp->m_materialIndex ]->m_tClamp ? GL_CLAMP_TO_EDGE : GL_REPEAT) );
 
                         glEnable( GL_TEXTURE_2D );
                      }
@@ -791,9 +791,9 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                            }
 
                            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
-                                 (m_materials[ grp->m_materialIndex ]->m_sClamp ? GL_CLAMP : GL_REPEAT) );
+                                 (m_materials[ grp->m_materialIndex ]->m_sClamp ? GL_CLAMP_TO_EDGE : GL_REPEAT) );
                            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 
-                                 (m_materials[ grp->m_materialIndex ]->m_tClamp ? GL_CLAMP : GL_REPEAT) );
+                                 (m_materials[ grp->m_materialIndex ]->m_tClamp ? GL_CLAMP_TO_EDGE : GL_REPEAT) );
 
                            glEnable( GL_TEXTURE_2D );
                         }
@@ -990,9 +990,9 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                      }
 
                      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
-                           (m_materials[ grp->m_materialIndex ]->m_sClamp ? GL_CLAMP : GL_REPEAT) );
+                           (m_materials[ grp->m_materialIndex ]->m_sClamp ? GL_CLAMP_TO_EDGE : GL_REPEAT) );
                      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 
-                           (m_materials[ grp->m_materialIndex ]->m_tClamp ? GL_CLAMP : GL_REPEAT) );
+                           (m_materials[ grp->m_materialIndex ]->m_tClamp ? GL_CLAMP_TO_EDGE : GL_REPEAT) );
 
                      glEnable( GL_TEXTURE_2D );
                   }

@@ -1827,9 +1827,9 @@ void TextureWidget::updateGLTexture()
          GL_NEAREST );
 
    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
-            (m_sClamp ? GL_CLAMP : GL_REPEAT) );
+            (m_sClamp ? GL_CLAMP_TO_EDGE : GL_REPEAT) );
    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
-         (m_tClamp ? GL_CLAMP : GL_REPEAT) );
+         (m_tClamp ? GL_CLAMP_TO_EDGE : GL_REPEAT) );
 
    GLuint format = m_texture->m_format == Texture::FORMAT_RGBA ? GL_RGBA : GL_RGB;
    gluBuild2DMipmaps( GL_TEXTURE_2D, format,
