@@ -24,6 +24,7 @@
 #ifndef __MVIEWPORT_H
 #define __MVIEWPORT_H
 
+#include <QtCore/QtGlobal>
 #include <QtOpenGL/QGLWidget>
 #include <QtGui/QWheelEvent>
 #include <QtGui/QFocusEvent>
@@ -178,6 +179,10 @@ class ModelViewport : public QGLWidget, public Tool::Parent
       //void dragEnterEvent( QDragMoveEvent * e ) override;
 
    protected:
+#if QT_VERSION < QT_VERSION_CHECK( 5, 6, 0 )
+      qreal devicePixelRatioF() { return devicePixelRatio(); }
+#endif
+
       void initializeGL() override;
       void paintGL() override;
       void resizeGL( int w, int h ) override;
