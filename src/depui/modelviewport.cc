@@ -1685,12 +1685,12 @@ void ModelViewport::mouseMoveEvent( QMouseEvent * e )
       QPoint curPos = e->pos();
 
       double xDiff = m_scrollStartPosition.x() - curPos.x();
-      xDiff = xDiff * (m_width / m_viewportWidth);
+      xDiff = xDiff * (m_width / this->width());
       m_centerX += xDiff;
 
       double yDiff = m_scrollStartPosition.y() - curPos.y();
       yDiff = -yDiff;  // Adjust for difference between pixel and GL coordinates
-      yDiff = yDiff * (m_height / m_viewportHeight);
+      yDiff = yDiff * (m_height / this->height());
       m_centerY += yDiff;
 
       //m_viewMatrix.inverseRotateVector( vec );
@@ -1719,11 +1719,11 @@ void ModelViewport::mouseMoveEvent( QMouseEvent * e )
       QPoint curPos = e->pos();
 
       double xDiff = m_scrollStartPosition.x() - curPos.x();
-      m_centerX += xDiff * (m_width / m_viewportWidth);
+      m_centerX += xDiff * (m_width / this->width());
 
       double yDiff = m_scrollStartPosition.y() - curPos.y();
       yDiff = -yDiff;  // Adjust for difference between pixel and GL coordinates
-      m_centerY += yDiff * (m_height / m_viewportHeight);
+      m_centerY += yDiff * (m_height / this->height());
 
       m_scrollStartPosition = curPos;
 #endif // NEWVIEWPORT
@@ -1816,12 +1816,12 @@ void ModelViewport::mouseMoveEvent( QMouseEvent * e )
                QPoint curPos = e->pos();
 
                double xDiff = m_scrollStartPosition.x() - curPos.x();
-               xDiff = xDiff * (m_width / m_viewportWidth);
+               xDiff = xDiff * (m_width / this->width());
                m_centerX += xDiff;
 
                double yDiff = m_scrollStartPosition.y() - curPos.y();
                yDiff = -yDiff;  // Adjust for difference between pixel and GL coordinates
-               yDiff = yDiff * (m_height / m_viewportHeight);
+               yDiff = yDiff * (m_height / this->height());
                m_centerY += yDiff;
 
                //m_viewMatrix.inverseRotateVector( vec );
@@ -1850,11 +1850,11 @@ void ModelViewport::mouseMoveEvent( QMouseEvent * e )
                QPoint curPos = e->pos();
 
                double xDiff = m_scrollStartPosition.x() - curPos.x();
-               m_centerX += xDiff * (m_width / m_viewportWidth);
+               m_centerX += xDiff * (m_width / this->width());
 
                double yDiff = m_scrollStartPosition.y() - curPos.y();
                yDiff = -yDiff;  // Adjust for difference between pixel and GL coordinates
-               m_centerY += yDiff * (m_height / m_viewportHeight);
+               m_centerY += yDiff * (m_height / this->height());
 
                m_scrollStartPosition = curPos;
 #endif // NEWVIEWPORT
@@ -1881,12 +1881,12 @@ void ModelViewport::mouseMoveEvent( QMouseEvent * e )
          QPoint curPos = e->pos();
 
          double xDiff = m_scrollStartPosition.x() - curPos.x();
-         xDiff = xDiff * (m_width / m_viewportWidth);
+         xDiff = xDiff * (m_width / this->width());
          m_centerX += xDiff;
 
          double yDiff = m_scrollStartPosition.y() - curPos.y();
          yDiff = -yDiff;  // Adjust for difference between pixel and GL coordinates
-         yDiff = yDiff * (m_height / m_viewportHeight);
+         yDiff = yDiff * (m_height / this->height());
          m_centerY += yDiff;
 
          m_arcballPoint[0] += xDiff;
@@ -2393,12 +2393,12 @@ void ModelViewport::dragEnterEvent( QDragMoveEvent * e )
 
 void ModelViewport::getParentXYValue( int x, int y, double & xval, double & yval, bool selected )
 {
-   xval = (((double) x / (double) m_viewportWidth)  * m_width)
+   xval = (((double) x / (double) this->width())  * m_width)
       - (m_width / 2.0);
-   yval = (((double) -y / (double) m_viewportHeight) * m_height)
+   yval = (((double) -y / (double) this->height()) * m_height)
       + (m_height / 2.0);
 
-   double maxDist = (4.1 / (double) m_viewportWidth) * m_width;
+   double maxDist = (4.1 / (double) this->width()) * m_width;
 
    if ( g_prefs.exists( "ui_snap_vertex" ) 
          &&  g_prefs( "ui_snap_vertex" ).intValue() != 0 )
@@ -2599,9 +2599,9 @@ void ModelViewport::getParentXYValue( int x, int y, double & xval, double & yval
 
 void ModelViewport::getRawParentXYValue( int x, int y, double & xval, double & yval )
 {
-   xval = (((double) x / (double) m_viewportWidth)  * m_width)
+   xval = (((double) x / (double) this->width())  * m_width)
       - (m_width / 2.0);
-   yval = (((double) -y / (double) m_viewportHeight) * m_height)
+   yval = (((double) -y / (double) this->height()) * m_height)
       + (m_height / 2.0);
 }
 
@@ -2609,8 +2609,8 @@ void ModelViewport::getRawParentXYValue( int x, int y, double & xval, double & y
 bool ModelViewport::getXValue( int x, int y, double * val )
 {
    Vector vec;
-   vec[0] =  (((double) x / (double) m_viewportWidth)  * m_width)  - (m_width  / 2.0);
-   vec[1] = -((((double) y / (double) m_viewportHeight) * m_height) - (m_height / 2.0));
+   vec[0] =  (((double) x / (double) this->width())  * m_width)  - (m_width  / 2.0);
+   vec[1] = -((((double) y / (double) this->height()) * m_height) - (m_height / 2.0));
    vec[2] = 0.0;
 
    m_invMatrix.apply( vec );
@@ -2635,8 +2635,8 @@ bool ModelViewport::getXValue( int x, int y, double * val )
 bool ModelViewport::getYValue( int x, int y, double * val )
 {
    Vector vec;
-   vec[0] =  (((double) x / (double) m_viewportWidth)  * m_width)  - (m_width  / 2.0);
-   vec[1] = -((((double) y / (double) m_viewportHeight) * m_height) - (m_height / 2.0));
+   vec[0] =  (((double) x / (double) this->width())  * m_width)  - (m_width  / 2.0);
+   vec[1] = -((((double) y / (double) this->height()) * m_height) - (m_height / 2.0));
    vec[2] = 0.0;
 
    m_invMatrix.apply( vec );
@@ -2661,8 +2661,8 @@ bool ModelViewport::getYValue( int x, int y, double * val )
 bool ModelViewport::getZValue( int x, int y, double * val )
 {
    Vector vec;
-   vec[0] =  (((double) x / (double) m_viewportWidth)  * m_width)  - (m_width  / 2.0);
-   vec[1] = -((((double) y / (double) m_viewportHeight) * m_height) - (m_height / 2.0));
+   vec[0] =  (((double) x / (double) this->width())  * m_width)  - (m_width  / 2.0);
+   vec[1] = -((((double) y / (double) this->height()) * m_height) - (m_height / 2.0));
    vec[2] = 0.0;
 
    m_invMatrix.apply( vec );
@@ -2692,10 +2692,10 @@ bool ModelViewport::getXValue( int x, int y, double * val )
       case ViewFront:
       case ViewTop:
       case ViewBottom:
-         *val = (m_centerX - (m_width / 2.0)) + (((double) x / (double) m_viewportWidth) * m_width);
+         *val = (m_centerX - (m_width / 2.0)) + (((double) x / (double) this->width()) * m_width);
          break;
       case ViewBack:
-         *val = ((-m_centerX) + (m_width / 2.0)) + (((double) (-x) / (double) m_viewportWidth) * m_width);
+         *val = ((-m_centerX) + (m_width / 2.0)) + (((double) (-x) / (double) this->width()) * m_width);
          break;
       case ViewRight:
       case ViewLeft:
@@ -2714,7 +2714,7 @@ bool ModelViewport::getYValue( int x, int y, double * val )
       case ViewBack:
       case ViewRight:
       case ViewLeft:
-         *val = (m_centerY + (m_height / 2.0)) - (((double) y / (double) m_viewportHeight) * m_height);
+         *val = (m_centerY + (m_height / 2.0)) - (((double) y / (double) this->height()) * m_height);
          break;
       case ViewTop:
       case ViewBottom:
@@ -2731,17 +2731,16 @@ bool ModelViewport::getZValue( int x, int y, double * val )
    switch ( m_viewDirection )
    {
       case ViewTop:
-         *val = ((-m_centerY) - (m_height / 2.0)) - (((double) (-y) / (double) m_viewportHeight) * m_height);
+         *val = ((-m_centerY) - (m_height / 2.0)) - (((double) (-y) / (double) this->height()) * m_height);
          break;
       case ViewBottom:
-         *val = (m_centerY + (m_height / 2.0)) - (((double) y / (double) m_viewportHeight) * m_height);
-         //*val = (m_centerY + (m_height / 2.0)) - (((double) y / (double) m_viewportHeight) * m_height);
+         *val = (m_centerY + (m_height / 2.0)) - (((double) y / (double) this->height()) * m_height);
          break;
       case ViewRight:
-         *val = (m_centerX - (m_width / 2.0)) + (((double) x / (double) m_viewportWidth) * m_width);
+         *val = (m_centerX - (m_width / 2.0)) + (((double) x / (double) this->width()) * m_width);
          break;
       case ViewLeft:
-         *val = ((-m_centerX) + (m_width / 2.0)) + (((double) (-x) / (double) m_viewportWidth) * m_width);
+         *val = ((-m_centerX) + (m_width / 2.0)) + (((double) (-x) / (double) this->width()) * m_width);
          break;
       case ViewFront:
       case ViewBack:
@@ -3078,8 +3077,8 @@ void ModelViewport::copyContentsToTexture( Texture * tex )
    m_capture = true;
    if ( tex )
    {
-      unsigned w = this->width();
-      unsigned h = this->height();
+      unsigned w = m_viewportWidth;
+      unsigned h = m_viewportHeight;
 
       // make sure texture can hold data
 

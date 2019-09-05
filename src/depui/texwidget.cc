@@ -1209,8 +1209,8 @@ void TextureWidget::mouseMoveEvent( QMouseEvent * e )
                double xDiff = (double) -(x - m_lastXPos);
                double yDiff = (double)  (y - m_lastYPos);
 
-               xDiff = xDiff / (double) m_viewportWidth;
-               yDiff = yDiff / (double) m_viewportHeight;
+               xDiff = xDiff / (double) this->width();
+               yDiff = yDiff / (double) this->height();
 
                xDiff *= m_zoom;
                yDiff *= m_zoom;
@@ -1441,8 +1441,8 @@ void TextureWidget::mouseMoveEvent( QMouseEvent * e )
             double xDiff = (double) -(x - m_lastXPos);
             double yDiff = (double)  (y - m_lastYPos);
 
-            xDiff = xDiff / (double) m_viewportWidth;
-            yDiff = yDiff / (double) m_viewportHeight;
+            xDiff = xDiff / (double) this->width();
+            yDiff = yDiff / (double) this->height();
 
             xDiff *= m_zoom;
             yDiff *= m_zoom;
@@ -2045,7 +2045,7 @@ void TextureWidget::getDragDirections( double windowX, double windowY,
    dragLeft   = false;
    dragRight  = false;
 
-   double prox = (6.0 / m_viewportWidth) * m_zoom;
+   double prox = (6.0 / this->width()) * m_zoom;
 
    if (  (windowX >= (m_xRangeMin - prox)) 
       && (windowX <= (m_xRangeMax + prox)) 
