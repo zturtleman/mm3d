@@ -33,7 +33,7 @@ class BoundingBox : public Decal
       BoundingBox();
       virtual ~BoundingBox();
 
-      void draw();
+      void draw( float devicePixelRatio );
 
       void setMatrixBounds( const Matrix & viewMat, double x1, double y1, double x2, double y2 );
       void setBounds( double x1, double y1, double z1, double x2, double y2, double z2 );

@@ -64,11 +64,13 @@ void BoundingBox::setBounds( double x1, double y1, double z1, double x2, double 
    m_z2 = z2;
 }
 
-void BoundingBox::draw()
+void BoundingBox::draw( float devicePixelRatio )
 {
-   glEnable( GL_COLOR_LOGIC_OP );
-   glColor3f( 1.0, 1.0, 1.0 );
    glLogicOp( GL_XOR );
+   glEnable( GL_COLOR_LOGIC_OP );
+
+   glLineWidth( devicePixelRatio );
+   glColor3f( 1.0, 1.0, 1.0 );
    glBegin( GL_LINES );
 
    if ( m_isMat )

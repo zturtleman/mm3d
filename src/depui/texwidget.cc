@@ -569,7 +569,7 @@ void TextureWidget::paintInternal()
    // TODO may want to make "draw points" a separate property
    if ( m_operation != MouseRange || m_drawVertices )
    {
-      glPointSize( 3.0 );
+      glPointSize( 3.0 * devicePixelRatioF() );
 
       glBegin( GL_POINTS );
 
@@ -1880,9 +1880,11 @@ void TextureWidget::setDrawMode( DrawModeE dm )
 
 void TextureWidget::drawSelectBox()
 {
-   glEnable( GL_COLOR_LOGIC_OP );
-   glColor3f( 1.0, 1.0, 1.0 );
    glLogicOp( GL_XOR );
+   glEnable( GL_COLOR_LOGIC_OP );
+
+   glLineWidth( devicePixelRatioF() );
+   glColor3f( 1.0, 1.0, 1.0 );
    glBegin( GL_LINES );
 
    glVertex3f( m_xSel1, m_ySel1, -0.75 );
@@ -1907,6 +1909,7 @@ void TextureWidget::drawRangeBox()
    glLogicOp( GL_COPY );
    glDisable( GL_LOGIC_OP );
 
+   glLineWidth( devicePixelRatioF() );
    glColor3f( 1.0, 1.0, 1.0 );
    glBegin( GL_LINES );
 
@@ -1930,6 +1933,7 @@ void TextureWidget::drawRotationPoint()
    glLogicOp( GL_COPY );
    glDisable( GL_LOGIC_OP );
 
+   glLineWidth( devicePixelRatioF() );
    glColor3f( 0.0, 1.0, 0.0 );
    glBegin( GL_LINES );
 

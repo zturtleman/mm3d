@@ -41,12 +41,14 @@ static void _defaultMaterial()
 }
 
 static void _drawPointOrientation( bool selected, float scale, 
-        const Matrix & m )
+        const Matrix & m, float devicePixelRatio )
 {
     float color = (selected) ? 0.9f : 0.7f;
 
     Vector v1;
     Vector v2;
+
+    glLineWidth( devicePixelRatio );
 
     glBegin( GL_LINES );
 
@@ -108,13 +110,13 @@ static void _drawPointOrientation( bool selected, float scale,
 }
 
 static void _drawPointOrientation( bool selected, float scale, 
-        const double * trans, const double * rot )
+        const double * trans, const double * rot, float devicePixelRatio )
 {
     Matrix m;
     m.setTranslation( trans );
     m.setRotation( rot );
 
-    _drawPointOrientation( selected, scale, m );
+    _drawPointOrientation( selected, scale, m, devicePixelRatio );
 }
 
 static const int CYL_VERT_COUNT = 8;
@@ -133,7 +135,7 @@ static double _cylinderVertices[ CYL_VERT_COUNT ][ 3 ] =
 };
 
 static void _drawProjectionCylinder( bool selected, float scale, 
-        const Vector & pos, const Vector & up, const Vector & seam )
+        const Vector & pos, const Vector & up, const Vector & seam, float devicePixelRatio )
 {
     float color = (selected) ? 0.75f : 0.55f;
 
@@ -190,6 +192,8 @@ static void _drawProjectionCylinder( bool selected, float scale,
 
     glLineStipple( 1, 0xf1f1 );
 
+    glLineWidth( devicePixelRatio );
+
     glEnable( GL_LINE_STIPPLE );
     glBegin( GL_LINES );
 
@@ -208,7 +212,7 @@ static void _drawProjectionCylinder( bool selected, float scale,
        if ( v == CYL_SEAM_VERT )
        {
           glEnd();
-          glLineWidth( 3.0 );
+          glLineWidth( 3.0 * devicePixelRatio );
           glBegin( GL_LINES );
        }
        glVertex3dv( topVerts[v] );
@@ -216,15 +220,15 @@ static void _drawProjectionCylinder( bool selected, float scale,
        if ( v == CYL_SEAM_VERT )
        {
           glEnd();
-          glLineWidth( 1.0 );
+          glLineWidth( devicePixelRatio );
           glBegin( GL_LINES );
        }
     }
 
     glEnd(); // GL_LINES
     glDisable( GL_LINE_STIPPLE );
-    glLineWidth( 1.0 );
 
+    glPointSize( devicePixelRatio );
     glBegin( GL_POINTS );
     glVertex3dv( topVerts[ CYL_SEAM_VERT ] );
     glVertex3dv( botVerts[ CYL_SEAM_VERT ] );
@@ -272,7 +276,7 @@ static double _sphereZVertices[ SPH_VERT_COUNT ][ 3 ] =
 };
 
 static void _drawProjectionSphere( bool selected, float scale, 
-        const Vector & pos, const Vector & up, const Vector & seam )
+        const Vector & pos, const Vector & up, const Vector & seam, float devicePixelRatio )
 {
     float color = (selected) ? 0.75f : 0.55f;
 
@@ -341,6 +345,8 @@ static void _drawProjectionSphere( bool selected, float scale,
 
     glLineStipple( 1, 0xf1f1 );
 
+    glLineWidth( devicePixelRatio );
+
     glEnable( GL_LINE_STIPPLE );
     glBegin( GL_LINES );
 
@@ -355,7 +361,7 @@ static void _drawProjectionSphere( bool selected, float scale,
        if ( v >= SPH_SEAM_VERT_TOP && v < SPH_SEAM_VERT_BOT )
        {
           glEnd();
-          glLineWidth( 3.0 );
+          glLineWidth( 3.0 * devicePixelRatio );
           glBegin( GL_LINES );
           thick = true;
        }
@@ -364,7 +370,7 @@ static void _drawProjectionSphere( bool selected, float scale,
        if ( thick )
        {
           glEnd();
-          glLineWidth( 1.0 );
+          glLineWidth( devicePixelRatio );
           glBegin( GL_LINES );
           thick = false;
        }
@@ -379,6 +385,7 @@ static void _drawProjectionSphere( bool selected, float scale,
     glEnd(); // GL_LINES
     glDisable( GL_LINE_STIPPLE );
 
+    glPointSize( devicePixelRatio );
     glBegin( GL_POINTS );
     glVertex3dv( xVerts[ SPH_SEAM_VERT_TOP ] );
     glVertex3dv( xVerts[ SPH_SEAM_VERT_BOT ] );
@@ -396,7 +403,7 @@ static double _planeVertices[ PLN_VERT_COUNT ][ 3 ] =
 };
 
 static void _drawProjectionPlane( bool selected, float scale, 
-        const Vector & pos, const Vector & up, const Vector & seam )
+        const Vector & pos, const Vector & up, const Vector & seam, float devicePixelRatio )
 {
     float color = (selected) ? 0.75f : 0.55f;
 
@@ -445,7 +452,7 @@ static void _drawProjectionPlane( bool selected, float scale,
 
     glLineStipple( 1, 0xf1f1 );
 
-    glLineWidth( 3.0 );
+    glLineWidth( 3.0 * devicePixelRatio );
 
     glEnable( GL_LINE_STIPPLE );
     glBegin( GL_LINES );
@@ -462,8 +469,6 @@ static void _drawProjectionPlane( bool selected, float scale,
 
     glEnd(); // GL_LINES
     glDisable( GL_LINE_STIPPLE );
-
-    glLineWidth( 1.0 );
 }
 
 void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
@@ -1159,7 +1164,7 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
    }
 }
 
-void Model::drawLines() // Used for orthographic projections
+void Model::drawLines( float devicePixelRatio ) // Used for orthographic projections
 {
    bool colorSelected = false;
 
@@ -1171,6 +1176,7 @@ void Model::drawLines() // Used for orthographic projections
       {
          if ( m_animationMode == ANIMMODE_SKELETAL && m_currentAnim < m_skelAnims.size() )
          {
+            glLineWidth( devicePixelRatio );
             glBegin( GL_LINES );
             glColor3f( 1.0, 1.0, 1.0 );
             for ( unsigned t = 0; t < m_triangles.size(); t++ )
@@ -1225,6 +1231,7 @@ void Model::drawLines() // Used for orthographic projections
 
             if ( m_currentFrame < m_frameAnims[m_currentAnim]->m_frameData.size() && m_frameAnims[m_currentAnim]->m_frameData[m_currentFrame]->m_frameVertices->size() > 0 )
             {
+               glLineWidth( devicePixelRatio );
                glBegin( GL_LINES );
                glColor3f( 1.0, 1.0, 1.0 );
                for ( unsigned t = 0; t < m_triangles.size(); t++ )
@@ -1282,7 +1289,7 @@ void Model::drawLines() // Used for orthographic projections
       }
       else
       {
-         glLineWidth( 1.0 );
+         glLineWidth( devicePixelRatio );
          glBegin( GL_LINES );
          glColor3f( 1.0, 1.0, 1.0 );
          for ( unsigned t = 0; t < m_triangles.size(); t++ )
@@ -1297,7 +1304,7 @@ void Model::drawLines() // Used for orthographic projections
                   if ( colorSelected == false )
                   {
                      glEnd();
-                     glLineWidth( 1.6 );
+                     glLineWidth( 1.6 * devicePixelRatio );
                      glBegin( GL_LINES );
                      glColor3f( 1.0, 0.0, 0.0 );
                   }
@@ -1308,7 +1315,7 @@ void Model::drawLines() // Used for orthographic projections
                   if ( colorSelected == true )
                   {
                      glEnd();
-                     glLineWidth( 1.0 );
+                     glLineWidth( devicePixelRatio );
                      glBegin( GL_LINES );
                      glColor3f( 1.0, 1.0, 1.0 );
                   }
@@ -1339,11 +1346,9 @@ void Model::drawLines() // Used for orthographic projections
          glEnd();
       }
    }
-
-   glLineWidth( 1.0 );
 }
 
-void Model::drawVertices()
+void Model::drawVertices( float devicePixelRatio )
 {
    if ( m_initialized ) // && m_selectionMode == SelectVertices )
    {
@@ -1355,11 +1360,10 @@ void Model::drawVertices()
          {
             if ( m_currentFrame < m_frameAnims[m_currentAnim]->m_frameData.size() && m_frameAnims[m_currentAnim]->m_frameData[m_currentFrame]->m_frameVertices->size() > 0 )
             {
-               glPointSize( 3.0 );
+               glPointSize( 3.0 * devicePixelRatio );
+               glColor3f( 1.0, 1.0, 1.0 );
 
                glBegin( GL_POINTS );
-
-               glColor3f( 1.0, 1.0, 1.0 );
                for ( unsigned t = 0; t < m_vertices.size(); t++ )
                {
                   if ( m_vertices[t]->m_visible )
@@ -1378,10 +1382,10 @@ void Model::drawVertices()
                }
                glEnd();
 
-               glPointSize( 4.0 );
+               glPointSize( 4.0 * devicePixelRatio );
+               glColor3f( 1.0, 0.0, 0.0 );
 
                glBegin( GL_POINTS );
-               glColor3f( 1.0, 0.0, 0.0 );
                for ( unsigned t = 0; t < m_vertices.size(); t++ )
                {
                   if ( m_vertices[t]->m_visible )
@@ -1404,11 +1408,10 @@ void Model::drawVertices()
       }
       else
       {
-         glPointSize( 3.0 );
+         glPointSize( 3.0 * devicePixelRatio );
+         glColor3f( 1.0, 1.0, 1.0 );
 
          glBegin( GL_POINTS );
-
-         glColor3f( 1.0, 1.0, 1.0 );
          for ( unsigned t = 0; t < m_vertices.size(); t++ )
          {
             if ( m_vertices[t]->m_visible )
@@ -1427,10 +1430,10 @@ void Model::drawVertices()
          }
          glEnd();
 
-         glPointSize( 4.0 );
+         glPointSize( 4.0 * devicePixelRatio );
+         glColor3f( 1.0, 0.0, 0.0 );
 
          glBegin( GL_POINTS );
-         glColor3f( 1.0, 0.0, 0.0 );
          for ( unsigned t = 0; t < m_vertices.size(); t++ )
          {
             if ( m_vertices[t]->m_visible )
@@ -1454,7 +1457,7 @@ void Model::drawVertices()
 
 #ifdef MM3D_EDIT
 
-void Model::drawJoints()
+void Model::drawJoints( float devicePixelRatio )
 {
    if ( m_drawJoints != JOINTMODE_NONE )
    {
@@ -1462,7 +1465,7 @@ void Model::drawJoints()
       {
          if ( m_animationMode == ANIMMODE_NONE || m_animationMode == ANIMMODE_SKELETAL )
          {
-            glPointSize( 3.0 );
+            glLineWidth( devicePixelRatio );
 
             glBegin( GL_LINES );
             for ( unsigned j = 0; j < m_joints.size(); j++ )
@@ -1570,6 +1573,8 @@ void Model::drawJoints()
             }
             glEnd();
 
+            glPointSize( 3.0 * devicePixelRatio );
+
             glBegin( GL_POINTS );
             for ( unsigned j = 0; j < m_joints.size(); j++ )
             {
@@ -1603,7 +1608,7 @@ void Model::drawJoints()
    }
 }
 
-void Model::drawPoints()
+void Model::drawPoints( float devicePixelRatio )
 {
    float scale = 2.0f;
    if ( m_initialized )
@@ -1618,7 +1623,7 @@ void Model::drawPoints()
                   Point * point = (m_points[ p ]);
 
                   _drawPointOrientation( point->m_selected, scale, 
-                        point->m_trans, point->m_rot );
+                        point->m_trans, point->m_rot, devicePixelRatio );
 
                   if ( point->m_selected )
                   {
@@ -1629,6 +1634,7 @@ void Model::drawPoints()
                      glColor3f( 0.0, 0.5, 0.0 );
                   }
 
+                  glPointSize( devicePixelRatio );
                   glBegin( GL_POINTS );
                   glVertex3f( 
                         point->m_trans[0],
@@ -1665,9 +1671,10 @@ void Model::drawPoints()
                   mat.setTranslation( point->m_kfTrans );
                   mat.setRotation( point->m_kfRot );
 
-                  _drawPointOrientation( false, scale, mat );
+                  _drawPointOrientation( false, scale, mat, devicePixelRatio );
 
                   glColor3f( 0.0, 0.5, 0.0 );
+                  glPointSize( devicePixelRatio );
                   glBegin( GL_POINTS );
                   glVertex3d(
                         mat.get(3, 0),
@@ -1692,7 +1699,7 @@ void Model::drawPoints()
                            ((*m_frameAnims[m_currentAnim]->m_frameData[m_currentFrame]->m_framePoints)[ p ]);
 
                         _drawPointOrientation( m_points[p]->m_selected, 1.0f,
-                              point->m_trans, point->m_rot );
+                              point->m_trans, point->m_rot, devicePixelRatio );
 
                         if ( m_points[p]->m_selected )
                         {
@@ -1703,6 +1710,7 @@ void Model::drawPoints()
                            glColor3f( 0.0, 0.5, 0.0 );
                         }
 
+                        glPointSize( devicePixelRatio );
                         glBegin( GL_POINTS );
                         glVertex3f( 
                               point->m_trans[0],
@@ -1723,7 +1731,7 @@ void Model::drawPoints()
    }
 }
 
-void Model::drawProjections()
+void Model::drawProjections( float devicePixelRatio )
 {
    if ( m_drawProjections )
    {
@@ -1746,14 +1754,14 @@ void Model::drawProjections()
                switch ( proj->m_type )
                {
                   case Model::TPT_Sphere:
-                     _drawProjectionSphere( proj->m_selected, scale, Vector(proj->m_pos), Vector(proj->m_upVec), Vector(proj->m_seamVec) );
+                     _drawProjectionSphere( proj->m_selected, scale, Vector(proj->m_pos), Vector(proj->m_upVec), Vector(proj->m_seamVec), devicePixelRatio );
                      break;
                   case Model::TPT_Cylinder:
-                     _drawProjectionCylinder( proj->m_selected, scale, Vector(proj->m_pos), Vector(proj->m_upVec), Vector(proj->m_seamVec) );
+                     _drawProjectionCylinder( proj->m_selected, scale, Vector(proj->m_pos), Vector(proj->m_upVec), Vector(proj->m_seamVec), devicePixelRatio );
                      break;
                   case Model::TPT_Plane:
                   default:
-                     _drawProjectionPlane( proj->m_selected, scale, Vector(proj->m_pos), Vector(proj->m_upVec), Vector(proj->m_seamVec) );
+                     _drawProjectionPlane( proj->m_selected, scale, Vector(proj->m_pos), Vector(proj->m_upVec), Vector(proj->m_seamVec), devicePixelRatio );
                      break;
                }
 
@@ -1766,6 +1774,7 @@ void Model::drawProjections()
                   glColor3f( 0.0, 0.5, 0.0 );
                }
 
+               glPointSize( devicePixelRatio );
                glBegin( GL_POINTS );
                glVertex3f( 
                      proj->m_pos[0],

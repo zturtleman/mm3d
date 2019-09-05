@@ -434,17 +434,17 @@ void ModelViewport::paintGL()
          if ( drawSelections )
          {
             glDisable( GL_LIGHTING );
-            m_model->drawLines();
-            m_model->drawVertices();
+            m_model->drawLines( devicePixelRatioF() );
+            m_model->drawVertices( devicePixelRatioF() );
 
             glDisable( GL_DEPTH_TEST );
-            m_model->drawJoints();
+            m_model->drawJoints( devicePixelRatioF() );
          }
 
          glDisable( GL_LIGHTING );
          glDisable( GL_DEPTH_TEST );
-         m_model->drawPoints();
-         m_model->drawProjections();
+         m_model->drawPoints( devicePixelRatioF() );
+         m_model->drawProjections( devicePixelRatioF() );
       }
       else
       {
@@ -485,16 +485,16 @@ void ModelViewport::paintGL()
             glPolygonOffset( 0, 0 );
          }
 
-         m_model->drawLines();
-         m_model->drawVertices();
+         m_model->drawLines( devicePixelRatioF() );
+         m_model->drawVertices( devicePixelRatioF() );
 
          glDisable( GL_DEPTH_TEST );
-         m_model->drawJoints();
-         m_model->drawPoints();
-         m_model->drawProjections();
+         m_model->drawJoints( devicePixelRatioF() );
+         m_model->drawPoints( devicePixelRatioF() );
+         m_model->drawProjections( devicePixelRatioF() );
          for ( DecalList::iterator it = m_decals.begin(); it != m_decals.end(); it++ )
          {
-            (*it)->draw();
+            (*it)->draw( devicePixelRatioF() );
          }
          glEnable( GL_DEPTH_TEST );
       }
@@ -532,6 +532,7 @@ void ModelViewport::drawGridLines()
       double y;
       double z;
 
+      glLineWidth( devicePixelRatioF() );
       glColor3f( 0.55f, 0.55f, 0.55f );
 
       glBegin( GL_LINES );
@@ -598,6 +599,7 @@ void ModelViewport::drawGridLines()
       double x = 0;
       double y = 0;
 
+      glLineWidth( devicePixelRatioF() );
       glColor3f( 0.55f, 0.55f, 0.55f );
 
       glBegin( GL_LINES );
@@ -791,6 +793,8 @@ void ModelViewport::drawGridLines()
 void ModelViewport::drawOrigin()
 {
    glDisable( GL_DEPTH_TEST );
+
+   glLineWidth( devicePixelRatioF() );
 
    glBegin( GL_LINES );
 

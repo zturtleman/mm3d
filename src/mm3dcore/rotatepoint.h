@@ -33,7 +33,7 @@ class RotatePoint : public Decal
       RotatePoint();
       virtual ~RotatePoint();
 
-      void draw();
+      void draw( float devicePixelRatio );
       void setPoint( double x, double y, double z );
       void getPoint( double & x, double & y, double & z );
 

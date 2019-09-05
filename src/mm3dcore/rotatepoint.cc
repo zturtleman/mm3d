@@ -32,8 +32,9 @@ RotatePoint::~RotatePoint()
 {
 }
 
-void RotatePoint::draw()
+void RotatePoint::draw( float devicePixelRatio )
 {
+   glLineWidth( devicePixelRatio );
    glColor3f( 0.0, 1.0, 0.0 );
    glBegin( GL_LINES );
 
