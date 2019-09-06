@@ -1020,8 +1020,8 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
       {
          // Triangle
          m_src->seek( meshPos + meshTriangleOffset );
-         int32_t triang[meshTriangleCount][3];
-         unsigned tri[meshTriangleCount];
+         vector<int32_t[3]> triang( meshTriangleCount );
+         vector<int> tri( meshTriangleCount );
          int32_t groupId = m_model->addGroup( meshName );
          for ( int t = 0; t < meshTriangleCount; t++ )
          {
