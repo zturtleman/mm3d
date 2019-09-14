@@ -53,6 +53,7 @@
 #include <string.h>
 #include <limits.h>
 #include <vector>
+#include <array>
 #include <limits>
 
 #ifdef PLUGIN
@@ -1020,7 +1021,7 @@ void Md3Filter::setMeshes( MeshSectionE section, int32_t offsetMeshes, int32_t n
       {
          // Triangle
          m_src->seek( meshPos + meshTriangleOffset );
-         vector<int32_t[3]> triang( meshTriangleCount );
+         vector<std::array<int32_t, 3>> triang( meshTriangleCount );
          vector<int> tri( meshTriangleCount );
          int32_t groupId = m_model->addGroup( meshName );
          for ( int t = 0; t < meshTriangleCount; t++ )
