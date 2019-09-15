@@ -1398,7 +1398,7 @@ AC_DEFUN([KSW_HAVE_GETTIMEOFDAY],
 #include <stdio.h>
 #include <sys/time.h>
 
-int main( int argc, char * argv[] )
+int main( int argc, char **argv )
 {
    struct timeval tv;
    gettimeofday( &tv, NULL );
