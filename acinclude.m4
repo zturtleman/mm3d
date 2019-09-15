@@ -1097,7 +1097,7 @@ dnl Check for Mesa first, unless we were asked not to.
     AC_LANG_C
 
     if test x"$is_osx" = xyes; then
-        GL_CFLAGS="-framework OpenGL -framework AGL"
+        GL_CFLAGS=""
         GL_LIBS="-framework OpenGL -framework AGL"
     else
         GL_CFLAGS=""
@@ -1107,7 +1107,7 @@ dnl Check for Mesa first, unless we were asked not to.
     CPPFLAGS="$GL_CFLAGS"
 
     GL_save_LIBS="$LIBS"
-    LIBS=""
+    LIBS="$GL_LIBS"
 
     # Save the "AC_MSG_RESULT file descriptor" to FD 8.
     exec 8>&AC_FD_MSG
@@ -1122,13 +1122,14 @@ dnl Check for Mesa first, unless we were asked not to.
     # Restore pretty messages.
     exec AC_FD_MSG>&8
 
-    if test -n "$LIBS"; then
+    if test x"$have_GL" = "xyes" -a x"$have_GLU" = "xyes"; then
       mdl_cv_have_OpenGL=yes
       GL_LIBS="$LIBS"
       AC_SUBST(GL_CFLAGS)
       AC_SUBST(GL_LIBS)
     else
       mdl_cv_have_OpenGL=no
+      GL_LIBS=
       GL_CFLAGS=
     fi
 
