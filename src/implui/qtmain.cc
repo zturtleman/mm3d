@@ -133,6 +133,10 @@ QApplication * ui_getapp()
 
 int ui_prep( int & argc, char * argv[] )
 {
+   // Don't use OpenGL ES (ANGLE, software) on Windows
+   // (It must be set before QApplication is created)
+   QCoreApplication::setAttribute( Qt::AA_UseDesktopOpenGL );
+
    s_app = new ModelApp( argc, argv );
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
