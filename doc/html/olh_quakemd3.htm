@@ -14,6 +14,7 @@
     <li> <a href="#shaders">Shaders</a> </li>
   </ul>
   <li><a href="#md3limits">MD3 Limits</a> </li>
+  <li><a href="#quake3limits">Quake3 Limits</a> </li>
 </ul>
 <h2><a name="modeltypes"></a>Model Types</h2>
 
@@ -570,15 +571,25 @@ model names)<br>
   </li>
   <li>The group name and point name cannot be longer than <span
  style="font-weight: bold;">63</span> characters.</li>
-  <li>Maximum of <span style="font-weight: bold;">1024</span>
-animation frames</li>
-  <li>Maximum of <span style="font-weight: bold;">16</span> Points
-(Quake 3 Tags)</li>
-  <li>Maximum of <span style="font-weight: bold;">32</span> Groups</li>
-  <li>Maximum of <span style="font-weight: bold;">256</span> Textures
-per Group</li>
-  <li>Maximum of <span style="font-weight: bold;">8192</span>
+</ul>
+
+<h2><a name="quake3limits"></a>Quake3 Limits</h2>
+<p>
+Quake3 only supports a limit amount of geometry. These are outlined below.
+Other games may have different limits. You should get a error message in
+the Quake3 console if your model has more geometry than the Quake3 limit.
+</p>
+<ul>
+  <li>Maximum of <span style="font-weight: bold;">1999</span>
 Triangles per Group</li>
-  <li>Maximum of <span style="font-weight: bold;">4096</span>
+  <li>Maximum of <span style="font-weight: bold;">999</span>
 Verticies per Group</li>
+</ul>
+<p>Vertexes in MM3D are shared between materials and texture coordinates.
+Exporting to MD3 may have a greater number of vertexes. You cannot solely
+go off of the vertex count displayed in the editor.</p>
+<p>.skin files in Quake3 have a limited number of groups. More than that
+will cause Quake3 to write memory out of bounds and may cause issues.</p>
+<ul>
+  <li>Maximum of <span style="font-weight: bold;">32</span> Groups</li>
 </ul>
