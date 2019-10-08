@@ -10,6 +10,9 @@
   <li> <a href="#animations">Animations</a> </li>
   <li><a href="#paths">Paths</a> </li>
   <li> <a href="#textures">Skins And Textures</a> </li>
+  <ul>
+    <li> <a href="#shaders">Shaders</a> </li>
+  </ul>
   <li><a href="#md3limits">MD3 Limits</a> </li>
 </ul>
 <h2><a name="modeltypes"></a>Model Types</h2>
@@ -525,19 +528,32 @@ and example upper_default.skin:
 <p>u_body,models/players/man/default_b.tga<br/>
 u_cape,models/players/man/default_c.tga
 </p>
+
+<h3><a name="shaders"></a>Shaders</h3>
 <p>
-Currently MD3 Filter will not load .shader files.
+Currently MD3 filter will not load Quake3 .shader files.
 These are files that could do complex OpenGL operations.
 You can still use shader files with your model inside Quake3 by
 creating the shader manually. Here is a example:
 </p>
-<ul>
-  <li>Set group texture to meshName.tga </li>
-  <li>Create a shader file called meshName.shader </li>
-  <li>Quake3 should see meshName.shader and use it because MM3D set it
-to look for meshName.* and Quake3 should take the shader file first. </li>
-  <li>Check your model in Quake3 </li>
-</ul>
+<p>Create a shader file in the scripts directory (at the top of the VFS next to models directory) called player-(your model).shader containing:</p>
+<pre>// comment: Use MD3_PATH/textureFilename without extension.
+models/players/man/default_b
+{
+	{
+		map models/players/man/default_b.tga // with extension
+		rgbGen wave sin 0.5 0.5 0 1.5 // make color be a sine wave
+	}
+}
+
+models/players/man/default_c
+{
+	{
+		map models/players/man/default_c.tga
+		rgbGen identityLighting // full bright
+	}
+}</pre>
+<p>Quake3 should see the shader and use it instead of just the texture.</p>
 
 <h2><a name="md3limits"></a>MD3 Limits</h2>
 <p>
