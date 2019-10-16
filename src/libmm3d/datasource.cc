@@ -262,6 +262,14 @@ bool DataSource::readLine( char * buf, size_t bufLen, bool * foundNewline )
 
    bool rval = readTo( '\n', buf, bufLen, foundNewline );
 
+   if ( !rval && buf[0] != '\0' )
+   {
+      // Read the last line in files that don't end with a new line.
+      rval = true;
+      if ( foundNewline != NULL )
+         *foundNewline = true;
+   }
+
    // No matter what is in the buffer, the last char must be null
    buf[ bufLen - 1] = '\0';
 
@@ -274,6 +282,8 @@ bool DataSource::readTo( char stopChar, char * buf, size_t bufLen, bool * foundC
       *foundChar = false;
 
    size_t bufOff = 0;
+
+   buf[bufOff] = '\0';
 
    // The only success condition is if we find stopChar. That happens
    // inside this loop.
