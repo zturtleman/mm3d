@@ -355,6 +355,7 @@ LIB_OBJ= \
 	${B}/libmm3d/cal3dfilter.o \
 	${B}/libmm3d/cmdlinemgr.o \
 	${B}/libmm3d/cobfilter.o \
+	${B}/libmm3d/d3dfilter.o \
 	${B}/libmm3d/datadest.o \
 	${B}/libmm3d/datasource.o \
 	${B}/libmm3d/filedatadest.o \

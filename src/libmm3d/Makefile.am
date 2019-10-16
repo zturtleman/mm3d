@@ -9,6 +9,7 @@ libmm3d_HFILES = \
 	datadest.h \
 	filedatadest.h \
 	memdatadest.h \
+	d3dfilter.h \
 	datasource.h \
 	filedatasource.h \
 	memdatasource.h \
@@ -68,6 +69,7 @@ libmm3d_a_SOURCES = \
 	cal3dfilter.cc \
 	cmdlinemgr.cc \
 	cobfilter.cc \
+	d3dfilter.cc \
 	datadest.cc \
 	filedatadest.cc \
 	memdatadest.cc \
