@@ -71,7 +71,7 @@ Model::ModelErrorE D3dFilter::readFile( Model * model, const char * const filena
       return err;
 
    Matrix loadMatrix;
-   loadMatrix.setRotationInDegrees( -90, -90, 0 );
+   loadMatrix.setRotationInDegrees( -90, 0, 0 );
 
    std::string modelPath = "";
    std::string modelBaseName = "";
@@ -410,7 +410,7 @@ Model::ModelErrorE D3dFilter::writeFile( Model * model, const char * const filen
 
    // Use the load matrix and then invert it
    Matrix saveMatrix;
-   saveMatrix.setRotationInDegrees( -90, -90, 0 );
+   saveMatrix.setRotationInDegrees( -90, 0, 0 );
    saveMatrix = saveMatrix.getInverse();
 
    string modelPath = "";
