@@ -1097,7 +1097,7 @@ void Quaternion::setRotationToPoint( const double & faceX, const double & faceY,
    //   - D = x1 (y2 z3 - y3 z2) + x2 (y3 z1 - y1 z3) + x3 (y1 z2 - y2 z1)
 
    float A = v1.get(1) * v2.get(2) - v2.get(1) * v1.get(2);
-   float B = v1.get(2) * v2.get(0) - v2.get(3) * v1.get(0);
+   float B = v1.get(2) * v2.get(0) - v2.get(2) * v1.get(0);
    float C = v1.get(0) * v2.get(1) - v2.get(0) * v1.get(1);
 
    Vector normal;
