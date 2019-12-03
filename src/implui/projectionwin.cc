@@ -1,498 +1,311 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
 
+#include "mm3dtypes.h" //PCH
+#include "win.h"
+
 #include "projectionwin.h"
-#include "decalmgr.h"
-#include "helpwin.h"
-#include "textureframe.h"
-#include "texwidget.h"
-#include "decalmgr.h"
+#include "viewwin.h"
 
-#include <QtWidgets/QInputDialog>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QShortcut>
-
-#include <list>
-
-using std::list;
 
 #include "model.h"
-#include "decalmgr.h"
 #include "log.h"
 #include "msg.h"
 #include "modelstatus.h"
 
-ProjectionWin::ProjectionWin( Model * model, QWidget * parent, ViewPanel * viewPanel )
-   : QDialog( parent ),
-     m_viewPanel( viewPanel ),
-     m_undoCount( 0 ),
-     m_redoCount( 0 ),
-     m_inUndo( false ),
-     m_ignoreChange( false )
+void ProjectionWin::init()
 {
-   setupUi( this );
+	m_ignoreChange = false;
 
-   m_material->hide();
-   m_materialLabel->hide();
+	type.add_item(0,"Cylinder");
+	type.add_item(1,"Sphere");
+	type.add_item(2,"Plane");
 
-   m_textureWidget = m_textureFrame->getTextureWidget();
-   m_textureWidget->setInteractive( true );
-   m_textureWidget->setMouseOperation( TextureWidget::MouseRange );
-   m_textureWidget->setDrawVertices( false );
-   m_textureWidget->setMouseTracking( true );
-   connect( m_textureWidget, SIGNAL(updateRangeSignal()), this, SLOT(rangeChangedEvent()) );
-   connect( m_textureWidget, SIGNAL(updateRangeDoneSignal()), this, SLOT(applyProjectionEvent()) );
-   connect( m_textureWidget, SIGNAL(updateSeamSignal(double,double)), this, SLOT(seamChangedEvent(double,double)) );
-   connect( m_textureWidget, SIGNAL(updateSeamDoneSignal()), this, SLOT(applyProjectionEvent()) );
-   connect( m_textureWidget, SIGNAL(zoomLevelChanged(QString)), this, SLOT(zoomLevelChangedEvent(QString)) );
+	// TODO handle undo of select/unselect?
+	// Can't do this until after constructor is done because of observer interface
+	//setModel(model);
+	texture.setModel(model);
+	texture.setInteractive(true);
+	texture.setMouseOperation(Widget::MouseRange);
+	texture.setDrawVertices(false);
+	//texture.setMouseTracking(true); //QWidget //???
+}
+void ProjectionWin::submit(int id)
+{
+	int p = projection; switch(id)
+	{	
+	case id_item:
+	{
+		type.select_id(model->getProjectionType(p));
 
-   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
-   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
+		double x,y,xx,yy;
+		model->getProjectionRange(p,x,y,xx,yy);
+		texture.setRange(x,y,xx,yy);
 
-   QShortcut * undo = new QShortcut( QKeySequence( tr("CTRL+Z", "Undo shortcut")), this );
-   connect( undo, SIGNAL(activated()), this, SLOT(undoEvent()) );
-   QShortcut * redo = new QShortcut( QKeySequence( tr("CTRL+Y", "Redo shortcut")), this );
-   connect( redo, SIGNAL(activated()), this, SLOT(redoEvent()) );
+		goto refresh;
+	}
+	case id_subitem:
+	
+		model->setProjectionType(p,type);
+		operationComplete(::tr("Set Projection Type","operation complete"));
+		goto refresh;	
+	
+	case '+': texture.zoomIn(); break;
+	case '-': texture.zoomOut(); break;
+	case '=': texture.setZoomLevel(zoom.value); break;
+		
+	case id_name:
+	{
+		std::string name = model->getProjectionName(p);
+		if(id_ok==EditBox(&name,::tr("Rename projection","window title"),::tr("Enter new point name:")))		
+		{
+			model->setProjectionName(p,name.c_str());
+			projection.selection()->text() = name;
+			operationComplete(::tr("Rename Projection","operation complete"));
+		}
+		break;
+	}
+	case id_apply: //???
+		
+		updateDone(); //applyProjectionEvent(); 
+		break;
 
-   // can't do this until constructor is done (because of Model::Observer interface)
-   //setModel( model );
+	case id_reset:
+	
+		model->setProjectionRange(p,0,0,1,1);
+
+		//updateDone();
+		operationComplete(::tr("Reset UV Coordinates","operation complete"));
+		addProjectionTriangles();
+		break;
+
+	case id_remove: p = -1; 
+	case id_append:
+	
+		for(int i=model->getTriangleCount();i-->0;)
+		{
+			if(model->isTriangleSelected(i))
+			{
+				//FIX ME: This is one Undo per triangle!
+				model->setTriangleProjection(i,p);
+			}
+		}
+		if(p!=-1) model->applyProjection(p);		
+
+		operationComplete(::tr("Set Triangle Projection","operation complete"));
+	
+		refresh: 
+		refreshProjectionDisplay();
+		break;
+
+	case id_scene:
+
+		texture.draw(scene.x(),scene.y(),scene.width(),scene.height());
+		break;
+
+	case id_ok: case id_close:
+
+		event.close_ui_by_create_id(); //Help?
+
+		//I guess this model saves users' work?
+		hide(); return;
+	}
+
+	basic_submit(id);
 }
 
-ProjectionWin::~ProjectionWin()
+void ProjectionWin::open()
 {
+	setModel();
+	
+	// If we are visible, setModel already did this
+	if(hidden())
+	{
+		//REMINDER: GLX needs to show before
+		//it can use OpenGL.
+		show(); openModel();
+	}
+}
+void ProjectionWin::setModel()
+{				  
+	texture.setModel(model);
+
+	if(!hidden()) openModel();
+}
+void ProjectionWin::modelChanged(int changeBits)
+{
+	if(m_ignoreChange) return;
+	
+	// TODO need some way to re-select the projection we were looking at
+	if(!hidden())
+	if(model->getProjectionCount()!=projection.find_line_count())
+	{
+		// A projection was added or deleted, we need to select a new
+		// projection and re-initialize everything. 
+		openModel();
+	}
+	else
+	{
+		// a change to projection itself,or a non-projection change,just 
+		// re-initialize the projection display for the current projection
+		int p = projection;
+		projection.selection()->text() = model->getProjectionName(p);
+		type.select_id(model->getProjectionType(p));		
+		addProjectionTriangles();
+	}
+}
+void ProjectionWin::openModel()
+{
+	projection.select_id(-1).clear();
+
+	int iN = model?model->getProjectionCount():0;	
+	if(!enable(iN!=0).enabled())
+	{
+		ok.nav.enable(); return;
+	}
+	
+	for(int i=0;i<iN;i++)
+	projection.add_item(i,model->getProjectionName(i));
+
+	int p = -1;
+	for(int i=0;i<iN;i++)
+	if(model->isProjectionSelected(i))
+	{
+		p = i; break;
+	}
+	iN = model->getTriangleCount();
+	if(p==-1)
+	for(int i=0;i<iN;i++)
+	if(model->isTriangleSelected(i))
+	{
+		int pp = model->getTriangleProjection(i);
+		if(pp<0) continue;
+		p = pp; break;
+	}	
+	projection.select_id(p==-1?0:p); submit(id_item);
 }
 
 void ProjectionWin::refreshProjectionDisplay()
 {
-   m_textureWidget->clearCoordinates();
+	texture.clearCoordinates();
 
-   if ( m_projection->count() > 0 )
-   {
-      int proj = m_projection->currentIndex();
-      unsigned tcount = m_model->getTriangleCount();
-      for ( unsigned t = 0; t < tcount; t++ )
-      {
-         int p = m_model->getTriangleProjection( t );
-         if ( p == proj )
-         {
-            int g = m_model->getTriangleGroup( t );
-            if ( g >= 0 )
-            {
-               int material = m_model->getGroupTextureId( g );
-               if ( material >= 0 )
-               {
-                  m_textureFrame->textureChangedEvent( material + 1 ); // TODO bah, off-by-one, I need to fix this
+	if(!projection.empty())
+	{			
+		int iN = model->getTriangleCount();
+		int proj = projection;
+		for(int i=0;i<iN;i++)
+		{
+			//FIX ME: getTriangleGroup is dumb!!
+			//FIX ME: getTriangleGroup is dumb!!
+			//FIX ME: getTriangleGroup is dumb!!
+			//FIX ME: getTriangleGroup is dumb!!
+			int p = model->getTriangleProjection(i);
+			int g = model->getTriangleGroup(i);
+			int material = model->getGroupTextureId(g);
+			if(p==proj&&g>=0&&material>=0)
+			{
+				texture.setTexture(material); 
+				return addProjectionTriangles();
+			}
+		}
+	}
+	texture.setTexture(-1);
 
-                  addProjectionTriangles();
-                  return;
-               }
-            }
-         }
-      }
-   }
-   m_textureWidget->updateGL();
-   m_textureFrame->textureChangedEvent( -1 );
-   DecalManager::getInstance()->modelUpdated( m_model );
-}
-
-void ProjectionWin::modelChanged( int changeBits )
-{
-   if ( !m_ignoreChange )
-   {
-      if ( !m_inUndo )
-      {
-         m_undoCount = 0;
-         m_redoCount = 0;
-      }
-
-      // TODO need some way to re-select the projection we were looking at
-      if ( isVisible() )
-      {
-         int projCount = m_model->getProjectionCount();
-         if ( projCount != m_projection->count() )
-         {
-            // A projection was added or deleted, we need to select a new
-            // projection and re-initialize everything. 
-            initWindow();
-         }
-         else
-         {
-            // a change to projection itself, or a non-projection change, just 
-            // re-initialize the projection display for the current projection
-            int p = m_projection->currentIndex();
-            m_projection->setItemText( p, QString::fromUtf8( m_model->getProjectionName( p )) );
-            m_type->setCurrentIndex( m_model->getProjectionType( p ) );
-            // TODO material/test pattern?
-            addProjectionTriangles();
-         }
-      }
-   }
+	//REFERENCE
+	//DecalManager::getInstance()->modelUpdated(model); //???
 }
 
 void ProjectionWin::addProjectionTriangles()
 {
-   m_textureWidget->clearCoordinates();
+	texture.clearCoordinates();
 
-   int p = getSelectedProjection();
+	int p = projection;
 
-   double uv[4] = { 0, 0, 0, 0 };
-   m_model->getProjectionRange( p,
-         uv[0], uv[1], uv[2], uv[3] );
-   m_textureWidget->setRange( 
-         uv[0], uv[1], uv[2], uv[3] );
+	double x,y,xx,yy;
+	model->getProjectionRange(p,x,y,xx,yy);
+	texture.setRange(x,y,xx,yy);
 
-   unsigned tcount = m_model->getTriangleCount();
-   for ( unsigned t = 0; t < tcount; t++ )
-   {
-      if ( m_model->getTriangleProjection( t ) == p )
-      {
-         int verts[3] = { 0, 0, 0 };
-         for ( int i = 0; i < 3; i++ )
-         {
-            float u = 1.0;
-            float v = 1.0;
-            m_model->getTextureCoords( t, i, u, v );
-            verts[i] = m_textureWidget->addVertex( u, v );
-         }
+	float s,t;
+	int iN = model->getTriangleCount();
+	for(int i=0,v=0;i<iN;i++,v+=3)	
+	if(p==model->getTriangleProjection(i))
+	{
+		for(int j=0;j<3;j++)
+		{				
+			model->getTextureCoords(i,j,s,t);
+			texture.addVertex(s,t);
+		}
+		texture.addTriangle(v,v+1,v+2);
+	}
+	texture.updateWidget();
 
-         m_textureWidget->addTriangle( 
-               verts[0], verts[1], verts[2] );
-      }
-   }
-   m_textureWidget->updateGL();
-   DecalManager::getInstance()->modelUpdated( m_model );
+	//REFERENCE
+	//DecalManager::getInstance()->modelUpdated(model); //???
 }
 
-void ProjectionWin::setModel( Model * model )
+void ProjectionWin::rangeChanged()
 {
-   m_undoCount = 0;
-   m_redoCount = 0;
+	double x,y,xx,yy;
+	texture.getRange(x,y,xx,yy);
+	model->setProjectionRange((int)projection,x,y,xx,yy);
 
-   if ( model != m_model )
-   {
-      model->addObserver( this );
-   }
-
-   m_model = model;
-   m_textureFrame->setModel( model );
-
-   if ( isVisible() )
-   {
-      initWindow();
-   }
+	addProjectionTriangles();
 }
-
-void ProjectionWin::helpNowEvent()
+void ProjectionWin::seamChanged(double xDiff, double yDiff)
 {
-   HelpWin * win = new HelpWin( "olh_projectionwin.html", true );
-   win->show();
-}
+	if(xDiff==0) return; //Zero-divide?
+		
+	int p = projection;
 
-void ProjectionWin::undoEvent()
+	double up[4] = { 0,0,0,1 };
+	double seam[4] = { 0,0,0,1 };
+
+	model->getProjectionUp(p,up);
+	model->getProjectionSeam(p,seam);
+
+	Matrix m;
+	m.setRotationOnAxis(up,xDiff);
+	m.apply3(seam);
+
+	model->setProjectionSeam(p,seam);
+
+	addProjectionTriangles();
+}
+void ProjectionWin::updateDone()
 {
-   if ( m_undoCount > 0 )
-   {
-      m_inUndo = true;
-      m_model->undo();
-      m_undoCount--;
-      m_inUndo = false;
-   }
+	int p = projection; if(p==-1) return; //Dragging?
+
+	model->applyProjection(p); 
+	
+	addProjectionTriangles();
+
+	operationComplete(::tr("Apply Projection","operation complete"));
 }
-
-void ProjectionWin::redoEvent()
-{
-   if ( m_undoCount < m_redoCount )
-   {
-      m_inUndo = true;
-      m_model->redo();
-      m_undoCount++;
-      m_inUndo = false;
-   }
+void ProjectionWin::operationComplete(const char *opname)
+{	
+	m_ignoreChange = true;
+	{
+		model->operationComplete(opname);
+	}
+	m_ignoreChange = false;
 }
-
-void ProjectionWin::show()
-{
-   setModel( m_model );
-   
-   if ( !isVisible() )
-   {
-      // If we are visible, setModel already did this
-      initWindow();
-   }
-   QDialog::show();
-}
-
-void ProjectionWin::initWindow()
-{
-   m_projection->clear();
-
-   if ( m_model )
-   {
-      unsigned pcount = m_model->getProjectionCount();
-      bool enabled = true;
-      if ( pcount == 0 )
-      {
-         enabled = false;
-      }
-      m_type->setEnabled( enabled );
-      m_material->setEnabled( enabled );
-      m_textureFrame->setEnabled( enabled );
-      m_addFacesButton->setEnabled( enabled );
-      m_removeFacesButton->setEnabled( enabled );
-      m_renameButton->setEnabled( enabled );
-      m_zoomInput->setEnabled( enabled );
-      m_zoomInButton->setEnabled( enabled );
-      m_zoomOutButton->setEnabled( enabled );
-      m_applyButton->setEnabled( enabled );
-      m_resetButton->setEnabled( enabled );
-
-      if ( enabled )
-      {
-         for ( unsigned p = 0; p < pcount; p++ )
-         {
-            m_projection->insertItem( p, QString::fromUtf8( m_model->getProjectionName(p) ) );
-         }
-
-         bool found = false;
-
-         for ( unsigned p = 0; p < pcount; p++ )
-         {
-            if ( m_model->isProjectionSelected( p ) )
-            {
-               found = true;
-               m_projection->setCurrentIndex( p );
-               projectionIndexChangedEvent( p );
-               break;
-            }
-         }
-
-         if ( !found )
-         {
-            unsigned tcount = m_model->getTriangleCount();
-            for ( unsigned t = 0; t < tcount; t++ )
-            {
-               if ( m_model->isTriangleSelected( t ) )
-               {
-                  int p = m_model->getTriangleProjection( t );
-                  if ( p >= 0 )
-                  {
-                     m_projection->setCurrentIndex( p );
-                     projectionIndexChangedEvent( p );
-                     break;
-                  }
-               }
-            }
-         }
-      }
-   }
-}
-
-void ProjectionWin::closeEvent( QCloseEvent * e )
-{
-   e->ignore();
-   hide();
-}
-
-void ProjectionWin::zoomIn()
-{
-   m_textureWidget->zoomIn();
-}
-
-void ProjectionWin::zoomOut()
-{
-   m_textureWidget->zoomOut();
-}
-
-void ProjectionWin::typeChangedEvent( int type )
-{
-   int p = getSelectedProjection();
-
-   if ( p >= 0 )
-   {
-      m_model->setProjectionType( p, type );
-      //m_model->applyProjection( p );
-      operationComplete( tr( "Set Projection Type", "operation complete" ).toUtf8() );
-   }
-
-   refreshProjectionDisplay();
-}
-
-void ProjectionWin::addFacesEvent()
-{
-   int p = getSelectedProjection();
-
-   unsigned tcount = m_model->getTriangleCount();
-   for ( unsigned t = 0; t < tcount; t++ )
-   {
-      if ( m_model->isTriangleSelected( t ) )
-      {
-         m_model->setTriangleProjection( t, p );
-      }
-   }
-   m_model->applyProjection( p );
-   operationComplete( tr( "Set Triangle Projection", "operation complete" ).toUtf8() );
-   refreshProjectionDisplay();
-}
-
-void ProjectionWin::removeFacesEvent()
-{
-   unsigned tcount = m_model->getTriangleCount();
-   for ( unsigned t = 0; t < tcount; t++ )
-   {
-      if ( m_model->isTriangleSelected( t ) )
-      {
-         m_model->setTriangleProjection( t, -1 );
-      }
-   }
-   operationComplete( tr( "Set Triangle Projection", "operation complete" ).toUtf8() );
-   refreshProjectionDisplay();
-}
-
-void ProjectionWin::applyProjection()
-{
-   int p = getSelectedProjection();
-
-   if ( p >= 0 )
-   {
-      m_model->applyProjection( p );
-   }
-   addProjectionTriangles();
-}
-
-void ProjectionWin::applyProjectionEvent()
-{
-   applyProjection();
-   operationComplete( tr("Apply Projection", "operation complete").toUtf8() );
-}
-
-void ProjectionWin::resetClickedEvent()
-{
-   int p = getSelectedProjection();
-
-   m_model->setProjectionRange( p, 0.0, 0.0, 1.0, 1.0 );
-   operationComplete( tr( "Reset UV Coordinates", "operation complete" ).toUtf8() );
-   addProjectionTriangles();
-   //applyProjectionEvent();
-}
-
-void ProjectionWin::renameClickedEvent()
-{
-   int p = getSelectedProjection();
-
-   if ( p >= 0 )
-   {
-      bool ok = false;
-      QString projName = QInputDialog::getText( this, tr("Rename projection", "window title"), tr("Enter new point name:"), QLineEdit::Normal, QString::fromUtf8( m_model->getProjectionName( p )), &ok );
-      if ( ok )
-      {
-         m_model->setProjectionName( p, projName.toUtf8() );
-         m_projection->setItemText( p, projName );
-         operationComplete( tr( "Rename Projection", "operation complete" ).toUtf8() );
-      }
-   }
-}
-
-void ProjectionWin::projectionIndexChangedEvent( int newIndex )
-{
-   int type = m_model->getProjectionType( newIndex );
-   m_type->setCurrentIndex( type );
-
-   double uv[4] = { 0, 0, 0, 0 };
-   m_model->getProjectionRange( newIndex, 
-         uv[0], uv[1], uv[2], uv[3] );
-
-   m_textureWidget->setRange( uv[0], uv[1], uv[2], uv[3] );
-
-   refreshProjectionDisplay();
-}
-
-void ProjectionWin::zoomChangeEvent()
-{
-   double zoom = m_zoomInput->text().toDouble();
-   if ( zoom < 0.00001 )
-   {
-      zoom = 1;
-   }
-   m_textureWidget->setZoomLevel( zoom );
-}
-
-void ProjectionWin::zoomLevelChangedEvent( QString zoomStr )
-{
-   m_zoomInput->setText( zoomStr );
-}
-
-void ProjectionWin::rangeChangedEvent()
-{
-   int p = getSelectedProjection();
-
-   double uv[4] = { 0, 0, 0, 0 };
-   m_textureWidget->getRange( uv[0], uv[1], uv[2], uv[3] );
-   m_model->setProjectionRange( p, uv[0], uv[1], uv[2], uv[3] );
-
-   addProjectionTriangles();
-}
-
-void ProjectionWin::seamChangedEvent( double xDiff, double yDiff )
-{
-   if ( fabs( xDiff ) > 0.0 )
-   {
-      int p = getSelectedProjection();
-
-      double up[4] = { 0, 0, 0, 1 };
-      double seam[4] = { 0, 0, 0, 1 };
-
-      m_model->getProjectionUp( p, up );
-      m_model->getProjectionSeam( p, seam );
-
-      Matrix m;
-      m.setRotationOnAxis( up, xDiff );
-      m.apply3( seam );
-
-      m_model->setProjectionSeam( p, seam );
-
-      addProjectionTriangles();
-   }
-}
-
-int ProjectionWin::getSelectedProjection()
-{
-   if ( m_projection->count() > 0 )
-   {
-      return m_projection->currentIndex();
-   }
-   return -1;
-}
-
-void ProjectionWin::operationComplete( const char * opname )
-{
-   m_undoCount++;
-   m_redoCount = m_undoCount;
-
-   m_ignoreChange = true;
-   m_model->operationComplete( opname );
-   m_ignoreChange = false;
-}
-

@@ -1,376 +1,124 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
 
-#ifndef __VIEWWIN_H
-#define __VIEWWIN_H
+#ifndef __VIEWWIN_H__
+#define __VIEWWIN_H__
 
-#include "config.h"
+#include "toolbox.h"
+#include "sidebar.h"
+#include "viewpanel.h"
 
-#include "contextpanelobserver.h"
+class MainWin : Model::Observer
+{	
+public:
 
-#include <list>
+	// Model::Observer method
+	virtual void modelChanged(int changeBits);
+		
+	MainWin(Model *model=nullptr); ~MainWin();
 
-using std::list;
+	static bool quit();
 
-class QVBoxLayout;
-class QMenuBar;
-class QMenu;
-class QToolBar;
+	static bool open(utf8 file, MainWin *window=nullptr);
 
-class QTimer;
-class ViewPanel;
-class ContextPanel;
-class BoolPanel;
-class ProjectionWin;
-class TextureCoord;
-class TransformWindow;
-class StatusBar;
-class Model;
+	static bool save(Model *model, bool expdir=false);
 
-class Command;
-class Tool;
-class Script;
+	static void merge(Model *model, bool anims=false);
+		
+	void undo(),redo();
 
-class AnimWidget;
-class AnimWindow;
-class QToolButton;
+	bool save_work();
+	bool save_work_prompt();
+		
+	bool reshape(int x=10000, int y=10000);
 
-class Toolbox;
-class CommandManager;
+	void frame(int globally=1); //Model::OS_Global
 
-class QContextMenuEvent;
-class QCloseEvent;
-class QResizeEvent;
+	template<class Functor>
+	static void each(const Functor &f)
+	{
+		extern std::vector<MainWin*> viewwin_list;
+		for(auto ea:viewwin_list) f(*ea);
+	}
 
-#include <QtWidgets/QMainWindow>
-#include <QtCore/QObject>
+public: //FINISH US
 
-class CommandWidget : public QObject
-{
-   Q_OBJECT
+	void run_script(const char *filename);
 
-   public:
-      CommandWidget( QObject * parent, Model * model, bool * canEdit,
-            Command * cmd, int index );
-      virtual ~CommandWidget();
+	/*VESTIGIAL??? NO-OP?
+	These are id_anim_rotate and id_anim_transl? 
+	https://github.com/zturtleman/mm3d/issues/16
+	void animSetRotEvent(),animSetTransEvent();*/
 
-   public slots:
-      void setModel( Model * m );
-      void activateCommand( bool );
+public:
 
-   private:
-      Model * m_model;
-      bool * m_canEdit;
-      Command * m_cmd;
-      int m_index;
+	//NOTE: I'm adding these because ui::main is
+	//easily confused with main as shorthand for
+	//MainWin. This way it's synonymous with its
+	//model.
+	operator Model*(){ return model; }
+	Model *operator->(){ return model; }	
+	
+	Model *const model;
+		
+	const int glut_window_id;
+	
+	Toolbox toolbox;	
+	ViewPanel views; SideBar sidebar; //IN Z-ORDER
+
+	void open_texture_window();	
+	void open_animation_system();
+	void sync_animation_system();
+	void open_animation_window();
+	void open_transform_window();
+	void open_projection_window();
+	void perform_menu_action(int);
+
+private:
+	
+	void _init_menu_toolbar();	
+
+	Model *_swap_models(Model*);
+
+	bool _window_title_asterisk;
+	void _rewrite_window_title();
+
+	friend void viewwin_close_func();
+	struct AnimWin *_animation_win;
+	struct TransformWin *_transform_win;
+	struct ProjectionWin *_projection_win;
+	struct TextureCoordWin *_texturecoord_win;
+	
+	//These menus have state.
+	//NOTE: It's pointless to separate them as long
+	//as the global "config" file holds their state.
+	int _view_menu,_rops_menu,_anim_menu,_menubar;
+
+	friend void viewwin_toolboxfunc(int);
+	int _prev_tool,_curr_tool;
+	int _prev_mode;
+	int _prev_view,_curr_view;
+	void _view(int i, void (ViewPanel::*mf)());
 };
 
-class ViewWindow : public QMainWindow, public ContextPanelObserver
-{
-   Q_OBJECT
-
-   public:
-      ViewWindow( Model * model, QWidget * parent = NULL );
-      virtual ~ViewWindow();
-
-      static bool closeAllWindows();
-      static bool openModelInEmptyWindow( const char * filename );
-
-      static bool openModel( const char * filename );
-      static bool openModelDialog( const char * openDirectory = NULL );
-
-      static void invalidateModelTextures();
-
-      void setModel( Model * model );
-
-      bool openModelInWindow( const char * filename );
-      bool openModelDialogInWindow( const char * openDirectory = NULL );
-
-      bool emptyWindow();
-
-      bool getSaved();
-      bool getAbortQuit() { return m_abortQuit; };
-      void setAbortQuit( bool o ) { m_abortQuit = o; };
-      
-      Model *getModel() { return m_model; };
-
-      // ContextPanelObserver methods
-      void showProjectionEvent();
-
-   signals:
-      void modelChanged( Model * m );
-
-   public slots:
-      void helpNowEvent();
-
-      void saveModelEvent();
-      void saveModelAsEvent();
-      void exportModelEvent();
-      void exportSelectedEvent();
-
-      void mergeModelsEvent();
-      void mergeAnimationsEvent();
-      void scriptEvent();
-      void runScript( const char * filename );
-
-      void frameAllEvent();
-      void frameSelectedEvent();
-
-      void showContextEvent();
-
-      void renderBadEvent();
-      void noRenderBadEvent();
-      void renderSelectionEvent();
-      void noRenderSelectionEvent();
-      void renderBackface();
-      void noRenderBackface();
-      void renderProjections();
-      void noRenderProjections();
-      void boneJointHide();
-      void boneJointLines();
-      void boneJointBones();
-
-      void viewportSettingsEvent();
-
-      void groupWindowEvent();
-      void textureWindowEvent();
-      void groupCleanWindowEvent();
-      void textureCoordEvent();
-      void paintTextureEvent();
-      void projectionWindowEvent();
-      void transformWindowEvent();
-      void metaWindowEvent();
-      void boolWindowEvent();
-      void reloadTexturesEvent();
-
-      void buttonToggled( bool on );
-
-      void toolActivated( QAction * id );
-      void scriptActivated( QAction * id );
-
-      void animSetWindowEvent();
-      void animExportWindowEvent();
-      void animSetRotEvent();
-      void animSetTransEvent();
-
-      void animCopyFrameEvent();
-      void animPasteFrameEvent();
-      void animClearFrameEvent();
-      void animCopySelectedEvent();
-      void animPasteSelectedEvent();
-
-      void startAnimationMode();
-      void stopAnimationMode();
-
-      void animationModeOn();
-      void animationModeOff();
-
-      void contextPanelHidden();
-
-      void editDisableEvent();
-      void editEnableEvent();
-
-      void undoRequest();
-      void redoRequest();
-
-      void snapToSelectedEvent( QAction * snapTo );
-
-      void fillMruMenu();
-      void openMru( QAction * id );
-
-      void fillScriptMruMenu();
-      void openScriptMru( QAction * id );
-
-      void openModelEvent();
-      void newModelEvent();
-      void quitEvent();
-
-      void pluginWindowEvent();
-      void backgroundWindowEvent();
-      void helpWindowEvent();
-      void aboutWindowEvent();
-      void licenseWindowEvent();
-
-      void savedTimeoutCheck();
-
-      // influences slots
-      void jointWinEvent();
-      void jointAssignSelectedToJoint();
-      void jointAutoAssignSelected();
-      void jointRemoveInfluencesFromSelected();
-      void jointRemoveInfluenceJoint();
-      void jointMakeSingleInfluence();
-      void jointSelectInfluenceJoints();
-      void jointSelectInfluencedVertices();
-      void jointSelectInfluencedPoints();
-      void jointSelectUnassignedVertices();
-      void jointSelectUnassignedPoints();
-
-   protected:
-      void saveModelInternal( Model * model, bool exportModel = false );
-
-      void contextMenuEvent( QContextMenuEvent * e );
-
-      void saveDockPositions();
-      void loadDockPositions();
-      void updateCaption();
-
-      void initializeToolbox();
-      void initializeCommands();
-
-      void closeEvent( QCloseEvent * e );
-      void resizeEvent( QResizeEvent * );
-
-      // returns id in menu
-      QAction * insertMenuItem( QMenu * parentMenu, bool isTool,
-            const QString & path, const QString & name, QMenu * subMenu );
-
-      struct _ToolMenuItem_t
-      {
-         QAction * id;
-         ::Tool * tool;
-         int arg;
-      };
-      typedef struct _ToolMenuItem_t ToolMenuItemT;
-
-      typedef list< ToolMenuItemT * > ToolMenuItemList;
-
-      typedef struct _CommandMenuItem_t
-      {
-         QAction * id;
-         Command * command;
-         CommandWidget * widget;
-         int arg;
-      } CommandMenuItemT;
-
-      typedef list< CommandMenuItemT * > CommandMenuItemList;
-
-      typedef struct _MenuItem_t
-      {
-         QString      text;
-         QMenu * menu;
-      } MenuItemT;
-
-      typedef list< MenuItemT > MenuItemList;
-
-      QMenuBar    * m_menuBar;
-      QMenu  * m_fileMenu;
-      QMenu  * m_viewMenu;
-      QMenu  * m_renderMenu;
-      QMenu  * m_toolMenu;
-      QMenu  * m_modelMenu;
-      QMenu  * m_geometryMenu;
-      QMenu  * m_materialsMenu;
-      QMenu  * m_jointsMenu;
-      QMenu  * m_animMenu;
-      QMenu  * m_scriptMenu;
-      QMenu  * m_helpMenu;
-      QMenu  * m_mruMenu;
-      QMenu  * m_scriptMruMenu;
-      QMenu  * m_snapMenu;
-
-      QToolBar    * m_toolBar;
-
-      ViewPanel    * m_viewPanel;
-      ContextPanel * m_contextPanel;
-      BoolPanel    * m_boolPanel;
-      ProjectionWin * m_projectionWin;
-      TextureCoord * m_textureCoordWin;
-      TransformWindow * m_transformWin;
-      StatusBar   * m_statusBar;
-      Model       * m_model;
-      AnimWindow  * m_animWin;
-      AnimWidget  * m_animWidget;
-
-      QAction *     m_snapToGrid;
-      QAction *     m_snapToVertex;
-
-      QAction *     m_animSetsItem;
-      QAction *     m_animExportItem;
-      QAction *     m_animSetRotItem;
-      QAction *     m_animSetTransItem;
-      QAction *     m_animCopyFrame;
-      QAction *     m_animPasteFrame;
-      QAction *     m_animCopySelected;
-      QAction *     m_animPasteSelected;
-      QAction *     m_animClearFrame;
-      QAction *     m_startAnimItem;
-      QAction *     m_stopAnimItem;
-      QAction *     m_showContext;
-
-      QAction *     m_3dWire;
-      QAction *     m_3dFlat;
-      QAction *     m_3dSmooth;
-      QAction *     m_3dTexture;
-      QAction *     m_3dAlpha;
-
-      QAction *     m_canvasWire;
-      QAction *     m_canvasFlat;
-      QAction *     m_canvasSmooth;
-      QAction *     m_canvasTexture;
-      QAction *     m_canvasAlpha;
-
-      QAction *     m_view1;
-      QAction *     m_view1x2;
-      QAction *     m_view2x1;
-      QAction *     m_view2x2;
-      QAction *     m_view2x3;
-      QAction *     m_view3x2;
-      QAction *     m_view3x3;
-
-      QAction *     m_renderBadItem;
-      QAction *     m_noRenderBadItem;
-      QAction *     m_renderSelectionItem;
-      QAction *     m_noRenderSelectionItem;
-      QAction *     m_hideJointsItem;
-      QAction *     m_drawJointLinesItem;
-      QAction *     m_drawJointBonesItem;
-      QAction *     m_renderBackface;
-      QAction *     m_noRenderBackface;
-      QAction *     m_renderProjections;
-      QAction *     m_noRenderProjections;
-
-      bool          m_abortQuit;
-
-      CommandMenuItemList m_primitiveCommands;
-      CommandMenuItemList m_groupCommands;
-      ToolMenuItemList m_tools;
-
-      MenuItemList m_menuItems;
-
-      CommandManager * m_cmdMgr;
-
-      // Moved from toolwidget
-      int m_toolCount;
-      Toolbox     * m_toolbox;
-      ::Tool        ** m_toolList;
-      QAction ** m_toolButtons;
-      QAction * m_last;
-      ::Tool        * m_currentTool;
-      bool m_canEdit;
-
-      QTimer      * m_savedTimer;
-};
-
-
-#endif // __VIEWWIN_H
+#endif // __VIEWWIN_H__

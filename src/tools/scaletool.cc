@@ -1,383 +1,283 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
+#include "mm3dtypes.h" //PCH
 
-#include "scaletool.h"
+#include "tool.h"
+#include "glmath.h" //distance
 
 #include "model.h"
 #include "log.h"
 #include "modelstatus.h"
 #include "pixmap/scaletool.xpm"
 
-#include <math.h>
-
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QApplication>
-
-ScaleTool::ScaleTool()
+enum ScaleProportionE
 {
+	ST_ScaleFree=0,
+	ST_ScaleProportion2D,
+	ST_ScaleProportion3D,
+};
+
+enum ScalePointE
+{
+	ST_ScalePointCenter=0,
+	ST_ScalePointFar,
+};
+
+struct ScaleTool : Tool
+{
+	ScaleTool():Tool(TT_Other)
+	{
+		m_proportion = m_point = 0; //config details
+	}
+
+	virtual const char *getName(int)
+	{
+		return TRANSLATE_NOOP("Tool","Scale");
+	}
+
+	virtual const char *getKeymap(int){ return "S"; }
+
+	virtual const char **getPixmap(int){ return scaletool_xpm; }
+
+	virtual void activated(int)
+	{
+		model_status(parent->getModel(),StatusNormal,STATUSTIME_NONE,
+		TRANSLATE("Tool","Tip: Hold shift to restrict scaling to one dimension"));
+
+		const char *e[3+1] = 
+		{
+		TRANSLATE("Tool","Free","Free scaling option"),
+		TRANSLATE("Tool","Keep Aspect 2D","2D scaling aspect option"),
+		TRANSLATE("Tool","Keep Aspect 3D","3D scaling aspect option"),
+		};
+		parent->addEnum(true,&m_proportion,TRANSLATE("Tool","Proportion"),e);
+
+		const char *f[2+1] = 
+		{
+		TRANSLATE("Tool","Center","Scale from center"),
+		TRANSLATE("Tool","Far Corner","Scale from far corner"),
+		};
+		parent->addEnum(true,&m_point,TRANSLATE("Tool","Point"),f);
+	}
+
+	virtual void mouseButtonDown(int buttonState, int x, int y);
+	virtual void mouseButtonMove(int buttonState, int x, int y);
+
+	//REMOVE ME
+	virtual void mouseButtonUp(int buttonState, int x, int y)
+	{
+		model_status(parent->getModel(),StatusNormal,STATUSTIME_SHORT,
+		TRANSLATE("Tool","Scale complete"));
+	}
+		int m_proportion;
+		int m_point;		
+
+		double m_x,m_y;
+		bool m_allowX,m_allowY;
+
+		double m_pointX;
+		double m_pointY;
+		double m_pointZ;
+
+		double m_startLengthX;
+		double m_startLengthY;
+
+		//double m_projScale;
+		//int_list m_projList;
+		std::vector<std::pair<int,double>> m_projList;
+
+		ToolCoordList m_positionCoords;
+};
+
+extern Tool *scaletool(){ return new ScaleTool; }
+
+void ScaleTool::mouseButtonDown(int buttonState, int x, int y)
+{
+	Model *model = parent->getModel();
+
+	m_allowX = m_allowY = true;
+			
+	pos_list posList;
+	model->getSelectedPositions(posList);
+	m_positionCoords.clear();
+	makeToolCoordList(m_positionCoords,posList);
+
+	double min[3] = {+DBL_MAX,+DBL_MAX,+DBL_MAX}; 
+	double max[3] = {-DBL_MAX,-DBL_MAX,-DBL_MAX};
+
+	m_projList.clear(); for(auto&ea:m_positionCoords)
+	{
+		for(int i=0;i<3;i++)
+		{
+			min[i] = std::min(min[i],ea.coords[i]);
+			max[i] = std::max(max[i],ea.coords[i]);
+		}
+
+		if(ea.pos.type==Model::PT_Projection)
+		{
+			//log_debug("found projection %d\n",ea.pos.index);
+			m_projList.push_back(std::make_pair(ea.pos.index,model->getProjectionScale(ea)));
+		}
+	}
+
+	double pos[2];
+	parent->getParentXYValue(x,y,pos[0],pos[1],true);
+	m_x = pos[0];
+	m_y = pos[1];
+	if(m_point==ST_ScalePointFar)
+	{
+		//NOTE: This looks wrong, but seems to not matter.
+		m_pointZ = min[2];
+
+		//DUPLICATES texwidget.cc.
+
+		//NOTE: sqrt not required.
+		double minmin = distance(min[0],min[1],pos[0],pos[1]);
+		double minmax = distance(min[0],max[1],pos[0],pos[1]);
+		double maxmin = distance(max[0],min[1],pos[0],pos[1]);
+		double maxmax = distance(max[0],max[1],pos[0],pos[1]);
+
+		//Can this be simplified?
+		if(minmin>minmax)
+		{
+			if(minmin>maxmin)
+			{
+				if(minmin>maxmax)
+				{
+					m_pointX = min[0]; m_pointY = min[1];
+				}
+				else
+				{
+					m_pointX = max[0]; m_pointY = max[1];
+				}
+			}
+			else same: // maxmin>minmin
+			{
+				if(maxmin>maxmax)
+				{
+					m_pointX = max[0]; m_pointY = min[1];
+				}
+				else
+				{
+					m_pointX = max[0]; m_pointY = max[1];
+				}
+			}
+		}
+		else // minmax>minmin
+		{
+			if(minmax>maxmin)
+			{
+				if(minmax>maxmax)
+				{
+					m_pointX = min[0]; m_pointY = max[1];
+				}
+				else
+				{
+					m_pointX = max[0]; m_pointY = max[1];
+				}
+			}
+			else goto same; // maxmin>minmax
+		}
+
+		m_startLengthX = fabs(m_pointX-pos[0]);
+		m_startLengthY = fabs(m_pointY-pos[1]);
+	}
+	else
+	{
+		m_pointX = (max[0]-min[0])/2+min[0];
+		m_pointY = (max[1]-min[1])/2+min[1];
+		m_pointZ = (max[2]-min[2])/2+min[2];
+
+		m_startLengthX = fabs(m_pointX-pos[0]);
+		m_startLengthY = fabs(m_pointY-pos[1]);
+	}
+
+	model_status(model,StatusNormal,STATUSTIME_SHORT,
+	TRANSLATE("Tool","Scaling selected primitives"));
 }
 
-ScaleTool::~ScaleTool()
+void ScaleTool::mouseButtonMove(int buttonState, int x, int y)
 {
+	double pos[2];
+	parent->getParentXYValue(x,y,pos[0],pos[1]);
+
+	//Should tools be responsible for this?
+	if(buttonState&BS_Shift&&m_allowX&&m_allowY)
+	{
+		double ax = fabs(pos[0]-m_x);
+		double ay = fabs(pos[1]-m_y);
+
+		if(ax>ay) m_allowY = false;
+		if(ay>ax) m_allowX = false;
+	}
+
+	if(!m_allowX) pos[0] = m_x;
+	if(!m_allowY) pos[1] = m_y;
+
+	double spX = m_pointX;
+	double spY = m_pointY;
+	double spZ = m_pointZ;
+
+	double lengthX = fabs(spX-pos[0]);
+	double lengthY = fabs(spY-pos[1]);
+
+	for(auto&ea:m_positionCoords)
+	{
+		double x = ea.coords[0]-spX;
+		double y = ea.coords[1]-spY;
+		double z = ea.coords[2]-spZ;
+
+		double xper = m_startLengthX<=0.00006?1:lengthX/m_startLengthX;
+		double yper = m_startLengthY<=0.00006?1:lengthY/m_startLengthY;
+
+		if(m_proportion==ST_ScaleFree)
+		{
+			x*=xper; y*=yper;
+		}
+		else
+		{
+			double max = std::max(xper,yper);
+			x*=max;
+			y*=max;
+			if(m_proportion==ST_ScaleProportion3D)			
+			z*=max;
+		}
+
+		movePosition(ea.pos,x+spX,y+spY,z+spZ);
+	}
+
+	if(!m_projList.empty())
+	{
+		//log_debug("setting scale\n");
+		double startLen = distance(m_startLengthX,m_startLengthY,0.0,0.0);
+		double len = distance(lengthX,lengthY,0.0,0.0);
+		double diff = len/startLen;
+		//log_debug("new scale = %f\n",diff*m_projScale);
+
+		//NEW: Why not all???
+		for(auto&ea:m_projList)
+		parent->getModel()->setProjectionScale(ea.first,ea.second*diff);
+	}
+
+	parent->updateAllViews();
 }
-
-const char * ScaleTool::getName( int arg )
-{
-   return QT_TRANSLATE_NOOP( "Tool", "Scale" );
-}
-
-bool ScaleTool::getKeyBinding( int arg, int & keyBinding )
-{
-   return false;
-}
-
-void ScaleTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y )
-{
-   m_positionCoords.clear();
-
-   m_allowX = true;
-   m_allowY = true;
-
-   Model * model = parent->getModel();
-   list<Model::Position> posList;
-
-   model->getSelectedPositions( posList );
-
-   m_positionCoords.clear();
-   makeToolCoordList( parent, m_positionCoords, posList );
-
-   ToolCoordList::iterator it;
-
-   bool firstSet = false;
-
-   for ( it = m_positionCoords.begin(); it != m_positionCoords.end(); it++ )
-   {
-      // update range
-      if ( !firstSet )
-      {
-         m_minX = (*it).oldCoords[0];
-         m_minY = (*it).oldCoords[1];
-         m_minZ = (*it).oldCoords[2];
-         m_maxX = (*it).oldCoords[0];
-         m_maxY = (*it).oldCoords[1];
-         m_maxZ = (*it).oldCoords[2];
-         firstSet = true;
-      }
-      else
-      {
-         if ( (*it).oldCoords[0] < m_minX ) { m_minX = (*it).oldCoords[0]; }
-         if ( (*it).oldCoords[0] > m_maxX ) { m_maxX = (*it).oldCoords[0]; }
-         if ( (*it).oldCoords[1] < m_minY ) { m_minY = (*it).oldCoords[1]; }
-         if ( (*it).oldCoords[1] > m_maxY ) { m_maxY = (*it).oldCoords[1]; }
-         if ( (*it).oldCoords[2] < m_minZ ) { m_minZ = (*it).oldCoords[2]; }
-         if ( (*it).oldCoords[2] > m_maxZ ) { m_maxZ = (*it).oldCoords[2]; }
-      }
-   }
-
-   double curX = 0;
-   double curY = 0;
-   
-   m_startLengthX = 0;
-   m_startLengthY = 0;
-
-   parent->getParentXYValue( x, y, curX, curY, true );
-
-   m_x = curX;
-   m_y = curY;
-
-   if ( m_point == ST_ScalePointFar )
-   {
-      double minmin = 0;
-      double minmax = 0;
-      double maxmin = 0;
-      double maxmax = 0;
-
-      m_farZ = m_minZ;
-
-      minmin = distance( m_minX, m_minY, curX, curY );
-      minmax = distance( m_minX, m_maxY, curX, curY );
-      maxmin = distance( m_maxX, m_minY, curX, curY );
-      maxmax = distance( m_maxX, m_maxY, curX, curY );
-
-      if ( minmin > minmax )
-      {
-         if ( minmin > maxmin )
-         {
-            if ( minmin > maxmax )
-            {
-               m_farX = m_minX;
-               m_farY = m_minY;
-            }
-            else
-            {
-               m_farX = m_maxX;
-               m_farY = m_maxY;
-            }
-         }
-         else
-         {
-            // maxmin > minmin
-            if ( maxmin > maxmax )
-            {
-               m_farX = m_maxX;
-               m_farY = m_minY;
-            }
-            else
-            {
-               m_farX = m_maxX;
-               m_farY = m_maxY;
-            }
-         }
-      }
-      else
-      {
-         // minmax > minmin
-         if ( minmax > maxmin )
-         {
-            if ( minmax > maxmax )
-            {
-               m_farX = m_minX;
-               m_farY = m_maxY;
-            }
-            else
-            {
-               m_farX = m_maxX;
-               m_farY = m_maxY;
-            }
-         }
-         else
-         {
-            // maxmin > minmax
-            if ( maxmin > maxmax )
-            {
-               m_farX = m_maxX;
-               m_farY = m_minY;
-            }
-            else
-            {
-               m_farX = m_maxX;
-               m_farY = m_maxY;
-            }
-         }
-      }
-
-      m_startLengthX = fabs( m_farX - curX );
-      m_startLengthY = fabs( m_farY - curY );
-   }
-   else
-   {
-      m_centerX = (m_maxX - m_minX) / 2.0 + m_minX;
-      m_centerY = (m_maxY - m_minY) / 2.0 + m_minY;
-      m_centerZ = (m_maxZ - m_minZ) / 2.0 + m_minZ;
-
-      m_startLengthX = fabs( m_centerX - curX );
-      m_startLengthY = fabs( m_centerY - curY );
-   }
-
-   m_projList.clear();
-   // remove projections (special case)
-   for ( it = m_positionCoords.begin(); it != m_positionCoords.end(); it++ )
-   {
-      log_debug( "checking for projection\n" );
-      if ( (*it).pos.type == Model::PT_Projection )
-      {
-         log_debug( "found projection %d\n", (*it).pos.index );
-         m_projList.push_back( (*it).pos.index );
-      }
-   }
-   while ( !m_positionCoords.empty() && m_positionCoords.back().pos.type == Model::PT_Projection )
-   {
-      log_debug( "removing projection\n" );
-      m_positionCoords.pop_back();
-   }
-   if ( !m_projList.empty() )
-   {
-      log_debug( "getting scale\n" );
-      m_projScale = model->getProjectionScale( m_projList.front() );
-   }
-
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Scaling selected primitives" ).toUtf8() );
-}
-
-void ScaleTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )
-{
-   LOG_PROFILE();
-
-   double curX = m_x;
-   double curY = m_y;
-
-   parent->getParentXYValue( x, y, curX, curY );
-
-   if ( buttonState & BS_Shift )
-   {
-      if ( m_allowX && m_allowY )
-      {
-         double ax = fabs( curX - m_x );
-         double ay = fabs( curY - m_y );
-
-         if ( ax > ay )
-         {
-            m_allowY = false;
-         }
-         if ( ay > ax )
-         {
-            m_allowX = false;
-         }
-      }
-   }
-
-   if ( !m_allowX )
-   {
-      curX = m_x;
-   }
-   if ( !m_allowY )
-   {
-      curY = m_y;
-   }
-
-   double spX = ( m_point == ST_ScalePointFar ) ? m_farX : m_centerX;
-   double spY = ( m_point == ST_ScalePointFar ) ? m_farY : m_centerY;
-   double spZ = ( m_point == ST_ScalePointFar ) ? m_farZ : m_centerZ;
-
-   double lengthX = distance( spX, 0, curX, 0 );
-   double lengthY = distance( spY, 0, curY, 0 );
-
-   ToolCoordList::iterator it;
-
-   for( it = m_positionCoords.begin(); it != m_positionCoords.end(); it++ )
-   {
-      double x = (*it).oldCoords[0];
-      double y = (*it).oldCoords[1];
-      double z = (*it).oldCoords[2];
-
-      x -= spX;
-      y -= spY;
-      z -= spZ;
-
-      double xper = (lengthX / m_startLengthX);
-      if ( m_startLengthX <= 0.00006 )
-      {
-         xper = 1.0;
-      }
-      double yper = (lengthY / m_startLengthY);
-      if ( m_startLengthY <= 0.00006 )
-      {
-         yper = 1.0;
-      }
-
-      if ( m_proportion == ST_ScaleFree )
-      {
-         x *= xper;
-         y *= yper;
-      }
-      else
-      {
-         if ( xper > yper )
-         {
-            x *= xper;
-            y *= xper;
-            if ( m_proportion == ST_ScaleProportion3D )
-            {
-               z *= xper;
-            }
-         }
-         else
-         {
-            x *= yper;
-            y *= yper;
-            if ( m_proportion == ST_ScaleProportion3D )
-            {
-               z *= yper;
-            }
-         }
-      }
-
-      x += spX;
-      y += spY;
-      z += spZ;
-
-      movePosition( parent, (*it).pos, x, y, z );
-   }
-
-   if ( !m_projList.empty() )
-   {
-      log_debug( "setting scale\n" );
-      double startLen = sqrt( m_startLengthX * m_startLengthX + m_startLengthY * m_startLengthY);
-      double len      = sqrt( lengthX * lengthX + lengthY * lengthY);
-      double diff = len / startLen;
-      parent->getModel()->setProjectionScale( m_projList.front(), m_projScale * diff );
-      log_debug( "new scale = %f\n", (float) m_projScale * diff );
-   }
-
-   parent->updateAllViews();
-}
-
-void ScaleTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
-{
-   if ( !m_projList.empty() )
-   {
-      //parent->getModel()->applyProjection( m_projList.front() );
-      //parent->updateAllViews();
-   }
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Scale complete" ).toUtf8() );
-}
-
-const char ** ScaleTool::getPixmap()
-{
-   return (const char **) scaletool_xpm;
-}
-
-double ScaleTool::distance( double x1, double y1, double x2, double y2 )
-{
-   double xDiff = x2 - x1;
-   double yDiff = y2 - y1;
-   return sqrt( xDiff*xDiff + yDiff*yDiff );
-}
-
-double ScaleTool::max( double a, double b )
-{
-   return ( a > b ) ? a : b;
-}
-
-void ScaleTool::setProportionValue( int newValue )
-{
-   m_proportion = newValue;
-}
-
-void ScaleTool::setPointValue( int newValue )
-{
-   m_point = newValue;
-}
-
-void ScaleTool::activated( int arg, Model * model, QMainWindow * mainwin )
-{
-   model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Tip: Hold shift to restrict scaling to one dimension" ).toUtf8() );
-   m_widget = new ScaleToolWidget( this, mainwin );
-   m_widget->show();
-}
-
-void ScaleTool::deactivated()
-{
-   m_widget->close();
-}
-

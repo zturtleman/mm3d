@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <title> MM3D Help - Face Details </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   </head>
+
+   <body bgcolor="#e0e0e0">
+
+      <h1>Face Details</h1>
+
+      <h2> Overview </h2>
+
+      <p>
+      A face is a polygon defined by connecting vertices in 3D space.
+      In MM3D, all polygons are triangles. Any geometric shape
+      that is more complex than a triangle is composed of multiple triangles.
+      Faces may be drawn as filled polygons or as wireframes, depending
+      on settings in the View menu.
+      </p>
+
+      <p>
+      All faces are one-sided. When a triangle is drawn as a filled polygon,
+      the side that faces the camera is drawn in a light gray color. The
+      side that faces away from the camera is drawn as dark gray.
+      </p>
+      
+      <p>
+      Some
+      renderers do not draw polygons that face away from the camera (this
+      is known as back-face culling). In MM3D, you can enable
+      or disable drawing of polygons that face away from the camera.
+      </p>
+
+      <p>
+      A face's "normal" is a line that is perpendicular to the plane of
+      the polygon. This line defines how light reflects off of a polygon,
+      and also helps the renderer determine if the polygon is facing the
+      camera or not. If faces are connected to each other, the normals
+      can be averaged to make the edges where they connect appear smooth.
+      You cannot directly manipulate a face's normal, but you can
+      influence the averaging calculations by assigning faces to a group
+      and then changing the group properties. See the
+      <a href="olh_groupwin.html">Group&nbsp;Window</a> for details.
+      </p>
+      
+      <a name="creating"></a>
+      <h2> Creating a Face </h2>
+      
+      <p>
+      Faces are created implicitly when more complex geometric shapes are
+      created. Select
+      any tool that creates a geometric shape (such as a cube, sphere, or
+      cylinder) and it will create new triangles which combine to form
+      the desired shape.
+      </p>
+
+      <a name="other"></a>
+      <h2> Other Face Details </h2>
+
+      <p>
+      To increase the level of detail, one face can be subdivided
+      into four faces using the
+      <a href="olh_commands.html#subdivide">Subdivide&nbsp;Faces</a> command.
+      </p>
+
+
+      <a name="seealso"></a>
+      <h2> See Also </h2>
+
+      <ul>
+      <li> <a href="olh_vertexdetails.html">Vertices</a> </li>
+      <li> <a href="olh_meshdetails.html">Meshes</a> </li>
+      <li> <a href="olh_normaldetails.html">Normals</a> </li>
+      <li> <a href="olh_groupdetails.html">Groups</a> </li>
+      <li> <a href="olh_materialdetails.html">Materials</a> </li>
+      <li> <a href="olh_texturecoorddetails.html">Texture Coordinates</a> </li>
+      <li> <a href="olh_projectiondetails.html">Texture Projections</a> </li>
+      </ul>
+
+
+
+<hr/>
+<center>
+[
+<a href="olh_index.html">Contents</a>
+|
+<a href="olh_detailsindex.html">Introduction</a>
+|
+<a href="olh_tools.html">Tools</a>
+|
+<a href="olh_commands.html">Geometry&nbsp;Menu</a>
+]
+<br/>
+
+Copyright &copy; 2004-2008, Kevin Worcester
+
+</center>
+
+</body></html>

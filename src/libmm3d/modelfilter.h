@@ -1,28 +1,31 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
 
 #ifndef __MODELFILTER_H
 #define __MODELFILTER_H
+
+#include "filefactory.h"
+#include "model.h"
 
 //------------------------------------------------------------------
 // About the ModelFilter class
@@ -30,188 +33,192 @@
 //
 // The ModelFilter class is a base class for implementing filters to
 // import and export models to various formats.  If you implement a
-// ModelFilter, you need to register the filter with the FilterManager.
+// ModelFilter,you need to register the filter with the FilterManager.
 // You only need one instance of your filter.
-
-#include "model.h"
-#include "filefactory.h"
-
-#include "mm3dtypes.h"
-
-#include <stdlib.h>
 
 class ModelFilter
 {
-   public:
+public:
 
-      // This class is used to provide model-specific options.  See
-      // the ObjFilter class in objfilter.h and the ObjPrompt
-      // class in objprompt.h for an example.
-      //
-      // For simple filters you can typically ignore anything related
-      // to the Options class.
-      class Options
-      {
-         public:
-            Options();
+	// This class is used to provide model-specific options.  See
+	// the ObjFilter class in objfilter.h and the ObjPrompt
+	// class in objprompt.h for an example.
+	//
+	// For simple filters you can typically ignore anything related
+	// to the Options class.
+	class Options
+	{
+	public:
 
-            // It is a good idea to override this if you implement
-            // filter options in a plugin.
-            virtual void release() { delete this; };
+		Options();
 
-            static void stats();
+		// It is a good idea to override this if you implement
+		// filter options in a plugin.
+		virtual void release(){ delete this; };
 
-         protected:
-            virtual ~Options(); // Use release() instead
+		static void stats(); //???
 
-            static int s_allocated;
-      };
+		virtual void setOptionsFromModel(Model*) = 0; //NEW
 
-      // To prompt a user for filter options, create a function
-      // that matches this prototype and call setOptionsPrompt.
-      //
-      // The Model argument indicates the model that will be saved.
-      //
-      // The ModelFilter::Options argument contains the options that
-      // should be set as default when the prompt is displayed.
-      //
-      // You must modify the value of the Options argument to match 
-      // the options selected by the user.
-      //
-      // The return value is false if the prompt (save) was cancelled,
-      // and true otherwise.
-      //
-      // For simple filters you can typically ignore anything related
-      // to the Options class.
-      typedef bool (*OptionsFuncF)( Model *, ModelFilter::Options * );
+		template<class T> T *getOptions()
+		{	
+			assert(dynamic_cast<T*>(this)); return (T*)this;
+		}
 
-      ModelFilter();
-      virtual ~ModelFilter() {};
+	protected:
 
-      // It is a good idea to override this if you implement
-      // a filter as a plugin.
-      virtual void release() { delete this; };
+		virtual ~Options(); // Use release() instead
 
-      // readFile reads the contents of 'filename' and modifies 'model' to
-      // match the description in 'filename'.  This is the import function.
-      //
-      // The model argument will be an empty model instance.  If the file
-      // cannot be loaded, return the appropriate ModelErrorE error code.
-      // If the load succeeds, return Model::ERROR_NONE.
-      virtual Model::ModelErrorE readFile( Model * model, const char * const filename ) = 0;
+		static int s_allocated;
+	};
 
-      // writeFile writes the contents of 'model' to the file 'filename'.
-      //
-      // If the model cannot be written to disk, return the appropriate 
-      // ModelErrorE error code.  If the write succeeds, return 
-      // ModelErrorE::ERROR_NONE.
-      //
-      // For simple filters you can typically ignore anything related
-      // to the Options class.  If you do not provide model specific options
-      // with your filter the Options argument will always be NULL.
-      virtual Model::ModelErrorE writeFile( Model * model, const char * const filename, Options * o = NULL ) = 0;
+	// To prompt a user for filter options,create a function
+	// that matches this prototype and call setOptionsPrompt.
+	//
+	// The Model argument indicates the model that will be saved.
+	//
+	// The ModelFilter::Options argument contains the options that
+	// should be set as default when the prompt is displayed.
+	//
+	// You must modify the value of the Options argument to match 
+	// the options selected by the user.
+	//
+	// The return value is false if the prompt (save)was canceled,
+	// and true otherwise.
+	//
+	// For simple filters you can typically ignore anything related
+	// to the Options class.
+	typedef bool PromptF(Model*,ModelFilter::Options*);
 
-      // This function should return true if the filename's extension matches 
-      // a type supported by your filter, and your filter has read support.
-      //
-      // A NULL argument means, do you support write operations for your
-      // supported format[s]?
-      virtual bool       canRead( const char * filename = NULL ) = 0;
+	ModelFilter();
 
-      // This function should return true if the filename's extension matches 
-      // a type supported by your filter, your filter has write support, and
-      // over-writing a file of this type is not likely to be problematic
-      // (for example, if the model has a skeleton and animations and your
-      // write support does not include skeleton and animations, you don't
-      // want to overwrite the original if the user accidently selects "Save").
-      //
-      // If write support is limited, you'll want to allow canExport().
-      //
-      // A NULL argument means, do you support write operations for your
-      // supported format[s]?
-      virtual bool       canWrite( const char * filename = NULL ) = 0;
+	virtual ~ModelFilter(){}
 
-      // This function should return true if the filename's extension matches 
-      // a type supported by your filter, and your filter has write support.
-      // The canExport function may return true even if the canWrite function
-      // returns false. If the canWrite function returns true, canExport
-      // should also return true.
-      //
-      // A NULL argument means, do you support write operations for your
-      // supported format[s]?
-      virtual bool       canExport( const char * filename = NULL ) = 0;
+	// It is a good idea to override this if you implement
+	// a filter as a plugin.
+	virtual void release(){ delete this; };
 
-      // This function should return true if the filename's extension matches 
-      // a type supported by your filter, regardless of whether your filter
-      // is read-only, write-only, or read-write.
-      virtual bool       isSupported( const char * file ) = 0;
+	// readFile reads the contents of 'file' and modifies 'model' to
+	// match the description in 'file'.  This is the import function.
+	//
+	// The model argument will be an empty model instance.  If the file
+	// cannot be loaded,return the appropriate ModelErrorE error code.
+	// If the load succeeds,return Model::ERROR_NONE.
+	virtual Model::ModelErrorE readFile(Model *model, const char *const file)= 0;
 
-      // This function returns an STL list of STL strings of filename patterns
-      // for which your model supports read operations.  Generally only one 
-      // format type should be provided by a single filter.
-      virtual std::list< std::string > getReadTypes()  = 0;
+	// writeFile writes the contents of 'model' to the file 'file'.
+	//
+	// If the model cannot be written to disk,return the appropriate 
+	// ModelErrorE error code.  If the write succeeds,return 
+	// ModelErrorE::ERROR_NONE.
+	//
+	// For simple filters you can typically ignore anything related
+	// to the Options class.  If you do not provide model specific options
+	// with your filter the Options argument will always be nullptr.
+	virtual Model::ModelErrorE writeFile(Model *model, const char *const file, Options &o) = 0;
 
-      // This function returns an STL list of STL strings of filename patterns
-      // for which your model supports write operations.  Generally only one 
-      // format type should be provided by a single filter.
-      virtual std::list< std::string > getWriteTypes() = 0;
+	// This function returns an STL list of STL strings of file patterns
+	// for which your model supports read operations.  Generally only one 
+	// format type should be provided by a single filter.
+	virtual const char *getReadTypes(){ return ""; }
 
-      // This function returns a dynamically allocated object derived
-      // from ModelFilter::Options which holds filter-specific options that
-      // the user can specify via a prompt at the time of save.
-      //
-      // To prompt a user for options, you most provide a prompt function 
-      // using setOptionsPrompt()
-      //
-      // For simple filters you can typically ignore anything related
-      // to the Options class.
-      virtual Options * getDefaultOptions() { return NULL; };
+	// This function returns an STL list of STL strings of file patterns
+	// for which your model supports write operations.  Generally only one 
+	// format type should be provided by a single filter.
+	virtual const char *getWriteTypes(){ return ""; }
 
-      // This function takes a pointer to a function which displays a prompt
-      // to get filter options from the user.
-      //
-      // For simple filters you can typically ignore anything related
-      // to the Options class.
-      virtual void setOptionsPrompt( OptionsFuncF f ) { m_optionsFunc = f; };
+	virtual const char *getExportTypes(){ return getWriteTypes(); }
 
-      // This function returns the pointer to the Options prompt.
-      // This may be NULL.
-      //
-      // For simple filters you can typically ignore anything related
-      // to the Options class.
-      virtual OptionsFuncF getOptionsPrompt() { return m_optionsFunc; };
+	// This function returns a dynamically allocated object derived
+	// from ModelFilter::Options which holds filter-specific options that
+	// the user can specify via a prompt at the time of save.
+	//
+	// To prompt a user for options,you most provide a prompt function 
+	// using setOptionsPrompt()
+	//
+	// For simple filters you can typically ignore anything related
+	// to the Options class.
+	virtual Options *getDefaultOptions();
 
-      // Overrides the default FileFactory with a custom version.
-      // This can be used to change how files are read and written by
-      // any file filters that use the ModelFilter's openInput and
-      // openOutput functions.
-      void setFactory( FileFactory * factory ) { m_factory = factory; }
+	// This function takes a pointer to a function which displays a prompt
+	// to get filter options from the user.
+	//
+	// For simple filters you can typically ignore anything related
+	// to the Options class.
+	virtual void setOptionsPrompt(PromptF *f){ m_promptFunc = f; };
 
-      // Default error should be Model::ERROR_FILE_OPEN, ERROR_FILE_READ, or
-      // ERROR_FILE_WRITE depending on the context of operations being performed.
-      static Model::ModelErrorE errnoToModelError( int err, Model::ModelErrorE defaultError );
+	// This function returns the pointer to the Options prompt.
+	// This may be nullptr.
+	//
+	// For simple filters you can typically ignore anything related
+	// to the Options class.
+	virtual PromptF *getOptionsPrompt(){ return m_promptFunc; };
 
-   protected:
+	// This function should return true if the file's extension matches 
+	// a type supported by your filter,and your filter has read support.
+	//
+	// A nullptr argument means,do you support write operations for your
+	// supported format[s]?
+	bool canRead(const char *file=nullptr);
 
-      DataSource * openInput( const char * filename, Model::ModelErrorE & err );
-      DataDest * openOutput( const char * filename, Model::ModelErrorE & err );
+	// This function should return true if the file's extension matches 
+	// a type supported by your filter,your filter has write support,and
+	// over-writing a file of this type is not likely to be problematic
+	// (for example,if the model has a skeleton and animations and your
+	// write support does not include skeleton and animations,you don't
+	// want to overwrite the original if the user accidently selects "Save").
+	//
+	// If write support is limited,you'll want to allow canExport().
+	//
+	// A nullptr argument means,do you support write operations for your
+	// supported format[s]?
+	bool canWrite(const char *file=nullptr);
 
-      // Call these protected methods in your base class if you want direct
-      // access to the model's primitive lists.  Treat them with care.
-      vector<Model::Vertex *>             & getVertexList( Model * m )     { return m->m_vertices;     };
-      vector<Model::Triangle *>           & getTriangleList( Model * m )   { return m->m_triangles;    };
-      vector<Model::Group *>              & getGroupList( Model * m )      { return m->m_groups;       };
-      vector<Model::Material *>           & getMaterialList( Model * m )   { return m->m_materials;    };
-      vector<Model::Joint *>              & getJointList( Model * m )      { return m->m_joints;       };
-      vector<Model::Point *>              & getPointList( Model * m )      { return m->m_points;       };
-      vector<Model::TextureProjection *>  & getProjectionList( Model * m ) { return m->m_projections;  };
-      vector<Model::SkelAnim *>           & getSkelList( Model * m )       { return m->m_skelAnims;    };
-      vector<Model::FrameAnim *>          & getFrameList( Model * m )      { return m->m_frameAnims;   };
+	// This function should return true if the file's extension matches 
+	// a type supported by your filter,and your filter has write support.
+	// The canExport function may return true even if the canWrite function
+	// returns false. If the canWrite function returns true,canExport
+	// should also return true.
+	//
+	// A nullptr argument means,do you support write operations for your
+	// supported format[s]?
+	bool canExport(const char *file=nullptr);
 
-      OptionsFuncF m_optionsFunc;
+	// This function should return true if the file's extension matches 
+	// a type supported by your filter,regardless of whether your filter
+	// is read-only,write-only,or read-write.
+	bool isSupported(const char *file);
 
-      FileFactory   m_defaultFactory;
-      FileFactory * m_factory;
+	// Overrides the default FileFactory with a custom version.
+	// This can be used to change how files are read and written by
+	// any file filters that use the ModelFilter's openInput and
+	// openOutput functions.
+	void setFactory(FileFactory *factory){ m_factory = factory; }
+
+	// Default error should be Model::ERROR_FILE_OPEN,ERROR_FILE_READ,or
+	// ERROR_FILE_WRITE depending on the context of operations being performed.
+	static Model::ModelErrorE errnoToModelError(int err,Model::ModelErrorE defaultError);
+
+protected:
+
+	DataSource *openInput(const char *file, Model::ModelErrorE &err);
+	DataDest *openOutput(const char *file, Model::ModelErrorE &err);
+
+	// Call these protected methods in your base class if to get direct
+	// access to the model's primitive list.
+	std::vector<Model::Vertex *>				 &getVertexList(Model *m)	{ return m->m_vertices;	  };
+	std::vector<Model::Triangle *>			  &getTriangleList(Model *m) { return m->m_triangles;	 };
+	std::vector<Model::Group *>				  &getGroupList(Model *m)	 { return m->m_groups;		 };
+	std::vector<Model::Material *>			  &getMaterialList(Model *m) { return m->m_materials;	 };
+	std::vector<Model::Joint *>				  &getJointList(Model *m)	 { return m->m_joints;		 };
+	std::vector<Model::Point *>				  &getPointList(Model *m)	 { return m->m_points;		 };
+	std::vector<Model::TextureProjection *>  &getProjectionList(Model *m){ return m->m_projections;  };
+	std::vector<Model::SkelAnim *>			  &getSkelList(Model *m)	  { return m->m_skelAnims;	 };
+	std::vector<Model::FrameAnim *>			 &getFrameList(Model *m)	 { return m->m_frameAnims;	};
+
+	PromptF *m_promptFunc;
+
+	FileFactory	m_defaultFactory, *m_factory;
 };
 
 #endif // __MODELFILTER_H

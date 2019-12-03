@@ -1,27 +1,28 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
+#include "mm3dtypes.h" //PCH
 
-#include "polytool.h"
+#include "tool.h"
 
 #include "model.h"
 #include "msg.h"
@@ -30,180 +31,113 @@
 
 #include "pixmap/polytool.xpm"
 
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QApplication>
-
-PolyTool::PolyTool()
-   : m_model( NULL ),
-     m_type( 0 ),
-     m_widget( NULL )
+struct PolyTool : Tool
 {
-   m_lastVertex.pos.type = Model::PT_Point;
-   m_lastVertex.pos.index = 0;
+	PolyTool():Tool(TT_Creator)
+	{
+		m_type = 0; //config defaults
+	}
+
+	virtual const char *getName(int)
+	{
+		return TRANSLATE_NOOP("Tool","Create Polygon");
+	}
+
+	virtual const char **getPixmap(int){ return polytool_xpm; }
+
+	virtual const char *getKeymap(int){ return "Z"; }
+
+	virtual void activated(int)
+	{
+		const char *e[2+1] = 
+		{
+		TRANSLATE_NOOP("Param","Strip","Triangle strip option"),
+		TRANSLATE_NOOP("Param","Fan","Triangle fan option"),
+		};
+		parent->addEnum(true,&m_type,TRANSLATE_NOOP("Param","Poly Type"),e);
+	}
+
+	void mouseButtonDown(int buttonState, int x, int y);		
+	void mouseButtonMove(int buttonState, int x, int y);
+		
+		int m_type;
+		
+		ToolCoordT m_lastVertex;
+
+		//FIX ME
+		//TODO: Add this and lift getParentXYValue(false)
+		//constraint. Refer to MoveTool.
+		//bool m_allowX,m_allowY;
+};
+
+extern Tool *polytool(){ return new PolyTool; }
+
+void PolyTool::mouseButtonDown(int buttonState, int x, int y)
+{
+	Model *model = parent->getModel();
+
+	if(buttonState!=BS_Left) return;
+
+	//FIX ME
+	std::vector<int> selected;
+	model->getSelectedVertices(selected);
+	if(selected.size()>3) selected.resize(3);
+	
+	//TODO: Change to "true" and lift BS_Left constraint. 
+	double pos[2];
+	parent->getParentXYValue(x,y,pos[0],pos[1],/*true*/false);
+	m_lastVertex = addPosition(Model::PT_Vertex,pos[0],pos[1],0);
+
+	if(3==selected.size())
+	{
+		int v = m_type?1:0;	
+		model->unselectVertex(selected[v]);
+		selected.erase(selected.begin()+v);
+	}
+	selected.push_back(m_lastVertex);
+
+	int tri;
+	if(3==selected.size())
+	tri = model->addTriangle(selected[0],selected[1],selected[2]);		
+	model->beginSelectionDifference();
+	model->selectVertex(m_lastVertex);
+	if(3==selected.size())
+	{
+		const Matrix &viewMatrix = 
+		parent->getParentViewInverseMatrix();
+		viewMatrix.show(); //???
+
+		Vector viewNorm(0,0,1);
+		viewNorm.transform3(viewMatrix);
+
+		float fNorm[3];
+		model->calculateNormals(); //FIX ME!
+		model->getNormal(tri,0,fNorm);		
+		Vector dNorm(fNorm[0],fNorm[1],fNorm[2]);
+
+		log_debug("view normal is %f %f %f\n",viewNorm[0],viewNorm[1],viewNorm[2]);
+		log_debug("triangle normal is %f %f %f\n",dNorm[0],dNorm[1],dNorm[2]);
+
+		double d = viewNorm.dot3(dNorm);
+		log_debug("dot product is %f\n",d);
+
+		if(d<0) model->invertNormals(tri);
+	}
+	model->endSelectionDifference();
+
+	parent->updateAllViews();	
+}
+void PolyTool::mouseButtonMove(int buttonState, int x, int y)
+{
+	if(buttonState==BS_Left)
+	{
+		//TODO: Change to "true" and lift BS_Left constraint. 
+		double pos[2];
+		parent->getParentXYValue(x,y,pos[0],pos[1],/*true*/false);
+		movePosition(m_lastVertex.pos,pos[0],pos[1],0);
+
+		parent->updateAllViews();
+	}
 }
 
-PolyTool::~PolyTool()
-{
-}
-
-void PolyTool::activated( int arg, Model * model, QMainWindow * mainwin )
-{
-   m_model = model;
-   m_widget = new PolyToolWidget( this, mainwin );
-   m_widget->show();
-}
-
-void PolyTool::deactivated()
-{
-   m_model->deleteOrphanedVertices();
-   m_widget->close();
-}
-
-void PolyTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y )
-{
-   Model * model = parent->getModel();
-
-   m_model = model;
-
-   if ( buttonState == BS_Left )
-   {
-      m_verts.clear();
-
-      IntList selected;
-      model->getSelectedVertices( selected );
-      IntList::iterator it;
-      for ( it = selected.begin(); m_verts.size() < 3 && it != selected.end(); it++ )
-      {
-         m_verts.push_back( *it );
-      }
-
-      double coord[3] = {0,0,0};
-
-      // Technically that last argument could be true, I chose false
-      // because for the poly tool you'd end up creating a flat triangle 
-      // that would just get deleted
-      parent->getParentXYValue( x, y, coord[0], coord[1], false );
-
-      m_lastVertex = addPosition( parent, Model::PT_Vertex, NULL,
-            coord[0], coord[1], coord[2] );
-
-      if ( m_verts.size() == 3 )
-      {
-         if ( m_type == 0 )
-         {
-            // Fan
-            int v = m_verts.front();
-            model->unselectVertex( v );
-
-            m_verts.pop_front();
-            m_verts.push_back( m_lastVertex.pos.index );
-         }
-         else
-         {
-            // Strip
-            it = m_verts.begin();
-            it++;
-            int v = *it;
-            m_verts.erase( it );
-            model->unselectVertex( v );
-
-            m_verts.push_back( m_lastVertex.pos.index );
-         }
-      }
-      else
-      {
-         m_verts.push_back( m_lastVertex.pos.index );
-      }
-
-      if ( m_verts.size() == 3 )
-      {
-         it = m_verts.begin();
-         int v1 = *it; it++;
-         int v2 = *it; it++;
-         int v3 = *it; it++;
-
-         int t = model->addTriangle( v1, v2, v3 );
-
-         model->beginSelectionDifference();
-         //model->unselectAllTriangles();
-
-         model->selectVertex( m_lastVertex.pos.index );
-         //model->selectTriangle( t );
-
-         const Matrix & viewMatrix = parent->getParentViewInverseMatrix();
-         Vector viewNorm( 0, 0, 1 );
-
-         viewMatrix.show();
-         viewNorm.transform3( viewMatrix );
-
-         float norm[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
-         model->calculateNormals();
-         model->getNormal( t, 0, norm );
-         Vector triNorm( norm[0], norm[1], norm[2] );
-
-         log_debug( "view normal is %f %f %f\n",
-               (float) viewNorm[0],
-               (float) viewNorm[1],
-               (float) viewNorm[2] );
-         log_debug( "triangle normal is %f %f %f\n",
-               (float) triNorm[0],
-               (float) triNorm[1],
-               (float) triNorm[2] );
-
-         double d = viewNorm.dot3( triNorm );
-         log_debug( "dot product is %f\n", (float) d );
-
-         if( d < 0 )
-         {
-            model->invertNormals( t );
-         }
-      }
-      else
-      {
-         model->beginSelectionDifference();
-         model->selectVertex( m_lastVertex.pos.index );
-      }
-
-      model->endSelectionDifference();
-
-      parent->updateAllViews();
-   }
-}
-
-void PolyTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )
-{
-   if ( buttonState == BS_Left )
-   {
-      if ( m_lastVertex.pos.type == Model::PT_Vertex )
-      {
-         double coord[3] = {0,0,0};
-
-         // I chose false for the same reason as above
-         parent->getParentXYValue( x, y, coord[0], coord[1], false );
-
-         movePosition( parent, m_lastVertex.pos, coord[0], coord[1], coord[2] );
-
-         parent->updateAllViews();
-      }
-   }
-}
-
-void PolyTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
-{
-}
-
-const char ** PolyTool::getPixmap()
-{
-   return (const char **) polytool_xpm;
-}
-
-void PolyTool::setTypeValue( int newValue )
-{
-   m_type = newValue;
-}
-
-const char * PolyTool::getName( int arg )
-{
-   return QT_TRANSLATE_NOOP( "Tool", "Create Polygon" );
-}
 

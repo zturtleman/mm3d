@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <title> MM3D Help - Development </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   </head>
+
+   <body bgcolor="#e0e0e0">
+
+      <h1>Contents</h1>
+      <ul>
+         <li> <a href="#contrib">Contributing</a>
+         <li> <a href="#plugins">Plugins</a>
+      </ul>
+
+      <a name="contrib">
+      <h1>Contributing</h1>
+
+      <p>
+      Contributions to MM3D are encouraged.  There are several
+      ways (both coding and non-coding) that you can help this project
+      continue.  The easiest thing is simply to send me an encouraging email.
+      Bug reports and feature requests are also appreciated.
+      </p>
+
+      <p>
+      Source code patches for bugs or new features are also welcome.  In the
+      case of patches, there are a few guidelines to follow which will
+      help expedite the integration process.
+
+      <ul>
+         <li> Follow the coding style in the rest of the project.</li>
+         <li> Make a patch from the latest version.  If your patch is a bug
+         fix for the stable version, your patch should be against the 
+         most recent stable version.  If your patch is a new feature or a bug
+         fix for the development version, it should be against the SVN
+         repository or the most recent development version.</li>
+         <li> Contact me before starting a complex feature.  I may be close to
+         finishing a similar feature myself, or the feature you wish to add may
+         conflict with MM3D's design goals.  If you are interested
+         in contributing code to MM3D, I certainly do not want your
+         efforts to be wasted.</li>
+      </ul>
+      </p>
+
+      <p>
+      You can also make contributions in the form of plugins.  You can create new
+      tools, commands, texture filters, and model filters through the plugin
+      system.  I am willing to host quality plugins on the main
+      website, or even consider integration into the core codebase.
+      </p>
+
+      <p>
+      Non-coding contributions could come in the form of documentation or artwork;
+      or possibly even in forms I have not considered.  If you have the desire
+      and means to contribute, contact me and I will be happy to help you get
+      started.
+      </p>
+
+      <a name="plugins">
+      <h1>Plugins</h1>
+
+      <p>
+      Plugins can be created to add new tools, commands, texture filters and
+      model filters.  MM3D development is done in C++.  If you
+      have a compelling reason to implement a plugin in another language,
+      contact me and I may be able to arrange C bindings which can be extended
+      to support other languages.
+      </p>
+
+      <p>
+      The details of the plugin system may change.  The discussion below details
+      the plugin system as of 1.4, but the development source code is always
+      the most up-to-date source of documentation.  Check the
+      <a href="http://misfitcode.com/misfitmodel3d/plugins.html">Misfit Model 3D
+      plugins webpage</a> for examples.  The ImLib2 Texture plugin contains a
+      documented, non-trivial example.
+      </p>
+
+      <p>
+      A MM3D plugin is a dynamic library which contains three required
+      functions and two optional functions, declared as <code>PLUGIN_API</code>
+      (defined in src/mm3dcore/pluginapi.h).
+      Functions marked with a <b>*</b> are optional.
+      </p>
+
+      <ul>
+         <li> <b>plugin_init</b> - Initialize the plugin
+         <li> <b>plugin_uninit</b> - Uninitialize the plugin
+         <li> <b>plugin_mm3d_version</b> - Provide MM3D version string the
+         plugin was compiled for
+         <li> <b>plugin_version *</b> - Provide plugin version string
+         <li> <b>plugin_desc *</b> - Provide plugin description string
+      </ul>
+
+      <p>
+      The contents of the init and uninit functions will depend on what
+      the purpose of the plugin is.  In most cases it will register
+      a new tool, command, or filter through the appropriate manager singleton.
+      The version and description functions are optional, but are useful
+      in providing information to the end user about the version
+      and purpose of the plugin.  These details can be viewed from the <b>Plugins
+      Window</b>.
+      </p>
+
+      <p>
+      The <code>plugin_mm3d_version</code> function should return 
+      the VERSION_STRING constant that is defined in src/mm3dcore/version.h.
+      </p>
+
+      <p>
+      See the ImLib2 Texture plugin for an introduction to writing a
+      plugin.  The example also contains pointers to other files in the codebase
+      which contain classes to derive from and documentation on how to use
+      the manager singletons.  The source code for the latest stable or
+      development release is always the authoritative reference.  I try to
+      keep documentation in the relevant header files current.
+      </p>
+
+
+<hr/>
+<center>
+[
+<a href="olh_index.html">Contents</a>
+|
+<a href="olh_detailsindex.html">Introduction</a>
+|
+<a href="olh_tools.html">Tools</a>
+|
+<a href="olh_commands.html">Geometry&nbsp;Menu</a>
+]
+<br/>
+
+Copyright &copy; 2004-2008, Kevin Worcester
+
+</center>
+
+</body></html>

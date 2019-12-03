@@ -1,97 +1,101 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
 
+#include "mm3dtypes.h" //PCH
+#include "win.h"
+
 #include "pluginmgr.h"
-#include "pluginwin.h"
 
-#include "helpwin.h"
-
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QShortcut>
-
-PluginWindow::PluginWindow()
-   : QDialog( NULL )
+struct PluginWin : Win
 {
-   setAttribute( Qt::WA_DeleteOnClose );
-   setupUi( this );
-   setModal( false );
+	void submit(int);
 
-   m_pluginList->header()->setSectionsClickable( false );
-   m_pluginList->header()->setSectionsMovable( false );
+	PluginWin()
+		:
+	Win("Plugins"),
+	table(main),header(table,id_sort),
+	c1(header,"Plugin"),
+	c2(header,"Version"),
+	c3(header,"Description"),
+	c4(header,"Status"),
+	ok(main)
+	{
+		c1.span()*=3; c3.span()*=4;
 
-   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
-   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
+		active_callback = &PluginWin::submit;
 
-   refreshPluginData();
-}
+		submit(id_init);
+	}
 
-PluginWindow::~PluginWindow()
+	listbox table;
+	listbar header;
+	listbar::item c1,c2,c3,c4;
+	f1_ok_panel ok;
+};
+void PluginWin::submit(int id)
 {
+	if(id==id_init)
+	{
+		PluginManager *pmgr = PluginManager::getInstance();
+
+		int_list plist = pmgr->getPluginIds();
+		int_list::iterator it;
+		for(it=plist.begin();it!=plist.end();it++)
+		{
+			//FIX THIS IS CRAP
+			utf8 name = pmgr->getPluginName(*it);
+			utf8 vers = pmgr->getPluginVersion(*it);
+			utf8 desc = pmgr->getPluginDescription(*it);
+			utf8 stat = "Unknown status code";
+			switch(pmgr->getPluginStatus(*it))
+			{
+			case PluginManager::PluginActive:
+			stat = "Active"; break;
+			case PluginManager::PluginUserDisabled:
+			stat = "Disabled by user"; break;
+			case PluginManager::PluginVersionDisabled:
+			stat = "Disabled (incompatible version)"; break;
+			case PluginManager::PluginNotPlugin: //???
+			stat = "Not a plugin"; break;
+			case PluginManager::PluginError:
+			stat = "Error"; break;
+			}
+			auto *i = new li::item(*it);
+			i->text().format(&"%s\0%s\0%s\0%s",name,vers,desc,stat);
+			table.add_item(i);
+		}
+	}
+	else if(id==id_sort)
+	{
+		header.sort_items([&](li::item *a, li::item *b)
+		{
+			utf8 row1[4]; a->text().c_row(row1);
+			utf8 row2[4]; b->text().c_row(row2);
+			//https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92338
+			return strcmp(row1[(int)header],row2[(int)header])<0;
+		});
+	}
+	basic_submit(id);
+
 }
-
-void PluginWindow::helpNowEvent()
-{
-   HelpWin * win = new HelpWin( "olh_pluginwin.html", true );
-   win->show();
-}
-
-void PluginWindow::refreshPluginData()
-{
-   PluginManager * pmgr = PluginManager::getInstance();
-
-   list<int> plist = pmgr->getPluginIds();
-   list<int>::iterator it;
-
-   for ( it = plist.begin(); it != plist.end(); it++ )
-   {
-      QTreeWidgetItem * item = new QTreeWidgetItem( m_pluginList );
-      item->setText( 0, QString( pmgr->getPluginName( *it ) ) + " " );
-      item->setText( 1, QString( pmgr->getPluginVersion( *it ) ) + " " );
-      item->setText( 2, QString( pmgr->getPluginDescription( *it ) ) + " " );
-
-      const char * status = "Unknown";
-      switch ( pmgr->getPluginStatus( *it ) )
-      {
-         case PluginManager::PluginActive:
-            status = "Active";
-            break;
-         case PluginManager::PluginUserDisabled:
-            status = "Disabled by user";
-            break;
-         case PluginManager::PluginVersionDisabled:
-            status = "Disabled (incompatible version)";
-            break;
-         case PluginManager::PluginNotPlugin:
-            status = "Not a plugin";
-            break;
-         case PluginManager::PluginError:
-            status = "Error";
-            break;
-         default:
-            status = "Unknown status code";
-            break;
-      }
-      item->setText( 3, QString(status) + " " );
-   }
-}
-
+extern void pluginwin(){ PluginWin().return_on_close(); }

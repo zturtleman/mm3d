@@ -1,250 +1,173 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
+#include "mm3dtypes.h" //PCH
 
-#include "sheartool.h"
+#include "tool.h"
+
+#include "pixmap/sheartool.xpm"
 
 #include "model.h"
 #include "modelstatus.h"
-#include "pixmap/sheartool.xpm"
 #include "log.h"
 
-#include <QtCore/QObject>
-#include <QtWidgets/QApplication>
-#include <math.h>
-
-ShearTool::ShearTool()
+struct ShearTool : Tool
 {
+	ShearTool():Tool(TT_Other){}
+
+	virtual const char *getName(int)
+	{
+		return TRANSLATE_NOOP("Tool","Shear");
+	}
+
+	virtual const char *getKeymap(int){ return "Shift+S"; }
+
+	virtual const char **getPixmap(int){ return sheartool_xpm; }
+	 
+	virtual void mouseButtonDown(int buttonState, int x, int y);
+	virtual void mouseButtonMove(int buttonState, int x, int y);
+
+	//REMOVE ME
+	virtual void mouseButtonUp(int buttonState, int x, int y)
+	{
+		model_status(parent->getModel(),StatusNormal,STATUSTIME_SHORT,
+		TRANSLATE("Tool","Shear complete"));
+	}
+		bool m_axis;
+
+		double m_far;
+		double m_orig;
+
+		double m_startLength;
+
+		ToolCoordList m_positionCoords;
+};
+
+extern Tool *sheartool(){ return new ShearTool; }
+
+void ShearTool::mouseButtonDown(int buttonState, int x, int y)
+{
+	Model *model = parent->getModel();
+
+	pos_list posList;
+	model->getSelectedPositions(posList);
+	m_positionCoords.clear();
+	makeToolCoordList(m_positionCoords,posList);
+
+	double cminX = +DBL_MAX, cminY = +DBL_MAX;
+	double cmaxX = -DBL_MAX, cmaxY = -DBL_MAX;
+
+	for(auto&ea:m_positionCoords)
+	{
+		cminX = std::min(cminX,ea.coords[0]);
+		cmaxX = std::max(cmaxX,ea.coords[0]);
+		cminY = std::min(cminY,ea.coords[1]);
+		cmaxY = std::max(cmaxY,ea.coords[1]);
+	}
+
+	double curX,curY;
+	parent->getParentXYValue(x,y,curX,curY,true);
+
+	double minX = fabs(cminX-curX);
+	double minY = fabs(cminY-curY);
+	double maxX = fabs(cmaxX-curX);
+	double maxY = fabs(cmaxY-curY);
+
+	if(minX>maxX)
+	{
+		if(minX>minY)
+		{
+			if(minX>maxY)
+			{
+				m_axis = 1;
+				m_far = cminX;
+				m_orig = curY;
+			}
+			else
+			{
+				m_axis = 0;
+				m_far = cmaxY;
+				m_orig = curX;
+			}
+		}
+		else same: // minY>cminX
+		{
+			if(minY>maxY)
+			{
+				m_axis = 0;
+				m_far = cminY;
+				m_orig = curX;
+			}
+			else
+			{
+				m_axis = 0;
+				m_far = cmaxY;
+				m_orig = curX;
+			}
+		}
+	}
+	else // maxX>minX
+	{
+		if(maxX>minY)
+		{
+			if(maxX>maxY)
+			{
+				m_axis = 1;
+				m_far = cmaxX;
+				m_orig = curY;
+			}
+			else
+			{
+				m_axis = 0;
+				m_far = cmaxY;
+				m_orig = curX;
+			}
+		}
+		else goto same;
+	}
+
+	m_startLength = fabs(m_far-(m_axis?curX:curY));
+
+	model_status(parent->getModel(),StatusNormal,STATUSTIME_SHORT,
+	TRANSLATE("Tool","Starting shear on selected primitives"));
 }
-
-ShearTool::~ShearTool()
+void ShearTool::mouseButtonMove(int buttonState, int x, int y)
 {
-}
+	double pos[2];
+	parent->getParentXYValue(x,y,pos[0],pos[1]);
 
-const char * ShearTool::getName( int arg )
-{
-   return QT_TRANSLATE_NOOP( "Tool", "Shear" );
-}
+	int a = m_axis, b = !m_axis;
 
-bool ShearTool::getKeyBinding( int arg, int & keyBinding )
-{
-   return false;
-}
+	double offset = pos[a]-m_orig;
+	double length = m_startLength;
 
-void ShearTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y )
-{
-   m_positionCoords.clear();
+	for(auto&ea:m_positionCoords)
+	{
+		double xy[2] = { ea.coords[0],ea.coords[1] };
 
-   Model * model = parent->getModel();
-   list<Model::Position> posList;
+		xy[a]+=offset*fabs(xy[b]-m_far)/length;			
 
-   model->getSelectedPositions( posList );
+		movePosition(ea.pos,xy[0],xy[1],ea.coords[2]);
+	}
 
-   ToolCoordList::iterator it;
-
-   m_positionCoords.clear();
-
-   makeToolCoordList( parent, m_positionCoords, posList );
-
-   double cminX = 0;
-   double cminY = 0;
-   double cmaxX = 0;
-   double cmaxY = 0;
-
-   bool setFirst = false;
-
-   for ( it = m_positionCoords.begin(); it != m_positionCoords.end(); it++ )
-   {
-      // update range
-      if ( !setFirst )
-      {
-         cminX = (*it).oldCoords[0];
-         cminY = (*it).oldCoords[1];
-         cmaxX = (*it).oldCoords[0];
-         cmaxY = (*it).oldCoords[1];
-         setFirst = true;
-      }
-      else
-      {
-         if ( (*it).oldCoords[0] < cminX ) { cminX = (*it).oldCoords[0]; }
-         if ( (*it).oldCoords[0] > cmaxX ) { cmaxX = (*it).oldCoords[0]; }
-         if ( (*it).oldCoords[1] < cminY ) { cminY = (*it).oldCoords[1]; }
-         if ( (*it).oldCoords[1] > cmaxY ) { cmaxY = (*it).oldCoords[1]; }
-      }
-   }
-
-   double curX = 0;
-   double curY = 0;
-   
-   double minX = 0;
-   double minY = 0;
-   double maxX = 0;
-   double maxY = 0;
-
-   m_startLengthX = 0;
-   m_startLengthY = 0;
-
-   parent->getParentXYValue( x, y, curX, curY, true );
-
-   minX = fabs( cminX - curX );
-   minY = fabs( cminY - curY );
-   maxX = fabs( cmaxX - curX );
-   maxY = fabs( cmaxY - curY );
-
-   if ( minX > maxX )
-   {
-      if ( minX > minY )
-      {
-         if ( minX > maxY )
-         {
-            m_axis = 1;
-            m_far  = cminX;
-            m_orig = curY;
-         }
-         else
-         {
-            m_axis = 0;
-            m_far  = cmaxY;
-            m_orig = curX;
-         }
-      }
-      else
-      {
-         // minY > cminX
-         if ( minY > maxY )
-         {
-            m_axis = 0;
-            m_far  = cminY;
-            m_orig = curX;
-         }
-         else
-         {
-            m_axis = 0;
-            m_far  = cmaxY;
-            m_orig = curX;
-         }
-      }
-   }
-   else
-   {
-      // maxX > minX
-      if ( maxX > minY )
-      {
-         if ( maxX > maxY )
-         {
-            m_axis = 1;
-            m_far  = cmaxX;
-            m_orig = curY;
-         }
-         else
-         {
-            m_axis = 0;
-            m_far  = cmaxY;
-            m_orig = curX;
-         }
-      }
-      else
-      {
-         // minY > maxX
-         if ( minY > maxY )
-         {
-            m_axis = 0;
-            m_far  = cminY;
-            m_orig = curX;
-         }
-         else
-         {
-            m_axis = 0;
-            m_far  = cmaxY;
-            m_orig = curX;
-         }
-      }
-   }
-
-   m_startLengthX = distance( m_far, 0, curX, 0 );
-   m_startLengthY = distance( m_far, 0, curY, 0 );
-
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Starting shear on selected primitives" ).toUtf8() );
-}
-
-void ShearTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )
-{
-   double curX = 0;
-   double curY = 0;
-
-   parent->getParentXYValue( x, y, curX, curY );
-
-   ToolCoordList::iterator it;
-
-   if ( m_axis == 0 )
-   {
-      double offset = curX - m_orig;
-      for( it = m_positionCoords.begin(); it != m_positionCoords.end(); it++ )
-      {
-         double x = (*it).oldCoords[0];
-         double y = (*it).oldCoords[1];
-         double z = (*it).oldCoords[2];
-
-         x = x + (offset * (fabs( y - m_far) / m_startLengthY) );
-
-         movePosition( parent, (*it).pos, x, y, z );
-      }
-   }
-   else
-   {
-      double offset = curY - m_orig;
-      for( it = m_positionCoords.begin(); it != m_positionCoords.end(); it++ )
-      {
-         double x = (*it).oldCoords[0];
-         double y = (*it).oldCoords[1];
-         double z = (*it).oldCoords[2];
-
-         y = y + (offset * (fabs(x - m_far) / m_startLengthX) );
-
-         movePosition( parent, (*it).pos, x, y, z );
-      }
-   }
-
-   parent->updateAllViews();
-}
-
-void ShearTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
-{
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Shear complete" ).toUtf8() );
-}
-
-const char ** ShearTool::getPixmap()
-{
-   return (const char **) sheartool_xpm;
-}
-
-double ShearTool::distance( const double & x1, const double & y1, const double & x2, const double & y2 )
-{
-   double xDiff = x2 - x1;
-   double yDiff = y2 - y1;
-   return sqrt( xDiff*xDiff + yDiff*yDiff );
-}
-
-double ShearTool::max( double a, double b )
-{
-   return ( a > b ) ? a : b;
+	parent->updateAllViews();
 }

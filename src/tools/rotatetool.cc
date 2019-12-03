@@ -1,373 +1,243 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
+#include "mm3dtypes.h" //PCH
 
-#include "rotatetool.h"
+#include "tool.h"
 
 #include "model.h"
 #include "pixmap/rotatetool.xpm"
 #include "glmath.h"
-#include "decalmgr.h"
+
 #include "rotatepoint.h"
 #include "log.h"
 #include "modelstatus.h"
 
-#include <math.h>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QApplication>
-
-static void _add_coords( double * dest, double * rhs, double * lhs )
+struct RotateTool : Tool
 {
-   dest[0] = rhs[0] + lhs[0];
-   dest[1] = rhs[1] + lhs[1];
-   dest[2] = rhs[2] + lhs[2];
+	RotateTool():Tool(TT_Other){}
+
+	virtual const char *getName(int)
+	{
+		return TRANSLATE_NOOP("Tool","Rotate");
+	}
+
+	virtual const char *getKeymap(int){ return "R"; }
+
+	virtual const char **getPixmap(int){ return rotatetool_xpm; }
+
+	void activated2(); 
+
+	virtual void activated(int)
+	{
+		activated2();
+		parent->addDouble(false,&m_rotatePoint.x,TRANSLATE_NOOP("Param","X"));
+		parent->groupParam();
+		parent->addDouble(false,&m_rotatePoint.y,TRANSLATE_NOOP("Param","Y"));
+		parent->groupParam();
+		parent->addDouble(false,&m_rotatePoint.z,TRANSLATE_NOOP("Param","Z"));
+	}
+	virtual void updateParam(void*)
+	{
+		//TODO: Update parent?
+		//DecalManager::getInstance()->modelUpdated(parent->getModel());
+		parent->updateAllViews();
+	}
+	virtual void deactivated()
+	{
+		parent->updateAllViews();
+	}
+	
+	int mouse2(int buttonState, int x, int y);
+
+	virtual void mouseButtonDown(int buttonState, int x, int y);
+	virtual void mouseButtonMove(int buttonState, int x, int y);
+
+	//REMOVE ME
+	virtual void mouseButtonUp(int buttonState, int x, int y)
+	{	
+		if(buttonState&BS_Left)	
+		model_status(parent->getModel(),StatusNormal,STATUSTIME_SHORT,
+		TRANSLATE("Tool","Rotate complete"));
+	
+		parent->updateAllViews();
+	}
+
+	virtual void draw(bool){ m_rotatePoint.draw(); }
+		
+		double m_mouse2_angle;
+
+		struct RotatePoint
+		{	
+			void draw()
+			{
+				//HACK: The crosshairs draw on top of each
+				//other. Note, assuming the previous value.
+				glEnable(GL_DEPTH_TEST);
+				glDepthRange(0,0);
+				glDepthFunc(GL_LESS);
+				{
+					//glColor3f(0,1,0);
+					glEnable(GL_COLOR_LOGIC_OP);
+					glColor3ub(0x80,0x80,0x80);
+					glLogicOp(GL_XOR);
+					glTranslated(x,y,z);
+					rotatepoint_draw_manip(scale); //0.25f
+					glTranslated(-x,-y,-z);
+					glDisable(GL_COLOR_LOGIC_OP);
+				}
+				glDepthRange(0,1);
+				glDepthFunc(GL_LEQUAL);
+			}
+
+			double x,y,z,w; float scale;
+
+			operator double*(){ return &x; }	
+
+		}m_rotatePoint;
+	
+	void getRotateCoords();
+};
+
+extern Tool *rotatetool(){ return new RotateTool; }
+
+void RotateTool::activated2()
+{
+	Model *model = parent->getModel();
+
+	if(model->getAnimationMode()!=Model::ANIMMODE_SKELETAL)
+	{
+		//FIX ME
+		//Min/max/scale the pivot accordingly.
+		//https://github.com/zturtleman/mm3d/issues/89
+		pos_list l;
+		model->getSelectedPositions(l);
+		double min[3] = {+DBL_MAX,+DBL_MAX,+DBL_MAX}; 
+		double max[3] = {-DBL_MAX,-DBL_MAX,-DBL_MAX}; 
+		for(auto&ea:l) 
+		{
+			double coords[3];
+			model->getPositionCoords(ea,coords);
+			for(int i=0;i<3;i++)
+			{
+				min[i] = std::min(min[i],coords[i]);
+				max[i] = std::max(max[i],coords[i]);
+			}
+		}
+		for(int i=0;i<3;i++)
+		m_rotatePoint[i] = (min[i]+max[i])/2;
+		m_rotatePoint.scale = distance(min,max)/6;
+	}
+	else //??? //REMOVE ME //???
+	{
+		m_rotatePoint.scale = 0.25f; //Old default???
+
+		m_rotatePoint.x = m_rotatePoint.y = m_rotatePoint.z = 0;
+	}
+	m_rotatePoint.w = 1;		
+
+	//FIX ME
+	//Should show decal in all views.
+//	DecalManager::getInstance()->addDecalToModel(&m_rotatePoint,model);
+	parent->updateAllViews(); //NEW
+		
+	model_status(model,StatusNormal,STATUSTIME_NONE,
+	TRANSLATE("Tool","Tip: Hold shift to rotate in 15 degree increments"));
 }
 
-
-RotateTool::RotateTool()
-   : m_model( NULL ),
-     m_tracking( false ),
-     m_widget( NULL )
+int RotateTool::mouse2(int buttonState, int x, int y)
 {
+	Model *model = parent->getModel();
+	
+	double pos[2];
+	parent->getParentXYValue(x,y,pos[0],pos[1]);
+
+	int ret = 0; if(buttonState&BS_Left)
+	{
+		ret = 1;
+
+		double coords[4];
+		memcpy(coords,m_rotatePoint,sizeof(coords));
+		coords[3] = 1; //???
+		parent->getParentViewMatrix().apply(coords);
+
+		double xDiff = pos[0]-coords[0];
+		double yDiff = pos[1]-coords[1];
+		double angle = rotatepoint_diff_to_angle(xDiff,yDiff);
+		if(buttonState&BS_Shift) 
+		angle = rotatepoint_adjust_to_nearest(angle,15);
+
+		m_mouse2_angle = angle;
+	}
+	else if(buttonState&BS_Right
+	&&model->getAnimationMode()!=Model::ANIMMODE_SKELETAL)
+	{
+		ret = 2;
+
+		m_rotatePoint.x = pos[0];
+		m_rotatePoint.y = pos[1];
+		m_rotatePoint.z = 0;
+		m_rotatePoint.w = 1; //???
+		parent->getParentViewInverseMatrix().apply(m_rotatePoint); 
+		parent->updateParams();
+	}
+
+	parent->updateAllViews(); return ret;
 }
-
-RotateTool::~RotateTool()
+void RotateTool::mouseButtonDown(int buttonState, int x, int y)
 {
+	Model *model = parent->getModel();
+
+	if(model->getAnimationMode()==Model::ANIMMODE_SKELETAL)
+	{
+		int iN = model->getBoneJointCount();
+		for(int i=0;i<iN;i++)		
+		if(model->isBoneJointSelected(i))
+		{
+			model->getBoneJointCoords(i,m_rotatePoint);
+			parent->updateParams();
+			break;
+		}
+	}
+	 
+	if(int mode=mouse2(buttonState,x,y))
+	{
+		const char *msg;
+		if(mode==1) msg = TRANSLATE("Tool","Rotating selected primitives");	
+		if(mode!=1) msg = TRANSLATE("Tool","Setting rotation point");
+		model_status(model,StatusNormal,STATUSTIME_SHORT,msg);
+	}
 }
-
-void RotateTool::setModel( Model * model )
+void RotateTool::mouseButtonMove(int buttonState, int x, int y)
 {
-   m_model = model;
-}
+	double angle = m_mouse2_angle;
+	if(1==mouse2(buttonState,x,y))
+	{
+		double vec[4] = { 0,0,1,1 };
+		parent->getParentViewInverseMatrix().apply3(vec);
+		Matrix m;
+		m.setRotationOnAxis(vec,m_mouse2_angle-angle);
 
-void RotateTool::activated( int arg, Model * model, QMainWindow * mainwin )
-{
-   m_model = model;
-
-   model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Tip: Hold shift to rotate in 15 degree increments" ).toUtf8() );
-
-   m_coords[0] = 0;
-   m_coords[1] = 0;
-   m_coords[2] = 0;
-   m_coords[3] = 1;
-
-   if ( model->getAnimationMode() == Model::ANIMMODE_SKELETAL )
-   {
-      list<int> joints;
-      model->getSelectedBoneJoints( joints );
-      if ( joints.size() > 0 )
-      {
-         model->getBoneJointCoords( joints.front(), m_coords );
-      }
-   }
-   else
-   {
-      double coords[3];
-
-      unsigned count = 0;
-
-      unsigned vcount = model->getVertexCount();
-
-      for ( unsigned int v = 0; v < vcount; v++ )
-      {
-         if ( model->isVertexSelected( v ) )
-         {
-            model->getVertexCoords( v, coords );
-            _add_coords( m_coords, m_coords, coords );
-            count++;
-         }
-      }
-
-      unsigned int bcount = model->getBoneJointCount();
-      for ( unsigned int b = 0; b < bcount; b++ )
-      {
-         if ( model->isBoneJointSelected( b ) )
-         {
-            model->getBoneJointCoords( b, coords );
-            _add_coords( m_coords, m_coords, coords );
-            count++;
-         }
-      }
-
-      unsigned int pcount = model->getPointCount();
-      for ( unsigned int p = 0; p < pcount; p++ )
-      {
-         if ( model->isPointSelected( p ) )
-         {
-            model->getPointTranslation( p, coords );
-            _add_coords( m_coords, m_coords, coords );
-            count++;
-         }
-      }
-
-      unsigned int rcount = model->getProjectionCount();
-      for ( unsigned int r = 0; r < rcount; r++ )
-      {
-         if ( model->isProjectionSelected( r ) )
-         {
-            model->getProjectionCoords( r, coords );
-            _add_coords( m_coords, m_coords, coords );
-            count++;
-         }
-      }
-
-      m_coords[0] = m_coords[0] / (double) count;
-      m_coords[1] = m_coords[1] / (double) count;
-      m_coords[2] = m_coords[2] / (double) count;
-   }
-
-   m_rotatePoint = new RotatePoint();
-   m_rotatePoint->setPoint( m_coords[0], m_coords[1], m_coords[2] );
-   DecalManager::getInstance()->addDecalToModel( m_rotatePoint, model );
-
-   m_widget = new RotateToolWidget( this, mainwin,
-         m_coords[0], m_coords[1], m_coords[2] );
-   m_widget->show();
-}
-
-void RotateTool::deactivated()
-{
-   DecalManager::getInstance()->removeDecal( m_rotatePoint );
-   delete m_rotatePoint;
-   m_rotatePoint = NULL;
-   m_widget->close();
-   m_widget = NULL;
-}
-
-void RotateTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y )
-{
-   Model * model = parent->getModel();
-   m_model = model;
-
-   if ( model->getAnimationMode() == Model::ANIMMODE_SKELETAL )
-   {
-      list<int> joints;
-      model->getSelectedBoneJoints( joints );
-      if ( joints.size() > 0 )
-      {
-         model->getBoneJointCoords( joints.front(), m_coords );
-         m_widget->setCoords( m_coords[0], m_coords[1], m_coords[2] );
-         m_rotatePoint->setPoint( m_coords[0], m_coords[1], m_coords[2] );
-      }
-   }
-
-   double newCoords[3] = {0,0,0};
-
-   parent->getParentXYValue( x, y, newCoords[0], newCoords[1], true );
-
-   m_viewMatrix  = parent->getParentViewMatrix();
-   m_viewInverse = parent->getParentViewInverseMatrix();
-
-   if ( buttonState & BS_Left )
-   {
-      m_tracking = true;
-
-      getRotateCoords( parent );
-
-      double xDiff = newCoords[0] - m_coords[0];
-      double yDiff = newCoords[1] - m_coords[1];
-
-      double angle = diffToAngle( yDiff, xDiff );
-
-      if ( buttonState & BS_Shift )
-      {
-         angle = adjustToNearest( angle );
-      }
-
-      m_startAngle = angle;
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Rotating selected primitives" ).toUtf8() );
-   }
-   else if ( buttonState & BS_Right && model->getAnimationMode() != Model::ANIMMODE_SKELETAL )
-   {
-      for ( int t = 0; t < 3; t++ )
-      {
-         m_coords[t] = newCoords[t];
-      }
-      m_coords[3] = 1;
-
-      m_viewInverse.apply( m_coords );
-
-      m_widget->setCoords( m_coords[0], m_coords[1], m_coords[2] );
-      m_rotatePoint->setPoint( m_coords[0], m_coords[1], m_coords[2] );
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Setting rotation point" ).toUtf8() );
-   }
-   parent->updateAllViews();
-}
-
-void RotateTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )
-{
-   Model * model = parent->getModel();
-   m_model = model;
-
-   double newCoords[3] = {0,0,0};
-
-   parent->getParentXYValue( x, y, newCoords[0], newCoords[1] );
-
-   if ( buttonState & BS_Left )
-   {
-      getRotateCoords( parent );
-
-      double xDiff = newCoords[0] - m_coords[0];
-      double yDiff = newCoords[1] - m_coords[1];
-
-      double angles[3] = { 0, 0, 0 };
-      Matrix m;
-
-      double angle = diffToAngle( yDiff, xDiff );
-      if ( buttonState & BS_Shift )
-      {
-         angle = adjustToNearest( angle );
-      }
-      angles[2] = (angle - m_startAngle);
-
-      double vec[4] = { 0, 0, 1, 1 };
-
-      m_viewInverse.apply3( vec );
-      m.setRotationOnAxis( vec, angle - m_startAngle );
-
-      m_coords[3] = 1;
-      m_viewInverse.apply( m_coords );
-
-      model->rotateSelected( m, m_coords );
-
-      m_startAngle = angle;
-   }
-   else if ( buttonState & BS_Right )
-   {
-      getRotateCoords( parent );
-
-      for ( int t = 0; t < 3; t++ )
-      {
-         m_coords[t] = newCoords[t];
-      }
-      m_coords[3] = 1;
-
-      m_viewInverse.apply( m_coords );
-
-      m_widget->setCoords( m_coords[0], m_coords[1], m_coords[2] );
-      m_rotatePoint->setPoint( m_coords[0], m_coords[1], m_coords[2] );
-   }
-   parent->updateAllViews();
-}
-
-void RotateTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
-{
-   parent->updateAllViews();
-
-   m_tracking = false;
-
-   if ( buttonState & BS_Left )
-   {
-      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Rotate complete" ).toUtf8() );
-   }
-}
-
-const char ** RotateTool::getPixmap()
-{
-   return (const char **) rotatetool_xpm;
-}
-
-double RotateTool::diffToAngle( double opposite, double adjacent )
-{
-   if ( adjacent < 0.0001 && adjacent > -0.0001 )
-   {
-      adjacent = (adjacent >= 0 ) ? 0.0001 : -0.0001;
-   }
-
-   double angle = atan(  opposite / adjacent );
-
-   float quad = PIOVER180 * 90;
-
-   if ( adjacent < 0 )
-   {
-      if ( opposite < 0 )
-      {
-         angle = -(quad) - ( (quad) - angle );
-      }
-      else
-      {
-         angle = (quad) + ( (quad) + angle );
-      }
-   }
-
-   return angle;
-}
-
-void RotateTool::getRotateCoords( Tool::Parent * parent )
-{
-   m_rotatePoint->getPoint( m_coords[0], m_coords[1], m_coords[2] );
-   m_coords[3] = 1;
-   m_viewMatrix.apply( m_coords );
-}
-
-double RotateTool::adjustToNearest( double angle )
-{
-   double f = angle / PIOVER180; // Change to degrees
-   if ( f < 0.0 )
-   {
-      int n = (int) (f / 15.0 - 0.5);
-      f = n * 15.0;
-   }
-   else
-   {
-      int n = (int) (f / 15.0 + 0.5);
-      f = n * 15.0;
-   }
-   log_debug( "nearest angle is %f\n", f );
-   return f * PIOVER180;
-}
-
-const char * RotateTool::getName( int arg )
-{
-   return QT_TRANSLATE_NOOP( "Tool", "Rotate" );
-}
-
-void RotateTool::setXValue( double newValue )
-{
-   double x = 0; double y = 0; double z = 0;
-   m_rotatePoint->getPoint( x, y, z );
-   x = newValue;
-   m_rotatePoint->setPoint( x, y, z );
-
-   DecalManager::getInstance()->modelUpdated( m_model );
-}
-
-void RotateTool::setYValue( double newValue )
-{
-   double x = 0; double y = 0; double z = 0;
-   m_rotatePoint->getPoint( x, y, z );
-   y = newValue;
-   m_rotatePoint->setPoint( x, y, z );
-
-   DecalManager::getInstance()->modelUpdated( m_model );
-}
-
-void RotateTool::setZValue( double newValue )
-{
-   double x = 0; double y = 0; double z = 0;
-   m_rotatePoint->getPoint( x, y, z );
-   z = newValue;
-   m_rotatePoint->setPoint( x, y, z );
-
-   DecalManager::getInstance()->modelUpdated( m_model );
+		parent->getModel()->rotateSelected(m,m_rotatePoint);
+	}
 }
 

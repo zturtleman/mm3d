@@ -1,157 +1,92 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
+#include "mm3dtypes.h" //PCH
 
-#include "stdcmds.h"
-#include "config.h"
+//#include "config.h"
 #include "cmdmgr.h"
-#include "hidecmd.h"
-#include "deletecmd.h"
-#include "dupcmd.h"
-#include "capcmd.h"
-#include "copycmd.h"
-#include "pastecmd.h"
-#include "edgedivcmd.h"
-#include "edgeturncmd.h"
-#include "extrudecmd.h"
-#include "faceoutcmd.h"
-#include "flipcmd.h"
-#include "flattencmd.h"
-#include "selectfreecmd.h"
-#include "invertcmd.h"
-#include "invnormalcmd.h"
-#include "subdividecmd.h"
-#include "makefacecmd.h"
-#include "rotatetexcmd.h"
-#include "weldcmd.h"
-#include "unweldcmd.h"
-#include "snapcmd.h"
-#include "simplifycmd.h"
-#include "aligncmd.h"
-#include "spherifycmd.h"
 #include "log.h"
 #include "cmdmgr.h"
 
-int init_std_cmds( CommandManager * cmdMgr )
+#include "menuconf.h"
+
+extern void init_std_cmds(CommandManager *cmdMgr)
 {
-   log_debug( "initializing standard commands\n" );
+	log_debug("initializing standard commands\n");
 
-   Command * cmd;
+	#define _(x) \
+	extern Command *x##cmd(); cmdMgr->addCommand(x##cmd());
 
-   cmd = new CopyCommand();
-   cmdMgr->registerCommand( cmd );
+	_(copy)_(paste)
 
-   cmd = new PasteCommand();
-   cmdMgr->registerCommand( cmd );
+	cmdMgr->addSeparator();
 
-   // ----------------------
+	// Vertices
+	
+	//_(makeface)
 
-   cmd = new SeparatorCommand();
-   cmdMgr->registerCommand( cmd );
+	_(weld)_(snap)
 
-   // Vertices
+	cmdMgr->addSeparator(); //NEW
 
-   cmd = new WeldCommand();
-   cmdMgr->registerCommand( cmd );
+	_(selectfree)
 
-   cmd = new UnweldCommand();
-   cmdMgr->registerCommand( cmd );
 
-   cmd = new SnapCommand();
-   cmdMgr->registerCommand( cmd );
+	// Faces
+	
+	_(makeface)
+	//REMINDER: This is positioning to overlap 
+	//with Group->Rotate Texture Coordinates.
+	//_(rotatetex,"Faces")
+	extern Command *rotatetexcmd(const char*);
+	cmdMgr->addCommand(rotatetexcmd(GEOM_FACES_MENU));
+	_(subdivide)
+	_(edgediv)_(edgeturn)
+	_(invnormal)_(faceout)
+		
+	// Groups
+					
+	//NOTE: This doesn't really have to do with groups.
+	//It applies to the texture.
+	//_(rotatetex,"Groups")
+	extern Command *rotatetexcmd(const char*);
+	cmdMgr->addCommand(rotatetexcmd(GEOM_GROUP_MENU));
+	
+	//cmdMgr->addSeparator(); //NEW
 
-   cmd = new MakeFaceCommand();
-   cmdMgr->registerCommand( cmd );
+	// Meshes
 
-   cmd = new SelectFreeCommand();
-   cmdMgr->registerCommand( cmd );
+	_(align)_(simplify)_(cap)_(spherify)
 
-   // Faces
+	// Other Geometry Commands
 
-   cmd = new EdgeTurnCommand();
-   cmdMgr->registerCommand( cmd );
+	cmdMgr->addSeparator();
 
-   cmd = new EdgeDivideCommand();
-   cmdMgr->registerCommand( cmd );
+	_(hide)_(flip)_(flatten)
+		
+	_(dup)_(delete) //Ctrl+D and Ctrl+Shift+D
+		
+	_(extrude)_(invert) //Invert Selection?
 
-   cmd = new SubdivideCommand();
-   cmdMgr->registerCommand( cmd );
-
-   cmd = new RotateTextureCommand();
-   cmdMgr->registerCommand( cmd );
-
-   cmd = new SeparatorCommand();
-   cmdMgr->registerCommand( cmd );
-
-   // Meshes
-
-   cmd = new AlignCommand();
-   cmdMgr->registerCommand( cmd );
-
-   cmd = new SimplifyMeshCommand();
-   cmdMgr->registerCommand( cmd );
-
-   cmd = new CapCommand();
-   cmdMgr->registerCommand( cmd );
-
-   cmd = new SpherifyCommand();
-   cmdMgr->registerCommand( cmd );
-
-   // Normals
-
-   cmd = new InvertNormalCommand();
-   cmdMgr->registerCommand( cmd );
-
-   cmd = new FaceOutCommand();
-   cmdMgr->registerCommand( cmd );
-
-   // ----------------------
-
-   cmd = new SeparatorCommand();
-   cmdMgr->registerCommand( cmd );
-
-   // Other Geometry Commands
-
-   cmd = new HideCommand();
-   cmdMgr->registerCommand( cmd );
-
-   cmd = new DeleteCommand();
-   cmdMgr->registerCommand( cmd );
-
-   cmd = new FlipCommand();
-   cmdMgr->registerCommand( cmd );
-
-   cmd = new FlattenCommand();
-   cmdMgr->registerCommand( cmd );
-
-   cmd = new DuplicateCommand();
-   cmdMgr->registerCommand( cmd );
-
-   cmd = new ExtrudeCommand();
-   cmdMgr->registerCommand( cmd );
-
-   cmd = new InvertSelectionCommand();
-   cmdMgr->registerCommand( cmd );
-
-   return 0;
+	#undef _
 }
 

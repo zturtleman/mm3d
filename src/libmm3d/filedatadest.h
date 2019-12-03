@@ -1,30 +1,30 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2008 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2008 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
 
 #ifndef FILEDATADEST_INC_H__
 #define FILEDATADEST_INC_H__
 
-#include <stdio.h>
+//#include <stdio.h> //???
 #include <stdlib.h>
 #include <stdint.h>
 #include <sys/types.h>
@@ -43,27 +43,27 @@
 
 class FileDataDest : public DataDest
 {
-   public:
-      FileDataDest( const char * filename );
-      virtual ~FileDataDest();
+	public:
+		FileDataDest(const char *filename);
+		virtual ~FileDataDest();
 
-      void internalClose();
+		void internalClose();
 
-      virtual bool internalSeek( off_t offset );
-      virtual bool internalWrite( const uint8_t * buf, size_t bufLen );
+		virtual bool internalSeek(off_t offset);
+		virtual bool internalWrite(const uint8_t *buf, size_t bufLen);
 
-   protected:
+	protected:
 
-   private:
-      void sendErrno( int err );
+	private:
+		void sendErrno(int err);
 
 #ifdef WIN32
-      HANDLE m_handle;
+		HANDLE m_handle;
 #else
-      FILE * m_fp;
+		FILE *m_fp;
 #endif // WIN32
-      size_t m_startOffset;
-      bool m_mustClose;
+		size_t m_startOffset;
+		bool m_mustClose;
 };
 
 #endif // FILEDATADEST_INC_H__

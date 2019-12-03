@@ -1,355 +1,332 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
+#include "mm3dtypes.h" //PCH
+#include "win.h"
 
-#include "animexportwin.h"
-#include "helpwin.h"
-#include "viewpanel.h"
+#include "viewwin.h"
 #include "model.h"
 #include "mview.h"
-#include "3dmprefs.h"
 #include "misc.h"
-#include "texture.h"
-#include "texmgr.h"
 #include "msg.h"
+#include "filedatadest.h"
 
-#include "mm3dport.h"
+/*NOT SURE WHAT THIS IS FOR?
+"The Export Animation Window allows you to save an animation as a series of jpeg or png files."
+Note: wxWidgets has an animated GIF feature that might make this more useful for sharing work.
+*/
 
-#include <unistd.h>
-
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QShortcut>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QComboBox>
-#include <QtGui/QImage>
-#include <QtWidgets/QShortcut>
-
-AnimExportWindow::AnimExportWindow( Model * model, ViewPanel * viewPanel, QWidget * parent )
-   : QDialog( parent ),
-     m_model( model ),
-     m_viewPanel( viewPanel )
+struct AnimExportWin : Win
 {
-   setModal( true );
-   setupUi( this );
+	void submit(int);
 
-   QString path = QString::fromUtf8( g_prefs( "ui_animexport_dir" ).stringValue().c_str() );
+	AnimExportWin(Model *model, ViewPanel *vp)
+		:
+	Win("Export Animation"),
+	model(model),vp(vp),
+	nav(main),source(nav),duration(nav.inl),
+	output(main),
+	f1_ok_cancel(main)
+	{
+		duration.nav.expand(bottom);
 
-   if ( g_prefs.exists( "ui_animexport_format" ) )
-   {
-      int f = g_prefs( "ui_animexport_format" ).intValue();
+		active_callback = &AnimExportWin::submit;
 
-      if ( f >= 0 && f < m_formatValue->count() )
-      {
-         m_formatValue->setCurrentIndex( f );
-      }
-   }
+		submit(id_init);
+	}
 
-   if ( g_prefs.exists( "ui_animexport_framerate" ) )
-   {
-      double fps = g_prefs( "ui_animexport_framerate" ).doubleValue();
+	Model *model; ViewPanel *vp;
 
-      if ( fps > 0.0001 )
-      {
-         char fpsStr[20] = "";
-         PORT_snprintf( fpsStr, sizeof(fpsStr), "%f", fps );
-         m_frameRateValue->setText( QString(fpsStr) );
-      }
-   }
+	struct source_group
+	{	
+		source_group(node *frame)
+			:
+		nav(frame,"Source"),
+		animation(nav,"Animation"),
+		viewport(nav,"Viewport\t")
+		{
+			animation.sspace<left>({viewport});
+			animation.expand();
+			viewport.expand();
+		}
 
-   if ( g_prefs.exists( "ui_animexport_seconds" ) )
-   {
-      int sec = g_prefs( "ui_animexport_seconds" ).intValue();
+		panel nav; 
+		dropdown animation,viewport;
+	};
+	struct duration_group
+	{
+		duration_group(node *frame)
+			:
+		nav(frame,"Duration"),mult(nav)
+		{
+			mult.space(1);
+			mult.add_item(0,"Seconds",seconds);
+			mult.add_item(1,"Iterations",iterations);
+			seconds.prev()->span({iterations.prev()});
+		}
 
-      if ( sec > 0 )
-      {
-         char secStr[20] = "";
-         PORT_snprintf( secStr, sizeof(secStr), "%d", sec );
-         m_secondsValue->setText( QString(secStr) );
-      }
-   }
+		panel nav; 
+		multiple mult; textbox seconds,iterations;
+	};
+	struct output_group
+	{
+		output_group(node *frame)
+			:
+		nav(frame,"Output"),
+		format_nav(nav),
+		framerate(format_nav,"Frame Rate"),
+		format(format_nav,"Format"),			
+		browse_nav(nav),
+		directory(browse_nav,"Directory"),
+		browse(browse_nav,"...",id_browse)
+		{
+			format_nav.expand();
+			format.ralign();
+			browse_nav.expand().space(0);
+			directory.expand();
+			browse.drop(directory.drop()).span(0).ralign();
+		}
 
-   if ( g_prefs.exists( "ui_animexport_iterations" ) )
-   {
-      int iterations = g_prefs( "ui_animexport_iterations" ).intValue();
+		panel nav;
+		row format_nav;
+		textbox framerate;
+		dropdown format;
+		row browse_nav;
+		textbox directory; button browse;
+	};
+	panel nav;
+	source_group source;
+	duration_group duration;
+	output_group output;	
+	f1_ok_cancel_panel f1_ok_cancel;
+};
+void AnimExportWin::submit(int id)
+{
+	//TODO: Try animated GIF path.
+	static const utf8 formats[] =
+	{
+		"anim_0001.png","anim_1.png",
+		"anim_0001.jpg","anim_1.jpg",
+	};
+	enum{ formatsN = sizeof(formats)/sizeof(*formats) };
 
-      if ( iterations > 0 )
-      {
-         char itStr[20] = "";
-         PORT_snprintf( itStr, sizeof(itStr), "%d", iterations );
-         m_iterationsValue->setText( QString(itStr) );
-      }
-   }
+	switch(id)
+	{
+	case id_init:
+	{
+		assert(model&&vp);
 
-   if ( m_model )
-   {
-      bool labelAnims = false;
-      unsigned scount = m_model->getAnimCount( Model::ANIMMODE_SKELETAL );
-      unsigned fcount = m_model->getAnimCount( Model::ANIMMODE_FRAME );
-      if ( scount > 0 && fcount > 0 )
-      {
-         labelAnims = true;
-      }
+		for(int i=0;i<formatsN;i++) 
+		output.format.add_item(i,formats[i]);
 
-      unsigned a = 0;
+		int fmt = config.get("ui_animexport_format",0);
+		if(fmt>0&&fmt<formatsN) output.format.select_id(fmt);
 
-      for ( a = 0; a < scount; a++ )
-      {
-         QString name = labelAnims ? tr( "Skeletal - ", "Skeletal Animation prefix" ) : QString("");
+		double min = 0.0001;
+		double fps = config.get("ui_animexport_framerate",25.0);
+		output.framerate.edit(min,fps>=min?fps:25.0,DBL_MAX);
 
-         name += m_model->getAnimName( Model::ANIMMODE_SKELETAL, a );
-         m_animValue->insertItem( a, name );
-      }
+		double sec = config.get("ui_animexport_seconds",15.0);
+		duration.seconds.edit(min,sec>=min?sec:15.0,DBL_MAX);
 
-      for ( a = 0; a < fcount; a++ )
-      {
-         QString name = labelAnims ? tr( "Frame - ", "Frame Animation prefix" )    : QString("");
+		double i = config.get("ui_animexport_iterations",1.0);
+		duration.iterations.edit(min,i>=min?i:1.0,DBL_MAX);
 
-         name += m_model->getAnimName( Model::ANIMMODE_FRAME, a );
-         m_animValue->insertItem( scount + a, name );
-      }
+		//i = config.get("ui_animexport_?",1);
+		duration.mult.select_id(1);
+	
+		size_t scount = model->getAnimCount(Model::ANIMMODE_SKELETAL);
+		size_t fcount = model->getAnimCount(Model::ANIMMODE_FRAME);
+		bool labelAnims = scount&&fcount;
 
-      const char * filename = m_model->getFilename();
+		std::string name;
+		for(size_t i=0;i<scount;i++,name.clear())
+		{
+			if(labelAnims) 
+			name = ::tr("Skeletal-","Skeletal Animation prefix");
+			name+=model->getAnimName(Model::ANIMMODE_SKELETAL,i);
+			source.animation.add_item((int)i,name);
+		}
+		for(size_t i=0;i<fcount;i++,name.clear())
+		{
+			if(labelAnims) 
+			name = ::tr("Frame-","Frame Animation prefix");
+			name+=model->getAnimName(Model::ANIMMODE_FRAME,i);
+			source.animation.add_item((int)(scount+i),name);
+		}
 
-      if ( path.isNull() || path.isEmpty() )
-      {
-         std::string fullName = "";
-         std::string fullPath = "";
-         std::string baseName = "";
+		const char *filename = model->getFilename();
+				
+		output.directory.set_text(config.get("ui_animexport_dir",""));
+		
+		int persp = -1;
+		for(int i=0;i<vp->viewsN;i++)
+		{
+			ViewBar::ModelView *mv = vp->getModelView(i);
+			
+			//name = ::tr("Viewport %1-").arg(i+1);
+			name = "Viewport 1"; 
+			name.back()+=0xff&i;
+			name.push_back('-');
+			name+=mv->view.selection()->text();
 
-         normalizePath( filename, fullName, fullPath, baseName );
+			if(-1!=persp&&!mv->view)
+			{
+				persp = (int)i;
+			}
 
-         if ( is_directory( fullPath.c_str() ) )
-         {
-            path = fullPath.c_str();
-         }
-      }
-   }
+			source.viewport.add_item((int)i,name);
+		}
 
-   if ( path.isNull() || path.isEmpty() )
-   {
-      char * cwd = PORT_get_current_dir_name();
-      if ( cwd )
-      {
-         path = cwd;
-         free( cwd );
-      }
-   }
+		if(-1!=persp) source.viewport.select_id(persp);
 
-   m_directoryLabel->setText( path );
+		break;
+	}	
+	case id_browse:
+	{
+		auto &d = output.directory;
+		d.set_text(d.text().locate("Index","Select an output directory"));
+		break;
+	}
+	case id_ok:
+	{	
+		if(!is_directory(output.directory))
+		{
+			return msg_warning(::tr("Output directory does not exist."));
+		}
 
-   if ( m_viewPanel )
-   {
-      int index = -1;
-      unsigned count = m_viewPanel->getModelViewCount();
-      for ( unsigned m = 0; m < count; m++ )
-      {
-         ModelView * v = m_viewPanel->getModelView( m );
+		auto swap = model->getAnimationMode();
+		int swap2 = model->getCurrentAnimation();
 
-         QString name = tr( "[None]", "No viewport for animation image export" );
-         if ( v )
-         {
-            name = tr("Viewport %1 - ").arg(m+1);
-            name += v->getViewDirectionLabel();
+		//https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92338
+		ModelViewport &mvp = vp->ports[(int)source.viewport];
+						 
+		auto mode = Model::ANIMMODE_SKELETAL;
+		int a = source.animation;
+		if((size_t)a>=model->getAnimCount(mode))
+		{
+			a-=(int)model->getAnimCount(mode);
+			mode = Model::ANIMMODE_FRAME;
+		}
 
-            if ( index == -1 && v->getViewDirection() == 0 )
-            {
-               index = m;
-            }
-         }
+		double fps = model->getAnimFPS(mode,a);
+		double spf = 1/fps;
+		double tm, dur = 0;
+		double outfps = output.framerate;
+		double interval = 1/outfps;
 
-         m_viewportValue->insertItem( m, name );
-      }
+		if(!duration.mult)
+		{
+			dur = duration.seconds;
+		}
+		else //???
+		{
+			dur = duration.iterations;		
+			dur*=spf*model->getAnimFrameCount(mode,a);
+		}
 
-      if ( index >= 0 )
-      {
-         m_viewportValue->setCurrentIndex( index );
-      }
-   }
+		FileBox file;
+		int frameN = dur/interval; if(frameN>60) //NEW
+		{
+			file.format("Save %d images?",frameN);
+			if(id_yes!=WarningBox("Confirmation",file.c_str(),id_yes|id_no,id_no))
+			return;
+		}
+			
+			////POINT-OF-NO-RETURN///
+			////POINT-OF-NO-RETURN///
+			////POINT-OF-NO-RETURN///
 
-   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
-   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
+
+		config.set("ui_animexport_dir",(utf8)output.directory);
+		config.set("ui_animexport_format",(int)output.format);
+		config.set("ui_animexport_framerate",(double)output.framerate);
+		config.set("ui_animexport_seconds",(double)duration.seconds);
+		config.set("ui_animexport_iterations",(double)duration.iterations);
+
+		bool enable = 
+		model->setUndoEnabled(false);
+		model->setCurrentAnimation(mode,a);
+				
+		file = output.directory.text();
+		size_t saveFile = file.size();
+		//https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92338
+		const char *saveFormat = strchr(formats[(int)output.format],'.');
+
+		int x,y,w,h; mvp.getGeometry(x,y,w,h); 
+		int il = glutext::glutCreateImageList();
+		int*pb =*glutext::glutLoadImageList(il,w,h,false);
+
+		//Select main window's OpenGL context.
+		glutSetWindow(vp->model.glut_window_id);
+		glPixelStorei(GL_PACK_ALIGNMENT,1); //glReadPixels
+
+		int gif = !file.render_gif; //IMPLEMENT ME
+		
+		int frameNum = 0; for(tm=0;tm<=dur;tm+=interval)
+		{
+			frameNum++;
+			
+			model->setCurrentAnimationTime(tm);			
+
+			//TODO: Try animated GIF (single file) path.
+			file.erase(saveFile);
+			file.append("/anim_");
+			char num[33];
+			sprintf(num,saveFormat[-2]=='0'?"%04d":"%d",frameNum);
+			file.append(num);
+			file.append(saveFormat);
+			file.push_back('\0');
+			size_t buf = file.size();
+			
+			mvp.render();
+			if(!pb) assert(pb);
+			else glReadPixels(x,y,pb[0],pb[1],pb[2],pb[3],(void*&)pb[4]);
+
+			if(!file.render(il,saveFormat+1,gif)
+			||!FileDataDest(file.c_str()).writeBytes(&file[buf],file.size()-buf))
+			{
+				msg_error("%s\n%s",::tr("Could not write file: "),file.c_str());
+				break;
+			}
+		}		
+
+		glutext::glutDestroyImageList(il);
+
+		model->setCurrentAnimation(swap,swap2); //model->setNoAnimation();
+		model->setUndoEnabled(enable);
+
+		if(tm<=dur) return; break;
+	}}
+
+	basic_submit(id);
 }
 
-AnimExportWindow::~AnimExportWindow()
+extern void animexportwin(Model *model, ViewPanel *vp)
 {
-}
-
-void AnimExportWindow::helpNowEvent()
-{
-   HelpWin * win = new HelpWin( "olh_animexportwin.html", true );
-   win->show();
-}
-
-void AnimExportWindow::accept()
-{
-   if ( m_viewPanel == NULL || m_model == NULL )
-   {
-      return;
-   }
-
-   ModelView * v = m_viewPanel->getModelView( m_viewportValue->currentIndex() );
-
-   if ( v == NULL )
-   {
-      return;
-   }
-
-   if ( !v->m_modelView->isValid() )
-   {
-      // invalid opengl context
-      return;
-   }
-
-   Model::AnimationModeE mode = Model::ANIMMODE_SKELETAL;
-   unsigned a = m_animValue->currentIndex();
-   if ( a >= m_model->getAnimCount( mode ) )
-   {
-      a -= m_model->getAnimCount( mode );
-      mode = Model::ANIMMODE_FRAME;
-   }
-
-   double fps = m_model->getAnimFPS( mode, a );
-   double spf = ( 1.0 / fps );
-   double duration = 0.0;
-   double tm = 0.0;
-
-   double outfps = m_frameRateValue->text().toDouble();
-   if ( outfps < 0.0001 )
-   {
-      msg_warning( (const char *) tr("Must have more than 0 frames per second").toUtf8() );
-      return;
-   }
-   double interval = (1.0 / outfps);
-
-   if ( m_timeButton->isChecked() )
-   {
-      duration = m_secondsValue->text().toDouble();
-   }
-   else
-   {
-      duration = spf 
-         * m_iterationsValue->text().toInt()
-         * m_model->getAnimFrameCount( mode, a );
-   }
-
-   if ( duration <= 0.0 )
-   {
-      msg_warning( (const char *) tr("Must have more than 0 seconds of animation").toUtf8() );
-      return;
-   }
-
-   QString path = m_directoryLabel->text();
-
-   if ( is_directory( path.toUtf8() ) )
-   {
-      g_prefs( "ui_animexport_dir" ) = (const char *) path.toUtf8();
-      g_prefs( "ui_animexport_format" ) = m_formatValue->currentIndex();
-      g_prefs( "ui_animexport_framerate" ) = m_frameRateValue->text().toDouble();
-      g_prefs( "ui_animexport_seconds" ) = m_secondsValue->text().toInt();
-      g_prefs( "ui_animexport_iterations" ) = m_iterationsValue->text().toInt();
-
-      bool enable = m_model->setUndoEnabled( false );
-
-      m_model->setCurrentAnimation( mode, a );
-
-      int frameNum = 0;
-
-      char formatStr[20] = "";
-      QString saveFormat = QString( "JPEG" );
-      switch ( m_formatValue->currentIndex() )
-      {
-         case 0:
-            strcpy( formatStr, "%s/anim_%04d.jpg" );
-            break;
-         case 1:
-            strcpy( formatStr, "%s/anim_%d.jpg" );
-            break;
-         case 2:
-            strcpy( formatStr, "%s/anim_%04d.png" );
-            saveFormat = QString( "PNG" );
-            break;
-         case 3:
-         default:
-            strcpy( formatStr, "%s/anim_%d.png" );
-            saveFormat = QString( "PNG" );
-            break;
-      }
-
-      this->hide();
-      
-      bool prompt    = true;
-      bool keepGoing = true;
-
-      while ( keepGoing && tm <= duration )
-      {
-         m_model->setCurrentAnimationTime( tm );
-         v->updateCaptureGL();
-
-         frameNum++;
-
-         QString file;
-         file.sprintf( formatStr, (const char *) path.toUtf8(), frameNum );
-
-         QImage img = v->grabFrameBuffer( false );
-
-         if ( !img.save( file, saveFormat.toUtf8(), 100 ) && prompt )
-         {
-            QString msg = tr( "Could not write file: " ) + QString("\n");
-            msg += file;
-
-            msg_error( (const char *) msg.toUtf8() );
-
-            keepGoing = false;
-         }
-
-         tm += interval;
-      }
-
-      m_model->setNoAnimation();
-      m_model->setUndoEnabled( enable );
-      v->updateView();
-
-      QDialog::accept();
-   }
-   else
-   {
-      msg_warning( (const char *) tr("Output directory does not exist.").toUtf8() );
-   }
-}
-
-void AnimExportWindow::reject()
-{
-   QDialog::reject();
-}
-
-void AnimExportWindow::directoryButtonClicked()
-{
-   QString dir = QFileDialog::getExistingDirectory( this, "Select an output directory", m_directoryLabel->text() );
-   if ( ! dir.isNull() && ! dir.isEmpty() )
-   {
-      m_directoryLabel->setText( dir );
-   }
+	if(!model->getAnimCount(Model::ANIMMODE_SKELETAL)
+	 &&!model->getAnimCount(Model::ANIMMODE_FRAME)) //FIX ME
+	{
+		msg_error(::tr("This model does not have any animations"));
+	}
+	else AnimExportWin(model,vp).return_on_close();
 }

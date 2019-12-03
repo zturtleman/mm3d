@@ -1,176 +1,163 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
+#include "mm3dtypes.h" //PCH
+#include "win.h"
 
-#include "spherifywin.h"
-#include "helpwin.h"
 #include "model.h"
 #include "glmath.h"
-#include "decalmgr.h"
+
 #include "log.h"
 
-#include <QtWidgets/QSlider>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QLabel>
-
-#include <math.h>
-#include <stdlib.h>
-
-
-SpherifyWin::SpherifyWin( Model * model, QWidget * parent )
-   : ValueWin( parent ),
-     m_model( model )
+struct SpherifyWin : Win
 {
-   setAttribute( Qt::WA_DeleteOnClose );
-   setLabel( "Spherify" );
-   m_valueSlider->setMinimum( -100 );
-   m_valueEdit->setText( QString("0") );
+	void submit(int);
 
-   double min[3] = { 0.0, 0.0, 0.0 };
-   double max[3] = { 0.0, 0.0, 0.0 };
-   bool haveCenter = false;
+	SpherifyWin(Model *model)
+		:
+	Win("Spherify"),model(model),
+	radius(params.radius_init(model)),
+	value(main,"Value",-radius,radius,0.0),
+	f1_ok_cancel(main)
+	{
+		if(!radius) value.nav.disable(); //NEW
+		
+		active_callback = &SpherifyWin::submit;
+		
+		submit(id_init);
+	}
 
-   SpherifyPosition sv;
-   std::list<Model::Position> posList;
-   m_model->getSelectedPositions( posList );
-   std::list<Model::Position>::iterator it;
-   for ( it = posList.begin(); it != posList.end(); it++ )
-   {
-       sv.pos = (*it);
-       m_model->getPositionCoords( (*it), sv.coords );
+	Model *model;
+	
+	struct SpherifyPosition
+	{
+		double coords[3]; Model::Position pos;
+	};
+	struct Parameters : std::vector<SpherifyPosition>
+	{
+		double centerpoint[3], radius_init(Model*);
+	};
 
-       if ( haveCenter )
-       {
-           min[0] = sv.coords[0] < min[0] ? sv.coords[0] : min[0];
-           min[1] = sv.coords[1] < min[1] ? sv.coords[1] : min[1];
-           min[2] = sv.coords[2] < min[2] ? sv.coords[2] : min[2];
+	//HACK: Constructor needs these in this order.
+	Parameters params; double radius;	
 
-           max[0] = sv.coords[0] > max[0] ? sv.coords[0] : max[0];
-           max[1] = sv.coords[1] > max[1] ? sv.coords[1] : max[1];
-           max[2] = sv.coords[2] > max[2] ? sv.coords[2] : max[2];
-       }
-       else
-       {
-           min[0] = sv.coords[0];
-           min[1] = sv.coords[1];
-           min[2] = sv.coords[2];
+	slider_value value;
+	f1_ok_cancel_panel f1_ok_cancel;
+};
 
-           max[0] = sv.coords[0];
-           max[1] = sv.coords[1];
-           max[2] = sv.coords[2];
-
-           haveCenter = true;
-       }
-
-       m_positions.push_back( sv );
-   }
-
-   m_center[0] = (min[0] + max[0]) / 2.0;
-   m_center[1] = (min[1] + max[1]) / 2.0;
-   m_center[2] = (min[2] + max[2]) / 2.0;
-
-   m_radius = 0.0;
-   {
-       SpherifyPositionList::iterator it;
-       for ( it = m_positions.begin(); it != m_positions.end(); it++ )
-       {
-           double dist = distance( m_center[0], m_center[1], m_center[2],
-                   (*it).coords[0], (*it).coords[1], (*it).coords[2] );
-           m_radius = dist > m_radius ? dist : m_radius;
-       }
-   }
-
-   log_debug( "center is %f,%f,%f\n", m_center[0], m_center[1], m_center[2] );
-   log_debug( "radius is %f\n", m_radius );
+extern void spherifywin(Model *model)
+{
+	SpherifyWin(model).return_on_close();
 }
 
-SpherifyWin::~SpherifyWin()
+double SpherifyWin::Parameters::radius_init(Model *model)
 {
+	pos_list l; model->getSelectedPositions(l);
+
+	//WORRIED THIS IS IMPRECISE
+	double init = l.empty()?0.0:DBL_MAX;
+	double cmin[3] = {init}, cmax[3] = {-init};
+	
+	pos_list::iterator itt,it;
+	for(it=l.begin(),itt=l.end();it<itt;it++)
+	{
+		SpherifyPosition sv; sv.pos = *it;
+		model->getPositionCoords(*it,sv.coords);
+		push_back(sv);
+		for(int i=0;i<3;i++)
+		cmin[i] = std::min(cmin[i],sv.coords[i]);
+		for(int i=0;i<3;i++)
+		cmax[i] = std::max(cmax[i],sv.coords[i]);
+	}
+	for(int i=0;i<3;i++)
+	{
+		centerpoint[i] = (cmin[i]+cmax[i])/2;
+	}
+
+	double radius = 0;
+	{
+		Parameters::iterator it,itt;
+		for(it=begin(),itt=end();it<itt;it++)
+		{
+			radius = std::max(radius,distance
+			(centerpoint[0],centerpoint[1],centerpoint[2],
+			it->coords[0],it->coords[1],it->coords[2]));
+		}
+	 
+		log_debug("center is %f,%f,%f\n",centerpoint[0],centerpoint[1],centerpoint[2]);
+		log_debug("radius is %f\n",radius);
+	}
+	return radius;
 }
 
-void SpherifyWin::showHelp()
+void SpherifyWin::submit(int id)
 {
-   HelpWin * win = new HelpWin( "olh_spherifywin.html", true );
-   win->show();
+	switch(id)
+	{
+	case id_ok:
+
+		model->operationComplete(::tr("Spherify","operation complete"));		
+		break;
+
+	case id_cancel:
+
+		model->undoCurrent();
+		break;
+	
+	case id_value:
+
+		//log_debug("changed\n"); //???
+
+		//double percent = (double)v/100.0;
+		double t = value.slider.float_val()/radius;
+
+		//FIX ME: This produces different results owing to 
+		//floating point error. It also generates needless
+		//undo records.
+
+		Vector unitvec;
+		Parameters::iterator it,itt;	
+		for(it=params.begin(),itt=params.end();it<itt;it++)
+		{
+			for(int i=0;i<3;i++)
+			unitvec[i] = it->coords[i]-params.centerpoint[i];
+			unitvec.normalize3();
+
+			double diff[3]; for(int i=0;i<3;i++) //lerp??
+			{
+				diff[i] = unitvec[i]*radius+params.centerpoint[i];
+				diff[i] = (diff[i]-it->coords[i])*t+it->coords[i];
+			}
+			model->movePosition(it->pos,diff[0],diff[1],diff[2]);
+		}
+
+		//https://github.com/zturtleman/mm3d/issues/90
+		//DecalManager::getInstance()->modelUpdated(model); //???
+		model->updateObservers();
+		break;	
+	}
+
+	basic_submit(id);
 }
 
-void SpherifyWin::valueSliderChanged( int v )
-{
-   log_debug( "changed\n" );
-
-   if ( v > 100 )
-   {
-      v = 100;
-   }
-   if ( v < -100 ) 
-   {
-      v = -100;
-   }
-
-   double percent = (double) v / 100.0;
-
-   double diff[4] = { 0.0, 0.0, 0.0, 0.0 };
-   SpherifyPositionList::iterator it;
-   for ( it = m_positions.begin(); it != m_positions.end(); it++ )
-   {
-      diff[0] = (*it).coords[0] - m_center[0];
-      diff[1] = (*it).coords[1] - m_center[1];
-      diff[2] = (*it).coords[2] - m_center[2];
-
-      Vector vec( diff );
-      vec.normalize3();
-
-      diff[0] = vec.get( 0 ) * m_radius + m_center[0];
-      diff[1] = vec.get( 1 ) * m_radius + m_center[1];
-      diff[2] = vec.get( 2 ) * m_radius + m_center[2];
-
-      diff[0] = (diff[0] - (*it).coords[0]) * percent + (*it).coords[0];
-      diff[1] = (diff[1] - (*it).coords[1]) * percent + (*it).coords[1];
-      diff[2] = (diff[2] - (*it).coords[2]) * percent + (*it).coords[2];
-
-      m_model->movePosition( (*it).pos, diff[0], diff[1], diff[2] );
-   }
-
-   DecalManager::getInstance()->modelUpdated( m_model );
-   ValueWin::valueSliderChanged( v );
-}
-
-void SpherifyWin::valueEditChanged( const QString & str )
-{
-   ValueWin::valueEditChanged( str );
-}
-
-void SpherifyWin::accept()
-{
-   m_model->operationComplete( tr( "Spherify", "operation complete" ).toUtf8() );
-   DecalManager::getInstance()->modelUpdated( m_model );
-   ValueWin::accept();
-}
-
-void SpherifyWin::reject()
-{
-   m_model->undoCurrent();
-   DecalManager::getInstance()->modelUpdated( m_model );
-   ValueWin::reject();
-}
 
 

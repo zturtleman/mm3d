@@ -1,99 +1,109 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
-
-#include "mergewin.h"
+#include "mm3dtypes.h" //PCH
+#include "win.h"
 
 #include "model.h"
-#include "glmath.h"
-#include "decalmgr.h"
-#include "helpwin.h"
 
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QShortcut>
 
-#include <stdio.h>
-#include <stdlib.h>
-
-MergeWindow::MergeWindow( Model * model, QWidget * parent )
-   : QDialog( parent ),
-     m_model( model )
+struct MergeWin : Win
 {
-   setupUi( this );
-   setModal( true );
+	void submit(control*);
 
-   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
-   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
+	MergeWin(Model *model, Model *merge)
+		:
+	Win("Merge Model"),model(model),merge(merge),
+	transformation_nav(main,"Merge Location"),
+	rotation(transformation_nav,"Rotation\t"),
+	translation(transformation_nav,"Translation\t"),
+	opts_nav(main),
+	incl_nav(opts_nav,"Merge Options"),
+	texture(incl_nav,"Include textures"),
+	animate(incl_nav,"Include animations"),
+	animate2(opts_nav,"Animation Options"),
+	f1_ok_cancel(main)
+	{
+		opts_nav.proportion();
+		incl_nav.expand();
+		texture.set();
+		animate.set();
+		animate2.expand();
+		animate2.style(bi::etched);
+		animate2.add_item(Model::AM_ADD,"Append animations");
+		animate2.add_item(Model::AM_MERGE,"Merge if possible");
+
+		active_callback = &MergeWin::submit;
+
+		submit(main); //id_init
+	}
+
+	Model *model,*merge;
+
+	struct transformation_group
+	{
+		transformation_group(node *frame, utf8 name)
+			:
+		nav(frame),
+		label(nav,name),x(nav),y(nav),z(nav)
+		{
+			nav.space(2).ralign();
+
+			label.space<top>(2).space<right>(4);
+
+			x.edit(0.0); y.edit(0.0); z.edit(0.0);
+		}
+
+		row nav; titlebar label; textbox x,y,z;
+	};
+	panel transformation_nav;
+	transformation_group rotation,translation;
+	row opts_nav;
+	panel incl_nav;
+	boolean texture,animate;
+	multiple animate2;
+	f1_ok_cancel_panel f1_ok_cancel;
+};
+void MergeWin::submit(control *c)
+{
+	if(c==animate)
+	{
+		animate2.enable(animate);
+	}
+	else if(c==f1_ok_cancel.ok_cancel.ok)
+	{
+		Model::AnimationMergeE mode = Model::AM_NONE;
+		if(animate)
+		mode = Model::AnimationMergeE(animate2.int_val());
+		double rot[3] = { rotation.x,rotation.y,rotation.z };
+		double trans[3] = { translation.x,translation.y,translation.z };		
+		model->mergeModels(merge,texture,mode,true,trans,rot);
+		//model->operationComplete(::tr("Merge models"));				
+		model->operationComplete(::tr("Merge models","operation complete"));
+	}
+	basic_submit(c->id());
 }
 
-MergeWindow::~MergeWindow()
+extern void mergewin(Model *model, Model *merge)
 {
+	MergeWin(model,merge).return_on_close();
 }
-
-void MergeWindow::helpNowEvent()
-{
-   HelpWin * win = new HelpWin( "olh_mergewin.html", true );
-   win->show();
-}
-
-void MergeWindow::getRotation( double * vec )
-{
-   if ( vec )
-   {
-      vec[0] = m_rotX->text().toDouble() * PIOVER180;
-      vec[1] = m_rotY->text().toDouble() * PIOVER180;
-      vec[2] = m_rotZ->text().toDouble() * PIOVER180;
-   }
-}
-
-void MergeWindow::getTranslation( double * vec )
-{
-   if ( vec )
-   {
-      vec[0] = m_transX->text().toDouble();
-      vec[1] = m_transY->text().toDouble();
-      vec[2] = m_transZ->text().toDouble();
-   }
-}
-
-void MergeWindow::includeAnimEvent( bool o )
-{
-   m_animMerge->setEnabled( o );
-   m_animAppend->setEnabled( o );
-}
-
-void MergeWindow::accept()
-{
-   m_model->operationComplete( tr( "Merge models", "operation complete" ).toUtf8() );
-   QDialog::accept();
-}
-
-void MergeWindow::reject()
-{
-   m_model->undoCurrent();
-   DecalManager::getInstance()->modelUpdated( m_model );
-   QDialog::reject();
-}
-

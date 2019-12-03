@@ -1,52 +1,52 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2008 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2008 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
+#include "mm3dtypes.h" //PCH
 
 #include "datasource.h"
-
 #include "endianconfig.h"
 
-SourceCloser::SourceCloser( DataSource * src )
-   : m_src( src )
+SourceCloser::SourceCloser(DataSource *src)
+	: m_src(src)
 {
 }
 
 SourceCloser::~SourceCloser()
 {
-   m_src->close();
+	m_src->close();
 }
 
 DataSource::DataSource()
-   : m_endian( LittleEndian ),
-     m_buf( NULL ),
-     m_fileSize( 0 ),
-     m_bufLen( 0 ),
-     m_bufOffset( 0 ),
-     m_errorOccurred( false ),
-     m_unexpectedEof( false ),
-     m_errno( 0 ),
-     m_endfunc16( ltoh_u16 ),
-     m_endfunc32( ltoh_u32 ),
-     m_endfuncfl( ltoh_float )
+	: m_endian(LittleEndian),
+	  m_buf(nullptr),
+	  m_fileSize(0),
+	  m_bufLen(0),
+	  m_bufOffset(0),
+	  m_errorOccurred(false),
+	  m_unexpectedEof(false),
+	  m_errno(0),
+	  m_endfunc16(ltoh_u16),
+	  m_endfunc32(ltoh_u32),
+	  m_endfuncfl(ltoh_float)
 {
 }
 
@@ -54,303 +54,295 @@ DataSource::~DataSource()
 {
 }
 
-void DataSource::setEndianness( EndiannessE e )
+void DataSource::setEndianness(EndiannessE e)
 {
-   m_endian = e;
+	m_endian = e;
 
-   if ( m_endian == LittleEndian )
-   {
-      m_endfunc16 = ltoh_u16;
-      m_endfunc32 = ltoh_u32;
-      m_endfuncfl = ltoh_float;
-   }
-   else
-   {
-      m_endfunc16 = btoh_u16;
-      m_endfunc32 = btoh_u32;
-      m_endfuncfl = btoh_float;
-   }
+	if(m_endian==LittleEndian)
+	{
+		m_endfunc16 = ltoh_u16;
+		m_endfunc32 = ltoh_u32;
+		m_endfuncfl = ltoh_float;
+	}
+	else
+	{
+		m_endfunc16 = btoh_u16;
+		m_endfunc32 = btoh_u32;
+		m_endfuncfl = btoh_float;
+	}
 }
 
-void DataSource::setUnexpectedEof( bool o )
+void DataSource::setUnexpectedEof(bool o)
 {
-   if ( o )
-      m_errorOccurred = true;
-   m_unexpectedEof = o;
+	if(o)
+		m_errorOccurred = true;
+	m_unexpectedEof = o;
 }
 
-void DataSource::setErrno( int err )
+void DataSource::setErrno(int err)
 {
-   m_errorOccurred = true;
-   m_errno = err;
+	m_errorOccurred = true;
+	m_errno = err;
 }
 
-bool DataSource::requireBytes( size_t bytes )
+bool DataSource::requireBytes(size_t bytes)
 {
-   if ( m_bufLen < bytes )
-   {
-      if ( !internalReadAt( m_bufOffset, &m_buf, &m_bufLen ) )
-      {
-         // TODO should probably have an assert here to make sure that
-         // the actual source sets an error condition.
-         return false;
-      }
+	if(m_bufLen<bytes)
+	{
+		if(!internalReadAt(m_bufOffset,&m_buf,&m_bufLen))
+		{
+			// TODO should probably have an assert here to make sure that
+			// the actual source sets an error condition.
+			return false;
+		}
 
-      if ( m_bufLen < bytes )
-      {
-         seek( m_fileSize );
-         setUnexpectedEof( true );
-         return false;
-      }
-   }
+		if(m_bufLen<bytes)
+		{
+			seek(m_fileSize);
+			setUnexpectedEof(true);
+			return false;
+		}
+	}
 
-   return true;
+	return true;
 }
 
-void DataSource::advanceBytes( size_t bytes )
+void DataSource::advanceBytes(size_t bytes)
 {
-   m_buf += bytes;
-   m_bufLen -= bytes;
-   m_bufOffset += bytes;
+	m_buf += bytes;
+	m_bufLen -= bytes;
+	m_bufOffset += bytes;
 
-   if ( m_bufLen == 0 )
-   {
-      m_buf = NULL;
-   }
+	if(m_bufLen==0)
+	{
+		m_buf = nullptr;
+	}
 }
 
-bool DataSource::seek( off_t offset )
+bool DataSource::seek(off_t offset)
 {
-   if ( (size_t) offset > m_fileSize )
-   {
-      setUnexpectedEof( true );
-      return false;
-   }
+	if((size_t)offset>m_fileSize)
+	{
+		setUnexpectedEof(true);
+		return false;
+	}
 
-   m_bufOffset = offset;
+	m_bufOffset = offset;
 
-   if ( (size_t) m_bufOffset == m_fileSize )
-   {
-      m_buf = NULL;
-      return true;
-   }
+	if((size_t)m_bufOffset==m_fileSize)
+	{
+		m_buf = nullptr;
+		return true;
+	}
 
-   if ( !internalReadAt( m_bufOffset, &m_buf, &m_bufLen ) )
-   {
-      // TODO should probably have an assert here to make sure that
-      // the actual source set an error condition.
-      return false;
-   }
+	if(!internalReadAt(m_bufOffset,&m_buf,&m_bufLen))
+	{
+		// TODO should probably have an assert here to make sure that
+		// the actual source set an error condition.
+		return false;
+	}
 
-   return true;
+	return true;
 }
 
-bool DataSource::read( int8_t & val )
+bool DataSource::read(int8_t &val)
 {
-   if ( !requireBytes( sizeof(val) ) )
-      return false;
+	if(!requireBytes(sizeof(val)))
+		return false;
 
-   val = * (int8_t*) m_buf;
+	val = *(int8_t*)m_buf;
 
-   advanceBytes( sizeof(val) );
-   return true;
+	advanceBytes(sizeof(val));
+	return true;
 }
 
-bool DataSource::read( uint8_t & val )
+bool DataSource::read(uint8_t &val)
 {
-   if ( !requireBytes( sizeof(val) ) )
-      return false;
+	if(!requireBytes(sizeof(val)))
+		return false;
 
-   val = * (int8_t*) m_buf;
+	val = *(int8_t*)m_buf;
 
-   advanceBytes( sizeof(val) );
-   return true;
+	advanceBytes(sizeof(val));
+	return true;
 }
 
-bool DataSource::read( int16_t & val )
+bool DataSource::read(int16_t &val)
 {
-   if ( !requireBytes( sizeof(val) ) )
-      return false;
+	if(!requireBytes(sizeof(val)))
+		return false;
 
-   val = m_endfunc16( * (uint16_t*) m_buf );
-   advanceBytes( sizeof(val) );
+	val = m_endfunc16(* (uint16_t*)m_buf);
+	advanceBytes(sizeof(val));
 
-   return true;
+	return true;
 }
 
-bool DataSource::read( uint16_t & val )
+bool DataSource::read(uint16_t &val)
 {
-   if ( !requireBytes( sizeof(val) ) )
-      return false;
+	if(!requireBytes(sizeof(val)))
+		return false;
 
-   val = m_endfunc16( * (uint16_t*) m_buf );
-   advanceBytes( sizeof(val) );
+	val = m_endfunc16(* (uint16_t*)m_buf);
+	advanceBytes(sizeof(val));
 
-   return true;
+	return true;
 }
 
-bool DataSource::read( int32_t & val )
+bool DataSource::read(int32_t &val)
 {
-   if ( !requireBytes( sizeof(val) ) )
-      return false;
+	if(!requireBytes(sizeof(val)))
+		return false;
 
-   val = m_endfunc32( * (uint32_t*) m_buf );
-   advanceBytes( sizeof(val) );
+	val = m_endfunc32(* (uint32_t*)m_buf);
+	advanceBytes(sizeof(val));
 
-   return true;
+	return true;
 }
 
-bool DataSource::read( uint32_t & val )
+bool DataSource::read(uint32_t &val)
 {
-   if ( !requireBytes( sizeof(val) ) )
-      return false;
+	if(!requireBytes(sizeof(val)))
+		return false;
 
-   val = m_endfunc32( * (uint32_t*) m_buf );
-   advanceBytes( sizeof(val) );
+	val = m_endfunc32(* (uint32_t*)m_buf);
+	advanceBytes(sizeof(val));
 
-   return true;
+	return true;
 }
 
-bool DataSource::read( float & val )
+bool DataSource::read(float &val)
 {
-   if ( !requireBytes( sizeof(val) ) )
-      return false;
+	if(!requireBytes(sizeof(val)))
+		return false;
 
-   val = m_endfuncfl( * (float*) m_buf );
-   advanceBytes( sizeof(val) );
+	val = m_endfuncfl(* (float*)m_buf);
+	advanceBytes(sizeof(val));
 
-   return true;
+	return true;
 }
 
 bool DataSource::fillBuffer()
 {
-   if ( m_bufLen == 0 )
-   {
-      if ( !internalReadAt( m_bufOffset, &m_buf, &m_bufLen ) )
-         return false;
+	if(m_bufLen==0)
+	{
+		if(!internalReadAt(m_bufOffset,&m_buf,&m_bufLen))
+			return false;
 
-      if ( m_bufOffset == m_fileSize )
-      {
-         setUnexpectedEof( true );
-         return false;
-      }
+		if(m_bufOffset==m_fileSize)
+		{
+			setUnexpectedEof(true);
+			return false;
+		}
 
-      // TODO should probably assert on m_bufLen == 0
-   }
+		// TODO should probably assert on m_bufLen==0
+	}
 
-   // There is now data in the buffer
-   return true;
+	// There is now data in the buffer
+	return true;
 }
 
-bool DataSource::readAsciiz( char * buf, size_t bufLen, bool * foundNull )
+bool DataSource::readAsciiz(char *buf, size_t bufLen,bool *foundNull)
 {
-   if ( bufLen < 1 )
-      return false;
+	if(bufLen<1)
+		return false;
 
-   bool rval = readTo( '\0', buf, bufLen, foundNull );
+	bool rval = readTo('\0',buf,bufLen,foundNull);
 
-   // No matter what is in the buffer, the last char must be null
-   buf[ bufLen - 1] = '\0';
+	// No matter what is in the buffer,the last char must be null
+	buf[bufLen-1] = '\0';
 
-   return rval;
+	return rval;
 }
 
-bool DataSource::readLine( char * buf, size_t bufLen, bool * foundNewline )
+bool DataSource::readLine(char *buf, size_t bufLen,bool *foundNewline)
 {
-   if ( bufLen < 1 )
-      return false;
+	if(bufLen<1)
+		return false;
 
-   bool rval = readTo( '\n', buf, bufLen, foundNewline );
+	bool rval = readTo('\n',buf,bufLen,foundNewline);
 
-   if ( !rval && buf[0] != '\0' )
-   {
-      // Read the last line in files that don't end with a new line.
-      rval = true;
-      if ( foundNewline != NULL )
-         *foundNewline = true;
-   }
+	// No matter what is in the buffer,the last char must be null
+	buf[bufLen-1] = '\0';
 
-   // No matter what is in the buffer, the last char must be null
-   buf[ bufLen - 1] = '\0';
-
-   return rval;
+	return rval;
 }
 
-bool DataSource::readTo( char stopChar, char * buf, size_t bufLen, bool * foundChar )
+bool DataSource::readTo(char stopChar,char *buf, size_t bufLen,bool *foundChar)
 {
-   if ( foundChar != NULL )
-      *foundChar = false;
+	if(foundChar!=nullptr)
+		*foundChar = false;
 
-   size_t bufOff = 0;
+	size_t bufOff = 0;
 
-   buf[bufOff] = '\0';
+	// The only success condition is if we find stopChar. That happens
+	// inside this loop.
+	while(!eof()&&bufOff<bufLen)
+	{
+		if(!fillBuffer())
+			return false;
 
-   // The only success condition is if we find stopChar. That happens
-   // inside this loop.
-   while ( !eof() && bufOff < bufLen )
-   {
-      if ( !fillBuffer() )
-         return false;
+		buf[bufOff] = m_buf[0];
+		
+		++m_buf;
+		++m_bufOffset;
+		--m_bufLen;
 
-      buf[bufOff] = m_buf[0];
-      
-      ++m_buf;
-      ++m_bufOffset;
-      --m_bufLen;
+		if(buf[bufOff]==stopChar)
+		{
+			if(foundChar!=nullptr)
+				*foundChar = true;
 
-      if ( buf[ bufOff ] == stopChar )
-      {
-         if ( foundChar != NULL )
-            *foundChar = true;
+			if(bufOff+1<bufLen)
+				buf[bufOff+1] = '\0';
+			else
+				buf[bufOff] = '\0';
 
-         if ( bufOff + 1 < bufLen )
-            buf[ bufOff + 1 ] = '\0';
-         else
-            buf[ bufOff ] = '\0';
+			return true;
+		}
 
-         return true;
-      }
+		bufOff++;
+	}
 
-      bufOff++;
-   }
+	if(eof())
+		setUnexpectedEof(true);
 
-   if ( eof() )
-      setUnexpectedEof( true );
-
-   return false;
+	return false;
 }
 
-bool DataSource::readBytes( uint8_t * buf, size_t bufLen )
+bool DataSource::readBytes(void *vbuf, size_t bufLen)
 {
-   if ( bufLen > (size_t) (m_fileSize - m_bufOffset) )
-   {
-      seek( m_fileSize );
-      setUnexpectedEof( true );
-      return false;
-   }
+	uint8_t *buf = (uint8_t*)vbuf;
 
-   size_t bufOff = 0;
+	if(bufLen>(size_t)(m_fileSize-m_bufOffset))
+	{
+		seek(m_fileSize);
+		setUnexpectedEof(true);
+		return false;
+	}
 
-   // The only success condition is if we find stopChar. That happens
-   // inside this loop.
-   while ( bufLen > 0 )
-   {
-      if ( !fillBuffer() )
-         return false;
+	size_t bufOff = 0;
 
-      size_t copySize = ( bufLen < m_bufLen ) ? bufLen : m_bufLen;
+	// The only success condition is if we find stopChar. That happens
+	// inside this loop.
+	while(bufLen>0)
+	{
+		if(!fillBuffer())
+			return false;
 
-      memcpy( &buf[bufOff], m_buf, copySize );
-      buf[bufOff] = m_buf[0];
-      
-      m_buf += copySize;
-      m_bufOffset += copySize;
-      m_bufLen -= copySize;
+		size_t copySize = (bufLen<m_bufLen)? bufLen : m_bufLen;
 
-      bufOff += copySize;
-      bufLen -= copySize;
-   }
+		memcpy(&buf[bufOff],m_buf,copySize);
+		buf[bufOff] = m_buf[0];
+		
+		m_buf += copySize;
+		m_bufOffset += copySize;
+		m_bufLen -= copySize;
 
-   return true;
+		bufOff += copySize;
+		bufLen -= copySize;
+	}
+
+	return true;
 }
 

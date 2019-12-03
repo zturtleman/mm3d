@@ -1,282 +1,196 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
+#include "mm3dtypes.h" //PCH
 
-#include <stdio.h> // For NULL
 #include "filtermgr.h"
 #include "modelfilter.h"
 #include "log.h"
 
-#include <ctype.h>
-
-using std::list;
-using std::string;
-
-FilterManager * FilterManager::s_instance = NULL;
-
-FilterManager::FilterManager()
-{
-}
+FilterManager *FilterManager::s_instance = nullptr;
 
 FilterManager::~FilterManager()
 {
-   log_debug( "FilterManager releasing %d filters\n", m_filters.size() );
-   FilterList::iterator it = m_filters.begin();
-   while ( it != m_filters.end() )
-   {
-      if ( *it )
-      {
-         (*it)->release();
-      }
-      it++;
-   }
+	log_debug("FilterManager releasing %d filters\n",m_filters.size());
+	for(auto*ea:m_filters) ea->release();
 }
 
-FilterManager * FilterManager::getInstance()
+FilterManager *FilterManager::getInstance()
 {
-   if ( !s_instance )
-   {
-      s_instance = new FilterManager();
-   }
+	if(!s_instance)
+	{
+		s_instance = new FilterManager();
+	}
 
-   return s_instance;
+	return s_instance;
 }
 
 void FilterManager::release()
 {
-   if ( s_instance != NULL )
-   {
-      delete s_instance;
-      s_instance = NULL;
-   }
+	if(s_instance!=nullptr)
+	{
+		delete s_instance;
+		s_instance = nullptr;
+	}
 }
 
-bool FilterManager::registerFilter( ModelFilter * filter )
+void FilterManager::registerFilter(ModelFilter *filter)
 {
-   if ( filter )
-   {
-      filter->setFactory( &m_factory );
-      m_filters.push_back( filter );
-      return true;
-   }
-   else
-   {
-      return false;
-   }
-}
+	_read.clear(); _write.clear(); _export.clear();
+	
+	m_filters.push_back(filter); assert(filter);
 
-Model::ModelErrorE FilterManager::readFile( Model * model, const char * filename )
+	filter->setFactory(&m_factory); //???
+}
+static const char *filtermgr_all_types //DUPLICATES texmgr.cc
+(std::vector<ModelFilter*> &f, std::string &g, const char*(ModelFilter::*mf)())
 {
-   Model::ModelErrorE rval = Model::ERROR_UNKNOWN_TYPE;
-   FilterList::iterator it;
-   for ( it = m_filters.begin(); it != m_filters.end(); it++ )
-   {
-      ModelFilter * filter = *it;
+	if(!g.empty()) return g.c_str(); //???
 
-      if ( filter && filter->isSupported( filename ) )
-      {
-         if ( filter->canRead() )
-         {
-            model->setUndoEnabled( false );
-            model->forceAddOrDelete( true );
+	//log_debug("have %d filters\n",f.size());
 
-            rval = filter->readFile( model, filename );
+	for(auto ea:f)
+	{
+		const char *t = (ea->*mf)();
 
-            model->forceAddOrDelete( false );
-            model->setUndoEnabled( true );
-            model->clearUndo();
-            m_factory.closeAll();
+		if(!t||!*t){ assert(t); continue; }
 
-            return rval;
-         }
-         else
-         {
-            rval = Model::ERROR_UNSUPPORTED_OPERATION;
-         }
-      }
-   }
+		size_t dup = g.size();
 
-   return rval;
+		//NOT REMOVING NONEXISTANT DUPLICATES.
+		g.append(t); g.push_back(' ');
+	}
+
+	if(!g.empty()) g.pop_back(); return g.c_str();
 }
-
-Model::ModelErrorE FilterManager::writeFile( Model * model, const char * filename, bool exportModel, FilterManager::WriteOptionsE wo )
+const char *FilterManager::getAllReadTypes()
 {
-   bool canWrite = true;
-   bool tryExport = false;
-   FilterList::iterator it;
-
-   for ( it = m_filters.begin(); it != m_filters.end(); it++ )
-   {
-      ModelFilter * filter = *it;
-
-      if ( filter && filter->isSupported( filename ) )
-      {
-         if ( (exportModel && filter->canExport()) || filter->canWrite() )
-         {
-            bool mustFree = false;
-            ModelFilter::OptionsFuncF f = filter->getOptionsPrompt();
-            ModelFilter::Options * o = NULL;
-            switch ( wo )
-            {
-               case WO_FilterDefault:
-                  o = filter->getDefaultOptions();
-                  mustFree = true;
-                  break;
-               case WO_ModelDefault:
-               case WO_ModelNoPrompt:
-                  //o = model->getWriteOptions( filename );
-                  if ( o == NULL )
-                  {
-                     o = filter->getDefaultOptions();
-                     mustFree = true;
-                  }
-                  break;
-               default:
-                  break;
-            }
-
-            bool doWrite = true;
-            if ( f != NULL && o != NULL && wo != WO_ModelNoPrompt )
-            {
-               doWrite = f( model, o );
-            }
-
-            Model::ModelErrorE err = Model::ERROR_NONE;
-
-            if ( doWrite )
-            {
-               err = filter->writeFile( model, filename, o );
-               m_factory.closeAll();
-            }
-            else
-            {
-               err = Model::ERROR_CANCEL;
-            }
-
-            if ( mustFree )
-            {
-               if ( o )
-               {
-                  o->release();
-               }
-               o = NULL;
-            }
-
-            return err;
-         }
-         else
-         {
-            if ( !exportModel && filter->canExport() )
-            {
-               tryExport = true;
-            }
-            else
-            {
-               canWrite = false;
-            }
-         }
-      }
-   }
-
-   if ( tryExport )
-   {
-      return Model::ERROR_EXPORT_ONLY;
-   }
-   if ( canWrite )
-   {
-      return Model::ERROR_UNKNOWN_TYPE;
-   }
-   else
-   {
-      return Model::ERROR_UNSUPPORTED_OPERATION;
-   }
+	return filtermgr_all_types(m_filters,_read,&ModelFilter::getReadTypes);
 }
-
-list<string> FilterManager::getAllReadTypes()
+const char *FilterManager::getAllWriteTypes(bool exportModel)
 {
-   list<string> rval;
-   FilterList::iterator filterIt = m_filters.begin();
-
-   while ( filterIt != m_filters.end() )
-   {
-      list<string> temp = (*filterIt)->getReadTypes();
-      while ( temp.size() )
-      {
-         // Add to read list if we can read a dummy file of this type
-         string tempFile = string( "file." ) + temp.front();
-         if ( (*filterIt)->canRead( tempFile.c_str() ) )
-         {
-            string s = temp.front();
-            rval.push_back( s );
-
-#ifndef WIN32
-            unsigned len = s.length();
-            for ( unsigned n = 0; n < len; n++ )
-            {
-               if ( isupper( s[n] ) )
-               {
-                  s[n] = tolower( s[n] );
-               }
-               else
-               {
-                  s[n] = toupper( s[n] );
-               }
-            }
-
-            rval.push_back( s );
-#endif // ! WIN32
-         }
-         temp.pop_front();
-      }
-      
-      filterIt++;
-   }
-
-   return rval;
+	if(!exportModel)
+	return filtermgr_all_types(m_filters,_write,&ModelFilter::getWriteTypes);
+	return filtermgr_all_types(m_filters,_export,&ModelFilter::getExportTypes);
 }
 
-list<string> FilterManager::getAllWriteTypes( bool exportModel )
+Model::ModelErrorE FilterManager::readFile(Model *model, const char *filename)
 {
-   list<string> rval;
-   FilterList::iterator filterIt = m_filters.begin();
+	//NEW: The individual filters are reimplementing this??
+	if(!model||!filename||!*filename) 
+	{
+		log_error("no filename supplied for model filter");
+		return Model::ERROR_BAD_ARGUMENT;
+	}
 
-   while ( filterIt != m_filters.end() )
-   {
-      list<string> temp = (*filterIt)->getWriteTypes();
-      while ( temp.size() )
-      {
-         // Add to write list if we can write a dummy file of this type
-         string tempFile = string( "file." ) + temp.front();
-         if ( (exportModel && (*filterIt)->canExport( tempFile.c_str() ))
-               || (*filterIt)->canWrite( tempFile.c_str() ) )
-         {
-            rval.push_back( temp.front() );
-         }
-         temp.pop_front();
-      }
-      
-      filterIt++;
-   }
+	//OPTIMIZING
+	const char *ext = strrchr(filename,'.'); //NEW
+	if(!ext) ext = filename;
 
-   return rval;
+	Model::ModelErrorE rval = Model::ERROR_UNKNOWN_TYPE;
+	
+	for(auto*ea:m_filters) 
+	{  
+		//if(ea&&ea->isSupported(filename)) //???
+		if(ea->canRead(ext))
+		{
+			//if(ea->canRead()) //???
+			{
+				model->setUndoEnabled(false);
+				model->forceAddOrDelete(true);
+
+				rval = ea->readFile(model,filename);
+
+				model->forceAddOrDelete(false);
+				model->setUndoEnabled(true);
+				model->clearUndo();
+				m_factory.closeAll();
+
+				return rval;
+			}
+			//else
+			{
+			//	rval = Model::ERROR_UNSUPPORTED_OPERATION;
+			}
+		}
+	}
+
+	return rval;
 }
 
+Model::ModelErrorE FilterManager::writeFile(Model *model, const char *filename, bool exportModel, FilterManager::WriteOptionsE wo)
+{	
+	//NEW: The individual filters are reimplementing this??
+	if(!model||!filename||!*filename) 
+	{
+		log_error("no filename supplied for model filter");
+		return Model::ERROR_BAD_ARGUMENT;
+	}
+
+	bool canWrite = true;
+	bool tryExport = false;
+	for(auto*ea:m_filters) 
+	{
+		if(ea&&ea->isSupported(filename))
+		if(exportModel&&ea->canExport()||ea->canWrite())
+		{
+			ModelFilter::PromptF *f = ea->getOptionsPrompt();
+			ModelFilter::Options *o = ea->getDefaultOptions();		
+			if(wo==WO_ModelNoPrompt) o->setOptionsFromModel(model);
+			
+			bool doWrite = true;
+			if(f!=nullptr&&o!=nullptr&&wo!=WO_ModelNoPrompt)
+			{
+				doWrite = f(model,o);
+			}
+
+			Model::ModelErrorE err = Model::ERROR_NONE;
+
+			if(doWrite)
+			{
+				err = ea->writeFile(model,filename,*o);
+				m_factory.closeAll();
+			}
+			else err = Model::ERROR_CANCEL;
+
+			o->release(); return err;
+		}
+		else if(!exportModel&&ea->canExport())
+		{
+			tryExport = true;
+		}
+		else canWrite = false;
+	}
+
+	if(tryExport)
+	{
+		return Model::ERROR_EXPORT_ONLY;
+	}
+	if(canWrite)
+	{
+		return Model::ERROR_UNKNOWN_TYPE;
+	}
+	else
+	{
+		return Model::ERROR_UNSUPPORTED_OPERATION;
+	}
+}

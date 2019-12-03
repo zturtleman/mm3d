@@ -1,24 +1,26 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
+
+#include "mm3dtypes.h" //PCH
 
 #include "model.h"
 #include "log.h"
@@ -27,2243 +29,2368 @@
 
 #include "modelundo.h"
 
-void Model::setSelectionMode( Model::SelectionModeE m )
+void Model::setSelectionMode(Model::SelectionModeE m)
 {
-   if ( m != m_selectionMode )
-   {
-      MU_SelectionMode * undo = new MU_SelectionMode;
-      undo->setSelectionMode( m, m_selectionMode );
-      sendUndo( undo );
+	if(m!=m_selectionMode)
+	{
+		MU_SelectionMode *undo = new MU_SelectionMode;
+		undo->setSelectionMode(m,m_selectionMode);
+		sendUndo(undo);
 
-      /*
-      switch ( m )
-      {
-         case SelectVertices:
-            unselectAllTriangles();
-            unselectAllGroups();
-            break;
-         case SelectTriangles:
-            if ( m_selectionMode == SelectVertices )
-            {
-               selectTrianglesFromVertices();
-            }
-            unselectAllGroups();
-            break;
-         case SelectGroups:
-            if ( m_selectionMode == SelectVertices )
-            {
-               selectTrianglesFromVertices();
-            }
-            if ( m_selectionMode == SelectVertices || m_selectionMode == SelectTriangles )
-            {
-               selectGroupsFromTriangles();
-            }
-            break;
-         case SelectJoints:
-            unselectAllVertices();
-            unselectAllTriangles();
-            unselectAllGroups();
-            break;
-         default:
-            break;
-      }
-      */
-      m_selectionMode = m;
-   }
+		/*
+		switch (m)
+		{
+			case SelectVertices:
+				unselectAllTriangles();
+				unselectAllGroups();
+				break;
+			case SelectTriangles:
+				if(m_selectionMode==SelectVertices)
+				{
+					selectTrianglesFromVertices();
+				}
+				unselectAllGroups();
+				break;
+			case SelectGroups:
+				if(m_selectionMode==SelectVertices)
+				{
+					selectTrianglesFromVertices();
+				}
+				if(m_selectionMode==SelectVertices||m_selectionMode==SelectTriangles)
+				{
+					selectGroupsFromTriangles();
+				}
+				break;
+			case SelectJoints:
+				unselectAllVertices();
+				unselectAllTriangles();
+				unselectAllGroups();
+				break;
+			default:
+				break;
+		}
+		*/
+		m_selectionMode = m;
+	}
 }
 
-bool Model::selectVertex( unsigned v )
+bool Model::selectVertex(unsigned v)
 {
-   if ( v < m_vertices.size() )
-   {
-      m_changeBits |= SelectionChange;
+	if(v<m_vertices.size()
+	&&!m_vertices[v]->m_selected) //2019
+	{
+		m_changeBits |= SelectionChange;
+		m_changeBits |= SelectionVertices; //2019
 
-      bool old = m_vertices[v]->m_selected;
-      m_vertices[ v ]->m_selected = true;
+		bool old = m_vertices[v]->m_selected;
+		m_vertices[v]->m_selected = true;
 
-      MU_Select * undo = new MU_Select( SelectVertices );
-      undo->setSelectionDifference( v, true, old );
-      sendUndo( undo );
+		MU_Select *undo = new MU_Select(SelectVertices);
+		undo->setSelectionDifference(v,true,old);
+		sendUndo(undo);
 
-      return true;
-   }
-   else
-   {
-      return false;
-   }
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::selectTriangle( unsigned t )
+bool Model::selectTriangle(unsigned t)
 {
-   if ( t < m_triangles.size() )
-   {
-      m_changeBits |= SelectionChange;
+	if(t<m_triangles.size()
+	&&!m_triangles[t]->m_selected) //2019
+	{
+		m_changeBits |= SelectionChange;
+		m_changeBits |= SelectionFaces; //2019
 
-      bool old = m_triangles[t]->m_selected;
-      m_triangles[ t ]->m_selected = true;
-      bool o = setUndoEnabled( false );
-      //selectVerticesFromTriangles();
-      selectVertex( m_triangles[t]->m_vertexIndices[0] );
-      selectVertex( m_triangles[t]->m_vertexIndices[1] );
-      selectVertex( m_triangles[t]->m_vertexIndices[2] );
-      setUndoEnabled( o );
+		bool old = m_triangles[t]->m_selected;
+		m_triangles[t]->m_selected = true;
+		bool o = setUndoEnabled(false);
+		//selectVerticesFromTriangles();
+		selectVertex(m_triangles[t]->m_vertexIndices[0]);
+		selectVertex(m_triangles[t]->m_vertexIndices[1]);
+		selectVertex(m_triangles[t]->m_vertexIndices[2]);
+		setUndoEnabled(o);
 
-      MU_Select * undo = new MU_Select( SelectTriangles );
-      undo->setSelectionDifference( t, true, old );
-      sendUndo( undo );
+		MU_Select *undo = new MU_Select(SelectTriangles);
+		undo->setSelectionDifference(t,true,old);
+		sendUndo(undo);
 
-      return true;
-   }
-   else
-   {
-      return false;
-   }
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::selectGroup( unsigned m )
+bool Model::selectGroup(unsigned m)
 {
-   if ( m >= 0 && m < m_groups.size() )
-   {
-      m_changeBits |= SelectionChange;
+	if(m>=0&&m<m_groups.size()
+	&&!m_groups[m]->m_selected) //2019
+	{
+		m_changeBits |= SelectionChange;
+		m_changeBits |= SelectionGroups; //2019
 
-      bool old = m_groups[m]->m_selected;
-      m_groups[ m ]->m_selected = true;
-      bool o = setUndoEnabled( false );
-      selectTrianglesFromGroups();
-      setUndoEnabled( o );
+		bool old = m_groups[m]->m_selected;
+		m_groups[m]->m_selected = true;
+		bool o = setUndoEnabled(false);
+		selectTrianglesFromGroups();
+		setUndoEnabled(o);
 
-      MU_Select * undo = new MU_Select( SelectGroups );
-      undo->setSelectionDifference( m, true, old );
-      sendUndo( undo );
+		MU_Select *undo = new MU_Select(SelectGroups);
+		undo->setSelectionDifference(m,true,old);
+		sendUndo(undo);
 
-      return true;
-   }
-   else
-   {
-      return false;
-   }
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::selectBoneJoint( unsigned j )
+bool Model::selectBoneJoint(unsigned j)
 {
-   if ( j >= 0 && j < m_joints.size() )
-   {
-      m_changeBits |= SelectionChange;
+	if(j>=0&&j<m_joints.size()
+	&&!m_joints[j]->m_selected) //2019
+	{
+		m_changeBits |= SelectionChange;
+		m_changeBits |= SelectionJoints; //2019
 
-      bool old = m_joints[j]->m_selected;
-      m_joints[ j ]->m_selected = true;
+		bool old = m_joints[j]->m_selected;
+		m_joints[j]->m_selected = true;
 
-      MU_Select * undo = new MU_Select( SelectJoints );
-      undo->setSelectionDifference( j, true, old );
-      sendUndo( undo );
+		MU_Select *undo = new MU_Select(SelectJoints);
+		undo->setSelectionDifference(j,true,old);
+		sendUndo(undo);
 
-      return true;
-   }
-   else
-   {
-      return false;
-   }
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::selectPoint( unsigned p )
+bool Model::selectPoint(unsigned p)
 {
-   if ( p >= 0 && p < m_points.size() )
-   {
-      m_changeBits |= SelectionChange;
+	if(p>=0&&p<m_points.size()
+	&&!m_points[p]->m_selected) //2019
+	{
+		m_changeBits |= SelectionChange;
+		m_changeBits |= SelectionPoints; //2019
 
-      bool old = m_points[p]->m_selected;
-      m_points[ p ]->m_selected = true;
+		bool old = m_points[p]->m_selected;
+		m_points[p]->m_selected = true;
 
-      MU_Select * undo = new MU_Select( SelectPoints );
-      undo->setSelectionDifference( p, true, old );
-      sendUndo( undo );
+		MU_Select *undo = new MU_Select(SelectPoints);
+		undo->setSelectionDifference(p,true,old);
+		sendUndo(undo);
 
-      return true;
-   }
-   else
-   {
-      return false;
-   }
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::selectProjection( unsigned p )
+bool Model::selectProjection(unsigned p)
 {
-   if ( p >= 0 && p < m_projections.size() )
-   {
-      m_changeBits |= SelectionChange;
+	if(p>=0&&p<m_projections.size()
+	&&!m_projections[p]->m_selected) //2019
+	{
+		m_changeBits |= SelectionChange;
+		m_changeBits |= SelectionProjections; //2019
 
-      bool old = m_projections[p]->m_selected;
-      m_projections[ p ]->m_selected = true;
+		bool old = m_projections[p]->m_selected;
+		m_projections[p]->m_selected = true;
 
-      MU_Select * undo = new MU_Select( SelectProjections );
-      undo->setSelectionDifference( p, true, old );
-      sendUndo( undo );
+		MU_Select *undo = new MU_Select(SelectProjections);
+		undo->setSelectionDifference(p,true,old);
+		sendUndo(undo);
 
-      return true;
-   }
-   else
-   {
-      return false;
-   }
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::unselectVertex( unsigned v )
+bool Model::unselectVertex(unsigned v)
 {
-   if ( v < m_vertices.size() )
-   {
-      m_changeBits |= SelectionChange;
+	if(v<m_vertices.size()
+	&&m_vertices[v]->m_selected) //2019
+	{
+		m_changeBits |= SelectionChange;
+		m_changeBits |= SelectionVertices; //2019
 
-      bool old = m_vertices[v]->m_selected;
-      m_vertices[ v ]->m_selected = false;
+		bool old = m_vertices[v]->m_selected;
+		m_vertices[v]->m_selected = false;
 
-      MU_Select * undo = new MU_Select( SelectVertices );
-      undo->setSelectionDifference( v, false, old );
-      sendUndo( undo );
+		MU_Select *undo = new MU_Select(SelectVertices);
+		undo->setSelectionDifference(v,false,old);
+		sendUndo(undo);
 
-      return true;
-   }
-   else
-   {
-      return false;
-   }
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::unselectTriangle( unsigned t )
+bool Model::unselectTriangle(unsigned t, bool remove_me)
 {
-   if ( t < m_triangles.size() )
-   {
-      m_changeBits |= SelectionChange;
+	if(t<m_triangles.size()
+	&&m_triangles[t]->m_selected) //2019
+	{
+		m_changeBits |= SelectionChange;
+		m_changeBits |= SelectionFaces; //2019
 
-      bool old = m_triangles[t]->m_selected;
-      m_triangles[ t ]->m_selected = false;
-      bool o = setUndoEnabled( false );
-      selectVerticesFromTriangles();
-      setUndoEnabled( o );
+		bool old = m_triangles[t]->m_selected;
+		m_triangles[t]->m_selected = false;
 
-      MU_Select * undo = new MU_Select( SelectTriangles );
-      undo->setSelectionDifference( t, false, old );
-      sendUndo( undo );
+		if(remove_me) //2019: MU_Select called in a loop!
+		{
+			bool o = setUndoEnabled(false);
+			selectVerticesFromTriangles();
+			setUndoEnabled(o);
+		}
 
-      return true;
-   }
-   else
-   {
-      return false;
-   }
+		MU_Select *undo = new MU_Select(SelectTriangles);
+		undo->setSelectionDifference(t,false,old);
+		sendUndo(undo);
+
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::unselectGroup( unsigned m )
+bool Model::unselectGroup(unsigned m)
 {
-   LOG_PROFILE();
+	LOG_PROFILE();
 
-   if ( m >= 0 && m < m_groups.size() )
-   {
-      m_changeBits |= SelectionChange;
+	if(m>=0&&m<m_groups.size()
+	&&m_groups[m]->m_selected) //2019
+	{
+		m_changeBits |= SelectionChange;
+		m_changeBits |= SelectionGroups; //2019
 
-      bool old = m_groups[m]->m_selected;
-      m_groups[ m ]->m_selected = false;
+		bool old = m_groups[m]->m_selected;
+		m_groups[m]->m_selected = false;
 
-      bool o = setUndoEnabled( false );
+		bool o = setUndoEnabled(false);
 
-      list<int> tris = getGroupTriangles( m );
-      list<int>::iterator it;
-      for ( it = tris.begin(); it != tris.end(); it++ )
-      {
-         m_triangles[ *it ]->m_selected = false;
-      }
-      selectVerticesFromTriangles();
+		int_list tris = getGroupTriangles(m);
+		int_list::iterator it;
+		for(it = tris.begin(); it!=tris.end(); it++)
+		{
+			m_triangles[*it]->m_selected = false;
+		}
+		selectVerticesFromTriangles();
 
-      setUndoEnabled( o );
+		setUndoEnabled(o);
 
-      MU_Select * undo = new MU_Select( SelectGroups );
-      undo->setSelectionDifference( m, false, old );
-      sendUndo( undo );
+		MU_Select *undo = new MU_Select(SelectGroups);
+		undo->setSelectionDifference(m,false,old);
+		sendUndo(undo);
 
-      return true;
-   }
-   else
-   {
-      return false;
-   }
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::unselectBoneJoint( unsigned j )
+bool Model::unselectBoneJoint(unsigned j)
 {
-   if ( j < m_joints.size() )
-   {
-      m_changeBits |= SelectionChange;
+	if(j<m_joints.size()
+	&&m_joints[j]->m_selected) //2019
+	{
+		m_changeBits |= SelectionChange;
+		m_changeBits |= SelectionJoints; //2019
 
-      bool old = m_joints[j]->m_selected;
-      m_joints[ j ]->m_selected = false;
+		bool old = m_joints[j]->m_selected;
+		m_joints[j]->m_selected = false;
 
-      MU_Select * undo = new MU_Select( SelectJoints );
-      undo->setSelectionDifference( j, false, old );
-      sendUndo( undo );
+		MU_Select *undo = new MU_Select(SelectJoints);
+		undo->setSelectionDifference(j,false,old);
+		sendUndo(undo);
 
-      return true;
-   }
-   else
-   {
-      return false;
-   }
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::unselectPoint( unsigned p )
+bool Model::unselectPoint(unsigned p)
 {
-   if ( p < m_points.size() )
-   {
-      m_changeBits |= SelectionChange;
+	if(p<m_points.size()
+	&&m_points[p]->m_selected) //2019
+	{
+		m_changeBits |= SelectionChange;
+		m_changeBits |= SelectionPoints; //2019
 
-      bool old = m_points[p]->m_selected;
-      m_points[ p ]->m_selected = false;
+		bool old = m_points[p]->m_selected;
+		m_points[p]->m_selected = false;
 
-      MU_Select * undo = new MU_Select( SelectPoints );
-      undo->setSelectionDifference( p, false, old );
-      sendUndo( undo );
+		MU_Select *undo = new MU_Select(SelectPoints);
+		undo->setSelectionDifference(p,false,old);
+		sendUndo(undo);
 
-      return true;
-   }
-   else
-   {
-      return false;
-   }
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::unselectProjection( unsigned p )
+bool Model::unselectProjection(unsigned p)
 {
-   if ( p < m_projections.size() )
-   {
-      m_changeBits |= SelectionChange;
+	if(p<m_projections.size()
+	&&m_projections[p]->m_selected) //2019
+	{
+		m_changeBits |= SelectionChange;
+		m_changeBits |= SelectionProjections; //2019
 
-      bool old = m_projections[p]->m_selected;
-      m_projections[ p ]->m_selected = false;
+		bool old = m_projections[p]->m_selected;
+		m_projections[p]->m_selected = false;
 
-      MU_Select * undo = new MU_Select( SelectProjections );
-      undo->setSelectionDifference( p, false, old );
-      sendUndo( undo );
+		MU_Select *undo = new MU_Select(SelectProjections);
+		undo->setSelectionDifference(p,false,old);
+		sendUndo(undo);
 
-      return true;
-   }
-   else
-   {
-      return false;
-   }
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::isVertexSelected( unsigned v ) const
+bool Model::isVertexSelected(unsigned v)const
 {
-   if ( v < m_vertices.size() )
-   {
-      return m_vertices[v]->m_selected;
-   }
-   else
-   {
-      return false;
-   }
+	if(v<m_vertices.size())
+	{
+		return m_vertices[v]->m_selected;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::isTriangleSelected( unsigned v ) const
+bool Model::isTriangleSelected(unsigned v)const
 {
-   if ( v < m_triangles.size() )
-   {
-      return m_triangles[v]->m_selected;
-   }
-   else
-   {
-      return false;
-   }
+	if(v<m_triangles.size())
+	{
+		return m_triangles[v]->m_selected;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::isGroupSelected( unsigned v ) const
+bool Model::isGroupSelected(unsigned v)const
 {
-   if ( v < m_groups.size() )
-   {
-      return m_groups[v]->m_selected;
-   }
-   else
-   {
-      return false;
-   }
+	if(v<m_groups.size())
+	{
+		return m_groups[v]->m_selected;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::isBoneJointSelected( unsigned j ) const
+bool Model::isBoneJointSelected(unsigned j)const
 {
-   if ( j < m_joints.size() )
-   {
-      return m_joints[j]->m_selected;
-   }
-   else
-   {
-      return false;
-   }
+	if(j<m_joints.size())
+	{
+		return m_joints[j]->m_selected;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::isPointSelected( unsigned p ) const
+bool Model::isPointSelected(unsigned p)const
 {
-   if ( p < m_points.size() )
-   {
-      return m_points[p]->m_selected;
-   }
-   else
-   {
-      return false;
-   }
+	if(p<m_points.size())
+	{
+		return m_points[p]->m_selected;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::isProjectionSelected( unsigned p ) const
+bool Model::isProjectionSelected(unsigned p)const
 {
-   if ( p < m_projections.size() )
-   {
-      return m_projections[p]->m_selected;
-   }
-   else
-   {
-      return false;
-   }
+	if(p<m_projections.size())
+	{
+		return m_projections[p]->m_selected;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Model::selectVerticesInVolumeMatrix( bool select, const Matrix & viewMat, double x1, double y1, double x2, double y2, SelectionTest * test )
+bool Model::selectVerticesInVolumeMatrix(bool select, const Matrix &viewMat, double x1, double y1, double x2, double y2,SelectionTest *test)
 {
-   LOG_PROFILE();
+	LOG_PROFILE();
 
-   if ( m_animationMode == Model::ANIMMODE_FRAME
-         && (m_currentAnim >= m_frameAnims.size() || 
-             m_currentFrame >= m_frameAnims[m_currentAnim]->m_frameData.size()) )
-   {
-      return false;
-   }
+	if(m_animationMode==Model::ANIMMODE_FRAME
+		  &&(m_currentAnim>=m_frameAnims.size()||
+				 m_currentFrame>=m_frameAnims[m_currentAnim]->m_frameData.size()))
+	{
+		return false;
+	}
 
-   beginSelectionDifference();
+	beginSelectionDifference();
 
-   if ( x1 > x2 )
-   {
-      double temp = x2;
-      x2 = x1;
-      x1 = temp;
-   }
+	if(x1>x2)
+	{
+		double temp = x2;
+		x2 = x1;
+		x1 = temp;
+	}
 
-   if ( y1 > y2 )
-   {
-      double temp = y2;
-      y2 = y1;
-      y1 = temp;
-   }
+	if(y1>y2)
+	{
+		double temp = y2;
+		y2 = y1;
+		y1 = temp;
+	}
 
-   Vector vert;
+	Vector vert;
 
-   for ( unsigned v = 0; v < m_vertices.size(); v++ )
-   {
-      if ( m_vertices[v]->m_selected != select )
-      {
-         if ( m_animationMode == Model::ANIMMODE_FRAME )
-         {
-            vert.setAll( (*m_frameAnims[m_currentAnim]->m_frameData[m_currentFrame]->m_frameVertices)[ v ]->m_coord, 3 );
-         }
-         else
-         {
-            vert.setAll( m_vertices[v]->m_drawSource, 3 );
-         }
-         vert[3] = 1.0;
+	for(unsigned v = 0; v<m_vertices.size(); v++)
+	{
+		if(m_vertices[v]->m_selected!=select)
+		{
+			if(m_animationMode==Model::ANIMMODE_FRAME)
+			{
+				vert.setAll((*m_frameAnims[m_currentAnim]->m_frameData[m_currentFrame]->m_frameVertices)[v]->m_coord,3);
+			}
+			else
+			{
+				vert.setAll(m_vertices[v]->m_drawSource,3);
+			}
+			vert[3] = 1.0;
 
-         viewMat.apply( vert );
+			viewMat.apply(vert);
 
-         if (  m_vertices[v]->m_visible
-               && vert[0] >= x1 && vert[0] <= x2 
-               && vert[1] >= y1 && vert[1] <= y2 )
-         {
-            if ( test )
-               m_vertices[v]->m_selected = test->shouldSelect( m_vertices[v] ) ? select : m_vertices[v]->m_selected;
-            else
-               m_vertices[v]->m_selected = select;
-         }
-      }
-   }
-   endSelectionDifference();
+			//TESTING
+			//This lets a projection matrix be used to do the selection.
+			//I guess it should be a permanent feature.
+			double w = vert[3]; if(1!=w) 
+			{
+				//HACK: Reject if behind Z plane.
+				if(w<=0) continue;
 
-   return true;
+				vert.scale(1/vert[3]);
+			}
+
+			if( m_vertices[v]->m_visible
+				  &&vert[0]>=x1&&vert[0]<=x2 
+				  &&vert[1]>=y1&&vert[1]<=y2)
+			{
+				if(test)
+					m_vertices[v]->m_selected = test->shouldSelect(m_vertices[v])? select : m_vertices[v]->m_selected;
+				else
+					m_vertices[v]->m_selected = select;
+			}
+		}
+	}
+	endSelectionDifference();
+
+	return true;
 }
 
-bool Model::selectTrianglesInVolumeMatrix( bool select, const Matrix & viewMat, double x1, double y1, double x2, double y2, bool connected, SelectionTest * test )
+bool Model::selectTrianglesInVolumeMatrix(bool select, const Matrix &viewMat, double x1, double y1, double x2, double y2,bool connected,SelectionTest *test)
 {
-   LOG_PROFILE();
+	LOG_PROFILE();
 
-   if ( m_animationMode == Model::ANIMMODE_FRAME
-         && (m_currentAnim >= m_frameAnims.size() || 
-             m_currentFrame >= m_frameAnims[m_currentAnim]->m_frameData.size()) )
-   {
-      return false;
-   }
+	if(m_animationMode==Model::ANIMMODE_FRAME
+		  &&(m_currentAnim>=m_frameAnims.size()||
+				 m_currentFrame>=m_frameAnims[m_currentAnim]->m_frameData.size()))
+	{
+		return false;
+	}
 
-   beginSelectionDifference();
+	beginSelectionDifference();
 
-   unsigned i;
-   for ( i = 0; i < m_vertices.size(); i++ )
-   {
-      m_vertices[i]->m_marked2 = false;
-   }
+	unsigned i;
+	for(i = 0; i<m_vertices.size(); i++)
+	{
+		m_vertices[i]->m_marked2 = false;
+	}
 
-   for ( i = 0; i < m_triangles.size(); i++ )
-   {
-      m_triangles[i]->m_marked2 = false;
-   }
+	for(i = 0; i<m_triangles.size(); i++)
+	{
+		m_triangles[i]->m_marked2 = false;
+	}
 
-   if ( x1 > x2 )
-   {
-      double temp = x2;
-      x2 = x1;
-      x1 = temp;
-   }
+	if(x1>x2)
+	{
+		double temp = x2;
+		x2 = x1;
+		x1 = temp;
+	}
 
-   if ( y1 > y2 )
-   {
-      double temp = y2;
-      y2 = y1;
-      y1 = temp;
-   }
+	if(y1>y2)
+	{
+		double temp = y2;
+		y2 = y1;
+		y1 = temp;
+	}
 
-   unsigned t;
-   for ( t = 0; t < m_triangles.size(); t++ )
-   {
-      Triangle * tri = m_triangles[t];
-      if ( tri->m_selected != select 
-            && tri->m_visible
-            && (!test || (test && test->shouldSelect( tri )) )) 
-      {
-         bool above = false;
-         bool below = false;
+	unsigned t;
+	for(t = 0; t<m_triangles.size(); t++)
+	{
+		Triangle *tri = m_triangles[t];
+		if(tri->m_selected!=select 
+			  &&tri->m_visible
+			  &&(!test||(test&&test->shouldSelect(tri))))
+		{
+			bool above = false;
+			bool below = false;
 
-         int v;
-         Vertex *vert[3];
-         double tCords[3][4];
+			int v;
+			Vertex *vert[3];
+			double tCords[3][4];
 
+			// 0. Assign vert to triangle's verticies 
+			// 1. Check for vertices within the selection volume in the process
+			for(v = 0; v<3; v++)
+			{
+				//FIX ME
+				//Calculating every instance of the vertex is pretty gratuitous.
 
-         // 0. Assign vert to triangle's verticies 
-         // 1. Check for vertices within the selection volume in the process
-         for ( v = 0; v < 3; v++ )
-         {
-            unsigned vertId = tri->m_vertexIndices[v];
-            vert[v] = m_vertices[ vertId ];
-            if ( m_animationMode == Model::ANIMMODE_FRAME )
-            {
-               FrameAnimVertex * avert= (*m_frameAnims[m_currentAnim]->m_frameData[m_currentFrame]->m_frameVertices)[ vertId ];
-               tCords[v][0] = avert->m_coord[0]; 
-               tCords[v][1] = avert->m_coord[1]; 
-               tCords[v][2] = avert->m_coord[2]; 
-               tCords[v][3] = 1.0;
+				unsigned vertId = tri->m_vertexIndices[v];
+				vert[v] = m_vertices[vertId];
+				if(m_animationMode==Model::ANIMMODE_FRAME)
+				{
+					FrameAnimVertex *avert= (*m_frameAnims[m_currentAnim]->m_frameData[m_currentFrame]->m_frameVertices)[vertId];
+					tCords[v][0] = avert->m_coord[0]; 
+					tCords[v][1] = avert->m_coord[1]; 
+					tCords[v][2] = avert->m_coord[2]; 
+					tCords[v][3] = 1.0;
 
-               viewMat.apply( tCords[v] );
-            }
-            else
-            {
-               tCords[v][0] = vert[v]->m_drawSource[0]; 
-               tCords[v][1] = vert[v]->m_drawSource[1]; 
-               tCords[v][2] = vert[v]->m_drawSource[2]; 
-               tCords[v][3] = 1.0;
+					viewMat.apply(tCords[v]);
+				}
+				else
+				{
+					tCords[v][0] = vert[v]->m_drawSource[0]; 
+					tCords[v][1] = vert[v]->m_drawSource[1]; 
+					tCords[v][2] = vert[v]->m_drawSource[2]; 
+					tCords[v][3] = 1.0;
 
-               viewMat.apply( tCords[v] );
-            }
-         }
-         for ( v = 0; v < 3; v++ )
-         {
-            if (  tCords[v][0] >= x1 && tCords[v][0] <= x2 
-                  && tCords[v][1] >= y1 && tCords[v][1] <= y2 )
-            {
-               // A vertex of the triangle is within the selection area
-               tri->m_selected = select;
+					viewMat.apply(tCords[v]);
+				}
 
-               vert[0]->m_marked2 = true;
-               vert[1]->m_marked2 = true;
-               vert[2]->m_marked2 = true;
-               goto next_triangle; // next triangle
-            }
-         }
+				//TESTING
+				//This lets a projection matrix be used to do the selection.
+				//I guess it should be a permanent feature.
+				double w = tCords[v][3]; if(1!=w) 
+				{
+					//HACK: Reject if behind the Z plane because they can't
+					//be clipped to the visible/meaningful parts.
+					if(w<=0) goto next_triangle;
 
-         // 2. Find intersections between triangle edges and selection edges
-         // 3. Also, check to see if the selection box is completely within triangle
+					((Vector*)tCords[v])->scale(1/w);
+				}
+			}
 
-         double m[3];
-         double b[3];
-         double *coord[3][2];
+			for(v = 0; v<3; v++)
+			{
+				if( tCords[v][0]>=x1&&tCords[v][0]<=x2 
+					  &&tCords[v][1]>=y1&&tCords[v][1]<=y2)
+				{
+					// A vertex of the triangle is within the selection area
+					tri->m_selected = select;
 
-         m[0] = (tCords[0][1] - tCords[1][1]) / (tCords[0][0] - tCords[1][0]) ;
-         coord[0][0] = tCords[0];
-         coord[0][1] = tCords[1];
-         m[1] = (tCords[0][1] - tCords[2][1]) / (tCords[0][0] - tCords[2][0]) ;
-         coord[1][0] = tCords[0];
-         coord[1][1] = tCords[2];
-         m[2] = (tCords[1][1] - tCords[2][1]) / (tCords[1][0] - tCords[2][0]) ;
-         coord[2][0] = tCords[1];
-         coord[2][1] = tCords[2];
+					vert[0]->m_marked2 = true;
+					vert[1]->m_marked2 = true;
+					vert[2]->m_marked2 = true;
+					goto next_triangle; // next triangle
+				}
+			}
 
-         b[0] = tCords[0][1] - ( m[0] * tCords[0][0] );
-         b[1] = tCords[2][1] - ( m[1] * tCords[2][0] );
-         b[2] = tCords[2][1] - ( m[2] * tCords[2][0] );
+			// 2. Find intersections between triangle edges and selection edges
+			// 3. Also,check to see if the selection box is completely within triangle
 
-         for ( int line = 0; line < 3; line++ )
-         {
-            double y;
-            double x;
-            double xmin;
-            double xmax;
-            double ymin;
-            double ymax;
+			double m[3];
+			double b[3];
+			double *coord[3][2];
 
-            if ( coord[line][0][0] < coord[line][1][0] )
-            {
-               xmin = coord[line][0][0];
-               xmax = coord[line][1][0];
-            }
-            else
-            {
-               xmin = coord[line][1][0];
-               xmax = coord[line][0][0];
-            }
+			m[0] = (tCords[0][1]-tCords[1][1])/(tCords[0][0]-tCords[1][0]);
+			coord[0][0] = tCords[0];
+			coord[0][1] = tCords[1];
+			m[1] = (tCords[0][1]-tCords[2][1])/(tCords[0][0]-tCords[2][0]);
+			coord[1][0] = tCords[0];
+			coord[1][1] = tCords[2];
+			m[2] = (tCords[1][1]-tCords[2][1])/(tCords[1][0]-tCords[2][0]);
+			coord[2][0] = tCords[1];
+			coord[2][1] = tCords[2];
 
-            if ( coord[line][0][1] < coord[line][1][1] )
-            {
-               ymin = coord[line][0][1];
-               ymax = coord[line][1][1];
-            }
-            else
-            {
-               ymin = coord[line][1][1];
-               ymax = coord[line][0][1];
-            }
+			b[0] = tCords[0][1]-(m[0] *tCords[0][0]);
+			b[1] = tCords[2][1]-(m[1] *tCords[2][0]);
+			b[2] = tCords[2][1]-(m[2] *tCords[2][0]);
 
-            if ( x1 >= xmin && x1 <= xmax )
-            {
-               y = m[line] * x1 + b[line];
-               if ( y >= y1 && y <= y2 )
-               {
-                  tri->m_selected = select;
+			for(int line = 0; line<3; line++)
+			{
+				double y;
+				double x;
+				double xmin;
+				double xmax;
+				double ymin;
+				double ymax;
 
-                  vert[0]->m_marked2 = true;
-                  vert[1]->m_marked2 = true;
-                  vert[2]->m_marked2 = true;
-                  goto next_triangle; // next triangle
-               }
+				if(coord[line][0][0]<coord[line][1][0])
+				{
+					xmin = coord[line][0][0];
+					xmax = coord[line][1][0];
+				}
+				else
+				{
+					xmin = coord[line][1][0];
+					xmax = coord[line][0][0];
+				}
 
-               if ( y > y1 )
-               {
-                  above = true;
-               }
-               if ( y < y1 )
-               {
-                  below = true;
-               }
-            }
+				if(coord[line][0][1]<coord[line][1][1])
+				{
+					ymin = coord[line][0][1];
+					ymax = coord[line][1][1];
+				}
+				else
+				{
+					ymin = coord[line][1][1];
+					ymax = coord[line][0][1];
+				}
 
-            if ( x2 >= xmin && x2 <= xmax )
-            {
-               y = m[line] * x2 + b[line];
-               if ( y >= y1 && y <= y2 )
-               {
-                  tri->m_selected = select;
+				if(x1>=xmin&&x1<=xmax)
+				{
+					y = m[line] *x1+b[line];
+					if(y>=y1&&y<=y2)
+					{
+						tri->m_selected = select;
 
-                  vert[0]->m_marked2 = true;
-                  vert[1]->m_marked2 = true;
-                  vert[2]->m_marked2 = true;
-                  goto next_triangle; // next triangle
-               }
-            }
+						vert[0]->m_marked2 = true;
+						vert[1]->m_marked2 = true;
+						vert[2]->m_marked2 = true;
+						goto next_triangle; // next triangle
+					}
 
-            if ( y1 >= ymin && y1 <= ymax )
-            {
-               if ( coord[line][0][0] == coord[line][1][0] )
-               {
-                  if ( coord[line][0][0] >= x1 && coord[line][0][0] <= x2 )
-                  {
-                     tri->m_selected = select;
+					if(y>y1)
+					{
+						above = true;
+					}
+					if(y<y1)
+					{
+						below = true;
+					}
+				}
 
-                     vert[0]->m_marked2 = true;
-                     vert[1]->m_marked2 = true;
-                     vert[2]->m_marked2 = true;
-                     goto next_triangle; // next triangle
-                  }
-               }
-               else
-               {
-                  x = (y1 - b[line]) / m[line];
-                  if ( x >= x1 && x <= x2 )
-                  {
-                     tri->m_selected = select;
+				if(x2>=xmin&&x2<=xmax)
+				{
+					y = m[line] *x2+b[line];
+					if(y>=y1&&y<=y2)
+					{
+						tri->m_selected = select;
 
-                     vert[0]->m_marked2 = true;
-                     vert[1]->m_marked2 = true;
-                     vert[2]->m_marked2 = true;
-                     goto next_triangle; // next triangle
-                  }
-               }
-            }
+						vert[0]->m_marked2 = true;
+						vert[1]->m_marked2 = true;
+						vert[2]->m_marked2 = true;
+						goto next_triangle; // next triangle
+					}
+				}
 
-            if ( y2 >= ymin && y2 <= ymax )
-            {
-               if ( coord[line][0][0] == coord[line][1][0] )
-               {
-                  if ( coord[line][0][0] >= x1 && coord[line][0][0] <= x2 )
-                  {
-                     tri->m_selected = select;
+				if(y1>=ymin&&y1<=ymax)
+				{
+					if(coord[line][0][0]==coord[line][1][0])
+					{
+						if(coord[line][0][0]>=x1&&coord[line][0][0]<=x2)
+						{
+							tri->m_selected = select;
 
-                     vert[0]->m_marked2 = true;
-                     vert[1]->m_marked2 = true;
-                     vert[2]->m_marked2 = true;
-                     goto next_triangle; // next triangle
-                  }
-               }
-               else
-               {
-                  x = (y2 - b[line]) / m[line];
-                  if ( x >= x1 && x <= x2 )
-                  {
-                     tri->m_selected = select;
+							vert[0]->m_marked2 = true;
+							vert[1]->m_marked2 = true;
+							vert[2]->m_marked2 = true;
+							goto next_triangle; // next triangle
+						}
+					}
+					else
+					{
+						x = (y1-b[line])/m[line];
+						if(x>=x1&&x<=x2)
+						{
+							tri->m_selected = select;
 
-                     vert[0]->m_marked2 = true;
-                     vert[1]->m_marked2 = true;
-                     vert[2]->m_marked2 = true;
-                     goto next_triangle; // next triangle
-                  }
-               }
-            }
-         }
+							vert[0]->m_marked2 = true;
+							vert[1]->m_marked2 = true;
+							vert[2]->m_marked2 = true;
+							goto next_triangle; // next triangle
+						}
+					}
+				}
 
-         if ( above && below )
-         {
-            // There was an intersection above and below the selection area,
-            // This means we're inside the triangle, so add it to our selection list
-            tri->m_selected = select;
+				if(y2>=ymin&&y2<=ymax)
+				{
+					if(coord[line][0][0]==coord[line][1][0])
+					{
+						if(coord[line][0][0]>=x1&&coord[line][0][0]<=x2)
+						{
+							tri->m_selected = select;
 
-            vert[0]->m_marked2 = true;
-            vert[1]->m_marked2 = true;
-            vert[2]->m_marked2 = true;
-            goto next_triangle; // next triangle
-         }
+							vert[0]->m_marked2 = true;
+							vert[1]->m_marked2 = true;
+							vert[2]->m_marked2 = true;
+							goto next_triangle; // next triangle
+						}
+					}
+					else
+					{
+						x = (y2-b[line])/m[line];
+						if(x>=x1&&x<=x2)
+						{
+							tri->m_selected = select;
+
+							vert[0]->m_marked2 = true;
+							vert[1]->m_marked2 = true;
+							vert[2]->m_marked2 = true;
+							goto next_triangle; // next triangle
+						}
+					}
+				}
+			}
+
+			if(above&&below)
+			{
+				// There was an intersection above and below the selection area,
+				// This means we're inside the triangle,so add it to our selection list
+				tri->m_selected = select;
+
+				vert[0]->m_marked2 = true;
+				vert[1]->m_marked2 = true;
+				vert[2]->m_marked2 = true;
+				goto next_triangle; // next triangle
+			}
 
 next_triangle:
-         ; // because we need a statement after a label
-      }
-   }
+			; // because we need a statement after a label
+		}
+	}
 
-   if ( connected )
-   {
-      bool found = true;
-      while ( found )
-      {
-         found = false;
-         for ( t = 0; t < m_triangles.size(); t++ )
-         {
-            if ( m_triangles[t]->m_visible )
-            {
-               int count = 0;
-               for ( unsigned v = 0; v < 3; v++ )
-               {
-                  if ( m_vertices[ m_triangles[t]->m_vertexIndices[v] ]->m_marked2 )
-                  {
-                     count++;
-                  }
-               }
+	if(connected)
+	{
+		bool found = true;
+		while(found)
+		{
+			found = false;
+			for(t = 0; t<m_triangles.size(); t++)
+			{
+				if(m_triangles[t]->m_visible)
+				{
+					int count = 0;
+					for(unsigned v = 0; v<3; v++)
+					{
+						if(m_vertices[m_triangles[t]->m_vertexIndices[v]]->m_marked2)
+						{
+							count++;
+						}
+					}
 
-               if ( count > 0 && 
-                     (count < 3 || m_triangles[t]->m_selected != select) ) 
-               {
-                  found = true;
+					if(count>0&&
+							(count<3||m_triangles[t]->m_selected!=select))
+					{
+						found = true;
 
-                  m_triangles[t]->m_selected = select;
+						m_triangles[t]->m_selected = select;
 
-                  for ( unsigned v = 0; v < 3; v++ )
-                  {
-                     m_vertices[ m_triangles[t]->m_vertexIndices[v] ]->m_marked2 = true;
-                  }
-               }
-            }
-         }
-      }
-   }
+						for(unsigned v = 0; v<3; v++)
+						{
+							m_vertices[m_triangles[t]->m_vertexIndices[v]]->m_marked2 = true;
+						}
+					}
+				}
+			}
+		}
+	}
 
-   selectVerticesFromTriangles();
+	selectVerticesFromTriangles();
 
-   endSelectionDifference();
-   return true;
+	endSelectionDifference();
+	return true;
 }
 
-bool Model::selectGroupsInVolumeMatrix( bool select, const Matrix & viewMat, double x1, double y1, double x2, double y2, SelectionTest * test )
+bool Model::selectGroupsInVolumeMatrix(bool select, const Matrix &viewMat, double x1, double y1, double x2, double y2,SelectionTest *test)
 {
-   LOG_PROFILE();
+	LOG_PROFILE();
 
-   beginSelectionDifference();
+	beginSelectionDifference();
 
-   selectTrianglesInVolumeMatrix( select, viewMat, x1, y1, x2, y2, false, test );
+	selectTrianglesInVolumeMatrix(select,viewMat,x1,y1,x2,y2,false,test);
 
-   if ( select )
-   {
-      selectGroupsFromTriangles( false );
-   }
-   else
-   {
-      selectGroupsFromTriangles( true );
-   }
+	if(select)
+	{
+		selectGroupsFromTriangles(false);
+	}
+	else
+	{
+		selectGroupsFromTriangles(true);
+	}
 
-   endSelectionDifference();
+	endSelectionDifference();
 
-   return true;
+	return true;
 }
 
-bool Model::selectBoneJointsInVolumeMatrix( bool select, const Matrix & viewMat, double x1, double y1, double x2, double y2, SelectionTest * test )
+bool Model::selectBoneJointsInVolumeMatrix(bool select, const Matrix &viewMat, double x1, double y1, double x2, double y2,SelectionTest *test)
 {
-   LOG_PROFILE();
+	LOG_PROFILE();
 
-   beginSelectionDifference();
+	beginSelectionDifference();
 
-   if ( x1 > x2 )
-   {
-      double temp = x2;
-      x2 = x1;
-      x1 = temp;
-   }
+	if(x1>x2)
+	{
+		double temp = x2;
+		x2 = x1;
+		x1 = temp;
+	}
 
-   if ( y1 > y2 )
-   {
-      double temp = y2;
-      y2 = y1;
-      y1 = temp;
-   }
+	if(y1>y2)
+	{
+		double temp = y2;
+		y2 = y1;
+		y1 = temp;
+	}
 
-   Vector vec;
+	Vector vec;
 
-   for ( unsigned j = 0; j < m_joints.size(); j++ )
-   {
-      Joint * joint = m_joints[j];
+	for(unsigned j = 0; j<m_joints.size(); j++)
+	{
+		Joint *joint = m_joints[j];
 
-      if ( joint->m_selected != select && joint->m_visible )
-      {
-         vec[0] = joint->m_final.get( 3, 0 );
-         vec[1] = joint->m_final.get( 3, 1 );
-         vec[2] = joint->m_final.get( 3, 2 );
-         vec[3] = 1.0;
+		if(joint->m_selected!=select&&joint->m_visible)
+		{
+			vec[0] = joint->m_final.get(3,0);
+			vec[1] = joint->m_final.get(3,1);
+			vec[2] = joint->m_final.get(3,2);
+			vec[3] = 1.0;
 
-         viewMat.apply( vec );
+			viewMat.apply(vec);
 
-         if ( vec[ 0 ] >= x1 && vec[ 0 ] <= x2 
-               && vec[ 1 ] >= y1 && vec[ 1 ] <= y2 )
-         {
-            if ( test )
-               joint->m_selected = test->shouldSelect( joint ) ? select : joint->m_selected;
-            else
-               joint->m_selected = select;
-         }
-      }
-   }
-   endSelectionDifference();
+			//TESTING
+			//This lets a projection matrix be used to do the selection.
+			//I guess it should be a permanent feature.
+			double w = vec[3]; if(1!=w) 
+			{
+				//HACK: Reject if behind Z plane.
+				if(w<=0) continue;
 
-   return true;
+				vec.scale(1/w);
+			}
+
+			if(vec[0]>=x1&&vec[0]<=x2 
+				  &&vec[1]>=y1&&vec[1]<=y2)
+			{
+				if(test)
+					joint->m_selected = test->shouldSelect(joint)? select : joint->m_selected;
+				else
+					joint->m_selected = select;
+			}
+		}
+	}
+	endSelectionDifference();
+
+	return true;
 }
 
-bool Model::selectPointsInVolumeMatrix( bool select, const Matrix & viewMat, double x1, double y1, double x2, double y2, SelectionTest * test )
+bool Model::selectPointsInVolumeMatrix(bool select, const Matrix &viewMat, double x1, double y1, double x2, double y2,SelectionTest *test)
 {
-   LOG_PROFILE();
+	LOG_PROFILE();
 
-   if ( m_animationMode == Model::ANIMMODE_FRAME
-         && (m_currentAnim >= m_frameAnims.size() || 
-             m_currentFrame >= m_frameAnims[m_currentAnim]->m_frameData.size()) )
-   {
-      return false;
-   }
+	if(m_animationMode==Model::ANIMMODE_FRAME
+		  &&(m_currentAnim>=m_frameAnims.size()||
+				 m_currentFrame>=m_frameAnims[m_currentAnim]->m_frameData.size()))
+	{
+		return false;
+	}
 
-   beginSelectionDifference();
+	beginSelectionDifference();
 
-   if ( x1 > x2 )
-   {
-      double temp = x2;
-      x2 = x1;
-      x1 = temp;
-   }
+	if(x1>x2)
+	{
+		double temp = x2;
+		x2 = x1;
+		x1 = temp;
+	}
 
-   if ( y1 > y2 )
-   {
-      double temp = y2;
-      y2 = y1;
-      y1 = temp;
-   }
+	if(y1>y2)
+	{
+		double temp = y2;
+		y2 = y1;
+		y1 = temp;
+	}
 
-   Vector vec;
+	Vector vec;
 
-   for ( unsigned p = 0; p < m_points.size(); p++ )
-   {
-      Point * point = m_points[p];
+	for(unsigned p = 0; p<m_points.size(); p++)
+	{
+		Point *point = m_points[p];
 
-      if ( point->m_selected != select 
-            && point->m_visible )
-      {
-         if ( m_animationMode == Model::ANIMMODE_FRAME )
-         {
-            vec.setAll( (*m_frameAnims[m_currentAnim]->m_frameData[m_currentFrame]->m_framePoints)[ p ]->m_trans, 3 );
-         }
-         else
-         {
-            vec.setAll( point->m_drawSource, 3 );
-         }
-         vec[3] = 1.0;
+		if(point->m_selected!=select 
+			  &&point->m_visible)
+		{
+			if(m_animationMode==Model::ANIMMODE_FRAME)
+			{
+				vec.setAll((*m_frameAnims[m_currentAnim]->m_frameData[m_currentFrame]->m_framePoints)[p]->m_trans,3);
+			}
+			else
+			{
+				vec.setAll(point->m_drawSource,3);
+			}
+			vec[3] = 1.0;
 
-         viewMat.apply( vec );
+			viewMat.apply(vec);
 
-         if ( vec[ 0 ] >= x1 && vec[ 0 ] <= x2 
-               && vec[ 1 ] >= y1 && vec[ 1 ] <= y2 )
-         {
-            if ( test )
-               point->m_selected = test->shouldSelect( point ) ? select : point->m_selected;
-            else
-               point->m_selected = select;
-         }
-      }
-   }
-   endSelectionDifference();
+			//TESTING
+			//This lets a projection matrix be used to do the selection.
+			//I guess it should be a permanent feature.
+			double w = vec[3]; if(1!=w) 
+			{
+				//HACK: Reject if behind Z plane.
+				if(w<=0) continue;
 
-   return true;
+				vec.scale(1/vec[3]);
+			}
+
+			if(vec[0]>=x1&&vec[0]<=x2 
+				  &&vec[1]>=y1&&vec[1]<=y2)
+			{
+				if(test)
+					point->m_selected = test->shouldSelect(point)? select : point->m_selected;
+				else
+					point->m_selected = select;
+			}
+		}
+	}
+	endSelectionDifference();
+
+	return true;
 }
 
-bool Model::selectProjectionsInVolumeMatrix( bool select, const Matrix & viewMat, double x1, double y1, double x2, double y2, SelectionTest * test )
+bool Model::selectProjectionsInVolumeMatrix(bool select, const Matrix &viewMat, double x1, double y1, double x2, double y2,SelectionTest *test)
 {
-   LOG_PROFILE();
+	LOG_PROFILE();
 
-   beginSelectionDifference();
+	beginSelectionDifference();
 
-   if ( x1 > x2 )
-   {
-      double temp = x2;
-      x2 = x1;
-      x1 = temp;
-   }
+	if(x1>x2)
+	{
+		double temp = x2;
+		x2 = x1;
+		x1 = temp;
+	}
 
-   if ( y1 > y2 )
-   {
-      double temp = y2;
-      y2 = y1;
-      y1 = temp;
-   }
+	if(y1>y2)
+	{
+		double temp = y2;
+		y2 = y1;
+		y1 = temp;
+	}
 
-   if ( m_animationMode == ANIMMODE_NONE )
-   {
-      for ( unsigned p = 0; p < m_projections.size(); p++ )
-      {
-         TextureProjection * proj = m_projections[p];
+	if(m_animationMode==ANIMMODE_NONE)
+	{
+		for(unsigned p = 0; p<m_projections.size(); p++)
+		{
+			TextureProjection *proj = m_projections[p];
 
-         if ( proj->m_selected != select )
-         {
-            Vector pos(  proj->m_pos );
-            Vector up(   proj->m_upVec );
-            Vector seam( proj->m_seamVec );
+			if(proj->m_selected!=select)
+			{
+				Vector pos( proj->m_pos);
+				Vector up(  proj->m_upVec);
+				Vector seam(proj->m_seamVec);
 
-            Vector left;  // perpendicular to up and seam vectors
+				Vector left;  // perpendicular to up and seam vectors
 
-            double upMag = up.mag3();
+				double upMag = up.mag3();
 
-            up.normalize3();
-            seam.normalize3();
+				up.normalize3();
+				seam.normalize3();
 
-            // Because up and seam are vectors from pos, we can assume
-            // that pos is at the origin. The math works out the same.
-            double orig[3] = { 0, 0, 0 };
-            calculate_normal( left.getVector(), orig, up.getVector(), seam.getVector() );
+				// Because up and seam are vectors from pos,we can assume
+				// that pos is at the origin. The math works out the same.
+				double orig[3] = { 0,0,0 };
+				calculate_normal(left.getVector(),orig,up.getVector(),seam.getVector());
 
-            up.scale3( upMag );
-            left.scale3( upMag );
+				up.scale3(upMag);
+				left.scale3(upMag);
 
-            viewMat.apply( pos );
-            viewMat.apply3( up );
-            viewMat.apply3( seam );
-            viewMat.apply3( left );
+				viewMat.apply(pos);
+				//TESTING
+				//This lets a projection matrix be used to do the selection.
+				//I guess it should be a permanent feature.				
+				double w = pos[3]; if(1!=w) 
+				{
+					//HACK: Reject if behind Z plane.
+					if(w<=0) continue;
 
-            bool selectable = false;
+					pos.scale(1/pos[3]);
+				}
+				viewMat.apply3(up);
+				viewMat.apply3(seam);
+				viewMat.apply3(left);
 
-            if ( proj->m_type == TPT_Plane )
-            {
-               bool above = false;
-               bool below = false;
+				bool selectable = false;
 
-               int v;
-               double tCords[4][3];
+				if(proj->m_type==TPT_Plane)
+				{
+					bool above = false;
+					bool below = false;
 
-               // 0. Assign vert to triangle's verticies 
-               // 1. Check for vertices within the selection volume in the process
-               for ( v = 0; v < 4; v++ )
-               {
-                  double x = (v == 0 || v == 3) ? -1.0 : 1.0;
-                  double y = (v >= 2) ? -1.0 : 1.0;
+					int v;
+					double tCords[4][3];
 
-                  tCords[v][0] = pos[0] + up[0] * y + left[0] * x;
-                  tCords[v][1] = pos[1] + up[1] * y + left[1] * x;
-                  tCords[v][2] = pos[2] + up[2] * y + left[2] * x;
+					// 0. Assign vert to triangle's verticies 
+					// 1. Check for vertices within the selection volume in the process
+					for(v = 0; v<4; v++)
+					{
+						double x = (v==0||v==3)? -1.0 : 1.0;
+						double y = (v>=2)? -1.0 : 1.0;
 
-                  log_debug( "vertex %d: %f,%f,%f\n", v, 
-                        tCords[v][0], tCords[v][1], tCords[v][2] );
-               }
+						tCords[v][0] = pos[0]+up[0] *y+left[0] *x;
+						tCords[v][1] = pos[1]+up[1] *y+left[1] *x;
+						tCords[v][2] = pos[2]+up[2] *y+left[2] *x;
 
-               for ( v = 0; v < 4; v++ )
-               {
-                  if (  tCords[v][0] >= x1 && tCords[v][0] <= x2 
-                        && tCords[v][1] >= y1 && tCords[v][1] <= y2 )
-                  {
-                     // A vertex of the square is within the selection area
-                     selectable = true;
-                  }
+						log_debug("vertex %d: %f,%f,%f\n",v,
+								tCords[v][0],tCords[v][1],tCords[v][2]);
+					}
 
-                  log_debug( "xform: %d: %f,%f,%f\n", v, 
-                        tCords[v][0], tCords[v][1], tCords[v][2] );
-               }
+					for(v = 0; v<4; v++)
+					{
+						if( tCords[v][0]>=x1&&tCords[v][0]<=x2 
+							  &&tCords[v][1]>=y1&&tCords[v][1]<=y2)
+						{
+							// A vertex of the square is within the selection area
+							selectable = true;
+						}
 
-               // 2. Find intersections between triangle edges and selection edges
-               // 3. Also, check to see if the selection box is completely within triangle
+						log_debug("xform: %d: %f,%f,%f\n",v,
+								tCords[v][0],tCords[v][1],tCords[v][2]);
+					}
 
-               double m[4];
-               double b[4];
-               double *coord[4][2];
+					// 2. Find intersections between triangle edges and selection edges
+					// 3. Also,check to see if the selection box is completely within triangle
 
-               m[0] = (tCords[0][1] - tCords[1][1]) / (tCords[0][0] - tCords[1][0]) ;
-               coord[0][0] = tCords[0];
-               coord[0][1] = tCords[1];
-               m[1] = (tCords[1][1] - tCords[2][1]) / (tCords[1][0] - tCords[2][0]) ;
-               coord[1][0] = tCords[1];
-               coord[1][1] = tCords[2];
-               m[2] = (tCords[2][1] - tCords[3][1]) / (tCords[2][0] - tCords[3][0]) ;
-               coord[2][0] = tCords[2];
-               coord[2][1] = tCords[3];
-               m[3] = (tCords[3][1] - tCords[0][1]) / (tCords[3][0] - tCords[0][0]) ;
-               coord[3][0] = tCords[3];
-               coord[3][1] = tCords[0];
+					double m[4];
+					double b[4];
+					double *coord[4][2];
 
-               b[0] = tCords[0][1] - ( m[0] * tCords[0][0] );
-               b[1] = tCords[1][1] - ( m[1] * tCords[1][0] );
-               b[2] = tCords[2][1] - ( m[2] * tCords[2][0] );
-               b[3] = tCords[3][1] - ( m[3] * tCords[3][0] );
+					m[0] = (tCords[0][1]-tCords[1][1])/(tCords[0][0]-tCords[1][0]);
+					coord[0][0] = tCords[0];
+					coord[0][1] = tCords[1];
+					m[1] = (tCords[1][1]-tCords[2][1])/(tCords[1][0]-tCords[2][0]);
+					coord[1][0] = tCords[1];
+					coord[1][1] = tCords[2];
+					m[2] = (tCords[2][1]-tCords[3][1])/(tCords[2][0]-tCords[3][0]);
+					coord[2][0] = tCords[2];
+					coord[2][1] = tCords[3];
+					m[3] = (tCords[3][1]-tCords[0][1])/(tCords[3][0]-tCords[0][0]);
+					coord[3][0] = tCords[3];
+					coord[3][1] = tCords[0];
+
+					b[0] = tCords[0][1]-(m[0] *tCords[0][0]);
+					b[1] = tCords[1][1]-(m[1] *tCords[1][0]);
+					b[2] = tCords[2][1]-(m[2] *tCords[2][0]);
+					b[3] = tCords[3][1]-(m[3] *tCords[3][0]);
 
 
-               for ( int line = 0; !selectable && line < 4; line++ )
-               {
-                  log_debug( "line %d:   m = %f   b = %f   x = %f   y = %f\n", 
-                        line, m[line], b[line], coord[line][0][0], coord[line][0][1] );
-                  double y;
-                  double x;
-                  double xmin;
-                  double xmax;
-                  double ymin;
-                  double ymax;
+					for(int line = 0; !selectable&&line<4; line++)
+					{
+						log_debug("line %d:	m = %f	b = %f	x = %f	y = %f\n",
+								line,m[line],b[line],coord[line][0][0],coord[line][0][1]);
+						double y;
+						double x;
+						double xmin;
+						double xmax;
+						double ymin;
+						double ymax;
 
-                  if ( coord[line][0][0] < coord[line][1][0] )
-                  {
-                     xmin = coord[line][0][0];
-                     xmax = coord[line][1][0];
-                  }
-                  else
-                  {
-                     xmin = coord[line][1][0];
-                     xmax = coord[line][0][0];
-                  }
+						if(coord[line][0][0]<coord[line][1][0])
+						{
+							xmin = coord[line][0][0];
+							xmax = coord[line][1][0];
+						}
+						else
+						{
+							xmin = coord[line][1][0];
+							xmax = coord[line][0][0];
+						}
 
-                  if ( coord[line][0][1] < coord[line][1][1] )
-                  {
-                     ymin = coord[line][0][1];
-                     ymax = coord[line][1][1];
-                  }
-                  else
-                  {
-                     ymin = coord[line][1][1];
-                     ymax = coord[line][0][1];
-                  }
+						if(coord[line][0][1]<coord[line][1][1])
+						{
+							ymin = coord[line][0][1];
+							ymax = coord[line][1][1];
+						}
+						else
+						{
+							ymin = coord[line][1][1];
+							ymax = coord[line][0][1];
+						}
 
-                  if ( x1 >= xmin && x1 <= xmax )
-                  {
-                     y = m[line] * x1 + b[line];
-                     if ( y >= y1 && y <= y2 )
-                     {
-                        selectable = true;
-                     }
+						if(x1>=xmin&&x1<=xmax)
+						{
+							y = m[line] *x1+b[line];
+							if(y>=y1&&y<=y2)
+							{
+								selectable = true;
+							}
 
-                     if ( y > y1 )
-                     {
-                        above = true;
-                     }
-                     if ( y < y1 )
-                     {
-                        below = true;
-                     }
-                  }
+							if(y>y1)
+							{
+								above = true;
+							}
+							if(y<y1)
+							{
+								below = true;
+							}
+						}
 
-                  if ( !selectable && x2 >= xmin && x2 <= xmax )
-                  {
-                     y = m[line] * x2 + b[line];
-                     if ( y >= y1 && y <= y2 )
-                     {
-                        selectable = true;
-                     }
-                  }
+						if(!selectable&&x2>=xmin&&x2<=xmax)
+						{
+							y = m[line] *x2+b[line];
+							if(y>=y1&&y<=y2)
+							{
+								selectable = true;
+							}
+						}
 
-                  bool vertical = ( fabs( coord[line][0][0] - coord[line][1][0] ) < 0.0001 );
-                  if ( !selectable && y1 >= ymin && y1 <= ymax )
-                  {
-                     if ( vertical )
-                     {
-                        if ( coord[line][0][0] >= x1 && coord[line][0][0] <= x2 )
-                        {
-                           selectable = true;
-                        }
-                     }
-                     else
-                     {
-                        x = (y1 - b[line]) / m[line];
-                        if ( x >= x1 && x <= x2 )
-                        {
-                           selectable = true;
-                        }
-                     }
-                  }
+						bool vertical = (fabs(coord[line][0][0]-coord[line][1][0])<0.0001);
+						if(!selectable&&y1>=ymin&&y1<=ymax)
+						{
+							if(vertical)
+							{
+								if(coord[line][0][0]>=x1&&coord[line][0][0]<=x2)
+								{
+									selectable = true;
+								}
+							}
+							else
+							{
+								x = (y1-b[line])/m[line];
+								if(x>=x1&&x<=x2)
+								{
+									selectable = true;
+								}
+							}
+						}
 
-                  if ( !selectable && y2 >= ymin && y2 <= ymax )
-                  {
-                     if ( vertical )
-                     {
-                        if ( coord[line][0][0] >= x1 && coord[line][0][0] <= x2 )
-                        {
-                           selectable = true;
-                        }
-                     }
-                     else
-                     {
-                        x = (y2 - b[line]) / m[line];
-                        if ( x >= x1 && x <= x2 )
-                        {
-                           selectable = true;
-                        }
-                     }
-                  }
-               }
+						if(!selectable&&y2>=ymin&&y2<=ymax)
+						{
+							if(vertical)
+							{
+								if(coord[line][0][0]>=x1&&coord[line][0][0]<=x2)
+								{
+									selectable = true;
+								}
+							}
+							else
+							{
+								x = (y2-b[line])/m[line];
+								if(x>=x1&&x<=x2)
+								{
+									selectable = true;
+								}
+							}
+						}
+					}
 
-               if ( above && below )
-               {
-                  // There was an intersection above and below the selection area,
-                  // This means we're inside the square, so add it to our selection list
-                  selectable = true;
-               }
-            }
-            else
-            {
-               int i = 0;
-               int iMax = 0;
+					if(above&&below)
+					{
+						// There was an intersection above and below the selection area,
+						// This means we're inside the square,so add it to our selection list
+						selectable = true;
+					}
+				}
+				else
+				{
+					int i = 0;
+					int iMax = 0;
 
-               double radius = up.mag3();
+					double radius = up.mag3();
 
-               double diffX = up[0];
-               double diffY = up[1];
+					double diffX = up[0];
+					double diffY = up[1];
 
-               if ( proj->m_type == TPT_Cylinder )
-               {
-                  radius = radius / 3;
+					if(proj->m_type==TPT_Cylinder)
+					{
+						radius = radius/3;
 
-                  i    = -1;
-                  iMax =  1;
-               }
+						i	 = -1;
+						iMax =  1;
+					}
 
-               for ( ; i <= iMax && !selectable; i++ )
-               {
-                  double x = pos[ 0 ];
-                  double y = pos[ 1 ];
+					for(; i<=iMax&&!selectable; i++)
+					{
+						double x = pos[0];
+						double y = pos[1];
 
-                  x += diffX * (double) i;
-                  y += diffY * (double) i;
+						x += diffX *(double)i;
+						y += diffY *(double)i;
 
-                  // check if center is inside selection region
-                  bool inx = ( x >= x1 && x <= x2 );
-                  bool iny = ( y >= y1 && y <= y2 );
+						// check if center is inside selection region
+						bool inx = (x>=x1&&x<=x2);
+						bool iny = (y>=y1&&y<=y2);
 
-                  selectable = ( inx && iny );
+						selectable = (inx&&iny);
 
-                  if ( !selectable )
-                  {
-                     // check if lines passes through radius
-                     if ( inx )
-                     {
-                        if ( fabs( y - y1 ) < radius
-                              || fabs( y - y2 ) < radius )
-                        {
-                           selectable = true;
-                        }
-                     }
-                     else if ( iny )
-                     {
-                        if ( fabs( x - x1 ) < radius
-                              || fabs( x - x2 ) < radius )
-                        {
-                           selectable = true;
-                        }
-                     }
-                     else
-                     {
-                        // line did not pass through radius, see if all bounding region 
-                        // points are within radius
-                        double diff[2];
+						if(!selectable)
+						{
+							// check if lines passes through radius
+							if(inx)
+							{
+								if(fabs(y-y1)<radius
+									  ||fabs(y-y2)<radius)
+								{
+									selectable = true;
+								}
+							}
+							else if(iny)
+							{
+								if(fabs(x-x1)<radius
+									  ||fabs(x-x2)<radius)
+								{
+									selectable = true;
+								}
+							}
+							else
+							{
+								// line did not pass through radius,see if all bounding region 
+								// points are within radius
+								double diff[2];
 
-                        diff[0] = fabs( x - x1 );
-                        diff[1] = fabs( y - y1 );
+								diff[0] = fabs(x-x1);
+								diff[1] = fabs(y-y1);
 
-                        if ( sqrt( diff[0]*diff[0] + diff[1]*diff[1] ) < radius )
-                        {
-                           selectable = true;
-                        }
+								if(sqrt(diff[0]*diff[0]+diff[1]*diff[1])<radius)
+								{
+									selectable = true;
+								}
 
-                        diff[0] = fabs( x - x2 );
-                        diff[1] = fabs( y - y1 );
+								diff[0] = fabs(x-x2);
+								diff[1] = fabs(y-y1);
 
-                        if ( sqrt( diff[0]*diff[0] + diff[1]*diff[1] ) < radius )
-                        {
-                           selectable = true;
-                        }
+								if(sqrt(diff[0]*diff[0]+diff[1]*diff[1])<radius)
+								{
+									selectable = true;
+								}
 
-                        diff[0] = fabs( x - x1 );
-                        diff[1] = fabs( y - y2 );
+								diff[0] = fabs(x-x1);
+								diff[1] = fabs(y-y2);
 
-                        if ( sqrt( diff[0]*diff[0] + diff[1]*diff[1] ) < radius )
-                        {
-                           selectable = true;
-                        }
+								if(sqrt(diff[0]*diff[0]+diff[1]*diff[1])<radius)
+								{
+									selectable = true;
+								}
 
-                        diff[0] = fabs( x - x2 );
-                        diff[1] = fabs( y - y2 );
+								diff[0] = fabs(x-x2);
+								diff[1] = fabs(y-y2);
 
-                        if ( sqrt( diff[0]*diff[0] + diff[1]*diff[1] ) < radius )
-                        {
-                           selectable = true;
-                        }
-                     }
-                  }
-               }
-            }
+								if(sqrt(diff[0]*diff[0]+diff[1]*diff[1])<radius)
+								{
+									selectable = true;
+								}
+							}
+						}
+					}
+				}
 
-            if ( selectable )
-            {
-               if ( test )
-                  proj->m_selected = test->shouldSelect( proj ) ? select : proj->m_selected;
-               else
-                  proj->m_selected = select;
-            }
-         }
-      }
-   }
+				if(selectable)
+				{
+					if(test)
+						proj->m_selected = test->shouldSelect(proj)? select : proj->m_selected;
+					else
+						proj->m_selected = select;
+				}
+			}
+		}
+	}
 
-   endSelectionDifference();
-   return true;
+	endSelectionDifference();
+	return true;
 }
 
-bool Model::selectInVolumeMatrix( const Matrix & viewMat, double x1, double y1, double x2, double y2, SelectionTest * test )
+bool Model::selectInVolumeMatrix(const Matrix &viewMat, double x1, double y1, double x2, double y2,SelectionTest *test)
 {
-   LOG_PROFILE();
+	LOG_PROFILE();
 
-   switch ( m_selectionMode )
-   {
-      case SelectVertices:
-         return selectVerticesInVolumeMatrix ( true, viewMat, x1, y1, x2, y2, test );
-         break;
-      case SelectTriangles:
-         return selectTrianglesInVolumeMatrix ( true, viewMat, x1, y1, x2, y2, false, test );
-         break;
-      case SelectConnected:
-         return selectTrianglesInVolumeMatrix ( true, viewMat, x1, y1, x2, y2, true, test );
-         break;
-      case SelectGroups:
-         return selectGroupsInVolumeMatrix ( true, viewMat, x1, y1, x2, y2, test );
-         break;
-      case SelectJoints:
-         return selectBoneJointsInVolumeMatrix ( true, viewMat, x1, y1, x2, y2, test );
-         break;
-      case SelectPoints:
-         return selectPointsInVolumeMatrix ( true, viewMat, x1, y1, x2, y2, test );
-         break;
-      case SelectProjections:
-         return selectProjectionsInVolumeMatrix ( true, viewMat, x1, y1, x2, y2, test );
-         break;
-      default:
-         break;
-   }
-   return true;
+	switch (m_selectionMode)
+	{
+		case SelectVertices:
+			return selectVerticesInVolumeMatrix (true,viewMat,x1,y1,x2,y2,test);
+			break;
+		case SelectTriangles:
+			return selectTrianglesInVolumeMatrix (true,viewMat,x1,y1,x2,y2,false,test);
+			break;
+		case SelectConnected:
+			return selectTrianglesInVolumeMatrix (true,viewMat,x1,y1,x2,y2,true,test);
+			break;
+		case SelectGroups:
+			return selectGroupsInVolumeMatrix (true,viewMat,x1,y1,x2,y2,test);
+			break;
+		case SelectJoints:
+			return selectBoneJointsInVolumeMatrix (true,viewMat,x1,y1,x2,y2,test);
+			break;
+		case SelectPoints:
+			return selectPointsInVolumeMatrix (true,viewMat,x1,y1,x2,y2,test);
+			break;
+		case SelectProjections:
+			return selectProjectionsInVolumeMatrix (true,viewMat,x1,y1,x2,y2,test);
+			break;
+		default:
+			break;
+	}
+	return true;
 }
 
-bool Model::unselectInVolumeMatrix( const Matrix & viewMat, double x1, double y1, double x2, double y2, SelectionTest * test )
+bool Model::unselectInVolumeMatrix(const Matrix &viewMat, double x1, double y1, double x2, double y2,SelectionTest *test)
 {
-   LOG_PROFILE();
+	LOG_PROFILE();
 
-   switch ( m_selectionMode )
-   {
-      case SelectVertices:
-         return selectVerticesInVolumeMatrix ( false, viewMat, x1, y1, x2, y2, test );
-         break;
-      case SelectTriangles:
-         return selectTrianglesInVolumeMatrix ( false, viewMat, x1, y1, x2, y2, false, test );
-         break;
-      case SelectConnected:
-         return selectTrianglesInVolumeMatrix ( false, viewMat, x1, y1, x2, y2, true, test );
-         break;
-      case SelectGroups:
-         return selectGroupsInVolumeMatrix ( false, viewMat, x1, y1, x2, y2, test );
-         break;
-      case SelectJoints:
-         return selectBoneJointsInVolumeMatrix ( false, viewMat, x1, y1, x2, y2, test );
-         break;
-      case SelectPoints:
-         return selectPointsInVolumeMatrix ( false, viewMat, x1, y1, x2, y2, test );
-         break;
-      case SelectProjections:
-         return selectProjectionsInVolumeMatrix ( false, viewMat, x1, y1, x2, y2, test );
-         break;
-      default:
-         break;
-   }
-   return true;
+	switch (m_selectionMode)
+	{
+		case SelectVertices:
+			return selectVerticesInVolumeMatrix (false,viewMat,x1,y1,x2,y2,test);
+			break;
+		case SelectTriangles:
+			return selectTrianglesInVolumeMatrix (false,viewMat,x1,y1,x2,y2,false,test);
+			break;
+		case SelectConnected:
+			return selectTrianglesInVolumeMatrix (false,viewMat,x1,y1,x2,y2,true,test);
+			break;
+		case SelectGroups:
+			return selectGroupsInVolumeMatrix (false,viewMat,x1,y1,x2,y2,test);
+			break;
+		case SelectJoints:
+			return selectBoneJointsInVolumeMatrix (false,viewMat,x1,y1,x2,y2,test);
+			break;
+		case SelectPoints:
+			return selectPointsInVolumeMatrix (false,viewMat,x1,y1,x2,y2,test);
+			break;
+		case SelectProjections:
+			return selectProjectionsInVolumeMatrix (false,viewMat,x1,y1,x2,y2,test);
+			break;
+		default:
+			break;
+	}
+	return true;
 }
 
 void Model::selectVerticesFromTriangles()
 {
-   LOG_PROFILE();
+	LOG_PROFILE();
 
-   unselectAllVertices();
+	//2019: Trying to cover all bases.
+	//NOTE: MU_Select calls this to unselect triangles on undo/redo.
+	//It was doing so for every triangle.
+	if(!m_selecting) m_changeBits |= SelectionChange|SelectionVertices;
 
-   for ( unsigned t = 0; t < m_triangles.size(); t++ )
-   {
-      if ( m_triangles[t]->m_selected )
-      {
-         for ( int v = 0; v < 3; v++ )
-         {
-            m_vertices[ m_triangles[t]->m_vertexIndices[v] ]->m_selected = true;
-         }
-      }
-   }
+	unselectAllVertices(); //???
+
+	for(unsigned t = 0; t<m_triangles.size(); t++)
+	{
+		if(m_triangles[t]->m_selected)
+		{
+			for(int v = 0; v<3; v++)
+			{
+				m_vertices[m_triangles[t]->m_vertexIndices[v]]->m_selected = true;
+			}
+		}
+	}
 }
 
 void Model::selectTrianglesFromGroups()
 {
-   LOG_PROFILE();
+	LOG_PROFILE();
 
-   unselectAllTriangles();
+	unselectAllTriangles();
 
-   for ( unsigned g = 0; g < m_groups.size(); g++ )
-   {
-      Group * grp = m_groups[g];
-      if ( grp->m_selected )
-      {
-         for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
-               it != grp->m_triangleIndices.end();
-               ++it )
-         {
-            if ( m_triangles[ *it ]->m_visible )
-            {
-               m_triangles[ *it ]->m_selected = true;
-            }
-         }
-      }
-   }
+	for(unsigned g = 0; g<m_groups.size(); g++)
+	{
+		Group *grp = m_groups[g];
+		if(grp->m_selected)
+		{
+			for(auto it = grp->m_triangleIndices.cbegin();
+					it!=grp->m_triangleIndices.cend();
+					++it)
+			{
+				if(m_triangles[*it]->m_visible)
+				{
+					m_triangles[*it]->m_selected = true;
+				}
+			}
+		}
+	}
 
-   selectVerticesFromTriangles();
+	selectVerticesFromTriangles();
 }
 
-void Model::selectTrianglesFromVertices( bool all )
+void Model::selectTrianglesFromVertices(bool all)
 {
-   LOG_PROFILE();
+	LOG_PROFILE();
 
-   unselectAllTriangles();
+	unselectAllTriangles();
 
-   for ( unsigned t = 0; t < m_triangles.size(); t++ )
-   {
-      if ( m_triangles[t]->m_visible )
-      {
-         int count = 0;
-         for ( int v = 0; v < 3; v++ )
-         {
-            if ( m_vertices[ m_triangles[t]->m_vertexIndices[v] ]->m_selected )
-            {
-               count++;
-            }
+	for(unsigned t = 0; t<m_triangles.size(); t++)
+	{
+		if(m_triangles[t]->m_visible)
+		{
+			int count = 0;
+			for(int v = 0; v<3; v++)
+			{
+				if(m_vertices[m_triangles[t]->m_vertexIndices[v]]->m_selected)
+				{
+					count++;
+				}
 
-         }
-         if ( all )
-         {
-            if ( count == 3 )
-            {
-               m_triangles[t]->m_selected = true;
-            }
-         }
-         else
-         {
-            if ( count > 0 )
-            {
-               m_triangles[t]->m_selected = true;
-            }
-         }
-      }
-   }
+			}
+			if(all)
+			{
+				if(count==3)
+				{
+					m_triangles[t]->m_selected = true;
+				}
+			}
+			else
+			{
+				if(count>0)
+				{
+					m_triangles[t]->m_selected = true;
+				}
+			}
+		}
+	}
 
-   // Unselect vertices who don't have a triangle selected
-   if ( all )
-   {
-      unselectAllVertices();
-      selectVerticesFromTriangles();
-   }
+	// Unselect vertices who don't have a triangle selected
+	if(all)
+	{
+		unselectAllVertices();
+		selectVerticesFromTriangles();
+	}
 }
 
-void Model::selectGroupsFromTriangles( bool all )
+void Model::selectGroupsFromTriangles(bool all)
 {
-   LOG_PROFILE();
+	LOG_PROFILE();
 
-   unselectAllGroups();
+	unselectAllGroups();
 
-   for ( unsigned g = 0; g < m_groups.size(); g++ )
-   {
-      Group * grp = m_groups[g];
-      unsigned count = 0;
-      for ( std::set<int>::const_iterator it = grp->m_triangleIndices.begin();
-            it != grp->m_triangleIndices.end();
-            ++it )
-      {
-         if ( m_triangles[ *it ]->m_selected )
-         {
-            count++;
-         }
-      }
+	for(unsigned g = 0; g<m_groups.size(); g++)
+	{
+		Group *grp = m_groups[g];
+		unsigned count = 0;
+		for(auto it = grp->m_triangleIndices.cbegin();
+				it!=grp->m_triangleIndices.cend();
+				++it)
+		{
+			if(m_triangles[*it]->m_selected)
+			{
+				count++;
+			}
+		}
 
-      if ( all )
-      {
-         if ( count == m_groups[g]->m_triangleIndices.size() )
-         {
-            grp->m_selected = true;
-         }
-         else
-         {
-            grp->m_selected = false;
-         }
-      }
-      else
-      {
-         if ( count > 0 )
-         {
-            grp->m_selected = true;
-         }
-         else
-         {
-            grp->m_selected = false;
-         }
-      }
-   }
+		if(all)
+		{
+			if(count==m_groups[g]->m_triangleIndices.size())
+			{
+				grp->m_selected = true;
+			}
+			else
+			{
+				grp->m_selected = false;
+			}
+		}
+		else
+		{
+			if(count>0)
+			{
+				grp->m_selected = true;
+			}
+			else
+			{
+				grp->m_selected = false;
+			}
+		}
+	}
 
-   // Unselect vertices who don't have a triangle selected
-   unselectAllTriangles();
-   selectTrianglesFromGroups();
+	// Unselect vertices who don't have a triangle selected
+	unselectAllTriangles();
+	selectTrianglesFromGroups();
 }
 
 bool Model::invertSelection()
 {
-   LOG_PROFILE();
+	LOG_PROFILE();
 
-   beginSelectionDifference();
-   switch ( m_selectionMode )
-   {
-      case SelectVertices:
-         for ( unsigned v = 0; v < m_vertices.size(); v++ )
-         {
-            if ( m_vertices[v]->m_visible )
-            {
-               m_vertices[v]->m_selected = m_vertices[v]->m_selected ? false : true;
-            }
-         }
-         break;
+	beginSelectionDifference();
+	switch (m_selectionMode)
+	{
+		case SelectVertices:
+			for(unsigned v = 0; v<m_vertices.size(); v++)
+			{
+				if(m_vertices[v]->m_visible)
+				{
+					m_vertices[v]->m_selected = m_vertices[v]->m_selected ? false : true;
+				}
+			}
+			break;
 
-      case SelectTriangles:
-         for ( unsigned t = 0; t < m_triangles.size(); t++ )
-         {
-            if ( m_triangles[t]->m_visible )
-            {
-               m_triangles[t]->m_selected = m_triangles[t]->m_selected ? false : true;
-            }
-         }
-         selectVerticesFromTriangles();
-         break;
+		case SelectTriangles:
+			for(unsigned t = 0; t<m_triangles.size(); t++)
+			{
+				if(m_triangles[t]->m_visible)
+				{
+					m_triangles[t]->m_selected = m_triangles[t]->m_selected ? false : true;
+				}
+			}
+			selectVerticesFromTriangles();
+			break;
 
-      case SelectGroups:
-         for ( unsigned g = 0; g < m_groups.size(); g++ )
-         {
-            m_groups[g]->m_selected = m_groups[g]->m_selected ? false : true;
-         }
-         selectTrianglesFromGroups();
-         break;
+		case SelectGroups:
+			for(unsigned g = 0; g<m_groups.size(); g++)
+			{
+				m_groups[g]->m_selected = m_groups[g]->m_selected ? false : true;
+			}
+			selectTrianglesFromGroups();
+			break;
 
-      case SelectJoints:
-         for ( unsigned j = 0; j < m_joints.size(); j++ )
-         {
-            m_joints[j]->m_selected = m_joints[j]->m_selected ? false : true;
-         }
-         break;
+		case SelectJoints:
+			for(unsigned j = 0; j<m_joints.size(); j++)
+			{
+				m_joints[j]->m_selected = m_joints[j]->m_selected ? false : true;
+			}
+			break;
 
-      case SelectPoints:
-         for ( unsigned p = 0; p < m_points.size(); p++ )
-         {
-            m_points[p]->m_selected = m_points[p]->m_selected ? false : true;
-         }
-         break;
+		case SelectPoints:
+			for(unsigned p = 0; p<m_points.size(); p++)
+			{
+				m_points[p]->m_selected = m_points[p]->m_selected ? false : true;
+			}
+			break;
 
-      default:
-         break;
-   }
-   endSelectionDifference();
+		default:
+			break;
+	}
+	endSelectionDifference();
 
-   return true;
+	return true;
 }
 
 void Model::beginSelectionDifference()
 {
-   LOG_PROFILE();
+	LOG_PROFILE();
 
-   if ( !m_selecting )
-   {
-      m_selecting = true;
+	if(!m_selecting)
+	{
+		m_selecting = true;
 
-      m_changeBits |= SelectionChange;
+		//Wait until endSelectionDifference?
+		//m_changeBits |= SelectionChange; //2019
 
-      if ( m_undoEnabled )
-      {
-         unsigned t;
-         for ( t = 0; t < m_vertices.size(); t++ )
-         {
-            m_vertices[t]->m_marked = m_vertices[t]->m_selected;
-         }
-         for ( t = 0; t < m_triangles.size(); t++ )
-         {
-            m_triangles[t]->m_marked = m_triangles[t]->m_selected;
-         }
-         for ( t = 0; t < m_groups.size(); t++ )
-         {
-            m_groups[t]->m_marked = m_groups[t]->m_selected;
-         }
-         for ( t = 0; t < m_joints.size(); t++ )
-         {
-            m_joints[t]->m_marked = m_joints[t]->m_selected;
-         }
-         for ( t = 0; t < m_points.size(); t++ )
-         {
-            m_points[t]->m_marked = m_points[t]->m_selected;
-         }
-         for ( t = 0; t < m_projections.size(); t++ )
-         {
-            m_projections[t]->m_marked = m_projections[t]->m_selected;
-         }
-      }
-   }
+		if(m_undoEnabled)
+		{
+			unsigned t;
+			for(t = 0; t<m_vertices.size(); t++)
+			{
+				m_vertices[t]->m_marked = m_vertices[t]->m_selected;
+			}
+			for(t = 0; t<m_triangles.size(); t++)
+			{
+				m_triangles[t]->m_marked = m_triangles[t]->m_selected;
+			}
+			for(t = 0; t<m_groups.size(); t++)
+			{
+				m_groups[t]->m_marked = m_groups[t]->m_selected;
+			}
+			for(t = 0; t<m_joints.size(); t++)
+			{
+				m_joints[t]->m_marked = m_joints[t]->m_selected;
+			}
+			for(t = 0; t<m_points.size(); t++)
+			{
+				m_points[t]->m_marked = m_points[t]->m_selected;
+			}
+			for(t = 0; t<m_projections.size(); t++)
+			{
+				m_projections[t]->m_marked = m_projections[t]->m_selected;
+			}
+		}
+	}
 }
 
 void Model::endSelectionDifference()
 {
-   LOG_PROFILE();
+	LOG_PROFILE();
 
-   m_selecting = false;
+	m_selecting = false;
 
-   {
-      MU_Select * undo = new MU_Select( SelectVertices );
-      for ( unsigned t = 0; t < m_vertices.size(); t++ )
-      {
-         if ( m_vertices[t]->m_selected != m_vertices[t]->m_marked )
-         {
-            undo->setSelectionDifference( t, m_vertices[t]->m_selected, m_vertices[t]->m_marked );
-         }
-      }
-      if ( undo->diffCount() > 0 )
-      {
-         sendUndo( undo );
-      }
-      else
-      {
-         undo->release();
-      }
-   }
-   {
-      MU_Select * undo = new MU_Select( SelectTriangles );
-      for ( unsigned t = 0; t < m_triangles.size(); t++ )
-      {
-         if ( m_triangles[t]->m_selected != m_triangles[t]->m_marked )
-         {
-            undo->setSelectionDifference( t, m_triangles[t]->m_selected, m_triangles[t]->m_marked );
-         }
-      }
-      if ( undo->diffCount() > 0 )
-      {
-         sendUndo( undo );
-      }
-      else
-      {
-         undo->release();
-      }
-   }
-   {
-      MU_Select * undo = new MU_Select( SelectGroups );
-      for ( unsigned t = 0; t < m_groups.size(); t++ )
-      {
-         if ( m_groups[t]->m_selected != m_groups[t]->m_marked )
-         {
-            undo->setSelectionDifference( t, m_groups[t]->m_selected, m_groups[t]->m_marked );
-         }
-      }
-      if ( undo->diffCount() > 0 )
-      {
-         sendUndo( undo );
-      }
-      else
-      {
-         undo->release();
-      }
-   }
-   {
-      MU_Select * undo = new MU_Select( SelectJoints );
-      for ( unsigned t = 0; t < m_joints.size(); t++ )
-      {
-         if ( m_joints[t]->m_selected != m_joints[t]->m_marked )
-         {
-            undo->setSelectionDifference( t, m_joints[t]->m_selected, m_joints[t]->m_marked );
-         }
-      }
-      if ( undo->diffCount() > 0 )
-      {
-         sendUndo( undo );
-      }
-      else
-      {
-         undo->release();
-      }
-   }
-   {
-      MU_Select * undo = new MU_Select( SelectPoints );
-      for ( unsigned t = 0; t < m_points.size(); t++ )
-      {
-         if ( m_points[t]->m_selected != m_points[t]->m_marked )
-         {
-            undo->setSelectionDifference( t, m_points[t]->m_selected, m_points[t]->m_marked );
-         }
-      }
-      if ( undo->diffCount() > 0 )
-      {
-         sendUndo( undo );
-      }
-      else
-      {
-         undo->release();
-      }
-   }
-   {
-      MU_Select * undo = new MU_Select( SelectProjections );
-      for ( unsigned t = 0; t < m_projections.size(); t++ )
-      {
-         if ( m_projections[t]->m_selected != m_projections[t]->m_marked )
-         {
-            undo->setSelectionDifference( t, m_projections[t]->m_selected, m_projections[t]->m_marked );
-         }
-      }
-      if ( undo->diffCount() > 0 )
-      {
-         sendUndo( undo );
-      }
-      else
-      {
-         undo->release();
-      }
-   }
+	{
+		MU_Select *undo = new MU_Select(SelectVertices);
+		for(unsigned t = 0; t<m_vertices.size(); t++)
+		{
+			if(m_vertices[t]->m_selected!=m_vertices[t]->m_marked)
+			{
+				undo->setSelectionDifference(t,m_vertices[t]->m_selected,m_vertices[t]->m_marked);
+			}
+		}
+		if(undo->diffCount()>0)
+		{
+			m_changeBits |= SelectionChange|SelectionVertices; //2019
+
+			sendUndo(undo);
+		}
+		else
+		{
+			undo->release();
+		}
+	}
+	{
+		MU_Select *undo = new MU_Select(SelectTriangles);
+		for(unsigned t = 0; t<m_triangles.size(); t++)
+		{
+			if(m_triangles[t]->m_selected!=m_triangles[t]->m_marked)
+			{
+				undo->setSelectionDifference(t,m_triangles[t]->m_selected,m_triangles[t]->m_marked);
+			}
+		}
+		if(undo->diffCount()>0)
+		{
+			m_changeBits |= SelectionChange|SelectionFaces; //2019
+
+			sendUndo(undo);
+		}
+		else
+		{
+			undo->release();
+		}
+	}
+	{
+		MU_Select *undo = new MU_Select(SelectGroups);
+		for(unsigned t = 0; t<m_groups.size(); t++)
+		{
+			if(m_groups[t]->m_selected!=m_groups[t]->m_marked)
+			{
+				undo->setSelectionDifference(t,m_groups[t]->m_selected,m_groups[t]->m_marked);
+			}
+		}
+		if(undo->diffCount()>0)
+		{
+			m_changeBits |= SelectionChange|SelectionGroups; //2019
+
+			sendUndo(undo);
+		}
+		else
+		{
+			undo->release();
+		}
+	}
+	{
+		MU_Select *undo = new MU_Select(SelectJoints);
+		for(unsigned t = 0; t<m_joints.size(); t++)
+		{
+			if(m_joints[t]->m_selected!=m_joints[t]->m_marked)
+			{
+				undo->setSelectionDifference(t,m_joints[t]->m_selected,m_joints[t]->m_marked);
+			}
+		}
+		if(undo->diffCount()>0)
+		{
+			m_changeBits |= SelectionChange|SelectionJoints; //2019
+
+			sendUndo(undo);
+		}
+		else
+		{
+			undo->release();
+		}
+	}
+	{
+		MU_Select *undo = new MU_Select(SelectPoints);
+		for(unsigned t = 0; t<m_points.size(); t++)
+		{
+			if(m_points[t]->m_selected!=m_points[t]->m_marked)
+			{
+				undo->setSelectionDifference(t,m_points[t]->m_selected,m_points[t]->m_marked);
+			}
+		}
+		if(undo->diffCount()>0)
+		{
+			m_changeBits |= SelectionChange|SelectionPoints; //2019
+
+			sendUndo(undo);
+		}
+		else
+		{
+			undo->release();
+		}
+	}
+	{
+		MU_Select *undo = new MU_Select(SelectProjections);
+		for(unsigned t = 0; t<m_projections.size(); t++)
+		{
+			if(m_projections[t]->m_selected!=m_projections[t]->m_marked)
+			{
+				undo->setSelectionDifference(t,m_projections[t]->m_selected,m_projections[t]->m_marked);
+			}
+		}
+		if(undo->diffCount()>0)
+		{
+			m_changeBits |= SelectionChange|SelectionProjections; //2019
+
+			sendUndo(undo);
+		}
+		else
+		{
+			undo->release();
+		}
+	}
 }
 
-void Model::getSelectedPositions( list< Position > & positions ) const
+void Model::getSelectedPositions(pos_list &positions)const
 {
-   unsigned count;
-   unsigned t;
+	unsigned count;
+	unsigned t;
 
-   positions.clear();
+	positions.clear();
 
-   count = m_vertices.size();
-   for ( t = 0; t < count; t++ )
-   {
-      if ( m_vertices[t]->m_selected )
-      {
-         Position p;
-         p.type = PT_Vertex;
-         p.index = t;
-         positions.push_back( p );
-      }
-   }
+	count = m_vertices.size();
+	for(t = 0; t<count; t++)
+	{
+		if(m_vertices[t]->m_selected)
+		{
+			Position p;
+			p.type = PT_Vertex;
+			p.index = t;
+			positions.push_back(p);
+		}
+	}
 
-   count = m_joints.size();
-   for ( t = 0; t < count; t++ )
-   {
-      if ( m_joints[t]->m_selected )
-      {
-         Position p;
-         p.type = PT_Joint;
-         p.index = t;
-         positions.push_back( p );
-      }
-   }
+	count = m_joints.size();
+	for(t = 0; t<count; t++)
+	{
+		if(m_joints[t]->m_selected)
+		{
+			Position p;
+			p.type = PT_Joint;
+			p.index = t;
+			positions.push_back(p);
+		}
+	}
 
-   count = m_points.size();
-   for ( t = 0; t < count; t++ )
-   {
-      if ( m_points[t]->m_selected )
-      {
-         Position p;
-         p.type = PT_Point;
-         p.index = t;
-         positions.push_back( p );
-      }
-   }
+	count = m_points.size();
+	for(t = 0; t<count; t++)
+	{
+		if(m_points[t]->m_selected)
+		{
+			Position p;
+			p.type = PT_Point;
+			p.index = t;
+			positions.push_back(p);
+		}
+	}
 
-   count = m_projections.size();
-   for ( t = 0; t < count; t++ )
-   {
-      if ( m_projections[t]->m_selected )
-      {
-         Position p;
-         p.type = PT_Projection;
-         p.index = t;
-         positions.push_back( p );
-      }
-   }
+	count = m_projections.size();
+	for(t = 0; t<count; t++)
+	{
+		if(m_projections[t]->m_selected)
+		{
+			Position p;
+			p.type = PT_Projection;
+			p.index = t;
+			positions.push_back(p);
+		}
+	}
 }
 
-void Model::getSelectedVertices( list<int> & vertices ) const
+void Model::getSelectedVertices(int_list &vertices)const
 {
-   vertices.clear();
+	vertices.clear();
 
-   for ( unsigned t = 0; t < m_vertices.size(); t++ )
-   {
-      if ( m_vertices[t]->m_selected )
-      {
-         vertices.push_back( t );
-      }
-   }
+	for(unsigned t = 0; t<m_vertices.size(); t++)
+	{
+		if(m_vertices[t]->m_selected)
+		{
+			vertices.push_back(t);
+		}
+	}
 }
 
-void Model::getSelectedTriangles( list<int> & triangles ) const
+void Model::getSelectedTriangles(int_list &triangles)const
 {
-   triangles.clear();
+	triangles.clear();
 
-   for ( unsigned t = 0; t < m_triangles.size(); t++ )
-   {
-      if ( m_triangles[t]->m_selected )
-      {
-         triangles.push_back( t );
-      }
-   }
+	for(unsigned t = 0; t<m_triangles.size(); t++)
+	{
+		if(m_triangles[t]->m_selected)
+		{
+			triangles.push_back(t);
+		}
+	}
 }
 
-void Model::getSelectedGroups( list<int> & groups ) const
+void Model::getSelectedGroups(int_list &groups)const
 {
-   groups.clear();
+	groups.clear();
 
-   for ( unsigned t = 0; t < m_groups.size(); t++ )
-   {
-      if ( m_groups[t]->m_selected )
-      {
-         groups.push_back( t );
-      }
-   }
+	for(unsigned t = 0; t<m_groups.size(); t++)
+	{
+		if(m_groups[t]->m_selected)
+		{
+			groups.push_back(t);
+		}
+	}
 }
 
-void Model::getSelectedBoneJoints( list<int> & joints ) const
+void Model::getSelectedBoneJoints(int_list &joints)const
 {
-   joints.clear();
+	joints.clear();
 
-   for ( unsigned t = 0; t < m_joints.size(); t++ )
-   {
-      if ( m_joints[t]->m_selected )
-      {
-         joints.push_back( t );
-      }
-   }
+	for(unsigned t = 0; t<m_joints.size(); t++)
+	{
+		if(m_joints[t]->m_selected)
+		{
+			joints.push_back(t);
+		}
+	}
 }
 
-void Model::getSelectedPoints( list<int> & points ) const
+void Model::getSelectedPoints(int_list &points)const
 {
-   points.clear();
+	points.clear();
 
-   for ( unsigned t = 0; t < m_points.size(); t++ )
-   {
-      if ( m_points[t]->m_selected )
-      {
-         points.push_back( t );
-      }
-   }
+	for(unsigned t = 0; t<m_points.size(); t++)
+	{
+		if(m_points[t]->m_selected)
+		{
+			points.push_back(t);
+		}
+	}
 }
 
-void Model::getSelectedProjections( list<int> & projections ) const
+void Model::getSelectedProjections(int_list &projections)const
 {
-   projections.clear();
+	projections.clear();
 
-   for ( unsigned t = 0; t < m_projections.size(); t++ )
-   {
-      if ( m_projections[t]->m_selected )
-      {
-         projections.push_back( t );
-      }
-   }
+	for(unsigned t = 0; t<m_projections.size(); t++)
+	{
+		if(m_projections[t]->m_selected)
+		{
+			projections.push_back(t);
+		}
+	}
 }
 
-unsigned Model::getSelectedVertexCount() const
+unsigned Model::getSelectedVertexCount()const
 {
-   unsigned c = m_vertices.size();
-   unsigned count = 0;
+	unsigned c = m_vertices.size();
+	unsigned count = 0;
 
-   for ( unsigned v = 0; v < c; v++ )
-   {
-      if ( m_vertices[v]->m_selected )
-      {
-         count++;
-      }
-   }
+	for(unsigned v = 0; v<c; v++)
+	{
+		if(m_vertices[v]->m_selected)
+		{
+			count++;
+		}
+	}
 
-   return count;
+	return count;
 }
 
-unsigned Model::getSelectedTriangleCount() const
+unsigned Model::getSelectedTriangleCount()const
 {
-   unsigned c = m_triangles.size();
-   unsigned count = 0;
+	unsigned c = m_triangles.size();
+	unsigned count = 0;
 
-   for ( unsigned v = 0; v < c; v++ )
-   {
-      if ( m_triangles[v]->m_selected )
-      {
-         count++;
-      }
-   }
+	for(unsigned v = 0; v<c; v++)
+	{
+		if(m_triangles[v]->m_selected)
+		{
+			count++;
+		}
+	}
 
-   return count;
+	return count;
 }
 
-unsigned Model::getSelectedBoneJointCount() const
+unsigned Model::getSelectedBoneJointCount()const
 {
-   unsigned c = m_joints.size();
-   unsigned count = 0;
+	unsigned c = m_joints.size();
+	unsigned count = 0;
 
-   for ( unsigned v = 0; v < c; v++ )
-   {
-      if ( m_joints[v]->m_selected )
-      {
-         count++;
-      }
-   }
+	for(unsigned v = 0; v<c; v++)
+	{
+		if(m_joints[v]->m_selected)
+		{
+			count++;
+		}
+	}
 
-   return count;
+	return count;
 }
 
-unsigned Model::getSelectedPointCount() const
+unsigned Model::getSelectedPointCount()const
 {
-   unsigned c = m_points.size();
-   unsigned count = 0;
+	unsigned c = m_points.size();
+	unsigned count = 0;
 
-   for ( unsigned v = 0; v < c; v++ )
-   {
-      if ( m_points[v]->m_selected )
-      {
-         count++;
-      }
-   }
+	for(unsigned v = 0; v<c; v++)
+	{
+		if(m_points[v]->m_selected)
+		{
+			count++;
+		}
+	}
 
-   return count;
+	return count;
 }
 
-unsigned Model::getSelectedProjectionCount() const
+unsigned Model::getSelectedProjectionCount()const
 {
-   unsigned c = m_projections.size();
-   unsigned count = 0;
+	unsigned c = m_projections.size();
+	unsigned count = 0;
 
-   for ( unsigned v = 0; v < c; v++ )
-   {
-      if ( m_projections[v]->m_selected )
-      {
-         count++;
-      }
-   }
+	for(unsigned v = 0; v<c; v++)
+	{
+		if(m_projections[v]->m_selected)
+		{
+			count++;
+		}
+	}
 
-   return count;
+	return count;
 }
 
-bool Model::parentJointSelected( int joint ) const
+bool Model::parentJointSelected(int joint)const
 {
-   while ( m_joints[joint]->m_parent >= 0 )
-   {
-      joint = m_joints[joint]->m_parent;
+	while(m_joints[joint]->m_parent>=0)
+	{
+		joint = m_joints[joint]->m_parent;
 
-      if ( m_joints[joint]->m_selected )
-      {
-         return true;
-      }
-   }
-   return false;
+		if(m_joints[joint]->m_selected)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
-bool Model::directParentJointSelected( int joint ) const
+bool Model::directParentJointSelected(int joint)const
 {
-   int p = m_joints[joint]->m_parent;
-   if ( p >= 0 )
-   {
-      return m_joints[ p ]->m_selected;
-   }
-   return false;
+	int p = m_joints[joint]->m_parent;
+	if(p>=0)
+	{
+		return m_joints[p]->m_selected;
+	}
+	return false;
 }
 
-bool Model::getSelectedBoundingRegion( double *x1, double *y1, double *z1, double *x2, double *y2, double *z2 ) const
+bool Model::getSelectedBoundingRegion(double *x1, double *y1, double *z1, double *x2, double *y2, double *z2)const
 {
-   if ( x1 && y1 && z1 && x2 && y2 && z2 )
-   {
-      int visible = 0;
-      bool havePoint = false;
-      *x1 = *y1 = *z1 = *x2 = *y2 = *z2 = 0.0;
+	if(x1&&y1&&z1&&x2&&y2&&z2)
+	{
+		int visible = 0;
+		bool havePoint = false;
+		*x1 = *y1 = *z1 = *x2 = *y2 = *z2 = 0.0;
 
-      for ( unsigned v = 0; v < m_vertices.size(); v++ )
-      {
-         if ( m_vertices[v]->m_visible && m_vertices[v]->m_selected )
-         {
-            if ( havePoint )
-            {
-               if ( m_vertices[v]->m_coord[0] < *x1 )
-               {
-                  *x1 = m_vertices[v]->m_coord[0];
-               }
-               if ( m_vertices[v]->m_coord[0] > *x2 )
-               {
-                  *x2 = m_vertices[v]->m_coord[0];
-               }
-               if ( m_vertices[v]->m_coord[1] < *y1 )
-               {
-                  *y1 = m_vertices[v]->m_coord[1];
-               }
-               if ( m_vertices[v]->m_coord[1] > *y2 )
-               {
-                  *y2 = m_vertices[v]->m_coord[1];
-               }
-               if ( m_vertices[v]->m_coord[2] < *z1 )
-               {
-                  *z1 = m_vertices[v]->m_coord[2];
-               }
-               if ( m_vertices[v]->m_coord[2] > *z2 )
-               {
-                  *z2 = m_vertices[v]->m_coord[2];
-               }
-            }
-            else
-            {
-               *x1 = *x2 = m_vertices[v]->m_coord[0];
-               *y1 = *y2 = m_vertices[v]->m_coord[1];
-               *z1 = *z2 = m_vertices[v]->m_coord[2];
-               havePoint = true;
-            }
-            visible++;
-         }
-      }
+		for(unsigned v = 0; v<m_vertices.size(); v++)
+		{
+			if(m_vertices[v]->m_visible&&m_vertices[v]->m_selected)
+			{
+				if(havePoint)
+				{
+					if(m_vertices[v]->m_coord[0]<*x1)
+					{
+						*x1 = m_vertices[v]->m_coord[0];
+					}
+					if(m_vertices[v]->m_coord[0]>*x2)
+					{
+						*x2 = m_vertices[v]->m_coord[0];
+					}
+					if(m_vertices[v]->m_coord[1]<*y1)
+					{
+						*y1 = m_vertices[v]->m_coord[1];
+					}
+					if(m_vertices[v]->m_coord[1]>*y2)
+					{
+						*y2 = m_vertices[v]->m_coord[1];
+					}
+					if(m_vertices[v]->m_coord[2]<*z1)
+					{
+						*z1 = m_vertices[v]->m_coord[2];
+					}
+					if(m_vertices[v]->m_coord[2]>*z2)
+					{
+						*z2 = m_vertices[v]->m_coord[2];
+					}
+				}
+				else
+				{
+					*x1 = *x2 = m_vertices[v]->m_coord[0];
+					*y1 = *y2 = m_vertices[v]->m_coord[1];
+					*z1 = *z2 = m_vertices[v]->m_coord[2];
+					havePoint = true;
+				}
+				visible++;
+			}
+		}
 
-      for ( unsigned j = 0; j < m_joints.size(); j++ )
-      {
-         if ( m_joints[j]->m_selected )
-         {
-            double coord[3];
-            m_joints[j]->m_absolute.getTranslation( coord );
+		for(unsigned j = 0; j<m_joints.size(); j++)
+		{
+			if(m_joints[j]->m_selected)
+			{
+				double coord[3];
+				m_joints[j]->m_absolute.getTranslation(coord);
 
-            if ( havePoint )
-            {
-               if ( coord[0] < *x1 )
-               {
-                  *x1 = coord[0];
-               }
-               if ( coord[0] > *x2 )
-               {
-                  *x2 = coord[0];
-               }
-               if ( coord[1] < *y1 )
-               {
-                  *y1 = coord[1];
-               }
-               if ( coord[1] > *y2 )
-               {
-                  *y2 = coord[1];
-               }
-               if ( coord[2] < *z1 )
-               {
-                  *z1 = coord[2];
-               }
-               if ( coord[2] > *z2 )
-               {
-                  *z2 = coord[2];
-               }
-            }
-            else
-            {
-               *x1 = *x2 = coord[0];
-               *y1 = *y2 = coord[1];
-               *z1 = *z2 = coord[2];
-               havePoint = true;
-            }
+				if(havePoint)
+				{
+					if(coord[0]<*x1)
+					{
+						*x1 = coord[0];
+					}
+					if(coord[0]>*x2)
+					{
+						*x2 = coord[0];
+					}
+					if(coord[1]<*y1)
+					{
+						*y1 = coord[1];
+					}
+					if(coord[1]>*y2)
+					{
+						*y2 = coord[1];
+					}
+					if(coord[2]<*z1)
+					{
+						*z1 = coord[2];
+					}
+					if(coord[2]>*z2)
+					{
+						*z2 = coord[2];
+					}
+				}
+				else
+				{
+					*x1 = *x2 = coord[0];
+					*y1 = *y2 = coord[1];
+					*z1 = *z2 = coord[2];
+					havePoint = true;
+				}
 
-            visible++;
-         }
-      }
+				visible++;
+			}
+		}
 
-      for ( unsigned p = 0; p < m_points.size(); p++ )
-      {
-         if ( m_points[p]->m_selected )
-         {
-            double coord[3];
-            coord[0] = m_points[p]->m_trans[0];
-            coord[1] = m_points[p]->m_trans[1];
-            coord[2] = m_points[p]->m_trans[2];
+		for(unsigned p = 0; p<m_points.size(); p++)
+		{
+			if(m_points[p]->m_selected)
+			{
+				double coord[3];
+				coord[0] = m_points[p]->m_trans[0];
+				coord[1] = m_points[p]->m_trans[1];
+				coord[2] = m_points[p]->m_trans[2];
 
-            if ( havePoint )
-            {
-               if ( coord[0] < *x1 )
-               {
-                  *x1 = coord[0];
-               }
-               if ( coord[0] > *x2 )
-               {
-                  *x2 = coord[0];
-               }
-               if ( coord[1] < *y1 )
-               {
-                  *y1 = coord[1];
-               }
-               if ( coord[1] > *y2 )
-               {
-                  *y2 = coord[1];
-               }
-               if ( coord[2] < *z1 )
-               {
-                  *z1 = coord[2];
-               }
-               if ( coord[2] > *z2 )
-               {
-                  *z2 = coord[2];
-               }
-            }
-            else
-            {
-               *x1 = *x2 = coord[0];
-               *y1 = *y2 = coord[1];
-               *z1 = *z2 = coord[2];
-               havePoint = true;
-            }
+				if(havePoint)
+				{
+					if(coord[0]<*x1)
+					{
+						*x1 = coord[0];
+					}
+					if(coord[0]>*x2)
+					{
+						*x2 = coord[0];
+					}
+					if(coord[1]<*y1)
+					{
+						*y1 = coord[1];
+					}
+					if(coord[1]>*y2)
+					{
+						*y2 = coord[1];
+					}
+					if(coord[2]<*z1)
+					{
+						*z1 = coord[2];
+					}
+					if(coord[2]>*z2)
+					{
+						*z2 = coord[2];
+					}
+				}
+				else
+				{
+					*x1 = *x2 = coord[0];
+					*y1 = *y2 = coord[1];
+					*z1 = *z2 = coord[2];
+					havePoint = true;
+				}
 
-            visible++;
-         }
-      }
+				visible++;
+			}
+		}
 
-      for ( unsigned p = 0; p < m_projections.size(); p++ )
-      {
-         if ( m_projections[p]->m_selected )
-         {
-            double coord[3];
-            double m = mag3(m_projections[p]->m_upVec);
+		for(unsigned p = 0; p<m_projections.size(); p++)
+		{
+			if(m_projections[p]->m_selected)
+			{
+				double coord[3];
+				double m = mag3(m_projections[p]->m_upVec);
 
-            coord[0] = m_projections[p]->m_pos[0] + m;
-            coord[1] = m_projections[p]->m_pos[1] + m;
-            coord[2] = m_projections[p]->m_pos[2] + m;
+				coord[0] = m_projections[p]->m_pos[0]+m;
+				coord[1] = m_projections[p]->m_pos[1]+m;
+				coord[2] = m_projections[p]->m_pos[2]+m;
 
-            if ( havePoint )
-            {
-               if ( coord[0] < *x1 )
-               {
-                  *x1 = coord[0];
-               }
-               if ( coord[0] > *x2 )
-               {
-                  *x2 = coord[0];
-               }
-               if ( coord[1] < *y1 )
-               {
-                  *y1 = coord[1];
-               }
-               if ( coord[1] > *y2 )
-               {
-                  *y2 = coord[1];
-               }
-               if ( coord[2] < *z1 )
-               {
-                  *z1 = coord[2];
-               }
-               if ( coord[2] > *z2 )
-               {
-                  *z2 = coord[2];
-               }
-            }
-            else
-            {
-               *x1 = *x2 = coord[0];
-               *y1 = *y2 = coord[1];
-               *z1 = *z2 = coord[2];
-               havePoint = true;
-            }
+				if(havePoint)
+				{
+					if(coord[0]<*x1)
+					{
+						*x1 = coord[0];
+					}
+					if(coord[0]>*x2)
+					{
+						*x2 = coord[0];
+					}
+					if(coord[1]<*y1)
+					{
+						*y1 = coord[1];
+					}
+					if(coord[1]>*y2)
+					{
+						*y2 = coord[1];
+					}
+					if(coord[2]<*z1)
+					{
+						*z1 = coord[2];
+					}
+					if(coord[2]>*z2)
+					{
+						*z2 = coord[2];
+					}
+				}
+				else
+				{
+					*x1 = *x2 = coord[0];
+					*y1 = *y2 = coord[1];
+					*z1 = *z2 = coord[2];
+					havePoint = true;
+				}
 
-            coord[0] = m_projections[p]->m_pos[0] - m;
-            coord[1] = m_projections[p]->m_pos[1] - m;
-            coord[2] = m_projections[p]->m_pos[2] - m;
+				coord[0] = m_projections[p]->m_pos[0]-m;
+				coord[1] = m_projections[p]->m_pos[1]-m;
+				coord[2] = m_projections[p]->m_pos[2]-m;
 
-            if ( coord[0] < *x1 )
-            {
-               *x1 = coord[0];
-            }
-            if ( coord[0] > *x2 )
-            {
-               *x2 = coord[0];
-            }
-            if ( coord[1] < *y1 )
-            {
-               *y1 = coord[1];
-            }
-            if ( coord[1] > *y2 )
-            {
-               *y2 = coord[1];
-            }
-            if ( coord[2] < *z1 )
-            {
-               *z1 = coord[2];
-            }
-            if ( coord[2] > *z2 )
-            {
-               *z2 = coord[2];
-            }
+				if(coord[0]<*x1)
+				{
+					*x1 = coord[0];
+				}
+				if(coord[0]>*x2)
+				{
+					*x2 = coord[0];
+				}
+				if(coord[1]<*y1)
+				{
+					*y1 = coord[1];
+				}
+				if(coord[1]>*y2)
+				{
+					*y2 = coord[1];
+				}
+				if(coord[2]<*z1)
+				{
+					*z1 = coord[2];
+				}
+				if(coord[2]>*z2)
+				{
+					*z2 = coord[2];
+				}
 
-            visible++;
-         }
-      }
+				visible++;
+			}
+		}
 
-      return ( visible != 0 ) ? true : false;
-   }
+		return (visible!=0)? true : false;
+	}
 
-   return false;
+	return false;
 }
 
 bool Model::unselectAllVertices()
 {
-   for ( unsigned v = 0; v < m_vertices.size(); v++ )
-   {
-      m_vertices[ v ]->m_selected = false;
-   }
-   return true;
+	//https://github.com/zturtleman/mm3d/issues/56
+	if(m_undoEnabled) beginSelectionDifference();
+
+	for(unsigned v = 0; v<m_vertices.size(); v++)
+	{
+		m_vertices[v]->m_selected = false;
+	}
+	return true;
 }
 
 bool Model::unselectAllTriangles()
 {
-   for ( unsigned t = 0; t < m_triangles.size(); t++ )
-   {
-      m_triangles[ t ]->m_selected = false;
-   }
-   return true;
+	//https://github.com/zturtleman/mm3d/issues/56
+	beginSelectionDifference();
+
+	for(unsigned t = 0; t<m_triangles.size(); t++)
+	{
+		m_triangles[t]->m_selected = false;
+	}
+	return true;
 }
 
 bool Model::unselectAllGroups()
 {
-   for ( unsigned m = 0; m < m_groups.size(); m++ )
-   {
-      m_groups[ m ]->m_selected = false;
-   }
-   return true;
+	//https://github.com/zturtleman/mm3d/issues/56
+	beginSelectionDifference();
+
+	for(unsigned m = 0; m<m_groups.size(); m++)
+	{
+		m_groups[m]->m_selected = false;
+	}
+	return true;
 }
 
 bool Model::unselectAllBoneJoints()
 {
-   for ( unsigned j = 0; j < m_joints.size(); j++ )
-   {
-      m_joints[ j ]->m_selected = false;
-   }
-   return true;
+	//https://github.com/zturtleman/mm3d/issues/56
+	if(m_undoEnabled) beginSelectionDifference();
+
+	for(unsigned j = 0; j<m_joints.size(); j++)
+	{
+		m_joints[j]->m_selected = false;
+	}
+	return true;
 }
 
 bool Model::unselectAllPoints()
 {
-   for ( unsigned p = 0; p < m_points.size(); p++ )
-   {
-      m_points[ p ]->m_selected = false;
-   }
-   return true;
+	//https://github.com/zturtleman/mm3d/issues/56
+	if(m_undoEnabled) beginSelectionDifference();
+
+	for(unsigned p = 0; p<m_points.size(); p++)
+	{
+		m_points[p]->m_selected = false;
+	}
+	return true;
 }
 
 bool Model::unselectAllProjections()
 {
-   for ( unsigned p = 0; p < m_projections.size(); p++ )
-   {
-      m_projections[ p ]->m_selected = false;
-   }
-   return true;
+	//https://github.com/zturtleman/mm3d/issues/56
+	if(m_undoEnabled) beginSelectionDifference();
+
+	for(unsigned p = 0; p<m_projections.size(); p++)
+	{
+		m_projections[p]->m_selected = false;
+	}
+	return true;
 }
 
 bool Model::unselectAll()
 {
-   LOG_PROFILE();
+	LOG_PROFILE();
 
-   beginSelectionDifference();
+	beginSelectionDifference();
 
-   unselectAllVertices();
-   unselectAllTriangles();
-   unselectAllGroups();
-   unselectAllBoneJoints();
-   unselectAllPoints();
-   unselectAllProjections();
+	unselectAllVertices();
+	unselectAllTriangles();
+	unselectAllGroups();
+	unselectAllBoneJoints();
+	unselectAllPoints();
+	unselectAllProjections();
 
-   endSelectionDifference();
-   return true;
+	endSelectionDifference();
+	return true;
 }
 
 void Model::selectFreeVertices()
 {
-   setSelectionMode( Model::SelectVertices );
-   beginSelectionDifference();
+	setSelectionMode(Model::SelectVertices);
+	beginSelectionDifference();
 
-   unsigned vcount = m_vertices.size();
-   unsigned v = 0;
+	unsigned vcount = m_vertices.size();
+	unsigned v = 0;
 
-   for ( v = 0; v < vcount; v++ )
-   {
-      m_vertices[ v ]->m_marked = m_vertices[ v ]->m_free;
-   }
+	for(v = 0; v<vcount; v++)
+	{
+		m_vertices[v]->m_marked = m_vertices[v]->m_free;
+	}
 
-   unsigned tcount = m_triangles.size();
+	unsigned tcount = m_triangles.size();
 
-   for ( unsigned t = 0; t < tcount; t++ )
-   {
-      m_vertices[ m_triangles[t]->m_vertexIndices[0] ]->m_marked = false;
-      m_vertices[ m_triangles[t]->m_vertexIndices[1] ]->m_marked = false;
-      m_vertices[ m_triangles[t]->m_vertexIndices[2] ]->m_marked = false;
-   }
+	for(unsigned t = 0; t<tcount; t++)
+	{
+		m_vertices[m_triangles[t]->m_vertexIndices[0]]->m_marked = false;
+		m_vertices[m_triangles[t]->m_vertexIndices[1]]->m_marked = false;
+		m_vertices[m_triangles[t]->m_vertexIndices[2]]->m_marked = false;
+	}
 
-   for ( v = 0; v < vcount; v++ )
-   {
-      if ( m_vertices[ v ]->m_marked )
-      {
-         selectVertex( v );
-      }
-      else
-      {
-         unselectVertex( v );
-      }
-   }
+	for(v = 0; v<vcount; v++)
+	{
+		if(m_vertices[v]->m_marked)
+		{
+			selectVertex(v);
+		}
+		else
+		{
+			unselectVertex(v);
+		}
+	}
 
-   endSelectionDifference();
+	endSelectionDifference();
 }
 
-void Model::setSelectedUv( const vector<int> & uvList )
+void Model::setSelectedUv(const std::vector<int> &uvList)
 {
-   m_changeBits |= SelectionChange;
+	//Inappropriate. Nothing sees UVs.
+	//m_changeBits |= SelectionChange; //2019
 
-   MU_SetSelectedUv * undo = new MU_SetSelectedUv();
-   undo->setSelectedUv( uvList, m_selectedUv );
-   sendUndo( undo );
+	MU_SetSelectedUv *undo = new MU_SetSelectedUv();
+	undo->setSelectedUv(uvList,m_selectedUv);
 
-   m_selectedUv = uvList;
+	//https://github.com/zturtleman/mm3d/issues/90
+	//sendUndo(undo);
+	appendUndo(undo); 
+
+	m_selectedUv = uvList;
 }
 
-void Model::getSelectedUv( vector<int> & uvList ) const
+void Model::getSelectedUv(std::vector<int> &uvList)const
 {
-   uvList = m_selectedUv;
+	uvList = m_selectedUv;
 }
 
 void Model::clearSelectedUv()
 {
-   vector<int> empty;
-   setSelectedUv( empty );
+	std::vector<int> empty; setSelectedUv(empty);
 }
 
 #endif // MM3D_EDIT

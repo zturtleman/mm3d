@@ -1,221 +1,191 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
+#include "mm3dtypes.h" //PCH
 
-#include "dragvertextool.h"
+#include "tool.h"
+
 #include "pixmap/dragvertextool.xpm"
+
 #include "glmath.h"
 #include "model.h"
 #include "modelstatus.h"
-
-#include <math.h>
-#include <QtCore/QObject>
-#include <QtWidgets/QApplication>
-
 #include "log.h"
 
-DragVertexTool::DragVertexTool()
+struct DragVertexTool: public Tool
 {
-}
+	DragVertexTool():Tool(TT_Other){}
 
-DragVertexTool::~DragVertexTool()
+	virtual const char *getName(int)
+	{
+		return TRANSLATE_NOOP("Tool","Drag Vertex on Edge");
+	}
+
+	virtual const char *getKeymap(int){ return "Shift+T"; } //"D"
+
+	virtual const char **getPixmap(int){ return dragvertextool_xpm; }
+
+	virtual void mouseButtonDown(int buttonState, int x, int y);
+	virtual void mouseButtonMove(int buttonState, int x, int y);
+
+	//REMOVE ME
+	virtual void mouseButtonUp(int buttonState, int x, int y)
+	{
+		model_status(parent->getModel(),StatusNormal,STATUSTIME_SHORT,
+		TRANSLATE("Tool","Drag complete"));
+
+		parent->updateAllViews();
+	}	
+		int m_vertId;
+		double m_coords[3];
+		std::vector<Vector> m_vectors;
+};
+
+extern Tool *dragvertextool(){ return new DragVertexTool; }
+
+void DragVertexTool::mouseButtonDown(int buttonState, int x, int y)
 {
-}
+	Model *model = parent->getModel();
+	
+	int_list vertices; //REMOVE ME
+	model->getSelectedVertices(vertices);
 
-void DragVertexTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y )
+	m_vectors.clear();
+	if(!vertices.empty()) //Or 1==vertices.size() ???
+	{
+		const int vid = vertices.front();
+		
+		model->getVertexCoords(vid,m_coords);
+		const Matrix &mat = parent->getParentViewMatrix(); // model to viewport space		
+		//log_debug("vertex %d is at (%f,%f,%f)\n",vid,m_coords[0],m_coords[1],m_coords[2]); //???
+		mat.apply3x(m_coords);
+
+		int iN = model->getTriangleCount();
+		for(int i=0;i<iN;i++)
+		{
+			bool match = false;
+
+			int tv[3]; for(int j=0;j<3;j++)
+			{
+				tv[j] = model->getTriangleVertex(i,j);
+				if(tv[j]==vid)
+				{
+					// TODO: could find the same vertex multiple times if
+					// edge belongs to more than one triangle, may want
+					// to prevent that in the future
+					match = true;
+				}
+			}
+
+			if(match) for(int j=0;j<3;j++) if(tv[j]!=vid)
+			{
+				double c[3];
+				model->getVertexCoords(tv[j],c);
+				mat.apply3x(c);
+
+				Vector v(c[0]-m_coords[0],c[1]-m_coords[1],c[2]-m_coords[2]);
+
+				//log_debug("adding vector (%f,%f,%f)\n",v[0],v[1],v[2]); //???
+
+				m_vectors.push_back(v);
+			}
+		}
+
+		model_status(model,StatusNormal,STATUSTIME_SHORT,
+		TRANSLATE("Tool","Dragging selected vertex"));
+
+		m_vertId = vid;
+	}
+	else
+	{
+		m_vertId = -1;
+
+		model_status(model,StatusError,STATUSTIME_LONG,
+		TRANSLATE("Tool","Must a vertex selected")); //FIX ME
+	}
+}
+void DragVertexTool::mouseButtonMove(int buttonState, int x, int y)
 {
-   Model * model = parent->getModel();
+	Model *model = parent->getModel();
 
-   m_vertVectors.clear();
+	Vector newPos;
+	parent->getParentXYValue(x,y,newPos[0],newPos[1]);
 
-   std::list<int> vertices;
-   model->getSelectedVertices( vertices );
+	//log_debug("pos is (%f,%f,%f)\n",newPos[0],newPos[1],newPos[2]); //???
 
-   if ( !vertices.empty() )
-   {
-      m_vertId = vertices.front();
+	newPos[0]-=m_coords[0];
+	newPos[1]-=m_coords[1];
 
-      m_view = parent->getParentViewMatrix();        // model to viewport space
-      m_inv  = parent->getParentViewInverseMatrix(); // viewport to model space
+	//log_debug("pos vector is (%f,%f,%f)\n",newPos[0],newPos[1],newPos[2]); //???
 
-      m_vertCoords[0] = 0;
-      m_vertCoords[1] = 0;
-      m_vertCoords[2] = 0;
-      model->getVertexCoords( m_vertId, m_vertCoords );
+	double pscale = newPos.mag3();
+	newPos.normalize3();
 
-      log_debug( "vertex %d is at ( %f, %f, %f )\n", m_vertId,
-            m_vertCoords[0], m_vertCoords[1], m_vertCoords[2] );
+	//log_debug("mouse has moved %f units\n",pscale); //???
 
-      m_view.apply3x( m_vertCoords );
+	if(!m_vectors.empty())
+	{
+		Vector best = m_vectors.front();
+		double bestDp = 0;
+		double ratio = 1;
 
-      size_t tcount = model->getTriangleCount();
-      for ( size_t t = 0; t < tcount; t++ )
-      {
-         int tv[3];
-         int i;
+		for(auto&ea:m_vectors)
+		{
+			Vector vtry = ea;
+			vtry[2] = 0;
 
-         bool match = false;
-         for ( i = 0; i < 3; i++ )
-         {
-            tv[i] = model->getTriangleVertex( t, i );
-            if ( tv[i] == m_vertId )
-            {
-               // TODO: could find the same vertex multiple times if
-               // edge belongs to more than one triangle, may want
-               // to prevent that in the future
-               match = true;
-            }
-         }
+			double trylen = vtry.mag3();
+			vtry.normalize3();
 
-         if ( match )
-         {
-            for ( i = 0; i < 3; i++ )
-            {
-               if ( tv[i] != m_vertId )
-               {
-                  double c[3]  = { 0, 0, 0 };
-                  model->getVertexCoords( tv[i], c );
-                  m_view.apply3x( c );
+			double dp = newPos.dot3(vtry);
 
-                  Vector v;
-                  v[0] = c[0] - m_vertCoords[0];
-                  v[1] = c[1] - m_vertCoords[1];
-                  v[2] = c[2] - m_vertCoords[2];
+			//log_debug("  dot3 is %f (%f,%f,%f)\n",d,vtry[0],vtry[1],vtry[2]); //???
 
-                  log_debug( "adding vector ( %f, %f, %f )\n",
-                        v[0], v[1], v[2] );
+			if(fabs(dp)>fabs(bestDp))
+			{
+				bestDp = dp;
+				best = ea;
+				ratio = pscale/trylen;
+			}
+		}
 
-                  m_vertVectors.push_back( v );
-               }
-            }
-         }
-      }
+		//log_debug("best vector is (%f,%f,%f)\n",best[0],best[1],best[2]); //???
 
-      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Dragging selected vertex" ).toUtf8() );
-   }
-   else
-   {
-      m_vertId = -1;
-      model_status( parent->getModel(), StatusError, STATUSTIME_LONG, qApp->translate( "Tool", "Must a vertex selected" ).toUtf8() );
-   }
+		best.scale3(bestDp*ratio);
+
+		//log_debug("best scaled is (%f,%f,%f)\n",best[0],best[1],best[2]); //???
+
+		best[0]+=m_coords[0];
+		best[1]+=m_coords[1];
+		best[2]+=m_coords[2];
+
+		//log_debug("best sum is (%f,%f,%f)\n",best[0],best[1],best[2]); //???
+
+		parent->getParentViewInverseMatrix().apply3x(best);
+
+		//log_debug("best applied is (%f,%f,%f)\n",best[0],best[1],best[2]); //???
+
+		model->moveVertex(m_vertId,best[0],best[1],best[2]);
+	}
+
+	parent->updateAllViews();
 }
-
-void DragVertexTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
-{
-   parent->updateAllViews();
-
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Drag complete" ).toUtf8() );
-}
-
-void DragVertexTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )
-{
-   Matrix m;
-
-   Vector newPos;
-   parent->getParentXYValue( x, y, newPos[0], newPos[1] );
-   Model * model = parent->getModel();
-
-   log_debug( "pos is ( %f, %f, %f )\n",
-         newPos[0], newPos[1], newPos[2] );
-
-   newPos[0] -= m_vertCoords[0];
-   newPos[1] -= m_vertCoords[1];
-
-   log_debug( "pos vector is ( %f, %f, %f )\n",
-         newPos[0], newPos[1], newPos[2] );
-
-   double pscale = newPos.mag3();
-   newPos.normalize3();
-
-   log_debug( "mouse has moved %f units\n",
-         pscale );
-
-   if ( !m_vertVectors.empty() && m_vertId >= 0 )
-   {
-      Vector best = m_vertVectors.front();
-      double bestDist = 0.0;
-      double ratio = 1.0;
-
-      std::list< Vector >::iterator it;
-
-      for ( it = m_vertVectors.begin(); it != m_vertVectors.end(); it++ )
-      {
-         Vector vtry = (*it);
-         vtry[2] = 0;
-
-         double trylen = vtry.mag3();
-
-         vtry.normalize3();
-         double d = newPos.dot3( vtry );
-
-         log_debug( "  dot3 is %f (%f, %f, %f)\n", d,
-               vtry[0], vtry[1], vtry[2] );
-
-         if ( fabs( d ) > fabs( bestDist ) )
-         {
-            bestDist = d;
-            best = (*it);
-            ratio = pscale / trylen;
-         }
-      }
-
-      log_debug( "best vector is (%f, %f, %f)\n",
-            best[0], best[1], best[2] );
-
-      best.scale3( bestDist * ratio );
-
-      log_debug( "best scaled is (%f, %f, %f)\n",
-            best[0], best[1], best[2] );
-
-      best[0] += m_vertCoords[0];
-      best[1] += m_vertCoords[1];
-      best[2] += m_vertCoords[2];
-
-      log_debug( "best sum is (%f, %f, %f)\n",
-            best[0], best[1], best[2] );
-
-      m_inv.apply3x( best );
-
-      log_debug( "best applied is (%f, %f, %f)\n",
-            best[0], best[1], best[2] );
-
-      model->moveVertex( m_vertId, best[0], best[1], best[2] );
-   }
-
-   parent->updateAllViews();
-}
-
-const char ** DragVertexTool::getPixmap()
-{
-   return (const char **) dragvertextool_xpm;
-}
-
-void DragVertexTool::activated( int argc, Model * model, QMainWindow * mainwin )
-{
-   //model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Tip: Hold shift to restrict movement to one dimension" ).toUtf8() );
-}
-
-const char * DragVertexTool::getName( int arg )
-{
-   return QT_TRANSLATE_NOOP( "Tool", "Drag Vertex on Edge" );
-}
-

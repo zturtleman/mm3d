@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
-  <mime-type type="application/x-mm3d">
-    <comment>mm3d model</comment>
-    <glob pattern="*.mm3d"/>
-    <glob pattern="*.MM3D"/>
-  </mime-type>
-</mime-info>

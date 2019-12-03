@@ -1,129 +1,178 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
-
-#include "metawin.h"
+#include "mm3dtypes.h" //PCH
+#include "win.h"
 
 #include "model.h"
-#include "keyvaluewin.h"
-#include "decalmgr.h"
-#include "helpwin.h"
 
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QShortcut>
 
-#include <stdio.h>
-#include <stdlib.h>
-
-MetaWindow::MetaWindow( Model * model, QWidget * parent )
-   : QDialog( parent ),
-     m_model( model )
+struct MetaEditWin : Win
 {
-   setAttribute( Qt::WA_DeleteOnClose );
-   setupUi( this );
-   setModal( true );
+	void submit(int);
 
-   m_list->header()->setSectionsClickable( false );
-   m_list->header()->setSectionsMovable( false );
+	MetaEditWin(li::item *kv)
+		:
+	Win("Edit Meta Data"),kv(kv),
+	key(main,"Name\t"),
+	val(main,"Value\t"),
+	ok_cancel(main)
+	{
+		key.expand(); val.expand();
 
-   unsigned count = m_model->getMetaDataCount();
+		utf8 row[2]; kv->text().c_row(row);
+		key.set_text(row[0]); val.set_text(row[1]);		
 
-   for ( unsigned int m = 0; m < count; m++ )
-   {
-      char key[1024];
-      char value[1024];
+		active_callback = &MetaEditWin::submit;
 
-      m_model->getMetaData( m, key, sizeof(key), value, sizeof(value) );
-      QTreeWidgetItem * item = new QTreeWidgetItem( m_list );
-      item->setText( 0, QString::fromUtf8( key ) );
-      item->setText( 1, QString::fromUtf8( value ) );
-   }
+		submit(id_init);
+	}
 
-   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
-   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
+	li::item *kv;
+
+	textbox key,val; 
+	ok_cancel_panel ok_cancel;
+};
+void MetaEditWin::submit(int id)
+{
+	if(id==id_ok)		
+	kv->text().format(&"%s\0%s",
+	key.text().c_str(),val.text().c_str());
+	basic_submit(id);
 }
 
-MetaWindow::~MetaWindow()
+struct MetaWin : Win
 {
+	void submit(int);
+
+	MetaWin(Model *model)
+		:
+	Win("Model Meta Data"),
+		model(model),
+	table(main,"",id_item),
+		header(table,id_sort),
+	nav(main),
+	add(nav,"New",id_new),
+	del(nav,"Delete",id_delete),
+	f1_ok_cancel(main)
+	{
+		table.expand();
+		nav.ralign();
+
+		active_callback = &MetaWin::submit;
+
+		submit(id_init);
+	}
+
+	Model *model;
+
+	listbox table;
+	listbar header;
+	row nav;
+	button add,del;
+	f1_ok_cancel_panel f1_ok_cancel;
+
+	void new_item(utf8 k, utf8 v)
+	{
+		auto *i = new li::item; 
+		i->text().format(&"%s\0%s",k,v); 
+		table.add_item(i);
+	}
+};
+void MetaWin::submit(int id)
+{
+	switch(id)
+	{
+	case id_init:
+
+		header.add_item("Name").add_item("Value");
+		for(int i=0,iN=model->getMetaDataCount();i<iN;i++)
+		{	
+			Model::MetaData &md = model->getMetaData(i);
+			new_item(md.key.c_str(),md.value.c_str());
+		}
+		break;
+
+	case id_new:
+
+		new_item(::tr("Name","meta value key name"),::tr("Value","meta value 'value'"));
+		table.outline(table.find_line_count()-1);
+		break;
+
+	case id_delete:
+
+		table.delete_item(table.find_line_ptr());
+		break;
+
+	case id_sort:
+	
+		header.sort_items([&](li::item *a, li::item *b)
+		{
+			utf8 row1[2]; a->text().c_row(row1);
+			utf8 row2[2]; b->text().c_row(row2);
+			//https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92338
+			return strcmp(row1[(int)header],row2[(int)header])<0;
+		});
+		break;
+
+	case id_item:
+
+		switch(event.get_click())
+		{
+		default: //Spacebar???
+		case 2: //Double-click? 
+			
+			MetaEditWin(table.find_line_ptr()).return_on_close();
+			break;
+
+		case 1:
+
+			if(event.listbox_item_rename())
+			{
+				textbox modal(table);
+				modal.move_into_place(); modal.return_on_enter();
+			}
+			break;
+		}		
+		break;
+
+	case id_ok:
+
+		model->clearMetaData();
+		table^[&](li::allitems ea)
+		{
+			utf8 row[2]; ea->text().c_row(row);
+			model->addMetaData(row[0],row[1]);
+		};	
+		model->operationComplete(::tr("Change meta data","operation complete"));
+		break;
+
+	case id_cancel:
+
+		model->undoCurrent();
+		break;
+	}
+
+	basic_submit(id);
 }
 
-void MetaWindow::helpNowEvent()
-{
-   HelpWin * win = new HelpWin( "olh_metawin.html", true );
-   win->show();
-}
-
-void MetaWindow::newClicked()
-{
-   QTreeWidgetItem * item = new QTreeWidgetItem( m_list );
-   item->setText( 0, tr("Name", "meta value key name") );
-   item->setText( 1, tr("Value", "meta value 'value'") );
-
-   int count = m_list->topLevelItemCount();
-   for ( int i = 0; i < count; ++i )
-   {
-      m_list->topLevelItem( i )->setSelected( false );
-   }
-
-   item->setSelected( true );
-   m_list->setCurrentItem( item );
-}
-
-void MetaWindow::deleteClicked()
-{
-   delete m_list->currentItem();
-}
-
-void MetaWindow::editItemEvent( QTreeWidgetItem * item, int col )
-{
-   KeyValueWindow w( item );
-   w.exec();
-}
-
-void MetaWindow::accept()
-{
-   m_model->clearMetaData();
-
-   int count = m_list->topLevelItemCount();
-   for ( int i = 0; i < count; ++i )
-   {
-      QTreeWidgetItem * item = m_list->topLevelItem(i);
-      m_model->addMetaData( (const char *) item->text(0).toUtf8(),
-            (const char *) item->text(1).toUtf8() );
-   }
-   
-   m_model->operationComplete( tr( "Change meta data", "operation complete" ).toUtf8() );
-   QDialog::accept();
-}
-
-void MetaWindow::reject()
-{
-   m_model->undoCurrent();
-   DecalManager::getInstance()->modelUpdated( m_model );
-   QDialog::reject();
-}
-
-
+extern void metawin(Model *m){ MetaWin(m).return_on_close(); }

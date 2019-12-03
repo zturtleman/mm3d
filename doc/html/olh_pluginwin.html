@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <title> MM3D Help - Plugins Window </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   </head>
+
+   <body bgcolor="#e0e0e0">
+
+      <h1>Plugins Window</h1>
+
+      <p>
+      The <b>Plugins Window</b> shows you what plugins are installed and active.
+      </p>
+
+      <p>
+      Plugins are located in a directory on your hard drive.  On Unix-like systems,
+      MM3D will try
+      <code>$HOME/.mm3d/plugins</code>.  If that directory does not exist
+      it will try in a shared directory (defaults to 
+      <code>/usr/local/share/mm3d/plugins</code>, although this can be changed at
+      install time).
+      MM3D will descend into subdirectories and follow symbolic links.
+      On Windows, MM3D uses the <code>plugins</code> subdirectory
+      where MM3D was installed.
+      </p>
+
+
+      <p>
+      The main component of the plugins window is a table that contains
+      a list of plugins.  Each plugin should also provide a <b>Version</b> string
+      and a <b>Description</b> string.  There is also a <b>Status</b> column that tells you
+      if the plugin is properly initialized and currently active.
+      </p>
+
+      <p>
+      All plugins can be disabled at run time by specifying <code>--no-plugins</code> 
+      on the command line.  Specific plugins can be disabled by specifying
+      <code>--no-plugin=<i>plugin_name</i></code> on the command line.  
+      <code>--no-plugin</code> can be specified more than once.
+      </p>
+
+      <p>
+      Press <b>Ok</b> to close the window.
+      </p>
+
+
+<hr/>
+<center>
+[
+<a href="olh_index.html">Contents</a>
+|
+<a href="olh_detailsindex.html">Introduction</a>
+|
+<a href="olh_tools.html">Tools</a>
+|
+<a href="olh_commands.html">Geometry&nbsp;Menu</a>
+]
+<br/>
+
+Copyright &copy; 2004-2008, Kevin Worcester
+
+</center>
+
+</body></html>

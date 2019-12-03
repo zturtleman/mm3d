@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <title> MM3D Help - Vertex Details </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   </head>
+
+   <body bgcolor="#e0e0e0">
+
+      <h1>Vertex Details</h1>
+
+      <h2> Overview </h2>
+
+      <p>
+      A vertex is a geometric point. A model triangle (or face) 
+      is defined by the three vertices that are connected to form the triangle.
+      Triangles may share vertices. In general vertices are created when a tool
+      is used to create triangles and deleted when all the triangles that use
+      the vertex are deleted. However, it is possible to create a vertex
+      independant of any triangle.
+      </p>
+
+      <a name="creating"></a>
+      <h2> Creating a Vertex </h2>
+      
+      <p>
+      A vertex is created implicitly when triangles are created. Select
+      any tool that creates a geometric shape (such as a cube, sphere, or
+      cylinder) and it will create new vertices for the triangles that it
+      creates.  You may also create a vertex without any triangles attached by
+      using the <a href="olh_tools.html#vertex">Create Vertex</a> tool.
+      </p>
+
+      <p>
+      Note that a vertex that is created implicitly will be deleted implicitly
+      when all the geometry that uses it is deleted. By contrast, a vertex 
+      that was created with the Create Vertex tool must be explicitly selected
+      and deleted by the user. To find unused vertices, see the 
+      <a href="olh_commands.html#selectfree">Select&nbsp;Free&nbsp;Vertices</a>
+      command.
+      </p>
+
+      <a name="other"></a>
+      <h2> Other Vertex Details </h2>
+
+      <p>
+      If two triangles share a vertex and you want to force them to each
+      have a separate vertex, you can use the
+      <a href="olh_commands.html#unweld">Unweld&nbsp;Vertices</a> command.
+      If you want to combine two vertices into one, use the
+      <a href="olh_commands.html#weld">Weld&nbsp;Vertices</a> command.
+      command.
+      </p>
+
+      <p>
+      In order for weld to work, the vertices must be very close in 3D space.
+      If the vertices are too far apart you can force them together
+      by using the
+      <a href="olh_commands.html#snap">Snap&nbsp;Together</a> command.
+      You can also enable the
+      <a href="olh_tools.html#snapto">Snap&nbsp;To&nbsp;Vertex</a> feature
+      to make it easier to line up vertices with each other.
+      </p>
+
+      <p>
+      Vertices can be attached to one or more bone joints to animate
+      geometry in animation mode.
+      </p>
+
+      <a name="seealso"></a>
+      <h2> See Also </h2>
+
+      <ul>
+      <li> <a href="olh_facedetails.html">Faces</a> </li>
+      <li> <a href="olh_jointdetails.html">Bone Joints</a> </li>
+      <li> <a href="olh_animationdetails.html">Animations</a> </li>
+      </ul>
+
+
+
+<hr/>
+<center>
+[
+<a href="olh_index.html">Contents</a>
+|
+<a href="olh_detailsindex.html">Introduction</a>
+|
+<a href="olh_tools.html">Tools</a>
+|
+<a href="olh_commands.html">Geometry&nbsp;Menu</a>
+]
+<br/>
+
+Copyright &copy; 2004-2008, Kevin Worcester
+
+</center>
+
+</body></html>

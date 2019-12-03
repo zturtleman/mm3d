@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <title> MM3D Help - Joints Window </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   </head>
+
+   <body bgcolor="#e0e0e0">
+
+      <h1>Joints Window</h1>
+
+      <p>
+      The <b>Joints Window</b> can be opened by selecting <b>Edit Joints...</b> from 
+      the <b>Influences</b> menu.
+      The <b>Joints Window</b> allows you to rename bone joints and assign vertices
+      to bone joints.  To create bone joints, see the 
+      <a href="olh_tools.html#joint">Create Bone Joint</a> tool.
+      </p>
+
+      <h2> Joints List </h2>
+
+      <p>
+      The joints combo box lists all the bone joints in the model.  Selecting 
+      a joint in the combo box will cause that joint to be selected (all other
+      joints will be unselected).  After selecting a joint you can rename it,
+      delete it, or assign vertices to it.
+      </p>
+
+      <h2> Rename </h2>
+
+      <p>
+      The <b>Rename</b> button allows you to rename a bone joint.  Bone joint names
+      do not have to be unique (unless you are exporting to Milkshape 3D format).
+      </p>
+
+      <h2> Delete </h2>
+
+      <p>
+      The <b>Delete</b> button deletes a bone joint.  The <b>parent</b> joint
+      of the selected joint will become the <b>parent</b> of all the selected
+      joint's <b>child</b> joints.  You cannot delete the root joint unless
+      it is the only joint.
+      </p>
+
+      <h2> Select Joint Vertices </h2>
+
+      <p>
+      The <b>Select Joint Vertices</b> button selects all the vertices that
+      are assigned to the selected bone joint.  All other vertices are unselected.
+      </p>
+
+      <h2> Select Unassigned Vertices </h2>
+
+      <p>
+      The <b>Select Unassigned Vertices</b> button selects all the vertices that
+      are not assigned to any bone joint.  All assigned vertices are unselected.
+      </p>
+
+      <h2> Assign Vertcies to Joint </h2>
+
+      <p>
+      The <b>Assign Vertices to Joint</b> button assigns all the selected
+      vertices to the selected bone joint.  Selected vertices that were assigned
+      to another joint will now only be assigned to the new one (when using
+      the <b>Joints Window</b> a vertex may
+      be assigned to only one bone joint, see the 
+      <a href="olh_properties.html#influences">Influences Properties Panel</a>
+      if you want to assign a vertex to multiple bone joints).  Unselected
+      vertices assigned to the current joint will still be assigned to the
+      current joint.
+      </p>
+
+      <p>
+      Press <b>Ok</b> to keep your changes or press <b>Cancel</b> 
+      to ignore any changes.
+      </p>
+
+      <h2> See Also </h2>
+      <ul>
+         <li><a href="olh_jointdetails.html">Bone Joints</a></li>
+         <li><a href="olh_animationdetails.html">Animations</a></li>
+      </ul>
+
+
+
+<hr/>
+<center>
+[
+<a href="olh_index.html">Contents</a>
+|
+<a href="olh_detailsindex.html">Introduction</a>
+|
+<a href="olh_tools.html">Tools</a>
+|
+<a href="olh_commands.html">Geometry&nbsp;Menu</a>
+]
+<br/>
+
+Copyright &copy; 2004-2008, Kevin Worcester
+
+</center>
+
+</body></html>

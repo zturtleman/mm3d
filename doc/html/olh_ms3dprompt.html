@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <title> MM3D Help - MS3D Export Options </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   </head>
+
+   <body bgcolor="#e0e0e0">
+
+      <h1>MS3D Export Options</h1>
+
+      <p>
+      The <b>MS3D Export Options</b> window is displayed when you save
+      a model in MS3D format. It allows you to specify how you want
+      bone joint influences to be saved.
+      </p>
+
+      <p>
+      The <b>Vertex Format</b> options specify which MS3D vertex subversion
+      you want to save as. If no vertices in your model are assigned to
+      more than one bone joint, select <b>Subversion 0</b>. Otherwise,
+      select <b>Subversion 1</b>, <b>2</b>, or <b>3</b>.
+      </p>
+
+      <ul>
+         <li> <b>Subversion 0</b> - Original file format, a vertex can 
+         only be assigned to one bone joint.</li>
+         <li> <b>Subversion 1</b> - A vertex may be assigned to multiple
+         bone joints, the weight range is 0 to 255. Models in this format
+         do not render correctly in MilkShape 3D 1.8.0 and later.</li>
+         <li> <b>Subversion 2</b> and <b>3</b> - A vertex may be assigned
+         to multiple bone joints, the weight range is 0 to 100.</li>
+      </ul>
+
+      <p>
+      The <b>Subversion Options</b> section includes options that
+      only apply to specific subversions. The <b>Vertex Extra</b>
+      option is a 32-bit number that is saved with the vertex data
+      in <b>Subversion 2</b> and <b>3</b>. The <b>Vertex Extra 2</b>
+      option is a 32-bit number that is saved with the vertex data
+      in <b>Subversion 3</b>. The numbers are specified in hexadecimal.
+      The numbers supplied is used for all vertices. There is no
+      way to set these values for individual vertices.
+      </p>
+
+      <p>
+      Click <b>Ok</b> to save the model with the specified
+      options or click <b>Cancel</b> to ignore any changes.
+      </p>
+
+
+<hr/>
+<center>
+[
+<a href="olh_index.html">Contents</a>
+|
+<a href="olh_detailsindex.html">Introduction</a>
+|
+<a href="olh_tools.html">Tools</a>
+|
+<a href="olh_commands.html">Geometry&nbsp;Menu</a>
+]
+<br/>
+
+Copyright &copy; 2004-2008, Kevin Worcester
+
+</center>
+
+</body></html>

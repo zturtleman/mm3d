@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <title> MM3D Help - SMD Export Options </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   </head>
+
+   <body bgcolor="#e0e0e0">
+
+      <h1>SMD Export Options</h1>
+
+      <p>
+      The <b>SMD Export Options</b> window is displayed when you save
+      a model in Studiomdl Data (SMD) format. It allows you to specify
+      things like whether or not to save the meshes in the file and
+      which animation to save.
+      </p>
+
+      <p>
+      Typically there is a SMD model that contains meshes and the bind pose
+      skeleton and separate SMD models for each animation without meshes.
+      </p>
+
+      <p>
+      The <b>Model Type</b> options specify whether to save <b>Reference</b>
+      (meshes with skeleton bind pose) or a skeleton <b>Animation</b>.
+      </p>
+
+      <p>
+      The <b>Save Points as Bone Joints</b> checkbox allows you to indicate
+      if you want the <a href="olh_pointdetails.html">points</a> to be saved
+      as skeleton bone joints or not at all. Points can only have one bone
+      joint influence.
+      </p>
+
+      <p>
+      The <b>Vertex Format</b> options specify which SMD vertex format
+      you want to save as. If no vertices in your model are assigned to
+      more than one bone joint, select <b>GoldSrc</b>. Otherwise,
+      select <b>Source</b>. This only affects Mesh SMD files.
+      </p>
+
+      <ul>
+         <li> <b>GoldSrc</b> - Original file format, a vertex can
+         only be assigned to one bone joint.</li>
+         <li> <b>Source</b> - A vertex may be assigned to multiple
+         bone joints.</li>
+      </ul>
+
+      <p>
+      The animation list box allows you to specify which animation you want
+      to be saved in the file. This only affects Animation SMD files.
+      </p>
+
+      <p>
+      Click <b>Ok</b> to save the model with the specified
+      options or click <b>Cancel</b> to ignore any changes.
+      </p>
+
+
+<hr/>
+<center>
+[
+<a href="olh_index.html">Contents</a>
+|
+<a href="olh_detailsindex.html">Introduction</a>
+|
+<a href="olh_tools.html">Tools</a>
+|
+<a href="olh_commands.html">Geometry&nbsp;Menu</a>
+]
+<br/>
+
+Copyright &copy; 2004-2008, Kevin Worcester
+
+</center>
+
+</body></html>

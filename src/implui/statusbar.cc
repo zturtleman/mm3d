@@ -1,300 +1,183 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
 
-#include "statusbar.h"
-#include "mm3dport.h"
-#include "model.h"
-#include "misc.h"
+#include "mm3dtypes.h" //PCH
+#include "win.h"
 
-#include <QtCore/QTimer>
-#include <QtWidgets/QLabel>
-#include <QtGui/QPixmap>
-#include <QtWidgets/QToolTip>
+#include "viewwin.h"
+ 
+static std::map<Model*,StatusObject*> statusbar_map;
 
-#include <stdarg.h>
-#include <stdlib.h>
-
-using std::map;
-
-map<Model *, StatusBar *> StatusBar::s_modelMap;
-
-StatusBar::StatusBar( Model * model, QWidget * parent )
-   : QWidget( parent ),
-     m_model( model ),
-     m_queueDisplay( false )
+extern StatusObject *statusbar_get_object(Model *model)
 {
-   setupUi( this );
-
-   m_palette = this->palette();
-   this->setAutoFillBackground( true );
-   m_statusLabel->setAutoFillBackground( true );
-   m_labelFrame->setAutoFillBackground( true );
-   s_modelMap[ m_model ] = this;
+	auto it = statusbar_map.find(model);
+	return it!=statusbar_map.end()?it->second:nullptr;
 }
 
-StatusBar::~StatusBar()
+ViewBar::ViewBar::StatusBar::~StatusBar()
 {
-   s_modelMap.erase( m_model );
+	statusbar_map.erase(m_model);
 }
 
-StatusObject * StatusBar::getStatusBarFromModel( Model * model )
+void ViewBar::StatusBar::setModel(Model *swap)
 {
-   if ( s_modelMap.find( model ) != s_modelMap.end() )
-   {
-      return s_modelMap[ model ];
-   }
-   else
-   {
-      return NULL;
-   }
+	if(m_model!=swap) //NEW
+	{
+		if(m_model) //NEW
+		statusbar_map.erase(m_model);
+
+		if(m_model=swap) //NEW
+		statusbar_map[m_model] = this;
+
+		if(swap) setStats(); //NEW
+	}
 }
 
-void StatusBar::setModel( Model * model )
+static void statusbar_timer(int id)
 {
-   s_modelMap.erase( m_model );
-   m_model = model;
-   s_modelMap[ m_model ] = this;
+	if(auto w=(ViewBar*)Widgets95::e::find_ui_by_window_id(id))
+	w->model.views.status.timer_expired();
+}
+void ViewBar::StatusBar::timer_expired()
+{
+	if(m_queue.empty())
+	{
+		m_queueDisplay = false; return;
+	}
+
+	TextQueueItemT tqi = m_queue.front();
+	m_queue.pop_front();
+
+	setText(tqi.str.c_str());
+	if(tqi.type==StatusError) text.select_all();
+
+	m_queueDisplay = true;
+		
+	if(tqi.ms>0)
+	{
+		glutTimerFunc(tqi.ms,statusbar_timer,nav.ui()->glut_window_id());
+	}
+	else timer_expired(); //RECURSIVE
+}
+void ViewBar::StatusBar::setText(utf8 str)
+{
+	//This is causing a problem with the status bar 
+	//constantly redrawing that slows down the main
+	//window's dragging on Windows. The text in the
+	//beginning prevents the bug from being noticed.
+	if(str&&str!=text.text()) text.set_text(str); 
+}
+void ViewBar::StatusBar::addText(StatusTypeE type, int ms, const char *str)
+{
+	if(!m_queueDisplay)
+	{	
+		m_queueDisplay = true;
+
+		setText(str);
+		if(type==StatusError) text.select_all();
+
+		glutTimerFunc(ms,statusbar_timer,nav.ui()->glut_window_id());
+	}
+	else //FIX ME (Looks like errors are hidden from user?)
+	{
+		// Clear non-errors first
+		size_t max_queue_size = 2;
+		bool removing = true;
+		while(removing&&m_queue.size()>max_queue_size)
+		{
+			removing = false;
+			for(auto it=m_queue.begin();it!=m_queue.end();)			
+			if(it->type!=StatusError)
+			{
+				removing = true;
+				it = m_queue.erase(it);				
+			}
+			else it++;
+		}
+
+		// If we still have more than max_queue_size in the queue,and the
+		// new message is an error,start removing the oldest errors.
+		if(m_queue.size()>max_queue_size)
+		{
+			if(type==StatusError)
+			while(m_queue.size()>max_queue_size)
+			m_queue.pop_front();
+			else return;
+		}
+
+		TextQueueItemT tqi;
+		tqi.str = str;
+		tqi.ms = ms;
+		tqi.type = type;
+		m_queue.push_back(tqi);
+	}
+}
+void ViewBar::StatusBar::setStats()
+{	
+	int d[6][2] = 
+	{
+		{m_model->getVertexCount(),m_model->getSelectedVertexCount()},
+		{m_model->getTriangleCount(),m_model->getSelectedTriangleCount()},
+		{m_model->getGroupCount()},
+		{m_model->getBoneJointCount(),m_model->getSelectedBoneJointCount()},
+		{m_model->getPointCount(),m_model->getSelectedPointCount()},
+		{m_model->getTextureCount()},
+	};
+
+	//ViewPanel::modelUpdatedEvent calls setStats 
+	//heavily/blindly.
+	int compile[sizeof(d)==sizeof(_curstats)];	
+	if(memcmp(_curstats,d,sizeof(d)))
+	{
+		memcpy(_curstats,d,sizeof(_curstats));
+	}
+	else return; (void)compile;
+
+	utf8 s[6] = 
+	{
+		::tr("V:","Vertices status bar label"),
+		::tr("F:","Faces status bar label"),
+		::tr("G:","Groups status bar label"),
+		::tr("B:","Bone Joints status bar label"),
+		::tr("P:","Points status bar label"),
+		::tr("M:","Materials status bar label"),
+	};		
+	char buf[33];	
+	std::string &st = stats.name();
+	st.clear();	
+	for(int i=0;i<sizeof(s)/sizeof(*s);i++)
+	{
+		st+=s[i]; if(d[i][1])
+		{
+			snprintf(buf,sizeof(buf),"%d",d[i][1]);
+			st+=buf;
+			st+='/';
+		}
+		snprintf(buf,sizeof(buf),"%d",d[i][0]);
+		st+=buf;
+		st+=' ';
+	}
+	st.pop_back(); stats.repack();
 }
 
-void StatusBar::setText( const char * str )
-{
-   QFontMetrics metrics( m_statusLabel->font() );
-   QString message = QString::fromUtf8( str );
-   QString visibleMessage = metrics.elidedText( message , Qt::ElideRight, m_statusLabel->width() );
-
-   m_statusLabel->setText( visibleMessage );
-
-   if ( visibleMessage != message )
-   {
-      setToolTip( message );
-   }
-   else
-   {
-      setToolTip( "" );
-   }
-}
-
-void StatusBar::addText( StatusTypeE type, unsigned ms, const char * str )
-{
-   if ( m_queueDisplay )
-   {
-      // Clear non-errors first
-      bool removing = true;
-      size_t max_queue_size = 2;
-      while ( removing && m_queue.size() > max_queue_size )
-      {
-         removing = false;
-         std::list< TextQueueItemT >::iterator it;
-
-         for ( it = m_queue.begin(); it != m_queue.end(); it++ )
-         {
-            if ( (*it).type != StatusError )
-            {
-               m_queue.erase( it );
-               it = m_queue.end();
-               removing = true;
-            }
-         }
-      }
-
-      // If we still have more than max_queue_size in the queue, and the
-      // new message is an error, start removing the oldest errors.
-      if ( m_queue.size() > max_queue_size )
-      {
-         if ( type != StatusError )
-            return;
-         while ( m_queue.size() > max_queue_size )
-            m_queue.pop_front();
-      }
-
-      TextQueueItemT tqi;
-      tqi.str  = QString::fromUtf8( str );
-      tqi.ms   = ms;
-      tqi.type = type;
-      m_queue.push_back( tqi );
-   }
-   else
-   {
-      setText( str );
-      QTimer::singleShot( ms, this, SLOT(timerExpired()));
-      if ( type == StatusError ) 
-      {
-         QPalette p = m_palette;
-         p.setColor( QPalette::WindowText, QColor( 255, 255, 255 ) );
-         p.setColor( QPalette::Window, QColor( 255, 0, 0 ) );
-         m_labelFrame->setPalette( p );
-      }
-      m_queueDisplay = true;
-   }
-}
-
-void StatusBar::timerExpired()
-{
-   m_labelFrame->setPalette( m_palette );
-   if ( !m_queue.empty() )
-   {
-      TextQueueItemT tqi = m_queue.front();
-      m_queue.pop_front();
-
-      setText( tqi.str.toUtf8() );
-
-      m_queueDisplay = true;
-      if ( tqi.type == StatusError ) 
-      {
-         QPalette p = m_palette;
-         p.setColor( QPalette::WindowText, QColor( 255, 255, 255 ) );
-         p.setColor( QPalette::Window, QColor( 255, 0, 0 ) );
-         m_labelFrame->setPalette( p );
-      }
-
-      if ( tqi.ms > 0 )
-      {
-         QTimer::singleShot( tqi.ms, this, SLOT(timerExpired()));
-      }
-      else
-      {
-         timerExpired();
-      }
-   }
-   else
-   {
-      m_queueDisplay = false;
-   }
-}
-
-void StatusBar::setVertices( unsigned v, unsigned sv )
-{
-   QString statChar = tr( "V:", "Vertices status bar label" );
-   QString str;
-   if ( sv )
-   {
-      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sv, v );
-   }
-   else
-   {
-      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), v );
-   }
-
-   m_vertexLabel->setText( QString(str) );
-}
-
-void StatusBar::setFaces( unsigned f, unsigned sf )
-{
-   QString statChar = tr( "F:", "Faces status bar label" );
-   QString str;
-   if ( sf )
-   {
-      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sf, f );
-   }
-   else
-   {
-      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), f );
-   }
-
-   m_faceLabel->setText( QString(str) );
-}
-
-void StatusBar::setGroups( unsigned g, unsigned sg )
-{
-   QString statChar = tr( "G:", "Groups status bar label" );
-   QString str;
-   if ( sg )
-   {
-      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sg, g );
-   }
-   else
-   {
-      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), g );
-   }
-
-   m_groupLabel->setText( QString(str) );
-}
-
-void StatusBar::setBoneJoints( unsigned b, unsigned sb )
-{
-   QString statChar = tr( "B:", "Bone Joints status bar label" );
-   QString str;
-   if ( sb )
-   {
-      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sb, b );
-   }
-   else
-   {
-      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), b );
-   }
-
-   m_boneLabel->setText( QString(str) );
-}
-
-void StatusBar::setPoints( unsigned b, unsigned sb )
-{
-   QString statChar = tr( "P:", "Points status bar label" );
-   QString str;
-   if ( sb )
-   {
-      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sb, b );
-   }
-   else
-   {
-      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), b );
-   }
-
-   m_pointLabel->setText( QString(str) );
-}
-
-void StatusBar::setTextures( unsigned t, unsigned st )
-{
-   QString statChar = tr( "M:", "Materials status bar label" );
-   QString str;
-   if ( st )
-   {
-      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), st, t );
-   }
-   else
-   {
-      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), t );
-   }
-
-   m_textureLabel->setText( QString(str) );
-}
-
-extern "C" void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... )
-{
-   static char temp[1024];
-   va_list ap;
-   va_start( ap, fmt );
-   PORT_vsnprintf( temp, sizeof(temp), fmt, ap );
-   StatusObject * bar = StatusBar::getStatusBarFromModel( model );
-   if ( bar )
-   {
-      bar->addText( type, ms, temp );
-   }
-   else
-   {
-      if ( type == StatusError )
-      {
-         model->pushError( temp );
-      }
-   }
-}
 

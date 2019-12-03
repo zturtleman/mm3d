@@ -1,157 +1,114 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
+#include "mm3dtypes.h" //PCH
+#include "win.h"
 
-#include "alignwin.h"
+//FIX ME
+//https://github.com/zturtleman/mm3d/issues/68
+//#include "align.h"
 
 #include "model.h"
 #include "log.h"
 #include "modelstatus.h"
-#include "decalmgr.h"
-#include "helpwin.h"
 
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QShortcut>
+		
+struct AlignWin : Win
+{	
+	void submit(int);
 
-#include <stdlib.h>
+	AlignWin(Model *model)
+	    :
+	Win("Align Selection"),
+	model(model),
+	nav(main),
+	x(nav,"Align &X Now"),
+	y(nav,"Align &Y Now"),
+	z(nav,"Align &Z Now"),f1_ok_cancel(main)
+	{
+		active_callback = &AlignWin::submit;
+	}
 
+	Model *model;
 
-using std::list;
-using std::map;
+	struct align_group
+	{
+		align_group(node *main, const char (&l)[13])
+			:
+		nav(main,""),mult(nav),
+		value(nav),apply(nav,l,l[7])
+		{	
+			nav.name().assign(l,8);
+			mult.add_item("Align minimum").add_item("Align center");
+			mult.add_item("Align maximum").set_int_val(1); 
+			value.edit(0.0).expand();
+		}
+					
+		panel nav;
+		multiple mult;
+		textbox value; 
+		button apply;		
+	};
 
-AlignWin::AlignWin( Model * model, QWidget * parent )
-   : QDialog( parent ),
-     m_model( model ),
-     m_atX( AT_Center ),
-     m_atY( AT_Center ),
-     m_atZ( AT_Center )
-{
-   setAttribute( Qt::WA_DeleteOnClose );
-   setModal( true );
-   setupUi( this );
+	row nav;
+	align_group x,y,z; 
+	f1_ok_cancel_panel f1_ok_cancel;
+};
+void AlignWin::submit(int i)
+{	
+	switch(i)
+	{
+	case 'X': case 'Y': case 'Z':
+	{
+		align_group *g = &x+i-'X';		
+		log_debug("aligning %c on %s\n",i,g->value.c_str());
+		extern void align_selected(int,Model*,int,double); //align.cc
+		align_selected(i,model,g->mult,g->value);
 
-   m_xCenter->setChecked( true );
-   m_yCenter->setChecked( true );
-   m_zCenter->setChecked( true );
+		//Note: This is like an Apply button.
+		//https://github.com/zturtleman/mm3d/issues/90
+		//DecalManager::getInstance()->modelUpdated(model); //???
+		model->updateObservers();
 
-   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
-   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
+		model_status(model,StatusNormal,STATUSTIME_SHORT,::tr("Align %c"),i);
+		return;
+	}
+	case id_ok:
+		
+		log_debug("Alignment complete\n");
+		model->operationComplete(::tr("Align Selected","operation complete"));		
+		break;
+
+	case id_cancel:
+
+		log_debug("Alignment canceled\n");
+		model->undoCurrent();
+		break;
+	}
+	basic_submit(i);
 }
 
-AlignWin::~AlignWin()
+extern void alignwin(Model *model)
 {
-}
-
-void AlignWin::helpNowEvent()
-{
-   HelpWin * win = new HelpWin( "olh_alignwin.html", true );
-   win->show();
-}
-
-void AlignWin::alignX()
-{
-   double val = m_xValue->text().toDouble();
-   log_debug( "aligning x on %f\n", val );
-   alignSelectedX( m_model, m_atX, val );
-   DecalManager::getInstance()->modelUpdated( m_model );
-   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align X").toUtf8() );
-}
-
-void AlignWin::alignY()
-{
-   double val = m_yValue->text().toDouble();
-   log_debug( "aligning y on %f\n", val );
-   alignSelectedY( m_model, m_atY, val );
-   DecalManager::getInstance()->modelUpdated( m_model );
-   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align Y").toUtf8() );
-}
-
-void AlignWin::alignZ()
-{
-   double val = m_zValue->text().toDouble();
-   log_debug( "aligning z on %f\n", val );
-   alignSelectedZ( m_model, m_atZ, val );
-   DecalManager::getInstance()->modelUpdated( m_model );
-   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align Z").toUtf8() );
-}
-
-void AlignWin::selectedXCenter()
-{
-   m_atX = AT_Center;
-}
-
-void AlignWin::selectedXMin()
-{
-   m_atX = AT_Min;
-}
-
-void AlignWin::selectedXMax()
-{
-   m_atX = AT_Max;
-}
-
-void AlignWin::selectedYCenter()
-{
-   m_atY = AT_Center;
-}
-
-void AlignWin::selectedYMin()
-{
-   m_atY = AT_Min;
-}
-
-void AlignWin::selectedYMax()
-{
-   m_atY = AT_Max;
-}
-
-void AlignWin::selectedZCenter()
-{
-   m_atZ = AT_Center;
-}
-
-void AlignWin::selectedZMin()
-{
-   m_atZ = AT_Min;
-}
-
-void AlignWin::selectedZMax()
-{
-   m_atZ = AT_Max;
-}
-
-void AlignWin::accept()
-{
-   log_debug( "Alignment complete\n" );
-   m_model->operationComplete( tr( "Align Selected", "operation complete" ).toUtf8() );
-   QDialog::accept();
-}
-
-void AlignWin::reject()
-{
-   log_debug( "Alignment canceled\n" );
-   m_model->undoCurrent();
-   DecalManager::getInstance()->modelUpdated( m_model );
-   QDialog::reject();
+	AlignWin(model).return_on_close();
 }
 

@@ -8,3 +8,4 @@ Makefile.in
 .deps
 .*.swp
 tags
+/src/win_resource.aps

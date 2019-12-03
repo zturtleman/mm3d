@@ -1,161 +1,94 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
+#include "mm3dtypes.h" //PCH
+#include "win.h"
 
-#include "ms3dprompt.h"
 #include "ms3dfilter.h"
-#include "model.h"
-#include "mm3dport.h"
 
-#include "helpwin.h"
-
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QShortcut>
-
-Ms3dPrompt::Ms3dPrompt()
-   : QDialog( NULL )
+struct Ms3dPrompt : Win
 {
-   setupUi( this );
-   setModal( true );
+	void submit(int);
+	
+	Ms3dPrompt(Model *model, Ms3dFilter::Ms3dOptions *ms3d)
+		:
+	Win("MS3D Filter Options"),
+	model(model),ms3d(ms3d),
+	vformat(main,"Vertex Format",id_item),
+	extra_nav(main,"Subversion Options"),
+	extra1(extra_nav,"Vertex Extra\t"),
+	extra2(extra_nav,"Vertex Extra 2\t"),
+	f1_ok_cancel(main)
+	{
+		vformat.style(bi::etched);
+		vformat.add_item("Subversion 0 (Single bone joint influence)")
+		.add_item("Subversion 1 (Multiple bone joints influences, weight scale 255)")
+        .add_item("Subversion 2 (Multiple bone joints influences, weight scale 100)")
+        .add_item("Subversion 3 (Multiple bone joints influences, weight scale 100)");
 
-   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
-   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
+		extra1.expand().sspace<left>({extra2});
+		extra2.expand();
+
+		active_callback = &Ms3dPrompt::submit;
+
+		submit(id_init);
+	}
+
+	Model *model; Ms3dFilter::Ms3dOptions *ms3d;
+
+	multiple vformat;
+	panel extra_nav; textbox extra1,extra2;
+	f1_ok_cancel_panel f1_ok_cancel;
+};
+void Ms3dPrompt::submit(int id)
+{
+	switch(id)
+	{
+	case id_init:
+
+		vformat.select_id(ms3d->m_subVersion);
+		extra1.text().format("%X",ms3d->m_vertexExtra);
+		extra2.text().format("%X",ms3d->m_vertexExtra2);
+		//break;
+
+	case id_item:
+
+		extra1.enable(vformat.int_val()>=2);
+		extra2.enable(vformat.int_val()>=3);	
+		break;
+
+	case id_ok:
+
+		ms3d->m_subVersion = vformat;
+		sscanf(extra1,"%X",&(ms3d->m_vertexExtra=0xffffffff));
+		sscanf(extra2,"%X",&(ms3d->m_vertexExtra2=0xffffffff));
+		break;
+	}
+	basic_submit(id);
 }
 
-Ms3dPrompt::~Ms3dPrompt()
+extern bool ms3dprompt(Model *model, ModelFilter::Options *o)
 {
-}
-
-void Ms3dPrompt::setOptions( Ms3dFilter::Ms3dOptions * opts )
-{
-   switch ( opts->m_subVersion )
-   {
-      case 0:
-      default:
-         m_subVersion0->setChecked( true );
-         break;
-      case 1:
-         m_subVersion1->setChecked( true );
-         break;
-      case 2:
-         m_subVersion2->setChecked( true );
-         break;
-      case 3:
-         m_subVersion3->setChecked( true );
-         break;
-   }
-   char str[20];
-   PORT_snprintf( str, sizeof(str), "%X", opts->m_vertexExtra );
-   m_vertexExtra->setText( str );
-
-   PORT_snprintf( str, sizeof(str), "%X", opts->m_vertexExtra2 );
-   m_vertexExtra2->setText( str );
-
-   // TODO joint color
-   //PORT_snprintf( str, sizeof(str), "%X", opts->m_jointColor );
-   //m_jointColor->setText( str );
-
-   updateExtraEnabled();
-}
-
-void Ms3dPrompt::getOptions( Ms3dFilter::Ms3dOptions * opts )
-{
-   opts->m_subVersion = 0;
-   if ( m_subVersion1->isChecked() )
-      opts->m_subVersion = 1;
-   if ( m_subVersion2->isChecked() )
-      opts->m_subVersion = 2;
-   if ( m_subVersion3->isChecked() )
-      opts->m_subVersion = 3;
-
-   uint32_t val = 0xffffffff;
-   sscanf( m_vertexExtra->text().toUtf8(), "%X", &val);
-   opts->m_vertexExtra   = val;
-
-   val = 0xffffffff;
-   sscanf( m_vertexExtra2->text().toUtf8(), "%X", &val);
-   opts->m_vertexExtra2   = val;
-
-   // TODO joint color
-   //val = 0xffffffff;
-   //sscanf( m_jointColor->text().toUtf8(), "%X", &val);
-   //opts->m_vertexExtra   = val;
-}
-
-void Ms3dPrompt::helpNowEvent()
-{
-   HelpWin * win = new HelpWin( "olh_ms3dprompt.html", true );
-   win->show();
-}
-
-void Ms3dPrompt::subVersionChangedEvent()
-{
-   updateExtraEnabled();
-}
-
-void Ms3dPrompt::updateExtraEnabled()
-{
-   int subVersion = 0;
-   if ( m_subVersion1->isChecked() )
-      subVersion = 1;
-   if ( m_subVersion2->isChecked() )
-      subVersion = 2;
-   if ( m_subVersion3->isChecked() )
-      subVersion = 3;
-   m_vertexExtra->setEnabled( subVersion >= 2 );
-   m_vertexExtra2->setEnabled( subVersion >= 3 );
-   // TODO joint color
-   //m_jointColor->setEnabled( !m_jointSubVersion0->isChecked() );
-}
-
-// This function takes a ModelFilter::Options argument, downcasts it
-// to an Ms3dOptions object, and uses it to prompt the user for
-// options for the MS3D file filter.
-//
-// This function is registered with the Ms3dFilter class when the
-// filter is created in stdfilters.cc.
-bool ms3dprompt_show( Model * model, ModelFilter::Options * o )
-{
-   bool rval = false;
-   Ms3dPrompt p;
-
-   Ms3dFilter::Ms3dOptions * opts
-      = dynamic_cast< Ms3dFilter::Ms3dOptions * >( o );
-   if ( opts )
-   {
-      opts->setOptionsFromModel( model );
-      p.setOptions( opts );
-
-      if ( p.exec() )
-      {
-         rval = true;
-         p.getOptions( opts );
-      }
-   }
-   else
-   {
-      rval = true;
-   }
-   return rval;
+	auto ms3d = o->getOptions<Ms3dFilter::Ms3dOptions>();
+	return id_ok==Ms3dPrompt(model,ms3d).return_on_close();
 }
 

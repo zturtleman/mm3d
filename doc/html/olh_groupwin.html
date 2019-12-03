@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <title> MM3D Help - Groups Window </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   </head>
+
+   <body bgcolor="#e0e0e0">
+
+      <h1>Groups Window</h1>
+
+      <p>
+      The <b>Groups Window</b> is used to add or remove model groups (collections
+      of faces) 
+      You may also set which faces are in which groups and assign textures.
+      Select <b>Edit Groups</b> from the <a href="olh_mainwin.html">Main Window</a>'s 
+      <b>Materials</b> menu.
+      </p>
+
+      <p>
+      The combo box at the top of the window contains the names of all groups
+      in this model.  You can select a group name and use the
+      face assignment buttons (<b>Assign As Group</b> and <b>Add To Group</b>)
+      to set which faces belong in this group.
+      You may also use the <b>Select Faces In Group</b> button to 
+      select the faces that belong to the group (this will clear any selected
+      vertices and faces) and the <b>Unselect Faces In Group</b> button
+      to unselect (other selected faces and vertices will remain selected).
+      </p>
+
+      <p>
+      To add a new group click the <b>New</b> button and enter a name (names do
+      not need to be unique, though duplicate names may be confusing for other
+      people using this model).  
+      The name is limited to 31 characters.
+      To remove a group from the model, select the group name in the combo box
+      and click the <b>Delete</b> button.
+      Note that deleting a
+      group in this window does not delete any faces that are in the group.
+      This only deletes the group name.
+      To rename a group click the <b>Rename</b> button.
+      </p>
+
+      <p>
+      The <b>Smoothness</b> slider allows you to change how smooth the surface
+      of the polygons of the group appear (this does not change the position of
+      vertices, it only affects the normals used for lighting calculations).  A
+      smoothness of 0 will show all the polygons as flat polygons.  A smoothness
+      of 100 will make the polygons appear as smooth as possible in viewports
+      with smooth polygon shading enabled.
+      </p>
+
+      <p>
+      The <b>Max Angle</b> slider allows you to change specify the maximum
+      angle that will automatically be smoothed.  Faces that share an edge at
+      an angle greater than this angle will be drawn as a sharp edge.  Faces
+      that share an edge at an angle less than this angle will be drawn as
+      a rounded edge  (this does not change the position of
+      vertices, it only affects the normals used for lighting calculations).
+      </p>
+
+      <p>
+      To assign a texture to a group, select the group name in the group combo
+      box and select a texture name in the texture combo box.  A preview of 
+      the texture image will be displayed in the frame below the texture combo
+      box.
+      You can also use the <a href="olh_properties.html#group">Group Properties</a>
+      panel to assign a material to a group without opening the <b>Groups Window</b>.
+      </p>
+
+      <p>
+      Press <b>Ok</b> to keep your changes or press <b>Cancel</b> 
+      to ignore any changes.
+      </p>
+
+      <h2> See Also </h2>
+      <ul>
+         <li><a href="olh_groupdetails.html">Groups</a></li>
+         <li><a href="olh_materialdetails.html">Materials</a></li>
+         <li><a href="olh_texturewin.html">Materials Window</a></li>
+         <li><a href="olh_texturecoorddetails.html">Texture Coordinates</a></li>
+         <li><a href="olh_texturecoordwin.html">Texture Coordinates Window</a></li>
+      </ul>
+
+
+
+<hr/>
+<center>
+[
+<a href="olh_index.html">Contents</a>
+|
+<a href="olh_detailsindex.html">Introduction</a>
+|
+<a href="olh_tools.html">Tools</a>
+|
+<a href="olh_commands.html">Geometry&nbsp;Menu</a>
+]
+<br/>
+
+Copyright &copy; 2004-2008, Kevin Worcester
+
+</center>
+
+</body></html>

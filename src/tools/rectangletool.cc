@@ -1,131 +1,92 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
+#include "mm3dtypes.h" //PCH
 
 #include "menuconf.h"
-#include "rectangletool.h"
+#include "tool.h"
+
 #include "pixmap/rectangletool.xpm"
+
 #include "log.h"
 #include "model.h"
 #include "modelstatus.h"
 
-#include <QtCore/QObject>
-#include <QtWidgets/QApplication>
-
-RectangleTool::RectangleTool()
-   : m_tracking( false ),
-     m_parent( NULL )
+struct RectangleTool : Tool
 {
-}
+	RectangleTool():Tool(TT_Creator,1,TOOLS_CREATE_MENU){}
+		
+	virtual const char *getName(int)
+	{
+		return TRANSLATE_NOOP("Tool","Create Rectangle");
+	}
 
-RectangleTool::~RectangleTool()
+	virtual const char **getPixmap(int){ return rectangletool_xpm; }
+ 
+	virtual const char *getKeymap(int){ return "F5"; }
+
+	virtual void mouseButtonDown(int buttonState, int x, int y);
+	virtual void mouseButtonMove(int buttonState, int x, int y);
+
+		double m_x,m_y;
+
+		ToolCoordT m_v1,m_v2,m_v3,m_v4;
+};
+
+extern Tool *rectangletool(){ return new RectangleTool; }
+
+void RectangleTool::mouseButtonDown(int buttonState, int x, int y)
 {
-}
+	parent->getParentXYValue(x,y,m_x,m_y);
 
-void RectangleTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y )
+	Model *model = parent->getModel();
+
+	//log_debug("model has %d vertices\n",model->getVertexCount()); //???
+
+	for(int i=0;i<4;i++)
+	(&m_v1)[i] = addPosition(Model::PT_Vertex,m_x,m_y,0);
+
+	//log_debug("last new vertex: %d\n",m_v4.pos.index); //???
+
+	model->addTriangle(m_v1,m_v2,m_v4);
+	model->addTriangle(m_v4,m_v3,m_v1);
+
+	model->unselectAll();
+	for(int i=0;i<4;i++)
+	model->selectVertex((&m_v1)[i]);
+	
+	model_status(model,StatusNormal,STATUSTIME_SHORT,
+	TRANSLATE("Tool","Rectangle created"));
+
+	parent->updateAllViews();
+}
+void RectangleTool::mouseButtonMove(int buttonState, int x, int y)
 {
-   if ( !m_tracking )
-   {
-      m_parent   = parent; // Keep track of which parent we're serving
-      m_tracking = true;
+	double pos[2];
+	parent->getParentXYValue(x,y,pos[0],pos[1]);
 
-      m_x1 = 0.0;
-      m_y1 = 0.0;
+	movePosition(m_v2.pos,m_x,pos[1],0);
+	movePosition(m_v3.pos,pos[0],m_y,0);
+	movePosition(m_v4.pos,pos[0],pos[1],0);
 
-      parent->getParentXYValue( x, y, m_x1, m_y1 );
-
-      Model * model = parent->getModel();
-
-      model->unselectAll();
-
-      log_debug( "model has %d vertices\n", model->getVertexCount() );
-
-      m_v1 = addPosition( parent, Model::PT_Vertex, NULL,
-            m_x1, m_y1, 0.0 );
-      m_v2 = addPosition( parent, Model::PT_Vertex, NULL,
-            m_x1, m_y1, 0.0 );
-      m_v3 = addPosition( parent, Model::PT_Vertex, NULL,
-            m_x1, m_y1, 0.0 );
-      m_v4 = addPosition( parent, Model::PT_Vertex, NULL,
-            m_x1, m_y1, 0.0 );
-
-      log_debug( "last new vertex: %d\n", m_v4.pos.index );
-
-      model->addTriangle( m_v1.pos.index, m_v2.pos.index, m_v4.pos.index );
-      model->addTriangle( m_v4.pos.index, m_v3.pos.index, m_v1.pos.index );
-
-      model->selectVertex( m_v1.pos.index );
-      model->selectVertex( m_v2.pos.index );
-      model->selectVertex( m_v3.pos.index );
-      model->selectVertex( m_v4.pos.index );
-
-      parent->updateAllViews();
-
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Rectangle created" ).toUtf8() );
-   }
+	parent->updateAllViews();
 }
-
-void RectangleTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
-{
-   m_tracking = false;
-}
-
-void RectangleTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )
-{
-   if ( parent != m_parent )
-   {
-      log_error( "Can't serve two parents at once\n" );
-   }
-
-   if ( m_tracking )
-   {
-      double x2 = 0.0;
-      double y2 = 0.0;
-
-      parent->getParentXYValue( x, y, x2, y2 );
-
-      movePosition( parent, m_v2.pos, 
-            m_x1, y2, 0.0 );
-      movePosition( parent, m_v3.pos, 
-            x2, m_y1, 0.0 );
-      movePosition( parent, m_v4.pos, 
-            x2, y2, 0.0 );
-
-      parent->updateAllViews();
-   }
-}
-
-const char ** RectangleTool::getPixmap()
-{
-   return (const char **) rectangletool_xpm;
-}
-
-const char * RectangleTool::getPath()
-{
-   return TOOLS_CREATE_MENU;
-}
-
-const char * RectangleTool::getName( int arg )
-{
-   return QT_TRANSLATE_NOOP( "Tool", "Create Rectangle" );
-}
-

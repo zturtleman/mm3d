@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <title> MM3D Help - Animation Details </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   </head>
+
+   <body bgcolor="#e0e0e0">
+
+      <h1>Animation Details</h1>
+
+      <h2> Overview </h2>
+
+      <p>
+      You can create animations to define how your model moves over time.
+      MM3D allows you to use bone joints to create skeletal
+      animations or to set vertex positions exatly with mesh deformation
+      animations (called "Frame" animations in MM3D).
+      </p>
+
+      <p>
+      Animations have one or more frames which are consecutive points in
+      time. Each frame lets you specify what the model should look like
+      at that time. The frame rate, or FPS for "Frames Per Second", indicates
+      how many frames are shown in one second when the animation is running
+      at full speed.
+      </p>
+
+      <a name="creating"></a>
+      <h2> Creating an Animation </h2>
+      
+      <p>
+      Select "Animation&nbsp;|&nbsp;Start&nbsp;Animation&nbsp;Mode...".
+      The 
+      <a href="olh_animwin.html">Animation&nbsp;Panel</a> will
+      appear at the bottom of the screen. Select &lt;New&nbsp;Animation&gt;
+      from the drop-down menu. Enter a name for your new animation and then 
+      select "Skeletal" for a skeletal animation or "Frame" for a 
+      mesh deformation animation.
+      </p>
+
+      <p>
+      You can create multiple animations of either type. When you have
+      animations of both types, the animation names in the drop-down selection
+      box list all skeletal animations first, followed by all frame animations.
+      </p>
+
+      <a name="other"></a>
+      <h2> Animation Details </h2>
+
+      <p>
+      In skeletal animations you only change bone joints. Any vertices or
+      points attached to the bone joints will move with the joints. Generally
+      you only want to use rotations (think about how you move your arm
+      by rotating the shoulder and elbow, not by dislocating the joints).
+      </p>
+
+      <p>
+      Any time you rotate or move a bone joint it sets a rotation or
+      translation keyframe for that animation frame. If you want the default
+      position to be a keyframe in that frame, you can select the joint
+      and then select "Animation&nbsp;|&nbsp;Set&nbsp;Rotation&nbsp;Keyframe".
+      Often you will want to do this on the first and last frame of an
+      animation for every joint that will be affected by the animation.
+      </p>
+
+      <p>
+      In frame animations you set the position for each vertex and point
+      in each frame. Bone joints have no effect (and are not even rendered).
+      </p>
+
+      <p>
+      You can copy and paste entire animation frames by selecting the copy
+      or paste option from the "Animation" menu. Clearing the frame will
+      erase all keyframes for the current frame of a skeletal animation
+      and will restore the model to the default position for a frame animation.
+      </p>
+
+      <a name="seealso"></a>
+      <h2> See Also </h2>
+
+      <ul>
+      <li> <a href="olh_jointdetails.html">Bone Joints</a> </li>
+      <li> <a href="olh_influences.html">Influences Menu</a> </li>
+      </ul>
+
+
+
+<hr/>
+<center>
+[
+<a href="olh_index.html">Contents</a>
+|
+<a href="olh_detailsindex.html">Introduction</a>
+|
+<a href="olh_tools.html">Tools</a>
+|
+<a href="olh_commands.html">Geometry&nbsp;Menu</a>
+]
+<br/>
+
+Copyright &copy; 2004-2008, Kevin Worcester
+
+</center>
+
+</body></html>

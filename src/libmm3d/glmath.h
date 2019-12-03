@@ -1,264 +1,266 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
 
 #ifndef __GLMATH_H
 #define __GLMATH_H
 
-#include <stdio.h>
-#include <math.h>
-
 #include "mm3dtypes.h"
-
-const double PI = 3.1415926;
-const double PIOVER180 = PI / 180.0;
-
-class Vector;
-class Quaternion;
 
 class Matrix
 {
-   public:
-      Matrix();
-      ~Matrix() {};
+	public:
+		Matrix();
+		~Matrix(){};
 
-      void loadIdentity();
-      bool isIdentity() const;
+		void loadIdentity();
+		bool isIdentity()const;
 
-      void show() const;
-      void set( int r, int c, double val ) { m_val[ (r<<2) + c ] = val; }
-      double get( int r, int c ) const { return m_val[ (r<<2) + c ]; }
+		void show()const;
+		void set(int r, int c, double val){ m_val[(r<<2)+c] = val; }
+		double get(int r, int c)const { return m_val[(r<<2)+c]; }
 
-      bool operator==( const Matrix & rhs ) const;
-      bool equiv( const Matrix & rhs, double tolerance = 0.00001 ) const;
+		bool operator==(const Matrix &rhs)const;
+		bool equiv(const Matrix &rhs, double tolerance = 0.00001)const;
 
-      void setTranslation( const Vector & vector );
-      void setTranslation( const double * vector );
-      void setTranslation( const double & x, const double & y, const double & z );
+		void setTranslation(const Vector &vector);
+		void setTranslation(const double *vector);
+		void setTranslation(const double &x, const double &y, const double &z);
 
-      void setRotation( const Vector & radians );
-      void setRotation( const double * radians );
-      void setRotationInDegrees( const double * degrees );
-      void setRotationInDegrees( const Vector & degrees );
-      void setRotationInDegrees( double x, double y, double z );
-      void getRotation( double & x, double & y, double & z ) const;
-      void getRotation( Vector & radians ) const;
-      void getRotation( double * radians ) const;
-      void getTranslation( double & x, double & y, double & z ) const;
-      void getTranslation( Vector & vector ) const;
-      void getTranslation( double * vector ) const;
+		void setRotation(const Vector &radians);
+		void setRotation(const double *radians);
+		void setRotationInDegrees(const double *degrees);
+		void setRotationInDegrees(const Vector &degrees);
+		void setRotationInDegrees(double x, double y, double z);
+		void getRotation(double &x, double &y, double &z)const;
+		void getRotation(Vector &radians)const;
+		void getRotation(double *radians)const;
+		void getTranslation(double &x, double &y, double &z)const;
+		void getTranslation(Vector &vector)const;
+		void getTranslation(double *vector)const;
 
-      void setInverseRotation( const double * radians );
-      void setInverseRotationInDegrees( const double * radians );
+		void setInverseRotation(const double *radians);
+		void setInverseRotationInDegrees(const double *radians);
 
-      void setRotationOnAxis( const double * pVect, double radians );
-      void setRotationQuaternion( const Quaternion & quat );
-      void getRotationQuaternion( Quaternion & quat ) const;
+		void setRotationOnAxis(const double *pVect, double radians);
+		void setRotationQuaternion(const Quaternion &quat);
+		void getRotationQuaternion(Quaternion &quat)const;
 
-      void inverseTranslateVector( double * pVect ) const;
-      void inverseRotateVector( double * pVect ) const;
+		void inverseTranslateVector(double *pVect)const;
+		void inverseRotateVector(double *pVect)const;
 
-      void normalizeRotation();
+		void normalizeRotation();
 
-      void apply( float * pVec ) const;
-      void apply( double * pVec ) const;
-      void apply( Vector & pVec ) const;
-      void apply3( float * pVec ) const;
-      void apply3( double * pVec ) const;
-      void apply3( Vector & pVec ) const;
-      void apply3x( float * pVec ) const;  // Apply 4x4 matrix to 3 element vec
-      void apply3x( double * pVec ) const;
-      void apply3x( Vector & pVec ) const;
+		void apply(float *pVec)const;
+		void apply(double *pVec)const;
+		void apply(Vector &pVec)const;
+		void apply3(float *pVec)const;
+		void apply3(double *pVec)const;
+		void apply3(Vector &pVec)const;
+		void apply3x(float *pVec)const;  // Apply 4x4 matrix to 3 element vec
+		void apply3x(double *pVec)const;
+		void apply3x(Vector &pVec)const;
 
-      void postMultiply( const Matrix & lhs );
+		//2019: This is equivalent to doing
+		//glLoadMatrix(this);
+		//glMultMatrix(lhs);
+		void postMultiply(const Matrix &lhs);
 
-      float getDeterminant() const;
-      float getDeterminant3() const;
-      Matrix getInverse() const;
-      void getSubMatrix( Matrix & ret, int i, int j ) const;
+		float getDeterminant()const;
+		float getDeterminant3()const;
+		Matrix getInverse()const;
+		void getSubMatrix(Matrix &ret, int i, int j)const;
 
-      friend Matrix operator*( const Matrix & lhs, const Matrix & rhs );
-      friend Vector operator*( const Vector & lhs, const Matrix & rhs );
-      friend class Vector;
+		double *getMatrix(){ return m_val; };
+		const double *getMatrix()const{ return m_val; };
 
-   protected:
+		friend Matrix operator*(const Matrix &lhs, const Matrix &rhs);
+		friend Vector operator*(const Vector &lhs, const Matrix &rhs);
+		friend class Vector;
 
-      const double * getMatrix() const { return m_val; };
+	protected:
 
-      double m_val[16];
+		//const double *getMatrix()const { return m_val; }; //???
+
+		double m_val[16];
 };
 
 class Vector
 {
-   public:
-      Vector( const double * val = NULL);
-      Vector( const double & x, const double & y, const double & z, const double & w = 1.0 );
-      ~Vector();
+	public:
+		Vector(const double *val = nullptr);
+		Vector(const double &x, const double &y, const double &z, const double &w = 1.0);
+		~Vector();
 
-      void show() const;
-      void translate( const Matrix & rhs );
-      void transform( const Matrix & rhs );
-      void transform3( const Matrix & rhs );
-      void set( int c, double val );
-      void setAll( double x, double y, double z, double w = 1.0 );
-      void setAll( const double * vec, int count = 3 );
-      double get( int c ) const { return m_val[c]; };
+		void show()const;
 
-      void scale( double val );
-      void scale3( double val );
+		//FIX ME
+		//Is this used?
+		//What is translation by matrix supposed to mean?
+		void translate(const Matrix &rhs);
 
-      double mag() const;
-      double mag3() const;
+		void transform(const Matrix &rhs);
+		void transform3(const Matrix &rhs);
+		void set(int c, double val);
+		void setAll(double x, double y, double z, double w = 1.0);
+		void setAll(const double *vec, int count = 3);
+		double get(int c)const { return m_val[c]; };
 
-      void normalize();
-      void normalize3();
+		void scale(double val);
+		void scale3(double val);
 
-      double dot3( const Vector & rhs ) const;
-      double dot4( const Vector & rhs ) const;
-      Vector cross3( const Vector & rhs ) const;
+		double mag()const;
+		double mag3()const;
 
-      const double * getVector() const { return m_val; };
-      double * getVector() { return m_val; };
+		void normalize();
+		void normalize3();
 
-      double & operator[]( int index );
-      const double & operator[]( int index ) const;
-      Vector operator+=( const Vector & rhs );
-      Vector operator-=( const Vector & rhs );
-      bool operator==( const Vector & rhs ) const;
+		double dot3(const Vector &rhs)const;
+		double dot4(const Vector &rhs)const;
+		Vector cross3(const Vector &rhs)const;
 
-      friend Vector operator*( const Vector & lhs, const Matrix & rhs );
-      friend Vector operator*( const Vector & lhs, const double & rhs );
-      friend Vector operator-( const Vector & lhs, const Vector & rhs );
-      friend Vector operator+( const Vector & lhs, const Vector & rhs );
+		const double *getVector()const { return m_val; };
+		double *getVector(){ return m_val; };
 
-   protected:
-      double m_val[4];
+		double &operator[](int index);
+		const double &operator[](int index)const;
+		Vector operator+=(const Vector &rhs);
+		Vector operator-=(const Vector &rhs);
+		bool operator==(const Vector &rhs)const;
+
+		friend Vector operator*(const Vector &lhs, const Matrix &rhs);
+		friend Vector operator*(const Vector &lhs, const double &rhs);
+		friend Vector operator-(const Vector &lhs, const Vector &rhs);
+		friend Vector operator+(const Vector &lhs, const Vector &rhs);
+
+	protected:
+		double m_val[4];
 };
 
 class Quaternion : public Vector
 {
-   public:
-      Quaternion( const double * val = NULL );
-      Quaternion( const Vector & val );
-      ~Quaternion();
+	public:
+		Quaternion(const double *val = nullptr);
+		Quaternion(const Vector &val);
+		~Quaternion();
 
-      void show() const;
-      void setEulerAngles( const double * radians );
-      void setRotationOnAxis( double x, double y, double z, double radians );
-      void setRotationOnAxis( const double * axis, double radians );
-      void setRotationToPoint( const double & faceX, const double & faceY, const double & faceZ,
-            const double & pointX, const double & pointY, const double & pointZ );
-      void setRotationToPoint( const Vector & face, const Vector & point );
-      void getRotationOnAxis( double * axis, double & radians ) const;
-      void set( int c, double val );
-      double get( int c ) const { return m_val[c]; };
+		void show()const;
+		void setEulerAngles(const double *radians);
+		void setRotationOnAxis(double x, double y, double z, double radians);
+		void setRotationOnAxis(const double *axis, double radians);
+		void setRotationToPoint(const double &faceX, const double &faceY, const double &faceZ,
+				const double &pointX, const double &pointY, const double &pointZ);
+		void setRotationToPoint(const Vector &face, const Vector &point);
+		void getRotationOnAxis(double *axis, double &radians)const;
+		void set(int c, double val);
+		double get(int c)const { return m_val[c]; };
 
-      void normalize();
+		void normalize();
 
-      Quaternion swapHandedness();
+		Quaternion swapHandedness();
 
-      const double * getVector() const { return m_val; };
+		const double *getVector()const { return m_val; };
 
-      friend Quaternion operator*( const Quaternion & lhs, const Quaternion & rhs );
+		friend Quaternion operator*(const Quaternion &lhs, const Quaternion &rhs);
 
-   protected:
-      //double m_val[4];
+	protected:
+		//double m_val[4];
 };
 
 template<typename T>
-bool float_equiv( T lhs, T rhs, double tolerance = 0.00001 )
+bool float_equiv(T lhs,T rhs, double tolerance = 0.00001)
 {
-   return ( fabs( lhs - rhs ) < tolerance );
+	return (fabs(lhs-rhs)<tolerance);
 }
 
 template<typename T>
-bool floatCompareVector( const T * lhs, const T * rhs, size_t len, double tolerance = 0.00001 )
+bool floatCompareVector(const T *lhs, const T *rhs, size_t len, double tolerance = 0.00001)
 {
-   for ( size_t index = 0; index < len; ++index )
-      if ( !float_equiv( lhs[index], rhs[index], tolerance ) )
-         return false;
-   return true;
+	for(size_t index = 0; index<len; ++index)
+		if(!float_equiv(lhs[index],rhs[index],tolerance))
+			return false;
+	return true;
 }
 
-template<typename T> T distance( T x1, T y1, T z1, T x2, T y2, T z2 )
+template<typename T> T distance(T x1,T y1,T z1,T x2,T y2,T z2)
 {
-   T xDiff = x1 - x2;
-   T yDiff = y1 - y2;
-   T zDiff = z1 - z2;
+	T xDiff = x1-x2;
+	T yDiff = y1-y2;
+	T zDiff = z1-z2;
 
-   return sqrt( xDiff*xDiff + yDiff*yDiff + zDiff*zDiff );
+	return sqrt(xDiff*xDiff+yDiff*yDiff+zDiff*zDiff);
 }
 
-template<typename T> T distance( T x1, T y1, T x2, T y2 )
+template<typename T> T distance(T x1,T y1,T x2,T y2)
 {
-   T xDiff = x1 - x2;
-   T yDiff = y1 - y2;
+	T xDiff = x1-x2;
+	T yDiff = y1-y2;
 
-   return sqrt( xDiff*xDiff + yDiff*yDiff );
+	return sqrt(xDiff*xDiff+yDiff*yDiff);
 }
 
-template<typename T> T mag3( const T * vec )
+template<typename T> T mag3(const T *vec)
 {
-   return sqrt(vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2] );
+	return sqrt(vec[0]*vec[0]+vec[1]*vec[1]+vec[2]*vec[2]);
 }
 
-template<typename T> void normalize3( T * vec )
+template<typename T> void normalize3(T *vec)
 {
-   if ( vec != NULL )
-   {
-      T length = mag3( vec );
-      vec[0] = vec[0] / length;
-      vec[1] = vec[1] / length;
-      vec[2] = vec[2] / length;
-   }
+	if(vec!=nullptr)
+	{
+		T length = mag3(vec);
+		vec[0] = vec[0]/length;
+		vec[1] = vec[1]/length;
+		vec[2] = vec[2]/length;
+	}
 }
 
-extern double distance ( const Vector & v1, const Vector & v2 );
+extern double distance (const Vector &v1, const Vector &v2);
 
-extern double distance ( const double * v1, const double * v2 );
+extern double distance (const double *v1, const double *v2);
 
-template<typename T> T dot3( const T * lhs, const T * rhs )
+template<typename T> T dot3(const T *lhs, const T *rhs)
 {
-   return(   lhs[0] * rhs[0]
-           + lhs[1] * rhs[1]
-           + lhs[2] * rhs[2] );
+	return(  lhs[0] *rhs[0]
+			 +lhs[1] *rhs[1]
+			 +lhs[2] *rhs[2]);
 }
 
-template<typename T> bool equiv3( const T * lhs, const T * rhs )
+template<typename T> bool equiv3(const T *lhs, const T *rhs)
 {
-   return(   fabs(lhs[0] - rhs[0]) < 0.0001
-         &&  fabs(lhs[1] - rhs[1]) < 0.0001
-         &&  fabs(lhs[2] - rhs[2]) < 0.0001 );
+	return(  fabs(lhs[0]-rhs[0])<0.0001
+		  && fabs(lhs[1]-rhs[1])<0.0001
+		  && fabs(lhs[2]-rhs[2])<0.0001);
 }
 
 template<typename T>
-static void calculate_normal( T * normal,
-      const T * a, const T * b, const T * c )
+static void calculate_normal(T *normal,
+		const T *a, const T *b, const T *c)
 {
-   normal[0] = a[1] * (b[2] - c[2]) + b[1] * (c[2] - a[2]) + c[1] * (a[2] - b[2]);
-   normal[1] = a[2] * (b[0] - c[0]) + b[2] * (c[0] - a[0]) + c[2] * (a[0] - b[0]);
-   normal[2] = a[0] * (b[1] - c[1]) + b[0] * (c[1] - a[1]) + c[0] * (a[1] - b[1]);
+	normal[0] = a[1] *(b[2]-c[2])+b[1] *(c[2]-a[2])+c[1] *(a[2]-b[2]);
+	normal[1] = a[2] *(b[0]-c[0])+b[2] *(c[0]-a[0])+c[2] *(a[0]-b[0]);
+	normal[2] = a[0] *(b[1]-c[1])+b[0] *(c[1]-a[1])+c[0] *(a[1]-b[1]);
 
-   normalize3( normal );
+	normalize3(normal);
 }
 
 #endif // __GLMATH_H

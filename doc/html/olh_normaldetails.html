@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <title> MM3D Help - Normal Details </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   </head>
+
+   <body bgcolor="#e0e0e0">
+
+      <h1>Normal Details</h1>
+
+      <h2> Overview </h2>
+
+      <p>
+      A normal is line that is perpendicular to the plane of a triangle.
+      The normal is used to perform lighting reflection calculations
+      and determine whether a triangle faces toward the camera or
+      away from the camera.
+      </p>
+
+      <p>
+      If faces are connected to each other, the normals
+      can be averaged to make the edges where they connect appear smooth.
+      You cannot directly manipulate a face's normal, but you can
+      influence the averaging calculations by assigning faces to a group
+      and then changing the group properties. See the
+      <a href="olh_groupwin.html">Group&nbsp;Window</a> for details.
+      </p>
+
+      <p>
+      You can invert the normals of selected faces using the
+      <a href="olh_commands.html#invnorm">Invert&nbsp;Normals</a> command.
+      If some or all normals in a mesh are facing the wrong direction
+      (pointing inward) and the faces are part of an enclosed mesh, you
+      can use the
+      <a href="olh_commands.html#faceout">Normals&nbsp;Face&nbsp;Out</a>
+      command to make all normals
+      point outward. If the triangles are not part of an enclosed mesh
+      the behavior is undefined.
+      </p>
+      
+
+      <a name="seealso"></a>
+      <h2> See Also </h2>
+
+      <ul>
+      <li> <a href="olh_facedetails.html">Faces</a> </li>
+      <li> <a href="olh_meshdetails.html">Meshes</a> </li>
+      <li> <a href="olh_groupdetails.html">Groups</a> </li>
+      </ul>
+
+
+
+<hr/>
+<center>
+[
+<a href="olh_index.html">Contents</a>
+|
+<a href="olh_detailsindex.html">Introduction</a>
+|
+<a href="olh_tools.html">Tools</a>
+|
+<a href="olh_commands.html">Geometry&nbsp;Menu</a>
+]
+<br/>
+
+Copyright &copy; 2004-2008, Kevin Worcester
+
+</center>
+
+</body></html>

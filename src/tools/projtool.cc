@@ -1,30 +1,30 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
+#include "mm3dtypes.h" //PCH
 
-#include "menuconf.h"
-#include "projtool.h"
+#include "menuconf.h" //TOOLS_CREATE_MENU
 
-#include "projtoolwidget.h"
+#include "tool.h"
 
 #include "model.h"
 #include "msg.h"
@@ -33,192 +33,137 @@
 
 #include "pixmap/projtool.xpm"
 
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QApplication>
-
-ProjectionTool::ProjectionTool()
-   : m_type( Model::TPT_Sphere )
+struct ProjTool : Tool
 {
-   m_proj.pos.type = Model::PT_Vertex;
-}
+	ProjTool():Tool(TT_Creator)
+	{
+		m_type = 1; //config defaults
+	}
+		
+	virtual const char *getName(int arg)
+	{
+		return TRANSLATE_NOOP("Tool","Create Projection");
+	}
 
-ProjectionTool::~ProjectionTool()
+	virtual const char **getPixmap(int){ return projtool_xpm; }
+
+	virtual const char *getKeymap(int){ return "Shift+F12"; }
+
+	virtual void activated(int)
+	{
+		const char *e[3+1] = 
+		{
+		TRANSLATE_NOOP("Param","Cylinder","Cylinder projection type"),
+		TRANSLATE_NOOP("Param","Sphere","Sphere projection type"),
+		TRANSLATE_NOOP("Param","Plane","Plane projection type"),
+		};
+		parent->addEnum(true,&m_type,TRANSLATE_NOOP("Param","Poly Type"),e);
+	}
+	
+	void mouseButtonDown(int buttonState, int x, int y);	
+	void mouseButtonMove(int buttonState, int x, int y);
+	
+		int	 m_type;
+
+		double m_orig[3];
+		int m_x,m_y;
+		bool m_allowX,m_allowY;		
+		
+		ToolCoordT m_proj;
+};
+
+extern Tool *projtool(){ return new ProjTool; }
+
+void ProjTool::mouseButtonDown(int buttonState, int x, int y)
 {
+	m_x = x; m_allowX = true;
+	m_y = y; m_allowY = true;
+
+	Model *model = parent->getModel();
+
+	model->setDrawProjections(true);
+
+	// use parent view matrix to translate 2D coords into 3D coords
+	double pos[4];
+	parent->getParentXYValue(x,y,pos[0],pos[1],true);
+	pos[2] = 0;
+	pos[3] = 1;
+	const Matrix &m = parent->getParentViewInverseMatrix();
+	m.apply(pos);
+	for(int i=0;i<3;i++) m_orig[i] = pos[i];
+
+	// Find a unique name for the projection
+	char name[64] = "Projection ";
+	int nameN = sizeof("Projection ")-1;
+	int num = 0;
+	int iN = model->getProjectionCount();
+	for(int i=0;i<iN;i++)
+	{
+		const char *cmp = model->getProjectionName(i);
+		if(!memcmp(cmp,name,nameN))
+		num = std::max(num,atoi(cmp+nameN));
+	}
+	sprintf(name+nameN,"%d",num+1);
+
+	// Create projection
+	m_proj.pos.type = Model::PT_Projection;
+	m_proj.pos.index = model->addProjection
+	(name,(Model::TextureProjectionTypeE)m_type,pos[0],pos[1],pos[2]);
+	double upVec[3]	= { 0,1,0 };
+	m.apply3(upVec);
+	double seamVec[3] = { 0,0,-1/3.0 };
+	m.apply3(seamVec);
+	model->setProjectionUp(m_proj,upVec);
+	model->setProjectionSeam(m_proj,seamVec);
+	model->setProjectionScale(m_proj,1);
+
+	// Assign selected faces to projection
+	iN = model->getTriangleCount();
+	for(int i=0;i<iN;i++)
+	if(model->isTriangleSelected(i))
+	model->setTriangleProjection(i,m_proj);
+	model->applyProjection(m_proj);
+
+	// Make new projection the only thing selected
+	model->unselectAll();
+	model->selectProjection(m_proj);
+
+	parent->updateAllViews();
+
+	model_status(model,StatusNormal,STATUSTIME_SHORT,TRANSLATE("Tool","Projection created"));
 }
-
-
-void ProjectionTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y )
+void ProjTool::mouseButtonMove(int buttonState, int x, int y)
 {
-   m_allowX = true;
-   m_allowY = true;
-   m_x = x;
-   m_y = y;
+	if(m_proj.pos.type!=Model::PT_Projection) return;
 
-   Model * model = parent->getModel();
+	//Should tools be responsible for this?
+	if(buttonState&BS_Shift&&m_allowX&&m_allowY)
+	{
+		double ax = fabs(x-m_x);
+		double ay = fabs(y-m_y);
 
-   model->setDrawProjections( true );
+		if(ax>ay) m_allowY = false;
+		if(ay>ax) m_allowX = false;
+	}
 
-   // use parent view matrix to translate 2D coords into 3D coords
-   double coord[4] = {0,0,0,1};
+	if(!m_allowX) x = m_x;
+	if(!m_allowY) y = m_y;
 
-   parent->getParentXYValue( x, y, coord[0], coord[1], true );
+	// Convert 2D coords to 3D in parent's view space
+	double pos[4];
+	parent->getParentXYValue(x,y,pos[0],pos[1]);
+	pos[2] = 0;
+	pos[3] = 1;
+	parent->getParentViewInverseMatrix().apply(pos);
+	pos[0]-=m_orig[0];
+	pos[1]-=m_orig[1];
+	pos[2]-=m_orig[2];
+	pos[3] = 1;
 
-   Matrix m = parent->getParentViewInverseMatrix();
-   m.apply( coord );
+	// Set the up vector to whereever the mouse is
+	Model *model = parent->getModel();
+	model->setProjectionUp(m_proj,pos);
+	//model->applyProjection(m_proj);
 
-   // Find a unique name for the projection
-   char name[32] = "Projection 1";
-   unsigned c = model->getProjectionCount();
-   bool uniqueName = (c == 0) ? true : false;
-
-   for ( unsigned i = 1; !uniqueName && i < 1000; i++ )
-   {
-      uniqueName = true;
-      sprintf( name, "Projection %d", i );
-      for ( unsigned j = 0; j < c; j++ )
-      {
-         if ( strcmp( name, model->getProjectionName( j ) ) == 0 )
-         {
-            uniqueName = false;
-            break;
-         }
-      }
-   }
-
-   // I give up, just call it "Projection"
-   if ( ! uniqueName )
-   {
-      strcpy( name, "Projection" );
-   }
-
-   m_orig[0] = coord[0];
-   m_orig[1] = coord[1];
-   m_orig[2] = coord[2];
-
-   // Create projection
-   m_proj.pos.type = Model::PT_Projection;
-   m_proj.pos.index = model->addProjection( name,
-         static_cast<Model::TextureProjectionTypeE>( m_type ),
-         coord[0], coord[1], coord[2] );
-
-   double upVec[3]   = { 0, 1, 0 };
-   double seamVec[3] = { 0, 0, -1.0 / 3.0 };
-
-   m.apply3( upVec );
-   m.apply3( seamVec );
-
-   model->setProjectionUp( m_proj.pos.index, upVec );
-   model->setProjectionSeam( m_proj.pos.index, seamVec );
-
-   model->setProjectionScale( m_proj.pos.index, 1.0 );
-
-   // Assign selected faces to projection
-   unsigned tcount = model->getTriangleCount();
-   for ( unsigned t = 0; t < tcount; t++ )
-   {
-      if ( model->isTriangleSelected( t ) )
-      {
-         model->setTriangleProjection( t, m_proj.pos.index );
-      }
-   }
-   model->applyProjection( m_proj.pos.index );
-
-   // Make new projection the only thing selected
-   model->unselectAll();
-   model->selectProjection( m_proj.pos.index );
-
-   parent->updateAllViews();
-
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Projection created" ).toUtf8() );
+	parent->updateAllViews();
 }
-
-void ProjectionTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )
-{
-   if ( m_proj.pos.type == Model::PT_Projection )
-   {
-      if ( buttonState & BS_Shift )
-      {
-         if ( m_allowX && m_allowY )
-         {
-            double ax = fabs( x - m_x );
-            double ay = fabs( y - m_y );
-
-            if ( ax > ay )
-            {
-               m_allowY = false;
-            }
-            if ( ay > ax )
-            {
-               m_allowX = false;
-            }
-         }
-      }
-
-      if ( !m_allowX )
-      {
-         x = m_x;
-      }
-      if ( !m_allowY )
-      {
-         y = m_y;
-      }
-
-      double coord[3] = {0,0,0};
-
-      // Convert 2D coords to 3D in parent's view space
-      parent->getParentXYValue( x, y, coord[0], coord[1] );
-
-      Matrix m = parent->getParentViewInverseMatrix();
-
-      double tranVec[4] = { coord[0], coord[1], 0.0, 1.0 };
-
-      m.apply( tranVec );
-
-      tranVec[0] -= m_orig[0];
-      tranVec[1] -= m_orig[1];
-      tranVec[2] -= m_orig[2];
-
-      // Set the up vector to whereever the mouse is
-      Model * model = parent->getModel();
-      model->setProjectionUp( m_proj.pos.index, tranVec );
-      //model->applyProjection( m_proj.pos.index );
-
-      parent->updateAllViews();
-   }
-}
-
-void ProjectionTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
-{
-}
-
-const char ** ProjectionTool::getPixmap()
-{
-   return (const char **) projtool_xpm;
-}
-
-const char * ProjectionTool::getPath()
-{
-   return TOOLS_CREATE_MENU;
-}
-
-const char * ProjectionTool::getName( int arg )
-{
-   return QT_TRANSLATE_NOOP( "Tool", "Create Projection" );
-}
-
-void ProjectionTool::setTypeValue( int newValue )
-{
-   m_type = newValue;
-}
-
-void ProjectionTool::activated( int arg, Model * model, QMainWindow * mainwin )
-{
-   m_widget = new ProjToolWidget( this, mainwin );
-   m_widget->show();
-}
-
-void ProjectionTool::deactivated()
-{
-   m_widget->close();
-}
-

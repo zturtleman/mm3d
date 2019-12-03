@@ -1,58 +1,45 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
+#include "mm3dtypes.h" //PCH
 
 #include "menuconf.h"
-#include "aligncmd.h"
-
-#include "alignwin.h"
-#include "align.h"
 #include "log.h"
+#include "command.h"
 
-#include <QtCore/QObject>
-#include <QtWidgets/QApplication>
-
-AlignCommand::AlignCommand()
+struct AlignCommand : Command
 {
-}
+	AlignCommand():Command(1,GEOM_MESHES_MENU){}
 
-AlignCommand::~AlignCommand()
-{
-}
+	virtual const char *getName(int)
+	{
+		return TRANSLATE_NOOP( "Command","Align Selected..."); 
+	}
 
-bool AlignCommand::activated( int arg, Model * model )
-{
-   AlignWin * win = new AlignWin( model );  
-   win->show();
-   return true;
-}
+	virtual bool activated(int, Model *model)
+	{
+		extern void alignwin(Model*);
+		alignwin(model); return true;
+	}
+};
 
-const char * AlignCommand::getPath()
-{
-   return GEOM_MESHES_MENU;
-}
-
-const char * AlignCommand::getName( int arg )
-{
-   return QT_TRANSLATE_NOOP( "Command", "Align Selected..." );
-}
-
+extern Command *aligncmd(){ return new AlignCommand; }

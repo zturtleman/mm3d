@@ -1,288 +1,290 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
-
-#include "groupwin.h"
+#include "mm3dtypes.h" //PCH
+#include "win.h"
 
 #include "model.h"
-#include "textureframe.h"
-#include "decalmgr.h"
-#include "helpwin.h"
 
-#include <QtCore/QString>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QInputDialog>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QSlider>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QShortcut>
+#include "texturecoord.h" //Widget
 
-#include <list>
-
-GroupWindow::GroupWindow( Model * model, QWidget * parent )
-   : QDialog( parent ),
-     m_model( model )
+struct GroupWin : Win
 {
-   setAttribute( Qt::WA_DeleteOnClose );
-   setupUi( this );
-   setModal( true );
+	void submit(int);
+	
+	GroupWin(Model *model)
+		:
+	Win("Groups"),
+	model(model),
+	group(main,"",id_item),
+	nav1(main),
+	add(nav1,"New",id_new),
+	name(nav1,"Rename",id_name),
+	del(nav1,"Delete",id_delete),
+	nav2(main),
+		//TODO: What about add to selection?
+	select(nav2,"Select Faces In Group",id_select), 
+	deselect(nav2,"Unselect Faces In Group",-id_select),
+	smooth(main),angle(main),
+	nav3(main),
+	scene(nav3,id_scene),	
+		col1(nav3),
+	material(nav3,"Material",id_subitem),
+	faces(nav3,"Membership",bi::none), //"Faces"	
+	set_faces(faces,"Assign Faces",id_assign), //"Assign As Group"
+	add_faces(faces,"Add To Group",id_append), //"Add To Group"	
+	f1_ok_cancel(main),
+	texture(scene,false)
+	{
+		//texwin.cc's happens to be 100 x 100.
+		scene.lock(100,100);
 
-   m_textureFrame->setModel( model );
+		smooth.space(3,2);
 
-   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
-   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
+		nav2.expand_all().proportion();
+		nav3.expand();
+		col1.expand().space<top>(1);
+		material.expand().place(bottom);
 
-   for ( int t = 0; t < m_model->getTextureCount(); t++ )
-   {
-      m_textureComboBox->insertItem( t+1, QString::fromUtf8( m_model->getTextureName( t ) ) );
-   }
+		active_callback = &GroupWin::submit;
+		
+		submit(id_init);
+	}
+	
+	Model *model;
 
-   for ( int t = 0; t < m_model->getGroupCount(); t++ )
-   {
-      m_groupComboBox->insertItem( t+1, QString::fromUtf8( m_model->getGroupName( t ) ) );
-   }
+	dropdown group;
+	row nav1;
+	button add,name,del;
+	row nav2;
+	button select,deselect;
+	bar smooth,angle; //spinbox?
+	panel nav3;
+	canvas scene;
+	column col1;
+	dropdown material;
+	row faces;
+	button set_faces,add_faces;
+	f1_ok_cancel_panel f1_ok_cancel;
 
-   list<int> triangles;
-   m_model->getSelectedTriangles( triangles );
+	Widget texture;
 
-   list<int>::iterator it;
-   for ( it = triangles.begin(); it != triangles.end(); it++ )
-   {
-      int g = m_model->getTriangleGroup( *it );
-      if ( g >= 0 )
-      {
-         m_groupComboBox->setCurrentIndex( g + 1 );
-         m_textureComboBox->setCurrentIndex( m_model->getGroupTextureId( g ) + 1 );
-         break;
-      }
-   }
+	void group_selected();
+	void new_group_or_name(int);	
+	bool smooth_differs(),angle_differs();
+};
+void GroupWin::submit(int id)
+{
+	enum{ id_smooth=1000,id_angle };
 
-   groupSelectedEvent( m_groupComboBox->currentIndex() );
+	switch(id)
+	{
+	case id_init:
+	{	
+		group.expand();
 
-   updateTexture();
+		int iN = model->getGroupCount();
+		for(int i=0;i<iN;i++)
+		group.add_item(i,model->getGroupName(i));
+
+		iN = model->getTextureCount();
+		material.add_item(-1,::tr("<None>"));
+		for(int i=0;i<iN;i++)	
+		material.add_item(i,model->getTextureName(i));
+		texture.setModel(model);
+		
+		int_list l; model->getSelectedTriangles(l);
+		for(int_list::iterator it=l.begin(),itt=l.end();it<itt;it++)	
+		if(int g=model->getTriangleGroup(*it)+1)
+		{
+			group.select_id(g-1); break;
+		}
+		group_selected(); 
+				
+		smooth.set_range(0,255).id(id_smooth).expand();
+		submit(id_smooth); //HACK
+		angle.set_range(0,180).id(id_angle).expand();
+		submit(id_angle); //HACK
+		smooth.sspace<left>({angle}); //EXPERIMENTAL
+
+		break;
+	}	
+	case id_scene:
+
+		texture.draw(scene.x(),scene.y(),scene.width(),scene.height());
+		break;
+
+	case id_delete:
+	case id_select: case -id_select: //Deselect?
+	case id_assign: case id_append:
+	case id_subitem:
+	{
+		int g = group; switch(id)
+		{
+		case id_delete:
+
+			model->deleteGroup(g);	
+			group.delete_item(g).select_id(0);
+			group.select_id(0);
+			group_selected();
+			break;
+
+		case id_select: 
+		
+			model->unselectAll(); //TODO: Disable option?
+			model->selectGroup(g);			
+			break;
+
+		case -id_select: model->unselectGroup(g); break;		
+
+		case id_assign: model->setSelectedAsGroup(g); break; 
+		case id_append: model->addSelectedToGroup(g); break;
+
+		case id_subitem:
+
+			model->setGroupTextureId(g,material);
+	
+			texture.setTexture(material); break;			
+		}
+		//https://github.com/zturtleman/mm3d/issues/90
+		//DecalManager::getInstance()->modelUpdated(model); //???
+		model->updateObservers();
+		break;
+	}
+	case id_smooth:
+
+		//Obscuring this adds phantom positions to this slider.
+		//smooth.name().format("%s%03d\t",::tr("Smoothness: "),(int)((val/255.0)*100));
+		smooth.name().format("%s\t%03d",::tr("Smoothness: "),(int)smooth);
+		break;
+
+	case id_angle:
+
+		angle.name().format("%s\t%03d",::tr("Max Angle: "),(int)angle);
+		break;
+
+	case id_new: case id_name:
+
+		new_group_or_name(id);
+		break;
+
+	case id_item:
+	case id_ok:
+
+		//FIX ME: https://github.com/zturtleman/mm3d/issues/53
+		if(!group.empty())
+		if(smooth_differs()||angle_differs())		
+		model->calculateNormals();
+		if(id==id_item)		
+		group_selected();
+		if(id==id_ok)
+		model->operationComplete(::tr("Group changes","operation complete"));		
+		break;
+
+	case id_cancel:
+
+		model->undoCurrent();
+		break;
+	}
+
+	basic_submit(id);
+}
+void GroupWin::group_selected()
+{
+	if(group.empty())
+	{
+		disable(); add.enable();
+		f1_ok_cancel.nav.enable(); 
+		material.select_id(0);
+	}
+	else
+	{
+		int g = group;
+		smooth.set_int_val(model->getGroupSmooth(g)); 
+		angle.set_int_val(model->getGroupAngle(g));	
+		material.select_id(model->getGroupTextureId(g));
+	}
+	texture.setTexture(material);
+}
+void GroupWin::new_group_or_name(int id)
+{
+	utf8 title = "Rename group"; //NEW
+	std::string name; int g; if(id==id_name)
+	{
+		title = "New group";
+		g = group; name = model->getGroupName(g);		
+	}
+	if(id_ok==EditBox(&name,::tr(title,"window title"),
+	::tr("Enter new group name:"),1,Model::MAX_GROUP_NAME_LEN))
+	{
+		if(id==id_name)
+		{	
+			model->setGroupName(g,name.c_str());
+			group.selection()->text() = name;		
+		}
+		else if(id==id_new)
+		{
+			if(group.empty()) enable();
+
+			g = model->addGroup(name.c_str());
+			group.add_item(g,name);
+			group.select_id(g);
+			group_selected();
+		}
+		else assert(0);
+	}
+}
+bool GroupWin::smooth_differs()
+{
+	int g = group;
+
+	unsigned char yuck = 0xFF&smooth; //FIX ME
+
+	//REMOVE ME: setGroupSmooth ought to return false.
+	if(yuck==model->getGroupSmooth(g)) 
+	return false;
+
+	//FIX ME: https://github.com/zturtleman/mm3d/issues/53
+	return model->setGroupSmooth(g,yuck);
+	//Converting 255 to 100???
+	//smooth.name().format("%s%03d",::tr("Smoothness: "),(int)((val/255.0)*100));
+	//model->calculateNormals();
+	//DecalManager::getInstance()->modelUpdated(model); //???
+}
+bool GroupWin::angle_differs()
+{
+	int g = group;
+
+	unsigned char yuck = 0xFF&angle; //FIX ME
+
+	//REMOVE ME: setGroupAngle ought to return false.
+	if(yuck==model->getGroupAngle(g))
+	return false;
+
+	//FIX ME: https://github.com/zturtleman/mm3d/issues/53
+	return model->setGroupAngle(g,yuck);
+	//angle.name().format("%s%03d",::tr("Max Angle: "),val);
+	//model->calculateNormals();
+	//DecalManager::getInstance()->modelUpdated(model); //???
 }
 
-GroupWindow::~GroupWindow()
-{
-}
-
-void GroupWindow::helpNowEvent()
-{
-   HelpWin * win = new HelpWin( "olh_groupwin.html", true );
-   win->show();
-}
-
-void GroupWindow::newClickedEvent()
-{
-   bool ok = true;
-   bool valid = false;
-
-   while ( !valid )
-   {
-      QString groupName = QInputDialog::getText( this, tr("New group", "window title"), tr("Enter new group name:"), QLineEdit::Normal, QString::null, &ok );
-
-      if ( ok == true )
-      {
-         if ( groupName.length() > 0 && groupName.length() < Model::MAX_GROUP_NAME_LEN )
-         {
-            int groupNum = m_model->addGroup( groupName.toUtf8() );
-            m_groupComboBox->insertItem( groupNum + 1, groupName );
-            m_groupComboBox->setCurrentIndex( groupNum + 1 );
-            groupSelectedEvent( groupNum + 1 );
-            valid = true;
-         }
-         else
-         {
-            QString msg = tr( "Group name must be between 1 and %1 characters" ).arg( Model::MAX_GROUP_NAME_LEN - 1 );
-            QMessageBox::warning( this, tr("Bad group name", "window title"), msg, QMessageBox::Ok | QMessageBox::Default, 0, 0 );
-         }
-      }
-      else
-      {
-         valid = true;
-      }
-   }
-}
-
-void GroupWindow::renameClickedEvent()
-{
-   bool ok = true;
-   bool valid = false;
-
-   int groupNum = m_groupComboBox->currentIndex();
-
-   if ( groupNum == 0 )
-   {
-      QMessageBox::information( this, tr("Cannot change", "cannot change group name, window title"), tr("You cannot change the default group name"), QMessageBox::Ok | QMessageBox::Default, 0, 0 );
-      return;
-   }
-
-   groupNum--;
-
-   while ( !valid )
-   {
-      QString groupName = QInputDialog::getText( this, tr("New group", "window title"), tr("Enter new group name:"), QLineEdit::Normal, QString::fromUtf8( m_model->getGroupName( groupNum ) ), &ok );
-
-      if ( ok == true )
-      {
-         if ( groupName.length() > 0 && groupName.length() < Model::MAX_GROUP_NAME_LEN )
-         {
-            m_model->setGroupName( groupNum, groupName.toUtf8() );
-            m_groupComboBox->setItemText( groupNum + 1, groupName );
-            valid = true;
-         }
-         else
-         {
-            QString msg;
-            msg.sprintf( "Group name must be between 1 and %d characters", Model::MAX_GROUP_NAME_LEN - 1 );
-            QMessageBox::warning( this, tr("Bad group name", "window title"), msg, QMessageBox::Ok | QMessageBox::Default, 0, 0 );
-         }
-      }
-      else
-      {
-         valid = true;
-      }
-   }
-}
-
-void GroupWindow::deleteClickedEvent()
-{
-   int groupNum = m_groupComboBox->currentIndex();
-   m_groupComboBox->removeItem( groupNum );
-   m_model->deleteGroup( groupNum - 1 );
-
-   m_groupComboBox->setCurrentIndex( 0 );
-   groupSelectedEvent( 0 );
-}
-
-void GroupWindow::selectFacesClickedEvent()
-{
-   m_model->unselectAll();
-   m_model->selectGroup( m_groupComboBox->currentIndex() - 1 );
-   DecalManager::getInstance()->modelUpdated( m_model );
-}
-
-void GroupWindow::unselectFacesClickedEvent()
-{
-   m_model->unselectGroup( m_groupComboBox->currentIndex() - 1 );
-   DecalManager::getInstance()->modelUpdated( m_model );
-}
-
-void GroupWindow::assignAsGroupClickedEvent()
-{
-   m_model->setSelectedAsGroup( m_groupComboBox->currentIndex() - 1 );
-   DecalManager::getInstance()->modelAnimate( m_model );
-}
-
-void GroupWindow::addToGroupClickedEvent()
-{
-   m_model->addSelectedToGroup( m_groupComboBox->currentIndex() - 1 );
-   DecalManager::getInstance()->modelAnimate( m_model );
-}
-
-void GroupWindow::smoothChangedEvent( int val )
-{
-   m_model->setGroupSmooth( m_groupComboBox->currentIndex() - 1, val );
-   QString text = tr( "Smoothness: " );
-   QString valStr;
-   valStr.sprintf( "%03d", (int) ((val / 255.0) * 100.0 ) );
-   m_smoothLabel->setText( text + valStr );
-   m_model->calculateNormals();
-   DecalManager::getInstance()->modelUpdated( m_model );
-}
-
-void GroupWindow::angleChangedEvent( int val )
-{
-   m_model->setGroupAngle( m_groupComboBox->currentIndex() - 1, val );
-   QString text = tr( "Max Angle: " );
-   QString valStr;
-   valStr.sprintf( "%03d", val );
-
-   m_angleLabel->setText( text + valStr );
-   m_model->calculateNormals();
-   DecalManager::getInstance()->modelUpdated( m_model );
-}
-
-void GroupWindow::groupSelectedEvent( int id )
-{
-   if ( id > 0 )
-   {
-      m_smoothSlider->setEnabled( true );
-      m_smoothSlider->setValue( m_model->getGroupSmooth( id - 1 ) );
-
-      m_angleSlider->setEnabled( true );
-      m_angleSlider->setValue( m_model->getGroupAngle( id - 1 ) );
-
-      m_renameButton->setEnabled( true );
-      m_deleteButton->setEnabled( true );
-      m_assignAsGroupButton->setEnabled( true );
-      m_addToGroupButton->setEnabled( true );
-      m_textureComboBox->setEnabled( true );
-
-      int texId = m_model->getGroupTextureId( id - 1 );
-      m_textureComboBox->setCurrentIndex( texId + 1 );
-      updateTexture();
-   }
-   else
-   {
-      m_smoothSlider->setEnabled( false );
-      m_angleSlider->setEnabled( false );
-      m_renameButton->setEnabled( false );
-      m_deleteButton->setEnabled( false );
-      m_assignAsGroupButton->setEnabled( false );
-      m_addToGroupButton->setEnabled( false );
-      m_textureComboBox->setEnabled( false );
-   }
-   DecalManager::getInstance()->modelAnimate( m_model );
-}
-
-void GroupWindow::textureSelectedEvent( int id )
-{
-   int groupId = m_groupComboBox->currentIndex() - 1;
-   if ( groupId >= 0 )
-   {
-      m_model->setGroupTextureId( groupId, id - 1 );
-   }
-   updateTexture();
-   DecalManager::getInstance()->modelAnimate( m_model );
-}
-
-void GroupWindow::updateTexture()
-{
-   m_textureFrame->textureChangedEvent( m_textureComboBox->currentIndex() );
-}
-
-void GroupWindow::accept()
-{
-   m_model->operationComplete( tr( "Group changes", "operation complete" ).toUtf8() );
-   QDialog::accept();
-   DecalManager::getInstance()->modelUpdated( m_model );
-}
-
-void GroupWindow::reject()
-{
-   m_model->undoCurrent();
-   DecalManager::getInstance()->modelUpdated( m_model );
-   QDialog::reject();
-}
+extern void groupwin(Model *m){ GroupWin(m).return_on_close(); }

@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <title> MM3D Help - Cal3D Notes </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   </head>
+
+   <body bgcolor="#e0e0e0">
+
+<h2>Contents</h2>
+<ul>
+  <li> <a href="#support">Cal3D Support</a> </li>
+  <li> <a href="#formats">File Formats and Versions</a> </li>
+</ul>
+
+<a name="support"></a>
+<h2>Cal3D Support</h2>
+
+<p>There are few different file formats for Cal3D and several different
+versions for those formats. MM3D has support for most Cal3D
+functionality, but some features are missing or imperfect. The following
+is a short list of things to be aware of when working with Cal3D files
+in MM3D. Some of these items are discussed in more detail in
+the sections below.
+</p>
+
+<ul>
+   <li> For the primary Cal3D model file, MM3D will read files with the
+   .cal and .cfg extensions. INI-style files are supported, XML-style
+   files are not (except for material files).</li>
+   <li>For skeleton, animation, mesh, and material files binary formats
+   are supported for versions 700-1200. XML materials are also supported.
+   No other XML formats are supported.</li>
+   <li>MM3D does not support springs or LOD reduction. These attributes
+   will be silently discarded on import.</li>
+   <li>Texture map materials are supported, any additional maps in the 
+   material file will be silently discarded on import.</li>
+   <li>MM3D assumes 30 fps and assigns the keyframes to frame numbers.</li>
+   <li>MM3D will read compressed animations, but will not write compressed
+   animations.</li>
+</ul>
+
+<p>
+MM3D has a <a href="olh_cal3dprompt.html">Cal3D Export Options</a> 
+window that allows you to write meshes in a single file, or in separate files,
+as well as specifying whether materials should be in XML or binary
+format.
+</p>
+
+<a name="formats"></a>
+<h2>File Formats and Versions</h2>
+
+<a name="formats_cal"></a>
+<h3>.cal and .cfg</h3>
+
+<p>
+Cal3D models are made up of skeleton, animation, mesh, and material files,
+as well as .cal or .cfg configuration files that define how to put the final
+model together from the individual files. There are two file formats for
+the .cal and .cfg files. One style is similar to a Windows .INI file. It has
+section names in square brackets and key/value pairs that specify filenames
+for parts of the model. The other style is an XML format. MM3D
+will read and write the INI style files, but not the XML format.
+</p>
+
+<p>
+Some attirbutes of the configuration file will be read, preserved, and written
+even though MM3D does not use them. Those attributes include things like
+scale and rotation.
+</p>
+
+<a name="formats_csf"></a>
+<h3>Skeleton Files (.csf)</h3>
+
+<p>
+Binary skeleton file formats 700 through 1200 are supported. XML skeleton
+files are not supported.
+</p>
+
+<p>
+The filename of the skeleton file written by MM3D will be the same as
+the main .cal or .cfg file with the extension replaced with .csf.
+</p>
+
+<a name="formats_caf"></a>
+<h3>Animation Files (.caf)</h3>
+
+<p>
+Binary animation file formats 700 through 1200 are supported. XML animation
+files are not supported.
+</p>
+
+<p>
+There is one animation file per animation. The animation filename is
+is the name of the animation plus the .caf extension. If a meta
+data key for "animation_[animation name] is defined, the filename
+specified in the meta data is used instead.
+</p>
+
+<p>
+MM3D tracks animations on a per-frame basis, using the
+frames-per-second attribute to determine at which point in time a
+keyframe influences the skeleton. Cal3D animations do not have
+an FPS attribute, only keyframe times. MM3D assumes 30 fps to
+assign the keyframes to frame numbers.
+</p>
+
+<p>
+MM3D will read compressed animation tracks. MM3D will write
+animation files in any version number you specify, but regardless of
+the version number MM3D will always write uncompressed animation tracks.
+</p>
+
+<a name="formats_cmf"></a>
+<h3>Mesh Files (.cmf)</h3>
+
+<p>
+Binary mesh file formats 700 through 1200 are supported. XML mesh
+files are not supported.
+</p>
+
+<p>The meshes in the model may be written in one mesh file, or one
+file for every group. If there is a single mesh file, it will
+be the same name as the .cal or .cfg file with the extension
+replaced with .cmf. If there are multiple mesh files, the files
+will be named after the groups with .cmf appended.
+</p>
+
+<p>
+Note that LOD (level of detail) attributes and springs are not
+supported by MM3D. LOD and spring data will be silently discarded
+when mesh files are read.
+</p>
+
+<a name="formats_crf"></a>
+<h3>Material Files (.crf and .xrf)</h3>
+
+<p>
+Binary material file formats 700 through 1200 are supported. XML versions
+900 through 1000 are supported.
+</p>
+
+<p>
+Material file names are the material name with .crf or .xrf appended.
+</p>
+
+<p>
+Texture map materials are supported. Other additional maps that are
+specified will be silently discarded by MM3D.
+</p>
+
+<p>
+Often Cal3D texture images are in PNG or RAW format. MM3D supports
+both of these formats in addition to many other formats.
+</p>
+
+
+
+<hr/>
+<center>
+[
+<a href="olh_index.html">Contents</a>
+|
+<a href="olh_detailsindex.html">Introduction</a>
+|
+<a href="olh_tools.html">Tools</a>
+|
+<a href="olh_commands.html">Geometry&nbsp;Menu</a>
+]
+<br/>
+
+Copyright &copy; 2004-2008, Kevin Worcester
+
+</center>
+
+</body></html>

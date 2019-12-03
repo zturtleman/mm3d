@@ -1,23 +1,23 @@
 /*  SmdFilter plugin for Maverick Model 3D
  *
- *  Copyright (c) 2018 Zack Middleton
+ * Copyright (c)2018 Zack Middleton
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
- *  USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
  *
- *  See the COPYING file for full license text.
+ * See the COPYING file for full license text.
  */
 
 #ifndef __SMDFILTER_H
@@ -25,54 +25,36 @@
 
 #include "modelfilter.h"
 
-#include <string>
-
-class DataDest;
-
 class SmdFilter : public ModelFilter
 {
-   public:
+public:
 
-      class SmdOptions : public ModelFilter::Options
-      {
-         public:
-            SmdOptions();
+	class SmdOptions : public Options
+	{
+	public:
 
-            virtual void release() { delete this; };
+		SmdOptions();
 
-            bool m_saveMeshes;
-            bool m_savePointsJoint;
-            bool m_multipleVertexInfluences;
-            std::vector<unsigned int> m_animations;
+		bool m_saveMeshes;
+		bool m_savePointsJoint;
+		bool m_multipleVertexInfluences;
+		std::vector<unsigned int> m_animations;
 
-            void setOptionsFromModel( Model * m );
+		virtual void setOptionsFromModel(Model*);
+	};
 
-         protected:
-            virtual ~SmdOptions(); // Use release() instead
-      };
+	Model::ModelErrorE readFile(Model *model, const char *const filename);
+	Model::ModelErrorE writeFile(Model *model, const char *const filename, Options &o);
 
-      SmdFilter();
-      virtual ~SmdFilter();
+	const char *getWriteTypes(){ return "SMD"; }
 
-      Model::ModelErrorE readFile( Model * model, const char * const filename );
-      Model::ModelErrorE writeFile( Model * model, const char * const filename, ModelFilter::Options * o = NULL );
+	Options *getDefaultOptions(){ return new SmdOptions; };
 
-      bool canRead( const char * filename = NULL );
-      bool canWrite( const char * filename = NULL );
-      bool canExport( const char * filename = NULL );
+protected:
 
-      bool isSupported( const char * file );
+	SmdOptions  *m_options;
 
-      std::list< std::string > getReadTypes();
-      std::list< std::string > getWriteTypes();
-
-      ModelFilter::Options * getDefaultOptions() { return new SmdOptions; };
-
-   protected:
-
-      SmdOptions  * m_options;
-
-      bool writeLine( DataDest *dst, const char * line, ... );
+	bool writeLine(DataDest *dst, const char *line,...);
 };
 
 #endif // __SMDFILTER_H

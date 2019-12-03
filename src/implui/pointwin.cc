@@ -1,160 +1,135 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
 
-#include "pointwin.h"
-#include "decalmgr.h"
-#include "helpwin.h"
-
-#include <QtWidgets/QInputDialog>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QShortcut>
-
-#include <list>
-
-using std::list;
+#include "mm3dtypes.h" //PCH
+#include "win.h"
 
 #include "model.h"
-#include "decalmgr.h"
+
 #include "log.h"
 #include "msg.h"
 #include "modelstatus.h"
 
-
-PointWin::PointWin( Model * model, QWidget * parent )
-   : QDialog( parent ),
-     m_model( model )
+struct PointWin : Win //UNUSED
 {
-   setAttribute( Qt::WA_DeleteOnClose );
-   setupUi( this );
-   setModal( true );
+	//2019: This window isn't available, but 
+	//I feel like it may be worth preserving.
 
-   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
-   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
+	void submit(int);
 
-   int t;
-   for ( t = 0; t < m_model->getPointCount(); t++ )
-   {
-      m_pointName->insertItem( t,  QString::fromUtf8( m_model->getPointName(t) ) );
-   }
+	PointWin(Model *model)
+		:
+	Win("Points"),model(model),
+	point(main,"",id_item),
+	nav(main),
+	name(nav,"Rename",id_name),
+	del(nav,"Delete",id_delete),
+	joint(main,"Bone Joint",id_subitem)
+	{
+		//Just a guess at what it looks like. 
 
-   for ( t = 0; t < m_model->getBoneJointCount(); t++ )
-   {
-      m_pointJoint->insertItem( t + 1, QString::fromUtf8( m_model->getBoneJointName(t) ) );
-   }
+		point.expand();
+		joint.style(bi::etched).expand();
 
-   list<int> points;
-   m_model->getSelectedPoints( points );
-   if ( ! points.empty() )
-   {
-      m_pointName->setCurrentIndex( points.front() );
-      pointNameSelected( points.front() );
-   }
-   else
-   {
-      m_pointName->setCurrentIndex( 0 );
-      pointNameSelected( 0 );
-   }
-}
+		active_callback = &PointWin::submit;
 
-PointWin::~PointWin()
+		submit(id_init);
+	}
+
+	Model *model;
+
+	row nav;
+	button name,del;
+	dropdown point,joint;
+};
+void PointWin::submit(int id)
 {
-}
+	switch(id)
+	{
+	case id_init:
+	{
+		int iN = model->getPointCount();
+		for(int i=0;i<iN;i++)
+		point.add_item(i,model->getPointName(i));
+	
+		iN = model->getBoneJointCount();
+		joint.add_item(0,::tr("<None>"));
+		for(int i=0;i<iN;i++)
+		joint.add_item(i+1,model->getBoneJointName(i));
 
-void PointWin::helpNowEvent()
-{
-   HelpWin * win = new HelpWin( "olh_pointwin.html", true );
-   win->show();
-}
+		int_list l;
+		model->getSelectedPoints(l);
+		if(!l.empty()) point.select_id(l.front());
+		//break;
+	}
+	case id_item:
 
-void PointWin::pointNameSelected( int index )
-{
-   if ( index < m_pointName->count() )
-   {
-      m_model->unselectAllPoints();
-      m_model->selectPoint( index );
+		if(point.selection())
+		{
+			model->unselectAllPoints();
+			model->selectPoint((int)point);			
+			joint.select_id(model->getPointBoneJoint((int)point)+1);
+			//https://github.com/zturtleman/mm3d/issues/90
+			//DecalManager::getInstance()->modelUpdated(model); //???
+			model->updateObservers();
+		}
+		else disable(); break;
 
-      m_deleteButton->setEnabled( true );
-      m_renameButton->setEnabled( true );
-      m_pointJoint->setEnabled( true );
-      m_pointJoint->setCurrentIndex( m_model->getPointBoneJoint( index ) + 1 );
-      DecalManager::getInstance()->modelUpdated( m_model );
-   }
-   else
-   {
-      m_deleteButton->setEnabled( false );
-      m_renameButton->setEnabled( false );
-      m_pointJoint->setEnabled( false );
-      m_pointJoint->setCurrentIndex( 0 );
-   }
-}
+	case id_subitem:
 
-void PointWin::pointJointSelected( int index )
-{
-   if ( m_pointName->count() > 0 )
-   {
-      if ( index >= 0 && index < m_pointJoint->count() )
-      {
-         m_model->setPointBoneJoint( m_pointName->currentIndex(), index - 1 );
-      }
-   }
-}
+		//Looks erroneous.
+		//if(index>=0&&index<m_pointJoint->count())
+		model->setPointBoneJoint((int)point,joint.int_val()-1);
+		break;
 
-void PointWin::deleteClicked()
-{
-   if ( m_pointName->count() )
-   {
-      m_model->deletePoint( m_pointName->currentIndex() );
-   }
-}
+	case id_delete:
 
-void PointWin::renameClicked()
-{
-   if ( m_pointName->count() )
-   {
-      bool ok = false;
-      int pointNum = m_pointName->currentIndex();
-      QString pointName = QInputDialog::getText( this, tr("Rename point", "window title"), tr("Enter new point name:"), QLineEdit::Normal, QString::fromUtf8( m_model->getPointName( pointNum )), &ok );
-      if ( ok )
-      {
-         m_model->setPointName( pointNum, pointName.toUtf8() );
-         m_pointName->setItemText( pointNum, pointName );
-      }
-   }
-}
+		model->deletePoint((int)point);
+		break;
 
-void PointWin::accept()
-{
-   log_debug( "Point changes complete\n" );
-   m_model->operationComplete( tr( "Point changes", "operation complete" ).toUtf8() );
-   QDialog::accept();
-}
+	case id_name:
+	{
+		std::string name = model->getPointName((int)point);
+		if(id_ok==EditBox(&name,::tr("Rename point","window title"),::tr("Enter new point name:")))
+		{
+			model->setPointName((int)point,name.c_str());
+			point.selection()->text() = name;
+		}
+		break;
+	}
+	case id_ok:
 
-void PointWin::reject()
-{
-   log_debug( "Point changes canceled\n" );
-   m_model->undoCurrent();
-   DecalManager::getInstance()->modelUpdated( m_model );
-   QDialog::reject();
+		log_debug("Point changes complete\n");
+		model->operationComplete(::tr("Point changes","operation complete"));
+		break;
+	
+	case id_cancel:
+
+		log_debug("Point changes canceled\n");
+		model->undoCurrent();
+		break;
+	}
+
+	basic_submit(id);
 }
 

@@ -1,27 +1,27 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
+#include "mm3dtypes.h" //PCH
 
-#include "config.h"
 #include "pluginmgr.h"
 #include "viewwin.h"
 #include "viewpanel.h"
@@ -29,2566 +29,1948 @@
 #include "tool.h"
 #include "toolbox.h"
 #include "cmdmgr.h"
-#include "viewportsettings.h"
-#include "groupclean.h"
-#include "groupwin.h"
-#include "texwin.h"
-#include "texturecoord.h"
-#include "painttexturewin.h"
 #include "log.h"
-#include "decalmgr.h"
+
 #include "msg.h"
-#include "statusbar.h"
 #include "modelstatus.h"
 #include "filtermgr.h"
 #include "misc.h"
-#include "helpwin.h"
-#include "licensewin.h"
-#include "aboutwin.h"
-#include "animsetwin.h"
-#include "animexportwin.h"
 #include "animwin.h"
-#include "animwidget.h"
-#include "metawin.h"
-#include "3dmprefs.h"
-#include "stdcmds.h"
-#include "pluginwin.h"
-#include "backgroundwin.h"
-#include "mergewin.h"
 #include "misc.h"
 #include "version.h"
 #include "texmgr.h"
 #include "sysconf.h"
-#include "contextpanel.h"
-#include "boolpanel.h"
 #include "projectionwin.h"
 #include "transformwin.h"
-
-#include "keycfg.h"
-
-#include "qtmain.h"
-
-#include <QtCore/QDataStream>
-#include <QtCore/QFile>
-#include <QtCore/QTimer>
-#include <QtWidgets/QActionGroup>
-#include <QtWidgets/QApplication>
-#include <QtGui/QCloseEvent>
-#include <QtGui/QContextMenuEvent>
-#include <QtWidgets/QDesktopWidget>
-#include <QtWidgets/QDockWidget>
-#include <QtWidgets/QFileDialog>
-#include <QtGui/QIcon>
-#include <QtWidgets/QLayout>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QMessageBox>
-#include <QtGui/QPixmap>
-#include <QtGui/QResizeEvent>
-#include <QtWidgets/QShortcut>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QToolTip>
-#include <QtWidgets/QVBoxLayout>
-#include <QtGui/QWindow>
-
-#include "errorobj.h"
+#include "texturecoord.h"
 
 #include "luascript.h"
 #include "luaif.h"
 
-#include "pixmap/mm3dlogo-32x32.xpm"
+extern void viewwin_menubarfunc(int);
+static void viewwin_mrumenufunc(int);
+static void viewwin_geomenufunc(int);
+extern void viewwin_toolboxfunc(int);
 
+static int
+viewwin_mruf_menu=0,viewwin_mrus_menu=0,
+viewwin_file_menu=0,viewwin_view_menu=0,
+viewwin_tool_menu=0,viewwin_modl_menu=0,
+viewwin_geom_menu=0,viewwin_mats_menu=0,
+viewwin_infl_menu=0,viewwin_help_menu=0,
+viewwin_deletecmd=0,viewwin_interlock=1,
+viewwin_toolbar = 0;
 
-#include <stdio.h>
-#include <list>
-#include <string>
+std::vector<MainWin*> viewwin_list(0); //extern
 
-using std::list;
-using std::string;
+static utf8 viewwin_title = "Untitled"; //"Maverick Model 3D"
 
-const char DOCK_FILENAME[] = "dock.dat";
-const int DOCK_VERSION = 1;
-
-//using namespace QIconSet;
-
-typedef QAction * QActionPtr;
-typedef ::Tool * ToolPtr;
-
-typedef std::list< ViewWindow *> ViewWindowList;
-static ViewWindowList _winList;
-
-static bool _shuttingDown = false;
-
-CommandWidget::CommandWidget( QObject * parent, Model * model, bool * canEdit,
-      Command * cmd, int index )
-   : QObject( parent ),
-     m_model( model ),
-     m_canEdit( canEdit ),
-     m_cmd( cmd ),
-     m_index( index )
+void MainWin::modelChanged(int changeBits) // Model::Observer method
 {
+	if(_window_title_asterisk==model->getSaved())
+	_rewrite_window_title();
+				
+	//REMOVE ME
+	//This is to replace DecalManager functionality
+	//until it can be demonstrated Model::m_changeBits
+	//is set by every change.
+	//https://github.com/zturtleman/mm3d/issues/90
+	if(!changeBits)
+	{
+		views.modelUpdatedEvent();
+		if(_texturecoord_win) _texturecoord_win->modelChanged(0);
+		return;
+	}
+
+	views.modelUpdatedEvent(); 
+	sidebar.modelChanged(changeBits);
+
+	if(_projection_win) _projection_win->modelChanged(changeBits);
+	if(_texturecoord_win) _texturecoord_win->modelChanged(changeBits);
+	//if(_transform_win) = _transform_win->modelChanged(changeBits);
 }
 
-CommandWidget::~CommandWidget()
+extern MainWin* &viewwin(int id=glutGetWindow())
 {
+	MainWin **o = nullptr;
+	for(auto&ea:viewwin_list) if(ea->glut_window_id==id)
+	o = &ea; //return ea;
+	assert(o); return *o;
+}
+ 
+static void viewwin_mru(int id, char *add=nullptr)
+{
+	glutSetMenu(id); 
+	
+	id = id==viewwin_mruf_menu?0:100;
+
+	utf8 cfg = "script_mru"+(id==100?0:7);
+
+	std::string &mru = config.get(cfg);
+
+	int lines = std::count(mru.begin(),mru.end(),'\n');
+
+	if(!mru.empty()&&mru.back()!='\n') 
+	{
+		lines++; mru.push_back('\n');
+	}
+
+	if(add)
+	{
+		assert(*add); //Untitled?
+
+		size_t n,len = strlen(add);
+
+		add[len] = '\n';
+		#ifdef WIN32
+		for(char*p=add;*p;p++) if(*p=='\\') *p = '/';
+		#endif
+		if(n=mru.find(add,0,len+1))
+		{	
+			if(n!=mru.npos) mru.erase(n,len+1);
+			else lines++;
+			mru.insert(mru.begin(),add,add+len+1);
+		}
+		add[len] = '\0';
+
+		if(!n) return; //ILLUSTRATING
+
+		if(lines>10) mru.erase(mru.rfind('\n'));
+	}
+
+	size_t r,s = 0;
+	int i,iN = glutGet(GLUT_MENU_NUM_ITEMS);
+	char *p = const_cast<char*>(mru.c_str());
+	for(i=0;i<lines;i++,p[s++]='\n',id++)
+	{
+		p[s=mru.find('\n',r=s)] = '\0';
+		if(i>=iN) glutAddMenuEntry(p+r,id);
+		else glutChangeToMenuEntry(1+i,p+r,id);
+	}
+
+	if(add) config.set(cfg,mru);
 }
 
-void CommandWidget::setModel( Model * m )
+static bool viewwin_close_func_quit = false;
+static void viewwin_close_func()
+{		
+	MainWin *w = viewwin();
+	if(!viewwin_close_func_quit)
+	if(!w->save_work_prompt()) return;
+
+	//REMOVE ME
+	//viewpanel_display_func is sometimes entered on closing
+	//after removal from viewwin_list.
+	//glutHideWindow();
+	Widgets95::glut::set_glutDisplayFunc(nullptr);
+
+	//viewwin_list.remove(w); //C++
+	std::swap(viewwin(w->glut_window_id),viewwin_list.back());
+	viewwin_list.pop_back();
+
+	//~MainWin can't do this since Model expects a 
+	//GLX context and GLX expects onscreen windows.
+	delete w->_swap_models(nullptr);
+
+	//close_ui_by_create_id should cover these as well.
+	//if(w->_animation_win) w->_animation_win->close();
+	//if(w->_transform_win) w->_transform_win->close();
+	//if(w->_projection_win) w->_projection_win->close();
+	//if(w->_texturecoord_win) w->_texturecoord_win->close();
+	Widgets95::e::close_ui_by_create_id(w->glut_window_id); //F1
+	Widgets95::e::close_ui_by_parent_id(w->glut_window_id);
+
+	//HACK: Wait for close_ui_by_parent_id to finish up in
+	//the idle stage.
+	glutext::glutModalLoop(); delete w;
+}
+bool MainWin::quit()
 {
-   m_model = m;
+	bool doSave = false;
+	
+	#ifndef CODE_DEBUG	
+	for(auto ea:viewwin_list)
+	if(!ea->model->getSaved())
+	{
+		 char response = msg_warning_prompt
+		 (::tr("Some models are unsaved.  Save before exiting?"));
+		 if(response=='C') return false; 
+		 if(response=='Y') doSave = true;
+	}
+	#endif // CODE_DEBUG
+
+	for(auto ea:viewwin_list)
+	if(doSave&&!ea->model->getSaved())
+	{
+		if(!ea->save_work()) return false;
+	}	
+
+	/*Crashes wxWidgets.
+	//NOTE: close won't take immediate effect.
+	for(auto ea:viewwin_list)
+	Widgets95::e::close_ui_by_parent_id(ea->glut_window_id);
+	viewwin_list.clear();*/
+	viewwin_close_func_quit = true;
+	while(!viewwin_list.empty())
+	{
+		glutSetWindow(viewwin_list.back()->glut_window_id);
+		viewwin_close_func();
+	}
+
+	return true;
 }
 
-void CommandWidget::activateCommand( bool )
+static utf8 viewwin_key_sequence(utf8 pf, utf8 name, utf8 def="")
 {
-   if ( !(*m_canEdit) )
-   {
-      model_status( m_model, StatusError, STATUSTIME_LONG,
-            tr("You are in animation mode, but there are no animations").toUtf8() );
-      return;
-   }
+	char buf[64*2]; 	
+	int i,j,iN = snprintf(buf,sizeof(buf),"%s_%s",pf,name);	
+	for(i=0,j=0;i<iN;i++) switch(buf[i])
+	{
+	case '.': break; 
+	case '\n': //RotateTextureCommand
+	case ' ': buf[i] = '_'; 		
+	default: buf[j++] = tolower(buf[i]);
+	}
+	buf[j] = '\0'; 
+	//return keycfg.get(buf,*def?TRANSLATE("KeyConfig",def,name):def);
+	return keycfg.get(buf,def);
+}
+static void viewwin_toolbar_title(std::string &s, Tool *tool, int i)
+{
+	//NOTE: This is really a title; not a tooltip.
+	utf8 name = tool->getName(i);
+	utf8 ks = viewwin_key_sequence("tool",name,tool->getKeymap(i));
+	s.append(TRANSLATE("Tool",name));
+	if(*ks) s.append(" (").append(ks).push_back(')');
+//	if(*ks) s.append("\t").append(ks);
+}
+static void viewwin_synthetic_hotkey(std::string &s, Tool *tool, int i)
+{
+	utf8 ks = viewwin_key_sequence("tool",tool->getName(i),tool->getKeymap(i));
+	if(*ks) s.append(1,'\t').append(ks);
+}
+static void viewwin_synthetic_hotkey(std::string &s, Command *cmd, int i)
+{
+	utf8 ks = viewwin_key_sequence("cmd",cmd->getName(i),cmd->getKeymap(i));
+	if(*ks) s.append(1,'\t').append(ks);
+}
+static utf8 viewwin_menu_entry(std::string &s, utf8 key, utf8 n, utf8 t, utf8 def="", bool clr=true)
+{
+	//utf8 ks = keycfg.get(key,*def?TRANSLATE("KeyConfig",def,t):def);
+	utf8 ks = keycfg.get(key,def);
+	if(clr) s.clear(); s+=::tr(n,t);
+	if(*ks) s.append(1,'\t').append(ks); return s.c_str();
+}
+static utf8 viewwin_menu_radio(std::string &o, bool O, utf8 key, utf8 n, utf8 t, utf8 def="")
+{
+	o = O?'O':'o'; o.push_back('|'); return viewwin_menu_entry(o,key,n,t,def,false);
+}
+static utf8 viewwin_menu_check(std::string &o, bool X, utf8 key, utf8 n, utf8 t, utf8 def="")
+{
+	o = X?'X':'x'; o.push_back('|'); return viewwin_menu_entry(o,key,n,t,def,false);
+}
+void MainWin::_init_menu_toolbar() //2019
+{
+	std::string o; //radio	
+	#define E(id,...) viewwin_menu_entry(o,#id,__VA_ARGS__),id_##id
+	#define O(on,id,...) viewwin_menu_radio(o,on,#id,__VA_ARGS__),id_##id
+	#define X(on,id,...) viewwin_menu_check(o,on,#id,__VA_ARGS__),id_##id
 
-   if ( m_cmd->activated( m_index, m_model ) )
-   {
-      m_model->operationComplete( qApp->translate( "Command", (m_cmd)->getName( m_index ) ).toUtf8() );
-      DecalManager * mgr = DecalManager::getInstance();
-      mgr->modelUpdated( m_model );
-   }
+	if(!viewwin_mruf_menu) //static menu(s)
+	{
+		//UNFINISHED
+		/* Most Recently Used */		
+		viewwin_mruf_menu = glutCreateMenu(viewwin_mrumenufunc);
+		viewwin_mru(viewwin_mruf_menu);
+
+		#ifdef HAVE_LUALIB //UNUSED			
+		viewwin_mrus_menu = glutCreateMenu(viewwin_mrumenufunc);		
+		viewwin_mru(viewwin_mrus_menu);
+		#endif
+
+		viewwin_file_menu = glutCreateMenu(viewwin_menubarfunc);
+
+	glutAddMenuEntry(E(file_new,"&New...","File|New","Ctrl+N"));
+	glutAddMenuEntry(E(file_open,"&Open...","File|Open","Ctrl+O"));	
+	//UNFINISHED
+	glutAddSubMenu(::tr("&Recent Models","File|Recent Models"),viewwin_mruf_menu);
+	//SLOT(close()),g_keyConfig.getKey("viewwin_file_close"));
+	glutAddMenuEntry(E(file_close,"Close","File|Close"));
+	glutAddMenuEntry();
+	glutAddMenuEntry(E(file_save,"&Save","File|Save","Ctrl+S"));
+	glutAddMenuEntry(E(file_save_as,"Save &As...","File|Save As"));
+	glutAddMenuEntry(E(file_export,"&Export...","File|Export"));
+	glutAddMenuEntry(E(file_export_selection,"Export Selected...","File|Export Selected"));	
+	glutAddMenuEntry();		
+	#ifdef HAVE_LUALIB //UNUSED
+	glutAddMenuEntry(E(file_run_script,"Run &Script...","File|Run Script"));
+	glutAddSubMenu(::tr("&Recent Scripts","File|Recent Script"),viewwin_mrus_menu);
+	#endif
+	glutAddMenuEntry(E(file_plugins,"Plugins...","File|Plugins"));
+	//Will wxWidgets detection ignore the ellipsis?
+	glutAddMenuEntry(E(file_prefs,"&Preferences...","")); //wxOSX requires this.
+	glutext::glutMenuEnable(id_file_prefs,0); //UNIMPLEMENTED
+	glutAddMenuEntry();		
+	//TODO: Ctrl+Q, Alt+F4
+	utf8 quit = "Ctrl+Q";
+	#ifdef WIN32
+	quit = "Alt+F4";
+	#endif
+	glutAddMenuEntry(E(file_quit,"&Quit","File|Quit",quit));
+	}	
+
+	if(!viewwin_view_menu) //static menu (NEW)
+	{
+		//_view_menu is pretty long compared to the others. The
+		//purpose of this submenu is to collect the static menu
+		//items.
+		viewwin_view_menu = glutCreateMenu(viewwin_menubarfunc);	
+
+		//glutAddMenuEntry(E(frame_all,"Frame All","View|Frame","Home"));
+		glutAddMenuEntry(X(true,frame_lock,"Interlock","","Ctrl+Shift+E"));
+		glutAddMenuEntry(E(frame_all,"Enhance","View|Frame","Shift+E"));
+		glutAddMenuEntry(E(frame_selection,"Enhance Selection","View|Frame","E"));
+		glutAddMenuEntry();
+		glutAddMenuEntry(E(view_swap,"Change Sides","View|Viewports","Shift+Tab"));
+		glutAddMenuEntry(E(view_flip,"Bottom on Top","View|Viewports","Shift+Q"));
+	}
+		bool r,s,t,u,v;
+				
+		//* SUB MENU */ //View->Render Options		
+		_rops_menu = glutCreateMenu(viewwin_menubarfunc);	
+		{	
+			int conf = config.get("ui_draw_joints",2); //(int)Model::JOINTMODE_BONES
+			if(conf!=1) conf = 2;
+			r = conf==0; //Model::JOINTMODE_NONE;
+			s = conf==1; //Model::JOINTMODE_LINES;
+			t = conf==2; //Model::JOINTMODE_BONES;
+			glutAddMenuEntry(O(r,rops_hide_joints,"Hide Joints","View|Hide Joints"));			
+			glutAddMenuEntry(O(s,rops_line_joints,"Draw Joint Lines","View|Draw Joint Lines"));			
+			glutAddMenuEntry(O(t,rops_show_joints,"Draw Joint Bones","View|Draw Joint Bones"));
+
+		glutAddMenuEntry();
+
+			r = true; s = false;
+			glutAddMenuEntry(O(r,rops_show_projections,"Draw Texture Projections","View|Draw Texture Projections"));
+			glutAddMenuEntry(O(s,rops_hide_projections,"Hide Texture Projections","View|Hide Texture Projections"));
+			
+		glutAddMenuEntry();
+	
+			r = config.get("ui_render_bad_textures",true);
+			s = !r;
+			glutAddMenuEntry(O(r,rops_show_badtex,"Use Red Error Texture","View|Use Red Error Texture"));	
+			glutAddMenuEntry(O(s,rops_hide_badtex,"Use Blank Error Texture","View|Use Blank Error Texture"));
+
+		glutAddMenuEntry();
+
+			r = config.get("ui_render_3d_selections",false);
+			s = !r;
+			glutAddMenuEntry(O(r,rops_show_lines,"Render 3D Lines","View|Render 3D Lines","Shift+W"));
+			glutAddMenuEntry(O(s,rops_hide_lines,"Hide 3D Lines","View|Hide 3D Lines"));		
+			
+		glutAddMenuEntry();
+
+			r = !config.get("ui_render_backface_cull",false);
+			s = !r;	
+			glutAddMenuEntry(O(r,rops_show_backs,"Draw Back-facing Triangles","View|Draw Back-facing Triangles","Shift+F"));
+			glutAddMenuEntry(O(s,rops_hide_backs,"Hide Back-facing Triangles","View|Hide Back-facing Triangles")); 
+		}
+
+		_view_menu = glutCreateMenu(viewwin_menubarfunc);	
+	
+	glutAddSubMenu("Reconfigure",viewwin_view_menu); //NEW
+	glutAddMenuEntry();
+	//2019: Snap To had been a Tool menu item.
+	//It seems to fit better in the View menu.
+	//Plus, it has to be unique to the window.
+	/* SUB MENU */ //Tools->Snap To		
+	//_snap_menu = glutCreateMenu(viewwin_menubarfunc);	
+	{	
+		r = config.get("ui_snap_vertex",false);
+		s = config.get("ui_snap_grid",false);
+		//glutAddMenuEntry(X(r,snap_vert,"Vertex","View|Snap to Vertex","Shift+V"));
+		glutAddMenuEntry(X(r,snap_vert,"Snap to Vertex","View|Snap to Vertex","Shift+V"));
+		//glutAddMenuEntry(X(s,snap_grid,"Grid","View|Snap to Grid","Shift+G"));
+		glutAddMenuEntry(X(s,snap_grid,"Snap to Grid","View|Snap to Grid","Shift+G"));
+		glutAddMenuEntry(E(view_settings,"Grid Settings...","View|Grid Settings"));
+	}		
+	//glutAddSubMenu(::tr("Snap To"),_snap_menu);
+	glutAddMenuEntry();	
+	glutAddSubMenu(::tr("Render Options","View|Render Options"),_rops_menu);	
+	glutAddMenuEntry();
+	glutAddMenuEntry(O(0,scene_wireframe,"3D Wireframe","View|3D"));
+	glutAddMenuEntry(O(0,scene_flat,"3D Flat","View|3D"));
+	glutAddMenuEntry(O(0,scene_smooth,"3D Smooth","View|3D"));
+	glutAddMenuEntry(O(true,scene_texture,"3D Texture","View|3D"));
+	glutAddMenuEntry(O(0,scene_blend,"3D Alpha Blend","View|3D"));
+	glutAddMenuEntry();		
+	glutAddMenuEntry(O(true,model_wireframe,"Canvas Wireframe","View|Canvas","W"));
+	glutAddMenuEntry(O(0,model_flat,"Canvas Flat","View|Canvas"));
+	glutAddMenuEntry(O(0,model_smooth,"Canvas Smooth","View|Canvas"));
+	glutAddMenuEntry(O(0,model_texture,"Canvas Texture","View|Canvas"));
+	glutAddMenuEntry(O(0,model_blend,"Canvas Alpha Blend","View|Canvas"));
+	glutAddMenuEntry();
+		r = s = t = u = v = false;
+		switch(config.get("ui_viewport_count",0))
+		{
+		case 1: r = true; break;
+		case 2: (config.get("ui_viewport_tall",0)?t:s) = true; break;
+		case 4: default: u = true; break;
+		case 6: v = true;
+		}			
+		if(r) _curr_view = id_view_1;
+		if(s) _curr_view = id_view_1x2;
+		if(t) _curr_view = id_view_2x1;
+		if(u) _curr_view = id_view_2x2;
+		if(v) _curr_view = id_view_3x2;
+		_prev_view = u?id_view_1:id_view_2x2;
+	glutAddMenuEntry(O(r,view_1,"1 View","View|Viewports","Shift+1"));
+	glutAddMenuEntry(O(0,view_2,"2 Views","View|Viewports","Shift+2"));
+	glutAddMenuEntry(O(s,view_1x2,"2 Views (Wide)","View|Viewports","Shift+3"));
+	glutAddMenuEntry(O(t,view_2x1,"2 Views (Tall)","View|Viewports","Shift+4"));
+	glutAddMenuEntry(O(u,view_2x2,"2x2 Views","View|Viewports","Q"));	
+	glutAddMenuEntry(O(v,view_3x2,"3x2 Views","View|Viewports","Ctrl+Shift+3"));		
+			
+	//REMOVE ME
+	//NOTE: The selected tool holds a state, but the 
+	//menu itself is not expected to change.
+	toolbox.registerAllTools(); if(!viewwin_toolbar)
+	{
+		viewwin_toolbar = glutCreateMenu(viewwin_toolboxfunc);
+	
+			//FINISH ME
+			//https://github.com/zturtleman/mm3d/issues/57
+
+		int sm,id;
+
+		//None (Esc) is first because Esc is top-left on keyboard.
+		toolbox.setCurrentTool();
+		Tool *tool = toolbox.getCurrentTool();
+		int pixmap = glutext::glutCreateImageList((char**)tool->getPixmap(0));
+		viewwin_toolbar_title(o="o|",tool,0);
+		glutAddMenuEntry(o.c_str(),id_tool_none);
+		glutext::glutMenuEnableImage(id_tool_none,pixmap);
+		for(int pass=1;pass<=2;pass++)
+		{
+			int creators = id = 0;
+			tool = toolbox.getFirstTool();
+			for(;tool;tool=toolbox.getNextTool())	
+			if(!tool->isSeparator())
+			{
+				int iN = tool->getToolCount();
+
+				if(tool->isCreateTool()) creators++;
+
+				//This is designed to put select-tools in the middle of 
+				//the toolbar because their shortcuts are in the middle
+				//of the keyboard.
+				if((pass==1)==(creators<=3&&!tool->isSelectTool()))
+				for(int i=0;i<iN;i++)
+				{
+					viewwin_toolbar_title(o="o|",tool,i);
+					glutAddMenuEntry(o.c_str(),id+i);
+					glutext::glutUpdateImageList(pixmap,(char**)tool->getPixmap(i));
+					glutext::glutMenuEnableImage(id+i,pixmap);
+				}
+
+				id+=iN;
+			}
+		}
+		glutext::glutDestroyImageList(pixmap);
+	
+		viewwin_tool_menu = glutCreateMenu(viewwin_toolboxfunc);
+
+		sm = id = 0; 
+
+		bool sep = false;
+		utf8 path = nullptr;
+
+		tool = toolbox.getFirstTool();
+		for(;tool;tool=toolbox.getNextTool())	
+		if(!tool->isSeparator())
+		{
+			utf8 p = tool->getPath(); 
+			if(p!=path)
+			{					
+				if(sm) glutSetMenu(viewwin_tool_menu);
+				if(sm) glutAddSubMenu(::tr(path,"Tool"),sm);
+			}
+			if(sep)
+			{
+				sep = false; glutAddMenuEntry();				
+			}
+			if(p!=path)
+			{
+				path = p; 
+				sm = p?glutCreateMenu(viewwin_toolboxfunc):0;
+			}
+
+			int iN = tool->getToolCount(); 
+			for(int i=0;i<iN;i++)
+			{
+				o = TRANSLATE("Tool",tool->getName(i));
+				viewwin_synthetic_hotkey(o,tool,i);
+				glutAddMenuEntry(o.c_str(),id+i);
+			}
+			id+=iN;
+		}
+		else sep = true;
+		if(sm) glutSetMenu(viewwin_tool_menu);
+		if(sm) glutAddSubMenu(::tr(path,"Tool"),sm);
+
+		glutAddMenuEntry();
+		glutAddMenuEntry(E(tool_none,"None","","Esc"));
+		glutAddMenuEntry(E(tool_toggle,"Toggle Tool","","Tab"));
+		glutAddMenuEntry(E(tool_recall,"Switch Tool","","Space"));
+	}
+
+	if(!viewwin_modl_menu) //static menu(s)
+	{
+		viewwin_modl_menu = glutCreateMenu(viewwin_menubarfunc);	
+
+	glutAddMenuEntry(E(edit_undo,"Undo","Undo shortcut","Ctrl+Z"));
+	glutAddMenuEntry(E(edit_redo,"Redo","Redo shortcut","Ctrl+Y"));
+	glutAddMenuEntry();
+	glutAddMenuEntry(E(edit_metadata,"Edit Model Meta Data...","Model|Edit Model Meta Data"));
+	//SLOT(transformWindowEvent()),g_keyConfig.getKey("viewwin_model_transform"));
+	glutAddMenuEntry(E(transform,"Transform Model...","Model|Transform Model"));
+	//SEEMS UNNCESSARY
+	//glutAddMenuEntry(::tr("Boolean Operation...","Model|Boolean Operation"),id_modl_boolop);
+	glutAddMenuEntry();
+	glutAddMenuEntry(E(background_settings,"Set Background Image...","Model|Set Background Image","Ctrl+Shift+Back"));
+	glutAddMenuEntry(E(merge_models,"Merge...","Model|Merge"));
+	glutAddMenuEntry(E(merge_animations,"Import Animations...","Model|Import Animations"));
+
+		viewwin_geom_menu = glutCreateMenu(viewwin_geomenufunc);
+
+			//FINISH ME
+			//https://github.com/zturtleman/mm3d/issues/57
+
+		bool sep = false;
+		int sm = 0, id = 0;
+		utf8 path = nullptr;
+		auto cmgr = CommandManager::getInstance();
+		for(Command*cmd=cmgr->getFirstCommand();cmd;cmd=cmgr->getNextCommand())
+		if(!cmd->isSeparator())
+		{
+			utf8 p = cmd->getPath(); 
+			if(p!=path)
+			{					
+				if(sm) glutSetMenu(viewwin_geom_menu);
+				if(sm) glutAddSubMenu(::tr(path,"Command"),sm);
+			}
+			if(sep)
+			{
+				sep = false; glutAddMenuEntry();				
+			}
+			if(p!=path)
+			{
+				path = p; 
+				sm = p?glutCreateMenu(viewwin_geomenufunc):0;
+			}
+			
+			int iN = cmd->getCommandCount(); 
+			for(int i=0;i<iN;i++)
+			{
+				utf8 n = cmd->getName(i);
+				
+				//REMOVE ME
+				//wxWidgets only allows one shortcut per command.
+				if(!memcmp(n,"Dele",4)) viewwin_deletecmd = id+i; 
+
+				o = TRANSLATE("Command",n);
+				viewwin_synthetic_hotkey(o,cmd,i);
+				glutAddMenuEntry(o.c_str(),id+i);
+			}
+			id+=iN;
+		}
+		else sep = true;
+
+		if(sm) glutSetMenu(viewwin_geom_menu);
+		if(sm) glutAddSubMenu(::tr(path,"Command"),sm);
+
+		viewwin_mats_menu = glutCreateMenu(viewwin_menubarfunc);	
+
+	glutAddMenuEntry(E(group_settings,"Edit Groups...","Materials|Edit Groups","Ctrl+G"));	
+	glutAddMenuEntry(E(material_settings,"Edit Materials...","Materials|Edit Materials","Ctrl+M"));
+	glutAddMenuEntry(E(material_cleanup,"Clean Up...","Materials|Clean Up"));
+	glutAddMenuEntry();
+	glutAddMenuEntry(E(uv_editor,"Edit Texture Coordinates...","Materials|Edit Texture Coordinates","M")); //Ctrl+E
+	glutAddMenuEntry(E(projection_settings,"Edit Projection...","Materials|Edit Projection"));	
+	glutAddMenuEntry();
+	glutAddMenuEntry(E(refresh_textures,"Reload Textures","Materials|Reload Textures"));
+	glutAddMenuEntry(E(uv_render,"Paint Texture...","Materials|Paint Texture"));
+				
+		viewwin_infl_menu = glutCreateMenu(viewwin_menubarfunc);	
+
+	glutAddMenuEntry(E(joint_settings,"Edit Joints...","Joints|Edit Joints","J")); 
+	glutAddMenuEntry(E(joint_attach_verts,"Assign Selected to Joint","Joints|Assign Selected to Joint","Ctrl+B"));
+	glutAddMenuEntry(E(joint_weight_verts,"Auto-Assign Selected...","Joints|Auto-Assign Selected","Shift+Ctrl+B")); 
+	glutAddMenuEntry(E(joint_remove_bones,"Remove All Influences from Selected","Joints|Remove All Influences from Selected")); 
+	glutAddMenuEntry(E(joint_remove_selection,"Remove Selected Joint from Influencing","Joints|Remove Selected Joint from Influencing")); 
+	glutAddMenuEntry();
+	//FIX ME
+	//Should be selection based.
+	glutAddMenuEntry(E(joint_simplify,"Convert Multiple Influences to Single","Joints|Convert Multiple Influences to Single")); 
+	glutAddMenuEntry();
+	//FIX ME
+	//Selection model should use a mask.
+	glutAddMenuEntry(E(joint_select_bones_of,"Select Joint Influences","Joints|Select Joint Influences")); 
+	glutAddMenuEntry(E(joint_select_verts_of,"Select Influenced Vertices","Joints|Select Influenced Vertices")); 	
+	glutAddMenuEntry(E(joint_select_points_of,"Select Influenced Points","Joints|Select Influenced Points")); 
+	glutAddMenuEntry(E(joint_unnassigned_verts,"Select Unassigned Vertices","Joints|Select Unassigned Vertices")); 
+	glutAddMenuEntry(E(joint_unnassigned_points,"Select Unassigned Points","Joints|Select Unassigned Points")); 
+	}		
+		_anim_menu = glutCreateMenu(viewwin_menubarfunc);	
+
+	//I intend to remove these two.
+	//glutAddMenuEntry(::tr("Start Animation Mode","Animation|Start Animation Mode"),id_anim_open);
+	//glutAddMenuEntry(::tr("Stop Animation Mode","Animation|Stop Animation Mode"),id_anim_close);	
+	//glutAddMenuEntry();
+	//SLOT(animSetWindowEvent()),g_keyConfig.getKey("viewwin_anim_animation_sets"));
+	glutAddMenuEntry(E(animate_settings,"Animation Sets...","Animation|Animation Sets"));		
+	glutAddMenuEntry();
+	glutAddMenuEntry(E(animate_copy,"Copy Animation Frame","Animation|Copy Animation Frame"));
+	//glutAddMenuEntry(E(animate_paste,"Paste Animation Frame","Animation|Paste Animation Frame"));	
+	//I think maybe this belongs below?
+	//https://github.com/zturtleman/mm3d/issues/65#issuecomment-522878969
+	//glutAddMenuEntry(E(animate_clear,"Clear Animation Frame","Animation|Clear Animation Frame"));
+	//glutAddMenuEntry();
+	glutAddMenuEntry(E(animate_copy_selection,"Copy Selected Keyframes","Animation|Copy Animation Frame"));
+	//glutAddMenuEntry(E(animate_paste_selection,"Paste Selected Keyframes","Animation|Paste Animation Frame"));
+	glutAddMenuEntry(E(animate_paste,"Paste Animation Frame(s)","Animation|Paste Animation Frame(s)"));
+	//Look like no-op to me. See viewwin.h notes?
+	//https://github.com/zturtleman/mm3d/issues/65#issuecomment-522878969
+	glutAddMenuEntry();
+	glutAddMenuEntry(E(animate_rotate,"Set Rotation Keyframe","Animation|Set Rotation Keyframe"));
+	glutAddMenuEntry(E(animate_translate,"Set Translation Keyframe","Animation|Set Translation Keyframe"));	
+	glutAddMenuEntry(E(animate_clear,"Clear Animation Frame","Animation|Clear Animation Frame"));
+	glutAddMenuEntry();
+	glutAddMenuEntry(E(animate_play,"Play Animation","","K"));
+	glutAddMenuEntry(E(animate_render,"Save Animation Images...","Animation|Save Animation Images"));	
+	glutAddMenuEntry(E(animate_window,"Animator Window...","Animation|Animation Window","A"));
+
+		extern void animwin_enable_menu(int=0);
+		animwin_enable_menu(); //2019
+
+	if(!viewwin_help_menu) //static menu
+	{
+		//TODO: According to wxOSX Apple moves Help and About menu items
+		//to be in the first menu or a special menu of some kind. In that
+		//case this menu may duplicate tha functionality or may degenerate 
+		//to Help->License, which could be crummy.
+
+		viewwin_help_menu = glutCreateMenu(viewwin_menubarfunc);	
+
+	glutAddMenuEntry(E(help,"&Contents","Help|Contents","F1"));	
+	glutAddMenuEntry(::tr("&License","Help|License"),id_license);		
+	glutAddMenuEntry(::tr("&About","Help|About"),id_about);
+	}
+		
+	_menubar = glutCreateMenu(viewwin_menubarfunc);
+	glutAddSubMenu(::tr("&File","menu bar"),viewwin_file_menu);
+	glutAddSubMenu(::tr("&View","menu bar"),_view_menu);
+	glutAddSubMenu(::tr("&Tools","menu bar"),viewwin_tool_menu);
+	glutAddSubMenu(::tr("&Model","menu bar"),viewwin_modl_menu);
+	glutAddSubMenu(::tr("&Geometry","menu bar"),viewwin_geom_menu);
+	glutAddSubMenu(::tr("Mate&rials","menu bar"),viewwin_mats_menu);
+	glutAddSubMenu(::tr("&Influences","menu bar"),viewwin_infl_menu);
+	glutAddSubMenu(::tr("&Animation","menu bar"),_anim_menu);	
+	glutAddSubMenu(::tr("&Help","menu bar"),viewwin_help_menu);
+	glutAddSubMenu("",viewwin_toolbar);
+	glutAttachMenu(glutext::GLUT_NON_BUTTON);
+
+	#undef E //viewwin_menu_entry
+	#undef O //viewwin_menu_radio
+	#undef X //viewwin_menu_check
 }
 
-bool ViewWindow::closeAllWindows()
+static void viewwin_reshape_func(int x, int y)
 {
-   bool noPrompt = true;
-   bool doSave   = false;
+	if(!viewwin_list.empty()) //Exit?
+	viewwin()->reshape(x,y);
+}
+bool MainWin::reshape(int x, int y)
+{
+	glutSetWindow(glut_window_id);
 
-   std::list<ViewWindow *>::iterator it;
+	int xx,wx = glutGet(GLUT_WINDOW_WIDTH);
+	int yy,wy = glutGet(GLUT_WINDOW_HEIGHT);
 
-   for ( it = _winList.begin(); noPrompt == true && it != _winList.end(); it++ )
-   {
-      noPrompt = (*it)->getSaved();
-   }
+	if(x==10000){ x = wx; y = wy; } //HACK
 
-#ifndef CODE_DEBUG
-   if ( noPrompt == false )
-   {
-       char response = msg_warning_prompt( (const char *) tr("Some models are unsaved.  Save before exiting?").toUtf8() );
+	//FIX ME
+	//248 is hardcoded. Want to calculate.
+	//NOTE: Depends on text in view menus.
+	int m = views.viewsM;
+	int n = views.viewsN/m;
+	int sbw = sidebar.width();
+	enum{ extra=1 }; //PERFECTLY BALANCED
+	int mx = std::max(extra+243*m+sbw,x); //520
+	int my = std::max(520/2*n,y); //520
+		
+	if(mx!=x||my!=y) goto wrong_shape;
+	
+	mx = glutGet(GLUT_SCREEN_WIDTH);
+	my = glutGet(GLUT_SCREEN_HEIGHT);
 
-       if ( response == 'C' )
-       {
-          return false;
-       }
+	xx = std::min(mx,x);
+	yy = std::min(my,y);
 
-       if ( response == 'Y' )
-       {
-          doSave = true;
-       }
-   }
-#endif // CODE_DEBUG
+	if(xx!=x||yy!=y)
+	{
+		mx = xx; my = yy; 
+		goto wrong_shape;
+	}	
+	else if(wx!=x||wy!=y) 
+	{
+		mx = x; my = y; 
+	
+		wrong_shape:
 
-   bool abortQuit = false;
+		glutReshapeWindow(mx,my);
 
-   for ( it = _winList.begin(); !abortQuit && it != _winList.end(); it++ )
-   {
-      ViewWindow * win = (*it);
+		//glutPostRedisplay();
 
-      if ( doSave && win->getSaved() == false )
-      {
-         win->raise();
-         win->setAbortQuit( false );
-         win->saveModelEvent();
-         abortQuit = win->getAbortQuit();
-      }
-   }
+		return false;
+	}
 
-   if ( !abortQuit )
-   {
-      while ( !_winList.empty() )
-      {
-         ViewWindow * win = _winList.front();
+	if(!sidebar.seen()) //Center?
+	{
+		glutPositionWindow((mx-x)/2,(my-y)/2);
+	}
+	else if(!glutGet(glutext::GLUT_WINDOW_MANAGED))
+	{
+		config.set("ui_viewwin_width",x);
+		config.set("ui_viewwin_height",y);
+	}
 
-         win->hide();
-         win->deleteLater();
+	//Inform the central drawing area of its size.
+	Widgets95::e::set_viewport_area
+	(nullptr,nullptr,(int*)views.shape+0,(int*)views.shape+1);
+	int c = (views.shape[0]-extra)/m;
+	int c0 = (views.shape[0]-extra)-c*m+c;
+	for(int i=0;i<m-1;i++,c0=c)
+	{
+		//TODO: I think locking the row should do.
+		views.views[i]->distance(c0,true).repack();
+		if(m!=views.viewsN)
+		views.views[i+m]->distance(c0,true).repack();
+	}
+	views.bar1.portside_row.lock(views.shape[0],false);
+	views.bar2.portside_row.lock(views.shape[0],false);
+	views.bar1.clip(views.shape[0],false,true);
+	views.bar2.clip(x,false,true);
+	//NOTE: Some X servers won't be able to handle this
+	//clipping over the bottom bar. It will need to cut
+	//off higher up.
+	//FIX ME: !true is because sometimes the z-order
+	//mysteriously changes. See SideBar::SideBar too.
+	sidebar.clip(sbw,y-views.status.nav.drop()-2,true);
 
-         _winList.pop_front();
-      }
-   }
-
-   if ( abortQuit )
-   {
-      return false;
-   }
-   else
-   {
-      return true;
-   }
+	glutPostRedisplay(); return true;
 }
 
-// open model in an existing window that doesn't have a model open or open a new window.
-bool ViewWindow::openModelInEmptyWindow( const char * filename )
+static int viewwin_init()
 {
-   QWindow *window = NULL;
+	//The width needs to be established to get correct number of rows in 
+	//toolbar so the height setting is correct.
+	glutInitWindowSize 
+	(config.get("ui_viewwin_width",640),config.get("ui_viewwin_height",520));
+	glutInitDisplayMode(GLUT_RGB|GLUT_DOUBLE|GLUT_DEPTH);
+	return glutCreateWindow(viewwin_title);
+}
+MainWin::MainWin(Model *model):
+model(/*model*/),		
+glut_window_id(viewwin_init()),
+//NOTE: Compilers (MSVC) may not like "this".
+//Makes parent/child relationships headaches.
+views(*this),sidebar(*this),
+_animation_win(),
+_transform_win(),
+_projection_win(),
+_texturecoord_win(),
+_prev_tool(3),_curr_tool(1),
+_prev_mode(id_model_texture),
+_prev_view(),_curr_view()
+{
+	if(!model) model = new Model;
+	
+	model->setUndoEnabled(false);
 
-   std::list<ViewWindow *>::iterator it;
+	viewwin_list.push_back(this);
 
-   for ( it = _winList.begin(); it != _winList.end(); it++ )
-   {
-      if ( !(*it)->emptyWindow() ) {
-         continue;
-      }
+	glutext::glutSetWindowIcon(pics[pic_icon]);
+	
 
-      if ( !(*it)->openModelInWindow( filename ) ) {
-         return false;
-      }
+		_swap_models(model);
 
-      // Unminimize and move window to foreground
-      window = (*it)->windowHandle();
-      window->show();
-      window->raise();
-      window->requestActivate();
-      break;
-   }
 
-   if ( !window ) {
-      return ViewWindow::openModel( filename );
-   }
+	views.setCurrentTool(toolbox.getCurrentTool(),0);
+	//views.status.setText(::tr("Press F1 for help using any window"));
+	views.status.setText(::tr(Win::f1_titlebar::msg()));
+		
 
-   return false;
+		_init_menu_toolbar(); //LONG SUBROUTINE		
+
+
+	model->setUndoEnabled(true);
+	model->clearUndo(); //???
+
+	glutSetWindow(glut_window_id);
+	glutext::glutCloseFunc(viewwin_close_func); 
+	Widgets95::glut::set_glutReshapeFunc(viewwin_reshape_func);
+	glutPopWindow(); //Make spacebar operational.
+		
+	viewwin_toolboxfunc(id_tool_none);	
+
+	#ifdef WIN32
+	//The toolbar is 1px too close for comfort.
+	//Making room for shadow rules.
+	//views.bar1.main->space<3>()++;
+	views.timeline.space<3>(1);
+	sidebar.main->space<3>()++;
+	#endif
+
+	views.timeline.drop(views.bar1.exterior_row.lock
+	(false,sidebar.anim_panel.media_nav.drop()+1).drop()+1);
+	views.params.nav.space<Win::top>(2);
+	views.params.nav.lock(false,views.bar1.exterior_row.drop());
+	//reshape(config.get("ui_viewwin_width",0),config.get("ui_viewwin_height",0));
+	reshape(glutGet(GLUT_INIT_WINDOW_WIDTH),glutGet(GLUT_INIT_WINDOW_HEIGHT));
+}
+MainWin::~MainWin()
+{
+	//NOTE: viewwin_close_func implements teardown logic
+	//prior to the C++ destructor stage.
+
+	log_debug("deleting view window\n");
+
+	/*Not using ContextT since lists/contexts are shared.
+	//views.freeTextures();
+	log_debug("freeing texture for viewport\n");
+	model->removeContext(static_cast<ContextT>(this));*/
+
+	log_debug("deleting view window %08X, model %08X\n",this,model);
+
+	if(viewwin_list.empty())
+	{
+		#ifdef _DEBUG
+		config.flush(); //keycfg.flush();
+		#ifdef WIN32
+		//wxFileConfig and Model::Background sometimes crash
+		//deallocating std::string.
+		TerminateProcess(GetModuleHandle(nullptr),0); //Fast. 
+		#endif	
+		#endif
+	}
+
+	//GLX can't have its OpenGL context at this stage.
+	//delete _swap_models(nullptr);
+	assert(!model);
+
+	//glutHideWindow();
+	for(int*m=&_view_menu;m<=&_menubar;m++)
+	glutDestroyMenu(*m);
+
+	//Could do this... Win::_delete is currently letting
+	//nonmodal top-level windows be deleted. That includes
+	//the help window, etc.
+	//delete _animation_win;
+	//delete _transform_win;
+	//delete _projection_win;
+	//delete _texturecoord_win;
 }
 
-class MainWidget : public QWidget
+Model *MainWin::_swap_models(Model *swap)
 {
-   public:
-      MainWidget( QWidget * parent = NULL );
-      virtual ~MainWidget() {};
+	if(swap==model) //NEW
+	{
+		assert(model!=swap); return nullptr; 
+	} 
 
-      void addWidgetToLayout( QWidget * w );
+	if(model) model->removeObserver(this);
 
-   protected:
+	if(swap) swap->addObserver(this);
 
-      QVBoxLayout * m_layout;
+	//FYI: If !swap this is what ~MainWin used
+	//to do. viewwin_close_func calls this now.
+	std::swap(swap,const_cast<Model*&>(model));		
+	views.setModel();
+	if(!model) return swap; //Closing?
+
+	sidebar.setModel();
+	//sidebar updates animation.
+	//if(_animation_win)
+	//_animation_win->setModel();
+	if(_projection_win)
+	_projection_win->setModel();
+	if(_texturecoord_win)
+	_texturecoord_win->setModel();
+
+	//YUCK
+	//https://github.com/zturtleman/mm3d/issues/56
+	if(!swap) 
+	{
+		/*auto jointMode = 
+		(Model::DrawJointModeE)config.get("ui_draw_joints",0);
+		if(jointMode!=Model::JOINTMODE_LINES)
+		jointMode = Model::JOINTMODE_BONES;		
+		model->setDrawJoints(jointMode);*/
+		//config.set("ui_draw_joints",(int)jointMode); //???		
+		if(1==config.get("ui_draw_joints",2))
+		model->setDrawOption(Model::DO_BONES,false);
+		if(config.get("ui_render_bad_textures",true))
+		model->setDrawOption(Model::DO_BADTEX,true);
+		if(config.get("ui_render_backface_cull",false))
+		model->setDrawOption(Model::DO_BACKFACECULL,true);
+		if(config.get("ui_render_3d_selections",false))
+		model->setDrawSelection(true);	
+		//
+		Model::ViewportUnits &vu = model->getViewportUnits();
+		vu.inc = config.get("ui_grid_inc",4.0);
+		vu.grid = config.get("ui_grid_mode",0);
+		vu.inc3d = config.get("ui_3dgrid_inc",4.0);
+		vu.lines3d = config.get("ui_3dgrid_count",6);
+		if(config.get("ui_3dgrid_xy",false)) vu.xyz3d|=4;
+		if(config.get("ui_3dgrid_xz",true)) vu.xyz3d|=2;
+		if(config.get("ui_3dgrid_yz",false)) vu.xyz3d|=1;
+		if(config.get("ui_snap_grid",false)) vu.snap|=vu.UnitSnap;
+		if(config.get("ui_snap_vertex",false)) vu.snap|=vu.VertexSnap;
+	}
+	else
+	{
+		glutSetMenu(_rops_menu);
+		glutext::glutMenuEnable(id_rops_show_joints,glutext::GLUT_MENU_CHECK);		
+		model->setDrawOption(swap->getDrawOptions(),true);
+		model->setDrawSelection(swap->getDrawSelection());
+		model->getViewportUnits() = swap->getViewportUnits();
+
+		model->setCanvasDrawMode(swap->getCanvasDrawMode());
+		model->setPerspectiveDrawMode(swap->getPerspectiveDrawMode());
+	}
+
+	_window_title_asterisk = model->getSaved();
+	_rewrite_window_title();
+
+		frame(); //NEW
+	
+	while(model->hasErrors())
+	model_status(model,StatusError,STATUSTIME_LONG,"%s",model->popError().c_str());
+		
+	return swap;
+}
+
+bool MainWin::save_work_prompt()
+{
+	#ifndef CODE_DEBUG
+	if(!model->getSaved())
+	{
+		int ret = Win::InfoBox(::tr("Save first?"),
+		::tr("Model has been modified\n"
+		"Do you want to save before closing?"),
+		id_yes|id_no|id_cancel,id_cancel);
+		if(ret==id_yes&&!save_work())
+		{
+			ret = id_cancel;
+		}
+		return ret!=id_cancel;
+	}		
+	#endif
+	return true;
+}
+bool MainWin::save_work()
+{
+	const char *filename = model->getFilename();
+	if(!*filename)
+	return MainWin::save(model,false); //save-as
+	
+	Model::ModelErrorE err =
+	FilterManager::getInstance()->writeFile(model,filename,false);
+	if(err==Model::ERROR_NONE)
+	{
+		model->setSaved(true);
+		_rewrite_window_title();
+		viewwin_mru(viewwin_mruf_menu,(char*)filename);
+		return true;
+	}
+	if(Model::operationFailed(err))
+	{
+		msg_error("%s:\n%s",filename,modelErrStr(err,model));
+	}
+	return false;
+}
+bool MainWin::save(Model *model, bool expdir)
+{
+	std::string verb = "Save: ";
+	verb+=::tr(expdir?"All Exportable Formats":"All Writable Formats");
+	verb+=" (";
+	verb+=FilterManager::getInstance()->getAllWriteTypes(expdir);
+	verb+=");; "; //Qt
+	verb+=::tr("All Files(*)");
+
+	const char *title;
+	const char *modelFile;
+	std::string file; if(expdir)
+	{
+		title = "Export save";
+		modelFile = model->getFilename();
+		file = config.get("ui_export_dir");
+	}
+	else
+	{
+		title = "Save save file as";
+		modelFile = model->getExportFile();
+		file = config.get("ui_model_dir");
+	}
+	if(*modelFile) //???
+	{
+		std::string fullname,fullpath,basename; //REMOVE US
+		normalizePath(modelFile,fullname,fullpath,basename);
+		file = fullpath;
+	}
+	if(file.empty()) file = "."; 
+	file = Win::FileBox(file,verb,::tr(title));
+	if(!file.empty())
+	{	
+		if(file.find('.')==file.npos)
+		{
+			file.append(".mm3d");
+		}
+
+		Model::ModelErrorE err =
+		FilterManager::getInstance()->writeFile(model,file.c_str(),expdir);
+
+		if(err==Model::ERROR_NONE)
+		{
+			utf8 cfg; if(expdir)
+			{
+				cfg = "ui_export_dir";
+				model->setExportFile(file.c_str());
+			}
+			else
+			{
+				cfg = "ui_model_dir";
+				model->setSaved(true);
+				model->setFilename(file.c_str());
+			}
+			
+			viewwin_mru(viewwin_mruf_menu,(char*)file.c_str());
+
+			config.set(cfg,file,file.rfind('/'));			
+
+			return true;
+		}
+		else if(Model::operationFailed(err))
+		{
+			msg_error(modelErrStr(err,model));
+		}
+	}
+	return false;
+}
+
+void MainWin::merge(Model *model, bool animations_only_non_interactive)
+{
+	std::string verb = "Open: ";
+	verb+=::tr("All Supported Formats","model formats");
+	verb+=" (";
+	verb+=FilterManager::getInstance()->getAllReadTypes();
+	verb+=");; "; //Qt
+	verb+=::tr("All Files(*)");
+
+	std::string file = config.get("ui_model_dir");
+	if(file.empty()) file = ".";
+	file = Win::FileBox(file,verb,::tr("Open model file"));
+	if(!file.empty())
+	{
+		Model::ModelErrorE err;
+		Model *merge = new Model();
+		if((err=FilterManager::getInstance()->readFile(merge,file.c_str()))==Model::ERROR_NONE)
+		{
+			model_show_alloc_stats();
+
+			if(!animations_only_non_interactive)
+			{
+				extern void mergewin(Model*,Model*);
+				mergewin(model,merge);
+			}
+			else model->mergeAnimations(merge);
+
+			viewwin_mru(viewwin_mruf_menu,(char*)file.c_str());
+
+			config.set("ui_model_dir",file,file.rfind('/'));
+		}
+		else if(Model::operationFailed(err))
+		{
+			msg_error("%s:\n%s",file.c_str(),modelErrStr(err,merge));
+		}
+		delete merge;
+	}
+}
+
+void MainWin::run_script(const char *file)
+{
+	#ifdef HAVE_LUALIB
+
+	if(!file) return; //???
+	
+	LuaScript lua;
+	LuaContext lc(model);
+	luaif_registerfunctions(&lua,&lc);
+
+	std::string scriptfile = file;
+
+	std::string fullname,fullpath,basename; //REMOVE US
+	normalizePath(scriptfile.c_str(),fullname,fullpath,basename); //???
+
+	log_debug("running script %s\n",basename.c_str());
+	int rval = lua.runFile(scriptfile.c_str());
+
+	viewwin_mru(viewwin_mrus_menu,(char*)file.c_str());
+
+	if(rval==0) //UNFINISHED
+	{
+		log_debug("script complete,exited normally\n");
+		//QString str = ::tr("Script %1 complete").arg(basename.c_str());
+		//model_status(model,StatusNormal,STATUSTIME_SHORT,"%s",(const char *)str);
+		model_status(model,StatusNormal,STATUSTIME_SHORT,::tr("Script %s complete"),basename.c_str());
+
+	}
+	else
+	{
+		log_error("script complete,exited with error code %d\n",rval);
+		//QString str = ::tr("Script %1 error %2").arg(basename.c_str()).arg(lua.error());
+		//model_status(model,StatusError,STATUSTIME_LONG,"%s",(const char *)str);
+		model_status(model,StatusError,STATUSTIME_LONG,::tr("Script %1 error %2"),basename.c_str(),lua.error());
+	}
+
+	model->setNoAnimation();
+	model->operationComplete(basename.c_str());
+
+	//views.modelUpdatedEvent();
+
+	#endif // HAVE_LUALIB
+}
+
+void MainWin::frame(int scope)
+{
+	auto os = (Model::OperationScopeE)scope;
+
+	//TODO: Need easy test for no selection.
+	double x1,y1,z1,x2,y2,z2;	
+	if(model->getBounds(os,&x1,&y1,&z1,&x2,&y2,&z2))
+	{
+		//NEW: true locks 2d viewports.
+		views.frameArea(viewwin_interlock,x1,y1,z1,x2,y2,z2);
+	}
+	else //NEW: If nothing is selected, frame model. 
+	{	
+		if(os==Model::OS_Selected) frame(Model::OS_Global);
+	}
+}
+
+template<class W>
+static W *viewwin_position_window(W *w)
+{
+	glutSetWindow(w->glut_window_id());
+
+	int x = glutGet(glutext::GLUT_X);
+	int y = glutGet(glutext::GLUT_Y);
+	
+	glutPositionWindow(x-4,y); return w;
+}
+void MainWin::open_texture_window()
+{
+	if(!model->getSelectedTriangleCount())
+	{
+		//2019: Seems obtrusive?
+		//msg_info(::tr("You must select faces first.\nUse the 'Select Faces' tool.","Notice that user must have faces selected to open 'edit texture coordinates' window"));
+		//return;
+		model_status(model,StatusError,STATUSTIME_LONG,TRANSLATE("Command","Must select faces"));
+	}
+	if(!_texturecoord_win)
+	{
+		_texturecoord_win = new TextureCoordWin(*this);
+	}
+	viewwin_position_window(_texturecoord_win)->open();
+}
+void MainWin::open_projection_window()
+{
+	if(!_projection_win)
+	{
+		_projection_win = new ProjectionWin(*this);
+	}
+	viewwin_position_window(_projection_win)->open();
+}
+void MainWin::open_transform_window()
+{
+	if(!_transform_win)
+	{
+		_transform_win = new TransformWin(*this);
+	}
+	viewwin_position_window(_transform_win)->open();
+}
+void MainWin::open_animation_system()
+{
+	if(!_animation_win)
+	{
+		extern bool viewwin_menu_origin; //YUCK
+		viewwin_menu_origin = true;
+
+		//NOTE: On GTK/XWin this briefly flickers the
+		//titlebar. I tried to fix it without success.
+		_animation_win = new AnimWin(*this,_anim_menu);
+		_animation_win->hide();
+	}
+	_animation_win->open(false);
+}
+void MainWin::sync_animation_system()
+{
+	if(_animation_win) _animation_win->open(true); //Undo.
+}
+void MainWin::open_animation_window()
+{
+	open_animation_system();
+
+	viewwin_position_window(_animation_win)->show();
+}
+
+extern void viewwin_undo(int id, bool undo)
+{
+	MainWin *w = viewwin(id); 
+	if(undo) w->undo(); else w->redo();
+}
+void MainWin::undo()
+{
+	log_debug("undo request\n");
+
+	if(model->canUndo())
+	{
+		//INVESTIGATE ME
+		//This string doesn't persist after the operation... might be a bug?
+		std::string buf = model->getUndoOpName();
+
+		if(!model->getAnimationMode()) //REMOVE ME
+		{
+			model->undo();
+
+			if(model->getAnimationMode()) //REMOVE ME
+			{
+				sync_animation_system();
+			}
+		}
+		else _animation_win->submit(id_edit_undo); //REMOVE ME
+		
+		model_status(model,StatusNormal,STATUSTIME_SHORT,::tr("Undo %s"),buf.c_str()); //"Undo %1"		
+
+		//REMOVE ME
+		if(model->getSelectedBoneJointCount())
+		{
+			//model->setDrawJoints((Model::DrawJointModeE)config.get("ui_draw_joints",0));
+			model->setDrawJoints(true);
+			
+			views.modelUpdatedEvent(); //HACK //???
+		}
+	}
+	else model_status(model,StatusNormal,STATUSTIME_SHORT,::tr("Nothing to undo"));
+}
+void MainWin::redo()
+{
+	log_debug("redo request\n");
+
+	if(model->canRedo())
+	{
+		//INVESTIGATE ME
+		//This string doesn't persist after the operation... might be a bug?
+		std::string buf = model->getRedoOpName();
+
+		if(!model->getAnimationMode()) //REMOVE ME
+		{
+			model->redo();
+
+			if(model->getAnimationMode()) //REMOVE ME
+			{
+				sync_animation_system();
+			}
+		}
+		else _animation_win->submit(id_edit_redo); //REMOVE ME
+
+		//REMOVE ME
+		if(model->getSelectedBoneJointCount()) 
+		{
+			//model->setDrawJoints((Model::DrawJointModeE)config.get("ui_draw_joints",0));
+			model->setDrawJoints(true);
+
+			views.modelUpdatedEvent(); //HACK //???
+		}
+		
+		model_status(model,StatusNormal,STATUSTIME_SHORT,::tr("Redo %s"),buf.c_str()); //"Redo %1"
+	}
+	else model_status(model,StatusNormal,STATUSTIME_SHORT,::tr("Nothing to redo"));
+}
+
+bool MainWin::open(const char *file2, MainWin *window)
+{
+	std::string buf; if(!file2) //openModelDialog
+	{		
+		std::string &file = buf; //semi-shadowing
+
+		std::string verb = "Open: ";
+		verb+=::tr("All Supported Formats","model formats");
+		verb+=" (";
+		verb+=FilterManager::getInstance()->getAllReadTypes();
+		verb+=");; "; //Qt
+		verb+=::tr("All Files(*)");
+
+		file = config.get("ui_model_dir");
+		if(file.empty()) file = ".";
+		file = Win::FileBox(file,verb,::tr("Open model file"));		
+		if(!file.empty())
+		config.set("ui_model_dir",file,file.rfind('/'));
+		if(file.empty()) return false;
+	}
+	utf8 file = file2?file2:buf.c_str();
+	if(window&&!window->save_work_prompt()) 
+	{
+		return false;
+	}
+
+	bool opened = false;
+
+	log_debug(" file: %s\n",file); //???
+
+	Model *model = new Model();
+	auto err = Model::ERROR_NONE;
+	if(*file)
+	err = FilterManager::getInstance()->readFile(model,file);
+	if(err==Model::ERROR_NONE)
+	{
+		opened = true;
+
+		if(*file)
+		model_show_alloc_stats();
+
+		assert(model->getSaved());
+
+		if(window)
+		{
+			delete window->_swap_models(model);
+		}
+		else window = new MainWin(model);
+		
+		//FIX ME
+		//NEW: Since "ContextT" is not in play the textures 
+		//aren't loaded automatically by model.
+		glutSetWindow(window->glut_window_id);
+		model->loadTextures();
+	
+		if(*file)
+		viewwin_mru(viewwin_mruf_menu,(char*)file);
+	}
+	else
+	{
+		if(Model::operationFailed(err))
+		{
+			msg_error("%s:\n%s",file,modelErrStr(err,model));
+		}
+		delete model;
+	}
+
+	return opened;
+}
+
+void MainWin::_rewrite_window_title()
+{
+	//HACK: Ensure contiguous storage.
+	model->m_filename.push_back('*');
+
+	utf8 path = model->getFilename();
+
+	//TODO: Isolate URL path component.
+	utf8 name = strrchr(path,'/');
+
+	name = name?name+1:path;
+
+	bool untitled = '*'==*name;
+	bool asterisk = !model->getSaved();
+
+	//NOTE: I've not put the software's name in the title. It could be put
+	//back. Or it could be be an option.
+	if(untitled&&!asterisk)
+	{
+		name = viewwin_title;
+	}
+	else if(untitled)
+	{
+		name = ::tr("[unnamed]","For filename in title bar (if not set)");
+		if(!strcmp(name,"[unnamed]"))
+		name = "Untitled";
+	}
+	else if(!asterisk)
+	{
+		model->m_filename.back() = '\0';
+	}
+
+	glutSetWindow(glut_window_id);
+	glutSetWindowTitle(name);
+
+	_window_title_asterisk = asterisk;
+
+	model->m_filename.pop_back(); //*
+}
+
+extern bool viewwin_menu_origin = false;
+struct viewin_menu
+{
+	viewin_menu(){ viewwin_menu_origin = true; }
+	~viewin_menu(){ viewwin_menu_origin = false; }
 };
-
-MainWidget::MainWidget( QWidget * parent )
-   : QWidget( parent )
-{
-   m_layout = new QVBoxLayout( this );
-   m_layout->setMargin(2);
-   m_layout->setSpacing(2);
-}
-
-void MainWidget::addWidgetToLayout( QWidget * w )
-{
-   m_layout->addWidget( w );
-}
-
-ViewWindow::ViewWindow( Model * model, QWidget * parent )
-   : QMainWindow( parent ),
-     m_model( model ),
-     m_animWin( NULL ),
-     m_toolbox( NULL ),
-     m_toolList( NULL ),
-     m_toolButtons( NULL ),
-     m_last( NULL ),
-     m_currentTool( NULL ),
-     m_canEdit( true )
-{
-   m_model->setUndoEnabled( false );
-   setAttribute( Qt::WA_DeleteOnClose );
-   _winList.push_back( this );
-
-
-   setWindowIcon( QPixmap((const char **) mm3dlogo_32x32_xpm) );
-   setWindowIconText( QString("Maverick Model 3D") );
-
-   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
-   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
-
-   updateCaption();
-
-   m_toolbox = new Toolbox();
-
-   MainWidget * mainWidget = new MainWidget( this );
-
-   m_viewPanel = new ViewPanel( m_toolbox, mainWidget );
-   mainWidget->addWidgetToLayout( m_viewPanel );
-
-   m_statusBar = new StatusBar( m_model, mainWidget );
-   mainWidget->addWidgetToLayout( m_statusBar );
-   m_statusBar->setText( tr( "Press F1 for help using any window" ).toUtf8() );
-   m_statusBar->setMaximumHeight( 30 );
-
-   m_animWin = new AnimWindow( m_model, false, this );
-   m_animWin->setObjectName( "mainwin_animwin" );
-   m_animWidget = m_animWin->getAnimWidget();
-   addDockWidget( Qt::BottomDockWidgetArea, m_animWin );
-
-   connect( m_animWin, SIGNAL(animWindowClosed()), this, SLOT(animationModeOff()) );
-   connect( m_animWidget, SIGNAL(animWindowClosed()), this, SLOT(animationModeOff()) );
-   connect( m_animWidget, SIGNAL(animInvalid()), this, SLOT(editDisableEvent()) );
-   connect( m_animWidget, SIGNAL(animValid()), this, SLOT(editEnableEvent()) );
-
-   m_contextPanel = new ContextPanel( this, m_viewPanel, this );
-   m_contextPanel->setObjectName( "mainwin_properties" );
-   m_contextPanel->setWindowTitle( tr( "Properties" ) );
-
-   connect( this, SIGNAL(modelChanged(Model*)), m_contextPanel, SLOT(setModel(Model*)));
-   addDockWidget( Qt::RightDockWidgetArea, m_contextPanel );
-
-   m_boolPanel = new BoolPanel( m_model, this, m_viewPanel );
-   m_boolPanel->setObjectName( "mainwin_boolwin" );
-   connect( this, SIGNAL(modelChanged(Model*)), m_boolPanel, SLOT(setModel(Model*)));
-
-   m_projectionWin = new ProjectionWin( m_model, this, m_viewPanel );
-   connect( this, SIGNAL(modelChanged(Model*)), m_projectionWin, SLOT(setModel(Model*)));
-
-   m_textureCoordWin = new TextureCoord( m_model );
-   connect( this, SIGNAL(modelChanged(Model*)), m_textureCoordWin, SLOT(setModel(Model*)));
-
-   m_transformWin = new TransformWindow( m_model, this );
-   connect( this, SIGNAL(modelChanged(Model*)), m_transformWin, SLOT(setModel(Model*)));
-
-   addDockWidget( Qt::RightDockWidgetArea, m_boolPanel );
-   setModel( m_model );
-
-   tabifyDockWidget( m_contextPanel, m_boolPanel );
-
-   setCentralWidget( mainWidget );
-
-   m_mruMenu = new QMenu( this );
-   m_scriptMruMenu = new QMenu( this );
-   connect( m_mruMenu, SIGNAL(aboutToShow()), this, SLOT(fillMruMenu()) );
-   connect( m_mruMenu, SIGNAL(triggered(QAction*)), this, SLOT(openMru(QAction*)) );
-   connect( m_scriptMruMenu, SIGNAL(aboutToShow()), this, SLOT(fillScriptMruMenu()) );
-   connect( m_scriptMruMenu, SIGNAL(triggered(QAction*)), this, SLOT(openScriptMru(QAction*)) );
-
-   m_fileMenu = new QMenu( this );
-   m_fileMenu->addAction( tr("New", "File|New"), this, SLOT(newModelEvent()), g_keyConfig.getKey( "viewwin_file_new" ) );
-   m_fileMenu->addAction( tr("Open...", "File|Open"), this, SLOT(openModelEvent()), g_keyConfig.getKey( "viewwin_file_open" ) );
-   m_fileMenu->addAction( tr("Save", "File|Save"), this, SLOT(saveModelEvent()), g_keyConfig.getKey( "viewwin_file_save" ) );
-   m_fileMenu->addAction( tr("Save As...", "File|Save As"), this, SLOT(saveModelAsEvent()), g_keyConfig.getKey( "viewwin_file_save_as" ) );
-   m_fileMenu->addAction( tr("Export...", "File|Export"), this, SLOT(exportModelEvent()), g_keyConfig.getKey( "viewwin_file_export" ) );
-   m_fileMenu->addAction( tr("Export Selected...", "File|Export Selected"), this, SLOT(exportSelectedEvent()), g_keyConfig.getKey( "viewwin_file_export_selected" ) );
-#ifdef HAVE_LUALIB
-   m_fileMenu->addAction( tr("Run Script...", "File|Run Script"), this, SLOT(scriptEvent()), g_keyConfig.getKey( "viewwin_file_run_script" ) );
-   m_scriptMruMenu->setTitle( tr("Recent Scripts", "File|Recent Script") );
-   m_fileMenu->addMenu( m_scriptMruMenu );
-#endif // HAVE_LUALIB
-   m_fileMenu->addSeparator();
-   m_mruMenu->setTitle( tr("Recent Models", "File|Recent Models") );
-   m_fileMenu->addMenu( m_mruMenu );
-   m_fileMenu->addSeparator();
-   m_fileMenu->addAction( tr("Plugins...", "File|Plugins"), this, SLOT(pluginWindowEvent()), g_keyConfig.getKey( "viewwin_file_plugins" ) );
-   m_fileMenu->addSeparator();
-   m_fileMenu->addAction( tr("Close", "File|Close"), this, SLOT(close()), g_keyConfig.getKey( "viewwin_file_close" ) );
-   m_fileMenu->addAction( tr("Quit", "File|Quit"), this, SLOT(quitEvent()), g_keyConfig.getKey( "viewwin_file_quit" ) );
-   
-   m_renderMenu = new QMenu( this );
-   QActionGroup * group;
-
-   // Bones group
-   group = new QActionGroup( this );
-   m_hideJointsItem     = m_renderMenu->addAction( tr("Hide Joints", "View|Hide Joints"),      this, SLOT(boneJointHide()), g_keyConfig.getKey( "viewwin_view_render_joints_hide" ) );
-   m_drawJointLinesItem = m_renderMenu->addAction( tr("Draw Joint Lines", "View|Draw Joint Lines"), this, SLOT(boneJointLines()), g_keyConfig.getKey( "viewwin_view_render_joints_lines" ) );
-   m_drawJointBonesItem = m_renderMenu->addAction( tr("Draw Joint Bones", "View|Draw Joint Bones"), this, SLOT(boneJointBones()), g_keyConfig.getKey( "viewwin_view_render_joints_bones" ) );
-
-   m_hideJointsItem->setCheckable( true );
-   m_drawJointLinesItem->setCheckable( true );
-   m_drawJointBonesItem->setCheckable( true );
-   group->addAction( m_hideJointsItem );
-   group->addAction( m_drawJointLinesItem );
-   group->addAction( m_drawJointBonesItem );
-
-   g_prefs.setDefault( "ui_draw_joints", (int) Model::JOINTMODE_BONES );
-   if ( g_prefs( "ui_draw_joints" ).intValue() == (int) Model::JOINTMODE_BONES ) 
-      m_drawJointBonesItem->setChecked( true );
-   else
-      m_drawJointBonesItem->setChecked( true );
-
-   m_renderMenu->addSeparator();
-
-   // Projection group
-   group = new QActionGroup( this );
-   m_renderProjections   = m_renderMenu->addAction( tr("Draw Texture Projections", "View|Draw Texture Projections"),   this, SLOT(renderProjections()), g_keyConfig.getKey( "viewwin_view_render_projections_show" ) );
-   m_noRenderProjections = m_renderMenu->addAction( tr("Hide Texture Projections", "View|Hide Texture Projections"),   this, SLOT(noRenderProjections()), g_keyConfig.getKey( "viewwin_view_render_projections_hide" ) );
-
-   m_renderProjections->setCheckable( true );
-   m_noRenderProjections->setCheckable( true );
-   group->addAction( m_renderProjections );
-   group->addAction( m_noRenderProjections );
-
-   m_renderProjections->setChecked( true );
-
-   m_renderMenu->addSeparator();
-
-   // Bad texture group
-   group = new QActionGroup( this );
-   m_renderBadItem   = m_renderMenu->addAction( tr("Use Red Error Texture", "View|Use Red Error Texture"),     this, SLOT(renderBadEvent()), g_keyConfig.getKey( "viewwin_view_render_badtex_red" ) );
-   m_noRenderBadItem = m_renderMenu->addAction( tr("Use Blank Error Texture", "View|Use Blank Error Texture"),   this, SLOT(noRenderBadEvent()), g_keyConfig.getKey( "viewwin_view_render_badtex_blank" ) );
-
-   m_renderBadItem->setCheckable( true );
-   m_noRenderBadItem->setCheckable( true );
-   group->addAction( m_renderBadItem );
-   group->addAction( m_noRenderBadItem );
-
-   g_prefs.setDefault( "ui_render_bad_textures", 1 );
-   if ( g_prefs( "ui_render_bad_textures" ).intValue() != 0 )
-      m_renderBadItem->setChecked( true );
-   else
-      m_noRenderBadItem->setChecked( true );
-
-   m_renderMenu->addSeparator();
-
-   // 3D Lines group
-   group = new QActionGroup( this );
-   m_renderSelectionItem   = m_renderMenu->addAction( tr("Render 3D Lines", "View|Render 3D Lines"),   this, SLOT(renderSelectionEvent()), g_keyConfig.getKey( "viewwin_view_render_3d_lines_show" ) );
-   m_noRenderSelectionItem = m_renderMenu->addAction( tr("Hide 3D Lines", "View|Hide 3D Lines"),   this, SLOT(noRenderSelectionEvent()), g_keyConfig.getKey( "viewwin_view_render_3d_lines_hide" ) );
-
-   m_renderSelectionItem->setCheckable( true );
-   m_noRenderSelectionItem->setCheckable( true );
-   group->addAction( m_renderSelectionItem );
-   group->addAction( m_noRenderSelectionItem );
-
-   g_prefs.setDefault( "ui_render_3d_selections", 0 );
-   if ( g_prefs( "ui_render_3d_selections" ).intValue() != 0 )
-      m_renderSelectionItem->setChecked( true );
-   else
-      m_noRenderSelectionItem->setChecked( true );
-
-   m_renderMenu->addSeparator();
-
-   // Backfacing poly group
-   group = new QActionGroup( this );
-   m_renderBackface   = m_renderMenu->addAction( tr("Draw Back-facing Triangles", "View|Draw Back-facing Triangles"),   this, SLOT(renderBackface()), g_keyConfig.getKey( "viewwin_view_render_backface_show" ) );
-   m_noRenderBackface = m_renderMenu->addAction( tr("Hide Back-facing Triangles", "View|Hide Back-facing Triangles"),   this, SLOT(noRenderBackface()), g_keyConfig.getKey( "viewwin_view_render_backface_hide" ) );
-
-   m_renderBackface->setCheckable( true );
-   m_noRenderBackface->setCheckable( true );
-   group->addAction( m_renderBackface );
-   group->addAction( m_noRenderBackface );
-
-   g_prefs.setDefault( "ui_render_backface_cull", 0 );
-   if ( g_prefs( "ui_render_backface_cull" ).intValue() == 0 )
-      m_renderBackface->setChecked( true );
-   else
-      m_noRenderBackface->setChecked( true );
-
-   m_viewMenu = new QMenu( this );
-   m_viewMenu->addAction( tr( "Frame All", "View|Frame"), this, SLOT(frameAllEvent()), g_keyConfig.getKey( "viewwin_view_frame_all" ) );
-   m_viewMenu->addAction( tr( "Frame Selected", "View|Frame"), this, SLOT(frameSelectedEvent()), g_keyConfig.getKey( "viewwin_view_frame_selected" ) );
-   m_viewMenu->addSeparator();
-   m_showContext = m_viewMenu->addAction( tr("Show Properties", "View|Show Properties"), this, SLOT(showContextEvent()), g_keyConfig.getKey( "viewwin_view_show_properties" ) );
-   connect( m_contextPanel, SIGNAL(panelHidden()), this, SLOT(contextPanelHidden()) );
-   m_renderMenu->setTitle( tr( "Render Options", "View|Render Options") );
-   m_viewMenu->addMenu( m_renderMenu );
-   m_viewMenu->addSeparator();
-
-   // 3D View group
-   group = new QActionGroup(this);
-   m_3dWire = group->addAction( m_viewMenu->addAction( tr( "3D Wireframe", "View|3D"),   m_viewPanel, SLOT(wireframeEvent()), g_keyConfig.getKey( "viewwin_view_3d_wireframe" ) ) );
-   m_3dFlat = group->addAction( m_viewMenu->addAction( tr( "3D Flat", "View|3D"),        m_viewPanel, SLOT(flatEvent()), g_keyConfig.getKey( "viewwin_view_3d_flat" ) ) );
-   m_3dSmooth = group->addAction( m_viewMenu->addAction( tr( "3D Smooth", "View|3D"),      m_viewPanel, SLOT(smoothEvent()), g_keyConfig.getKey( "viewwin_view_3d_smooth" ) ) );
-   m_3dTexture = group->addAction( m_viewMenu->addAction( tr( "3D Texture", "View|3D"),     m_viewPanel, SLOT(textureEvent()), g_keyConfig.getKey( "viewwin_view_3d_textured" ) ) );
-   m_3dAlpha = group->addAction( m_viewMenu->addAction( tr( "3D Alpha Blend", "View|3D"), m_viewPanel, SLOT(alphaEvent()), g_keyConfig.getKey( "viewwin_view_3d_alpha" ) ) );
-   m_viewMenu->addSeparator();
-
-   // Canvas Group
-   group = new QActionGroup(this);
-   m_canvasWire = group->addAction( m_viewMenu->addAction( tr( "Canvas Wireframe", "View|Canvas"),   m_viewPanel, SLOT(canvasWireframeEvent()), g_keyConfig.getKey( "viewwin_view_ortho_wireframe" ) ) );
-   m_canvasFlat = group->addAction( m_viewMenu->addAction( tr( "Canvas Flat", "View|Canvas"),        m_viewPanel, SLOT(canvasFlatEvent()), g_keyConfig.getKey( "viewwin_view_ortho_flat" ) ) );
-   m_canvasSmooth = group->addAction( m_viewMenu->addAction( tr( "Canvas Smooth", "View|Canvas"),      m_viewPanel, SLOT(canvasSmoothEvent()), g_keyConfig.getKey( "viewwin_view_ortho_smooth" ) ) );
-   m_canvasTexture = group->addAction( m_viewMenu->addAction( tr( "Canvas Texture", "View|Canvas"),     m_viewPanel, SLOT(canvasTextureEvent()), g_keyConfig.getKey( "viewwin_view_ortho_textured" ) ) );
-   m_canvasAlpha = group->addAction( m_viewMenu->addAction( tr( "Canvas Alpha Blend", "View|Canvas"), m_viewPanel, SLOT(canvasAlphaEvent()), g_keyConfig.getKey( "viewwin_view_ortho_alpha" ) ) );
-   m_viewMenu->addSeparator();
-
-   // Num viewports group
-   group = new QActionGroup(this);
-   m_view1 = group->addAction( m_viewMenu->addAction( tr( "1 View", "View|Viewports"),   m_viewPanel, SLOT(view1()), g_keyConfig.getKey( "viewwin_view_1" )   ) );
-   m_view1x2 = group->addAction( m_viewMenu->addAction( tr( "1x2 View", "View|Viewports"), m_viewPanel, SLOT(view1x2()), g_keyConfig.getKey( "viewwin_view_1x2" ) ) );
-   m_view2x1 = group->addAction( m_viewMenu->addAction( tr( "2x1 View", "View|Viewports"), m_viewPanel, SLOT(view2x1()), g_keyConfig.getKey( "viewwin_view_2x1" ) ) );
-   m_view2x2 = group->addAction( m_viewMenu->addAction( tr( "2x2 View", "View|Viewports"), m_viewPanel, SLOT(view2x2()), g_keyConfig.getKey( "viewwin_view_2x2" ) ) );
-   m_view2x3 = group->addAction( m_viewMenu->addAction( tr( "2x3 View", "View|Viewports"), m_viewPanel, SLOT(view2x3()), g_keyConfig.getKey( "viewwin_view_2x3" ) ) );
-   m_view3x2 = group->addAction( m_viewMenu->addAction( tr( "3x2 View", "View|Viewports"), m_viewPanel, SLOT(view3x2()), g_keyConfig.getKey( "viewwin_view_3x2" ) ) );
-   m_view3x3 = group->addAction( m_viewMenu->addAction( tr( "3x3 View", "View|Viewports"), m_viewPanel, SLOT(view3x3()), g_keyConfig.getKey( "viewwin_view_3x3" ) ) );
-
-   m_3dWire->setCheckable( true );
-   m_3dFlat->setCheckable( true );
-   m_3dSmooth->setCheckable( true );
-   m_3dTexture->setCheckable( true );
-   m_3dAlpha->setCheckable( true );
-
-   m_3dTexture->setChecked( true );
-
-   m_canvasWire->setCheckable( true );
-   m_canvasFlat->setCheckable( true );
-   m_canvasSmooth->setCheckable( true );
-   m_canvasTexture->setCheckable( true );
-   m_canvasAlpha->setCheckable( true );
-
-   m_canvasWire->setChecked( true );
-
-   m_view1->setCheckable( true );
-   m_view1x2->setCheckable( true );
-   m_view2x1->setCheckable( true );
-   m_view2x2->setCheckable( true );
-   m_view2x3->setCheckable( true );
-   m_view3x2->setCheckable( true );
-   m_view3x3->setCheckable( true );
-
-   int count = 4;
-   bool tall = false;
-
-   if ( g_prefs.exists( "ui_viewport_count" ) )
-      count = g_prefs( "ui_viewport_count" ).intValue();
-   if ( g_prefs.exists( "ui_viewport_tall" ) )
-      tall = (g_prefs( "ui_viewport_tall" ).intValue() != 0);
-
-   switch ( count )
-   {
-      case 1:
-         m_view1->setChecked( true );
-         break;
-
-      case 2:
-         if ( tall )
-            m_view1x2->setChecked( true );
-         else
-            m_view2x1->setChecked( true );
-         break;
-
-      default:
-      case 4:
-         m_view2x2->setChecked( true );
-         break;
-
-      case 6:
-         if ( tall )
-            m_view2x3->setChecked( true );
-         else
-            m_view3x2->setChecked( true );
-         break;
-
-      case 9:
-         m_view3x3->setChecked( true );
-         break;
-   }
-
-   
-   m_viewMenu->addSeparator();
-   m_viewMenu->addAction( tr( "Viewport Settings...", "View|Viewport Settings" ), this, SLOT(viewportSettingsEvent()), g_keyConfig.getKey( "viewwin_view_viewport_settings" ) );
-
-   m_snapMenu = new QMenu( this );
-   connect( m_snapMenu, SIGNAL(triggered(QAction*)), this, SLOT(snapToSelectedEvent(QAction*)) );
-   m_snapToGrid = m_snapMenu->addAction( tr("Grid", "Tools|Snap to Grid") );
-   m_snapToGrid->setShortcut( g_keyConfig.getKey( "tool_snap_to_grid" ) );
-   m_snapToGrid->setCheckable( true );
-   m_snapToVertex = m_snapMenu->addAction( tr("Vertex", "Tools|Snap to Vertex") );
-   m_snapToVertex->setShortcut( g_keyConfig.getKey( "tool_snap_to_vertex" ) );
-   m_snapToVertex->setCheckable( true );
-
-   if ( g_prefs.exists( "ui_snap_grid" ) 
-         &&  g_prefs( "ui_snap_grid" ).intValue() != 0 )
-   {
-      m_snapToGrid->setChecked( true );
-   }
-   if ( g_prefs.exists( "ui_snap_vertex" ) 
-         &&  g_prefs( "ui_snap_vertex" ).intValue() != 0 )
-   {
-      m_snapToVertex->setChecked( true );
-   }
-
-   m_toolMenu = new QMenu( this );
-   m_snapMenu->setTitle(  tr("Snap To") );
-   m_toolMenu->addMenu( m_snapMenu );
-   m_toolMenu->addSeparator();
-
-   m_toolBar = new QToolBar( this );
-   m_toolBar->setObjectName( "mainwin_toolbar" );
-   addToolBar( m_toolBar );
-
-   m_toolBar->setWindowTitle( tr( "Tools" ) );
-   //m_toolBar->setHorizontallyStretchable( true );
-   //m_toolBar->setVerticallyStretchable( true );
-
-   initializeToolbox();
-
-   m_modelMenu = new QMenu( this );
-   m_modelMenu->addAction( tr("Undo"), this, SLOT(undoRequest()), QKeySequence( tr("Ctrl+Z", "Undo shortcut" ) ) );
-   m_modelMenu->addAction( tr("Redo"), this, SLOT(redoRequest()), QKeySequence( tr("Ctrl+Y", "Redo shortcut" ) ) );
-   m_modelMenu->addSeparator();
-   m_modelMenu->addAction( tr("Edit Model Meta Data...", "Model|Edit Model Meta Data"), this, SLOT(metaWindowEvent()), g_keyConfig.getKey( "viewwin_model_edit_meta_data" ) );
-   m_modelMenu->addAction( tr("Transform Model...", "Model|Transform Model"), this, SLOT(transformWindowEvent()), g_keyConfig.getKey( "viewwin_model_transform" ) );
-   m_modelMenu->addAction( tr("Boolean Operation...", "Model|Boolean Operation"), this, SLOT(boolWindowEvent()), g_keyConfig.getKey( "viewwin_model_boolean_operation" ) );
-   m_modelMenu->addSeparator();
-   m_modelMenu->addAction( tr("Set Background Image...", "Model|Set Background Image"), this, SLOT(backgroundWindowEvent()), g_keyConfig.getKey( "viewwin_model_set_background_image" ) );
-   m_modelMenu->addAction( tr("Merge...", "Model|Merge"), this, SLOT(mergeModelsEvent()), g_keyConfig.getKey( "viewwin_model_merge" ) );
-   m_modelMenu->addAction( tr("Import Animations...", "Model|Import Animations"), this, SLOT(mergeAnimationsEvent()), g_keyConfig.getKey( "viewwin_model_import_animations" ) );
-
-   m_geometryMenu = new QMenu( this );
-   m_materialsMenu  = new QMenu( this );
-
-   m_materialsMenu->addAction( tr("Edit Groups...", "Materials|Edit Groups"), this, SLOT(groupWindowEvent()), g_keyConfig.getKey( "viewwin_groups_edit_groups" ) );
-   m_materialsMenu->addAction( tr("Edit Materials...", "Materials|Edit Materials"), this, SLOT(textureWindowEvent()), g_keyConfig.getKey( "viewwin_groups_edit_materials" ) );
-   m_materialsMenu->addAction( tr("Clean Up...", "Materials|Clean Up"), this, SLOT(groupCleanWindowEvent()), g_keyConfig.getKey( "viewwin_groups_cleanup" ) );
-   m_materialsMenu->addAction( tr("Reload Textures", "Materials|Reload Textures"), this, SLOT(reloadTexturesEvent()), g_keyConfig.getKey( "viewwin_groups_reload_textures" ) );
-   m_materialsMenu->addSeparator();
-   m_materialsMenu->addAction( tr("Edit Projection...", "Materials|Edit Projection"), this, SLOT(projectionWindowEvent()), g_keyConfig.getKey( "viewwin_groups_edit_projection" ) );
-   m_materialsMenu->addAction( tr("Edit Texture Coordinates...", "Materials|Edit Texture Coordinates"), this, SLOT(textureCoordEvent()), g_keyConfig.getKey( "viewwin_groups_edit_texture_coordinates" ) );
-   m_materialsMenu->addAction( tr("Paint Texture...", "Materials|Paint Texture"), this, SLOT(paintTextureEvent()), g_keyConfig.getKey( "viewwin_groups_paint_texture" ) );
-
-   m_jointsMenu     = new QMenu( this );
-
-   m_jointsMenu->addAction( tr( "Edit Joints...", "Joints|Edit Joints"), this, SLOT(jointWinEvent()), g_keyConfig.getKey( "viewwin_joints_edit_joints" ) );
-   m_jointsMenu->addAction( tr( "Assign Selected to Joint", "Joints|Assign Selected to Joint"), this, SLOT(jointAssignSelectedToJoint()), g_keyConfig.getKey( "viewwin_joints_assign_selected" ) );
-   m_jointsMenu->addAction( tr( "Auto-Assign Selected...", "Joints|Auto-Assign Selected"), this, SLOT(jointAutoAssignSelected()), g_keyConfig.getKey( "viewwin_joints_auto_assign_selected" ) );
-   m_jointsMenu->addAction( tr( "Remove All Influences from Selected", "Joints|Remove All Influences from Selected"), this, SLOT(jointRemoveInfluencesFromSelected()), g_keyConfig.getKey( "viewwin_joints_remove_influences" ) );
-   m_jointsMenu->addAction( tr( "Remove Selected Joint from Influencing", "Joints|Remove Selected Joint from Influencing"), this, SLOT(jointRemoveInfluenceJoint()), g_keyConfig.getKey( "viewwin_joints_remove_joint" ) );
-   m_jointsMenu->addSeparator();
-   m_jointsMenu->addAction( tr( "Convert Multiple Influences to Single", "Joints|Convert Multiple Influences to Single"), this, SLOT(jointMakeSingleInfluence()), g_keyConfig.getKey( "viewwin_joints_make_single_influence" ) );
-   m_jointsMenu->addSeparator();
-   m_jointsMenu->addAction( tr( "Select Joint Influences", "Joints|Select Joint Influences"), this, SLOT(jointSelectInfluenceJoints()), g_keyConfig.getKey( "viewwin_joints_select_joint_influences" ) );
-   m_jointsMenu->addAction( tr( "Select Influenced Vertices", "Joints|Select Influenced Vertices"), this, SLOT(jointSelectInfluencedVertices()), g_keyConfig.getKey( "viewwin_joints_select_influenced_vertices" ) );
-   m_jointsMenu->addAction( tr( "Select Influenced Points", "Joints|Select Influenced Points"), this, SLOT(jointSelectInfluencedPoints()), g_keyConfig.getKey( "viewwin_joints_select_influenced_points" ) );
-   m_jointsMenu->addAction( tr( "Select Unassigned Vertices", "Joints|Select Unassigned Vertices"), this, SLOT(jointSelectUnassignedVertices()), g_keyConfig.getKey( "viewwin_joints_select_unassigned_vertices" ) );
-   m_jointsMenu->addAction( tr( "Select Unassigned Points", "Joints|Select Unassigned Points"), this, SLOT(jointSelectUnassignedPoints()), g_keyConfig.getKey( "viewwin_joints_select_unassigned_points" ) );
-
-   initializeCommands();
-
-   //m_scriptMenu = new QPopupMenu( this );
-
-   m_animMenu = new QMenu( this );
-   m_startAnimItem     = m_animMenu->addAction( tr("Start Animation Mode...", "Animation|Start Animation Mode"), this, SLOT(startAnimationMode()), g_keyConfig.getKey( "viewwin_anim_start_mode" ) );
-   m_stopAnimItem      = m_animMenu->addAction( tr("Stop Animation Mode", "Animation|Stop Animation Mode"),     this, SLOT(stopAnimationMode()), g_keyConfig.getKey( "viewwin_anim_stop_mode" ) );
-   m_animMenu->addSeparator();
-   m_animSetsItem      = m_animMenu->addAction( tr("Animation Sets...", "Animation|Animation Sets"), this, SLOT(animSetWindowEvent()), g_keyConfig.getKey( "viewwin_anim_animation_sets" ) );
-   m_animExportItem    = m_animMenu->addAction( tr("Save Animation Images...", "Animation|Save Animation Images"), this, SLOT(animExportWindowEvent()), g_keyConfig.getKey( "viewwin_anim_save_images" ) );
-   m_animMenu->addSeparator();
-   m_animCopyFrame   = m_animMenu->addAction( tr("Copy Animation Frame", "Animation|Copy Animation Frame"), this, SLOT(animCopyFrameEvent()), g_keyConfig.getKey( "viewwin_anim_frame_copy" ) );
-   m_animPasteFrame  = m_animMenu->addAction( tr("Paste Animation Frame", "Animation|Paste Animation Frame"), this, SLOT(animPasteFrameEvent()), g_keyConfig.getKey( "viewwin_anim_frame_paste" ) );
-   m_animClearFrame  = m_animMenu->addAction( tr("Clear Animation Frame", "Animation|Clear Animation Frame"), this, SLOT(animClearFrameEvent()), g_keyConfig.getKey( "viewwin_anim_frame_clear" ) );
-   m_animMenu->addSeparator();
-   m_animCopySelected   = m_animMenu->addAction( tr("Copy Selected Keyframes", "Animation|Copy Animation Frame"), this, SLOT(animCopySelectedEvent()), g_keyConfig.getKey( "viewwin_anim_selected_copy" ) );
-   m_animPasteSelected  = m_animMenu->addAction( tr("Paste Selected Keyframes", "Animation|Paste Animation Frame"), this, SLOT(animPasteSelectedEvent()), g_keyConfig.getKey( "viewwin_anim_selected_paste" ) );
-   m_animMenu->addSeparator();
-   m_animSetRotItem    = m_animMenu->addAction( tr("Set Rotation Keyframe", "Animation|Set Rotation Keyframe"), this, SLOT(animSetRotEvent()), g_keyConfig.getKey( "viewwin_anim_set_rotation" ) );
-   m_animSetTransItem  = m_animMenu->addAction( tr("Set Translation Keyframe", "Animation|Set Translation Keyframe"), this, SLOT(animSetTransEvent()), g_keyConfig.getKey( "viewwin_anim_set_translation" ) );
-
-   m_stopAnimItem->setEnabled( false );
-   m_animSetRotItem->setEnabled( false );
-   m_animSetTransItem->setEnabled( false );
-
-   m_animCopyFrame->setEnabled( false );
-   m_animPasteFrame->setEnabled( false );
-   m_animClearFrame->setEnabled( false );
-   m_animCopySelected->setEnabled( false );
-   m_animPasteSelected->setEnabled( false );
-
-   m_helpMenu = new QMenu( this );
-   m_helpMenu->addAction( tr("Contents...", "Help|Contents"), this, SLOT(helpWindowEvent()), g_keyConfig.getKey( "viewwin_help_contents" ) );
-   m_helpMenu->addAction( tr("License...", "Help|License"),  this, SLOT(licenseWindowEvent()), g_keyConfig.getKey( "viewwin_help_license" ) );
-   m_helpMenu->addAction( tr("About...", "Help|About"),    this, SLOT(aboutWindowEvent()), g_keyConfig.getKey( "viewwin_help_about" ) );
-
-   m_menuBar = menuBar();
-   m_fileMenu->setTitle( tr("&File", "menu bar") );
-   m_menuBar->addMenu( m_fileMenu );
-   m_viewMenu->setTitle( tr("&View", "menu bar") );
-   m_menuBar->addMenu( m_viewMenu );
-   m_toolMenu->setTitle( tr("&Tools", "menu bar") );
-   m_menuBar->addMenu( m_toolMenu );
-   m_modelMenu->setTitle( tr("&Model", "menu bar") );
-   m_menuBar->addMenu( m_modelMenu );
-   m_geometryMenu->setTitle( tr("&Geometry", "menu bar") );
-   m_menuBar->addMenu( m_geometryMenu );
-   m_materialsMenu->setTitle( tr("Mate&rials", "menu bar") );
-   m_menuBar->addMenu( m_materialsMenu );
-   m_jointsMenu->setTitle( tr("&Influences", "menu bar") );
-   m_menuBar->addMenu( m_jointsMenu );
-   m_animMenu->setTitle( tr("&Animation", "menu bar") );
-   m_menuBar->addMenu( m_animMenu );
-   m_helpMenu->setTitle( tr("&Help", "menu bar") );
-   m_menuBar->addMenu( m_helpMenu );
-
-   resize( 
-         g_prefs.exists( "ui_viewwin_width")  ? g_prefs( "ui_viewwin_width" )  : 900,
-         g_prefs.exists( "ui_viewwin_height") ? g_prefs( "ui_viewwin_height" ) : 700 );
-
-   // If the window size including the title bar etc is the area of the screen
-   // without taskbar etc then set the window to maximized.
-   QRect screenSpace = QApplication::desktop()->availableGeometry( this );
-   bool windowMaximized = false;
-   if ( g_prefs.exists( "ui_viewwin_lastframewidth") && g_prefs.exists( "ui_viewwin_lastframeheight") )
-   {
-      int frameWidth = g_prefs( "ui_viewwin_lastframewidth");
-      int frameHeight = g_prefs( "ui_viewwin_lastframeheight");
-
-      //log_debug( "Window frame size %dx%d, available %dx%d\n", frameWidth, frameHeight, screenSpace.width(), screenSpace.height() );
-
-      windowMaximized = ( frameWidth >= screenSpace.width() && frameHeight >= screenSpace.height() );
-   }
-
-   setMinimumSize( 520, 520 );
-
-   frameAllEvent();
-
-   m_viewPanel->modelUpdatedEvent();
-   if ( windowMaximized )
-   {
-      showMaximized();
-   }
-   else
-   {
-      show();
-   }
-
-   QTimer * m_savedTimer = new QTimer();
-   connect( m_savedTimer, SIGNAL(timeout()), this, SLOT(savedTimeoutCheck()) );
-   m_savedTimer->start( 1000 );
-
-   QString windowPos;
-
-   loadDockPositions();
-   stopAnimationMode();
-   m_model->setUndoEnabled( true );
-   m_model->clearUndo();
-
-   // FIXME hack if toolbar was hidden by loadDockPositions(), restore it.
-   // https://github.com/zturtleman/mm3d/issues/28
-   if ( m_toolBar->isHidden() ) {
-      m_toolBar->show();
-   }
-
-   // This is a hack to prevent a minimized bool panel from blocking the left
-   // side of the menu bar.
-   if ( !m_boolPanel->isVisible() )
-   {
-      m_boolPanel->show();
-      m_boolPanel->hide();
-   }
-}
-
-ViewWindow::~ViewWindow()
-{
-   log_debug( "deleting view window\n" );
-   _winList.remove( this );
-
-   log_debug( "deleting view window %08X, model %08X\n", this, m_model );
-   DecalManager::getInstance()->unregisterModel( m_model );
-   m_viewPanel->freeTextures();
-   delete m_model;
-   m_viewPanel->setModel( NULL );
-
-   model_show_alloc_stats();
-
-   // QToolBar actually deletes buttons, we just need to delete array
-   delete[] m_toolButtons;
-
-   if ( !_shuttingDown )
-   {
-      if ( _winList.empty() )
-      {
-         ui_exit();
-      }
-   }
-
-   delete m_toolbox;
-}
-
-void ViewWindow::setModel( Model * model )
-{
-   m_viewPanel->setModel( model );
-   m_statusBar->setModel( model );
-   m_transformWin->setModel( model );
-   m_model = model;
-
-   if ( m_model )
-   {
-      Model::DrawJointModeE jointMode = 
-         static_cast<Model::DrawJointModeE>( g_prefs( "ui_draw_joints" ).intValue() );
-
-      if ( jointMode != Model::JOINTMODE_LINES )
-      {
-         jointMode = Model::JOINTMODE_BONES;
-      }
-      m_model->setDrawJoints( jointMode );
-
-      g_prefs( "ui_draw_joints" ) = (int) jointMode;
-   }
-
-   updateCaption();
-
-   //m_contextPanel->setModel( m_model );
-   if ( m_animWin->isVisible() )
-   {
-      m_animWidget->initialize( m_model, true ); // Treat it like an undo
-   }
-   m_viewPanel->modelUpdatedEvent();
-
-   emit modelChanged( m_model );
-
-   while ( m_model->hasErrors() )
-   {
-      std::string str = m_model->popError();
-      model_status( m_model, StatusError, STATUSTIME_LONG, "%s", str.c_str() );
-   }
-
-   if ( m_currentTool )
-   {
-      m_currentTool->setModel( m_model );
-   }
-
-   for ( CommandMenuItemList::iterator it = m_primitiveCommands.begin();
-         it != m_primitiveCommands.end(); ++it )
-   {
-      (*it)->widget->setModel( m_model );
-   }
-}
-
-bool ViewWindow::emptyWindow()
-{
-   if ( m_model )
-   {
-      // if no model is loaded and default scene is unmodified
-      return ( strcmp( m_model->getFilename(), "" ) == 0 && m_model->getSaved() == true && !m_model->canRedo() );
-   }
-   return true;
-}
-
-bool ViewWindow::getSaved()
-{
-   if ( m_model )
-   {
-      return m_model->getSaved();
-   }
-   return true;
-}
-
-void ViewWindow::resizeEvent ( QResizeEvent * e )
-{
-   int w = e->size().width();
-   int h = e->size().height();
-
-   /*
-   m_menuBar->move( 0, 0 );
-   m_menuBar->resize( w, m_menuBar->height() );
-
-   m_viewPanel->move( 0, m_menuBar->height() );
-   m_viewPanel->resize( w, h - m_menuBar->height() - m_statusBar->height() );
-
-   m_statusBar->move( 0, h - m_statusBar->height() );
-   m_statusBar->resize( w, m_statusBar->height() );
-   */
-
-   g_prefs( "ui_viewwin_width" )  = w;
-   g_prefs( "ui_viewwin_height" ) = h;
-
-   QMainWindow::resizeEvent(e);
-
-   g_prefs( "ui_viewwin_lastframewidth" )  = frameGeometry().width();
-   g_prefs( "ui_viewwin_lastframeheight" ) = frameGeometry().height();
-
-   //log_debug( "Resize: %dx%d, Window frame size: %dx%d\n", w, h, frameGeometry().width(), frameGeometry().height() );
-}
-
-/*
-void ViewWindow::resizeEvent ( QResizeEvent * e )
-{
-   int w = e->size().width();
-   int h = e->size().height();
-
-   m_menuBar->move( 0, 0 );
-   m_menuBar->resize( w, m_menuBar->height() );
-
-   m_viewPanel->move( 0, m_menuBar->height() );
-   m_viewPanel->resize( w, h - m_menuBar->height() - m_statusBar->height() );
-
-   m_statusBar->move( 0, h - m_statusBar->height() );
-   m_statusBar->resize( w, m_statusBar->height() );
-
-   g_prefs( "ui_viewwin_width" )  = w;
-   g_prefs( "ui_viewwin_height" ) = h;
-}
-*/
-
-void ViewWindow::helpNowEvent()
-{
-   HelpWin * win = new HelpWin( "olh_mainwin.html", false );
-   win->show();
-}
-
-void ViewWindow::contextMenuEvent( QContextMenuEvent * e )
-{
-   e->ignore();
-}
-
-void ViewWindow::saveModelEvent()
-{
-   const char * filename = m_model->getFilename();
-   if ( filename && filename[0] )
-   {
-      Model::ModelErrorE err 
-         = FilterManager::getInstance()->writeFile( m_model, filename, false );
-
-      if ( err == Model::ERROR_NONE )
-      {
-         m_model->setSaved( true );
-         prefs_recent_model( filename );
-      }
-      else
-      {
-         m_abortQuit = true;
-         if ( Model::operationFailed( err ) )
-         {
-            QString reason = modelErrStr( err, m_model );
-            reason = QString(filename) + QString(":\n") + reason;
-            msg_error( (const char *) reason.toUtf8() );
-         }
-      }
-   }
-   else
-   {
-      saveModelAsEvent();
-   }
-}
-
-void ViewWindow::saveModelAsEvent()
-{
-   saveModelInternal( m_model, false );
-}
-
-void ViewWindow::exportModelEvent()
-{
-   saveModelInternal( m_model, true );
-}
-
-void ViewWindow::exportSelectedEvent()
-{
-   if ( m_model->getSelectedTriangleCount() == 0
-         && m_model->getSelectedPointCount() == 0
-         && m_model->getSelectedProjectionCount() == 0 )
-   {
-      model_status( m_model, StatusError, STATUSTIME_LONG, tr( "You must have at least 1 face, joint, or point selected to Export Selected" ).toUtf8() );
-      return;
-   }
-
-   Model * m = m_model->copySelected();
-   
-   if ( !m )
-      return;
-
-   saveModelInternal( m, true );
-
-   delete m;
-}
-
-void ViewWindow::saveModelInternal( Model * model, bool exportModel )
-{
-   list<string> formats = FilterManager::getInstance()->getAllWriteTypes( exportModel );
-
-   QString formatsStr = 
-      ((exportModel) ? tr( "All Exportable Formats" ) : tr( "All Writable Formats" ))
-                                                      + QString(" (" );
-
-   list<string>::iterator it = formats.begin();
-   while(  it != formats.end() )
-   {
-      formatsStr += QString( (*it).c_str() );
-
-      it++;
-
-      if ( it != formats.end() )
-      {
-         formatsStr += QString( " " );
-      }
-   }
-
-   formatsStr += QString( ")" );
-
-   const char * modelFile = model->getFilename();
-   QString dir = QString::fromUtf8( g_prefs( "ui_model_dir" ).stringValue().c_str() );
-   if ( exportModel )
-   {
-      dir = QString::fromUtf8( g_prefs( "ui_export_dir" ).stringValue().c_str() );
-   }
-   else
-   {
-      if ( modelFile && modelFile[0] != '\0' )
-      {
-         std::string fullname;
-         std::string fullpath;
-         std::string basename;
-
-         normalizePath( modelFile, fullname, fullpath, basename );
-         dir = tr( fullpath.c_str() );
-      }
-   }
-
-   if ( dir.isEmpty() )
-   {
-      dir = QString( "." );
-   }
-
-   QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; ") + tr( "All Files (*)" ) );
-   d.setAcceptMode( QFileDialog::AcceptSave );
-   if ( exportModel )
-   {
-      d.selectFile( QString( model->getExportFile() ) );
-   }
-
-   d.setWindowTitle( tr( "Save model file as" ) );
-   if ( exportModel )
-   {
-      d.setWindowTitle( tr( "Export model" ) );
-   }
-   d.selectNameFilter( formatsStr );
-   d.setFileMode( QFileDialog::AnyFile );
-
-   m_abortQuit = true;
-
-   bool again = true;
-   while ( again )
-   {
-      again = false;
-      if ( QDialog::Accepted == d.exec() )
-      {
-         bool save = true;
-
-         QStringList files = d.selectedFiles();
-
-         if ( save && !files.empty() )
-         {
-            std::string filename = (const char *) files[0].toUtf8();
-            if ( !strchr(filename.c_str(), '.' ) )
-            {
-               filename += ".mm3d";
-            }
-
-            Model::ModelErrorE err 
-               = FilterManager::getInstance()->writeFile( model, filename.c_str(), exportModel );
-            if ( err == Model::ERROR_NONE )
-            {
-               m_abortQuit = false;
-               if ( exportModel )
-               {
-                  g_prefs( "ui_export_dir" ) = (const char *) d.directory().absolutePath().toUtf8();
-                  model->setExportFile( filename.c_str() );
-               }
-               else
-               {
-                  model->setSaved( true );
-                  model->setFilename( filename.c_str() );
-                  g_prefs( "ui_model_dir" ) = (const char *) d.directory().absolutePath().toUtf8();
-               }
-               prefs_recent_model( (const char *) filename.c_str() );
-
-               updateCaption();
-            }
-            else
-            {
-               if ( Model::operationFailed( err ) )
-               {
-                  msg_error( modelErrStr( err, model ).toUtf8() );
-               }
-            }
-         }
-      }
-   }
-}
-
-void ViewWindow::mergeModelsEvent()
-{
-   list<string> formats = FilterManager::getInstance()->getAllReadTypes();
-
-   QString formatsStr = tr( "All Supported Formats", "model formats" ) +  QString( " (" );
-
-   list<string>::iterator it = formats.begin();
-   while(  it != formats.end() )
-   {
-      formatsStr += QString( (*it).c_str() );
-
-      it++;
-
-      if ( it != formats.end() )
-      {
-         formatsStr += QString( " " );
-      }
-   }
-
-   formatsStr += QString(")");
-
-   QString dir = QString::fromUtf8( g_prefs( "ui_model_dir" ).stringValue().c_str() );
-   if ( dir.isEmpty() )
-   {
-      dir = ".";
-   }
-
-   QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; ") + tr( "All Files (*)" ) );
-
-   d.setWindowTitle( tr( "Open model file" ) );
-   d.selectNameFilter( formatsStr );
-
-   if ( QDialog::Accepted == d.exec() )
-   {
-      QStringList files = d.selectedFiles();
-
-      if ( files.empty() )
-         return;
-
-      std::string filename = (const char *) files[0].toUtf8();
-
-      Model::ModelErrorE err;
-      Model * model = new Model();
-      if ( (err = FilterManager::getInstance()->readFile( model, filename.c_str() )) == Model::ERROR_NONE)
-      {
-         model_show_alloc_stats();
-
-         MergeWindow mw( model, this );
-
-         if ( mw.exec() )
-         {
-            Model::AnimationMergeE mode = Model::AM_NONE;
-
-            if ( mw.getIncludeAnimation() )
-            {
-               mode = Model::AM_ADD;
-
-               if ( mw.getAnimationMerge() )
-               {
-                  mode = Model::AM_MERGE;
-               }
-            }
-            double rot[3];
-            double trans[3];
-            mw.getRotation( rot );
-            mw.getTranslation( trans );
-            m_model->mergeModels( model, mw.getIncludeTexture(), mode, true, trans, rot );
-            m_model->operationComplete( tr("Merge models").toUtf8() );
-            g_prefs( "ui_model_dir" ) = (const char *) d.directory().absolutePath().toUtf8();
-
-            m_viewPanel->modelUpdatedEvent();
-         }
-
-         prefs_recent_model( filename.c_str() );
-         delete model;
-      }
-      else
-      {
-         if ( Model::operationFailed( err ) )
-         {
-            QString reason = modelErrStr( err, model );
-            reason = tr(filename.c_str()) + tr(":\n") + reason;
-            msg_error( (const char *) reason.toUtf8() );
-         }
-         delete model;
-      }
-   }
-}
-
-void ViewWindow::mergeAnimationsEvent()
-{
-   list<string> formats = FilterManager::getInstance()->getAllReadTypes();
-
-   QString formatsStr = tr( "All Supported Formats", "model formats") + QString( " (" );
-
-   list<string>::iterator it = formats.begin();
-   while(  it != formats.end() )
-   {
-      formatsStr += QString( (*it).c_str() );
-
-      it++;
-
-      if ( it != formats.end() )
-      {
-         formatsStr += QString( " " );
-      }
-   }
-
-   formatsStr += QString( ")" );
-
-   QString dir = QString::fromUtf8( g_prefs( "ui_model_dir" ).stringValue().c_str() );
-   if ( dir.isEmpty() )
-   {
-      dir = ".";
-   }
-
-   QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; ") + tr( "All Files (*)" ) );
-
-   d.setWindowTitle( tr( "Open model file" ) );
-   d.selectNameFilter( formatsStr );
-
-   if ( QDialog::Accepted == d.exec() )
-   {
-      QStringList files = d.selectedFiles();
-
-      if ( files.empty() )
-         return;
-
-      std::string filename = (const char *) files[0].toUtf8();
-
-      Model::ModelErrorE err;
-      Model * model = new Model();
-      if ( (err = FilterManager::getInstance()->readFile( model, filename.c_str() )) == Model::ERROR_NONE)
-      {
-         model_show_alloc_stats();
-
-         m_model->mergeAnimations( model );
-
-         prefs_recent_model( filename.c_str() );
-         delete model;
-      }
-      else
-      {
-         if ( Model::operationFailed( err ) )
-         {
-            QString reason = modelErrStr( err, model );
-            reason = tr(filename.c_str()) + tr(":\n") + reason;
-            msg_error( (const char *) reason.toUtf8() );
-         }
-         delete model;
-      }
-   }
-}
-
-void ViewWindow::scriptEvent()
-{
-#ifdef HAVE_LUALIB
-   QString dir = QString::fromUtf8( g_prefs( "ui_script_dir" ).stringValue().c_str() );
-   if ( dir.isEmpty() )
-   {
-      dir = QString(".");
-   }
-
-   QString formatsStr = QString( "Lua scripts (*.lua)" );
-   QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; ") + tr( "All Files (*)" ) );
-
-   d.setWindowTitle( tr( "Open model file" ) );
-   d.selectNameFilter( formatsStr );
-
-   if ( QDialog::Accepted == d.exec() )
-   {
-      QStringList files = d.selectedFiles();
-
-      if ( files.empty() )
-         return;
-
-      g_prefs( "ui_script_dir" ) = (const char *) d.directory().absolutePath().toUtf8();
-
-      std::string filename = (const char *) files[0].toUtf8();
-      runScript( filename.c_str() );
-   }
-#endif // HAVE_LUALIB
-}
-
-void ViewWindow::runScript( const char * filename )
-{
-#ifdef HAVE_LUALIB
-   if ( filename )
-   {
-      LuaScript lua;
-      LuaContext lc( m_model );
-      luaif_registerfunctions( &lua, &lc );
-
-      std::string scriptfile = filename;
-
-      std::string fullname;
-      std::string fullpath;
-      std::string basename;
-
-      normalizePath( scriptfile.c_str(), fullname, fullpath, basename );
-
-      log_debug( "running script %s\n", basename.c_str() );
-      int rval = lua.runFile( scriptfile.c_str() );
-
-      prefs_recent_script( filename );
-
-      if ( rval == 0 )
-      {
-         log_debug( "script complete, exited normally\n" );
-         QString str = tr("Script %1 complete").arg(basename.c_str());
-         model_status( m_model, StatusNormal, STATUSTIME_SHORT, "%s", (const char *) str.toUtf8() );
-      }
-      else
-      {
-         log_error( "script complete, exited with error code %d\n", rval );
-         QString str = tr("Script %1 error %2")
-            .arg(basename.c_str())
-            .arg(lua.error());
-         model_status( m_model, StatusError, STATUSTIME_LONG, "%s", (const char *) str.toUtf8() );
-      }
-
-      m_model->setNoAnimation();
-      m_model->operationComplete( basename.c_str() );
-
-      m_viewPanel->modelUpdatedEvent();
-   }
-#endif // HAVE_LUALIB
-}
-
-void ViewWindow::closeEvent( QCloseEvent * e )
-{
-   saveDockPositions();
-   
-#ifdef CODE_DEBUG
-   e->accept();
-#else // CODE_DEBUG
-   if ( ! m_model->getSaved() )
-   {
-      int val = QMessageBox::warning( this, tr("Save first?"), tr("Model has been modified\nDo you want to save before closing?"), QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel );
-      switch ( val )
-      {
-         case QMessageBox::Yes:
-            m_abortQuit = false;
-            saveModelEvent();
-            if ( ! m_abortQuit )
-            {
-               e->accept();
-            }
-            break;
-         case QMessageBox::No:
-            e->accept();
-            break;
-         case QMessageBox::Cancel:
-            e->ignore();
-            break;
-         default:
-            {
-               QString str = tr( "Unknown response: %1, Canceling close request" )
-                  .arg( val );
-               msg_error( (const char *) str.toUtf8() );
-            }
-            e->ignore();
-            break;
-      }
-   }
-   else
-   {
-      e->accept();
-   }
-#endif // CODE_DEBUG
-}
-
-QAction * ViewWindow::insertMenuItem( QMenu * parentMenu, bool isTool,
-      const QString & path, const QString & name, QMenu * subMenu )
-{
-   QMenu * addMenu = parentMenu;
-
-   if ( path.length() != 0 )
-   {
-      bool found = false;
-
-      MenuItemList::iterator it;
-      for ( it = m_menuItems.begin(); it != m_menuItems.end(); it++ )
-      {
-         if ( it->text == path )
-         {
-            addMenu = it->menu;
-            found = true;
-         }
-      }
-
-      if ( !found )
-      {
-         // TODO deal with multi-level paths
-         addMenu = new QMenu( this );
-
-         QString module;
-         if ( isTool )
-         {
-            module = "Tool";
-            connect( addMenu, SIGNAL(triggered(QAction*)), this, SLOT(toolActivated(QAction*)));
-         }
-         else
-         {
-            module = "Command";
-         }
-         addMenu->setTitle( qApp->translate( module.toUtf8(), path.toUtf8() ) );
-         parentMenu->addMenu( addMenu );
-
-         MenuItemT mi;
-         mi.text = path;
-         mi.menu = addMenu;
-
-         m_menuItems.push_back( mi );
-      }
-   }
-
-   QAction * id;
-   if ( subMenu )
-   {
-      subMenu->setTitle( name );
-      id = addMenu->addMenu( subMenu );
-   }
-   else
-   {
-      id = addMenu->addAction( name );
-   }
-   log_debug( "added %s as id %d\n", (const char *) name.toUtf8(), id );
-   return id;
-}
-
-void ViewWindow::frameAllEvent()
-{
-   double x1, y1, z1, x2, y2, z2;
-   if ( m_model->getBoundingRegion( &x1, &y1, &z1, &x2, &y2, &z2 ) )
-   {
-      m_viewPanel->frameArea( x1, y1, z1, x2, y2, z2 );
-   }
-}
-
-void ViewWindow::frameSelectedEvent()
-{
-   double x1, y1, z1, x2, y2, z2;
-   if ( m_model->getSelectedBoundingRegion( &x1, &y1, &z1, &x2, &y2, &z2 ) )
-   {
-      m_viewPanel->frameArea( x1, y1, z1, x2, y2, z2 );
-   }
-}
-
-void ViewWindow::showContextEvent()
-{
-   m_viewPanel->modelUpdatedEvent();
-
-   // Set model so that it is properly initialized before display
-   m_contextPanel->setModel( m_model );
-   m_contextPanel->show();
-   m_contextPanel->raise();
-
-   // Set model again so that it actually displays properties
-   m_contextPanel->setModel( m_model );
-}
-
-void ViewWindow::renderBadEvent()
-{
-   g_prefs( "ui_render_bad_textures" ) = 1;
-   m_viewPanel->modelUpdatedEvent();
-}
-
-void ViewWindow::noRenderBadEvent()
-{
-   g_prefs( "ui_render_bad_textures" ) = 0;
-   m_viewPanel->modelUpdatedEvent();
-}
-
-void ViewWindow::renderBackface()
-{
-   g_prefs( "ui_render_backface_cull" ) = 0;
-   m_viewPanel->modelUpdatedEvent();
-}
-
-void ViewWindow::noRenderBackface()
-{
-   g_prefs( "ui_render_backface_cull" ) = 1;
-   m_viewPanel->modelUpdatedEvent();
-}
-
-void ViewWindow::renderProjections()
-{
-   g_prefs( "ui_render_projections" ) = 0;
-   m_model->setDrawProjections( true );
-   m_viewPanel->modelUpdatedEvent();
-}
-
-void ViewWindow::noRenderProjections()
-{
-   bool doHide = true;
-
-   if ( m_model->getSelectedProjectionCount() > 0 )
-   {
-      doHide = false;
-
-      char ch = msg_info_prompt( (const char *) tr("Cannot hide with selected projections.  Unselect projections now?").toUtf8(), "yN" );
-
-      if ( toupper(ch) == 'Y' )
-      {
-         doHide = true;
-         m_model->unselectAll();
-         m_model->operationComplete( tr("Hide projections").toUtf8() );
-      }
-   }
-
-   if ( doHide )
-   {
-      g_prefs( "ui_render_projections" ) = 1;
-      m_model->setDrawProjections( false );
-      m_viewPanel->modelUpdatedEvent();
-   }
-}
-
-void ViewWindow::renderSelectionEvent()
-{
-   g_prefs( "ui_render_3d_selections" ) = 1;
-   m_viewPanel->modelUpdatedEvent();
-}
-
-void ViewWindow::noRenderSelectionEvent()
-{
-   g_prefs( "ui_render_3d_selections" ) = 0;
-   m_viewPanel->modelUpdatedEvent();
-}
-
-void ViewWindow::boneJointHide()
-{
-   bool doHide = true;
-
-   if ( m_model->getSelectedBoneJointCount() > 0 )
-   {
-      doHide = false;
-
-      char ch = msg_info_prompt( (const char *) tr("Cannot hide with selected joints.  Unselect joints now?").toUtf8(), "yN" );
-
-      if ( toupper(ch) == 'Y' )
-      {
-         doHide = true;
-         m_model->unselectAll();
-         m_model->operationComplete( tr("Hide bone joints").toUtf8() );
-      }
-   }
-
-   if ( doHide )
-   {
-      m_model->setDrawJoints( Model::JOINTMODE_NONE );
-      m_viewPanel->modelUpdatedEvent();
-   }
-}
-
-void ViewWindow::boneJointLines()
-{
-   Model::DrawJointModeE m = Model::JOINTMODE_LINES;
-   g_prefs( "ui_draw_joints" ) = (int) m;
-   m_model->setDrawJoints( m );
-   m_viewPanel->modelUpdatedEvent();
-}
-
-void ViewWindow::boneJointBones()
-{
-   Model::DrawJointModeE m = Model::JOINTMODE_BONES;
-   g_prefs( "ui_draw_joints" ) = (int) m;
-   m_model->setDrawJoints( m );
-   m_viewPanel->modelUpdatedEvent();
-}
-
-void ViewWindow::viewportSettingsEvent()
-{
-   ViewportSettings * win = new ViewportSettings();
-   win->show();
-}
-
-void ViewWindow::toolActivated( QAction * id )
-{
-   log_debug( "toolActivated(%p)\n", id );
-   for ( ToolMenuItemList::iterator it = m_tools.begin();
-         it != m_tools.end(); ++it )
-   {
-      if ( (*it)->id == id )
-      {
-         ::Tool * tool = (*it)->tool;
-         for ( int t = 0; t < m_toolCount; t++ )
-         {
-            if ( m_toolList[t] == tool )
-            {
-               if ( !m_toolButtons[t]->isChecked() )
-               {
-                  m_toolButtons[t]->setChecked( true );
-               }
-               m_currentTool = m_toolList[ t ];
-            }
-         }
-         return;
-      }
-   }
-}
-
-void ViewWindow::scriptActivated( QAction * id )
-{
-}
-
-void ViewWindow::groupWindowEvent()
-{
-   GroupWindow * win = new GroupWindow( m_model );
-   win->show();
-}
-
-void ViewWindow::textureWindowEvent()
-{
-   TextureWindow * win = new TextureWindow( m_model );
-   win->show();
-}
-
-void ViewWindow::groupCleanWindowEvent()
-{
-   GroupCleanWin * win = new GroupCleanWin( m_model );
-   win->show();
-}
-
-void ViewWindow::textureCoordEvent()
-{
-   if ( m_model->getSelectedTriangleCount() > 0 )
-   {
-      m_textureCoordWin->show();
-      m_textureCoordWin->raise();
-   }
-   else
-   {
-      msg_info( (const char *) tr("You must select faces first.\nUse the 'Select Faces' tool.", "Notice that user must have faces selected to open 'edit texture coordinates' window" ).toUtf8());
-   }
-}
-
-void ViewWindow::paintTextureEvent()
-{
-   if ( m_model->getSelectedTriangleCount() > 0 )
-   {
-      PaintTextureWin * win = new PaintTextureWin( m_model );
-      win->show();
-   }
-   else
-   {
-      msg_info( (const char *) tr("You must select faces first.\nUse the 'Select Faces' tool.", "Notice that user must have faces selected to open 'paint texture' window").toUtf8() );
-   }
-}
-
-// ContextPanelObserver method
-void ViewWindow::showProjectionEvent()
-{
-   projectionWindowEvent();
-}
-
-void ViewWindow::projectionWindowEvent()
-{
-   m_projectionWin->show();
-   m_projectionWin->raise();
-}
-
-void ViewWindow::transformWindowEvent()
-{
-   m_transformWin->show();
-   m_transformWin->raise();
-}
-
-void ViewWindow::metaWindowEvent()
-{
-   MetaWindow * win = new MetaWindow( m_model );
-   win->show();
-}
-
-void ViewWindow::boolWindowEvent()
-{
-   m_boolPanel->show();
-   m_boolPanel->raise();
-}
-
-void ViewWindow::reloadTexturesEvent()
-{
-   if( TextureManager::getInstance()->reloadTextures() )
-   {
-      invalidateModelTextures();
-   }
-}
-
-void ViewWindow::editDisableEvent()
-{
-   m_canEdit = false;
-   m_viewPanel->setEnabled( m_canEdit );
+void viewwin_menubarfunc(int id) //extern
+{
+	viewwin()->perform_menu_action(id);
+}
+void MainWin::perform_menu_action(int id)
+{
+	viewin_menu raii;
+
+	//* marked cases are unsafe to call
+	//without glutSetWindow.
+
+	MainWin *w = this; Model *m = model;
+
+	switch(id)
+	{
+	case 127: //Delete?
+
+		//REMOVE ME
+		//Note: The default key combo is Ctrl+Shift+D.
+		return viewwin_geomenufunc(viewwin_deletecmd);
+
+		/*File menu*/
+	
+	case id_file_new:
+		
+		new MainWin; return;
+
+	case id_file_open: 
+
+		MainWin::open(nullptr,w); return;
+
+	case id_file_close:
+
+		//2019: Changing behavior.
+		
+		if(1) //Open blank model?
+		{
+			MainWin::open("",this);
+			glutPostRedisplay();
+		}
+		else //Close window?
+		{
+			viewwin_close_func(); //*
+		}
+		return;
+
+	case id_file_save: 
+		
+		w->save_work(); return;
+
+	case id_file_save_as: 
+		
+		MainWin::save(model,false); return;
+
+	case id_file_export: 
+		
+		MainWin::save(model,true); return;
+
+	case id_file_export_selection: 
+		
+		if(m->getSelectedPointCount()
+		+m->getSelectedTriangleCount()
+		+m->getSelectedProjectionCount())
+		{
+			if(Model*tmp=m->copySelected())
+			{
+				MainWin::save(tmp,true); delete tmp;
+			}
+		}
+		else model_status(m,StatusError,STATUSTIME_LONG,
+		::tr("You must have at least 1 face, joint, or point selected to Export Selected"));
+		return;
+
+	//case id_file_run_script:
+	#ifdef HAVE_LUALIB
+	{
+		case id_file_run_script:
+		std::string file = config.get("ui_script_dir");
+		if(file.empty()) file = ".";	
+		file = Win::FileBox(file,
+		"Lua scripts (*.lua)" ";; " "All Files(*)", //::tr("All Files(*)")
+		::tr("Open model file"));
+		if(!file.empty())
+		{			
+			w->run_script(file);
+			config.set("ui_script_dir",file,file.rfind('/'));
+		}
+		return;
+	}
+	#endif //HAVE_LUALIB
+
+	case id_file_plugins: 
+		
+		extern void pluginwin(); 
+		pluginwin(); return;
+
+	case id_file_quit: 
+		
+		//TODO: Confirm close all windows if there are more than one.
+		if(MainWin::quit()) 
+		{
+			//qApp->quit();
+		}
+		return;
+
+	/*View->Render Options menu*/
+	case id_rops_hide_joints:
+
+		if(m->getSelectedBoneJointCount())
+		if('Y'==msg_info_prompt(::tr("Cannot hide with selected joints.  Unselect joints now?"),"yN"))		
+		{
+			m->unselectAll();
+			m->operationComplete(::tr("Hide bone joints"));
+		}
+		else return; //break; [[fallthrough]];
+		
+	case id_rops_line_joints: 
+	case id_rops_show_joints:
+
+		model->setDrawOption(Model::DO_BONES,id==id_rops_show_joints);
+		if(id-=id_rops_hide_joints)
+		config.set("ui_draw_joints",id);
+		m->setDrawJoints(id!=0);
+		break;
+
+	case id_rops_hide_projections:
+
+		if(model->getSelectedProjectionCount())	
+		if('Y'==msg_info_prompt(::tr("Cannot hide with selected projections.  Unselect projections now?"),"yN"))
+		{
+			m->unselectAll();
+			model->operationComplete(::tr("Hide projections"));
+		}
+		else return; //break; [[fallthrough]];
+
+	case id_rops_show_projections:
+		
+		id-=id_rops_hide_projections;
+		config.set("ui_render_projections",id);
+		model->setDrawProjections(!id);
+		break;
+
+	case id_rops_show_badtex: 
+	case id_rops_hide_badtex: 
+		
+		id-=id_rops_show_badtex;
+		config.set("ui_render_bad_textures",!id);
+		//NEW
+		model->setDrawOption(Model::DO_BADTEX,!id);
+		break;
+
+	case id_rops_show_lines:
+	case id_rops_hide_lines: 
+		
+		id-=id_rops_show_lines;
+		//Let Shift+W toggle.
+		if(id==!model->getDrawSelection())
+		{
+			id = !id;
+			glutext::glutMenuEnable(id_rops_show_lines+id,glutext::GLUT_MENU_CHECK);
+		}		
+		config.set("ui_render_3d_selections",!id);
+		model->setDrawSelection(!id);
+		break;
+
+	case id_rops_show_backs:
+	case id_rops_hide_backs:
+		
+		id-=id_rops_show_backs;
+		//Let Shift+F toggle.
+		if(id!=!(Model::DO_BACKFACECULL&model->getDrawOptions()))
+		{
+			id = !id;
+			glutext::glutMenuEnable(id_rops_show_backs+id,glutext::GLUT_MENU_CHECK);
+		}
+		config.set("ui_render_backface_cull",id);
+		//NEW
+		model->setDrawOption(Model::DO_BACKFACECULL,id!=0);
+		break;
+
+	/*View menu*/
+	case id_frame_all:
+	case id_frame_selection:
+		
+		w->frame(id==id_frame_all);
+		return;
+
+	case id_frame_lock: //EXPERIMENTAL
+
+		viewwin_interlock = glutGet(glutext::GLUT_MENU_CHECKED);
+		return;
+
+	//case id_view_props: //REMOVING
+	//	
+	//	w->sidebar.prop_panel.nav.open(); return;
+
+	case id_model_wireframe:
+	case id_model_flat:
+	case id_model_smooth:
+	case id_model_texture:
+	case id_model_blend:
+		
+		//Let W toggle modes.
+		{
+			int curr = m->getCanvasDrawMode()+id_model_wireframe;
+			if(id==curr) std::swap(id,_prev_mode);			
+			else _prev_mode = curr;
+			glutext::glutMenuEnable(id,glutext::GLUT_MENU_CHECK);
+		}
+
+		id-=id_model_wireframe;		
+		m->setCanvasDrawMode((ModelViewport::ViewOptionsE)id);
+		break;
+	
+	case id_scene_wireframe: //id_view_prsp1
+	case id_scene_flat:
+	case id_scene_smooth:
+	case id_scene_texture:
+	case id_scene_blend:
+
+		id-=id_scene_wireframe;
+		m->setPerspectiveDrawMode((ModelViewport::ViewOptionsE)id);
+		break;
+
+		//_view lets Q toggle modes.
+	case id_view_1:   _view(id,&ViewPanel::view1);   break;
+	case id_view_2:   _view(id,&ViewPanel::view2);   break;
+	case id_view_1x2: _view(id,&ViewPanel::view1x2); break;
+	case id_view_2x1: _view(id,&ViewPanel::view2x1); break;
+	case id_view_2x2: _view(id,&ViewPanel::view2x2); break;
+	case id_view_3x2: _view(id,&ViewPanel::view3x2); break;
+
+	case id_view_swap: w->views.rearrange(1); break;
+	case id_view_flip: w->views.rearrange(2); break;
+
+	case id_view_settings:
+		
+		extern void viewportsettings(Model*); 
+		viewportsettings(model); break;
+
+	/*View->Snap To menu*/
+	case id_snap_grid: //*
+	case id_snap_vert: //*
+	{
+		int x = glutGet(glutext::GLUT_MENU_CHECKED);
+
+		config.set(id==id_snap_grid?"ui_snap_grid":"ui_snap_vertex",x);
+		
+		Model::ViewportUnits &vu = model->getViewportUnits();
+
+		int y = id==id_snap_grid?vu.UnitSnap:vu.VertexSnap;
+
+		if(x) vu.snap|=y; else vu.snap&=~y; 
+
+		return;
+	}
+	/*Model menu*/
+	case id_edit_undo: w->undo(); break;
+	case id_edit_redo: w->redo(); break;
+	case id_edit_metadata:
+		
+		extern void metawin(Model*);
+		metawin(m); return;
+
+	case id_transform: 
+		
+		w->open_transform_window(); return;
+
+	//case id_modl_boolop: //REMOVING 
+	//	
+	//	w->sidebar.bool_panel.nav.open(); return;
+
+	case id_background_settings: 
+		
+		extern void backgroundwin(Model*);
+		backgroundwin(m); return;
+
+	case id_merge_models:
+	case id_merge_animations:
+
+		MainWin::merge(m,id==id_merge_animations); return;
+
+	/*Materials menu*/
+	case id_group_settings:
+
+		extern void groupwin(Model*);
+		groupwin(m); return;
+
+	case id_material_settings: 
+
+		extern void texwin(Model*);
+		texwin(m); return;
+
+	case id_material_cleanup: 
+		
+		extern void groupclean(Model*);
+		groupclean(m); return;
+
+	case id_refresh_textures: 
+	
+		//NOTE: It does timestamp comparison, but I think
+		//it should be limited to the current main window.
+		if(TextureManager::getInstance()->reloadTextures())		
+		for(auto ea:viewwin_list)
+		{
+			Model *model = ea->model;
+			model->invalidateTextures();
+			views.modelUpdatedEvent();
+		}
+		return;
+
+	case id_projection_settings: 
+		
+		w->open_projection_window(); return;
+	
+	case id_uv_editor:
+
+		w->open_texture_window(); return;
+
+	case id_uv_render:
+		
+		extern void painttexturewin(Model*);
+		painttexturewin(m); return;
+
+	/*Influences menu*/
+	case id_joint_settings: 
+		
+		extern void jointwin(Model*);
+		jointwin(m); return;
+		
+	case id_joint_attach_verts:
+	case id_joint_weight_verts:
+	case id_joint_remove_bones:
+	case id_joint_remove_selection:
+	case id_joint_simplify:
+	case id_joint_select_bones_of:
+	case id_joint_select_verts_of:
+	case id_joint_select_points_of:
+	case id_joint_unnassigned_verts:
+	case id_joint_unnassigned_points:
+
+		extern void viewwin_influences(Model*,int);
+		viewwin_influences(m,id); return;
+
+	case id_animate_settings: 
+		
+		extern void animsetwin(MainWin&);
+		animsetwin(*this); return;
+
+	case id_animate_render:
+		
+		extern void animexportwin(Model*,ViewPanel*);
+		animexportwin(m,&w->views); return;
+		
+	case id_animate_window:
+		
+		open_animation_window(); return;
+
+	case id_animate_copy: 
+	case id_animate_copy_selection:
+	case id_animate_paste:
+	//case id_animate_paste_selection:
+	case id_animate_clear:	
+
+	case id_animate_play: case id_animate_pause:
+		
+		if(!_animation_win)
+		open_animation_system();
+		_animation_win->submit(id);
+		return;
+	
+	case id_animate_rotate: 
+	case id_animate_translate: 
+	{
+		//I believe this bogus code has the side-effect of making a position
+		//uninterpolated. I believe id_animate_clear has the opposite effect.
+		bool r = id==id_animate_rotate; Matrix i; double point[3] = {};		
+		if(r) m->rotateSelected(i,point); else m->translateSelected(i);
+		m->operationComplete(::tr(r?"Set rotation keframe":"Set translation keframe"));
+		return;
+	}
+	
+	/*Help menu*/
+	case id_help: 
+	case id_about:
+	case id_license:
+
+		extern void aboutwin(int); 
+		aboutwin(id); return;
+	}
+
+	views.modelUpdatedEvent(); //HACK //???
+}
+void MainWin::_view(int i, void (ViewPanel::*mf)())
+{
+	//95% of this code deal with 2x modes.
+	//It's a simple concept otherwise.
+	bool two = 2==views.viewsN;
+	if(i==_curr_view||two&&i==id_view_2)
+	{
+		glutext::glutMenuEnable(_prev_view,glutext::GLUT_MENU_CHECK);
+		perform_menu_action(_prev_view);			
+	}
+	else
+	{
+		(views.*mf)();
+		if(i==id_view_2)
+		i = views.views1x2?id_view_1x2:id_view_2x1;		
+		if(!two||2!=views.viewsN)
+		_prev_view = _curr_view;
+		_curr_view = i;
+	}	
+}
+
+void viewwin_toolboxfunc(int id) //extern
+{	
+	int iid = id;
+
+	MainWin *w = viewwin();
+	bool def = id_tool_none==id;
+	bool cmp = w->toolbox.getCurrentTool()->isNullTool();
+	Tool *tool = nullptr; 
+	switch(id)
+	{
+	case id_tool_recall:
+
+		iid = id = w->_prev_tool; break;
+
+	case id_tool_toggle:
+	
+		def = !cmp;
+		iid = id = cmp?w->_curr_tool:id_tool_none; 
+		if(cmp) break;
+
+	case id_tool_none:
+
+		w->toolbox.setCurrentTool();
+		tool = w->toolbox.getCurrentTool();
+		w->views.timeline.redraw();
+		id = 0; break;
+	}
+	if(!tool)
+	{
+		tool = w->toolbox.getFirstTool();
+		for(;tool;tool=w->toolbox.getNextTool())
+		{
+			int iN = tool->getToolCount(); 
+			if(id>=iN||tool->isSeparator())
+			id-=iN; else break;
+		}
+	}
+	if(!tool){ assert(0); return; } //???
+		
+	//REMOVE ME
+	//w->toolbox.getCurrentTool()->deactivated();
+	w->toolbox.setCurrentTool(tool);
+	
+	//tool->activated(id);
+	w->views.setCurrentTool(tool,id); //NEW
+	
+	if(!def&&iid!=w->_curr_tool)
+	{
+		w->_prev_tool = w->_curr_tool;
+		w->_curr_tool = iid;
+	}
+
+	if(viewwin_toolbar!=glutGetMenu()) //Window menu?
+	{
+		//NOTE: wxWidets doesn't do this. I can't figure out
+		//a sane way to do it without assuming that the menu
+		//item IDs are the same for the toolbar's. Even then
+		//it's hard to say items definitely belong to a menu.
+		glutSetMenu(viewwin_toolbar);
+		glutext::glutMenuEnable(iid,glutext::GLUT_MENU_CHECK);
+	}
+
+	bool empty = !w->views.params.nav.first_child();
+	w->views.params.nav.set_hidden(empty||def);
+	w->views.timeline.set_hidden(!def);
+
+	int wx = glutGet(GLUT_WINDOW_X);
+	int x = glutGet(glutext::GLUT_X)-wx;
+	int div = w->views.shape[0]/7;
+	enum{ l=Win::left,c=Win::center,r=Win::right };
+	w->views.params.nav.align(x>div*2?x>div*5?r:c:l);
+
+	//TESTING
+	//May want to do regardless??
+	//Trying to offer visual cues by hiding vertices?
+	if(def!=cmp) glutPostWindowRedisplay(w->glut_window_id);
+}
+
+static void viewwin_geomenufunc(int id)
+{
+	viewin_menu raii;
+
+	auto cmgr = CommandManager::getInstance();
+	for(Command*cmd=cmgr->getFirstCommand();cmd;cmd=cmgr->getNextCommand())
+	{
+		int iN = cmd->getCommandCount();
+		if(id<iN&&!cmd->isSeparator())
+		{
+			Model *model = viewwin()->model;
+			if(cmd->activated(id,model))
+			model->operationComplete(TRANSLATE("Command",cmd->getName(id)));
+			return;
+		}
+		id-=iN;
+	}
+}
+
+static void viewwin_mrumenufunc(int id)
+{
+	MainWin *w = viewwin();
+	
+	utf8 cmp = "script_mru";
+	utf8 cfg = cmp+(id==100?0:7);
+	if(id>=100) id-=100;
+	
+	std::string &mru = config.get(cfg);
+
+	size_t pos = 0; while(id-->0)
+	{
+		pos = mru.find('\n',pos+1); 
+	}
+	if(~pos)
+	{
+		if(pos) pos++;
+	}
+	else{ assert(~pos); return; }
+	
+	size_t pos2 = mru.find('\n',pos);
+	if(~pos2) mru[pos2] = '\0';
+
+	char *str = const_cast<char*>(mru.c_str()+pos);
+
+	#ifdef WIN32
+	for(char*p=str;*p;p++) if(*p=='\\') *p = '/';
+	#endif
+
+	//viewwin_mru consumes this string.
+	std::string buf(str);
+
+	if(cfg==cmp)
+	{
+		w->run_script(buf.c_str());
+	}
+	else MainWin::open(buf.c_str(),w);
 }
-
-void ViewWindow::editEnableEvent()
-{
-   m_canEdit = true;
-   m_viewPanel->setEnabled( m_canEdit );
-}
-
-void ViewWindow::undoRequest()
-{
-   log_debug( "undo request\n" );
-
-   if ( m_model->canUndo() )
-   {
-      const char * opname = m_model->getUndoOpName();
-
-      if ( m_animWin->isVisible() )
-      {
-         m_animWidget->undoRequest();
-      }
-      else
-      {
-         m_model->undo();
-
-         if ( m_model->getAnimationMode() )
-         {
-            m_animWidget->initialize( m_model, true );
-            animationModeOn();
-            m_animWin->show();
-         }
-         else
-         {
-            m_viewPanel->modelUpdatedEvent();
-         }
-      }
-      
-      QString str = tr( "Undo %1" ).arg( (opname && opname[0]) ? opname : "" );
-      model_status ( m_model, StatusNormal, STATUSTIME_SHORT, "%s", 
-            (const char *) str.toUtf8() );
-
-      if ( m_model->getSelectedBoneJointCount() > 0 )
-      {
-         m_model->setDrawJoints( 
-               (Model::DrawJointModeE) g_prefs( "ui_draw_joints" ).intValue() );
-         m_viewPanel->modelUpdatedEvent();
-      }
-   }
-   else
-   {
-      model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Nothing to undo").toUtf8() );
-   }
-}
-
-void ViewWindow::redoRequest()
-{
-   log_debug( "redo request\n" );
-
-   if ( m_model->canRedo() )
-   {
-      const char * opname = m_model->getRedoOpName();
-
-      if ( m_animWin->isVisible() )
-      {
-         m_animWidget->redoRequest();
-      }
-      else
-      {
-         m_model->redo();
-
-         if ( m_model->getAnimationMode() )
-         {
-            m_animWidget->initialize( m_model, true );
-            animationModeOn();
-            m_animWin->show();
-         }
-         else
-         {
-            m_viewPanel->modelUpdatedEvent();
-         }
-      }
-
-      if ( m_model->getSelectedBoneJointCount() > 0 )
-      {
-         m_model->setDrawJoints( 
-               (Model::DrawJointModeE) g_prefs( "ui_draw_joints" ).intValue() );
-         m_viewPanel->modelUpdatedEvent();
-      }
-      
-      QString str = tr( "Redo %1" ).arg( (opname && opname[0]) ? opname : "" );
-      model_status ( m_model, StatusNormal, STATUSTIME_SHORT, "%s", 
-            (const char *) str.toUtf8() );
-   }
-   else
-   {
-      model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Nothing to redo").toUtf8() );
-   }
-}
-
-void ViewWindow::snapToSelectedEvent( QAction * snapTo )
-{
-   log_debug( "snapToSelectedEvent( %d )\n", snapTo );
-   g_prefs( "ui_snap_grid" )   = ( m_snapToGrid->isChecked() ) ? 1 : 0;
-   g_prefs( "ui_snap_vertex" ) = ( m_snapToVertex->isChecked() ) ? 1 : 0;
-}
-
-void ViewWindow::helpWindowEvent()
-{
-   HelpWin * win = new HelpWin();
-   win->show();
-}
-
-void ViewWindow::aboutWindowEvent()
-{
-   AboutWin * win = new AboutWin();
-   win->show();
-}
-
-void ViewWindow::licenseWindowEvent()
-{
-   LicenseWin * win = new LicenseWin();
-   win->show();
-}
-
-void ViewWindow::animSetWindowEvent()
-{
-   if ( m_animWin->isVisible() )
-   {
-      stopAnimationMode();
-   }
-
-   AnimSetWindow asw( m_model, this );
-   asw.exec();
-}
-
-void ViewWindow::animExportWindowEvent()
-{
-   if ( m_model->getAnimCount( Model::ANIMMODE_SKELETAL ) > 0 
-         || m_model->getAnimCount( Model::ANIMMODE_FRAME ) > 0 )
-   {
-      AnimExportWindow aew( m_model, m_viewPanel, this );
-      aew.exec();
-   }
-   else
-   {
-      msg_error( (const char *) tr("This model does not have any animations").toUtf8() );
-   }
-}
-
-void ViewWindow::animSetRotEvent()
-{
-   double point[3] = { 0.0, 0.0, 0.0 };
-   Matrix m;
-   m.loadIdentity();
-   m_model->rotateSelected( m, point );
-   m_model->operationComplete( tr("Set rotation keframe").toUtf8() );
-}
-
-void ViewWindow::animSetTransEvent()
-{
-   Matrix m;
-   m.loadIdentity();
-   m_model->translateSelected( m );
-   m_model->operationComplete( tr("Set translation keframe").toUtf8() );
-}
-
-void ViewWindow::animCopyFrameEvent()
-{
-   if ( m_animWin->isVisible() )
-   {
-      m_animPasteFrame->setEnabled( false );
-      m_animPasteSelected->setEnabled( false );
-
-      if ( m_animWidget->copyFrame( false ) )
-      {
-         m_animPasteFrame->setEnabled( true );
-      }
-   }
-}
-
-void ViewWindow::animPasteFrameEvent()
-{
-   if ( m_animWin->isVisible() )
-   {
-      m_animWidget->pasteFrame();
-   }
-}
-
-void ViewWindow::animCopySelectedEvent()
-{
-   if ( m_animWin->isVisible() )
-   {
-      m_animPasteFrame->setEnabled( false );
-      m_animPasteSelected->setEnabled( false );
-
-      if ( m_animWidget->copyFrame( true ) )
-      {
-         m_animPasteSelected->setEnabled( true );
-      }
-   }
-}
-
-void ViewWindow::animPasteSelectedEvent()
-{
-   animPasteFrameEvent(); // Same logic for both
-}
-
-void ViewWindow::animClearFrameEvent()
-{
-   if ( m_animWin->isVisible() )
-   {
-      m_animWidget->clearFrame();
-   }
-}
-
-void ViewWindow::startAnimationMode()
-{
-   m_animWidget->initialize( m_model, false );
-   animationModeOn();
-   m_animWin->show();
-}
-
-void ViewWindow::stopAnimationMode()
-{
-   m_animWin->close();
-   m_animWidget->stopAnimationMode();
-   animationModeOff();
-}
-
-void ViewWindow::animationModeOn()
-{
-   m_animExportItem->setEnabled( false );
-   m_startAnimItem->setEnabled( false );
-   m_stopAnimItem->setEnabled(  true  );
-   m_animSetRotItem->setEnabled(  true  );
-   m_animSetTransItem->setEnabled(  true  );
-   m_animCopyFrame->setEnabled(  true  );
-   m_animPasteFrame->setEnabled(  false  ); // Disabled until copy occurs
-   m_animClearFrame->setEnabled(  true  );
-   m_animCopySelected->setEnabled(  true  );
-   m_animPasteSelected->setEnabled(  false  ); // Disabled until copy occurs
-}
-
-void ViewWindow::animationModeOff()
-{
-   m_model->setNoAnimation();
-   m_viewPanel->modelUpdatedEvent();
-   m_animWin->close();
-   m_animExportItem->setEnabled( true );
-   m_startAnimItem->setEnabled( true );
-   m_stopAnimItem->setEnabled(  false  );
-   m_animSetRotItem->setEnabled(  false  );
-   m_animSetTransItem->setEnabled(  false  );
-   m_animCopyFrame->setEnabled(  false  );
-   m_animPasteFrame->setEnabled(  false  );
-   m_animClearFrame->setEnabled(  false  );
-   m_animCopySelected->setEnabled(  false  );
-   m_animPasteSelected->setEnabled(  false  );
-
-   editEnableEvent();
-}
-
-void ViewWindow::contextPanelHidden()
-{
-   m_showContext->setText( tr( "Show Properties", "View|Show Properties") );
-   //m_viewPanel->modelUpdatedEvent();
-}
-
-void ViewWindow::buttonToggled( bool on )
-{
-   if ( on )
-   {
-      if ( m_currentTool )
-         m_currentTool->deactivated();
-
-      for ( int t = 0; t < m_toolCount; t++ )
-      {
-         if ( m_toolButtons[t]->isChecked() )
-         {
-            if ( m_last != m_toolButtons[t] )
-            {
-               m_currentTool = m_toolList[ t ];
-               m_currentTool->activated( 0, m_model, this );
-               m_toolbox->setCurrentTool( m_currentTool );
-               break;
-            }
-         }
-      }
-   }
-}
-
-static void _registerKeyBinding( ::Tool * tool, int index,
-      QMenu * menu, QAction * id )
-{
-   QString name = QString( "tool_" ) + QString::fromUtf8( tool->getName( 0 ) );
-
-   if ( index > 0 )
-   {
-      name += QString( "_" ) + QString::fromUtf8( tool->getName( index ) );
-   }
-
-   name = name.replace( QString("."), QString("") );
-   name = name.replace( QString(" "), QString("_") );
-   name = name.toLower();
-
-   QKeySequence key = g_keyConfig.getKey( (const char *) name.toUtf8() );
-
-   if ( !key.isEmpty() )
-   {
-      id->setShortcut( key );
-   }
-}
-
-static QString _makeToolTip( ::Tool * tool, int index )
-{
-   QString lookupStr = QString( "tool_" ) + QString::fromUtf8( tool->getName( 0 ) );
-
-   if ( index > 0 )
-   {
-      lookupStr += QString( "_" ) + QString::fromUtf8( tool->getName( index ) );
-   }
-
-   lookupStr = lookupStr.replace( QString("."), QString("") );
-   lookupStr = lookupStr.replace( QString(" "), QString("_") );
-   lookupStr = lookupStr.toLower();
-
-   QKeySequence key = g_keyConfig.getKey( (const char *) lookupStr.toUtf8() );
-
-   QString name = qApp->translate( "Tool", tool->getName( index ) );
-
-   if ( !key.isEmpty() )
-   {
-      name += QString(" (");
-      name += key.toString();
-      name += QString(")");
-   }
-   return name;
-}
-
-void ViewWindow::initializeToolbox()
-{
-   connect( m_toolMenu, SIGNAL(triggered(QAction*)), this, SLOT(toolActivated(QAction*)));
-   m_toolbox->registerAllTools();
-
-   QActionGroup * grp = new QActionGroup( this );
-
-   m_toolButtons = new QActionPtr[ m_toolbox->getToolCount() ];
-   m_toolList    = new ToolPtr[ m_toolbox->getToolCount() ];
-   m_toolCount = 0;
-
-   ::Tool * tool = m_toolbox->getFirstTool();
-   while ( tool )
-   {
-      if ( !tool->isSeparator() )
-      {
-         ToolMenuItemT * item;
-         QAction * id;
-         int count = tool->getToolCount();
-         if ( count > 1 )
-         {
-            QMenu * menu = new QMenu( this );
-            connect( menu, SIGNAL(triggered(QAction*)), this, SLOT(toolActivated(QAction*)));
-            for ( int t = 1; t < count; t++ )
-            {
-               const char * name = tool->getName( t );
-               id = menu->addAction( qApp->translate( "Tool", name ) );
-
-               _registerKeyBinding( tool, t, menu, id );
-
-               item = new ToolMenuItemT;
-               item->id = id;
-               item->tool = tool;
-               item->arg = t;
-
-               m_tools.push_back( item );
-
-               // Create tool button
-               QIcon set;
-               set.addPixmap( QPixmap( tool->getPixmap() ) );
-
-               m_toolList[m_toolCount] = tool;
-               // Text below
-               m_toolButtons[ m_toolCount ] = m_toolBar->addAction( set,
-                     qApp->translate( "Tool", tool->getName(t) ) );
-               m_toolButtons[ m_toolCount ]->setCheckable( true );
-               if ( name && name[0] )
-               {
-                  m_toolButtons[ m_toolCount ]->setToolTip( _makeToolTip( tool, t ) );
-               }
-
-               connect( m_toolButtons[m_toolCount], SIGNAL(toggled(bool)), this, SLOT(buttonToggled(bool)));
-
-               grp->addAction( m_toolButtons[ m_toolCount ] );
-
-               m_toolCount++;
-            }
-
-            //id = m_toolMenu->addAction( qApp->translate( "Tool", tool->getName(0)), menu );
-            id = insertMenuItem( m_toolMenu, true, tool->getPath(),
-                  qApp->translate( "Tool", tool->getName(0)), menu );
-
-            _registerKeyBinding( tool, 0, m_toolMenu, id );
-
-            item = new ToolMenuItemT;
-            item->id = id;
-            item->tool = tool;
-            item->arg = 0;
-
-            m_tools.push_back( item );
-         }
-         else
-         {
-            const char * name = tool->getName( 0 );
-            //id = m_toolMenu->addAction( qApp->translate( "Tool", name ) );
-            id = insertMenuItem( m_toolMenu, true, tool->getPath(),
-                  qApp->translate( "Tool", tool->getName(0)), NULL );
-
-            _registerKeyBinding( tool, 0, m_toolMenu, id );
-
-            item = new ToolMenuItemT;
-            item->id = id;
-            item->tool = tool;
-            item->arg = 0;
-
-            m_tools.push_back( item );
-
-            // Create tool button
-            QIcon set;
-            set.addPixmap( QPixmap( tool->getPixmap() ) );
-
-            m_toolList[m_toolCount] = tool;
-            // Text below
-            m_toolButtons[ m_toolCount ] = m_toolBar->addAction( set,
-                     qApp->translate( "Tool", tool->getName(0) ) );
-            m_toolButtons[ m_toolCount ]->setCheckable( true );
-            if ( name && name[0] )
-            {
-               m_toolButtons[ m_toolCount ]->setToolTip( _makeToolTip( tool, 0 ) );
-            }
-
-            connect( m_toolButtons[m_toolCount], SIGNAL(toggled(bool)), this, SLOT(buttonToggled(bool)));
-
-            grp->addAction( m_toolButtons[ m_toolCount ] );
-
-            m_toolCount++;
-         }
-      }
-      else
-      {
-         m_toolMenu->addSeparator();
-      }
-      tool = m_toolbox->getNextTool();
-   }
-}
-
-static void _registerKeyBinding( Command * cmd, int index,
-      QMenu * menu, QAction * id )
-{
-   QString name = QString( "cmd_" ) + QString( cmd->getName( 0 ) );
-
-   if ( index > 0 )
-   {
-      name += QString( "_" ) + QString( cmd->getName( index ) );
-   }
-
-   name = name.replace( QString("."), QString("") );
-   name = name.replace( QString(" "), QString("_") );
-   name = name.toLower();
-
-   QKeySequence key = g_keyConfig.getKey( (const char *) name.toUtf8() );
-
-   if ( !key.isEmpty() )
-   {
-      id->setShortcut( key );
-   }
-}
-
-void ViewWindow::initializeCommands()
-{
-   //m_cmdMgr = new CommandManager();
-   //init_std_cmds( m_cmdMgr );
-   m_cmdMgr = CommandManager::getInstance();
-   Command * cmd = m_cmdMgr->getFirstCommand();
-   while ( cmd )
-   {
-      if ( !cmd->isSeparator() )
-      {
-         CommandMenuItemT * item;
-         QAction * id;
-         int count = cmd->getCommandCount();
-         if ( count > 1 )
-         {
-            QMenu * menu = new QMenu( this );
-            for ( int t = 1; t < count; t++ )
-            {
-               id = menu->addAction(  qApp->translate( "Command", cmd->getName(t) ) );
-
-               item = new CommandMenuItemT;
-               item->id = id;
-               item->command = cmd;
-               item->arg = t;
-               item->widget = new CommandWidget(this, m_model, &m_canEdit, cmd, t );
-               connect(id, SIGNAL(triggered(bool)), item->widget, SLOT(activateCommand(bool)));
-
-               _registerKeyBinding( cmd, t, menu, id );
-               m_primitiveCommands.push_back( item );
-            }
-
-            log_debug( "adding command '%s' to menus\n", cmd->getName(0) );
-            id = insertMenuItem( m_geometryMenu, false, cmd->getPath(),
-                  qApp->translate( "Command", cmd->getName(0) ), menu );
-            //id = m_geometryMenu->addAction( qApp->translate( "Command", cmd->getName(0) ), menu );
-            _registerKeyBinding( cmd, 0, m_geometryMenu, id );
-
-            item = new CommandMenuItemT;
-            item->id = id;
-            item->command = cmd;
-            item->arg = 0;
-            item->widget = new CommandWidget(this, m_model, &m_canEdit, cmd, 0 );
-            connect(id, SIGNAL(triggered(bool)), item->widget, SLOT(activateCommand(bool)));
-
-            m_primitiveCommands.push_back( item );
-         }
-         else
-         {
-            QMenu * curMenu = m_geometryMenu;
-            id = insertMenuItem( m_geometryMenu, false, cmd->getPath(),
-                   qApp->translate( "Command", cmd->getName(0)), NULL );
-            //id = curMenu->addAction( qApp->translate( "Command", cmd->getName(0)) );
-            item = new CommandMenuItemT;
-            item->id = id;
-            item->command = cmd;
-            item->arg = 0;
-            item->widget = new CommandWidget(this, m_model, &m_canEdit, cmd, 0 );
-            connect(id, SIGNAL(triggered(bool)), item->widget, SLOT(activateCommand(bool)));
-
-            _registerKeyBinding( cmd, 0, curMenu, id );
-
-            log_debug( "adding command '%s' to menus\n", cmd->getName(0) );
-            m_primitiveCommands.push_back( item );
-         }
-      }
-      else
-      {
-         m_geometryMenu->addSeparator();
-      }
-      cmd = m_cmdMgr->getNextCommand();
-   }
-}
-
-void ViewWindow::fillMruMenu()
-{
-   m_mruMenu->clear();
-   for ( unsigned i = 0; i < g_prefs("mru").count(); i++ )
-   {
-      m_mruMenu->addAction( QDir::toNativeSeparators( QString::fromUtf8( g_prefs("mru")[i].stringValue().c_str() ) ) );
-   }
-}
-
-void ViewWindow::openMru( QAction * id )
-{
-   openModelInWindow( QDir::fromNativeSeparators( id->text() ).toUtf8() );
-}
-
-void ViewWindow::fillScriptMruMenu()
-{
-   m_scriptMruMenu->clear();
-   for ( unsigned i = 0; i < g_prefs("script_mru").count(); i++ )
-   {
-      m_scriptMruMenu->addAction( QDir::toNativeSeparators( QString::fromUtf8( g_prefs("script_mru")[i].stringValue().c_str() ) ) );
-   }
-}
-
-void ViewWindow::openScriptMru( QAction * id )
-{
-   runScript( QDir::fromNativeSeparators( id->text() ).toUtf8() );
-}
-
-void ViewWindow::openModelEvent()
-{
-   openModelDialogInWindow();
-}
-
-bool ViewWindow::openModel( const char * filename )
-{
-   bool opened = false;
-
-   log_debug( " file: %s\n", filename );
-
-   Model::ModelErrorE err;
-   Model * model = new Model();
-   if ( (err = FilterManager::getInstance()->readFile( model, filename )) == Model::ERROR_NONE)
-   {
-      opened = true;
-
-      model_show_alloc_stats();
-
-      model->setSaved( true );
-      ViewWindow * win = new ViewWindow( model, NULL );
-      win->getSaved(); // Just so I don't have a warning
-
-      prefs_recent_model( filename );
-   }
-   else
-   {
-      if ( Model::operationFailed( err ) )
-      {
-         QString reason = modelErrStr( err, model );
-         reason = QString(filename) + QString(":\n") + reason;
-         msg_error( (const char *) reason.toUtf8() );
-      }
-      delete model;
-   }
-
-   return opened;
-}
-
-bool ViewWindow::openModelDialog( const char * openDirectory )
-{
-   bool opened = false;
-
-   list<string> formats = FilterManager::getInstance()->getAllReadTypes();
-
-   QString formatsStr = tr( "All Supported Formats" ) + QString( " (" );
-
-   list<string>::iterator it = formats.begin();
-   while(  it != formats.end() )
-   {
-      formatsStr += QString( (*it).c_str() );
-
-      it++;
-
-      if ( it != formats.end() )
-      {
-         formatsStr += QString(" ");
-      }
-   }
-
-   formatsStr += QString(")");
-
-   QString dir = QString::fromUtf8( g_prefs( "ui_model_dir" ).stringValue().c_str() );
-   if ( dir.isEmpty() )
-   {
-      dir = QString( "." );
-   }
-
-   if ( openDirectory )
-   {
-      dir = QString::fromUtf8( openDirectory );
-   }
-
-   QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; ") + tr( "All Files (*)" ) );
-
-   d.setWindowTitle( tr( "Open model file" ) );
-   d.selectNameFilter( formatsStr );
-
-   if ( QDialog::Accepted == d.exec() )
-   {
-      QStringList files = d.selectedFiles();
-
-      if ( files.empty() )
-         return false;
-
-      if ( openModel( files[0].toUtf8() ) )
-      {
-         opened = true;
-         g_prefs( "ui_model_dir" ) = (const char *) d.directory().absolutePath().toUtf8();
-      }
-   }
-
-   return opened;
-}
-
-bool ViewWindow::openModelInWindow( const char * filename )
-{
-   bool opened = false;
-
-   log_debug( " file: %s\n", filename );
-
-#ifndef CODE_DEBUG
-   if ( ! m_model->getSaved() )
-   {
-      int val = QMessageBox::warning( this, tr("Save first?"), tr("Model has been modified\nDo you want to save before closing?"), QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel );
-      switch ( val )
-      {
-         case QMessageBox::Yes:
-            m_abortQuit = false;
-            saveModelEvent();
-            if ( m_abortQuit )
-            {
-               return false;
-            }
-            break;
-         case QMessageBox::No:
-            break;
-         case QMessageBox::Cancel:
-            return false;
-            break;
-         default:
-            {
-               msg_error( (const char *) tr("Unknown response: Canceling operation").toUtf8() );
-            }
-            return false;
-      }
-   }
-#endif // CODE_DEBUG
-
-   Model::ModelErrorE err;
-   Model * model = new Model();
-   if ( (err = FilterManager::getInstance()->readFile( model, filename )) == Model::ERROR_NONE)
-   {
-      opened = true;
-
-      model_show_alloc_stats();
-
-      Model * oldModel = m_model;
-      setModel( model );
-      delete oldModel;
-
-      frameAllEvent();
-
-      prefs_recent_model( filename );
-   }
-   else
-   {
-      if ( Model::operationFailed( err ) )
-      {
-         QString reason = modelErrStr( err, model );
-         reason = QString(filename) + QString(":\n") + reason;
-         msg_error( (const char *) reason.toUtf8() );
-      }
-      delete model;
-   }
-
-   return opened;
-}
-
-bool ViewWindow::openModelDialogInWindow( const char * openDirectory )
-{
-   bool opened = false;
-
-   list<string> formats = FilterManager::getInstance()->getAllReadTypes();
-
-   QString formatsStr = tr( "All Supported Formats" ) + QString( " (" );
-
-   list<string>::iterator it = formats.begin();
-   while(  it != formats.end() )
-   {
-      formatsStr += QString( (*it).c_str() );
-
-      it++;
-
-      if ( it != formats.end() )
-      {
-         formatsStr += QString(" ");
-      }
-   }
-
-   formatsStr += QString(")");
-
-   QString dir = QString::fromUtf8( g_prefs( "ui_model_dir" ).stringValue().c_str() );
-   if ( dir.isEmpty() )
-   {
-      dir = ".";
-   }
-
-   if ( openDirectory )
-   {
-      dir = openDirectory;
-   }
-
-   QFileDialog d(NULL, QString(""), dir, formatsStr + QString(";; ") + tr( "All Files (*)" ) );
-
-   d.setWindowTitle( tr( "Open model file" ) );
-   d.selectNameFilter( formatsStr );
-
-   if ( QDialog::Accepted == d.exec() )
-   {
-      QStringList files = d.selectedFiles();
-
-      if ( files.empty() )
-         return false;
-
-      if ( openModelInWindow( files[0].toUtf8() ) )
-      {
-         opened = true;
-         g_prefs( "ui_model_dir" ) = (const char *) d.directory().absolutePath().toUtf8();
-      }
-   }
-
-   return opened;
-}
-
-void ViewWindow::invalidateModelTextures()
-{
-   ViewWindowList::iterator windowIter;
-   
-   Model * model;
-   DecalManager * mgr = DecalManager::getInstance();
-
-   for( windowIter = _winList.begin(); windowIter != _winList.end(); windowIter++ )
-   {
-      model = (*windowIter)->getModel();
-      model->invalidateTextures();
-      mgr->modelUpdated( model );
-   }
-}
-
-void ViewWindow::quitEvent()
-{
-   saveDockPositions();
-
-   if ( ViewWindow::closeAllWindows() )
-   {
-      qApp->quit();
-   }
-}
-
-void ViewWindow::pluginWindowEvent()
-{
-   // pluginWin will delete itself view WDestructiveClose
-   PluginWindow * pluginWin = new PluginWindow();
-   pluginWin->show();
-}
-
-void ViewWindow::backgroundWindowEvent()
-{
-   // pluginWin will delete itself view WDestructiveClose
-   BackgroundWin * win = new BackgroundWin( m_model );  
-   win->show();
-}
-
-void ViewWindow::newModelEvent()
-{
-   ViewWindow * win = new ViewWindow( new Model, NULL );
-   win->getSaved(); // Just so I don't have a warning
-}
-
-void ViewWindow::savedTimeoutCheck()
-{
-   updateCaption();
-}
-
-void ViewWindow::saveDockPositions()
-{
-   QString dockFile( getMm3dHomeDirectory().c_str() );
-   dockFile += "/";
-   dockFile += DOCK_FILENAME;
-
-   QFile fp( dockFile );
-   if ( fp.open( QIODevice::WriteOnly ) )
-   {
-      {
-         // Must go out of scope before fp is closed.
-         QDataStream stream(&fp);
-         stream << this->saveState( DOCK_VERSION );
-      }
-      fp.close();
-   }
-}
-
-void ViewWindow::loadDockPositions()
-{
-   QString dockFile( getMm3dHomeDirectory().c_str() );
-   dockFile += "/";
-   dockFile += DOCK_FILENAME;
-
-   QFile fp( dockFile );
-   if ( fp.open( QIODevice::ReadOnly ) )
-   {
-      {
-         // Must go out of scope before fp is closed.
-         QDataStream stream(&fp);
-         QByteArray state;
-         stream >> state;
-         this->restoreState( state, DOCK_VERSION );
-      }
-      fp.close();
-   }
-}
-
-void ViewWindow::updateCaption()
-{
-   QString caption = QString( "Maverick Model 3D: " );
-   if ( m_model )
-   {
-      caption += m_model->getSaved() ? QString("") : QString("* ");
-
-      const char * filename = m_model->getFilename();
-      if ( filename && filename[0] )
-      {
-         std::string fullName;
-         std::string fullPath;
-         std::string baseName;
-         normalizePath( filename, fullName, fullPath, baseName );
-
-         caption += baseName.c_str();
-      }
-      else
-      {
-         caption += tr( "[unnamed]", "For filename in title bar (if not set)" );
-      }
-   }
-
-   setWindowTitle( caption );
-}
-

@@ -1,111 +1,97 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2007 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2007 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
-
-#include "iqeprompt.h"
+#include "mm3dtypes.h" //PCH
+#include "win.h"
 #include "iqefilter.h"
-#include "model.h"
 
-#include "helpwin.h"
-
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QShortcut>
-
-IqePrompt::IqePrompt()
-   : QDialog( NULL )
+struct IqePrompt : Win
 {
-   setupUi( this );
-   setModal( true );
+	void submit(int);
 
-   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
-   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
+	IqePrompt(Model *model, IqeFilter::IqeOptions *iqe)
+		:
+	Win("IQE Filter Options"),
+	model(model),iqe(iqe),
+	a(main,"Save Meshes"),
+    b(main,"Save Points as Bone Joints"),
+    c(main,"Save Points in Animations"),
+	d(main,"Save Skeleton"),
+	e(main,"Save Animations"),
+	animation(main),
+	f1_ok_cancel(main)
+	{
+		animation.expand();
+
+		active_callback = &IqePrompt::submit;
+
+		submit(id_init);
+	}
+
+	Model *model;
+	IqeFilter::IqeOptions *iqe;
+
+	boolean a,b,c,d,e;
+	listbox animation; 
+	f1_ok_cancel_panel f1_ok_cancel; 
+};
+void IqePrompt::submit(int id)
+{
+	switch(id)
+	{
+	case id_init:
+
+		//NOTE: THESE ARE ALWAYS true.
+		a.set(iqe->m_saveMeshes);
+		b.set(iqe->m_savePointsJoint);
+		c.set(iqe->m_savePointsAnim);
+		d.set(iqe->m_saveSkeleton);
+		e.set(iqe->m_saveAnimations);
+		for(int i=0,iN=model->getAnimCount(Model::ANIMMODE_SKELETAL);i<iN;i++)
+		{
+			auto *ii = new multisel_item(i,model->getAnimName(Model::ANIMMODE_SKELETAL,i));
+			animation.add_item(ii->select());
+		}
+		break;
+
+	case id_ok:
+
+		iqe->m_saveMeshes = a;
+		iqe->m_savePointsJoint = b;
+		iqe->m_savePointsAnim = c;
+		iqe->m_saveSkeleton = d;
+		iqe->m_saveAnimations = e;
+		iqe->m_animations.clear();
+		animation^[&](li::multisel ea)
+		{
+			iqe->m_animations.push_back(ea->id());
+		};
+		break;
+	}
+
+	basic_submit(id);
 }
-
-IqePrompt::~IqePrompt()
+extern bool iqeprompt(Model *model, ModelFilter::Options *o)
 {
-}
-
-void IqePrompt::setOptions( IqeFilter::IqeOptions * opts, Model * model )
-{
-   m_saveMeshes->setChecked( opts->m_saveMeshes );
-   m_savePointsJoint->setChecked( opts->m_savePointsJoint );
-   m_savePointsAnim->setChecked( opts->m_savePointsAnim );
-   m_saveSkeleton->setChecked( opts->m_saveSkeleton );
-   m_saveAnimations->setChecked( opts->m_saveAnimations );
-   m_animList->clear();
-
-   unsigned count = model->getAnimCount( Model::ANIMMODE_SKELETAL );
-   for ( unsigned t = 0; t < count; t++ )
-   {
-      m_animList->insertItem( t, QString::fromUtf8( model->getAnimName( Model::ANIMMODE_SKELETAL, t ) ) );
-      m_animList->item(t)->setSelected( true );
-   }
-}
-
-void IqePrompt::getOptions( IqeFilter::IqeOptions * opts )
-{
-   opts->m_saveMeshes     = m_saveMeshes->isChecked();
-   opts->m_savePointsJoint= m_savePointsJoint->isChecked();
-   opts->m_savePointsAnim = m_savePointsAnim->isChecked();
-   opts->m_saveSkeleton   = m_saveSkeleton->isChecked();
-   opts->m_saveAnimations = m_saveAnimations->isChecked();
-   opts->m_animations.clear();
-
-   unsigned count = m_animList->count();
-   for ( unsigned t = 0; t < count; t++ )
-   {
-      if ( m_animList->item( t )->isSelected() )
-      {
-         opts->m_animations.push_back( t );
-      }
-   }
-}
-
-void IqePrompt::helpNowEvent()
-{
-   HelpWin * win = new HelpWin( "olh_iqeprompt.html", true );
-   win->show();
-}
-
-bool iqeprompt_show( Model * model, ModelFilter::Options * o )
-{
-   bool rval = false;
-   IqePrompt p;
-
-   IqeFilter::IqeOptions * opts = dynamic_cast< IqeFilter::IqeOptions * >( o );
-   if ( opts )
-   {
-      p.setOptions( opts, model );
-
-      if ( p.exec() )
-      {
-         rval = true;
-         p.getOptions( opts );
-      }
-   }
-   else
-   {
-      rval = true;
-   }
-   return rval;
+	auto iqe = o->getOptions<IqeFilter::IqeOptions>();
+	return iqe&&id_ok==IqePrompt(model,iqe).return_on_close();
 }

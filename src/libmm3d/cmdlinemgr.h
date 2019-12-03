@@ -1,23 +1,23 @@
-/*  Maverick Model 3D
- * 
- *  Copyright (c) 2004-2008 Kevin Worcester
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/*  MM3D Misfit/Maverick Model 3D
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c)2004-2008 Kevin Worcester
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
- *  USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License,or
+ * (at your option)any later version.
  *
- *  See the COPYING file for full license text.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not,write to the Free Software
+ * Foundation,Inc.,59 Temple Place-Suite 330,Boston,MA 02111-1307,
+ * USA.
+ *
+ * See the COPYING file for full license text.
  */
 
 
@@ -26,91 +26,95 @@
 
 #include <string>
 #include <map>
-
-#include "local_ptr.h"
+//#include "local_ptr.h" //unique_ptr
+#include <memory>
 
 class CommandLineManager
 {
-   public:
-      class Option
-      {
-         public:
-            Option( char shortOption, const char * longOption = NULL,
-                  const char * defaultValue = NULL,
-                  bool takesArg = false );
-            virtual ~Option();
+public:
 
-            char shortOption() const { return m_shortOption; }
-            const char * longOption() const { return m_longOption; }
-            bool takesArgument() const { return m_takesArg; }
+	class Option
+	{
+	public:
+		Option(char shortOption, const char *longOption = nullptr,
+				const char *defaultValue = nullptr,
+				bool takesArg = false);
+		virtual ~Option();
 
-            void parseOption(const char * arg);
+		char shortOption()const { return m_shortOption; }
+		const char *longOption()const { return m_longOption; }
+		bool takesArgument()const { return m_takesArg; }
 
-            int intValue() const { return m_intValue; }
-            const char * stringValue() const { return m_stringValue.c_str(); }
+		void parseOption(const char *arg);
 
-            bool isSpecified() const { return m_isSpecified; }
+		int intValue()const { return m_intValue; }
+		const char *stringValue()const { return m_stringValue.c_str(); }
 
-         protected:
-            void setIntValue(int val) { m_intValue = val; }
-            void setStringValue(const char * val) { m_stringValue = val; }
+		bool isSpecified()const { return m_isSpecified; }
 
-            virtual void customParse(const char * arg);
+	protected:
+		void setIntValue(int val){ m_intValue = val; }
+		void setStringValue(const char *val){ m_stringValue = val; }
 
-         private:
-            char m_shortOption;
-            const char * m_longOption;
-            bool m_takesArg;
+		virtual void customParse(const char *arg);
 
-            bool m_isSpecified;
+	private:
+		char m_shortOption;
+		const char *m_longOption;
+		bool m_takesArg;
 
-            int m_intValue;
-            std::string m_stringValue;
-      };
+		bool m_isSpecified;
 
-      enum ErrorE 
-      {
-         NoError,
-         UnknownOption,
-         MissingArgument,
-      };
+		int m_intValue;
+		std::string m_stringValue;
+	};
 
-      typedef void (*OptionFunctionF)(const char *);
+	enum ErrorE 
+	{
+		NoError,
+		UnknownOption,
+		MissingArgument,
+	};
 
-      CommandLineManager();
-      virtual ~CommandLineManager();
+	typedef void (*OptionFunctionF)(const char *);
 
-      bool parse( int argc, const char ** argv );
-      int firstArgument() const { return m_firstArg; }
+	CommandLineManager();
+	virtual ~CommandLineManager();
 
-      ErrorE error() const { return m_error; }
-      int errorArgument() const { return m_errorArg; }
+	bool parse(int argc, const char ** argv);
+	int firstArgument()const { return m_firstArg; }
 
-      void addOption( int id, char shortOption, const char * longOption = NULL,
-            const char * defaultValue = NULL, bool takesArg = false );
-      void addCustomOption( int id, Option * opt );
-      void addFunctionOption( int id, char shortOption, const char * longOption, bool takesArg,
-            OptionFunctionF optFunc );
+	ErrorE error()const { return m_error; }
+	int errorArgument()const { return m_errorArg; }
 
-      bool isSpecified( int optionId ) const;
-      int intValue( int optionId ) const;
-      const char * stringValue( int optionId ) const;
+	void addOption(int id,char shortOption, const char *longOption = nullptr,
+			const char *defaultValue = nullptr,bool takesArg = false);
+	void addCustomOption(int id,Option *opt);
+	void addFunctionOption(int id,char shortOption, const char *longOption,bool takesArg,
+			OptionFunctionF optFunc);
 
-      int getUniqueId();
+	bool isSpecified(int optionId)const;
+	int intValue(int optionId)const;
+	const char *stringValue(int optionId)const;
 
-   private:
-      typedef std::map< int, local_ptr<Option> > OptionListT;
+	int getUniqueId();
 
-      const Option * lookupOptionById( int optionId ) const;
-      Option * lookupOptionByShort( char shortOption );
-      Option * lookupOptionByLong( const char * longOption );
+private:
 
-      OptionListT m_optionList;
-      int m_uniqueId;
-      int m_firstArg;
+	//NONCE Removing local_ptr.h (one/only instance.)
+	//typedef std::map<int,local_ptr<Option>> OptionListT;
+	typedef std::map<int,std::unique_ptr<Option>> OptionListT;
 
-      ErrorE m_error;
-      int m_errorArg;
+	const Option *lookupOptionById(int optionId)const;
+	Option *lookupOptionByShort(char shortOption);
+	Option *lookupOptionByLong(const char *longOption);
+
+	OptionListT m_optionList;
+	int m_uniqueId;
+	int m_firstArg;
+
+	ErrorE m_error;
+	int m_errorArg;
 };
 
 #endif // CMDLINEMGR_H_INC__
