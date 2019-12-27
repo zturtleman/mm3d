@@ -2245,8 +2245,8 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
 
          model->getMetaData( m, key, sizeof(key), value, sizeof(value) );
 
-         unsigned keyLen = strlen( key ) + 1;
-         unsigned valueLen = strlen( value ) + 1;
+         uint32_t keyLen = strlen( key ) + 1;
+         uint32_t valueLen = strlen( value ) + 1;
 
          m_dst->write(keyLen + valueLen);
 
@@ -2373,7 +2373,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       for ( unsigned g = 0; g < count; g++ )
       {
          Model::Group * grp = modelGroups[g];
-         unsigned groupSize = baseSize + grp->m_name.length() + 1 
+         uint32_t groupSize = baseSize + grp->m_name.length() + 1
             + (grp->m_triangleIndices.size() * sizeof(uint32_t));
 
          uint16_t flags = 0x0000;
@@ -2420,7 +2420,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       for ( unsigned m = 0; m < count; m++ )
       {
          Model::Material * mat = modelMaterials[m];
-         unsigned matSize = baseSize + mat->m_name.length() + 1;
+         uint32_t matSize = baseSize + mat->m_name.length() + 1;
 
          uint16_t flags = 0x0000;
          uint32_t texIndex = texNum;  // TODO deal with embedded textures
@@ -2512,7 +2512,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
 
             replaceSlash( filename );
 
-            unsigned texSize = baseSize + strlen(filename) + 1;
+            uint32_t texSize = baseSize + strlen(filename) + 1;
 
             uint16_t flags = 0x0000;
 
@@ -2635,7 +2635,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
             cb.center[2] = cb.center[2];
 
             std::string fileStr = getRelativePath( modelPath.c_str(), file );
-            unsigned backSize = baseSize + fileStr.size() + 1;
+            uint32_t backSize = baseSize + fileStr.size() + 1;
 
             char * filedup = strdup( fileStr.c_str() );
             replaceSlash( filedup );
@@ -2957,7 +2957,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       for ( unsigned s = 0; s < count; s++ )
       {
          Model::SkelAnim * sa = modelSkels[s];
-         unsigned animSize = baseSize + sa->m_name.length() + 1;
+         uint32_t animSize = baseSize + sa->m_name.length() + 1;
 
          uint32_t frameCount = sa->m_frameCount;
          uint32_t keyframeCount = 0;
@@ -3057,7 +3057,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       for ( unsigned a = 0; a < count; a++ )
       {
          Model::FrameAnim * fa = modelFrames[a];
-         unsigned animSize = baseSize + fa->m_name.length() + 1;
+         uint32_t animSize = baseSize + fa->m_name.length() + 1;
 
          uint32_t frameCount = fa->m_frameData.size();
 
