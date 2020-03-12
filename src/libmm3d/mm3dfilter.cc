@@ -2132,6 +2132,17 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       }
    }
 
+   unsigned externalTextures = 0;
+   unsigned materialCount = modelMaterials.size();
+   for ( unsigned m = 0; m < materialCount; m++ )
+   {
+      Model::Material * mat = modelMaterials[m];
+      if ( mat->m_type == Model::Material::MATTYPE_TEXTURE )
+      {
+         externalTextures++;
+      }
+   }
+
    bool haveProjectionTriangles = false;
    if ( model->getProjectionCount() > 0 )
    {
@@ -2152,7 +2163,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
    doWrite[ MDT_TriangleNormals ]     = (modelTriangles.size() > 0);
    doWrite[ MDT_Groups ]              = (modelGroups.size() > 0);
    doWrite[ MDT_Materials ]           = (modelMaterials.size() > 0);
-   doWrite[ MDT_ExtTextures ]         =  doWrite[ MDT_Materials ];
+   doWrite[ MDT_ExtTextures ]         = (externalTextures > 0);
    doWrite[ MDT_TexCoords ]           = true; // Some users map texture coordinates before assigning a texture (think: paint texture)
    doWrite[ MDT_ProjectionTriangles ] = haveProjectionTriangles;
    doWrite[ MDT_CanvasBackgrounds ]   = (backgrounds > 0);
@@ -2402,8 +2413,6 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       log_debug( "wrote %d groups\n", count );
    }
 
-   int texNum = 0;
-
    // Materials
    if ( doWrite[ MDT_Materials ] )
    {
@@ -2417,6 +2426,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       unsigned baseSize = sizeof(uint16_t) + sizeof(uint32_t)
          + (sizeof(float32_t) * 17);
 
+      int texNum = 0;
       int internalTextures = 0;
 
       for ( unsigned m = 0; m < count; m++ )
@@ -2498,13 +2508,13 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       _setOffset( MDT_ExtTextures, m_dst->offset(), offsetList );
       _setUniformOffset( MDT_ExtTextures, false, offsetList );
 
-      unsigned count = modelMaterials.size();
+      unsigned count = externalTextures;
 
       writeHeaderA( 0x0000, count );
 
       unsigned baseSize = sizeof(uint16_t);
 
-      for ( unsigned m = 0; m < count; m++ )
+      for ( unsigned m = 0; m < materialCount; m++ )
       {
          Model::Material * mat = modelMaterials[m];
          if ( mat->m_type == Model::Material::MATTYPE_TEXTURE )
@@ -2528,7 +2538,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
             log_debug( "material file is %s\n", filename );
          }
       }
-      log_debug( "wrote %d external textures\n", texNum );
+      log_debug( "wrote %d external textures\n", count );
    }
 
    // Texture Coordinates
