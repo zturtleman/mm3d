@@ -20,6 +20,7 @@
  *  See the COPYING file for full license text.
  */
 
+#include <algorithm>
 
 #include "mm3dfilter.h"
 
@@ -2132,14 +2133,33 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       }
    }
 
-   unsigned externalTextures = 0;
+   std::vector< std::string > texNames;
+   std::vector< int > materialTexMap;
    unsigned materialCount = modelMaterials.size();
    for ( unsigned m = 0; m < materialCount; m++ )
    {
       Model::Material * mat = modelMaterials[m];
       if ( mat->m_type == Model::Material::MATTYPE_TEXTURE )
       {
-         externalTextures++;
+         std::vector<std::string>::iterator it = std::find( texNames.begin(), texNames.end(), mat->m_filename );
+
+         if ( it == texNames.end() )
+         {
+            int texIndex = texNames.size();
+            log_debug( "material %s -> external texture %d (%s): New texture\n", mat->m_name.c_str(), texIndex, mat->m_filename.c_str() );
+            materialTexMap.push_back( texNames.size() );
+            texNames.push_back( mat->m_filename );
+         }
+         else
+         {
+            int texIndex = it - texNames.begin();
+            log_debug( "material %s -> external texture %d (%s): Reused texture\n", mat->m_name.c_str(), texIndex, texNames[texIndex].c_str() );
+            materialTexMap.push_back( it - texNames.begin() );
+         }
+      }
+      else
+      {
+         materialTexMap.push_back( 0 );
       }
    }
 
@@ -2163,7 +2183,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
    doWrite[ MDT_TriangleNormals ]     = (modelTriangles.size() > 0);
    doWrite[ MDT_Groups ]              = (modelGroups.size() > 0);
    doWrite[ MDT_Materials ]           = (modelMaterials.size() > 0);
-   doWrite[ MDT_ExtTextures ]         = (externalTextures > 0);
+   doWrite[ MDT_ExtTextures ]         = (texNames.size() > 0);
    doWrite[ MDT_TexCoords ]           = true; // Some users map texture coordinates before assigning a texture (think: paint texture)
    doWrite[ MDT_ProjectionTriangles ] = haveProjectionTriangles;
    doWrite[ MDT_CanvasBackgrounds ]   = (backgrounds > 0);
@@ -2426,7 +2446,6 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       unsigned baseSize = sizeof(uint16_t) + sizeof(uint32_t)
          + (sizeof(float32_t) * 17);
 
-      int texNum = 0;
       int internalTextures = 0;
 
       for ( unsigned m = 0; m < count; m++ )
@@ -2435,7 +2454,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
          uint32_t matSize = baseSize + mat->m_name.length() + 1;
 
          uint16_t flags = 0x0000;
-         uint32_t texIndex = texNum;  // TODO deal with embedded textures
+         uint32_t texIndex = materialTexMap[m];  // TODO deal with embedded textures
 
          switch ( mat->m_type )
          {
@@ -2453,7 +2472,6 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
                break;
             case Model::Material::MATTYPE_TEXTURE:
                flags = 0x0000;
-               texNum++;
                break;
             default:
                break;
@@ -2508,35 +2526,31 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       _setOffset( MDT_ExtTextures, m_dst->offset(), offsetList );
       _setUniformOffset( MDT_ExtTextures, false, offsetList );
 
-      unsigned count = externalTextures;
+      unsigned count = texNames.size();
 
       writeHeaderA( 0x0000, count );
 
       unsigned baseSize = sizeof(uint16_t);
 
-      for ( unsigned m = 0; m < materialCount; m++ )
+      for ( unsigned t = 0; t < count; t++ )
       {
-         Model::Material * mat = modelMaterials[m];
-         if ( mat->m_type == Model::Material::MATTYPE_TEXTURE )
-         {
-            std::string fileStr = getRelativePath( modelPath.c_str(), mat->m_filename.c_str() );
+         std::string fileStr = getRelativePath( modelPath.c_str(), texNames[t].c_str() );
 
-            char filename[PATH_MAX];
-            strncpy( filename, fileStr.c_str(), PATH_MAX );
-            utf8chrtrunc( filename, sizeof(filename)-1 );
+         char filename[PATH_MAX];
+         strncpy( filename, fileStr.c_str(), PATH_MAX );
+         utf8chrtrunc( filename, sizeof(filename)-1 );
 
-            replaceSlash( filename );
+         replaceSlash( filename );
 
-            uint32_t texSize = baseSize + strlen(filename) + 1;
+         uint32_t texSize = baseSize + strlen(filename) + 1;
 
-            uint16_t flags = 0x0000;
+         uint16_t flags = 0x0000;
 
-            m_dst->write( texSize );
-            m_dst->write( flags );
-            m_dst->writeBytes( (const uint8_t *) filename, strlen(filename) + 1 );
+         m_dst->write( texSize );
+         m_dst->write( flags );
+         m_dst->writeBytes( (const uint8_t *) filename, strlen(filename) + 1 );
 
-            log_debug( "material file is %s\n", filename );
-         }
+         log_debug( "texture file is %s\n", filename );
       }
       log_debug( "wrote %d external textures\n", count );
    }
