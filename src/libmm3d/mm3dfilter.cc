@@ -2576,6 +2576,8 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
 
       writeHeaderA( 0x0000, pcount );
 
+      unsigned totaltris = 0;
+
       for ( unsigned p = 0; p < pcount; p++ )
       {
          unsigned wcount = 0; // triangles to write
@@ -2589,6 +2591,8 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
                wcount++;
             }
          }
+
+         totaltris += wcount;
 
          uint32_t triSize = sizeof(uint32_t) * 2 
                + sizeof(uint32_t) * wcount;
@@ -2608,7 +2612,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
             }
          }
       }
-      log_debug( "wrote %d external textures\n", texNum );
+      log_debug( "wrote %d triangles affected by a texture projection\n", totaltris );
    }
 
    // Canvas Backgrounds
