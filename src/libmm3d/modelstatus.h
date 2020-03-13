@@ -58,7 +58,7 @@ const unsigned STATUSTIME_LONG  = 6500;
 
 typedef StatusObject * (*StatusObjectFunction)(Model *);
 
-extern "C" void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... );
+extern "C" void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... ) __attribute__ ((format (printf, 4, 5)));
 StatusObject * model_status_get_object( Model * model );
 void model_status_register_function( StatusObjectFunction func );
 

@@ -120,8 +120,8 @@ class ObjFilter : public ModelFilter
       void addObjMaterial( ObjMaterial * mat );
       char * skipSpace( char * str );
 
-      bool writeLine( const char * line, ... );
-      bool writeStripped( const char * line, ... );
+      bool writeLine( const char * line, ... ) __attribute__ ((format (printf, 2, 3)));
+      bool writeStripped( const char * line, ... ) __attribute__ ((format (printf, 2, 3)));
       bool writeHeader();
       bool writeMaterials();
       bool writeGroups();

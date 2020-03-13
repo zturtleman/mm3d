@@ -51,7 +51,7 @@ class D3dFilter : public ModelFilter
 
       DataDest * m_dst;
 
-      bool writeLine( const char * line, ... );
+      bool writeLine( const char * line, ... ) __attribute__ ((format (printf, 2, 3)));
 };
 
 #endif // __D#DFILTER_H

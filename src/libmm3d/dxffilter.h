@@ -70,7 +70,7 @@ class DxfFilter : public ModelFilter
       typedef enum _ReadState_e ReadStateE;
 
       bool readLine( const char * line );
-      bool writeLine( const char * line, ... );
+      bool writeLine( const char * line, ... ) __attribute__ ((format (printf, 2, 3)));
 
       bool readMain( const char * line );
       bool readSection( const char * line );
