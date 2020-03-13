@@ -50,7 +50,7 @@ int Model::addAnimation( AnimationModeE m, const char * name )
                anim->m_name = name;
                anim->m_fps  = 30.0;
                anim->m_spf  = (1.0 / anim->m_fps);
-               anim->m_loop = true;
+               anim->m_loop = false;
                anim->m_frameCount = 1;
                anim->m_validNormals = false;
 
@@ -74,7 +74,7 @@ int Model::addAnimation( AnimationModeE m, const char * name )
                FrameAnim * anim = FrameAnim::get();
                anim->m_name = name;
                anim->m_fps = 10.0;
-               anim->m_loop = true;
+               anim->m_loop = false;
                anim->m_validNormals = false;
 
                MU_AddAnimation * undo = new MU_AddAnimation();
