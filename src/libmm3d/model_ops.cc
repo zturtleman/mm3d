@@ -559,7 +559,7 @@ bool Model::equivalent( const Model * model, double tolerance ) const
       if ( fabs( getAnimFPS( mode, a ) - model->getAnimFPS( mode, a ) )
             > tolerance )
       {
-         log_warning( "animation fps mismatch on %d, lhs = %d, rhs = %d\n",
+         log_warning( "animation fps mismatch on %d, lhs = %f, rhs = %f\n",
                a, model->getAnimFPS( mode, a ), model->getAnimFPS( mode, a ) );
          return false;
       }
@@ -672,7 +672,7 @@ bool Model::equivalent( const Model * model, double tolerance ) const
       if ( fabs( getAnimFPS( mode, a ) - model->getAnimFPS( mode, a ) )
             > tolerance )
       {
-         log_warning( "animation fps mismatch on %d, lhs = %d, rhs = %d\n",
+         log_warning( "animation fps mismatch on %d, lhs = %f, rhs = %f\n",
                a, model->getAnimFPS( mode, a ), model->getAnimFPS( mode, a ) );
          return false;
       }

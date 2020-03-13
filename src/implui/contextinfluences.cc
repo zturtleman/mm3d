@@ -666,7 +666,7 @@ void ContextInfluences::updateWeightField( int index, bool enabled, int type, in
 
 int ContextInfluences::getRemainderWeight( int joint )
 {
-   log_debug( "getting remainder weight for joint %d\n" );
+   log_debug( "getting remainder weight for joint %d\n", joint );
    if ( joint >= 0 && joint < (int) m_model->getBoneJointCount() )
    {
       list< Model::Position > plist;

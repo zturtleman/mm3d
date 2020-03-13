@@ -458,7 +458,7 @@ void AnimSetWindow::joinClicked()
          }
          else
          {
-            log_debug( "animation to join to is %d\n" );
+            log_debug( "animation to join to is %d\n", t );
             joinNum = t;
 
             currentAnim++;
@@ -521,7 +521,7 @@ void AnimSetWindow::mergeClicked()
             }
             else
             {
-               log_debug( "animation to merge to is %d\n" );
+               log_debug( "animation to merge to is %d\n", t );
                mergeNum = t;
 
                currentAnim++;

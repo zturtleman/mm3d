@@ -770,7 +770,7 @@ ViewWindow::~ViewWindow()
    log_debug( "deleting view window\n" );
    _winList.remove( this );
 
-   log_debug( "deleting view window %08X, model %08X\n", this, m_model );
+   log_debug( "deleting view window %p, model %p\n", this, m_model );
    DecalManager::getInstance()->unregisterModel( m_model );
    m_viewPanel->freeTextures();
    delete m_model;
@@ -1420,7 +1420,7 @@ QAction * ViewWindow::insertMenuItem( QMenu * parentMenu, bool isTool,
    {
       id = addMenu->addAction( name );
    }
-   log_debug( "added %s as id %d\n", (const char *) name.toUtf8(), id );
+   log_debug( "added %s as id %p\n", (const char *) name.toUtf8(), id );
    return id;
 }
 
@@ -1786,7 +1786,7 @@ void ViewWindow::redoRequest()
 
 void ViewWindow::snapToSelectedEvent( QAction * snapTo )
 {
-   log_debug( "snapToSelectedEvent( %d )\n", snapTo );
+   log_debug( "snapToSelectedEvent( %p )\n", snapTo );
    g_prefs( "ui_snap_grid" )   = ( m_snapToGrid->isChecked() ) ? 1 : 0;
    g_prefs( "ui_snap_vertex" ) = ( m_snapToVertex->isChecked() ) ? 1 : 0;
 }
