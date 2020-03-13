@@ -2417,6 +2417,8 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       unsigned baseSize = sizeof(uint16_t) + sizeof(uint32_t)
          + (sizeof(float32_t) * 17);
 
+      int internalTextures = 0;
+
       for ( unsigned m = 0; m < count; m++ )
       {
          Model::Material * mat = modelMaterials[m];
@@ -2429,12 +2431,15 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
          {
             case Model::Material::MATTYPE_COLOR:
                flags = 0x000d;
+               internalTextures++;
                break;
             case Model::Material::MATTYPE_GRADIENT:
                flags = 0x000e;
+               internalTextures++;
                break;
             case Model::Material::MATTYPE_BLANK:
                flags = 0x000f;
+               internalTextures++;
                break;
             case Model::Material::MATTYPE_TEXTURE:
                flags = 0x0000;
@@ -2484,7 +2489,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
          m_dst->write( lightProp );
 
       }
-      log_debug( "wrote %d materials with %d internal textures\n", count, texNum );
+      log_debug( "wrote %d materials with %d internal textures\n", count, internalTextures );
    }
 
    // External Textures
