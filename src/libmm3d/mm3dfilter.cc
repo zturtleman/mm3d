@@ -1181,7 +1181,7 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
                memset( mat->m_color, 255, sizeof( mat->m_color ) );
                break;
             default:
-               log_debug( "  got unknown material type\n", texIndex );
+               log_debug( "  got unknown material type %d\n", flags & 0x0f );
                mat->m_type = Model::Material::MATTYPE_BLANK;
                mat->m_filename = "";
                memset( mat->m_color, 255, sizeof( mat->m_color ) );
@@ -1498,7 +1498,7 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
          }
       }
 
-      log_debug( "read %d points\n" );
+      log_debug( "read %d points\n", count );
    }
 
    // Smooth Angles
@@ -1708,7 +1708,7 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
                uv[0][0], uv[0][1], uv[1][0], uv[1][1] );
       }
 
-      log_debug( "read %d projections\n" );
+      log_debug( "read %d projections\n", count );
    }
 
    // Texture Projection Triangles (have to read this after projections)
