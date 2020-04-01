@@ -72,7 +72,7 @@ class SmdFilter : public ModelFilter
 
       SmdOptions  * m_options;
 
-      bool writeLine( DataDest *dst, const char * line, ... );
+      bool writeLine( DataDest *dst, const char * line, ... ) __attribute__ ((format (printf, 3, 4)));
 };
 
 #endif // __SMDFILTER_H

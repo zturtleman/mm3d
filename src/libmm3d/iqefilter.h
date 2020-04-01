@@ -72,7 +72,7 @@ class IqeFilter : public ModelFilter
 
       IqeOptions  * m_options;
 
-      bool writeLine( DataDest *dst, const char * line, ... );
+      bool writeLine( DataDest *dst, const char * line, ... ) __attribute__ ((format (printf, 3, 4)));
 };
 
 #endif // __IQEFILTER_H

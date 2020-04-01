@@ -30,6 +30,10 @@
 #include <stdarg.h>
 #include "config.h"
 
+// GCC attribute
+#ifndef __GNUC__
+#define __attribute__(x)
+#endif
 
 struct _PORT_timeval
 {
@@ -45,7 +49,7 @@ void   PORT_gettimeofday( PORT_timeval * tv );
 char * PORT_asctime_r( const struct tm * tmval, char * buf );
 int    PORT_symlink( const char * oldpath, const char * newpath );
 int    PORT_mkdir( const char * pathname, mode_t mode );
-int    PORT_snprintf( char * dest, size_t len, const char * fmt, ... );
+int    PORT_snprintf( char * dest, size_t len, const char * fmt, ... ) __attribute__ ((format (printf, 3, 4)));
 int    PORT_vsnprintf( char * dest, size_t len, const char * fmt, va_list args );
 char * PORT_basename( const char * path );
 char * PORT_dirname( const char * path );

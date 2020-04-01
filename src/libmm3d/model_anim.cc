@@ -50,7 +50,7 @@ int Model::addAnimation( AnimationModeE m, const char * name )
                anim->m_name = name;
                anim->m_fps  = 30.0;
                anim->m_spf  = (1.0 / anim->m_fps);
-               anim->m_loop = true;
+               anim->m_loop = false;
                anim->m_frameCount = 1;
                anim->m_validNormals = false;
 
@@ -74,7 +74,7 @@ int Model::addAnimation( AnimationModeE m, const char * name )
                FrameAnim * anim = FrameAnim::get();
                anim->m_name = name;
                anim->m_fps = 10.0;
-               anim->m_loop = true;
+               anim->m_loop = false;
                anim->m_validNormals = false;
 
                MU_AddAnimation * undo = new MU_AddAnimation();
@@ -1164,7 +1164,7 @@ bool Model::deleteSkelAnimKeyframe( unsigned anim, unsigned frame, unsigned join
       {
          if ( (*it)->m_frame == frame && (*it)->m_isRotation == isRotation )
          {
-            log_debug( "deleting keyframe for anim %d frame %d joint %d\n", anim, frame, joint, isRotation ? "rotation" : "translation" );
+            log_debug( "deleting %s keyframe for anim %d frame %d joint %d\n", isRotation ? "rotation" : "translation", anim, frame, joint );
             MU_DeleteKeyframe * undo = new MU_DeleteKeyframe;
             undo->setAnimationData( anim );
             undo->deleteKeyframe( *it );
@@ -2409,8 +2409,8 @@ bool Model::getSkelAnimKeyframe( unsigned anim, unsigned frame,
       bool found = false;
       if ( m_skelAnims[anim]->m_jointKeyframes[joint].find_sorted( kf, index ) )
       {
-//         log_debug( "found keyframe anim %d, frame %d, joint %d, %s\n",
-//               anim, frame, joint, isRotation ? "rotation" : "translation" );
+//         log_debug( "found %s keyframe for anim %d, frame %d, joint %d\n",
+//               isRotation ? "rotation" : "translation", anim, frame, joint );
          x = m_skelAnims[anim]->m_jointKeyframes[joint][index]->m_parameter[0];
          y = m_skelAnims[anim]->m_jointKeyframes[joint][index]->m_parameter[1];
          z = m_skelAnims[anim]->m_jointKeyframes[joint][index]->m_parameter[2];
@@ -2418,8 +2418,8 @@ bool Model::getSkelAnimKeyframe( unsigned anim, unsigned frame,
       }
       else
       {
-         //log_debug( "could not find keyframe anim %d, frame %d, joint %d, %s\n",
-         //      anim, frame, joint, isRotation ? "rotation" : "translation" );
+         //log_debug( "could not find %s keyframe for anim %d, frame %d, joint %d\n",
+         //      isRotation ? "rotation" : "translation", anim, frame, joint );
       }
       kf->release();
 

@@ -40,6 +40,7 @@
 #include "iqeprompt.h"
 #include "smdfilter.h"
 #include "smdprompt.h"
+#include "d3dfilter.h"
 #include "log.h"
 
 int init_std_filters()
@@ -90,6 +91,9 @@ int init_std_filters()
    
    filter = new SmdFilter();
    filter->setOptionsPrompt( smdprompt_show );
+   mgr->registerFilter( filter );
+   
+   filter = new D3dFilter();
    mgr->registerFilter( filter );
    
    return 0;

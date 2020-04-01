@@ -349,7 +349,7 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
    uint16_t numGroups = 0;
    m_src->read( numGroups );
 
-   log_debug( "model says %d groups\n" );
+   log_debug( "model says %d groups\n", numGroups );
 
    for ( t = 0; t < numGroups; t++ )
    {

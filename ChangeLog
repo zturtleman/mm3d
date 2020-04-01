@@ -1,3 +1,14 @@
+Changes for 1.3.12 (2019-10-07)
+   Add shift key behavior to Texture Coord editor for move/rotate/scale
+   Make Convert To Frame window convert multiple animations at once
+   Remove artificial MD3 export limits
+   Fix animation frame slider not responding to arrow keys
+   Fix delete button in Edit Joints window
+   Fix mouse interaction and wireframe line size on HiDPI displays
+   Fix OpenGL possibly not working on Windows with Qt5 (black viewports)
+   Fix some memory leak and std::list usage
+   Fix configure when compiling on Fedora
+
 Changes for 1.3.11 (2019-01-02)
    Add support for exporting Studiomdl Data (SMD) models
    Add support for texture alpha blending in animation mode

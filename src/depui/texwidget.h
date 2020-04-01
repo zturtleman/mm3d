@@ -26,6 +26,7 @@
 
 #include <stdint.h>
 
+#include <QtCore/QtGlobal>
 #include <QtWidgets/QOpenGLWidget>
 #include <QtGui/QWheelEvent>
 #include <QtGui/QMouseEvent>
@@ -180,6 +181,10 @@ class TextureWidget : public QOpenGLWidget
       void zoomLevelChanged( QString zoomStr );
 
    protected:
+#if QT_VERSION < QT_VERSION_CHECK( 5, 6, 0 )
+      qreal devicePixelRatioF() { return devicePixelRatio(); }
+#endif
+
       void mousePressEvent( QMouseEvent * e ) override;
       void mouseReleaseEvent( QMouseEvent * e ) override;
       void mouseMoveEvent( QMouseEvent * e ) override;

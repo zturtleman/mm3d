@@ -1070,11 +1070,11 @@ class Model
 
       // Functions for rendering the model in a viewport
       void draw( unsigned drawOptions = DO_TEXTURE, ContextT context = NULL, float *viewPoint = NULL );
-      void drawLines();
-      void drawVertices();
-      void drawPoints();
-      void drawProjections();
-      void drawJoints();
+      void drawLines( float devicePixelRatio );
+      void drawVertices( float devicePixelRatio );
+      void drawPoints( float devicePixelRatio );
+      void drawProjections( float devicePixelRatio );
+      void drawJoints( float devicePixelRatio );
 
       void setCanvasDrawMode( int m ) { m_canvasDrawMode = m; };
       int  getCanvasDrawMode() const { return m_canvasDrawMode; };

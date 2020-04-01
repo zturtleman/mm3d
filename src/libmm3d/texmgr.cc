@@ -498,7 +498,7 @@ bool TextureManager::canWrite( const char * filename )
 {
    if ( filename == NULL || filename[0] == '\0' )
    {
-      return Texture::ERROR_BAD_ARGUMENT;
+      return false;
    }
 
    TextureFilterList::iterator filterIt = m_filters.begin();

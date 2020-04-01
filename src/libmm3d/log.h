@@ -81,8 +81,8 @@ extern void log_enable_debug( bool o );
 extern void log_enable_warning( bool o );
 extern void log_enable_error( bool o );
 
-extern void log_debug( const char * fmt, ... );
-extern void log_warning( const char * fmt, ... );
-extern void log_error( const char * fmt, ... );
+extern void log_debug( const char * fmt, ... ) __attribute__ ((format (printf, 1, 2)));
+extern void log_warning( const char * fmt, ... ) __attribute__ ((format (printf, 1, 2)));
+extern void log_error( const char * fmt, ... ) __attribute__ ((format (printf, 1, 2)));
 
 #endif // __LOG_H

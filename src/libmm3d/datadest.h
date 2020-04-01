@@ -128,7 +128,7 @@ class DataDest
 
       // Write a printf-style formatted string to output
       // Returns the size written in bytes (or -1 on error)
-      ssize_t writePrintf( const char * format, ... );
+      ssize_t writePrintf( const char * format, ... ) __attribute__ ((format (printf, 2, 3)));
 
       // Write a printf-style formatted string to output
       // Returns the size written in bytes (or -1 on error)

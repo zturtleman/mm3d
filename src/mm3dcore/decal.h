@@ -30,7 +30,7 @@ class Decal
       Decal();
       virtual ~Decal();
 
-      virtual void draw() = 0;
+      virtual void draw( float devicePixelRatio ) = 0;
 };
 
 #endif // __DECAL_H

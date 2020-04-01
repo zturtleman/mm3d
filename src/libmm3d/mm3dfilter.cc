@@ -20,6 +20,7 @@
  *  See the COPYING file for full license text.
  */
 
+#include <algorithm>
 
 #include "mm3dfilter.h"
 
@@ -1181,7 +1182,7 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
                memset( mat->m_color, 255, sizeof( mat->m_color ) );
                break;
             default:
-               log_debug( "  got unknown material type\n", texIndex );
+               log_debug( "  got unknown material type %d\n", flags & 0x0f );
                mat->m_type = Model::Material::MATTYPE_BLANK;
                mat->m_filename = "";
                memset( mat->m_color, 255, sizeof( mat->m_color ) );
@@ -1498,7 +1499,7 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
          }
       }
 
-      log_debug( "read %d points\n" );
+      log_debug( "read %d points\n", count );
    }
 
    // Smooth Angles
@@ -1708,7 +1709,7 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
                uv[0][0], uv[0][1], uv[1][0], uv[1][1] );
       }
 
-      log_debug( "read %d projections\n" );
+      log_debug( "read %d projections\n", count );
    }
 
    // Texture Projection Triangles (have to read this after projections)
@@ -2132,6 +2133,36 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       }
    }
 
+   std::vector< std::string > texNames;
+   std::vector< int > materialTexMap;
+   unsigned materialCount = modelMaterials.size();
+   for ( unsigned m = 0; m < materialCount; m++ )
+   {
+      Model::Material * mat = modelMaterials[m];
+      if ( mat->m_type == Model::Material::MATTYPE_TEXTURE )
+      {
+         std::vector<std::string>::iterator it = std::find( texNames.begin(), texNames.end(), mat->m_filename );
+
+         if ( it == texNames.end() )
+         {
+            int texIndex = texNames.size();
+            log_debug( "material %s -> external texture %d (%s): New texture\n", mat->m_name.c_str(), texIndex, mat->m_filename.c_str() );
+            materialTexMap.push_back( texNames.size() );
+            texNames.push_back( mat->m_filename );
+         }
+         else
+         {
+            int texIndex = it - texNames.begin();
+            log_debug( "material %s -> external texture %d (%s): Reused texture\n", mat->m_name.c_str(), texIndex, texNames[texIndex].c_str() );
+            materialTexMap.push_back( it - texNames.begin() );
+         }
+      }
+      else
+      {
+         materialTexMap.push_back( 0 );
+      }
+   }
+
    bool haveProjectionTriangles = false;
    if ( model->getProjectionCount() > 0 )
    {
@@ -2152,7 +2183,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
    doWrite[ MDT_TriangleNormals ]     = (modelTriangles.size() > 0);
    doWrite[ MDT_Groups ]              = (modelGroups.size() > 0);
    doWrite[ MDT_Materials ]           = (modelMaterials.size() > 0);
-   doWrite[ MDT_ExtTextures ]         =  doWrite[ MDT_Materials ];
+   doWrite[ MDT_ExtTextures ]         = (texNames.size() > 0);
    doWrite[ MDT_TexCoords ]           = true; // Some users map texture coordinates before assigning a texture (think: paint texture)
    doWrite[ MDT_ProjectionTriangles ] = haveProjectionTriangles;
    doWrite[ MDT_CanvasBackgrounds ]   = (backgrounds > 0);
@@ -2245,8 +2276,8 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
 
          model->getMetaData( m, key, sizeof(key), value, sizeof(value) );
 
-         unsigned keyLen = strlen( key ) + 1;
-         unsigned valueLen = strlen( value ) + 1;
+         uint32_t keyLen = strlen( key ) + 1;
+         uint32_t valueLen = strlen( value ) + 1;
 
          m_dst->write(keyLen + valueLen);
 
@@ -2373,7 +2404,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       for ( unsigned g = 0; g < count; g++ )
       {
          Model::Group * grp = modelGroups[g];
-         unsigned groupSize = baseSize + grp->m_name.length() + 1 
+         uint32_t groupSize = baseSize + grp->m_name.length() + 1
             + (grp->m_triangleIndices.size() * sizeof(uint32_t));
 
          uint16_t flags = 0x0000;
@@ -2402,8 +2433,6 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       log_debug( "wrote %d groups\n", count );
    }
 
-   int texNum = 0;
-
    // Materials
    if ( doWrite[ MDT_Materials ] )
    {
@@ -2417,28 +2446,32 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       unsigned baseSize = sizeof(uint16_t) + sizeof(uint32_t)
          + (sizeof(float32_t) * 17);
 
+      int internalTextures = 0;
+
       for ( unsigned m = 0; m < count; m++ )
       {
          Model::Material * mat = modelMaterials[m];
-         unsigned matSize = baseSize + mat->m_name.length() + 1;
+         uint32_t matSize = baseSize + mat->m_name.length() + 1;
 
          uint16_t flags = 0x0000;
-         uint32_t texIndex = texNum;  // TODO deal with embedded textures
+         uint32_t texIndex = materialTexMap[m];  // TODO deal with embedded textures
 
          switch ( mat->m_type )
          {
             case Model::Material::MATTYPE_COLOR:
                flags = 0x000d;
+               internalTextures++;
                break;
             case Model::Material::MATTYPE_GRADIENT:
                flags = 0x000e;
+               internalTextures++;
                break;
             case Model::Material::MATTYPE_BLANK:
                flags = 0x000f;
+               internalTextures++;
                break;
             case Model::Material::MATTYPE_TEXTURE:
                flags = 0x0000;
-               texNum++;
                break;
             default:
                break;
@@ -2484,7 +2517,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
          m_dst->write( lightProp );
 
       }
-      log_debug( "wrote %d materials with %d internal textures\n", count, texNum );
+      log_debug( "wrote %d materials with %d internal textures\n", count, internalTextures );
    }
 
    // External Textures
@@ -2493,37 +2526,33 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       _setOffset( MDT_ExtTextures, m_dst->offset(), offsetList );
       _setUniformOffset( MDT_ExtTextures, false, offsetList );
 
-      unsigned count = modelMaterials.size();
+      unsigned count = texNames.size();
 
       writeHeaderA( 0x0000, count );
 
       unsigned baseSize = sizeof(uint16_t);
 
-      for ( unsigned m = 0; m < count; m++ )
+      for ( unsigned t = 0; t < count; t++ )
       {
-         Model::Material * mat = modelMaterials[m];
-         if ( mat->m_type == Model::Material::MATTYPE_TEXTURE )
-         {
-            std::string fileStr = getRelativePath( modelPath.c_str(), mat->m_filename.c_str() );
+         std::string fileStr = getRelativePath( modelPath.c_str(), texNames[t].c_str() );
 
-            char filename[PATH_MAX];
-            strncpy( filename, fileStr.c_str(), PATH_MAX );
-            utf8chrtrunc( filename, sizeof(filename)-1 );
+         char filename[PATH_MAX];
+         strncpy( filename, fileStr.c_str(), PATH_MAX );
+         utf8chrtrunc( filename, sizeof(filename)-1 );
 
-            replaceSlash( filename );
+         replaceSlash( filename );
 
-            unsigned texSize = baseSize + strlen(filename) + 1;
+         uint32_t texSize = baseSize + strlen(filename) + 1;
 
-            uint16_t flags = 0x0000;
+         uint16_t flags = 0x0000;
 
-            m_dst->write( texSize );
-            m_dst->write( flags );
-            m_dst->writeBytes( (const uint8_t *) filename, strlen(filename) + 1 );
+         m_dst->write( texSize );
+         m_dst->write( flags );
+         m_dst->writeBytes( (const uint8_t *) filename, strlen(filename) + 1 );
 
-            log_debug( "material file is %s\n", filename );
-         }
+         log_debug( "texture file is %s\n", filename );
       }
-      log_debug( "wrote %d external textures\n", texNum );
+      log_debug( "wrote %d external textures\n", count );
    }
 
    // Texture Coordinates
@@ -2571,6 +2600,8 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
 
       writeHeaderA( 0x0000, pcount );
 
+      unsigned totaltris = 0;
+
       for ( unsigned p = 0; p < pcount; p++ )
       {
          unsigned wcount = 0; // triangles to write
@@ -2584,6 +2615,8 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
                wcount++;
             }
          }
+
+         totaltris += wcount;
 
          uint32_t triSize = sizeof(uint32_t) * 2 
                + sizeof(uint32_t) * wcount;
@@ -2603,7 +2636,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
             }
          }
       }
-      log_debug( "wrote %d external textures\n", texNum );
+      log_debug( "wrote %d triangles affected by a texture projection\n", totaltris );
    }
 
    // Canvas Backgrounds
@@ -2635,7 +2668,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
             cb.center[2] = cb.center[2];
 
             std::string fileStr = getRelativePath( modelPath.c_str(), file );
-            unsigned backSize = baseSize + fileStr.size() + 1;
+            uint32_t backSize = baseSize + fileStr.size() + 1;
 
             char * filedup = strdup( fileStr.c_str() );
             replaceSlash( filedup );
@@ -2957,7 +2990,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       for ( unsigned s = 0; s < count; s++ )
       {
          Model::SkelAnim * sa = modelSkels[s];
-         unsigned animSize = baseSize + sa->m_name.length() + 1;
+         uint32_t animSize = baseSize + sa->m_name.length() + 1;
 
          uint32_t frameCount = sa->m_frameCount;
          uint32_t keyframeCount = 0;
@@ -3057,7 +3090,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
       for ( unsigned a = 0; a < count; a++ )
       {
          Model::FrameAnim * fa = modelFrames[a];
-         unsigned animSize = baseSize + fa->m_name.length() + 1;
+         uint32_t animSize = baseSize + fa->m_name.length() + 1;
 
          uint32_t frameCount = fa->m_frameData.size();
 
