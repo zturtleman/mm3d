@@ -2077,6 +2077,7 @@ Model::ModelErrorE MisfitFilterRef::readFile( Model * model, const char * const 
       {
          if ( modelJoints[j]->m_parent >= (signed) jcount )
          {
+            // Misfit Model 3D 1.1.7 to 1.1.9 wrote joint parent as native endian while the rest of the file was little endian.
             log_warning( "Joint %d has bad parent joint, checking endianness\n", j );
             if ( htob_u32( modelJoints[j]->m_parent ) < jcount )
             {
