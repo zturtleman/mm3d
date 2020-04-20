@@ -69,8 +69,8 @@ static unsigned bestNormal( double * n )
    float norm[3];
 
    norm[0] = n[0];
-   norm[1] = n[2];
-   norm[2] = n[1];
+   norm[1] = n[1];
+   norm[2] = n[2];
 
    for ( unsigned t = 0; t < MAX_QUAKE_NORMALS; t++ )
    {
