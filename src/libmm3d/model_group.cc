@@ -40,11 +40,6 @@ int Model::addGroup( const char * name )
    {
       return -1;
    }
-   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
-   {
-      displayFrameAnimPrimitiveError();
-      return -1;
-   }
 
    m_changeBits |= AddOther;
 
@@ -73,11 +68,6 @@ bool Model::deleteGroup( unsigned groupNum )
    LOG_PROFILE();
    if ( m_animationMode )
    {
-      return false;
-   }
-   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
-   {
-      displayFrameAnimPrimitiveError();
       return false;
    }
 
