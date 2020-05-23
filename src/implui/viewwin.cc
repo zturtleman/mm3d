@@ -1230,6 +1230,7 @@ void ViewWindow::mergeAnimationsEvent()
          model_show_alloc_stats();
 
          m_model->mergeAnimations( model );
+         m_model->operationComplete( tr("Merge animations").toUtf8() );
 
          prefs_recent_model( filename.c_str() );
          delete model;
