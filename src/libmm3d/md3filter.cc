@@ -1725,7 +1725,12 @@ Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filen
       // coordinate or normal. MM3D does. The mesh_create_list function will
       // break the model up into meshes where vertices meet the MD3 criteria.
       // See mesh.h for details.
+#if 0
+      // TODO: Split up meshes to meet Quake 3 per-mesh triangle and vertex limits. Need an export option dialog and/or meta data.
+      mesh_create_list( meshes, model, Mesh::MO_All, 2000 - 1, 1000 - 1 );
+#else
       mesh_create_list( meshes, model );
+#endif
 
       string modelPath = "";
       string modelBaseName = "";

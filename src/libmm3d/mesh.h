@@ -24,6 +24,7 @@
 #ifndef __MESH_H
 #define __MESH_H
 
+#include <stdlib.h>
 #include <vector>
 
 class Model;
@@ -84,12 +85,12 @@ class Mesh
         FaceList faces;        // list of mesh faces
 
         void clear();
-        void addTriangle( Model * m, int triangle );
+        bool addTriangle( Model * m, int triangle, size_t maxTriangles, size_t maxVertices );
         int  addVertex( Model * model, int triangle, int vertexIndex );
 };
 typedef std::vector< Mesh > MeshList;
 
-void mesh_create_list( MeshList & meshes, Model * model, int options = Mesh::MO_All );
+void mesh_create_list( MeshList & meshes, Model * model, int options = Mesh::MO_All, size_t maxTriangles = ~0u, size_t maxVertices = ~0u );
 int mesh_list_vertex_count( const MeshList & meshes );
 int mesh_list_face_count( const MeshList & meshes );
 

@@ -25,9 +25,14 @@
 #include "model.h"
 #include "log.h"
 
-void mesh_create_list( MeshList & meshes, Model * model, int opt )
+void mesh_create_list( MeshList & meshes, Model * model, int opt, size_t maxTriangles, size_t maxVertices )
 {
    meshes.clear();
+
+   if ( maxTriangles < 1 || maxVertices < 3 )
+   {
+      return;
+   }
 
    if ( model )
    {
@@ -65,7 +70,17 @@ void mesh_create_list( MeshList & meshes, Model * model, int opt )
 
          for ( it = triList.begin(); it != triList.end(); it++ )
          {
-            m.addTriangle( model, *it );
+            if ( !m.addTriangle( model, *it, maxTriangles, maxVertices ) )
+            {
+               meshes.push_back( m );
+
+               // start new mesh
+               m.clear();
+               m.options = opt;
+               m.group = g;
+
+               m.addTriangle( model, *it, maxTriangles, maxVertices );
+            }
          }
       }
 
@@ -96,7 +111,17 @@ void mesh_create_list( MeshList & meshes, Model * model, int opt )
 
          for ( it = triList.begin(); it != triList.end(); it++ )
          {
-            m.addTriangle( model, *it );
+            if ( !m.addTriangle( model, *it, maxTriangles, maxVertices ) )
+            {
+               meshes.push_back( m );
+
+               // start new mesh
+               m.clear();
+               m.options = opt;
+               m.group = -1;
+
+               m.addTriangle( model, *it, maxTriangles, maxVertices );
+            }
          }
 
          // ungrouped is not empty, so make sure it gets added to the list
@@ -121,12 +146,19 @@ void Mesh::clear()
    faces.clear();
 }
 
-void Mesh::addTriangle( Model * model, int triangle )
+bool Mesh::addTriangle( Model * model, int triangle, size_t maxTriangles, size_t maxVertices )
 {
    Face f;
 
+   if ( faces.size() >= maxTriangles )
+   {
+      return false;
+   }
+
    f.modelTri = triangle;
    model->getFlatNormal( triangle, f.norm );
+
+   size_t originalVertexCount = vertices.size();
 
    for ( int i = 0; i < 3; i++ )
    {
@@ -135,7 +167,14 @@ void Mesh::addTriangle( Model * model, int triangle )
       model->getTextureCoords( triangle, i, f.uv[i][0], f.uv[i][1] );
    }
 
+   if ( vertices.size() > maxVertices )
+   {
+      vertices.resize( originalVertexCount );
+      return false;
+   }
+
    faces.push_back( f );
+   return true;
 }
 
 int Mesh::addVertex( Model * model, int triangle, int vertexIndex )
