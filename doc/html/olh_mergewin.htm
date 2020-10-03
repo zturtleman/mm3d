@@ -13,19 +13,25 @@
       <h2> Merge Location </h2>
 
       <p>
-      The merge location frame is made up of two components, the <b>Rotation</b>
-      and <b>Translation</b> components.
+      The merge location frame is made up of three components, the <b>Base Point</b>,
+      <b>Rotation</b>, and <b>Translation</b> components.
+      </p>
+
+      </p>
+      The <b>Base Point</b> specifies whether to use the origin or a <a href="olh_pointdetails.html">point</a> in the existing model
+      as the base rotation and translation for the new model.
+      It's particularly useful for merging a model into existing frame animations.
       </p>
 
       </p>
       The <b>Rotation</b> specifies how the
-      new model will be rotated relative to the existing model.  You can rotate
+      new model will be rotated relative to the base point in the existing model.  You can rotate
       the new model on all three axes.  Rotation is specified in degrees.
       </p>
 
       </p>
       The <b>Translation</b> specifies the location of the 
-      new model relative to the origin of the existing model.  The translation
+      new model relative to the base point of the existing model.  The translation
       is specified in GL units.  The relative position will depend on the
       scale of your model.
       </p>

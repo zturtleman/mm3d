@@ -33,9 +33,10 @@ class MergeWindow : public QDialog, public Ui::MergeWinBase
 {
       Q_OBJECT
    public:
-      MergeWindow( Model *, QWidget * parent = NULL );
+      MergeWindow( Model * model, Model * existingModel, QWidget * parent = NULL );
       virtual ~MergeWindow();
 
+      int getPoint();
       void getRotation( double * vec );
       void getTranslation( double * vec );
       bool getIncludeTexture() { return m_textureInclude->isChecked(); };
@@ -52,6 +53,7 @@ class MergeWindow : public QDialog, public Ui::MergeWinBase
 
    protected:
       Model  * m_model;
+      Model  * m_existingModel;
 };
 
 #endif // __MERGEWIN_H

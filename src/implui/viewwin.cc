@@ -1140,7 +1140,7 @@ void ViewWindow::mergeModelsEvent()
       {
          model_show_alloc_stats();
 
-         MergeWindow mw( model, this );
+         MergeWindow mw( model, m_model, this );
 
          if ( mw.exec() )
          {
@@ -1159,7 +1159,7 @@ void ViewWindow::mergeModelsEvent()
             double trans[3];
             mw.getRotation( rot );
             mw.getTranslation( trans );
-            m_model->mergeModels( model, mw.getIncludeTexture(), mode, true, trans, rot );
+            m_model->mergeModels( model, mw.getIncludeTexture(), mode, true, mw.getPoint(), trans, rot );
             m_model->operationComplete( tr("Merge models").toUtf8() );
             g_prefs( "ui_model_dir" ) = (const char *) d.directory().absolutePath().toUtf8();
 

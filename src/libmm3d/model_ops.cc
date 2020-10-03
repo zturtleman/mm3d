@@ -1092,7 +1092,7 @@ bool Model::mergeAnimations( Model * model )
    return true;
 }
 
-bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animations, bool emptyGroups, double * trans, double * rot )
+bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animations, bool emptyGroups, int point, double * trans, double * rot )
 {
    if ( m_animationMode )
    {
@@ -1114,6 +1114,33 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
    {
       log_debug( "merge translation: %f, %f, %f\n", trans[0], trans[1], trans[2] );
       mat.setTranslation( trans );
+   }
+
+   Matrix pointOffset;
+
+   if ( point >= 0 && point < m_points.size() )
+   {
+      pointOffset = mat;
+
+      // The MD3 filter doesn't rotate points correctly and has defacto changed their meaning.
+      Matrix pointSpace;
+      pointSpace.setRotationInDegrees( 90, 0, 90 );
+      pointOffset = pointOffset * pointSpace;
+
+      double rot[3];
+      double trans[3];
+      getPointRotation( point, rot );
+      getPointTranslation( point, trans );
+
+      Matrix m;
+      m.setRotation( rot );
+      m.setTranslation( trans );
+
+      mat = pointOffset * m;
+   }
+   else
+   {
+      point = -1;
    }
 
    unsigned vertbase   = 0;
@@ -1401,35 +1428,51 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
                unsigned f;
 
                unsigned vertcount = model->m_vertices.size();
+               unsigned pointcount = model->m_points.size();
 
                for ( f = 0; f < fc1; f++ )
                {
+                  Matrix fmat;
+
+                  if ( point != -1 )
+                  {
+                     double rot[3];
+                     double trans[3];
+
+                     getFrameAnimPointRotation( a, f, point, rot[0], rot[1], rot[2] );
+                     getFrameAnimPointCoords( a, f, point, trans[0], trans[1], trans[2] );
+
+                     fmat.setRotation( rot );
+                     fmat.setTranslation( trans );
+
+                     fmat = pointOffset * fmat;
+                  }
+                  else
+                  {
+                     fmat = mat;
+                  }
+
                   for ( unsigned v = 0; v < vertcount; v++ )
                   {
                      double coord[3] = { 0, 0, 0 };
                      model->getFrameAnimVertexCoords( a, f, v, coord[0], coord[1], coord[2] );
                      Vector vec( coord );
-                     vec = vec * mat;
+                     vec = vec * fmat;
                      setFrameAnimVertexCoords( a, f, v + vertbase, vec.get(0), vec.get(1), vec.get(2) );
                   }
-               }
 
-               unsigned pointcount = model->m_points.size();
-
-               for ( f = 0; f < fc1; f++ )
-               {
                   for ( unsigned p = 0; p < pointcount; p++ )
                   {
                      double coord[3] = { 0, 0, 0 };
                      model->getFrameAnimPointCoords( a, f, p, coord[0], coord[1], coord[2] );
                      Vector vec( coord );
-                     vec = vec * mat;
+                     vec = vec * fmat;
                      setFrameAnimPointCoords( a, f, p + pointbase, vec.get(0), vec.get(1), vec.get(2) );
 
                      model->getFrameAnimPointRotation( a, f, p, coord[0], coord[1], coord[2] );
                      Matrix m;
                      m.setRotation( coord );
-                     m = m * mat;
+                     m = m * fmat;
                      m.getRotation( coord );
                      setFrameAnimPointRotation( a, f, p + pointbase, coord[0], coord[1], coord[2] );
                   }
@@ -1454,35 +1497,51 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
             unsigned f;
 
             unsigned vertcount = model->m_vertices.size();
+            unsigned pointcount = model->m_points.size();
 
             for ( f = 0; f < framecount; f++ )
             {
+               Matrix fmat;
+
+               if ( point != -1 )
+               {
+                  double rot[3];
+                  double trans[3];
+
+                  getFrameAnimPointRotation( n, f, point, rot[0], rot[1], rot[2] );
+                  getFrameAnimPointCoords( n, f, point, trans[0], trans[1], trans[2] );
+
+                  fmat.setRotation( rot );
+                  fmat.setTranslation( trans );
+
+                  fmat = pointOffset * fmat;
+               }
+               else
+               {
+                  fmat = mat;
+               }
+
                for ( unsigned v = 0; v < vertcount; v++ )
                {
                   double coord[3] = { 0, 0, 0 };
                   model->getFrameAnimVertexCoords( n, f, v, coord[0], coord[1], coord[2] );
                   Vector vec( coord );
-                  vec = vec * mat;
+                  vec = vec * fmat;
                   setFrameAnimVertexCoords( index, f, v + vertbase, vec.get(0), vec.get(1), vec.get(2) );
                }
-            }
 
-            unsigned pointcount = model->m_points.size();
-
-            for ( f = 0; f < framecount; f++ )
-            {
                for ( unsigned p = 0; p < pointcount; p++ )
                {
                   double coord[3] = { 0, 0, 0 };
                   model->getFrameAnimPointCoords( n, f, p, coord[0], coord[1], coord[2] );
                   Vector vec( coord );
-                  vec = vec * mat;
+                  vec = vec * fmat;
                   setFrameAnimPointCoords( index, f, p + pointbase, vec.get(0), vec.get(1), vec.get(2) );
 
                   model->getFrameAnimPointRotation( n, f, p, coord[0], coord[1], coord[2] );
                   Matrix m;
                   m.setRotation( coord );
-                  m = m * mat;
+                  m = m * fmat;
                   m.getRotation( coord );
                   setFrameAnimPointRotation( index, f, p + pointbase, coord[0], coord[1], coord[2] );
                }
@@ -1570,37 +1629,53 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
       {
          unsigned framecount = getAnimFrameCount( ANIMMODE_FRAME, n );
          unsigned vertcount = model->m_vertices.size();
+         unsigned pointcount = model->m_points.size();
 
          for ( unsigned f = 0; f < framecount; f++ )
          {
+            Matrix fmat;
+
+            if ( point != -1 )
+            {
+               double rot[3];
+               double trans[3];
+
+               getFrameAnimPointRotation( n, f, point, rot[0], rot[1], rot[2] );
+               getFrameAnimPointCoords( n, f, point, trans[0], trans[1], trans[2] );
+
+               fmat.setRotation( rot );
+               fmat.setTranslation( trans );
+
+               fmat = pointOffset * fmat;
+            }
+            else
+            {
+               fmat = mat;
+            }
+
             for ( unsigned v = 0; v < vertcount; v++ )
             {
                double coord[3] = { 0, 0, 0 };
                model->getVertexCoords( v, coord );
 
                Vector vec( coord );
-               vec = vec * mat;
+               vec = vec * fmat;
 
                setFrameAnimVertexCoords( n, f, v + vertbase, vec.get(0), vec.get(1), vec.get(2) );
             }
-         }
 
-         unsigned pointcount = model->m_points.size();
-
-         for ( unsigned f = 0; f < framecount; f++ )
-         {
             for ( unsigned p = 0; p < pointcount; p++ )
             {
                double coord[3] = { 0, 0, 0 };
                model->getPointTranslation( p, coord );
                Vector vec( coord );
-               vec = vec * mat;
+               vec = vec * fmat;
                setFrameAnimPointCoords( n, f, p + pointbase, vec.get(0), vec.get(1), vec.get(2) );
 
                model->getPointRotation( p, coord );
                Matrix m;
                m.setRotation( coord );
-               m = m * mat;
+               m = m * fmat;
                m.getRotation( coord );
                setFrameAnimPointRotation( n, f, p + pointbase, coord[0], coord[1], coord[2] );
             }

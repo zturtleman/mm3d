@@ -37,15 +37,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-MergeWindow::MergeWindow( Model * model, QWidget * parent )
+MergeWindow::MergeWindow( Model * model, Model * existingModel, QWidget * parent )
    : QDialog( parent ),
-     m_model( model )
+     m_model( model ),
+     m_existingModel( existingModel )
 {
    setupUi( this );
    setModal( true );
 
    QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
    connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
+
+   int t;
+   // index 0 is <origin>
+   for ( t = 0; t < m_existingModel->getPointCount(); t++ )
+   {
+      m_pointName->insertItem( t + 1,  QString::fromUtf8( m_existingModel->getPointName(t) ) );
+   }
+
+   list<int> points;
+   m_existingModel->getSelectedPoints( points );
+   if ( ! points.empty() )
+   {
+      m_pointName->setCurrentIndex( points.front() + 1 );
+   }
+   else
+   {
+      m_pointName->setCurrentIndex( 0 );
+   }
 }
 
 MergeWindow::~MergeWindow()
@@ -56,6 +75,11 @@ void MergeWindow::helpNowEvent()
 {
    HelpWin * win = new HelpWin( "olh_mergewin.html", true );
    win->show();
+}
+
+int MergeWindow::getPoint()
+{
+   return m_pointName->currentIndex() - 1;
 }
 
 void MergeWindow::getRotation( double * vec )

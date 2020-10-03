@@ -1310,7 +1310,7 @@ class Model
       // The model argument should be const, but it calls setupJoints.
       // TODO: Calling setupJoints in here should not be necessary.
       bool mergeModels( Model * model, bool textures, AnimationMergeE mergeMode, bool emptyGroups,
-            double * trans = NULL, double * rot = NULL );
+            int point = -1, double * trans = NULL, double * rot = NULL );
 
       // These are helper functions for the boolean operations
       void removeInternalTriangles( 
