@@ -360,6 +360,11 @@ void Model::setFrameAnimPointCount( unsigned pointCount )
    for ( anim = 0; anim < acount; anim++ )
    {
       unsigned fcount = m_frameAnims[ anim ]->m_frameData.size();
+      if ( fcount == 0 )
+      {
+         continue;
+      }
+
       oldCount = m_frameAnims[anim]->m_frameData[0]->m_framePoints->size();
       for ( frame = 0; frame < fcount; frame++ )
       {
@@ -516,6 +521,11 @@ void Model::setFrameAnimVertexCount( unsigned vertexCount )
    for ( anim = 0; anim < acount; anim++ )
    {
       unsigned fcount = m_frameAnims[ anim ]->m_frameData.size();
+      if ( fcount == 0 )
+      {
+         continue;
+      }
+
       oldCount = m_frameAnims[anim]->m_frameData[0]->m_frameVertices->size();
       for ( frame = 0; frame < fcount; frame++ )
       {
