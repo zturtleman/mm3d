@@ -1364,7 +1364,7 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
    if ( frameAnimsNeeded )
    {
       setFrameAnimVertexCount( m_vertices.size() );
-      setFrameAnimPointCount( m_vertices.size() );
+      setFrameAnimPointCount( m_points.size() );
    }
 
    unsigned oldcount = getAnimCount( ANIMMODE_FRAME );
