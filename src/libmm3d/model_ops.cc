@@ -1571,17 +1571,38 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
          unsigned framecount = getAnimFrameCount( ANIMMODE_FRAME, n );
          unsigned vertcount = model->m_vertices.size();
 
-         for ( unsigned v = 0; v < vertcount; v++ )
+         for ( unsigned f = 0; f < framecount; f++ )
          {
-            double coord[3] = { 0, 0, 0 };
-            model->getVertexCoords( v, coord );
-
-            Vector vec( coord );
-            vec = vec * mat;
-
-            for ( unsigned f = 0; f < framecount; f++ )
+            for ( unsigned v = 0; v < vertcount; v++ )
             {
+               double coord[3] = { 0, 0, 0 };
+               model->getVertexCoords( v, coord );
+
+               Vector vec( coord );
+               vec = vec * mat;
+
                setFrameAnimVertexCoords( n, f, v + vertbase, vec.get(0), vec.get(1), vec.get(2) );
+            }
+         }
+
+         unsigned pointcount = model->m_points.size();
+
+         for ( unsigned f = 0; f < framecount; f++ )
+         {
+            for ( unsigned p = 0; p < pointcount; p++ )
+            {
+               double coord[3] = { 0, 0, 0 };
+               model->getPointTranslation( p, coord );
+               Vector vec( coord );
+               vec = vec * mat;
+               setFrameAnimPointCoords( n, f, p + pointbase, vec.get(0), vec.get(1), vec.get(2) );
+
+               model->getPointRotation( p, coord );
+               Matrix m;
+               m.setRotation( coord );
+               m = m * mat;
+               m.getRotation( coord );
+               setFrameAnimPointRotation( n, f, p + pointbase, coord[0], coord[1], coord[2] );
             }
          }
       }
