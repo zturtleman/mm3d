@@ -1,7 +1,7 @@
 /*  Md3Filter plugin for Maverick Model 3D
  *
  *  Copyright (c) 2005-2007 Russell Valentine and Kevin Worcester
- *  Copyright (c) 2009-2015 Zack Middleton
+ *  Copyright (c) 2009-2020 Zack Middleton
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -179,7 +179,7 @@ class Md3Filter : public ModelFilter
 
       //writes
       Model::ModelErrorE writeSectionFile( const char * filename, MeshSectionE section, MeshList & meshes );
-      bool     writeAnimations();
+      bool     writeAnimations( bool playerModel, const char * filename );
       DataDest * m_dst;
 
       //writes util
@@ -188,8 +188,8 @@ class Md3Filter : public ModelFilter
       double   greater(double a, double b);
       double   smaller(double a, double b);
       Matrix   getMatrixFromPoint( int anim, int frame, int point );
-      MeshAnimationTypeE getAnimationType(const std::string animName);
-      bool getExportAnimData( int modelAnim,
+      MeshAnimationTypeE getAnimationType( bool playerModel, const std::string & animName );
+      bool getExportAnimData( bool playerModel, int modelAnim,
             int & fileFrame, int & frameCount, int & fps );
 };
 #endif // __MD3FILTER_H

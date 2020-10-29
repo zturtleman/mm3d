@@ -1,7 +1,7 @@
 /*  Md3Filter plugin for Maverick Model 3D
  *
  *  Copyright (c) 2005-2007 Russell Valentine and Kevin Worcester
- *  Copyright (c) 2009-2015 Zack Middleton
+ *  Copyright (c) 2009-2020 Zack Middleton
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -740,7 +740,7 @@ bool Md3Filter::readAnimations( bool create )
                   char *name = NULL;
                   std::string str;
 
-                  // Save settings "name value" into MD3_CGF_(name)
+                  // Save settings "name value" into MD3_CFG_(name)
 
                   name = line;
                   while( isspace(name[0]) )
@@ -1836,7 +1836,7 @@ Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filen
          playerFile = path + fixFileCase( m_modelPath.c_str(), "head.md3" );
          writeSectionFile( playerFile.c_str(), MS_Head,  meshes );
 
-         writeAnimations();
+         writeAnimations( true, NULL );
 
          model->operationComplete( transll( QT_TRANSLATE_NOOP( "LowLevel", "Set meta data for MD3 export" ) ).c_str() );
 
@@ -1845,7 +1845,17 @@ Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filen
       else
       {
          log_debug( "saving as a single model\n" );
-         return writeSectionFile( filename, MS_None, meshes );
+
+         writeSectionFile( filename, MS_None, meshes );
+
+#if 0
+         // TODO: Add an export dialog option to enable writing animation.cfg for non-player models.
+         if ( m_model->getAnimCount( Model::ANIMMODE_FRAME ) > 0 ) {
+            writeAnimations( false, filename );
+         }
+#endif
+
+         return Model::ERROR_NONE;
       }
    }
    else
@@ -2474,7 +2484,7 @@ bool Md3Filter::animSyncWarning(std::string name)
    return false;
 }
 
-bool Md3Filter::writeAnimations()
+bool Md3Filter::writeAnimations( bool playerModel, const char * modelName )
 {
    string animFile = m_modelPath + "/animation.cfg";
    bool eliteLoop = false;
@@ -2492,7 +2502,14 @@ bool Md3Filter::writeAnimations()
    {
       log_debug( "writing animation.cfg\n" );
 
-      dst->writeString( "// animation config file\r\n" );
+      if ( modelName )
+      {
+         dst->writePrintf( "// animation config file for %s\r\n", PORT_basename( modelName ) );
+      }
+      else
+      {
+         dst->writeString( "// animation config file\r\n" );
+      }
 
       bool hadKeyword = false;
       char keyword[1024], value[1024];
@@ -2565,7 +2582,7 @@ bool Md3Filter::writeAnimations()
          int animFrame = 0;
          int count = 1;
          int fps   = 15;
-         if (!getExportAnimData( (int)anim, animFrame, count, fps ))
+         if (!getExportAnimData( playerModel, (int)anim, animFrame, count, fps ))
          {
             continue;
          }
@@ -2654,9 +2671,14 @@ Matrix Md3Filter::getMatrixFromPoint( int anim, int frame, int point )
    return m;
 }
 
-Md3Filter::MeshAnimationTypeE Md3Filter::getAnimationType(const std::string animName)
+Md3Filter::MeshAnimationTypeE Md3Filter::getAnimationType( bool playerModel, const std::string & animName )
 {
    MeshAnimationTypeE animType = MA_All;
+
+   if ( !playerModel )
+   {
+      return MA_All;
+   }
 
    if (strncasecmp(animName.c_str(), "both_", 5) == 0)
    {
@@ -2678,7 +2700,7 @@ Md3Filter::MeshAnimationTypeE Md3Filter::getAnimationType(const std::string anim
    return animType;
 }
 
-bool Md3Filter::getExportAnimData( int modelAnim,
+bool Md3Filter::getExportAnimData( bool playerModel, int modelAnim,
       int & fileFrame, int & frameCount, int & fps )
 {
    fileFrame  = 0;
@@ -2686,7 +2708,7 @@ bool Md3Filter::getExportAnimData( int modelAnim,
 
    size_t animCount = m_model->getAnimCount( Model::ANIMMODE_FRAME );
    std::string animName = getSafeName( modelAnim );
-   MeshAnimationTypeE animType = getAnimationType(animName);
+   MeshAnimationTypeE animType = getAnimationType( playerModel, animName );
 
    // If this is a "dead" animation and its after a "death" animation
    //   and it has 0 frames, use the last frame of the death animation.
@@ -2696,7 +2718,7 @@ bool Md3Filter::getExportAnimData( int modelAnim,
          && strncasecmp(getSafeName( modelAnim - 1 ).c_str(), "both_death", 10) == 0))
       && m_model->getAnimFrameCount( Model::ANIMMODE_FRAME, modelAnim ) == 0 )
    {
-      if (getExportAnimData( modelAnim - 1, fileFrame, frameCount, fps ))
+      if ( getExportAnimData( playerModel, modelAnim - 1, fileFrame, frameCount, fps ) )
       {
          fileFrame += frameCount - 1;
          frameCount = 1;
@@ -2707,11 +2729,12 @@ bool Md3Filter::getExportAnimData( int modelAnim,
    for ( size_t a = 0; a < animCount; a++ )
    {
       std::string name = getSafeName( a );
-      if ( animInSection( name, MS_Upper )
+      if ( !playerModel
+            || animInSection( name, MS_Upper )
             || animInSection( name, MS_Lower )
-            || animInSection( name, MS_Head ))
+            || animInSection( name, MS_Head ) )
       {
-         MeshAnimationTypeE type = getAnimationType(name);
+         MeshAnimationTypeE type = getAnimationType( playerModel, name );
          if ( (int)a == modelAnim )
          {
             frameCount = m_model->getAnimFrameCount( Model::ANIMMODE_FRAME, a );
@@ -2732,7 +2755,7 @@ bool Md3Filter::getExportAnimData( int modelAnim,
                return true;
             }
          }
-         // All torso frames go before leg frames, all legs go after tosro
+         // All torso frames go before leg frames, all legs go after torso
          else if (((int)a < modelAnim && animType >= type) || ((int)a > modelAnim && animType > type))
          {
                fileFrame += m_model->getAnimFrameCount( Model::ANIMMODE_FRAME, a );
