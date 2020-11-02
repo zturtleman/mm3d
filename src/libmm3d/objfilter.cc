@@ -782,7 +782,15 @@ bool ObjFilter::readFace( char * line )
       int texidx  = -1;
       int normidx = -1;
 
-      vlist.push_back( v );
+      if ( v >= 0 && v < m_model->getVertexCount() )
+      {
+         vlist.push_back( v );
+      }
+      else
+      {
+         log_warning( "face with invalid vertex index %d\n", v );
+         return false;
+      }
 
       line = &line[len];
 
@@ -803,7 +811,15 @@ bool ObjFilter::readFace( char * line )
             {
                texidx = texidx - 1;
             }
-            vtlist.push_back( texidx );
+
+            if ( texidx >= 0 && (size_t) texidx < m_uvList.size() )
+            {
+               vtlist.push_back( texidx );
+            }
+            else if ( m_uvList.size() > 0 )
+            {
+               log_warning( "face with invalid texcoord index %d\n", texidx );
+            }
 
             while ( line[0] != '\0' && line[0] != '/' && !isspace( line[0] ) )
             {
