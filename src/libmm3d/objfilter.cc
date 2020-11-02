@@ -1075,6 +1075,21 @@ bool ObjFilter::readMaterialLibrary( const char * filename )
 
          objmat->name = name;
       }
+      else if ( ptr[0] == '#' )
+      {
+         // ignore comment lines
+      }
+      else if ( !objmat )
+      {
+         char * keyword = ptr;
+         while ( ptr[0] && !isspace( ptr[0] ) )
+         {
+            ptr++;
+         }
+         ptr[0] = '\0';
+
+         log_warning( "Found keyword '%s' before newmtl in '%s'\n", keyword, filename );
+      }
       else if ( strncmp( "map_Kd", ptr, 6 ) == 0 )
       {
          ptr += 7;
@@ -1098,35 +1113,26 @@ bool ObjFilter::readMaterialLibrary( const char * filename )
       else if ( strncmp( "Kd ", ptr, 3 ) == 0 )
       {
          ptr += 3;
-         if ( objmat )
-         {
-            sscanf( ptr, "%f %f %f", 
-                  &objmat->diffuse[0], 
-                  &objmat->diffuse[1], 
-                  &objmat->diffuse[2] );
-         }
+         sscanf( ptr, "%f %f %f",
+               &objmat->diffuse[0],
+               &objmat->diffuse[1],
+               &objmat->diffuse[2] );
       }
       else if ( strncmp( "Ka ", ptr, 3 ) == 0 )
       {
          ptr += 3;
-         if ( objmat )
-         {
-            sscanf( ptr, "%f %f %f", 
-                  &objmat->ambient[0], 
-                  &objmat->ambient[1], 
-                  &objmat->ambient[2] );
-         }
+         sscanf( ptr, "%f %f %f",
+               &objmat->ambient[0],
+               &objmat->ambient[1],
+               &objmat->ambient[2] );
       }
       else if ( strncmp( "Ks ", ptr, 3 ) == 0 )
       {
          ptr += 3;
-         if ( objmat )
-         {
-            sscanf( ptr, "%f %f %f", 
-                  &objmat->specular[0], 
-                  &objmat->specular[1], 
-                  &objmat->specular[2] );
-         }
+         sscanf( ptr, "%f %f %f",
+               &objmat->specular[0],
+               &objmat->specular[1],
+               &objmat->specular[2] );
       }
       else if ( strncmp( "Ns ", ptr, 3 ) == 0 )
       {
