@@ -282,6 +282,7 @@ bool ObjFilter::writeStripped( const char * fmt, ... )
             }
             s++;
             d++;
+            break;
          case OFWS_AfterDecimal:
             if ( isdigit( line[s] ) )
             {
