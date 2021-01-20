@@ -444,6 +444,7 @@ MM3D_UI= \
 	${B}/qtui/newanim.base.h \
 	${B}/qtui/cal3dprompt.base.h \
 	${B}/qtui/iqeprompt.base.h \
+	${B}/qtui/md3prompt.base.h \
 	${B}/qtui/ms3dprompt.base.h \
 	${B}/qtui/objprompt.base.h \
 	${B}/qtui/smdprompt.base.h \
@@ -498,6 +499,7 @@ MM3D_MOC= \
 	${B}/implui/newanim.moc.cc \
 	${B}/implui/cal3dprompt.moc.cc \
 	${B}/implui/iqeprompt.moc.cc \
+	${B}/implui/md3prompt.moc.cc \
 	${B}/implui/ms3dprompt.moc.cc \
 	${B}/implui/objprompt.moc.cc \
 	${B}/implui/smdprompt.moc.cc \
@@ -563,6 +565,7 @@ MM3D_MOC_OBJ= \
 	${B}/implui/newanim.moc.o \
 	${B}/implui/cal3dprompt.moc.o \
 	${B}/implui/iqeprompt.moc.o \
+	${B}/implui/md3prompt.moc.o \
 	${B}/implui/ms3dprompt.moc.o \
 	${B}/implui/objprompt.moc.o \
 	${B}/implui/smdprompt.moc.o \
@@ -670,6 +673,7 @@ MM3D_OBJ= \
 	${B}/implui/newanim.o \
 	${B}/implui/cal3dprompt.o \
 	${B}/implui/iqeprompt.o \
+	${B}/implui/md3prompt.o \
 	${B}/implui/ms3dprompt.o \
 	${B}/implui/objprompt.o \
 	${B}/implui/smdprompt.o \

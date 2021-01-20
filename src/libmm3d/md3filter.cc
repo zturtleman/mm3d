@@ -42,6 +42,7 @@
 #include "mm3dport.h"
 #include "datadest.h"
 #include "datasource.h"
+#include "release_ptr.h"
 #include "msg.h"
 
 #include "translate.h"
@@ -107,6 +108,77 @@ const char *s_animSyncWarning[] =
    "torso_raise",
    NULL
 };
+
+Md3Filter::Md3Options::Md3Options()
+   : m_playerSupported( false ),
+     m_saveAsPlayer( false ),
+     m_saveAnimationCfg( false )
+{
+}
+
+Md3Filter::Md3Options::~Md3Options()
+{
+}
+
+void Md3Filter::Md3Options::setOptionsFromModel( Model * model, const char * const filename )
+{
+   m_playerSupported = false;
+
+   string modelPath = "";
+   string modelBaseName = "";
+   string modelFullName = "";
+
+   normalizePath( filename, modelFullName, modelPath, modelBaseName );
+
+   if (     strncasecmp( modelBaseName.c_str(), "lower.", 6 ) == 0
+         || strncasecmp( modelBaseName.c_str(), "upper.", 6 ) == 0
+         || strncasecmp( modelBaseName.c_str(), "head.",  5 ) == 0 )
+   {
+      bool haveUpper = false;
+      bool haveLower = false;
+
+      unsigned gcount = model->getGroupCount();
+      for ( unsigned g = 0; g < gcount; g++ )
+      {
+         std::string name = model->getGroupName( g );
+         if ( name[0] != '\0' && name[1] == '_' )
+         {
+            switch ( toupper( name[0] ) )
+            {
+               case 'U':
+                  haveUpper = true;
+                  break;
+               case 'L':
+                  haveLower = true;
+                  break;
+               default:
+                  break;
+            }
+         }
+      }
+
+      if ( haveUpper && haveLower
+            && model->getPointByName( "tag_torso" ) >= 0
+            && model->getPointByName( "tag_head" )  >= 0 )
+      {
+         // have filename, groups, and tags required for player model
+         m_playerSupported = true;
+      }
+   }
+
+   m_saveAsPlayer = m_playerSupported;
+   m_saveAnimationCfg = m_playerSupported;
+
+   char value[20];
+   if ( model->getMetaData( "MD3_composite", value, sizeof( value ) ) )
+   {
+      if ( atoi( value ) == 0 )
+      {
+         m_saveAsPlayer = false;
+         m_saveAnimationCfg = false;
+      }
+   }
+}
 
 Md3Filter::Md3Filter()
 {
@@ -1703,10 +1775,18 @@ std::string Md3Filter::getSafeName( unsigned int anim )
    return animName;
 }
  
-Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filename, ModelFilter::Options *  )
+Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filename, ModelFilter::Options * o )
 {
    if ( model && filename && filename[0] )
    {
+      release_ptr<Md3Options> freeOptions = NULL;
+      m_options = dynamic_cast<Md3Options *>( o );
+      if ( !m_options )
+      {
+         freeOptions = static_cast< Md3Options * >( getDefaultOptions() );
+         m_options = freeOptions.get();
+      }
+
       unsigned tcount = model->getTriangleCount();
       for ( unsigned t = 0; t < tcount; ++t )
       {
@@ -1740,88 +1820,7 @@ Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filen
 
       m_modelPath = modelPath;
 
-      bool saveAsPlayer = true;
-
-      bool haveUpper = false;
-      bool haveLower = false;
-
-      unsigned gcount = m_model->getGroupCount();
-      for ( unsigned g = 0; g < gcount; g++ )
-      {
-         std::string name = m_model->getGroupName( g );
-         if ( name[1] == '_' )
-         {
-            switch ( toupper( name[0] ) )
-            {
-               case 'U':
-                  haveUpper = true;
-                  break;
-               case 'L':
-                  haveLower = true;
-                  break;
-               default:
-                  break;
-            }
-         }
-      }
-
-      if ( haveUpper && haveLower )
-      {
-         if (  m_model->getPointByName( "tag_torso" )  < 0
-            || m_model->getPointByName( "tag_head" )   < 0 )
-         {
-            // missing required tags for player model
-            saveAsPlayer = false;
-         }
-      }
-      else
-      {
-         // don't have the proper groups to save as a player model
-         saveAsPlayer = false;
-      }
-
-      if ( saveAsPlayer )
-      {
-         if (     strncasecmp( modelBaseName.c_str(), "lower.", 6 ) == 0 
-               || strncasecmp( modelBaseName.c_str(), "upper.", 6 ) == 0 
-               || strncasecmp( modelBaseName.c_str(), "head.",  5 ) == 0 )
-         {
-            log_debug( "filename %s looks like a player model\n", modelBaseName.c_str() );
-            char value[20];
-            if ( model->getMetaData( "MD3_composite", value, sizeof( value ) ) )
-            {
-               if ( atoi( value ) == 0 )
-               {
-                  log_debug( "model is explicitly not a composite\n" );
-                  saveAsPlayer = false;
-               }
-            }
-            else
-            {
-               char answer = msg_info_prompt( transll( QT_TRANSLATE_NOOP( "LowLevel", "This looks like a player model.\nDo you want to save all sections?")).c_str(), "Ync" );
-               if ( answer == 'Y' )
-               {
-                  model->addMetaData( "MD3_composite", "1" );
-               }
-               else if ( answer == 'N' )
-               {
-                  model->addMetaData( "MD3_composite", "0" );
-                  saveAsPlayer = false;
-               }
-               else
-               {
-                  return Model::ERROR_CANCEL;
-               }
-            }
-         }
-         else
-         {
-            log_debug( "filename %s does not look like a player model\n", modelBaseName.c_str() );
-            saveAsPlayer = false;
-         }
-      }
-
-      if ( saveAsPlayer )
+      if ( m_options->m_saveAsPlayer )
       {
          log_debug( "saving as a player model\n" );
 
@@ -1836,8 +1835,12 @@ Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filen
          playerFile = path + fixFileCase( m_modelPath.c_str(), "head.md3" );
          writeSectionFile( playerFile.c_str(), MS_Head,  meshes );
 
-         writeAnimations( true, NULL );
+         if ( m_options->m_saveAnimationCfg )
+         {
+            writeAnimations( true, NULL );
+         }
 
+         model->addMetaData( "MD3_composite", "1" );
          model->operationComplete( transll( QT_TRANSLATE_NOOP( "LowLevel", "Set meta data for MD3 export" ) ).c_str() );
 
          return Model::ERROR_NONE;
@@ -1848,12 +1851,16 @@ Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filen
 
          writeSectionFile( filename, MS_None, meshes );
 
-#if 0
-         // TODO: Add an export dialog option to enable writing animation.cfg for non-player models.
-         if ( m_model->getAnimCount( Model::ANIMMODE_FRAME ) > 0 ) {
+         if ( m_options->m_saveAnimationCfg )
+         {
             writeAnimations( false, filename );
          }
-#endif
+
+         if ( m_options->m_playerSupported )
+         {
+            model->addMetaData( "MD3_composite", "0" );
+            model->operationComplete( transll( QT_TRANSLATE_NOOP( "LowLevel", "Set meta data for MD3 export" ) ).c_str() );
+         }
 
          return Model::ERROR_NONE;
       }

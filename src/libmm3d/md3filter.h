@@ -57,6 +57,27 @@ class DataSource;
 class Md3Filter : public ModelFilter
 {
    public:
+
+      class Md3Options : public ModelFilter::Options
+      {
+         public:
+            Md3Options();
+
+            virtual void release() { delete this; };
+
+            bool m_playerSupported;
+
+            bool m_saveAsPlayer;
+            bool m_saveAnimationCfg;
+
+            void setOptionsFromModel( Model * m, const char * const filename );
+
+         protected:
+            virtual ~Md3Options(); // Use release() instead
+      };
+
+      ModelFilter::Options * getDefaultOptions() { return new Md3Options; };
+
       Md3Filter();
       virtual ~Md3Filter();
 
@@ -181,6 +202,7 @@ class Md3Filter : public ModelFilter
       Model::ModelErrorE writeSectionFile( const char * filename, MeshSectionE section, MeshList & meshes );
       bool     writeAnimations( bool playerModel, const char * filename );
       DataDest * m_dst;
+      Md3Options * m_options;
 
       //writes util
       bool     animSyncWarning(std::string name);

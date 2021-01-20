@@ -25,6 +25,7 @@
 #include "filtermgr.h"
 #include "md2filter.h"
 #include "md3filter.h"
+#include "md3prompt.h"
 #include "lwofilter.h"
 #include "cal3dfilter.h"
 #include "cal3dprompt.h"
@@ -73,6 +74,7 @@ int init_std_filters()
    mgr->registerFilter( filter );
    
    filter = new Md3Filter();
+   filter->setOptionsPrompt( md3prompt_show );
    mgr->registerFilter( filter );
    
    filter = new Cal3dFilter();

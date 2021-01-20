@@ -29,6 +29,7 @@ libqtui_UIFILES = alignwin.ui \
 	projectionwin.ui \
 	keyvaluewin.ui \
 	mapdirection.ui \
+	md3prompt.ui \
 	mergewin.ui \
 	metawin.ui \
 	modelview.ui \
@@ -73,6 +74,7 @@ libqtui_UIHEADERS = \
 	projectionwin.base.h     \
 	keyvaluewin.base.h     \
 	mapdirection.base.h \
+	md3prompt.base.h    \
 	mergewin.base.h     \
 	metawin.base.h     \
 	modelview.base.h    \

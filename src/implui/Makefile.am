@@ -32,6 +32,7 @@ libimplui_HFILES = \
 	keyvaluewin.h \
 	licensewin.h \
 	mapdirection.h \
+	md3prompt.h \
 	mergewin.h \
 	metawin.h \
 	ms3dprompt.h \
@@ -90,6 +91,7 @@ libimplui_MOC = \
 	projectionwin.moc.cc \
 	keyvaluewin.moc.cc \
 	licensewin.moc.cc \
+	md3prompt.moc.cc \
 	mergewin.moc.cc \
 	metawin.moc.cc \
 	ms3dprompt.moc.cc \
@@ -142,6 +144,7 @@ libimplui_a_SOURCES = \
 	keyvaluewin.cc \
 	licensewin.cc \
 	mapdirection.cc \
+	md3prompt.cc \
 	mergewin.cc \
 	metawin.cc \
 	ms3dprompt.cc \
