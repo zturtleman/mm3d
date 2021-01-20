@@ -108,7 +108,7 @@ void SmdPrompt::saveMeshesChangedEvent()
    m_animList->setEnabled( m_saveAnimation->isChecked() );
 }
 
-bool smdprompt_show( Model * model, ModelFilter::Options * o )
+bool smdprompt_show( Model * model, const char * const filename, ModelFilter::Options * o )
 {
    bool rval = false;
    SmdPrompt p;

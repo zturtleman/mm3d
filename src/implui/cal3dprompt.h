@@ -49,6 +49,6 @@ class Cal3dPrompt : public QDialog, public Ui::Cal3dPromptBase
    protected:
 };
 
-bool cal3dprompt_show( Model * model, ModelFilter::Options * o );
+bool cal3dprompt_show( Model * model, const char * const filename, ModelFilter::Options * o );
 
 #endif // __CAL3DPROMPT_H

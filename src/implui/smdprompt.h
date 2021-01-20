@@ -52,6 +52,6 @@ class SmdPrompt : public QDialog, public Ui::SmdPromptBase
 
 };
 
-bool smdprompt_show( Model * model, ModelFilter::Options * o );
+bool smdprompt_show( Model * model, const char * const filename, ModelFilter::Options * o );
 
 #endif // __SMDPROMPT_H

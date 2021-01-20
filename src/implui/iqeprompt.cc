@@ -87,7 +87,7 @@ void IqePrompt::helpNowEvent()
    win->show();
 }
 
-bool iqeprompt_show( Model * model, ModelFilter::Options * o )
+bool iqeprompt_show( Model * model, const char * const filename, ModelFilter::Options * o )
 {
    bool rval = false;
    IqePrompt p;

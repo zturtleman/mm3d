@@ -50,6 +50,6 @@ class ObjPrompt : public QDialog, public Ui::ObjPromptBase
 
 };
 
-bool objprompt_show( Model * model, ModelFilter::Options * o );
+bool objprompt_show( Model * model, const char * const filename, ModelFilter::Options * o );
 
 #endif // __OBJPROMPT_H

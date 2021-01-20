@@ -134,7 +134,7 @@ void Ms3dPrompt::updateExtraEnabled()
 //
 // This function is registered with the Ms3dFilter class when the
 // filter is created in stdfilters.cc.
-bool ms3dprompt_show( Model * model, ModelFilter::Options * o )
+bool ms3dprompt_show( Model * model, const char * const filename, ModelFilter::Options * o )
 {
    bool rval = false;
    Ms3dPrompt p;

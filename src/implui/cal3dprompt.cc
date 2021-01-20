@@ -75,7 +75,7 @@ void Cal3dPrompt::helpNowEvent()
 //
 // This function is registered with the Cal3dFilter class when the
 // filter is created in stdfilters.cc.
-bool cal3dprompt_show( Model * model, ModelFilter::Options * o )
+bool cal3dprompt_show( Model * model, const char * const filename, ModelFilter::Options * o )
 {
    bool rval = false;
    Cal3dPrompt p;

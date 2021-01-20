@@ -56,12 +56,12 @@ class TestOptions : public ModelFilter::Options
       int value;
 };
 
-bool prompt_cancel( Model *, ModelFilter::Options * )
+bool prompt_cancel( Model *, const char * const, ModelFilter::Options * )
 {
    return false;
 }
 
-bool prompt_change( Model * m, ModelFilter::Options * o )
+bool prompt_change( Model * m, const char * const, ModelFilter::Options * o )
 {
    TestOptions * opts = dynamic_cast<TestOptions*>( o );
    if ( !opts )

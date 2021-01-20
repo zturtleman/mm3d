@@ -157,7 +157,7 @@ Model::ModelErrorE FilterManager::writeFile( Model * model, const char * filenam
             bool doWrite = true;
             if ( f != NULL && o != NULL && wo != WO_ModelNoPrompt )
             {
-               doWrite = f( model, o );
+               doWrite = f( model, filename, o );
             }
 
             Model::ModelErrorE err = Model::ERROR_NONE;

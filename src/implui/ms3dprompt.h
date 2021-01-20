@@ -53,6 +53,6 @@ class Ms3dPrompt : public QDialog, public Ui::Ms3dPromptBase
       void updateExtraEnabled();
 };
 
-bool ms3dprompt_show( Model * model, ModelFilter::Options * o );
+bool ms3dprompt_show( Model * model, const char * const filename, ModelFilter::Options * o );
 
 #endif // __MS3DPROMPT_H

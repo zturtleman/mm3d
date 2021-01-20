@@ -77,7 +77,7 @@ void ObjPrompt::helpNowEvent()
 //
 // This function is registered with the ObjFilter class when the
 // filter is created in stdfilters.cc.
-bool objprompt_show( Model * model, ModelFilter::Options * o )
+bool objprompt_show( Model * model, const char * const filename, ModelFilter::Options * o )
 {
    bool rval = false;
    ObjPrompt p;

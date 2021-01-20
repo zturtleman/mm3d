@@ -72,6 +72,9 @@ class ModelFilter
       //
       // The Model argument indicates the model that will be saved.
       //
+      // The 'const char * const' argument is the filename that the
+      // model will be saved to.
+      //
       // The ModelFilter::Options argument contains the options that
       // should be set as default when the prompt is displayed.
       //
@@ -83,7 +86,7 @@ class ModelFilter
       //
       // For simple filters you can typically ignore anything related
       // to the Options class.
-      typedef bool (*OptionsFuncF)( Model *, ModelFilter::Options * );
+      typedef bool (*OptionsFuncF)( Model *, const char * const, ModelFilter::Options * );
 
       ModelFilter();
       virtual ~ModelFilter() {};

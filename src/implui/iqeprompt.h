@@ -50,6 +50,6 @@ class IqePrompt : public QDialog, public Ui::IqePromptBase
 
 };
 
-bool iqeprompt_show( Model * model, ModelFilter::Options * o );
+bool iqeprompt_show( Model * model, const char * const filename, ModelFilter::Options * o );
 
 #endif // __IQEPROMPT_H
