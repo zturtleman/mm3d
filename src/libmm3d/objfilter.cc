@@ -432,7 +432,7 @@ bool ObjFilter::writeMaterials()
             std::string filename = getRelativePath( m_modelPath.c_str(), m_model->getTextureFilename( m ) );
             char * filecpy = strdup( filename.c_str() );
             replaceSlash( filecpy );
-            writeStripped( "\tmap_Kd %s", 
+            writeLine( "\tmap_Kd %s",
                   ( (strncmp( filecpy, ".\\", 2 ) == 0 ) ? &filecpy[2] : filecpy ) );
             free( filecpy );
          }
