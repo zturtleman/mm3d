@@ -1,6 +1,6 @@
 include ../Makefile.common
 
-LIBS = ../common/libtest_common.a ../../libmm3d/libmm3d.a
+LIBS = ../common/libtest_common.a $(BUILDDIR)/src/libmm3d/libmm3d.a
 
 # If you add a test, be sure to add a moc dependency, and a run line below
 

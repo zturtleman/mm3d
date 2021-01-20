@@ -4,11 +4,18 @@ CXXFLAGS = -coverage -DMM3D_EDIT -I../../libmm3d -I../../implui -I../common -I..
 TESTLIBS = -lQt5Test -lQt5Core -lQt5Gui -lGL -lGLU
 LIBS =
 
+# Override BUILDDIR if you use a out-of-tree build.
+#
+# e.g., cd mm3d; mkdir build-configure; cd build-configure; ../configure; make; cd ..
+#       make -C src/tests/common/    BUILDDIR=$(pwd)/build-configure
+#       make -C src/tests/libmm3d/   BUILDDIR=$(pwd)/build-configure   check
+BUILDDIR=../../..
+
 .cc.o:
 	$(CXX) $(CXXFLAGS) -c $<
 
 .cc.unit:
-	$(CXX) $(CXXFLAGS) -o $*.unit $< ../../implui/qttex.o $(LIBS) $(TESTLIBS) -lgcov
+	$(CXX) $(CXXFLAGS) -o $*.unit $< $(BUILDDIR)/src/implui/qttex.o $(LIBS) $(TESTLIBS) -lgcov
 
 .cc.moc:
 	qtchooser -qt=5 -run-tool=moc $< > $*.moc
