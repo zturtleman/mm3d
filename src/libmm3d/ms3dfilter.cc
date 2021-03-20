@@ -1318,7 +1318,7 @@ void Ms3dFilter::writeVertexWeight( int subVersion,
       log_debug( "          new weights: %d, %d, %d, %d (total: %d)\n", weight[0], weight[1], weight[2], weight[3], weight[0] + weight[1] + weight[2] + weight[3] );
    }
 
-   if ( weight[0] + weight[1] + weight[2] + weight[3] != maxWeight ) {
+   if ( boneId[0] != 0xFF && weight[0] + weight[1] + weight[2] + weight[3] != maxWeight ) {
       log_warning( "write ms3d vertex weights: %d, %d, %d, %d (total: %d != %d)\n", weight[0], weight[1], weight[2], weight[3], weight[0] + weight[1] + weight[2] + weight[3], maxWeight );
    }
 
