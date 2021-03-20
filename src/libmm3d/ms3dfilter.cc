@@ -1485,6 +1485,12 @@ bool Ms3dFilter::readVertexWeight( int subVersion,
       m_src->read( extra2 ); // don't do anything with this
    }
 
+   // no weights defaults to full influence as if extra vertex data doesn't exist
+   if ( weights[0] == 0 && weights[1] == 0 && weights[2] == 0 )
+   {
+      weights[0] = 100;
+   }
+
    //log_debug( "      vtx %d: b %d, %d, %d, %d; w %d, %d, %d, %d\n", vertex,
    //   (int)boneIds[0], (int)boneIds[1], (int)boneIds[2], (int)boneIds[3],
    //   (int)weights[0], (int)weights[1], (int)weights[2], (int)weights[3] );
