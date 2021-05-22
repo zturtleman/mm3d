@@ -31,3 +31,5 @@ qmfiles: $(QMFILES)
 install:
 	$(INSTALL) -d $(DESTDIR)$(datadir)/mm3d/i18n
 	${INSTALL} -m 0644 $(QMFILES) $(DESTDIR)$(datadir)/mm3d/i18n
+
+CLEANFILES = $(QMFILES)

@@ -136,3 +136,4 @@ install: all
 	${INSTALL} -m 0644 $(srcdir)/olh_images/tools/*.png $(DESTDIR)${DOCDIR}/olh_images/tools
 	${INSTALL} -m 0644 $(srcdir)/olh_images/tools/*.jpg $(DESTDIR)${DOCDIR}/olh_images/tools
 
+CLEANFILES = ${PAGES}
