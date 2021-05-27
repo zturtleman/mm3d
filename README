@@ -35,13 +35,13 @@ See INSTALL.WIN32 for Windows-specific instructions.
 
 Build dependencies:
 
-    sudo apt-get install autoconf automake make g++ qtbase5-dev qtbase5-dev-tools qttools5-dev-tools libqt5opengl5-dev libgl1-mesa-dev libhtml-template-perl
+    sudo apt install autoconf automake make gcc g++ qtbase5-dev qtbase5-dev-tools qttools5-dev-tools libqt5opengl5-dev libgl1-mesa-dev libhtml-template-perl
 
 ## Fedora
 
 Build dependencies:
 
-    sudo dnf install autoconf automake make gcc-c++ qt5-qtbase-devel qt5-linguist mesa-libGLU-devel perl-HTML-Template
+    sudo dnf install autoconf automake make gcc gcc-c++ qt5-qtbase-devel qt5-linguist mesa-libGLU-devel perl-HTML-Template
 
 ## macOS
 

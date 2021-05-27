@@ -335,16 +335,19 @@ ifndef WINDEPLOYQT
   WINDEPLOYQT=${QT_BIN_DIR}/windeployqt${TOOLS_BINEXT}
 endif
 
-# Use debug or release cflags
-#CXXFLAGS=-std=c++11 -Wall -g -ggdb
-CXXFLAGS=-std=c++11 -O2 -s
-
-CXXFLAGS+=${BASE_FLAGS} -fno-math-errno -I${QT_INCLUDE_DIR} -DMM3D_EDIT -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${B}/depui -I${B}/qtui -I${B}/implui -I${B}/commands
-
 ifndef MINGW
 # not for mingw because warning: -fPIC ignored for target (all code is position independent)
-CXXFLAGS+=-fPIC
+BASE_FLAGS+=-fPIC
 endif
+
+BASE_FLAGS+=-fno-math-errno -I${QT_INCLUDE_DIR} -DMM3D_EDIT -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${B}/depui -I${B}/qtui -I${B}/implui -I${B}/commands
+
+# Use debug or release cflags
+#BUILD_FLAGS+=-Wall -g -ggdb
+BUILD_FLAGS+=-O2 -s
+
+CCFLAGS=-std=c99 ${BUILD_FLAGS} ${BASE_FLAGS}
+CXXFLAGS=-std=c++11 ${BUILD_FLAGS} ${BASE_FLAGS}
 
 DEFS=
 
@@ -756,7 +759,7 @@ endif
 
 define DO_CC
 $(echo_cmd) "CC $<"
-$(Q)${CC} ${DEFS} -c $< -o $@ ${CXXFLAGS}
+$(Q)${CC} ${DEFS} -c $< -o $@ ${CCFLAGS}
 endef
 
 define DO_CXX
