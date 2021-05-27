@@ -33,7 +33,5 @@ To build doc/html help files:
 
 The help files in doc/html are source files that use templates to build the 
 final help pages that appear in the mm3d help window. To build these final
-html pages you will need to use the hpagemake.pl perl script in the util
-directory. The perl script requires the HTML::Template perl library to be
-installed. You can get this library from CPAN. 
+html pages just run "make" in the doc directory.
 

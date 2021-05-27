@@ -125,8 +125,12 @@ all: docs
 
 docs: ${PAGES}
 
-%.html: %.page %.htm ${COMMON}
-	$(top_srcdir)/util/hpagemake.pl $(srcdir)/$*.page > $*.html
+# TODO: Is there a better way to tell autotools it needs to build hpagemake first?
+$(top_builddir)/util/hpagemake:
+	make -C $(top_builddir)/util hpagemake
+
+%.html: %.page %.htm ${COMMON} $(top_builddir)/util/hpagemake
+	$(top_builddir)/util/hpagemake $(srcdir)/$*.page > $*.html
 
 install: all
 	${INSTALL} -d      $(DESTDIR)${DOCDIR}/olh_images/screencaps

@@ -7,7 +7,8 @@ EXTRA_DIST = Makefile.generic \
 	mm3d.ico \
 	mm3d.icns
 
-SUBDIRS = src plugins i18n doc desktop man
+# util is before doc because doc uses tool built in util.
+SUBDIRS = src plugins i18n util doc desktop man
 
 DESTDIR = src
 

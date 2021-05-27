@@ -122,6 +122,7 @@ AC_CONFIG_FILES([ Makefile
           doc/html/olh_images/Makefile
           doc/html/olh_images/screencaps/Makefile
           doc/html/olh_images/tools/Makefile
+          util/Makefile
           ])
 AC_OUTPUT
 

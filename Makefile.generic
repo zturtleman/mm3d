@@ -749,6 +749,64 @@ QMFILES = \
 	${B}/i18n/mm3d_ref.qm \
 	${B}/i18n/mm3d_bork.qm
 
+MM3D_HTML = \
+	${B}/doc/html/olh_detailsindex.html \
+	${B}/doc/html/olh_vertexdetails.html \
+	${B}/doc/html/olh_facedetails.html \
+	${B}/doc/html/olh_meshdetails.html \
+	${B}/doc/html/olh_normaldetails.html \
+	${B}/doc/html/olh_groupdetails.html \
+	${B}/doc/html/olh_materialdetails.html \
+	${B}/doc/html/olh_texturecoorddetails.html \
+	${B}/doc/html/olh_projectiondetails.html \
+	${B}/doc/html/olh_jointdetails.html \
+	${B}/doc/html/olh_pointdetails.html \
+	${B}/doc/html/olh_animationdetails.html \
+	${B}/doc/html/olh_backgroundimagedetails.html \
+	${B}/doc/html/olh_alignwin.html \
+	${B}/doc/html/olh_animconvertwin.html \
+	${B}/doc/html/olh_animexportwin.html \
+	${B}/doc/html/olh_animsetwin.html \
+	${B}/doc/html/olh_animwin.html \
+	${B}/doc/html/olh_autoassignjointwin.html \
+	${B}/doc/html/olh_backgroundwin.html \
+	${B}/doc/html/olh_boolwin.html \
+	${B}/doc/html/olh_cmdline.html \
+	${B}/doc/html/olh_commands.html \
+	${B}/doc/html/olh_develop.html \
+	${B}/doc/html/olh_quakemd2.html \
+	${B}/doc/html/olh_quakemd3.html \
+	${B}/doc/html/olh_cal3d.html \
+	${B}/doc/html/olh_groupwin.html \
+	${B}/doc/html/olh_index.html \
+	${B}/doc/html/olh_influences.html \
+	${B}/doc/html/olh_jointwin.html \
+	${B}/doc/html/olh_license.html \
+	${B}/doc/html/olh_mergewin.html \
+	${B}/doc/html/olh_metawin.html \
+	${B}/doc/html/olh_mm3dformat.html \
+	${B}/doc/html/olh_cal3dprompt.html \
+	${B}/doc/html/olh_ms3dprompt.html \
+	${B}/doc/html/olh_objprompt.html \
+	${B}/doc/html/olh_iqeprompt.html \
+	${B}/doc/html/olh_quakemd3prompt.html \
+	${B}/doc/html/olh_smdprompt.html \
+	${B}/doc/html/olh_painttexturewin.html \
+	${B}/doc/html/olh_pointwin.html \
+	${B}/doc/html/olh_pluginwin.html \
+	${B}/doc/html/olh_projectionwin.html \
+	${B}/doc/html/olh_properties.html \
+	${B}/doc/html/olh_spherifywin.html \
+	${B}/doc/html/olh_texturecoordwin.html \
+	${B}/doc/html/olh_texturewin.html \
+	${B}/doc/html/olh_tips.html \
+	${B}/doc/html/olh_tools.html \
+	${B}/doc/html/olh_tutorial_index.html \
+	${B}/doc/html/olh_transformwin.html \
+	${B}/doc/html/olh_viewportsettings.html \
+	${B}/doc/html/olh_whatsnew.html \
+	${B}/doc/html/olh_mainwin.html
+
 ifeq (${V},1)
 echo_cmd=@:
 Q=
@@ -782,9 +840,14 @@ $(echo_cmd) "LRELEASE $<"
 $(Q)${LRELEASE} $< -qm $@
 endef
 
-.PHONY: all mm3d_ui mm3d_moc mm3d clean
+define DO_HTML
+$(echo_cmd) "HTML $<"
+$(Q)${B}/util/hpagemake${BINEXT} $< > $@
+endef
 
-all: makedirs mm3d_ui mm3d_moc mm3d qmfiles
+.PHONY: all makedirs mm3d_ui mm3d_moc mm3d hpagemake docs clean
+
+all: makedirs mm3d_ui mm3d_moc mm3d qmfiles hpagemake docs
 
 # mingw.org's mingw32-make.exe uses Window's command processing and mkdir
 makedirs:
@@ -799,6 +862,9 @@ ifdef MINGW32_MAKE
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\mm3dcore" ${MKDIR} "${BUILD}\${BUILDSUB}\mm3dcore"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\commands" ${MKDIR} "${BUILD}\${BUILDSUB}\commands"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\i18n" ${MKDIR} "${BUILD}\${BUILDSUB}\i18n"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\util" ${MKDIR} "${BUILD}\${BUILDSUB}\util"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\doc" ${MKDIR} "${BUILD}\${BUILDSUB}\doc"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\doc\html" ${MKDIR} "${BUILD}\${BUILDSUB}\doc\html"
 else
 	@${MKDIR} "${B}"
 	@${MKDIR} "${B}/src"
@@ -810,6 +876,9 @@ else
 	@${MKDIR} "${B}/mm3dcore"
 	@${MKDIR} "${B}/commands"
 	@${MKDIR} "${B}/i18n"
+	@${MKDIR} "${B}/util"
+	@${MKDIR} "${B}/doc"
+	@${MKDIR} "${B}/doc/html"
 endif
 
 mm3d_ui: ${MM3D_UI}
@@ -817,6 +886,13 @@ mm3d_ui: ${MM3D_UI}
 mm3d_moc: ${MM3D_MOC}
 
 qmfiles: ${QMFILES}
+
+${B}/util/hpagemake${BINEXT}: ${B}/util/hpagemake.o
+	$(Q)${CC} ${CCFLAGS} ${DEFS} -o ${B}/util/hpagemake${BINEXT} ${B}/util/hpagemake.o
+
+hpagemake: ${B}/util/hpagemake${BINEXT}
+
+docs: hpagemake ${MM3D_HTML}
 
 $(BIN)/mm3d${BINEXT}: ${MM3D_MOC_OBJ} ${LIB_OBJ} ${MM3D_OBJ}
 	$(echo_cmd) "LINKING $(BIN)/mm3d${BINEXT}"
@@ -833,15 +909,6 @@ endif
 
 mm3d: $(BIN)/mm3d${BINEXT}
 
-# FIXME: html docs are only created by autotools build system
-#$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/html/"
-#$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/html/olh_images/screencaps/"
-#$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/html/olh_images/tools/"
-#${INSTALL} -m 0644 doc/html/*.html "$(PREFIX)/share/doc/mm3d/html/"
-#${INSTALL} -m 0644 doc/html/olh_images/screencaps/*.png "$(PREFIX)/share/doc/mm3d/html/olh_images/screencaps/"
-#${INSTALL} -m 0644 doc/html/olh_images/tools/*.png "$(PREFIX)/share/doc/mm3d/html/olh_images/tools/"
-#${INSTALL} -m 0644 doc/html/olh_images/tools/*.jpg "$(PREFIX)/share/doc/mm3d/html/olh_images/tools/"
-
 # make install doesn't work for mingw32-make.exe because it's case insenitive and autotools requires INSTALL file.
 install: deploy
 
@@ -851,19 +918,32 @@ ifdef MINGW32_MAKE
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install" ${MKDIR} "${BUILD}\${BUILDSUB}\install"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\doc" ${MKDIR} "${BUILD}\${BUILDSUB}\install\doc"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\doc\html" ${MKDIR} "${BUILD}\${BUILDSUB}\install\doc\html"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\doc\html\olh_images" ${MKDIR} "${BUILD}\${BUILDSUB}\install\doc\html\olh_images\screencaps"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\doc\html\olh_images\screencaps" ${MKDIR} "${BUILD}\${BUILDSUB}\install\doc\html\olh_images"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\doc\html\olh_images\tools" ${MKDIR} "${BUILD}\${BUILDSUB}\install\doc\html\olh_images\tools"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\i18n" ${MKDIR} "${BUILD}\${BUILDSUB}\install\i18n"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\plugins" ${MKDIR} "${BUILD}\${BUILDSUB}\install\plugins"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\plugins\1.3" ${MKDIR} "${BUILD}\${BUILDSUB}\install\plugins\1.3"
 	@copy "$(BUILD)\$(BUILDSUB)\mm3d${BINEXT}" "$(BUILD)\$(BUILDSUB)\install"
+	@copy "$(BUILD)\$(BUILDSUB)\doc\html\*.html" "$(BUILD)\$(BUILDSUB)\install\doc\html"
+	@copy "doc\html\olh_images\screencaps\*.png" "$(BUILD)\$(BUILDSUB)\install\doc\html\olh_images\screencaps"
+	@copy "doc\html\olh_images\tools\*.png" "$(BUILD)\$(BUILDSUB)\install\doc\html\olh_images\tools"
+	@copy "doc\html\olh_images\tools\*.jpg" "$(BUILD)\$(BUILDSUB)\install\doc\html\olh_images\tools"
 	@copy "$(BUILD)\$(BUILDSUB)\i18n\*.qm" "$(BUILD)\$(BUILDSUB)\install\i18n"
 	@$(WINDEPLOYQT) --compiler-runtime "$(BUILD)\$(BUILDSUB)\install"
 else
 	@$(MKDIR) "$(B)/install"
 	@$(MKDIR) "$(B)/install/doc/html"
+	@$(MKDIR) "$(B)/install/doc/html/olh_images/screencaps"
+	@$(MKDIR) "$(B)/install/doc/html/olh_images/tools"
 	@$(MKDIR) "$(B)/install/i18n"
 	@$(MKDIR) "$(B)/install/plugins/1.3"
 	@cp "$(B)/mm3d${BINEXT}" "$(B)/install"
 	@cp $(QMFILES) "$(B)/install/i18n"
+	@cp $(MM3D_HTML) "$(B)/install/doc/html"
+	@cp doc/html/olh_images/screencaps/*.png "$(B)/install/doc/html/olh_images/screencaps"
+	@cp doc/html/olh_images/tools/*.png "$(B)/install/doc/html/olh_images/tools"
+	@cp doc/html/olh_images/tools/*.jpg "$(B)/install/doc/html/olh_images/tools"
 	@$(WINDEPLOYQT) --compiler-runtime "$(B)/install"
 endif
 else
@@ -881,12 +961,22 @@ else
 	$(INSTALL) -d "$(PREFIX)/share/man/man1/"
 	${INSTALL} -m 0644 man/mm3d.1 "$(PREFIX)/share/man/man1/"
 	$(INSTALL) -d "$(PREFIX)/share/mm3d/plugins/1.3"
+	$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/html/"
+	$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/html/olh_images/screencaps/"
+	$(INSTALL) -d "$(PREFIX)/share/doc/mm3d/html/olh_images/tools/"
+	${INSTALL} -m 0644 $(MM3D_HTML) "$(PREFIX)/share/doc/mm3d/html/"
+	${INSTALL} -m 0644 doc/html/olh_images/screencaps/*.png "$(PREFIX)/share/doc/mm3d/html/olh_images/screencaps/"
+	${INSTALL} -m 0644 doc/html/olh_images/tools/*.png "$(PREFIX)/share/doc/mm3d/html/olh_images/tools/"
+	${INSTALL} -m 0644 doc/html/olh_images/tools/*.jpg "$(PREFIX)/share/doc/mm3d/html/olh_images/tools/"
 endif
 
 installer: mm3d
 	makensis mm3d-win32-installer.nsi
 
 ${B}/%.o: src/%.c
+	$(DO_CC)
+
+${B}/util/%.o: util/%.c
 	$(DO_CC)
 
 ${B}/%.o: src/%.cc
@@ -914,6 +1004,9 @@ ${B}/qtui/resources.cpp: src/qtui/resources.qrc src/qtui/images/zoomin.xpm src/q
 ${B}/i18n/%.qm: i18n/%.ts
 	$(DO_LRELEASE)
 
+${B}/doc/html/%.html: doc/html/%.page doc/html/%.htm doc/html/template.htm ${B}/util/hpagemake${BINEXT}
+	$(DO_HTML)
+
 clean:
 	$(Q)rm -f ${LIB_OBJ}
 	$(Q)rm -f ${MM3D_UI}
@@ -921,5 +1014,6 @@ clean:
 	$(Q)rm -f ${QMFILES}
 	$(Q)rm -f ${MM3D_OBJ}
 	$(Q)rm -f ${MM3D_MOC_OBJ}
+	$(Q)rm -f ${MM3D_HTML}
 	$(Q)rm -f $(BIN)/mm3d${BINEXT}
 

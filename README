@@ -35,13 +35,13 @@ See INSTALL.WIN32 for Windows-specific instructions.
 
 Build dependencies:
 
-    sudo apt install autoconf automake make gcc g++ qtbase5-dev qtbase5-dev-tools qttools5-dev-tools libqt5opengl5-dev libgl1-mesa-dev libhtml-template-perl
+    sudo apt install autoconf automake make gcc g++ qtbase5-dev qtbase5-dev-tools qttools5-dev-tools libqt5opengl5-dev libgl1-mesa-dev
 
 ## Fedora
 
 Build dependencies:
 
-    sudo dnf install autoconf automake make gcc gcc-c++ qt5-qtbase-devel qt5-linguist mesa-libGLU-devel perl-HTML-Template
+    sudo dnf install autoconf automake make gcc gcc-c++ qt5-qtbase-devel qt5-linguist mesa-libGLU-devel
 
 ## macOS
 
@@ -49,8 +49,6 @@ On macOS 10.11+, install homebrew from http://brew.sh and run the following
 commands.
 
    brew install autoconf automake qt
-   cpan App::cpanminus # choose sudo in the interactive command
-   cpanm HTML::Template --sudo
    ./autosetup.sh
    CXX='clang++ -stdlib=libc++' ./configure --with-Qt-dir=/usr/local/Cellar/qt/5.11.1 --with-macosx-version-min=10.11
    make

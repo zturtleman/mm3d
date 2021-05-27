@@ -1,5 +1,19 @@
 #!/usr/bin/perl -w
 
+#
+# NOTE: This file (hpagemake.pl) was replaced with hpagemake.c in Maverick Model 3D.
+#
+# How to install HTML::Template:
+#
+# Debian/Ubuntu:
+#   sudo apt install libhtml-template-perl
+# Fedora:
+#   sudo dnf install perl-HTML-Template
+# General:
+#   cpan App::cpanminus # choose sudo in the interactive command
+#   cpanm HTML::Template --sudo
+#
+
 use HTML::Template;
 use File::Basename;
 my $srcdir = dirname(__FILE__).'/../doc/html';
