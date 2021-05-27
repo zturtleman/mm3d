@@ -1570,7 +1570,7 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
          model->removeAllVertexInfluences( v );
       }
 
-      unsigned pcount = model->getVertexCount();
+      unsigned pcount = model->getPointCount();
       for ( unsigned p = 0; p < pcount; p++ )
       {
          model->removeAllPointInfluences( p );
