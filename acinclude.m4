@@ -1080,10 +1080,12 @@ AC_DEFUN([MDL_HAVE_OPENGL],
   AC_CACHE_CHECK([for OpenGL], mdl_cv_have_OpenGL,
   [
 dnl Check for Mesa first, unless we were asked not to.
-    AC_ARG_WITH([--with-Mesa],
-                   [Prefer the Mesa library over a vendors native OpenGL library (default=yes)],
+    AC_ARG_WITH([Mesa],
+    [  --with-Mesa             Prefer the Mesa library over a vendors native OpenGL library (default=yes)],
                    with_Mesa_help_string)
     AC_ARG_ENABLE(Mesa, $with_Mesa_help_string, use_Mesa=$enableval, use_Mesa=yes)
+    AC_ARG_WITH([GL-cflags],
+    [  --with-GL-cflags        CFLAGS for linking with GL/GLU libraries])
 
     if test x"$use_Mesa" = xyes; then
        GL_search_list="MesaGL   GL"
@@ -1097,10 +1099,10 @@ dnl Check for Mesa first, unless we were asked not to.
     AC_LANG_C
 
     if test x"$is_osx" = xyes; then
-        GL_CFLAGS=""
+        GL_CFLAGS="$with_GL_cflags"
         GL_LIBS="-framework OpenGL -framework AGL"
     else
-        GL_CFLAGS=""
+        GL_CFLAGS="$with_GL_cflags"
         GL_LIBS=""
     fi
     GL_save_CPPFLAGS="$CPPFLAGS"

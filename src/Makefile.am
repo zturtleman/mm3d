@@ -20,7 +20,7 @@ mm3d_SOURCES = \
 	$(mm3d_HFILES)
 
 mm3d_LDADD = $(CORE_PROFILE) tools/libtools.a commands/libcommands.a implui/libimplui.a qtui/libqtui.a depui/libdepui.a mm3dcore/libmm3dcore.a libmm3d/libmm3d.a $(QGL_LIBS) $(QT_LIBS) $(LUALIB_LIBS) $(GL_LIBS) $(DLOPEN_LIBS) $(COVLFLAGS)
-mm3d_LDFLAGS = $(all_libraries) $(QT_CXXFLAGS)
+mm3d_LDFLAGS = $(all_libraries) $(QT_CXXFLAGS) $(GL_CFLAGS)
 
 AM_CPPFLAGS = $(CORE_PROFILE) $(COVFLAGS) -Wall -I$(srcdir)/libmm3d -I$(srcdir)/mm3dcore -I$(srcdir)/depui -I$(builddir)/qtui -I$(srcdir)/implui -I$(srcdir)/tools -I$(srcdir)/commands -DMM3D_EDIT $(all_includes) $(QT_CXXFLAGS) $(LUALIB_CCFLAGS) $(GL_CFLAGS)
 
