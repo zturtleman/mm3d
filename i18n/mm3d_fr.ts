@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.1" language="fr">
 <context>
     <name>AboutWin</name>
     <message>
@@ -136,58 +136,90 @@
         <translation>Convertir en pose (Morph Frame)</translation>
     </message>
     <message>
-        <location line="+38"/>
+        <location line="+21"/>
         <source>Convert Skeletal to Frame:</source>
         <translation>Convertir Squelette en Pose (Morph frame):</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+20"/>
+        <source>example</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Skeletal Animation</source>
+        <translation type="unfinished">Animation par squelette</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Frame Animation</source>
+        <translation type="unfinished">Animation par pose</translation>
+    </message>
+    <message>
+        <location line="+68"/>
+        <source>Convert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>AnimName</source>
-        <translation>Nom de l&apos;animation</translation>
+        <translation type="vanished">Nom de l&apos;animation</translation>
     </message>
     <message>
-        <location line="+45"/>
         <source>Frame Anim Name:</source>
-        <translation>Nom de la pose (Morph Frame) de l&apos;animation:</translation>
+        <translation type="vanished">Nom de la pose (Morph Frame) de l&apos;animation:</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="-63"/>
         <source>Frame Count</source>
         <translation>Nombre de poses (Morph frames)</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+5"/>
+        <location line="+5"/>
+        <source>TORSO_IDLE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>1</source>
+        <translation type="unfinished">1</translation>
+    </message>
+    <message>
+        <location line="+22"/>
         <source>F1 for help</source>
         <translation>Appuyer sur F1 pour l&apos;aide</translation>
     </message>
     <message>
-        <location line="+26"/>
         <source>Continue</source>
-        <translation>Continuer</translation>
+        <translation type="vanished">Continuer</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+33"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
     </message>
     <message>
-        <location line="+7"/>
         <source>Cancel All</source>
-        <translation>Annuler Tout</translation>
+        <translation type="vanished">Annuler Tout</translation>
     </message>
 </context>
 <context>
     <name>AnimConvertWindow</name>
     <message>
-        <location filename="../src/implui/animconvertwin.cc" line="+40"/>
+        <location filename="../src/implui/animconvertwin.cc" line="+90"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+25"/>
         <source>Convert Skeletal to Frame:</source>
         <translation>Convertir Squelette en Pose (frame):</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Skeletal Animation</source>
+        <translation type="unfinished">Animation par squelette</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -195,14 +227,29 @@
         <translation>Convertir Pose en Pose (frame):</translation>
     </message>
     <message>
+        <location line="+1"/>
+        <source>Frame Animation</source>
+        <translation type="unfinished">Animation par pose</translation>
+    </message>
+    <message>
         <location line="+3"/>
         <source>Convert Frame Relative to Frame:</source>
         <translation>Convertir Pose Relative en Pose (frame):</translation>
     </message>
     <message>
+        <location line="+1"/>
+        <source>Frame Relative Animation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+3"/>
         <source>Convert Unknown Type to Frame:</source>
         <translation>Convertir Type Inconnu en Pose (frame):</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Unknown Type Animation</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -505,13 +552,13 @@ Le nombre d&apos;images diffère.</translation>
         <translation>Ne peut fusionner que les animation par squelette.</translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="+26"/>
         <source>Animation changes</source>
         <comment>operation complete</comment>
         <translation>Changement d&apos;animation</translation>
     </message>
     <message>
-        <location line="-236"/>
+        <location line="-220"/>
         <source>copy</source>
         <translation>copier</translation>
     </message>
@@ -1241,12 +1288,23 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Il faut selectionner exactement 3 vertex</translation>
     </message>
     <message>
-        <location filename="../src/commands/pastecmd.cc" line="+67"/>
+        <location filename="../src/commands/pastecmd.cc" line="+68"/>
         <source>Paste complete</source>
         <translation>Coller terminé</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+6"/>
+        <source>Nothing to paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Paste failed: %1
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+16"/>
         <source>Paste from Clipboard</source>
         <translation>Coller depuis le presse-papiers</translation>
     </message>
@@ -2260,7 +2318,7 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation></translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+77"/>
         <source>Rename joint</source>
         <comment>window title</comment>
         <translation>Renommer le joint</translation>
@@ -2271,7 +2329,7 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Entrer un nouveau nom de point :</translation>
     </message>
     <message>
-        <location line="+119"/>
+        <location line="+118"/>
         <source>Joint changes</source>
         <comment>operation complete</comment>
         <translation>Modification de Joints</translation>
@@ -2285,7 +2343,12 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>joints</translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+22"/>
+        <source>None</source>
+        <translation type="unfinished">Aucun</translation>
+    </message>
+    <message>
+        <location line="+25"/>
         <source>Rename</source>
         <translation>Renommer</translation>
     </message>
@@ -2544,17 +2607,17 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>LowLevel</name>
     <message>
-        <location filename="../src/libmm3d/model.cc" line="+909"/>
+        <location filename="../src/libmm3d/model.cc" line="+919"/>
         <source>Cannot delete root joint</source>
         <translation>Impossible d&apos;effacer le joint racine</translation>
     </message>
     <message>
-        <location line="+2372"/>
+        <location line="+2379"/>
         <source>Cannot add or delete because you have frame animations.  Try &quot;Merge...&quot; instead.</source>
         <translation>Impossible d&apos;ajouter ou d&apos;effacer puisque vous avez des Animations de Pose.  Essayer &quot;Fusionner...&quot; à la place.</translation>
     </message>
     <message>
-        <location line="-2900"/>
+        <location line="-2917"/>
         <location filename="../src/libmm3d/texture.cc" line="+128"/>
         <source>Success</source>
         <translation>Succès</translation>
@@ -2646,8 +2709,8 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Cette opération n&apos;est pas supportée</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/mm3dfilter.cc" line="+683"/>
-        <location line="+1405"/>
+        <location filename="../src/libmm3d/mm3dfilter.cc" line="+684"/>
+        <location line="+1406"/>
         <location filename="../src/libmm3d/mm3dfilter_ref.cc" line="+635"/>
         <source>MM3D encountered an unexpected data size problem
 See Help-&gt;About to contact the developers</source>
@@ -2675,7 +2738,7 @@ Voir &quot;Aide-&gt;A Propos&quot; pour contacter les développeurs</translation
         <translation>Les squelettes des modèle ne correspondent pas</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="+168"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="+241"/>
         <source>This looks like a player model.
 Do you want to load all sections?</source>
         <translation>Cela ressemble à un modèle de joueur
@@ -2707,7 +2770,12 @@ Voulez-vous charger toutes les sections ?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md2filter.cc" line="+558"/>
+        <location line="+1382"/>
+        <source>Set meta data for Cal3D export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/libmm3d/md2filter.cc" line="+557"/>
         <source>MD2 requires all groups to have the same material.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2717,48 +2785,23 @@ Voulez-vous charger toutes les sections ?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="+1546"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="+1554"/>
         <source>MD3 export requires all faces to be grouped.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+81"/>
-        <source>This looks like a player model.
-Do you want to save all sections?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+105"/>
+        <location line="+130"/>
         <source>MD3_PATH+filename is to long.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+23"/>
-        <source>Too many animation frames for MD3 export.</source>
+        <location line="-81"/>
+        <location line="+18"/>
+        <source>Set meta data for MD3 export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+56"/>
-        <source>Too many points for MD3 export.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Too many groups for MD3 export.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>Too many faces in a single group for MD3 export</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Too many vertices in a single group for MD3 export</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+176"/>
+        <location line="+304"/>
         <source>Point name is too large for MD3 export.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2828,13 +2871,98 @@ Do you want to save all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/smdfilter.cc" line="+129"/>
+        <location line="+456"/>
+        <source>Set meta data for MS3D export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/libmm3d/smdfilter.cc" line="+138"/>
         <source>Bone joints must have unique names for SMD export.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+17"/>
         <source>SMD export requires points to only have one bone influence.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+427"/>
+        <source>Set meta data for SMD export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/libmm3d/d3dfilter.cc" line="+94"/>
+        <source>Unsupported D3D version.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Missing version in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Invalid D3D directives count.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Missing line count in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>Too few tokens on line in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>Found primitive start without primitive end in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Line primitive type is not supported for D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Triangle strip primitive type is not supported for D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Triangle fan primitive type is not supported for D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Unsupported primitive type in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Primitive end without start in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Incomplete triangle list before primitive end in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+100"/>
+        <source>Vertex outside of primitive begin/end in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+62"/>
+        <source>Primitive start without end in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+34"/>
+        <source>D3D requires all groups to have the same material.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2892,6 +3020,48 @@ Do you want to save all sections?</source>
     </message>
 </context>
 <context>
+    <name>Md3Prompt</name>
+    <message>
+        <location filename="../src/implui/md3prompt.cc" line="+40"/>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished">F1</translation>
+    </message>
+</context>
+<context>
+    <name>Md3PromptBase</name>
+    <message>
+        <location filename="../src/qtui/md3prompt.ui" line="+14"/>
+        <source>MD3 Filter Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Save as a Player Model (head.md3, upper.md3, lower.md3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Save animation.cfg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <source>Press F1 for help</source>
+        <translation type="unfinished">Appuyer sur F1 pour l&apos;aide</translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>Ok</source>
+        <translation type="unfinished">Ok</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Annuler</translation>
+    </message>
+</context>
+<context>
     <name>MergeWinBase</name>
     <message>
         <location filename="../src/qtui/mergewin.ui" line="+14"/>
@@ -2904,7 +3074,17 @@ Do you want to save all sections?</source>
         <translation>Fusionner les lieux</translation>
     </message>
     <message>
-        <location line="+66"/>
+        <location line="+23"/>
+        <source>Base Point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>&lt;origin&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+55"/>
         <source>Rotation</source>
         <translation>Rotation</translation>
     </message>
@@ -2962,13 +3142,13 @@ Do you want to save all sections?</source>
 <context>
     <name>MergeWindow</name>
     <message>
-        <location filename="../src/implui/mergewin.cc" line="+47"/>
+        <location filename="../src/implui/mergewin.cc" line="+48"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="+65"/>
         <source>Merge models</source>
         <comment>operation complete</comment>
         <translation>Fusionner les modèles
@@ -3096,7 +3276,7 @@ Opération Terminée</translation>
 <context>
     <name>ModelViewport</name>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="+1127"/>
+        <location filename="../src/depui/modelviewport.cc" line="+1131"/>
         <source>Could not load background %1</source>
         <translation>Impossible de charger l&apos;image de fond %1</translation>
     </message>
@@ -3106,7 +3286,7 @@ Opération Terminée</translation>
         <translation>Utiliser le boutoun du milieu de la souris pour faire glisser la visualisation</translation>
     </message>
     <message>
-        <location line="+1434"/>
+        <location line="+1433"/>
         <source>OpenGL error = Invalid Value</source>
         <translation>Erreur OpenGL = Valeur Invalide</translation>
     </message>
@@ -3778,50 +3958,34 @@ Opération Terminée</translation>
     </message>
 </context>
 <context>
-    <name>RgbaWin</name>
-    <message>
-        <location filename="../src/implui/rgbawin.cc" line="+42"/>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation></translation>
-    </message>
-</context>
-<context>
     <name>RgbaWinBase</name>
     <message>
-        <location filename="../src/qtui/rgbawin.ui" line="+14"/>
         <source>RGBA Window</source>
-        <translation>Fenêtre RGBA</translation>
+        <translation type="vanished">Fenêtre RGBA</translation>
     </message>
     <message>
-        <location line="+41"/>
         <source>Light Property</source>
-        <translation>Propriété de la Lumière</translation>
+        <translation type="vanished">Propriété de la Lumière</translation>
     </message>
     <message>
-        <location line="+56"/>
         <source>Red</source>
-        <translation>Rouge</translation>
+        <translation type="vanished">Rouge</translation>
     </message>
     <message>
-        <location line="+81"/>
         <source>Green</source>
-        <translation>Vert</translation>
+        <translation type="vanished">Vert</translation>
     </message>
     <message>
-        <location line="+10"/>
         <source>Blue</source>
-        <translation>Bleu</translation>
+        <translation type="vanished">Bleu</translation>
     </message>
     <message>
-        <location line="+26"/>
         <source>Alpha</source>
-        <translation>Alpha</translation>
+        <translation type="vanished">Alpha</translation>
     </message>
     <message>
-        <location line="+61"/>
         <source>Close</source>
-        <translation>Fermer</translation>
+        <translation type="vanished">Fermer</translation>
     </message>
 </context>
 <context>
@@ -4228,7 +4392,7 @@ Opération Terminée</translation>
 <context>
     <name>TextureWindow</name>
     <message>
-        <location filename="../src/implui/texwin.cc" line="+129"/>
+        <location filename="../src/implui/texwin.cc" line="+127"/>
         <source>All Supported Formats (</source>
         <comment>all texture formats</comment>
         <translation>Tous les formats supportés (</translation>
@@ -4280,7 +4444,7 @@ Opération Terminée</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+159"/>
+        <location line="+131"/>
         <source>Texture changes</source>
         <translation>Changements de texture</translation>
     </message>
@@ -4295,7 +4459,7 @@ Opération Terminée</translation>
         <translation>Rouge</translation>
     </message>
     <message>
-        <location line="+134"/>
+        <location line="+132"/>
         <source>Change texture...</source>
         <comment>Change material&apos;s texture file</comment>
         <translation>Changer de texture...</translation>
@@ -4307,7 +4471,7 @@ Opération Terminée</translation>
         <translation>Choisir la texture...</translation>
     </message>
     <message>
-        <location line="-521"/>
+        <location line="-491"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>
@@ -4860,7 +5024,7 @@ Opération Terminée</translation>
 <context>
     <name>TransformWindow</name>
     <message>
-        <location filename="../src/implui/transformwin.cc" line="+91"/>
+        <location filename="../src/implui/transformwin.cc" line="+89"/>
         <source>Matrix Translate</source>
         <translation>Translation par matrice</translation>
     </message>
@@ -5219,13 +5383,13 @@ bouton</translation>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+1473"/>
+        <location line="+1474"/>
         <source>Show Properties</source>
         <comment>View|Show Properties</comment>
         <translation>Afficher les Propriétés</translation>
     </message>
     <message>
-        <location line="-1471"/>
+        <location line="-1472"/>
         <source>Render Options</source>
         <comment>View|Render Options</comment>
         <translation>Options de Rendu</translation>
@@ -5548,14 +5712,14 @@ bouton</translation>
         <location line="+322"/>
         <location line="+94"/>
         <location line="+89"/>
-        <location line="+48"/>
+        <location line="+49"/>
         <location line="+1079"/>
         <location line="+120"/>
         <source>All Files (*)</source>
         <translation>Tous les Fichiers (*)</translation>
     </message>
     <message>
-        <location line="-1423"/>
+        <location line="-1424"/>
         <source>Save model file as</source>
         <translation>Sauver le ficher sous</translation>
     </message>
@@ -5566,20 +5730,20 @@ bouton</translation>
     <message>
         <location line="+89"/>
         <location line="+89"/>
-        <location line="+48"/>
+        <location line="+49"/>
         <location line="+1079"/>
         <location line="+120"/>
         <source>Open model file</source>
         <translation>Ouvrir le fichier modèle</translation>
     </message>
     <message>
-        <location line="-1298"/>
+        <location line="-1299"/>
         <source>Merge models</source>
         <translation>Fusionner les modèles</translation>
     </message>
     <message>
         <location line="+14"/>
-        <location line="+65"/>
+        <location line="+66"/>
         <source>:
 </source>
         <translation>:
@@ -5757,7 +5921,7 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
         <translation>Selectionner les Points influencés</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="-1946"/>
+        <location filename="../src/implui/viewwin.cc" line="-1947"/>
         <source>Auto-Assign Selected...</source>
         <comment>Joints|Auto-Assign Selected</comment>
         <translation>Assigner automatiquement la selection...</translation>
@@ -5927,13 +6091,18 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
         <translation>Tous les formats supportés</translation>
     </message>
     <message>
-        <location line="+1122"/>
+        <location line="+44"/>
+        <source>Merge animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1079"/>
         <location line="+120"/>
         <source>All Supported Formats</source>
         <translation>Tous les formats supportés</translation>
     </message>
     <message>
-        <location line="-2128"/>
+        <location line="-2129"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>

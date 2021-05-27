@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.1" language="sk">
 <context>
     <name>AboutWin</name>
     <message>
@@ -136,58 +136,90 @@
         <translation>Konvertovať na rámec</translation>
     </message>
     <message>
-        <location line="+38"/>
+        <location line="+21"/>
         <source>Convert Skeletal to Frame:</source>
         <translation>Konvertovať kostrovú na rámcovú:</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+20"/>
+        <source>example</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Skeletal Animation</source>
+        <translation type="unfinished">Kostrová animácia</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Frame Animation</source>
+        <translation type="unfinished">Rámcová animácia</translation>
+    </message>
+    <message>
+        <location line="+68"/>
+        <source>Convert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>AnimName</source>
-        <translation>AnimName</translation>
+        <translation type="vanished">AnimName</translation>
     </message>
     <message>
-        <location line="+45"/>
         <source>Frame Anim Name:</source>
-        <translation>Názov rámcovej animácie:</translation>
+        <translation type="vanished">Názov rámcovej animácie:</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="-63"/>
         <source>Frame Count</source>
         <translation>Počet rámcov</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+5"/>
+        <location line="+5"/>
+        <source>TORSO_IDLE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+22"/>
         <source>F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
     <message>
-        <location line="+26"/>
         <source>Continue</source>
-        <translation>Pokračovať</translation>
+        <translation type="vanished">Pokračovať</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+33"/>
         <source>Cancel</source>
         <translation>Zrušiť</translation>
     </message>
     <message>
-        <location line="+7"/>
         <source>Cancel All</source>
-        <translation>Zrušiť všetko</translation>
+        <translation type="vanished">Zrušiť všetko</translation>
     </message>
 </context>
 <context>
     <name>AnimConvertWindow</name>
     <message>
-        <location filename="../src/implui/animconvertwin.cc" line="+40"/>
+        <location filename="../src/implui/animconvertwin.cc" line="+90"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+25"/>
         <source>Convert Skeletal to Frame:</source>
         <translation>Konvertovať kostrovú na rámcovú:</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Skeletal Animation</source>
+        <translation type="unfinished">Kostrová animácia</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -195,14 +227,29 @@
         <translation>Konvertovať rámcovú na rámcovú:</translation>
     </message>
     <message>
+        <location line="+1"/>
+        <source>Frame Animation</source>
+        <translation type="unfinished">Rámcová animácia</translation>
+    </message>
+    <message>
         <location line="+3"/>
         <source>Convert Frame Relative to Frame:</source>
         <translation>Konvertovať rámcovú relatívnu na rámcovú:</translation>
     </message>
     <message>
+        <location line="+1"/>
+        <source>Frame Relative Animation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+3"/>
         <source>Convert Unknown Type to Frame:</source>
         <translation>Konvertovať neznámy typ na rámec:</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Unknown Type Animation</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -514,13 +561,13 @@ počet rámcov sa líši.</translation>
         <translation>Môžem zlučovať iba kostrové animácie.</translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="+26"/>
         <source>Animation changes</source>
         <comment>operation complete</comment>
         <translation>Zmeny animácie</translation>
     </message>
     <message>
-        <location line="-236"/>
+        <location line="-220"/>
         <source>copy</source>
         <translation>kopírovať</translation>
     </message>
@@ -1320,12 +1367,23 @@ Chcete pokračovať?</translation>
         <translation>Musíte zvoliť práve 3 plochy</translation>
     </message>
     <message>
-        <location filename="../src/commands/pastecmd.cc" line="+67"/>
+        <location filename="../src/commands/pastecmd.cc" line="+68"/>
         <source>Paste complete</source>
         <translation>Vloženie dokončené</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+6"/>
+        <source>Nothing to paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Paste failed: %1
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+16"/>
         <source>Paste from Clipboard</source>
         <translation>Vložiť zo schránky</translation>
     </message>
@@ -2375,7 +2433,7 @@ Chcete pokračovať?</translation>
         <translation></translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+77"/>
         <source>Rename joint</source>
         <comment>window title</comment>
         <translation>Premenovať kĺb</translation>
@@ -2386,7 +2444,7 @@ Chcete pokračovať?</translation>
         <translation>Zadaj meno nového kĺbu:</translation>
     </message>
     <message>
-        <location line="+119"/>
+        <location line="+118"/>
         <source>Joint changes</source>
         <comment>operation complete</comment>
         <translation>Zmeny kĺbov</translation>
@@ -2400,7 +2458,12 @@ Chcete pokračovať?</translation>
         <translation>Kĺby</translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+22"/>
+        <source>None</source>
+        <translation type="unfinished">Nič</translation>
+    </message>
+    <message>
+        <location line="+25"/>
         <source>Rename</source>
         <translation>Premenovať</translation>
     </message>
@@ -2745,12 +2808,12 @@ Chcete pokračovať?</translation>
         <translation>Nesprávny chybový kód</translation>
     </message>
     <message>
-        <location line="+488"/>
+        <location line="+498"/>
         <source>Cannot delete root joint</source>
         <translation>Nemožno zmazať hlavný kĺb</translation>
     </message>
     <message>
-        <location line="+2372"/>
+        <location line="+2379"/>
         <source>Cannot add or delete because you have frame animations.  Try &quot;Merge...&quot; instead.</source>
         <translation>Nemožno pridať alebo zmazať lebo máte rámcovú animáciu. Skúste namiesto toho &quot;Zlúčiť...&quot;.</translation>
     </message>
@@ -2765,8 +2828,8 @@ Chcete pokračovať?</translation>
         <translation>Táto operácia nie je podporovaná</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/mm3dfilter.cc" line="+683"/>
-        <location line="+1405"/>
+        <location filename="../src/libmm3d/mm3dfilter.cc" line="+684"/>
+        <location line="+1406"/>
         <location filename="../src/libmm3d/mm3dfilter_ref.cc" line="+635"/>
         <source>MM3D encountered an unexpected data size problem
 See Help-&gt;About to contact the developers</source>
@@ -2794,7 +2857,7 @@ Pozrite Pomoc-&gt;O programe na kontakt s vývojármi</translation>
         <translation>Kostry modelu sa nezhodujú</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="+168"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="+241"/>
         <source>This looks like a player model.
 Do you want to load all sections?</source>
         <translation>Toto vyzerá ako model hráča.
@@ -2806,7 +2869,7 @@ Chcete načítať všetky sekcie?</translation>
         <translation>Nemožno načítať textúry</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/model.cc" line="-2874"/>
+        <location filename="../src/libmm3d/model.cc" line="-2891"/>
         <source>Write not supported, try &quot;Export...&quot;</source>
         <translation>Zápis nie je podporovaný, skúste &quot;Export...&quot;</translation>
     </message>
@@ -2816,7 +2879,7 @@ Chcete načítať všetky sekcie?</translation>
         <translation>Nerozpoznaná prípona súboru (neznámy typ) </translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md2filter.cc" line="+558"/>
+        <location filename="../src/libmm3d/md2filter.cc" line="+557"/>
         <source>MD2 requires all groups to have the same material.</source>
         <translation>MD2 vyžaduje aby všetky skupiny mali rovnaký materiál.</translation>
     </message>
@@ -2826,48 +2889,43 @@ Chcete načítať všetky sekcie?</translation>
         <translation>MD2 export vyžaduje aby všetky plochy boli v jednej skupine.</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="+1546"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="+1554"/>
         <source>MD3 export requires all faces to be grouped.</source>
         <translation>MD3 export  vyžaduje aby všetky plochy boli v nejakej skupine.</translation>
     </message>
     <message>
-        <location line="+81"/>
-        <source>This looks like a player model.
-Do you want to save all sections?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+105"/>
+        <location line="+130"/>
         <source>MD3_PATH+filename is to long.</source>
         <translation>MD3_PATH+meno súboru je príliž dlhé.</translation>
     </message>
     <message>
-        <location line="+23"/>
         <source>Too many animation frames for MD3 export.</source>
-        <translation>Príliš veľa animácií pre MD3 export.</translation>
+        <translation type="vanished">Príliš veľa animácií pre MD3 export.</translation>
     </message>
     <message>
-        <location line="+56"/>
         <source>Too many points for MD3 export.</source>
-        <translation>Príliš veľa bodov pre MD3 export.</translation>
+        <translation type="vanished">Príliš veľa bodov pre MD3 export.</translation>
     </message>
     <message>
-        <location line="+6"/>
         <source>Too many groups for MD3 export.</source>
-        <translation>Príliš veľa skupín pre MD3 export.</translation>
+        <translation type="vanished">Príliš veľa skupín pre MD3 export.</translation>
     </message>
     <message>
-        <location line="+13"/>
         <source>Too many faces in a single group for MD3 export</source>
-        <translation>Príliš veľa plôch v jednej skupine pre MD3 export</translation>
+        <translation type="vanished">Príliš veľa plôch v jednej skupine pre MD3 export</translation>
     </message>
     <message>
-        <location line="+6"/>
         <source>Too many vertices in a single group for MD3 export</source>
-        <translation>Príliš veľa vrcholov v jednej skupine pre MD3 export</translation>
+        <translation type="vanished">Príliš veľa vrcholov v jednej skupine pre MD3 export</translation>
     </message>
     <message>
-        <location line="+176"/>
+        <location line="-81"/>
+        <location line="+18"/>
+        <source>Set meta data for MD3 export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+304"/>
         <source>Point name is too large for MD3 export.</source>
         <translation>Meno bodu je príliš dlhé pre MD3 export.</translation>
     </message>
@@ -2890,6 +2948,11 @@ Do you want to save all sections?</source>
         <location line="+3"/>
         <source>The file does not contain any mesh or animation data</source>
         <translation>Súbor neobsahuje žiadnu mriežku ani aimáciu</translation>
+    </message>
+    <message>
+        <location line="+1382"/>
+        <source>Set meta data for Cal3D export</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/libmm3d/iqefilter.cc" line="+94"/>
@@ -2947,13 +3010,98 @@ Do you want to save all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/smdfilter.cc" line="+129"/>
+        <location line="+456"/>
+        <source>Set meta data for MS3D export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/libmm3d/smdfilter.cc" line="+138"/>
         <source>Bone joints must have unique names for SMD export.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+17"/>
         <source>SMD export requires points to only have one bone influence.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+427"/>
+        <source>Set meta data for SMD export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/libmm3d/d3dfilter.cc" line="+94"/>
+        <source>Unsupported D3D version.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Missing version in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Invalid D3D directives count.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Missing line count in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>Too few tokens on line in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>Found primitive start without primitive end in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Line primitive type is not supported for D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Triangle strip primitive type is not supported for D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Triangle fan primitive type is not supported for D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Unsupported primitive type in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Primitive end without start in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Incomplete triangle list before primitive end in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+100"/>
+        <source>Vertex outside of primitive begin/end in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+62"/>
+        <source>Primitive start without end in D3D model.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+34"/>
+        <source>D3D requires all groups to have the same material.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3011,6 +3159,48 @@ Do you want to save all sections?</source>
     </message>
 </context>
 <context>
+    <name>Md3Prompt</name>
+    <message>
+        <location filename="../src/implui/md3prompt.cc" line="+40"/>
+        <source>F1</source>
+        <comment>Help Shortcut</comment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Md3PromptBase</name>
+    <message>
+        <location filename="../src/qtui/md3prompt.ui" line="+14"/>
+        <source>MD3 Filter Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Save as a Player Model (head.md3, upper.md3, lower.md3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Save animation.cfg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <source>Press F1 for help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>Ok</source>
+        <translation type="unfinished">Ok</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Zrušiť</translation>
+    </message>
+</context>
+<context>
     <name>MergeWinBase</name>
     <message>
         <location filename="../src/qtui/mergewin.ui" line="+14"/>
@@ -3023,7 +3213,17 @@ Do you want to save all sections?</source>
         <translation>Zlúčiť polohu</translation>
     </message>
     <message>
-        <location line="+66"/>
+        <location line="+23"/>
+        <source>Base Point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>&lt;origin&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+55"/>
         <source>Rotation</source>
         <translation>Otočenie</translation>
     </message>
@@ -3081,13 +3281,13 @@ Do you want to save all sections?</source>
 <context>
     <name>MergeWindow</name>
     <message>
-        <location filename="../src/implui/mergewin.cc" line="+47"/>
+        <location filename="../src/implui/mergewin.cc" line="+48"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="+65"/>
         <source>Merge models</source>
         <comment>operation complete</comment>
         <translation>Zlúčiť modely</translation>
@@ -3214,7 +3414,7 @@ Do you want to save all sections?</source>
 <context>
     <name>ModelViewport</name>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="+1127"/>
+        <location filename="../src/depui/modelviewport.cc" line="+1131"/>
         <source>Could not load background %1</source>
         <translation>Nemožno načítať pozadie %1</translation>
     </message>
@@ -3224,7 +3424,7 @@ Do you want to save all sections?</source>
         <translation>Použite stredné tlačidlo myši na posunutie/naklonenie výrezu</translation>
     </message>
     <message>
-        <location line="+1434"/>
+        <location line="+1433"/>
         <source>OpenGL error = Invalid Value</source>
         <translation>Chyba OpenGL = Chybná hodnota</translation>
     </message>
@@ -3896,50 +4096,34 @@ Do you want to save all sections?</source>
     </message>
 </context>
 <context>
-    <name>RgbaWin</name>
-    <message>
-        <location filename="../src/implui/rgbawin.cc" line="+42"/>
-        <source>F1</source>
-        <comment>Help Shortcut</comment>
-        <translation></translation>
-    </message>
-</context>
-<context>
     <name>RgbaWinBase</name>
     <message>
-        <location filename="../src/qtui/rgbawin.ui" line="+14"/>
         <source>RGBA Window</source>
-        <translation>RGBA Okno</translation>
+        <translation type="vanished">RGBA Okno</translation>
     </message>
     <message>
-        <location line="+41"/>
         <source>Light Property</source>
-        <translation>Parametre svetla</translation>
+        <translation type="vanished">Parametre svetla</translation>
     </message>
     <message>
-        <location line="+56"/>
         <source>Red</source>
-        <translation>Červená</translation>
+        <translation type="vanished">Červená</translation>
     </message>
     <message>
-        <location line="+81"/>
         <source>Green</source>
-        <translation>Zelená</translation>
+        <translation type="vanished">Zelená</translation>
     </message>
     <message>
-        <location line="+10"/>
         <source>Blue</source>
-        <translation>Modrá</translation>
+        <translation type="vanished">Modrá</translation>
     </message>
     <message>
-        <location line="+26"/>
         <source>Alpha</source>
-        <translation>Priehľadnosť</translation>
+        <translation type="vanished">Priehľadnosť</translation>
     </message>
     <message>
-        <location line="+61"/>
         <source>Close</source>
-        <translation>Zatvoriť</translation>
+        <translation type="vanished">Zatvoriť</translation>
     </message>
 </context>
 <context>
@@ -4346,7 +4530,7 @@ Do you want to save all sections?</source>
 <context>
     <name>TextureWindow</name>
     <message>
-        <location filename="../src/implui/texwin.cc" line="+129"/>
+        <location filename="../src/implui/texwin.cc" line="+127"/>
         <source>All Supported Formats (</source>
         <comment>all texture formats</comment>
         <translation>Všetky podporované formáty (</translation>
@@ -4398,7 +4582,7 @@ Do you want to save all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+159"/>
+        <location line="+131"/>
         <source>Texture changes</source>
         <translation>Zmeny textúry</translation>
     </message>
@@ -4413,7 +4597,7 @@ Do you want to save all sections?</source>
         <translation>Červená</translation>
     </message>
     <message>
-        <location line="+134"/>
+        <location line="+132"/>
         <source>Change texture...</source>
         <comment>Change material&apos;s texture file</comment>
         <translation>Zmeniť textúru...</translation>
@@ -4425,7 +4609,7 @@ Do you want to save all sections?</source>
         <translation>Nastaviť textúru...</translation>
     </message>
     <message>
-        <location line="-521"/>
+        <location line="-491"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>
@@ -4978,7 +5162,7 @@ Do you want to save all sections?</source>
 <context>
     <name>TransformWindow</name>
     <message>
-        <location filename="../src/implui/transformwin.cc" line="+91"/>
+        <location filename="../src/implui/transformwin.cc" line="+89"/>
         <source>Matrix Translate</source>
         <translation>Matica posunutia</translation>
     </message>
@@ -5361,13 +5545,13 @@ Do you want to save all sections?</source>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+1473"/>
+        <location line="+1474"/>
         <source>Show Properties</source>
         <comment>View|Show Properties</comment>
         <translation>Ukázať parametre</translation>
     </message>
     <message>
-        <location line="-1471"/>
+        <location line="-1472"/>
         <source>Render Options</source>
         <comment>View|Render Options</comment>
         <translation>Parametre kreslenia</translation>
@@ -5729,14 +5913,14 @@ Do you want to save all sections?</source>
         <location line="+322"/>
         <location line="+94"/>
         <location line="+89"/>
-        <location line="+48"/>
+        <location line="+49"/>
         <location line="+1079"/>
         <location line="+120"/>
         <source>All Files (*)</source>
         <translation>Všetky súbory (*)</translation>
     </message>
     <message>
-        <location line="-1423"/>
+        <location line="-1424"/>
         <source>Save model file as</source>
         <translation>Uložiť model ako</translation>
     </message>
@@ -5752,20 +5936,20 @@ Do you want to save all sections?</source>
     <message>
         <location line="+89"/>
         <location line="+89"/>
-        <location line="+48"/>
+        <location line="+49"/>
         <location line="+1079"/>
         <location line="+120"/>
         <source>Open model file</source>
         <translation>Otvoriť súbor modelu</translation>
     </message>
     <message>
-        <location line="-1298"/>
+        <location line="-1299"/>
         <source>Merge models</source>
         <translation>Zlúčiť modely</translation>
     </message>
     <message>
         <location line="+14"/>
-        <location line="+65"/>
+        <location line="+66"/>
         <source>:
 </source>
         <translation>:
@@ -5943,7 +6127,7 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
         <translation>Zvoliť body pôsobenia</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="-1946"/>
+        <location filename="../src/implui/viewwin.cc" line="-1947"/>
         <source>Auto-Assign Selected...</source>
         <comment>Joints|Auto-Assign Selected</comment>
         <translation>Automaticky priradiť zvolené...</translation>
@@ -6107,13 +6291,18 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
         <translation>Všetky podporované formáty</translation>
     </message>
     <message>
-        <location line="+1122"/>
+        <location line="+44"/>
+        <source>Merge animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1079"/>
         <location line="+120"/>
         <source>All Supported Formats</source>
         <translation>Všetky podporované formáty</translation>
     </message>
     <message>
-        <location line="-2128"/>
+        <location line="-2129"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>
