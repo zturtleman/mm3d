@@ -20,7 +20,7 @@ This program uses autoconf and automake for building from source.  What this
 means is that if you are lucky you can install this program with these
 easy steps:
 
-   ./autosetup.sh
+   ./autogen.sh
    ./configure
    make
    sudo make install
@@ -49,7 +49,7 @@ On macOS 10.11+, install homebrew from http://brew.sh and run the following
 commands.
 
    brew install autoconf automake qt
-   ./autosetup.sh
+   ./autogen.sh
    CXX='clang++ -stdlib=libc++' ./configure --with-Qt-dir=/usr/local/Cellar/qt/5.11.1 --with-macosx-version-min=10.11
    make
    make mm3d.app
