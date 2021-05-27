@@ -1,6 +1,8 @@
 #!/bin/sh
 
-# Using autoconf 2.50 and automake 1.9
-# If you are trying this with any other version it may not work
+DIR=$(dirname $0)
+if [ ! -z "$DIR" ]; then
+	cd "$DIR"
+fi
 
 aclocal && autoconf && automake --add-missing && touch config.h.in
