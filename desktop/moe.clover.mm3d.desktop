@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Exec=mm3d %U
-Icon=mm3d
+Icon=moe.clover.mm3d
 GenericName=3D Modeler
 Comment=3D modeling program
 Terminal=false
