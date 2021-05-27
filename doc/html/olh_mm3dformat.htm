@@ -358,7 +358,7 @@ Their orientation information is relative to their parent joint's orientation.
    <tr><th>Data</th>                <th>Type</th>    <th>Description</th></tr>
    <tr><td>JOINT_FLAGS</td>         <td>uint16</td>  <td>See joint flags below</td></tr>
    <tr><td>JOINT_NAME</td>          <td>int8 * 40</td>  <td>Joint name</td></tr>
-   <tr><td>JOINT_PARENT</td>        <td>uint32</td>  <td>Index of parent joint</td></tr>
+   <tr><td>JOINT_PARENT</td>        <td>int32</td>  <td>Index of parent joint (or -1 if root joint)</td></tr>
    <tr><td>JOINT_LOCAL_ROT_X</td>   <td>float32</td> <td>X rotation of joint relative to parent (in radians)</td></tr>
    <tr><td>JOINT_LOCAL_ROT_Y</td>   <td>float32</td> <td>Y rotation of joint relative to parent</td></tr>
    <tr><td>JOINT_LOCAL_ROT_Z</td>   <td>float32</td> <td>Z rotation of joint relative to parent</td></tr>
