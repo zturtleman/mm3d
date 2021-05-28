@@ -1,3 +1,3 @@
-bin_PROGRAMS = hpagemake
+noinst_PROGRAMS = hpagemake
 
 hpagemake_SOURCES = hpagemake.c
