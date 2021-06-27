@@ -21,16 +21,20 @@
   <launchable type="desktop-id">moe.clover.mm3d.desktop</launchable>
 
   <url type="homepage">https://clover.moe/mm3d</url>
+  <update_contact>zack@cloemail.com</update_contact>
 
   <provides>
     <binary>mm3d</binary>
-    <mediatype>application/x-mm3d</mediatype>
+    <id>mm3d.desktop</id>
   </provides>
 
   <kudos>
+    <kudo>ModernToolkit</kudo>
     <kudo>UserDocs</kudo>
-    <kudo>HiDpiIcon</kudo>
   </kudos>
+
+  <content_rating type="oars-1.0" />
+  <content_rating type="oars-1.1" />
 
   <translation type="qt">mm3d</translation>
 
