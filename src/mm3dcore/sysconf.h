@@ -35,7 +35,7 @@ void init_sysconf();
 
 const std::string & getMm3dHomeDirectory();
 const std::string & getDocDirectory();
-const std::string & getI18nDirectory();
+const std::string & getTranslationsDirectory();
 const std::string & getPluginDirectory();
 const std::string & getSharedPluginDirectory();
 

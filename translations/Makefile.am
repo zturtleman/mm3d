@@ -29,7 +29,7 @@ qmfiles: $(QMFILES)
 	$(QT_LRELEASE) $< -qm $@
 
 install:
-	$(INSTALL) -d $(DESTDIR)$(datadir)/mm3d/i18n
-	${INSTALL} -m 0644 $(QMFILES) $(DESTDIR)$(datadir)/mm3d/i18n
+	$(INSTALL) -d $(DESTDIR)$(datadir)/mm3d/translations
+	${INSTALL} -m 0644 $(QMFILES) $(DESTDIR)$(datadir)/mm3d/translations
 
 CLEANFILES = $(QMFILES)

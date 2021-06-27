@@ -51,7 +51,7 @@
 
 static std::string s_mm3dHomeDir;
 static std::string s_docDir;
-static std::string s_i18nDir;
+static std::string s_translationsDir;
 static std::string s_pluginDir;
 static std::string s_sharedPluginDir;
 
@@ -177,7 +177,7 @@ void init_sysconf()
    s_pluginDir  += majorMinor;
 
    s_docDir      = path + DOC_ROOT;
-   s_i18nDir     = path + I18N_ROOT;
+   s_translationsDir  = path + TRANSLATIONS_ROOT;
    s_sharedPluginDir  = path + SHARED_PLUGINS;
    s_sharedPluginDir += "\\";
    s_sharedPluginDir += majorMinor;
@@ -193,13 +193,13 @@ void init_sysconf()
 
    if ( appPath.length() > 0 ) {
       s_docDir           = appPath + "/Contents/SharedSupport/mm3d/doc/html";
-      s_i18nDir          = appPath + "/Contents/SharedSupport/mm3d/i18n";
+      s_translationsDir  = appPath + "/Contents/SharedSupport/mm3d/translations";
       s_sharedPluginDir  = appPath + "/Contents/PlugIns/mm3d";
       s_sharedPluginDir += "/";
       s_sharedPluginDir += majorMinor;
    } else {
       s_docDir           = DOC_ROOT;
-      s_i18nDir          = I18N_ROOT;
+      s_translationsDir  = TRANSLATIONS_ROOT;
       s_sharedPluginDir  = SHARED_PLUGINS;
       s_sharedPluginDir += "/";
       s_sharedPluginDir += majorMinor;
@@ -233,7 +233,7 @@ void init_sysconf()
       s_dataDir = s_mm3dHomeDir;
    }
    s_docDir    = DOC_ROOT;
-   s_i18nDir   = I18N_ROOT;
+   s_translationsDir = TRANSLATIONS_ROOT;
    s_pluginDir = s_dataDir + HOME_PLUGINS;
    s_pluginDir += "/";
    s_pluginDir += majorMinor;
@@ -270,9 +270,9 @@ const std::string & getDocDirectory()
    return s_docDir;
 }
 
-const std::string & getI18nDirectory()
+const std::string & getTranslationsDirectory()
 {
-   return s_i18nDir;
+   return s_translationsDir;
 }
 
 const std::string & getPluginDirectory()

@@ -108,8 +108,8 @@ static bool loadTranslationFile( QTranslator * xlat, const QString & localeFile 
    std::list<std::string> path_list;
 
    path_list.push_back( "." );
-   path_list.push_back( "../i18n" );
-   path_list.push_back( getI18nDirectory() );
+   path_list.push_back( "../translations" );
+   path_list.push_back( getTranslationsDirectory() );
 
    // try current directory first (for override), then mm3d system directory
    for ( std::list<std::string>::iterator it = path_list.begin(); it != path_list.end(); ++it )

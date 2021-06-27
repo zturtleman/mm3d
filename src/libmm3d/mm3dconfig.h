@@ -54,13 +54,13 @@
 
 #ifdef WIN32
 #define DOC_ROOT              "\\doc\\html"
-#define I18N_ROOT             "\\i18n"
+#define TRANSLATIONS_ROOT     "\\translations"
 #else
 // NOTE: macOS AppBundle uses "Contents/SharedSupport/mm3d/..." paths in the app bundle.
 #if !defined(DOC_ROOT)
 #define DOC_ROOT              PREFIX "/share/doc/mm3d/html"
 #endif
-#define I18N_ROOT             PREFIX "/share/mm3d/i18n"
+#define TRANSLATIONS_ROOT     PREFIX "/share/mm3d/translations"
 #endif // WIN32
 
 #define DIR_SLASH             '/'

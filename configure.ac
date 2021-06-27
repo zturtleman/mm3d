@@ -115,7 +115,7 @@ AC_CONFIG_FILES([ Makefile
           src/pixmap/Makefile
           plugins/Makefile
           man/Makefile
-          i18n/Makefile
+          translations/Makefile
           desktop/Makefile
           doc/Makefile
           doc/html/Makefile

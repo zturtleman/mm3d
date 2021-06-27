@@ -63,8 +63,8 @@ Section "Maverick Model 3D"
     File build\mingw32-x86\install\mm3d.x86.exe
     File /r build\mingw32-x86\install\doc
 
-    SetOutPath "$INSTDIR\i18n"
-    File build\mingw32-x86\install\i18n\*.qm
+    SetOutPath "$INSTDIR\translations"
+    File build\mingw32-x86\install\translations\*.qm
 
     SetOutPath "$INSTDIR"
     CreateDirectory "$INSTDIR\plugins"
@@ -166,7 +166,7 @@ Section "Uninstall"
 
     Delete "$INSTDIR\COPYING.txt"
     Delete "$INSTDIR\mm3d.x86.exe"
-    Delete "$INSTDIR\i18n\*.qm"
+    Delete "$INSTDIR\translations\*.qm"
 
     ; Qt dlls
     Delete "$INSTDIR\Qt5Core.dll"
@@ -196,7 +196,7 @@ Section "Uninstall"
     Delete "$INSTDIR\Uninstall.exe"
 
     RMDir /r /REBOOTOK "$INSTDIR\doc"
-    RMDir /REBOOTOK "$INSTDIR\i18n"
+    RMDir /REBOOTOK "$INSTDIR\translations"
     RMDir /REBOOTOK "$INSTDIR\plugins\1.3"
     RMDir /REBOOTOK "$INSTDIR\plugins"
 

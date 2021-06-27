@@ -6,8 +6,8 @@ The ./configure script and many other files are output files from an early
 stage of the build process. Those output files are not included in source
 control, you must build them from the sources. Additionally the translation
 files and help pages are also output files from the build process. You can
-build mm3d without building the i18n and doc/html files. For instructions
-on creating the build files for MM3D, i18n, and help, continue reading below.
+build mm3d without building the translations and doc/html files. For instructions
+on creating the build files for MM3D, translations, and help, continue reading below.
 
 If you plan to look at or modify the code itself, read the CODE file
 in this directory may be helpful.
@@ -21,11 +21,11 @@ file. If you have problems building the translation files and documentation
 html files, you can just run "make" from the src/ directory instead of 
 the top level trunk directory.
 
-To build i18n translation files:
+To build translations files:
 
 You must have Qt's lrelease program in your path. If this is in your path you
-should be able to just run "make" in the i18n directory. You do not need to
-build i18n files to get an mm3d executable. If you get an error that the shell
+should be able to just run "make" in the translations directory. You do not need to
+build translations files to get an mm3d executable. If you get an error that the shell
 can't find the lrelease program and you don't care about translation files,
 then you can safely ignore this error.
 

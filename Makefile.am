@@ -8,7 +8,7 @@ EXTRA_DIST = Makefile.generic \
 	mm3d.icns
 
 # util is before doc because doc uses tool built in util.
-SUBDIRS = src plugins i18n util doc desktop man
+SUBDIRS = src plugins translations util doc desktop man
 
 DESTDIR = src
 
@@ -143,14 +143,14 @@ $(PACKAGE).app:
 	${INSTALL} -d      "$(MAC_APP)/Contents/PlugIns/mm3d/1.3"
 	${INSTALL} -d      "$(MAC_APP)/Contents/SharedSupport/mm3d/doc/html/olh_images/screencaps/"
 	${INSTALL} -d      "$(MAC_APP)/Contents/SharedSupport/mm3d/doc/html/olh_images/tools/"
-	${INSTALL} -d      "$(MAC_APP)/Contents/SharedSupport/mm3d/i18n/"
+	${INSTALL} -d      "$(MAC_APP)/Contents/SharedSupport/mm3d/translations/"
 	${INSTALL} -m 0755 "$(DESTDIR)/$(PACKAGE)" "$(MAC_APP)/Contents/MacOS/$(PACKAGE)"
 	${INSTALL} -m 0644 mm3d.icns "$(MAC_APP)/Contents/Resources/${PACKAGE}.icns"
 	${INSTALL} -m 0644 doc/html/*.html "$(MAC_APP)/Contents/SharedSupport/mm3d/doc/html/"
 	${INSTALL} -m 0644 doc/html/olh_images/screencaps/*.png "$(MAC_APP)/Contents/SharedSupport/mm3d/doc/html/olh_images/screencaps/"
 	${INSTALL} -m 0644 doc/html/olh_images/tools/*.png "$(MAC_APP)/Contents/SharedSupport/mm3d/doc/html/olh_images/tools/"
 	${INSTALL} -m 0644 doc/html/olh_images/tools/*.jpg "$(MAC_APP)/Contents/SharedSupport/mm3d/doc/html/olh_images/tools/"
-	${INSTALL} -m 0644 i18n/*.qm "$(MAC_APP)/Contents/SharedSupport/mm3d/i18n/"
+	${INSTALL} -m 0644 translations/*.qm "$(MAC_APP)/Contents/SharedSupport/mm3d/translations/"
 	echo "APPL????" > "$(MAC_APP)/Contents/PkgInfo"
 	@echo "$$INFOPLIST" > "$(MAC_APP)/Contents/Info.plist"
 	@echo "Wrote \"$(MAC_APP)/Contents/Info.plist\""

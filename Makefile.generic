@@ -743,11 +743,11 @@ MM3D_OBJ= \
 	${B}/commands/weldcmd.o 
 
 QMFILES = \
-	${B}/i18n/mm3d_de.qm \
-	${B}/i18n/mm3d_fr.qm \
-	${B}/i18n/mm3d_sk.qm \
-	${B}/i18n/mm3d_ref.qm \
-	${B}/i18n/mm3d_bork.qm
+	${B}/translations/mm3d_de.qm \
+	${B}/translations/mm3d_fr.qm \
+	${B}/translations/mm3d_sk.qm \
+	${B}/translations/mm3d_ref.qm \
+	${B}/translations/mm3d_bork.qm
 
 MM3D_HTML = \
 	${B}/doc/html/olh_detailsindex.html \
@@ -861,7 +861,7 @@ ifdef MINGW32_MAKE
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\libmm3d" ${MKDIR} "${BUILD}\${BUILDSUB}\libmm3d"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\mm3dcore" ${MKDIR} "${BUILD}\${BUILDSUB}\mm3dcore"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\commands" ${MKDIR} "${BUILD}\${BUILDSUB}\commands"
-	@IF NOT EXIST "${BUILD}\${BUILDSUB}\i18n" ${MKDIR} "${BUILD}\${BUILDSUB}\i18n"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\translations" ${MKDIR} "${BUILD}\${BUILDSUB}\translations"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\util" ${MKDIR} "${BUILD}\${BUILDSUB}\util"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\doc" ${MKDIR} "${BUILD}\${BUILDSUB}\doc"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\doc\html" ${MKDIR} "${BUILD}\${BUILDSUB}\doc\html"
@@ -875,7 +875,7 @@ else
 	@${MKDIR} "${B}/libmm3d"
 	@${MKDIR} "${B}/mm3dcore"
 	@${MKDIR} "${B}/commands"
-	@${MKDIR} "${B}/i18n"
+	@${MKDIR} "${B}/translations"
 	@${MKDIR} "${B}/util"
 	@${MKDIR} "${B}/doc"
 	@${MKDIR} "${B}/doc/html"
@@ -921,7 +921,7 @@ ifdef MINGW32_MAKE
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\doc\html\olh_images" ${MKDIR} "${BUILD}\${BUILDSUB}\install\doc\html\olh_images\screencaps"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\doc\html\olh_images\screencaps" ${MKDIR} "${BUILD}\${BUILDSUB}\install\doc\html\olh_images"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\doc\html\olh_images\tools" ${MKDIR} "${BUILD}\${BUILDSUB}\install\doc\html\olh_images\tools"
-	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\i18n" ${MKDIR} "${BUILD}\${BUILDSUB}\install\i18n"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\translations" ${MKDIR} "${BUILD}\${BUILDSUB}\install\translations"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\plugins" ${MKDIR} "${BUILD}\${BUILDSUB}\install\plugins"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install\plugins\1.3" ${MKDIR} "${BUILD}\${BUILDSUB}\install\plugins\1.3"
 	@copy "$(BUILD)\$(BUILDSUB)\mm3d${BINEXT}" "$(BUILD)\$(BUILDSUB)\install"
@@ -929,17 +929,17 @@ ifdef MINGW32_MAKE
 	@copy "doc\html\olh_images\screencaps\*.png" "$(BUILD)\$(BUILDSUB)\install\doc\html\olh_images\screencaps"
 	@copy "doc\html\olh_images\tools\*.png" "$(BUILD)\$(BUILDSUB)\install\doc\html\olh_images\tools"
 	@copy "doc\html\olh_images\tools\*.jpg" "$(BUILD)\$(BUILDSUB)\install\doc\html\olh_images\tools"
-	@copy "$(BUILD)\$(BUILDSUB)\i18n\*.qm" "$(BUILD)\$(BUILDSUB)\install\i18n"
+	@copy "$(BUILD)\$(BUILDSUB)\translations\*.qm" "$(BUILD)\$(BUILDSUB)\install\translations"
 	@$(WINDEPLOYQT) --compiler-runtime "$(BUILD)\$(BUILDSUB)\install"
 else
 	@$(MKDIR) "$(B)/install"
 	@$(MKDIR) "$(B)/install/doc/html"
 	@$(MKDIR) "$(B)/install/doc/html/olh_images/screencaps"
 	@$(MKDIR) "$(B)/install/doc/html/olh_images/tools"
-	@$(MKDIR) "$(B)/install/i18n"
+	@$(MKDIR) "$(B)/install/translations"
 	@$(MKDIR) "$(B)/install/plugins/1.3"
 	@cp "$(B)/mm3d${BINEXT}" "$(B)/install"
-	@cp $(QMFILES) "$(B)/install/i18n"
+	@cp $(QMFILES) "$(B)/install/translations"
 	@cp $(MM3D_HTML) "$(B)/install/doc/html"
 	@cp doc/html/olh_images/screencaps/*.png "$(B)/install/doc/html/olh_images/screencaps"
 	@cp doc/html/olh_images/tools/*.png "$(B)/install/doc/html/olh_images/tools"
@@ -949,8 +949,8 @@ endif
 else
 	$(INSTALL) -d "$(PREFIX)/bin"
 	$(INSTALL) -m 0755 $(BIN)/mm3d${BINEXT} "$(PREFIX)/bin/mm3d"
-	$(INSTALL) -d "$(PREFIX)/share/mm3d/i18n/"
-	${INSTALL} -m 0644 $(QMFILES) "$(PREFIX)/share/mm3d/i18n/"
+	$(INSTALL) -d "$(PREFIX)/share/mm3d/translations/"
+	${INSTALL} -m 0644 $(QMFILES) "$(PREFIX)/share/mm3d/translations/"
 	$(INSTALL) -d "$(PREFIX)/share/applications/"
 	$(INSTALL) -d "$(PREFIX)/share/metainfo/"
 	$(INSTALL) -d "$(PREFIX)/share/mime/packages/"
@@ -1008,7 +1008,7 @@ ${B}/qtui/resources.cpp: src/qtui/resources.qrc src/qtui/images/zoomin.xpm src/q
 	$(echo_cmd) "RCC $<"
 	$(Q)${RCC} --name qtuiResources $< -o $@
 
-${B}/i18n/%.qm: i18n/%.ts
+${B}/translations/%.qm: translations/%.ts
 	$(DO_LRELEASE)
 
 ${B}/doc/html/%.html: doc/html/%.page doc/html/%.htm doc/html/template.htm ${B}/util/hpagemake${BINEXT}

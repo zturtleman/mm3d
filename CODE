@@ -11,7 +11,7 @@ Directories:
       tools -- Toolbar tools
       pixmap -- Icons used by mm3d
    doc -- Online documentation, HTML format
-   i18n -- Internationalization files
+   translations -- UI translation files
    man -- Manpage
    desktop -- Desktop icons and config files
    util -- Utilities for building
