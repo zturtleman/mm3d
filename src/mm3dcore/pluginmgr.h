@@ -72,6 +72,7 @@ class PluginManager
 
       list<int> getPluginIds();
 
+      const char *  getPluginFilename( int id );
       const char *  getPluginName( int id );
       const char *  getPluginVersion( int id );
       const char *  getPluginDescription( int id );

@@ -92,6 +92,8 @@ void PluginWindow::refreshPluginData()
             break;
       }
       item->setText( 3, QString(status) + " " );
+
+      item->setText( 4, QString( pmgr->getPluginFilename( *it ) ) + " " );
    }
 }
 

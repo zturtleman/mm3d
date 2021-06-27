@@ -522,6 +522,20 @@ list<int> PluginManager::getPluginIds()
    return pluginList;
 }
 
+const char * PluginManager::getPluginFilename( int id )
+{
+   PluginDataList::iterator it;
+   for ( it = m_plugins.begin(); it != m_plugins.end(); it++ )
+   {
+      if ( (*it)->m_id == id )
+      {
+         return (*it)->m_fullpath.c_str();
+      }
+   }
+
+   return "Not found";
+}
+
 const char * PluginManager::getPluginName( int id )
 {
    PluginDataList::iterator it;
