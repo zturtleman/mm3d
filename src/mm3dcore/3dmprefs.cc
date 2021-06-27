@@ -38,33 +38,13 @@ Preferences g_prefs;
 
 static void _3dmprefs_makerc()
 {
-   struct stat stbuf;
-
    std::string temp = getMm3dHomeDirectory().c_str();
 
    mkpath( temp.c_str(), 0755 );
 
    temp = std::string( getPluginDirectory().c_str() );
 
-   bool doSymlink = false;
-   if ( stat( temp.c_str(), &stbuf ) != 0 )
-   {
-      doSymlink = true;
-   }
-
    mkpath( temp.c_str(), 0755 );
-
-   // Don't make a symlink to macOS app bundle or on Windows.
-   // Note: if not win32 or apple, then shared plugins are only loaded if
-   //       this symlink exists (see PluginManager::loadPlugins()).
-#if !defined WIN32 && !defined __APPLE__
-   if ( doSymlink )
-   {
-      // This bit is ignored on Win32
-      temp += "/shared";
-      PORT_symlink( getSharedPluginDirectory().c_str(), temp.c_str() );
-   }
-#endif
 }
 
 static void _3dmprefs_defaults()

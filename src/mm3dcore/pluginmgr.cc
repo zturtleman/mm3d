@@ -150,8 +150,39 @@ bool PluginManager::loadPlugin( const char * pluginFile )
    const char * (*desc_function)();
    PluginStatusE status = PluginError;
    string name;
+   const char *fullpath;
+   char resolved[ PATH_MAX ];
 
-   log_debug( "loading plugin file: %s\n", pluginFile );
+   if ( PORT_realpath( pluginFile, resolved, PATH_MAX ) )
+   {
+      fullpath = resolved;
+   }
+   else
+   {
+      fullpath = pluginFile;
+   }
+
+   // Historically there was a "shared" symlink in user plugins to the system plugins directory.
+   // It's now hard coded to allow for portable install path so need to avoid loading plugins
+   // from built-in system plugins directory and old "shared" symlink.
+   PluginDataList::iterator it;
+   for ( it = m_plugins.begin(); it != m_plugins.end(); it++ )
+   {
+      if ( (*it)->m_fullpath == fullpath )
+      {
+         log_debug( "skipping plugin file '%s', already loaded plugin from '%s'\n", pluginFile, fullpath );
+         return false;
+      }
+   }
+
+   if ( strcmp( pluginFile, fullpath ) != 0 )
+   {
+      log_debug( "loading plugin file: %s (real path %s)\n", pluginFile, fullpath );
+   }
+   else
+   {
+      log_debug( "loading plugin file: %s\n", pluginFile );
+   }
    name = fileToName( pluginFile );
 
    if( (handle = _openLibrary( pluginFile ) ) == NULL )
@@ -283,6 +314,7 @@ bool PluginManager::loadPlugin( const char * pluginFile )
    data->m_id              = getNextId();
    data->m_status          = status;
    data->m_name            = name;
+   data->m_fullpath        = fullpath;
    data->m_enabled         = enabled;
    data->m_initFunction    = init_function;
    data->m_uninitFunction  = uninit_function;
@@ -456,21 +488,11 @@ void PluginManager::loadPlugins()
 {
    string plugin_dir = getPluginDirectory();
 
-#if defined WIN32 || defined __APPLE__
    loadPluginDir( plugin_dir.c_str() );
 
    plugin_dir  = getSharedPluginDirectory();
+
    loadPluginDir( plugin_dir.c_str() );
-#else
-   // Check to see if we have a user-specific plugin directory
-   // (By default it contains a symlink to the shared directory, see 3dmprefs.cc)
-   if ( ! loadPluginDir( plugin_dir.c_str() ) )
-   {
-      // No, check shared directory
-      plugin_dir  = getSharedPluginDirectory();
-      loadPluginDir( plugin_dir.c_str() );
-   }
-#endif
 }
 
 int init_plugins()

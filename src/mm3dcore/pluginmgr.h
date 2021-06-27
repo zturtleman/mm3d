@@ -84,7 +84,8 @@ class PluginManager
             int  m_id;
             bool m_enabled;
             PluginStatusE m_status;
-            string m_name;
+            string m_name; // basename without extension
+            string m_fullpath; // full filename of the plugin
             bool (*m_initFunction)();
             bool (*m_uninitFunction)();
             const char * (*m_versionFunction)();
