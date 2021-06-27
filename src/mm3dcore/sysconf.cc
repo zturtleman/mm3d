@@ -145,6 +145,8 @@ void init_sysconf()
    majorMinor[ off ] = '\0';
 
 
+   std::string s_dataDir;
+
 #ifdef WIN32
    std::string path = getExecutablePath();
 
@@ -169,7 +171,8 @@ void init_sysconf()
       s_mm3dHomeDir += "\\userhome";
    }
 
-   s_pluginDir   = s_mm3dHomeDir + HOME_PLUGINS;
+   s_dataDir     = s_mm3dHomeDir;
+   s_pluginDir   = s_dataDir + HOME_PLUGINS;
    s_pluginDir  += "\\";
    s_pluginDir  += majorMinor;
 
@@ -181,7 +184,8 @@ void init_sysconf()
 #elif defined __APPLE__
    s_mm3dHomeDir = getenv( "HOME" );
    s_mm3dHomeDir += HOME_MM3D;
-   s_pluginDir = s_mm3dHomeDir + HOME_PLUGINS;
+   s_dataDir   = s_mm3dHomeDir;
+   s_pluginDir = s_dataDir + HOME_PLUGINS;
    s_pluginDir += "/";
    s_pluginDir += majorMinor;
 
@@ -201,11 +205,36 @@ void init_sysconf()
       s_sharedPluginDir += majorMinor;
    }
 #else
-   s_mm3dHomeDir = getenv( "HOME" );
-   s_mm3dHomeDir += HOME_MM3D;
+   // I don't want to deal with moving the existing config
+   // so non-flatpak still uses ~/.mm3d. --zturtleman
+   const char *var = getenv( "FLATPAK_ID" );
+   if ( var && var[0] ) {
+      var = getenv( "XDG_CONFIG_HOME" );
+      s_mm3dHomeDir = var ? var : "";
+      if ( s_mm3dHomeDir.empty() ) {
+         s_mm3dHomeDir = getenv( "HOME" );
+         s_mm3dHomeDir += "/.config";
+      }
+      s_mm3dHomeDir += "/";
+      s_mm3dHomeDir += HOME_MM3D;
+
+      var = getenv( "XDG_DATA_HOME" );
+      s_dataDir = var ? var : "";
+      if ( s_dataDir.empty() ) {
+         s_dataDir = getenv( "HOME" );
+         s_dataDir += "/.local/share";
+      }
+      s_dataDir += "/";
+      s_dataDir += HOME_MM3D;
+   } else {
+      s_mm3dHomeDir = getenv( "HOME" );
+      s_mm3dHomeDir += "/.";
+      s_mm3dHomeDir += HOME_MM3D;
+      s_dataDir = s_mm3dHomeDir;
+   }
    s_docDir    = DOC_ROOT;
    s_i18nDir   = I18N_ROOT;
-   s_pluginDir = s_mm3dHomeDir + HOME_PLUGINS;
+   s_pluginDir = s_dataDir + HOME_PLUGINS;
    s_pluginDir += "/";
    s_pluginDir += majorMinor;
    s_sharedPluginDir  = SHARED_PLUGINS;

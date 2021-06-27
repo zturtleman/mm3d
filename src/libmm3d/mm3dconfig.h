@@ -27,7 +27,12 @@
 #elif defined __APPLE__
 #define HOME_MM3D             "/Library/Application Support/Maverick Model 3D"
 #else
-#define HOME_MM3D             "/.mm3d"
+// For regular install:
+// $HOME/.mm3d
+// For flatpak:
+// $XDG_CONFIG_HOME/mm3d | $HOME/.config/mm3d
+// $XDG_DATA_HOME/mm3d   | $HOME/.local/share/mm3d
+#define HOME_MM3D             "mm3d"
 #endif // WIN32
 
 #ifdef WIN32
