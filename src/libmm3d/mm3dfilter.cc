@@ -2673,7 +2673,7 @@ Model::ModelErrorE MisfitFilter::writeFile( Model * model, const char * const fi
 
             char * filedup = strdup( fileStr.c_str() );
             replaceSlash( filedup );
-            utf8chrtrunc( filedup, PATH_MAX-1 );
+            utf8chrtrunc( filedup, fileStr.size()-1 );
 
             m_dst->write( backSize );
             m_dst->write( cb.flags );
