@@ -136,6 +136,7 @@ void Md3Filter::Md3Options::setOptionsFromModel( Model * model, const char * con
    {
       bool haveUpper = false;
       bool haveLower = false;
+      bool haveUnknown = false;
 
       unsigned gcount = model->getGroupCount();
       for ( unsigned g = 0; g < gcount; g++ )
@@ -151,13 +152,18 @@ void Md3Filter::Md3Options::setOptionsFromModel( Model * model, const char * con
                case 'L':
                   haveLower = true;
                   break;
+               case 'H':
+                  break;
                default:
+                  haveUnknown = true;
                   break;
             }
+         } else {
+            haveUnknown = true;
          }
       }
 
-      if ( haveUpper && haveLower
+      if ( !haveUnknown && haveUpper && haveLower
             && model->getPointByName( "tag_torso" ) >= 0
             && model->getPointByName( "tag_head" )  >= 0 )
       {
