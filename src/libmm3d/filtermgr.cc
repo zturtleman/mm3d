@@ -88,6 +88,10 @@ Model::ModelErrorE FilterManager::readFile( Model * model, const char * filename
 {
    Model::ModelErrorE rval = Model::ERROR_UNKNOWN_TYPE;
    FilterList::iterator it;
+
+   // Make model filter snprintf()/sscanf() use "." as decimal separator regardless of locale.
+   setlocale( LC_NUMERIC, "C" );
+
    for ( it = m_filters.begin(); it != m_filters.end(); it++ )
    {
       ModelFilter * filter = *it;
@@ -106,6 +110,7 @@ Model::ModelErrorE FilterManager::readFile( Model * model, const char * filename
             model->clearUndo();
             m_factory.closeAll();
 
+            setlocale( LC_NUMERIC, "" );
             return rval;
          }
          else
@@ -115,6 +120,7 @@ Model::ModelErrorE FilterManager::readFile( Model * model, const char * filename
       }
    }
 
+   setlocale( LC_NUMERIC, "" );
    return rval;
 }
 
@@ -123,6 +129,9 @@ Model::ModelErrorE FilterManager::writeFile( Model * model, const char * filenam
    bool canWrite = true;
    bool tryExport = false;
    FilterList::iterator it;
+
+   // Make model filter snprintf()/sscanf() use "." as decimal separator regardless of locale.
+   setlocale( LC_NUMERIC, "C" );
 
    for ( it = m_filters.begin(); it != m_filters.end(); it++ )
    {
@@ -181,6 +190,7 @@ Model::ModelErrorE FilterManager::writeFile( Model * model, const char * filenam
                o = NULL;
             }
 
+            setlocale( LC_NUMERIC, "" );
             return err;
          }
          else
@@ -196,6 +206,8 @@ Model::ModelErrorE FilterManager::writeFile( Model * model, const char * filenam
          }
       }
    }
+
+   setlocale( LC_NUMERIC, "" );
 
    if ( tryExport )
    {
