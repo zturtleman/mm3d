@@ -728,6 +728,30 @@ AC_DEFUN([BNV_HAVE_QT],
         QT_MACDEPLOYQT=`which macdeployqt`
       fi
     fi
+
+    # If binaries are still not set, fail
+    QT_MISSING_TOOLS=
+    if test x"$QT_UIC" = x; then
+      have_qt=no
+      QT_MISSING_TOOLS="$QT_MISSING_TOOLS uic"
+    fi
+    if test x"$QT_MOC" = x; then
+      have_qt=no
+      QT_MISSING_TOOLS="$QT_MISSING_TOOLS moc"
+    fi
+    if test x"$QT_RCC" = x; then
+      have_qt=no
+      QT_MISSING_TOOLS="$QT_MISSING_TOOLS rcc"
+    fi
+    if test x"$QT_LRELEASE" = x; then
+      have_qt=no
+      QT_MISSING_TOOLS="$QT_MISSING_TOOLS lrelease"
+    fi
+    # Allow macdeployqt to be absent
+    if test x"$QT_MACDEPLOYQT" = x; then
+      QT_MACDEPLOYQT="macdeployqt"
+    fi
+
     # All variables are defined, report the result
     AC_MSG_RESULT([$have_qt:
     QT_CXXFLAGS=$QT_CXXFLAGS
@@ -738,6 +762,11 @@ AC_DEFUN([BNV_HAVE_QT],
     QT_RCC=$QT_RCC
     QT_LRELEASE=$QT_LRELEASE
     QT_MACDEPLOYQT=$QT_MACDEPLOYQT])
+
+    if test x"$QT_MISSING_TOOLS" != x; then
+      AC_MSG_ERROR([Failed to find Qt tool programs:$QT_MISSING_TOOLS.
+                  Try using more options, see ./configure --help.])
+    fi
   else
     # Qt was not found
     QT_CXXFLAGS=
