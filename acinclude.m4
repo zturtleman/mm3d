@@ -656,34 +656,44 @@ AC_DEFUN([BNV_HAVE_QT],
     fi
 
     # If binaries are still not set, try qtchooser
-    if test x"$QT_UIC" = x; then
-      # UIC detection
-      if test `which qtchooser 2> /dev/null`; then
-        QT_UIC="qtchooser -qt=5 -run-tool=uic"
-      fi
+    qtchoosertoolsdir=
+    if test `which qtchooser 2> /dev/null`; then
+      # Example of "qtchooser -qt=5 -print-env" output:
+      #     QT_SELECT="5"
+      #     QTTOOLDIR="/usr/lib/qt5/bin"
+      #     QTLIBDIR="/usr/lib/x86_64-linux-gnu"
+      qtchoosertoolsdir=$(qtchooser -qt=5 -print-env | grep QTTOOLDIR | cut -d\" -f2)
     fi
-    if test x"$QT_MOC" = x; then
-      # MOC detection
-      if test `which qtchooser 2> /dev/null`; then
-        QT_MOC="qtchooser -qt=5 -run-tool=moc"
+    if test x"$qtchoosertoolsdir" != x; then
+      if test x"$QT_UIC" = x; then
+        # UIC detection
+        if test -x "$qtchoosertoolsdir/uic"; then
+          QT_UIC="$qtchoosertoolsdir/uic"
+        fi
       fi
-    fi
-    if test x"$QT_RCC" = x; then
-      # RCC detection
-      if test `which qtchooser 2> /dev/null`; then
-        QT_RCC="qtchooser -qt=5 -run-tool=rcc"
+      if test x"$QT_MOC" = x; then
+        # MOC detection
+        if test -x "$qtchoosertoolsdir/moc"; then
+          QT_MOC="$qtchoosertoolsdir/moc"
+        fi
       fi
-    fi
-    if test x"$QT_LRELEASE" = x; then
-      # LRELEASE detection
-      if test `which qtchooser 2> /dev/null`; then
-        QT_LRELEASE="qtchooser -qt=5 -run-tool=lrelease"
+      if test x"$QT_RCC" = x; then
+        # RCC detection
+        if test -x "$qtchoosertoolsdir/rcc"; then
+          QT_RCC="$qtchoosertoolsdir/rcc"
+        fi
       fi
-    fi
-    if test x"$QT_MACDEPLOYQT" = x; then
-      # MACDEPLOYQT detection
-      if test `which qtchooser 2> /dev/null`; then
-        QT_MACDEPLOYQT="qtchooser -qt=5 -run-tool=macdeployqt"
+      if test x"$QT_LRELEASE" = x; then
+        # LRELEASE detection
+        if test -x "$qtchoosertoolsdir/lrelease"; then
+          QT_LRELEASE="$qtchoosertoolsdir/lrelease"
+        fi
+      fi
+      if test x"$QT_MACDEPLOYQT" = x; then
+        # MACDEPLOYQT detection
+        if test -x "$qtchoosertoolsdir/macdeployqt"; then
+          QT_MACDEPLOYQT="$qtchoosertoolsdir/macdeployqt"
+        fi
       fi
     fi
 
