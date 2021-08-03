@@ -43,6 +43,12 @@ Build dependencies:
 
     sudo dnf install autoconf automake make gcc gcc-c++ qt5-qtbase-devel qt5-linguist mesa-libGLU-devel
 
+## Arch Linux
+
+Build dependencies:
+
+    sudo pacman -S autoconf automake make gcc qt5-base qt5-tools glu
+
 ## macOS
 
 On macOS 10.11+, install homebrew from http://brew.sh and run the following
