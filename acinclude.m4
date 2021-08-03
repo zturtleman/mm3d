@@ -904,6 +904,7 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
     bnv_include_path_list="
       /usr/include/$bnv_qt_host/qt5
       /usr/include/qt5
+      /usr/include/qt
       /usr/qt5/include
       /usr/local/include/$bnv_qt_host/qt5
       /usr/local/include/qt5
