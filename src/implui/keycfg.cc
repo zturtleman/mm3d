@@ -63,7 +63,7 @@ static void _writeDefaultFile( const char * filename )
          "; Modifiers are not case-sensitive. You can have as many modifiers as you want " FILE_NEWLINE
          "; (none, all, or any combination)." FILE_NEWLINE
          ";" FILE_NEWLINE
-         "; Most keys can be entered by typing the actual key (letters, numbers, arithmatic" FILE_NEWLINE
+         "; Most keys can be entered by typing the actual key (letters, numbers, arithmetic" FILE_NEWLINE
          "; operators, etc)." FILE_NEWLINE
          ";" FILE_NEWLINE
          "; Some special keys:" FILE_NEWLINE
