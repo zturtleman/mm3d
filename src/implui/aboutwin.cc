@@ -45,7 +45,7 @@ AboutWin::AboutWin( QWidget * parent )
    setModal( false );
    setWindowTitle( tr( "Maverick Model 3D - About") );
 
-   resize( 350, 300 );
+   resize( 350, 350 );
    m_text->setHtml( QString( ABOUT_TEXT ) );
 }
 
