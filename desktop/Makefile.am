@@ -1,9 +1,11 @@
 EXTRA_DIST = \
-	mm3d.desktop \
-	mm3d.xml \
-	mm3d.png \
-	mm3d-32.xpm \
-	mm3d-16.xpm
+	moe.clover.mm3d.desktop \
+	moe.clover.mm3d.metainfo.xml \
+	moe.clover.mm3d.mm3dmodel.xml \
+	moe.clover.mm3d.png \
+	moe.clover.mm3d-64.png \
+	moe.clover.mm3d-32.png \
+	moe.clover.mm3d-16.png
 
 all:
 
