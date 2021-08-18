@@ -33,7 +33,7 @@
    "<h2>" VERSION_STRING "</h2><br>" \
    "https://clover.moe/mm3d<br><br>" \
    "Copyright &copy; 2004-2008, Kevin Worcester<br>" \
-   "Copyright &copy; 2009-2019 Zack Middleton<br><br>" \
+   "Copyright &copy; 2009-2021 Zack Middleton<br><br>" \
    "</center></body></html>"
 
 AboutWin::AboutWin( QWidget * parent )

@@ -60,7 +60,7 @@ BEGIN
             VALUE "InternalName",     "mm3d.x86"
 #endif
             // Copyright symbol (©) in Windows codepage 1252 is \xA9
-            VALUE "LegalCopyright",   "Copyright \xA9 2004-2008 Kevin Worcester, Copyright \xA9 2009-2019 Zack Middleton."
+            VALUE "LegalCopyright",   "Copyright \xA9 2004-2008 Kevin Worcester, Copyright \xA9 2009-2021 Zack Middleton."
         END
     END
 
