@@ -1,0 +1,58 @@
+#
+# Flatpak manifest
+#
+# To build and install the Flatpak (requires flatpak and flatpak-builder programs):
+#
+#    flatpak-builder --user --install --force-clean --state-dir=flatpak-state flatpak-build mm3d-flatpak.yaml
+#
+# After it's installed you can remove "flatpak-state" and "flatpak-build" directories.
+#
+#    rm -r flatpak-state flatpak-build
+#
+# To uninstall the Flatpak use:
+#
+#    flatpak uninstall --user moe.clover.mm3d
+#
+
+app-id: moe.clover.mm3d
+runtime: org.kde.Platform
+runtime-version: '5.15'
+sdk: org.kde.Sdk
+command: mm3d
+finish-args:
+  # OpenGL access
+  - --device=dri
+  # Wayland access
+  - --socket=wayland
+  # X11 + XShm access
+  - --share=ipc
+  - --socket=x11
+  - --socket=fallback-x11
+  # File access
+  - --filesystem=host
+modules:
+  # glu from flathub/shared-modules
+  - name: glu
+    config-opts:
+      - "--disable-static"
+    sources:
+    - type: archive
+      url: https://mesa.freedesktop.org/archive/glu/glu-9.0.1.tar.xz
+      sha256: fb5a4c2dd6ba6d1c21ab7c05129b0769544e1d68e1e3b0ffecb18e73c93055bc
+    cleanup:
+      - "/include"
+      - "/lib/*.a"
+      - "/lib/*.la"
+      - "/lib/pkgconfig"
+  - name: mm3d
+    config-opts:
+      # specify where GLU was just installed to
+      # NOTE: "-L/app/lib" is set in LDFLAGS by flatpak-builder but mm3d configure doesn't use it for testing GL LIBS.
+      - "--with-GL-cflags=-L/app/lib"
+      # specify where Qt is in the SDK
+      - "--with-Qt-bin-dir=/bin"
+      - "--with-Qt-include-dir=/include"
+      - "--with-Qt-lib-dir=/lib"
+    sources:
+      - type: dir
+        path: .
