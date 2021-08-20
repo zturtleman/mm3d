@@ -1,0 +1,85 @@
+name: Build
+on: [push, pull_request]
+
+jobs:
+  linux-configure-gcc:
+    name: GCC (Linux)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Dependencies
+      run: |
+        sudo apt update
+        sudo apt install autoconf automake make gcc g++ qtbase5-dev qtbase5-dev-tools qttools5-dev-tools libgl1-mesa-dev
+    - name: autogen.sh
+      run: ./autogen.sh
+    - name: configure
+      run: CC=gcc CXX=g++ ./configure
+    - name: make
+      run: make
+    - name: make install
+      run: sudo make install
+
+  linux-configure-clang:
+    name: Clang (Linux)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Dependencies
+      run: |
+        sudo apt update
+        sudo apt install autoconf automake make gcc g++ qtbase5-dev qtbase5-dev-tools qttools5-dev-tools libgl1-mesa-dev
+    - name: autogen.sh
+      run: ./autogen.sh
+    - name: configure
+      run: CC=clang CXX=clang++ ./configure
+    - name: make
+      run: make
+    - name: make install
+      run: sudo make install
+
+  linux-make:
+    name: Makefile.generic (Linux, GCC)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Dependencies
+      run: |
+        sudo apt update
+        sudo apt install autoconf automake make gcc g++ qtbase5-dev qtbase5-dev-tools qttools5-dev-tools libgl1-mesa-dev
+    - name: Setup
+      run: cp config.h.generic config.h
+    - name: make
+      run: make -f Makefile.generic
+    - name: make install
+      run: sudo make -f Makefile.generic install
+
+  linux-flatpak:
+    name: Flatpak (Linux, GCC)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # This is needed for "git describe" to work.
+    - name: Install Dependencies
+      run: |
+        sudo apt update
+        sudo apt install flatpak flatpak-builder
+        flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+        flatpak install --user -y org.kde.Platform//5.15 flathub org.kde.Sdk//5.15
+    - name: Set version for the Flatpak
+      run: |
+        sed -i "s|<releases>|<releases>\n    <release version=\"$(git describe|sed 's/^v\([0-9]\)/\1/')\" date=\"$(git show -s --pretty=format:%ad --date=short)\" />|" desktop/moe.clover.mm3d.metainfo.xml
+        cat desktop/moe.clover.mm3d.metainfo.xml
+    - name: flatpak-builder
+      run: flatpak-builder --repo=flatpak-repo --state-dir=flatpak-state flatpak-build mm3d-flatpak.yaml
+    - name: flatpak build-bundle
+      run: flatpak build-bundle flatpak-repo moe.clover.mm3d.$(git describe|sed 's/^v\([0-9]\)/\1/').flatpak moe.clover.mm3d
+    - name: flatpak install
+      run: |
+        flatpak install --user -y moe.clover.mm3d.$(git describe|sed 's/^v\([0-9]\)/\1/').flatpak
+        flatpak list
+    - uses: actions/upload-artifact@v2
+      with:
+        name: flatpak
+        path: ./*.flatpak
