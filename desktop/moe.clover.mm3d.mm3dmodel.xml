@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
-  <mime-type type="application/x-mm3d">
+  <mime-type type="model/x-mm3d">
     <comment>MM3D model</comment>
     <!-- NOTE: Flatpak forces glob to weight="5" and removes magic. -->
     <glob pattern="*.mm3d" weight="5"/>
