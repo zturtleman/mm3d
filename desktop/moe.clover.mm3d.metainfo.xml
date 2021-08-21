@@ -26,6 +26,7 @@
   <provides>
     <binary>mm3d</binary>
     <id>mm3d.desktop</id>
+    <id>moe.clover.mm3d.desktop</id>
   </provides>
 
   <kudos>
