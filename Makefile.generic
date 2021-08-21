@@ -845,7 +845,7 @@ $(echo_cmd) "HTML $<"
 $(Q)${B}/util/hpagemake${BINEXT} $< > $@
 endef
 
-.PHONY: all makedirs mm3d_ui mm3d_moc mm3d hpagemake docs clean
+.PHONY: all makedirs mm3d_ui mm3d_moc mm3d qmfiles hpagemake docs install deploy installer clean
 
 all: makedirs mm3d_ui mm3d_moc mm3d qmfiles hpagemake docs
 
