@@ -74,12 +74,12 @@ jobs:
     - name: flatpak-builder
       run: flatpak-builder --repo=flatpak-repo --state-dir=flatpak-state flatpak-build mm3d-flatpak.yaml
     - name: flatpak build-bundle
-      run: flatpak build-bundle flatpak-repo moe.clover.mm3d.$(git describe|sed 's/^v\([0-9]\)/\1/').flatpak moe.clover.mm3d
+      run: flatpak build-bundle flatpak-repo moe.clover.mm3d-$(git describe|sed 's/^v\([0-9]\)/\1/').flatpak moe.clover.mm3d
     - name: flatpak install
       run: |
-        flatpak install --user -y moe.clover.mm3d.$(git describe|sed 's/^v\([0-9]\)/\1/').flatpak
+        flatpak install --user -y moe.clover.mm3d-$(git describe|sed 's/^v\([0-9]\)/\1/').flatpak
         flatpak list
     - uses: actions/upload-artifact@v2
       with:
-        name: flatpak
+        name: Flatpak Bundle
         path: ./*.flatpak
