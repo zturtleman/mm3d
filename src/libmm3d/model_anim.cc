@@ -718,7 +718,11 @@ int Model::splitAnimation( AnimationModeE mode, unsigned anim, const char * newN
                }
 
                setAnimFrameCount( mode, anim, frame );
-               moveAnimation( mode, num, anim + 1 );
+
+               if ( moveAnimation( mode, num, anim + 1 ) )
+               {
+                  num = anim + 1;
+               }
             }
          }
          break;
@@ -750,7 +754,11 @@ int Model::splitAnimation( AnimationModeE mode, unsigned anim, const char * newN
                }
 
                setAnimFrameCount( mode, anim, frame );
-               moveAnimation( mode, num, anim + 1 );
+
+               if ( moveAnimation( mode, num, anim + 1 ) )
+               {
+                  num = anim + 1;
+               }
             }
          }
          break;
