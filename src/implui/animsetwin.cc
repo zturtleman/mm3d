@@ -411,7 +411,7 @@ void AnimSetWindow::splitClicked()
             if ( ok )
             {
                name = name + " " + tr("split");
-               if ( m_model->splitAnimation( mode, t, name.toUtf8(), frame ) )
+               if ( m_model->splitAnimation( mode, t, name.toUtf8(), frame - 1 ) )
                {
                   refillList = true;
                }
