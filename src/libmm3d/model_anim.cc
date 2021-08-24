@@ -693,7 +693,8 @@ int Model::splitAnimation( AnimationModeE mode, unsigned anim, const char * newN
    switch ( mode )
    {
       case ANIMMODE_SKELETAL:
-         if ( anim < m_skelAnims.size() )
+         if ( anim < m_skelAnims.size()
+               && frame < m_skelAnims[anim]->m_frameCount )
          {
             num = addAnimation( mode, newName );
             if ( num >= 0 )
@@ -727,7 +728,8 @@ int Model::splitAnimation( AnimationModeE mode, unsigned anim, const char * newN
          }
          break;
       case ANIMMODE_FRAME:
-         if ( anim < m_frameAnims.size() )
+         if ( anim < m_frameAnims.size()
+               && frame < m_frameAnims[anim]->m_frameData.size() )
          {
             num = addAnimation( mode, newName );
             if ( num >= 0 )
