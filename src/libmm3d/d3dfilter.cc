@@ -50,6 +50,8 @@
 #include <ctype.h>
 
 #include <string>
+#include <array>
+#include <vector>
 
 using std::string;
 

@@ -22,6 +22,7 @@
 
 
 #include <stdio.h> // For NULL
+#include <locale.h>
 #include "filtermgr.h"
 #include "modelfilter.h"
 #include "log.h"
