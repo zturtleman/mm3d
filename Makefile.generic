@@ -1004,6 +1004,9 @@ ${B}/tools/%.moc.cc: src/tools/%.h
 ${B}/depui/%.moc.cc: src/depui/%.h
 	$(DO_MOC)
 
+${B}/%.moc.o: ${B}/%.moc.cc
+	$(DO_CXX)
+
 ${B}/qtui/resources.cpp: src/qtui/resources.qrc src/qtui/images/zoomin.xpm src/qtui/images/zoomout.xpm
 	$(echo_cmd) "RCC $<"
 	$(Q)${RCC} --name qtuiResources $< -o $@
