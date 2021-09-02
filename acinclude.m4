@@ -502,7 +502,7 @@ AC_DEFUN([BNV_HAVE_QT],
         bnv_qt_lib_dir="$with_Qt_dir/lib"
       fi
       if test x"$is_osx" = xyes; then
-        bnv_qt_LIBS="-F$bnv_qt_dir/Frameworks -L$bnv_qt_lib_dir $bnv_qt5_libs "
+        bnv_qt_LIBS="-F$bnv_qt_dir/lib -L$bnv_qt_lib_dir $bnv_qt5_libs "
       else
         bnv_qt_LIBS="-L$bnv_qt_lib_dir $bnv_qt5_libs "
       fi
@@ -535,7 +535,11 @@ AC_DEFUN([BNV_HAVE_QT],
     fi # all $bnv_qt_* are set
   fi   # $have_qt reflects the system status
   if test x"$have_qt" = xyes; then
-    QT_CXXFLAGS="-I$bnv_qt_include_dir"
+    if test x"$is_osx" = xyes; then
+      QT_CXXFLAGS="-I$bnv_qt_include_dir -F$bnv_qt_dir/lib $bnv_qt5_libs "
+    else
+      QT_CXXFLAGS="-I$bnv_qt_include_dir"
+    fi
     QT_DIR="$bnv_qt_dir"
     QT_LIBS="$bnv_qt_LIBS"
     if test x"$bnv_qt_bin_dir" != x; then
