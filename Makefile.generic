@@ -224,16 +224,20 @@ ifeq ($(PLATFORM),darwin)
     QT_LIB_DIR=${QTDIR}/lib
   endif
   ifndef QT_FRAMEWORKS_DIR
-    QT_FRAMEWORKS_DIR=${QTDIR}/Frameworks
+    QT_FRAMEWORKS_DIR=${QTDIR}/lib
   endif
 
   ifndef QT_LIBS
-    QT_LIBS=-framework QtCore -framework QtGui -framework QtWidgets
+    QT_LIBS=
+  endif
+  ifndef QT_FRAMEWORKS
+    QT_FRAMEWORKS=-framework QtCore -framework QtGui -framework QtWidgets
   endif
 
-  LINK=-F${QT_FRAMEWORKS_DIR} -L${QT_LIB_DIR} ${QT_LIBS} -framework OpenGl
+  FRAMEWORKS=${QT_FRAMEWORKS} -framework OpenGL
+  LINK=-F${QT_FRAMEWORKS_DIR} ${FRAMEWORKS} -L${QT_LIB_DIR} ${QT_LIBS}
 
-  # Qt5 requires C++11
+  # Required for C++11 on macOS
   BASE_FLAGS+=-stdlib=libc++
 
   ifeq ($(ARCH),x86)
@@ -241,6 +245,14 @@ ifeq ($(PLATFORM),darwin)
   endif
 
   BASE_FLAGS += -DPREFIX="\"$(PREFIX)\"" -DIS_OSX
+
+  # Set this to match Qt's minimum macOS deployment target.
+  ifdef MACOSX_VERSION_MIN
+    BASE_FLAGS += -mmacosx-version-min=${MACOSX_VERSION_MIN}
+  endif
+
+  # Frameworks may contain header files so they need to be specified for compiling as well.
+  BASE_FLAGS += -F${QT_FRAMEWORKS_DIR} ${FRAMEWORKS}
 
   BINEXT=.${ARCH}
   TOOLS_BINEXT=
