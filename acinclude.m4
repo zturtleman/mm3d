@@ -840,11 +840,11 @@ EOF
       else
         bnv_try_2="$CXX $QT_CXXFLAGS -c $CXXFLAGS -Wno-non-virtual-dtor -o moc_bnv_qt_test.o moc_bnv_qt_test.$ac_ext >/dev/null 2>bnv_qt_test_2.out"
         AC_TRY_EVAL(bnv_try_2)
-        bnv_err_2=`grep -v '^ *+' bnv_qt_test_2.out | grep -v "^bnv_qt_test.{$ac_ext}\$"`
+        bnv_err_2=`grep -v '^ *+' bnv_qt_test_2.out | grep -v "^moc_bnv_qt_test.{$ac_ext}\$"`
         if test x"$bnv_err_2" != x; then
           echo "$bnv_err_2" >&AC_FD_CC
           echo "configure: could not compile:" >&AC_FD_CC
-          cat bnv_qt_test.$ac_ext >&AC_FD_CC
+          cat moc_bnv_qt_test.$ac_ext >&AC_FD_CC
         else
           bnv_try_3="$CXX $QT_CXXFLAGS -c $CXXFLAGS -o bnv_qt_main.o bnv_qt_main.$ac_ext >/dev/null 2>bnv_qt_test_3.out"
           AC_TRY_EVAL(bnv_try_3)
