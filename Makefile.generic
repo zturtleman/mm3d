@@ -344,7 +344,9 @@ BASE_FLAGS+=-fno-math-errno -I${QT_INCLUDE_DIR} -DMM3D_EDIT -I. -I./src -I./src/
 
 # Use debug or release cflags
 #BUILD_FLAGS+=-Wall -Wextra -Wno-unused-parameter -Wno-format-zero-length -g -ggdb
-BUILD_FLAGS+=-Wall -Wextra -Wno-unused-parameter -Wno-format-zero-length -O2 -s
+#STRIP=
+BUILD_FLAGS+=-Wall -Wextra -Wno-unused-parameter -Wno-format-zero-length -O2
+STRIP=strip
 
 CCFLAGS=-std=c99 ${BUILD_FLAGS} ${BASE_FLAGS}
 CXXFLAGS=-std=c++11 ${BUILD_FLAGS} ${BASE_FLAGS}
@@ -905,6 +907,10 @@ endif
 	$(Q)${CXX} ${CXXFLAGS} ${DEFS} -o $(BIN)/mm3d${BINEXT} ${MM3D_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} ${B}/src/win_resource.o ${LINK}
 else
 	$(Q)${CXX} ${CXXFLAGS} ${DEFS} -o $(BIN)/mm3d${BINEXT} ${MM3D_OBJ} ${MM3D_MOC_OBJ} ${LIB_OBJ} ${LINK}
+endif
+ifdef STRIP
+	$(echo_cmd) "STRIP $(BIN)/mm3d${BINEXT}"
+	$(Q)$(STRIP) $(BIN)/mm3d${BINEXT}
 endif
 
 mm3d: $(BIN)/mm3d${BINEXT}
