@@ -343,8 +343,8 @@ endif
 BASE_FLAGS+=-fno-math-errno -I${QT_INCLUDE_DIR} -DMM3D_EDIT -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${B}/depui -I${B}/qtui -I${B}/implui -I${B}/commands
 
 # Use debug or release cflags
-#BUILD_FLAGS+=-Wall -Wextra -g -ggdb
-BUILD_FLAGS+=-Wall -Wextra -O2 -s
+#BUILD_FLAGS+=-Wall -Wextra -Wno-unused-parameter -Wno-format-zero-length -g -ggdb
+BUILD_FLAGS+=-Wall -Wextra -Wno-unused-parameter -Wno-format-zero-length -O2 -s
 
 CCFLAGS=-std=c99 ${BUILD_FLAGS} ${BASE_FLAGS}
 CXXFLAGS=-std=c++11 ${BUILD_FLAGS} ${BASE_FLAGS}
