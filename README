@@ -51,14 +51,17 @@ Build dependencies:
 
 ## macOS
 
-On macOS 10.11+, install homebrew from http://brew.sh and run the following
-commands.
+To build a "Maverick Model 3D.app" AppBundle on macOS 10.14+,
+install homebrew from http://brew.sh and run the following commands.
+
+(I haven't tested these build steps as my MacBook Pro is limited to
+macOS 10.11 and Qt 5.12+ no longer supports it.)
 
    brew install autoconf automake qt@5
    ./autogen.sh
-   CXX='clang++ -stdlib=libc++' ./configure --with-Qt-dir=/usr/local/Cellar/qt/5.11.1 --with-macosx-version-min=10.11
+   ./configure --with-Qt-dir=/usr/local/Cellar/qt/5.15.2 --with-macosx-version-min=10.13
    make
    make mm3d.app
 
-This will build a 'Maverick Model 3D.app' AppBundle. (macosx-version-min is
-copied from /usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang/qmake.conf)
+--with-macosx-version-min should be set to the value in
+/usr/local/Cellar/qt/5.15.2/mkspecs/macx-clang/qmake.conf
