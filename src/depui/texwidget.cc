@@ -712,7 +712,6 @@ void TextureWidget::setModel( Model * model )
    m_model = model;
    m_texture = NULL;
    clearCoordinates();
-   glDisable( GL_TEXTURE_2D );
 }
 
 void TextureWidget::set3d( bool o )
