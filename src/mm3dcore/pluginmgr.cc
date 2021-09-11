@@ -29,6 +29,7 @@
 #include "version.h"
 
 #include <stdio.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <dirent.h>
 #include <errno.h>
