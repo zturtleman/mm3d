@@ -829,6 +829,10 @@ int main( int argc, char **argv )
 }
 EOF
 
+      # Some versions of Clang or use of separate include directory causes
+      # a warning for unused macOS framework with no way to disable it.
+      ignore_warning="clang: warning: -framework .*: 'linker' input unused"
+
       bnv_cv_qt_test_result="failure"
       bnv_try_1="$QT_MOC bnv_qt_test.h -o moc_bnv_qt_test.$ac_ext >/dev/null 2>bnv_qt_test_1.out"
       AC_TRY_EVAL(bnv_try_1)
@@ -840,7 +844,7 @@ EOF
       else
         bnv_try_2="$CXX $QT_CXXFLAGS -c $CXXFLAGS -Wno-non-virtual-dtor -o moc_bnv_qt_test.o moc_bnv_qt_test.$ac_ext >/dev/null 2>bnv_qt_test_2.out"
         AC_TRY_EVAL(bnv_try_2)
-        bnv_err_2=`grep -v '^ *+' bnv_qt_test_2.out | grep -v "^moc_bnv_qt_test.{$ac_ext}\$"`
+        bnv_err_2=`grep -v '^ *+' bnv_qt_test_2.out | grep -v "^moc_bnv_qt_test.${ac_ext}\$" | grep -v "^${ignore_warning}\$"`
         if test x"$bnv_err_2" != x; then
           echo "$bnv_err_2" >&AC_FD_CC
           echo "configure: could not compile:" >&AC_FD_CC
@@ -848,7 +852,7 @@ EOF
         else
           bnv_try_3="$CXX $QT_CXXFLAGS -c $CXXFLAGS -o bnv_qt_main.o bnv_qt_main.$ac_ext >/dev/null 2>bnv_qt_test_3.out"
           AC_TRY_EVAL(bnv_try_3)
-          bnv_err_3=`grep -v '^ *+' bnv_qt_test_3.out | grep -v "^bnv_qt_main.{$ac_ext}\$"`
+          bnv_err_3=`grep -v '^ *+' bnv_qt_test_3.out | grep -v "^bnv_qt_main.${ac_ext}\$" | grep -v "^${ignore_warning}\$"`
           if test x"$bnv_err_3" != x; then
             echo "$bnv_err_3" >&AC_FD_CC
             echo "configure: could not compile:" >&AC_FD_CC
