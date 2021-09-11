@@ -967,7 +967,7 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
   if test -x $bnv_possible_qt_dir/bin/moc; then
     if ls $bnv_possible_qt_dir/lib/libQt5Core.* 1> /dev/null 2> /dev/null; then
       bnv_found_traditional=yes
-    elif test -r $bnv_possible_qt_dir/Frameworks/QtCore.framework; then
+    elif test -r $bnv_possible_qt_dir/lib/QtCore.framework; then
       bnv_found_traditional=yes
     fi
   fi
@@ -981,7 +981,7 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
       bnv_qt_lib_dir="$bnv_qt_dir/lib"
     fi
     if test x"$is_osx" = xyes; then
-      bnv_qt_LIBS="-F$bnv_qt_dir/Frameworks -L$bnv_qt_lib_dir $bnv_qt5_libs"
+      bnv_qt_LIBS="-F$bnv_qt_dir/lib -L$bnv_qt_lib_dir $bnv_qt5_libs"
     else
       bnv_qt_LIBS="-L$bnv_qt_lib_dir $bnv_qt5_libs"
     fi
