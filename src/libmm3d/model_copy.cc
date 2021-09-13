@@ -27,10 +27,9 @@
 #include "log.h"
 #include "texmgr.h"
 
-#include <vector>
-#include <ext/hash_map>
+#include <unordered_map>
 
-using __gnu_cxx::hash_map;
+using std::unordered_map;
 
 
 Model * Model::copySelected() const
@@ -46,11 +45,11 @@ Model * Model::copySelected() const
    list<int> proj;
    this->getSelectedProjections( proj );
 
-   hash_map<int,int> projMap;
-   hash_map<int,int> vertMap;
-   hash_map<int,int> triMap;
-   hash_map<int,int> jointMap;
-   hash_map<int,int> pointMap;
+   unordered_map<int,int> projMap;
+   unordered_map<int,int> vertMap;
+   unordered_map<int,int> triMap;
+   unordered_map<int,int> jointMap;
+   unordered_map<int,int> pointMap;
 
    list<int>::iterator lit;
 
@@ -258,7 +257,7 @@ Model * Model::copySelected() const
          m->selectBoneJoint( nj );
       }
 
-      for ( hash_map<int,int>::iterator it = vertMap.begin();
+      for ( unordered_map<int,int>::iterator it = vertMap.begin();
             it != vertMap.end(); ++it )
       {
          InfluenceList il;
@@ -275,7 +274,7 @@ Model * Model::copySelected() const
          }
       }
 
-      for ( hash_map<int,int>::iterator it = pointMap.begin();
+      for ( unordered_map<int,int>::iterator it = pointMap.begin();
             it != pointMap.end(); ++it )
       {
          InfluenceList il;
