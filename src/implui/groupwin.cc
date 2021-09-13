@@ -100,7 +100,7 @@ void GroupWindow::newClickedEvent()
 
    while ( !valid )
    {
-      QString groupName = QInputDialog::getText( this, tr("New group", "window title"), tr("Enter new group name:"), QLineEdit::Normal, QString::null, &ok );
+      QString groupName = QInputDialog::getText( this, tr("New group", "window title"), tr("Enter new group name:"), QLineEdit::Normal, QString(), &ok );
 
       if ( ok == true )
       {

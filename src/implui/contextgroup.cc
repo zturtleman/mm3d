@@ -160,7 +160,7 @@ void ContextGroup::groupChanged()
          if ( g >= m_model->getGroupCount() )
          {
             // TODO pick unique name?
-            QString groupName = QInputDialog::getText( this, tr("New Group", "Name of new group, window title" ), tr("Enter new group name:"), QLineEdit::Normal, QString::null, &addSelected );
+            QString groupName = QInputDialog::getText( this, tr("New Group", "Name of new group, window title" ), tr("Enter new group name:"), QLineEdit::Normal, QString(), &addSelected );
             if ( groupName.length() == 0 )
             {
                addSelected = false;
