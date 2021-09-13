@@ -1029,6 +1029,9 @@ ${B}/qtui/resources.cpp: src/qtui/resources.qrc src/qtui/images/zoomin.xpm src/q
 	$(echo_cmd) "RCC $<"
 	$(Q)${RCC} --name qtuiResources $< -o $@
 
+${B}/qtui/resources.o: ${B}/qtui/resources.cpp
+	$(DO_CXX)
+
 ${B}/translations/%.qm: translations/%.ts
 	$(DO_LRELEASE)
 
