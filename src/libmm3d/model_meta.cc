@@ -5,6 +5,7 @@
 #include "log.h"
 
 #include <algorithm>
+#include <functional>
 
 #ifdef MM3D_EDIT
 
@@ -48,7 +49,7 @@ void Model::updateMetaData( const char * key, const char * value )
 {
    MetaDataList::iterator it
       = std::find_if( m_metaData.begin(), m_metaData.end(),
-            std::bind2nd(MetaDataKeyMatch(), key) );
+            std::bind(MetaDataKeyMatch(), std::placeholders::_1, key) );
    if ( it == m_metaData.end() )
    {
       MetaData md;
@@ -75,7 +76,7 @@ bool Model::getMetaData( const char * key, char * value, size_t valueLen ) const
 {
    MetaDataList::const_iterator it
       = std::find_if( m_metaData.begin(), m_metaData.end(),
-            std::bind2nd(MetaDataKeyMatch(), key) );
+            std::bind(MetaDataKeyMatch(), std::placeholders::_1, key) );
    if ( it == m_metaData.end() )
       return false;
 
