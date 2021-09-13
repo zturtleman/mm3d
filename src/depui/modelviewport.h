@@ -131,23 +131,23 @@ class ModelViewport : public QOpenGLWidget, public Tool::Parent
 
       // Tool::Parent methods
 
-      Model * getModel() { return m_model; };
-      ViewDirectionE getViewDirection() { return m_viewDirection; };
-      void updateView();
-      void update3dView();
-      void updateAllViews() { emit modelUpdated(); };
+      Model * getModel() override { return m_model; };
+      ViewDirectionE getViewDirection() override { return m_viewDirection; };
+      void updateView() override;
+      void update3dView() override;
+      void updateAllViews() override { emit modelUpdated(); };
 
-      void getParentXYValue( int x, int y, double & xval, double & yval, bool selected );
-      void getRawParentXYValue( int x, int y, double & xval, double & yval );
-      const Matrix & getParentViewMatrix() const { return m_viewMatrix; };
-      const Matrix & getParentViewInverseMatrix() const { return m_invMatrix; };
+      void getParentXYValue( int x, int y, double & xval, double & yval, bool selected ) override;
+      void getRawParentXYValue( int x, int y, double & xval, double & yval ) override;
+      const Matrix & getParentViewMatrix() const override { return m_viewMatrix; };
+      const Matrix & getParentViewInverseMatrix() const override { return m_invMatrix; };
 
-      bool getXValue( int x, int y, double * val );
-      bool getYValue( int x, int y, double * val );
-      bool getZValue( int x, int y, double * val );
+      bool getXValue( int x, int y, double * val ) override;
+      bool getYValue( int x, int y, double * val ) override;
+      bool getZValue( int x, int y, double * val ) override;
 
-      void addDecal( Decal * decal );
-      void removeDecal( Decal * decal );
+      void addDecal( Decal * decal ) override;
+      void removeDecal( Decal * decal ) override;
 
       void copyContentsToTexture( Texture * tex );
       void updateCaptureGL();
