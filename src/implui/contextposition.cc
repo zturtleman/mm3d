@@ -135,16 +135,16 @@ void ContextPosition::modelChanged( int changeBits )
 
       QString str;
 
-      str.sprintf( "%f", m_coords[0] );
+      str = QString::asprintf( "%f", m_coords[0] );
       m_xValue->setText( str );
 
-      str.sprintf( "%f", m_coords[1] );
+      str = QString::asprintf( "%f", m_coords[1] );
       m_yValue->setText( str );
 
-      str.sprintf( "%f", m_coords[2] );
+      str = QString::asprintf( "%f", m_coords[2] );
       m_zValue->setText( str );
 
-      str.sprintf( "%g, %g, %g", cmax[0]-cmin[0], cmax[1]-cmin[1], cmax[2]-cmin[2] );
+      str = QString::asprintf( "%g, %g, %g", cmax[0]-cmin[0], cmax[1]-cmin[1], cmax[2]-cmin[2] );
       m_dimensionsValue->setText( str );
 
       m_change = false;

@@ -1586,8 +1586,7 @@ void TextureWidget::zoomIn()
          m_zoom *= (VP_ZOOMSCALE);
       }
 
-      QString zoomStr;
-      zoomStr.sprintf( "%f", (float) m_zoom );
+      QString zoomStr = QString::asprintf( "%f", (float) m_zoom );
       emit zoomLevelChanged( zoomStr );
 
       updateViewport();
@@ -1603,8 +1602,7 @@ void TextureWidget::zoomOut()
          m_zoom /= VP_ZOOMSCALE;
       }
 
-      QString zoomStr;
-      zoomStr.sprintf( "%f", (float) m_zoom );
+      QString zoomStr = QString::asprintf( "%f", (float) m_zoom );
       emit zoomLevelChanged( zoomStr );
 
       updateViewport();

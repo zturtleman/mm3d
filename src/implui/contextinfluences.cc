@@ -621,7 +621,7 @@ void ContextInfluences::updateWeightField( int index, bool enabled, int type, in
             typeStr = tr("<Mixed>", "multiple types of bone joint influence");
             break;
          case 1:
-            typeStr.sprintf( "%d", weight );
+            typeStr = QString::asprintf( "%d", weight );
             break;
          case 2:
             typeStr = tr("Auto: %1").arg( weight);

@@ -1334,8 +1334,7 @@ void ModelViewport::zoomIn()
       PORT_snprintf( str, sizeof(str), "Units: %g", m_unitWidth );
       model_status( m_model, StatusNormal, STATUSTIME_NONE, "%s", str );
 
-      QString zoomStr;
-      zoomStr.sprintf( "%f", m_zoomLevel );
+      QString zoomStr = QString::asprintf( "%f", m_zoomLevel );
       emit zoomLevelChanged( zoomStr );
 
       makeCurrent();
@@ -1357,8 +1356,7 @@ void ModelViewport::zoomOut()
       PORT_snprintf( str, sizeof(str), "Units: %g", m_unitWidth );
       model_status( m_model, StatusNormal, STATUSTIME_NONE, "%s", str );
 
-      QString zoomStr;
-      zoomStr.sprintf( "%f", m_zoomLevel );
+      QString zoomStr = QString::asprintf( "%f", m_zoomLevel );
       emit zoomLevelChanged( zoomStr );
 
       makeCurrent();
@@ -2292,8 +2290,7 @@ void ModelViewport::setZoomLevel( double zoom )
       makeCurrent();
       adjustViewport();
 
-      QString zoomStr;
-      zoomStr.sprintf( "%f", m_zoomLevel );
+      QString zoomStr = QString::asprintf( "%f", m_zoomLevel );
       emit zoomLevelChanged( zoomStr );
    }
 }
@@ -3027,8 +3024,7 @@ void ModelViewport::frameArea( double x1, double y1, double z1, double x2, doubl
       }
    }
 
-   QString zoomStr;
-   zoomStr.sprintf( "%f", m_zoomLevel );
+   QString zoomStr = QString::asprintf( "%f", m_zoomLevel );
    emit zoomLevelChanged( zoomStr );
 
    makeCurrent();

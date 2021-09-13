@@ -38,8 +38,7 @@ ModelView::ModelView( Toolbox * toolbox, QWidget * parent )
 {
    setupUi( this );
 
-   QString zoomStr;
-   zoomStr.sprintf( "%f", m_modelView->getZoomLevel() );
+   QString zoomStr = QString::asprintf( "%f", m_modelView->getZoomLevel() );
    m_zoomInput->setText( zoomStr );
 
    connect( m_modelView, SIGNAL(viewDirectionChanged(int)), this, SLOT(setViewDirection(int)));

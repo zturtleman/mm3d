@@ -106,13 +106,13 @@ void ContextRotation::modelChanged( int changeBits )
 
       QString str;
 
-      str.sprintf( "%f", (float)rad[0] );
+      str = QString::asprintf( "%f", (float)rad[0] );
       m_xValue->setText( str );
 
-      str.sprintf( "%f", (float)rad[1] );
+      str = QString::asprintf( "%f", (float)rad[1] );
       m_yValue->setText( str );
 
-      str.sprintf( "%f", (float)rad[2] );
+      str = QString::asprintf( "%f", (float)rad[2] );
       m_zValue->setText( str );
 
       this->setEnabled( searching ? false : true );

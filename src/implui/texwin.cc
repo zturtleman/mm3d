@@ -455,8 +455,7 @@ void TextureWindow::redSliderChanged( int v )
 {
    if ( ! m_editing )
    {
-      QString str;
-      str.sprintf( "%1.02f", (float) v / 100.0 );
+      QString str = QString::asprintf( "%1.02f", (float) v / 100.0 );
       m_redEdit->setText( str );
    }
    if ( !m_setting )
@@ -469,8 +468,7 @@ void TextureWindow::greenSliderChanged( int v )
 {
    if ( ! m_editing )
    {
-      QString str;
-      str.sprintf( "%1.02f", (float) v / 100.0 );
+      QString str = QString::asprintf( "%1.02f", (float) v / 100.0 );
       m_greenEdit->setText( str );
    }
    if ( !m_setting )
@@ -483,8 +481,7 @@ void TextureWindow::blueSliderChanged( int v )
 {
    if ( ! m_editing )
    {
-      QString str;
-      str.sprintf( "%1.02f", (float) v / 100.0 );
+      QString str = QString::asprintf( "%1.02f", (float) v / 100.0 );
       m_blueEdit->setText( str );
    }
    if ( !m_setting )
@@ -497,8 +494,7 @@ void TextureWindow::alphaSliderChanged( int v )
 {
    if ( ! m_editing )
    {
-      QString str;
-      str.sprintf( "%1.02f", (float) v / 100 );
+      QString str = QString::asprintf( "%1.02f", (float) v / 100 );
       m_alphaEdit->setText( str );
    }
    if ( !m_setting )

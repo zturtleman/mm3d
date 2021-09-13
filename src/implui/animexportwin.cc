@@ -310,9 +310,7 @@ void AnimExportWindow::accept()
 
          frameNum++;
 
-         QString file;
-         file.sprintf( formatStr, (const char *) path.toUtf8(), frameNum );
-
+         QString file = QString::asprintf( formatStr, (const char *) path.toUtf8(), frameNum );
          QImage img = v->grabFramebuffer();
 
          if ( !img.save( file, saveFormat.toUtf8(), 100 ) && prompt )

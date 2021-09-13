@@ -249,8 +249,7 @@ void AnimWidget::setCurrentFrame( int frame )
    {
       m_currentFrame = frame - 1;
       QString str = tr("Frame: ");
-      QString numStr;
-      numStr.sprintf( "%03d", frame );
+      QString numStr = QString::asprintf( "%03d", frame );
       m_countLabel->setText( str + numStr );
    }
    else

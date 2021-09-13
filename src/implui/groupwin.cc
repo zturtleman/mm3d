@@ -154,8 +154,7 @@ void GroupWindow::renameClickedEvent()
          }
          else
          {
-            QString msg;
-            msg.sprintf( "Group name must be between 1 and %d characters", Model::MAX_GROUP_NAME_LEN - 1 );
+            QString msg = QString::asprintf( "Group name must be between 1 and %d characters", Model::MAX_GROUP_NAME_LEN - 1 );
             QMessageBox::warning( this, tr("Bad group name", "window title"), msg, QMessageBox::Ok | QMessageBox::Default, 0, 0 );
          }
       }
@@ -205,8 +204,7 @@ void GroupWindow::smoothChangedEvent( int val )
 {
    m_model->setGroupSmooth( m_groupComboBox->currentIndex() - 1, val );
    QString text = tr( "Smoothness: " );
-   QString valStr;
-   valStr.sprintf( "%03d", (int) ((val / 255.0) * 100.0 ) );
+   QString valStr = QString::asprintf( "%03d", (int) ((val / 255.0) * 100.0 ) );
    m_smoothLabel->setText( text + valStr );
    m_model->calculateNormals();
    DecalManager::getInstance()->modelUpdated( m_model );
@@ -216,8 +214,7 @@ void GroupWindow::angleChangedEvent( int val )
 {
    m_model->setGroupAngle( m_groupComboBox->currentIndex() - 1, val );
    QString text = tr( "Max Angle: " );
-   QString valStr;
-   valStr.sprintf( "%03d", val );
+   QString valStr = QString::asprintf( "%03d", val );
 
    m_angleLabel->setText( text + valStr );
    m_model->calculateNormals();

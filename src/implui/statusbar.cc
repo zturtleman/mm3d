@@ -188,14 +188,14 @@ void StatusBar::setVertices( unsigned v, unsigned sv )
    QString str;
    if ( sv )
    {
-      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sv, v );
+      str = QString::asprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sv, v );
    }
    else
    {
-      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), v );
+      str = QString::asprintf( "%s%d", (const char *) statChar.toUtf8(), v );
    }
 
-   m_vertexLabel->setText( QString(str) );
+   m_vertexLabel->setText( str );
 }
 
 void StatusBar::setFaces( unsigned f, unsigned sf )
@@ -204,14 +204,14 @@ void StatusBar::setFaces( unsigned f, unsigned sf )
    QString str;
    if ( sf )
    {
-      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sf, f );
+      str = QString::asprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sf, f );
    }
    else
    {
-      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), f );
+      str = QString::asprintf( "%s%d", (const char *) statChar.toUtf8(), f );
    }
 
-   m_faceLabel->setText( QString(str) );
+   m_faceLabel->setText( str );
 }
 
 void StatusBar::setGroups( unsigned g, unsigned sg )
@@ -220,14 +220,14 @@ void StatusBar::setGroups( unsigned g, unsigned sg )
    QString str;
    if ( sg )
    {
-      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sg, g );
+      str = QString::asprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sg, g );
    }
    else
    {
-      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), g );
+      str = QString::asprintf( "%s%d", (const char *) statChar.toUtf8(), g );
    }
 
-   m_groupLabel->setText( QString(str) );
+   m_groupLabel->setText( str );
 }
 
 void StatusBar::setBoneJoints( unsigned b, unsigned sb )
@@ -236,14 +236,14 @@ void StatusBar::setBoneJoints( unsigned b, unsigned sb )
    QString str;
    if ( sb )
    {
-      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sb, b );
+      str = QString::asprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sb, b );
    }
    else
    {
-      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), b );
+      str = QString::asprintf( "%s%d", (const char *) statChar.toUtf8(), b );
    }
 
-   m_boneLabel->setText( QString(str) );
+   m_boneLabel->setText( str );
 }
 
 void StatusBar::setPoints( unsigned b, unsigned sb )
@@ -252,14 +252,14 @@ void StatusBar::setPoints( unsigned b, unsigned sb )
    QString str;
    if ( sb )
    {
-      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sb, b );
+      str = QString::asprintf( "%s%d/%d", (const char *) statChar.toUtf8(), sb, b );
    }
    else
    {
-      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), b );
+      str = QString::asprintf( "%s%d", (const char *) statChar.toUtf8(), b );
    }
 
-   m_pointLabel->setText( QString(str) );
+   m_pointLabel->setText( str );
 }
 
 void StatusBar::setTextures( unsigned t, unsigned st )
@@ -268,14 +268,14 @@ void StatusBar::setTextures( unsigned t, unsigned st )
    QString str;
    if ( st )
    {
-      str.sprintf( "%s%d/%d", (const char *) statChar.toUtf8(), st, t );
+      str = QString::asprintf( "%s%d/%d", (const char *) statChar.toUtf8(), st, t );
    }
    else
    {
-      str.sprintf( "%s%d", (const char *) statChar.toUtf8(), t );
+      str = QString::asprintf( "%s%d", (const char *) statChar.toUtf8(), t );
    }
 
-   m_textureLabel->setText( QString(str) );
+   m_textureLabel->setText( str );
 }
 
 extern "C" void model_status( Model * model, StatusTypeE type, unsigned ms, const char * fmt, ... )

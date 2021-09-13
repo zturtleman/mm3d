@@ -65,8 +65,7 @@ void ValueWin::setLabel( const char * newLabel )
    if ( newLabel )
    {
       setWindowTitle( QString( newLabel ) );
-      QString str;
-      str.sprintf( "<b>%s<b>", newLabel );
+      QString str = QString::asprintf( "<b>%s<b>", newLabel );
       m_propertyLabel->setText( str );
    }
 }
@@ -85,8 +84,7 @@ void ValueWin::valueSliderChanged( int v )
 {
    if ( ! m_editing )
    {
-      QString str;
-      str.sprintf( "%d", v );
+      QString str = QString::asprintf( "%d", v );
       m_valueEdit->setText( str );
    }
 }
