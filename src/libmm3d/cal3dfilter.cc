@@ -1558,7 +1558,7 @@ bool Cal3dFilter::readBCompressedAnimTrack( double duration )
       uint32_t trans_comp = readBInt32();
       uint64_t rot_comp = readBUInt48();
 
-      log_debug( "compressed trans = %X  rot = %llX\n",
+      log_debug( "compressed trans = %x  rot = %" PRIx64 "\n",
          trans_comp, rot_comp );
 
       Vector trans;

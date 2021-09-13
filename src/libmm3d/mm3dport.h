@@ -28,6 +28,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <stdarg.h>
+#include <inttypes.h>
 #include "config.h"
 
 // GCC attribute
