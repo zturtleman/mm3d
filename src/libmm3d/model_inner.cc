@@ -25,10 +25,7 @@
 #include "texture.h"
 #include "log.h"
 
-#include <ext/hash_set>
 #include <map>
-
-using __gnu_cxx::hash_set;
 
 static bool _model_recycle = true;
 
