@@ -35,7 +35,7 @@ class ValueWin : public QDialog, public Ui::ValueWinBase
    public:
 
       ValueWin( QWidget * parent = NULL, bool modal = true,
-            Qt::WindowFlags flags = 0 );
+            Qt::WindowFlags flags = Qt::WindowFlags() );
       virtual ~ValueWin();
 
       void setLabel( const char * newLabel );
