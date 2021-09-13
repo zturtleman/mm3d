@@ -25,6 +25,8 @@
 
 #include "config.h"
 
+#define GL_GLEXT_LEGACY
+
 #ifdef IS_OSX
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
