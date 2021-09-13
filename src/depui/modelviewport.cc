@@ -1296,7 +1296,7 @@ void ModelViewport::setViewportOverlay()
 
 void ModelViewport::wheelEvent( QWheelEvent * e )
 {
-   if ( e->delta() > 0 )
+   if ( e->angleDelta().y() > 0 )
    {
       if ( (e->modifiers() & Qt::ControlModifier) == Qt::ControlModifier )
       {
@@ -1307,7 +1307,7 @@ void ModelViewport::wheelEvent( QWheelEvent * e )
          zoomIn();
       }
    }
-   else
+   else if ( e->angleDelta().y() < 0 )
    {
       if ( (e->modifiers() & Qt::ControlModifier) == Qt::ControlModifier )
       {

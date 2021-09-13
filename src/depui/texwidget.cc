@@ -1441,11 +1441,11 @@ void TextureWidget::wheelEvent( QWheelEvent * e )
 {
    if ( m_interactive )
    {
-      if ( e->delta() > 0 )
+      if ( e->angleDelta().y() > 0 )
       {
          zoomIn();
       }
-      else
+      else if ( e->angleDelta().y() < 0 )
       {
          zoomOut();
       }
