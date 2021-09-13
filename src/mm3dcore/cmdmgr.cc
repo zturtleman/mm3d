@@ -32,7 +32,7 @@ CommandManager::CommandManager()
 
 CommandManager::~CommandManager()
 {
-   log_debug( "CommandManager releasing %d commands\n", m_commands.size() );
+   log_debug( "CommandManager releasing %" PORTuSIZE " commands\n", m_commands.size() );
    CommandList::iterator it;
    for ( it = m_commands.begin(); it != m_commands.end(); it++ )
    {

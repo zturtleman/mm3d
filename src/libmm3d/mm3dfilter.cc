@@ -1854,7 +1854,7 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
 
          if ( size > m_src->getRemaining() )
          {
-            log_error( "Size of frame animation is too large for file data (%d > %d)\n",
+            log_error( "Size of frame animation is too large for file data (%d > %" PORTuSIZE ")\n",
                   size, m_src->getRemaining() );
             return Model::ERROR_BAD_DATA;
          }
@@ -1907,7 +1907,7 @@ Model::ModelErrorE MisfitFilter::readFile( Model * model, const char * const fil
             if ( (maxVertex) != modelVertices.size() )
             {
                missingElements = true;
-               log_error( "Vertex count for frame animation %d, frame %d has %d vertices, should be %d\n", anim, f, maxVertex, modelVertices.size() );
+               log_error( "Vertex count for frame animation %d, frame %d has %d vertices, should be %" PORTuSIZE "\n", anim, f, maxVertex, modelVertices.size() );
             }
          }
       }

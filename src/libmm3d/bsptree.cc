@@ -736,12 +736,12 @@ void BspTree::Node::render( float * point, DrawingContext * context )
 
 void BspTree::Poly::stats()
 {
-   log_debug( "BspTree::Poly: %d/%d\n", s_recycle.size(), s_allocated );
+   log_debug( "BspTree::Poly: %" PORTuSIZE "/%d\n", s_recycle.size(), s_allocated );
 }
 
 void BspTree::Node::stats()
 {
-   log_debug( "BspTree::Node: %d/%d\n", s_recycle.size(), s_allocated );
+   log_debug( "BspTree::Node: %" PORTuSIZE "/%d\n", s_recycle.size(), s_allocated );
 }
 
 int BspTree::Poly::flush()

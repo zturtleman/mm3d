@@ -216,7 +216,7 @@ void JointWin::assignVerticesClicked()
       list<Model::Position> posList;
       m_model->getSelectedPositions( posList );
       list<Model::Position>::iterator it;
-      log_debug( "assigning %d objects to joint %d\n", posList.size(), jointNum );
+      log_debug( "assigning %" PORTuSIZE " objects to joint %d\n", posList.size(), jointNum );
       for ( it = posList.begin(); it != posList.end(); it++ )
       {
          m_model->setPositionBoneJoint( *it, jointNum );
@@ -233,7 +233,7 @@ void JointWin::addVerticesClicked()
       list<Model::Position> posList;
       m_model->getSelectedPositions( posList );
       list<Model::Position>::iterator it;
-      log_debug( "adding %d objects to joint %d\n", posList.size(), jointNum );
+      log_debug( "adding %" PORTuSIZE " objects to joint %d\n", posList.size(), jointNum );
       for ( it = posList.begin(); it != posList.end(); it++ )
       {
          m_model->addPositionInfluence( *it, jointNum, Model::IT_Custom, 1.0 );

@@ -155,7 +155,7 @@ Model::ModelErrorE TextFilter::readFile( Model * model, const char * const filen
            pointList.push_back( p );
        }
 
-       log_debug( "got %d points\n", pointList.size() );
+       log_debug( "got %" PORTuSIZE " points\n", pointList.size() );
 
        if ( pointList.size() >= 3 )
        {

@@ -1168,7 +1168,7 @@ int Model::setSkelAnimKeyframe( unsigned anim, unsigned frame, unsigned joint, b
       log_error( "anim keyframe out of range: anim %d, frame %d, joint %d\n", anim, frame, joint );
       if ( anim < m_skelAnims.size() )
       {
-         log_error( "max frame is %d, max joint is %d\n", m_skelAnims[anim]->m_frameCount, m_joints.size() );
+         log_error( "max frame is %d, max joint is %" PORTuSIZE "\n", m_skelAnims[anim]->m_frameCount, m_joints.size() );
       }
       return -1;
    }
@@ -1274,7 +1274,7 @@ void Model::insertFrameAnim( unsigned index, FrameAnim * anim )
    }
    else
    {
-      log_error( "index %d/%d out of range in insertFrameAnim\n", index, m_frameAnims.size() );
+      log_error( "index %d/%" PORTuSIZE " out of range in insertFrameAnim\n", index, m_frameAnims.size() );
    }
 }
 
@@ -1328,7 +1328,7 @@ void Model::insertSkelAnim( unsigned index, SkelAnim * anim )
    }
    else
    {
-      log_error( "index %d/%d out of range in insertSkelAnim\n", index, m_skelAnims.size() );
+      log_error( "index %d/%" PORTuSIZE " out of range in insertSkelAnim\n", index, m_skelAnims.size() );
    }
 }
 
@@ -1384,7 +1384,7 @@ void Model::insertFrameAnimFrame( unsigned anim, unsigned frame,
       }
       else
       {
-         log_error( "frame %d/%d out of range in insertFrameAnimFrame for frame %d\n", frame, fa->m_frameData.size(), anim );
+         log_error( "frame %d/%" PORTuSIZE " out of range in insertFrameAnimFrame for frame %d\n", frame, fa->m_frameData.size(), anim );
       }
    }
 }

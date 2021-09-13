@@ -352,7 +352,7 @@ Model::ModelErrorE CobFilter::readFileHeader()
 
 bool CobFilter::readPolygonChunk( const CobFilter::ChunkHeaderT & header )
 {
-    log_debug( "reading polygon chunk %d of %d bytes\n", 
+    log_debug( "reading polygon chunk %d of %" PORTuSIZE " bytes\n", 
           header.chunkId, header.length );
 
     PolygonMeshT mesh;
@@ -365,7 +365,7 @@ bool CobFilter::readPolygonChunk( const CobFilter::ChunkHeaderT & header )
         readAPolygonChunk( header, mesh );
     }
 
-    log_debug( "verts %d uvs %d faces %d\n", 
+    log_debug( "verts %" PORTuSIZE " uvs %" PORTuSIZE " faces %" PORTuSIZE "\n", 
           mesh.vertexList.size(),
           mesh.uvList.size(),
           mesh.faceList.size() );
@@ -434,7 +434,7 @@ bool CobFilter::readPolygonChunk( const CobFilter::ChunkHeaderT & header )
 
 bool CobFilter::readMaterialChunk( const CobFilter::ChunkHeaderT & header )
 {
-    log_debug( "reading material chunk %d of %d bytes\n", 
+    log_debug( "reading material chunk %d of %" PORTuSIZE " bytes\n", 
           header.chunkId, header.length );
 
     MaterialT material;
@@ -853,7 +853,7 @@ bool CobFilter::readAPolygonChunk( const CobFilter::ChunkHeaderT & header,
             skipAString( "Hole verts" );
             size_t vcount = readALong();
 
-            log_warning( "skipping %d vertices in hole\n", vcount );
+            log_warning( "skipping %" PORTuSIZE " vertices in hole\n", vcount );
 
             char * pos = (char *) m_bufPos;
             while ( pos && vcount > 0 )
@@ -1008,7 +1008,7 @@ bool CobFilter::readBString( std::string & str )
     log_debug( "reading string at %p\n", m_bufPos );
     log_debug( "value is %02x %02x\n", m_bufPos[0], m_bufPos[1] );
     size_t len = readBShort();
-    log_debug( "strlen is %d at %p\n", len, m_bufPos );
+    log_debug( "strlen is %" PORTuSIZE " at %p\n", len, m_bufPos );
 
     str.assign( (char *) m_bufPos, len );
     m_bufPos += len;
@@ -1108,7 +1108,7 @@ bool CobFilter::readBPolygonChunk( const CobFilter::ChunkHeaderT & header,
 
     // Vertices
     size_t vcount = readBLong();
-    log_debug( "reading %d vertices\n", vcount );
+    log_debug( "reading %" PORTuSIZE " vertices\n", vcount );
     for ( size_t v = 0; v < vcount; v++ )
     {
         double coord[4];
@@ -1129,7 +1129,7 @@ bool CobFilter::readBPolygonChunk( const CobFilter::ChunkHeaderT & header,
 
     // UV Coordinates
     size_t uvcount = readBLong();
-    log_debug( "reading %d texture coordiantes\n", uvcount );
+    log_debug( "reading %" PORTuSIZE " texture coordiantes\n", uvcount );
     TextureCoordT tc;
     for ( size_t uv = 0; uv < uvcount; uv++ )
     {
@@ -1142,7 +1142,7 @@ bool CobFilter::readBPolygonChunk( const CobFilter::ChunkHeaderT & header,
     // Faces
 
     size_t fcount = readBLong();
-    log_debug( "reading %d faces\n", fcount );
+    log_debug( "reading %" PORTuSIZE " faces\n", fcount );
     for ( size_t f = 0; f < fcount; f++ )
     {
         PolygonFaceT face;
@@ -1167,7 +1167,7 @@ bool CobFilter::readBPolygonChunk( const CobFilter::ChunkHeaderT & header,
         }
         else
         {
-            log_warning( "skipping %d vertices in hole\n", vcount );
+            log_warning( "skipping %" PORTuSIZE " vertices in hole\n", vcount );
             // HOLE faces are not supported, ignore them
             m_bufPos += vcount * 8; // Each hole vertex is 8 bytes
         }
@@ -1432,7 +1432,7 @@ void CobFilter::writeBTriangleGroup( const std::list<int> & triList, const std::
 
     // Write local vertex count
     size_t vcount = vertList.size();
-    log_debug( "writing %d vertices for group\n", vcount );
+    log_debug( "writing %" PORTuSIZE " vertices for group\n", vcount );
     writeBLong( vcount );
 
     // Write local vertex positions

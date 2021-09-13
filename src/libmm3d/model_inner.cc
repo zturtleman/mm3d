@@ -162,7 +162,7 @@ int Model::Vertex::flush()
 
 void Model::Vertex::stats()
 {
-   log_debug( "Vertex: %d/%d\n", s_recycle.size(), s_allocated );
+   log_debug( "Vertex: %" PORTuSIZE "/%d\n", s_recycle.size(), s_allocated );
 }
 
 Model::Vertex * Model::Vertex::get()
@@ -274,7 +274,7 @@ int Model::Triangle::flush()
 
 void Model::Triangle::stats()
 {
-   log_debug( "Triangle: %d/%d\n", s_recycle.size(), s_allocated );
+   log_debug( "Triangle: %" PORTuSIZE "/%d\n", s_recycle.size(), s_allocated );
 }
 
 Model::Triangle * Model::Triangle::get()
@@ -384,7 +384,7 @@ int Model::Group::flush()
 
 void Model::Group::stats()
 {
-   log_debug( "Group: %d/%d\n", s_recycle.size(), s_allocated );
+   log_debug( "Group: %" PORTuSIZE "/%d\n", s_recycle.size(), s_allocated );
 }
 
 Model::Group * Model::Group::get()
@@ -491,7 +491,7 @@ int Model::Material::flush()
 
 void Model::Material::stats()
 {
-   log_debug( "Material: %d/%d\n", s_recycle.size(), s_allocated );
+   log_debug( "Material: %" PORTuSIZE "/%d\n", s_recycle.size(), s_allocated );
 }
 
 Model::Material * Model::Material::get()
@@ -619,7 +619,7 @@ int Model::Keyframe::flush()
 
 void Model::Keyframe::stats()
 {
-   log_debug( "Keyframe: %d/%d\n", s_recycle.size(), s_allocated );
+   log_debug( "Keyframe: %" PORTuSIZE "/%d\n", s_recycle.size(), s_allocated );
 }
 
 Model::Keyframe * Model::Keyframe::get()
@@ -735,7 +735,7 @@ int Model::Joint::flush()
 
 void Model::Joint::stats()
 {
-   log_debug( "Joint: %d/%d\n", s_recycle.size(), s_allocated );
+   log_debug( "Joint: %" PORTuSIZE "/%d\n", s_recycle.size(), s_allocated );
 }
 
 bool Model::Joint::propEqual(const Joint & rhs, int propBits, double tolerance ) const
@@ -850,7 +850,7 @@ int Model::Point::flush()
 
 void Model::Point::stats()
 {
-   log_debug( "Point: %d/%d\n", s_recycle.size(), s_allocated );
+   log_debug( "Point: %" PORTuSIZE "/%d\n", s_recycle.size(), s_allocated );
 }
 
 bool Model::Point::propEqual(const Point & rhs, int propBits, double tolerance ) const
@@ -1094,7 +1094,7 @@ int Model::SkelAnim::flush()
 
 void Model::SkelAnim::stats()
 {
-   log_debug( "SkelAnim: %d/%d\n", s_recycle.size(), s_allocated );
+   log_debug( "SkelAnim: %" PORTuSIZE "/%d\n", s_recycle.size(), s_allocated );
 }
 
 bool Model::SkelAnim::propEqual(const SkelAnim & rhs, int propBits, double tolerance ) const
@@ -1143,7 +1143,7 @@ bool Model::SkelAnim::propEqual(const SkelAnim & rhs, int propBits, double toler
    {
       if ( m_jointKeyframes.size() != rhs.m_jointKeyframes.size() )
       {
-         log_warning( "match failed at anim keyframe size, lhs = %d, rhs = %d\n",
+         log_warning( "match failed at anim keyframe size, lhs = %" PORTuSIZE ", rhs = %" PORTuSIZE "\n",
                m_jointKeyframes.size(), rhs.m_jointKeyframes.size() );
          return false;
       }
@@ -1265,7 +1265,7 @@ int Model::FrameAnim::flush()
 
 void Model::FrameAnim::stats()
 {
-   log_debug( "FrameAnim: %d/%d\n", s_recycle.size(), s_allocated );
+   log_debug( "FrameAnim: %" PORTuSIZE "/%d\n", s_recycle.size(), s_allocated );
 }
 
 bool Model::FrameAnim::propEqual(const FrameAnim & rhs, int propBits, double tolerance ) const
@@ -1304,7 +1304,7 @@ bool Model::FrameAnim::propEqual(const FrameAnim & rhs, int propBits, double tol
    {
       if ( m_frameData.size() != rhs.m_frameData.size() )
       {
-         log_warning( "match failed at anim frame size lhs %d, rhs %d\n",
+         log_warning( "match failed at anim frame size lhs %" PORTuSIZE ", rhs %" PORTuSIZE "\n",
                m_frameData.size(), rhs.m_frameData.size() );
          return false;
       }
@@ -1388,7 +1388,7 @@ int Model::FrameAnimVertex::flush()
 
 void Model::FrameAnimVertex::stats()
 {
-   log_debug( "FrameAnimVertex: %d/%d\n", s_recycle.size(), s_allocated );
+   log_debug( "FrameAnimVertex: %" PORTuSIZE "/%d\n", s_recycle.size(), s_allocated );
 }
 
 bool Model::FrameAnimVertex::propEqual(const FrameAnimVertex & rhs, int propBits, double tolerance ) const
@@ -1470,7 +1470,7 @@ int Model::FrameAnimPoint::flush()
 
 void Model::FrameAnimPoint::stats()
 {
-   log_debug( "FrameAnimPoint: %d/%d\n", s_recycle.size(), s_allocated );
+   log_debug( "FrameAnimPoint: %" PORTuSIZE "/%d\n", s_recycle.size(), s_allocated );
 }
 
 bool Model::FrameAnimPoint::propEqual(const FrameAnimPoint & rhs, int propBits, double tolerance ) const
@@ -1507,14 +1507,14 @@ bool Model::FrameAnimData::propEqual(const FrameAnimData & rhs, int propBits, do
    {
       if ( m_frameVertices->size() != rhs.m_frameVertices->size() )
       {
-         log_warning( "anim frame vertex size mismatch lhs %d, rhs %d\n",
+         log_warning( "anim frame vertex size mismatch lhs %" PORTuSIZE ", rhs %" PORTuSIZE "\n",
                m_frameVertices->size(), rhs.m_frameVertices->size() );
          return false;
       }
 
       if ( m_framePoints->size() != rhs.m_framePoints->size() )
       {
-         log_warning( "anim frame point size mismatch lhs %d, rhs %d\n",
+         log_warning( "anim frame point size mismatch lhs %" PORTuSIZE ", rhs %" PORTuSIZE "\n",
                m_framePoints->size(), rhs.m_framePoints->size() );
          return false;
       }

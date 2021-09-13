@@ -88,7 +88,7 @@ void ExtrudeWin::absoluteExtrudeEvent()
    list<int> vertices;
    m_model->getSelectedVertices( vertices );
 
-   log_debug( "extruding %d faces on %f,%f,%f\n", faces.size(), x, y, z );
+   log_debug( "extruding %" PORTuSIZE " faces on %f,%f,%f\n", faces.size(), x, y, z );
 
    // Find edges (sides with count==1)
    list<int>::iterator it;

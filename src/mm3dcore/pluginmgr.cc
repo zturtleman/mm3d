@@ -459,7 +459,7 @@ bool PluginManager::loadPluginDir( const char * pluginDir )
 
 bool PluginManager::unloadPlugins()
 {
-   log_debug( "PluginManager unloading %d plugins\n", m_plugins.size() );
+   log_debug( "PluginManager unloading %" PORTuSIZE " plugins\n", m_plugins.size() );
 #ifdef PLUGINS_ENABLED
    PluginDataList::iterator it = m_plugins.begin();
 

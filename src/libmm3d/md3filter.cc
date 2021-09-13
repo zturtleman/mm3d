@@ -369,7 +369,7 @@ Model::ModelErrorE Md3Filter::readFile( Model * model, const char * const filena
          log_debug( "Offset Tags: %d\n",  offsetTags );
          log_debug( "Offset Meshes: %d\n",  offsetMeshes );
          log_debug( "Offset End: %d\n",        offsetEnd );
-         log_debug( "File Length: %d\n",       m_src->getFileSize() );
+         log_debug( "File Length: %" PORTuSIZE "\n",       m_src->getFileSize() );
 
          if ( magic[0] != 'I' && magic[1] != 'D' && magic[2] != 'P' && magic[3] != '3' )
          {

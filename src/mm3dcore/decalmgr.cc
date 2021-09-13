@@ -40,7 +40,7 @@ DecalManager::~DecalManager()
    // We only need to delete the lists that we're pointing to.
    // We do not need to delete the Models or the Tool::Parents in the map/lists
 
-   log_debug( "DecalManager releasing %d model parent lists\n", m_parents.size() );
+   log_debug( "DecalManager releasing %" PORTuSIZE " model parent lists\n", m_parents.size() );
    ModelParentMap::iterator it;
 
    for ( it = m_parents.begin(); it != m_parents.end(); it++ )

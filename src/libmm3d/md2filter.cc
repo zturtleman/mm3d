@@ -346,7 +346,7 @@ Model::ModelErrorE Md2Filter::readFile( Model * model, const char * const filena
          {
             string md2path = tempStr;
             size_t slashChar = md2path.rfind( '/' );
-            log_debug( "The '/' char is at %d\n", slashChar );
+            log_debug( "The '/' char is at %" PORTuSIZE "\n", slashChar );
             if ( slashChar < md2path.size() )
             {
                md2path.resize( slashChar + 1 );

@@ -24,6 +24,8 @@
 #ifndef __LOG_H
 #define __LOG_H
 
+#include "mm3dport.h"
+
 #ifdef __DO_PROFILE
 
 #include <stdio.h>

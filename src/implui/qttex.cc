@@ -171,7 +171,7 @@ Texture::ErrorE QtTextureFilter::readMemory( const char * format, Texture * text
    char fmt[5] = "PNG";
    getFormatString( fmt, format );
 
-   log_debug( "loading image from data for %s, size %d\n", fmt, d->getDataSize() );
+   log_debug( "loading image from data for %s, size %" PORTuSIZE "\n", fmt, d->getDataSize() );
    const uint8_t * ptr = d->getConstDataPtr();
 
    if ( ptr == NULL )

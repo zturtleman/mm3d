@@ -306,9 +306,9 @@ void UndoManager::showStatistics() const
    log_debug( "\n" );
 
    log_debug( "--------------- Undo statistics ---------------\n" );
-   log_debug( " undo:  %7d size, %5d items, %5d lists\n", undoSize, undoItems, m_atomic.size() );
-   log_debug( " redo:  %7d size, %5d items, %5d lists\n", redoSize, redoItems, m_atomicRedo.size() );
-   log_debug( " total: %7d size, %5d items, %5d lists\n", undoSize + redoSize, undoItems + redoItems, m_atomic.size() +m_atomicRedo.size() );
+   log_debug( " undo:  %7d size, %5d items, %5" PORTuSIZE " lists\n", undoSize, undoItems, m_atomic.size() );
+   log_debug( " redo:  %7d size, %5d items, %5" PORTuSIZE " lists\n", redoSize, redoItems, m_atomicRedo.size() );
+   log_debug( " total: %7d size, %5d items, %5" PORTuSIZE " lists\n", undoSize + redoSize, undoItems + redoItems, m_atomic.size() + m_atomicRedo.size() );
    log_debug( "-----------------------------------------------\n" );
 }
 

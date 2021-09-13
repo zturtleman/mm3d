@@ -90,7 +90,7 @@ Model * Model::copySelected() const
       this->getSelectedVertices( vert );
 
       // Copy vertices
-      log_debug( "Copying %d vertices\n", vert.size() );
+      log_debug( "Copying %" PORTuSIZE " vertices\n", vert.size() );
       for ( lit = vert.begin(); lit != vert.end(); lit++ )
       {
          double coords[3];
@@ -103,7 +103,7 @@ Model * Model::copySelected() const
       }
 
       // Copy faces
-      log_debug( "Copying %d faces\n", tri.size() );
+      log_debug( "Copying %" PORTuSIZE " faces\n", tri.size() );
       for ( lit = tri.begin(); lit != tri.end(); lit++ )
       {
          unsigned v[3];
@@ -119,7 +119,7 @@ Model * Model::copySelected() const
       }
 
       // Copy texture coords
-      log_debug( "Copying %d face texture coordinates\n", tri.size() );
+      log_debug( "Copying %" PORTuSIZE " face texture coordinates\n", tri.size() );
       for ( lit = tri.begin(); lit != tri.end(); lit++ )
       {
          float s;
@@ -191,7 +191,7 @@ Model * Model::copySelected() const
       if ( gcount > 0 )
       {
          // Set groups
-         log_debug( "Setting %d triangle groups\n", tri.size() );
+         log_debug( "Setting %" PORTuSIZE " triangle groups\n", tri.size() );
          for ( lit = tri.begin(); lit != tri.end(); lit++ )
          {
             // This works, even if triangle group == -1
@@ -208,7 +208,7 @@ Model * Model::copySelected() const
    if ( !points.empty() )
    {
       // Copy points
-      log_debug( "Copying %d points\n", points.size() );
+      log_debug( "Copying %" PORTuSIZE " points\n", points.size() );
       for ( lit = points.begin(); lit != points.end(); lit++ )
       {
          double coord[3];
@@ -228,7 +228,7 @@ Model * Model::copySelected() const
    if ( !joints.empty() )
    {
       // Copy joints
-      log_debug( "Copying %d joints\n", joints.size() );
+      log_debug( "Copying %" PORTuSIZE " joints\n", joints.size() );
       for ( lit = joints.begin(); lit != joints.end(); lit++ )
       {
          int parent = this->getBoneJointParent( *lit );

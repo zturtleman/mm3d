@@ -789,7 +789,7 @@ bool LwoFilter::readTagChunk( size_t chunkLen )
    {
       char tagName[256];
       unsigned len = readString( tagName, sizeof(tagName) );
-      log_debug( "found tag %d '%s'\n", m_tags.size(), tagName );
+      log_debug( "found tag %" PORTuSIZE " '%s'\n", m_tags.size(), tagName );
       m_tags.push_back( tagName );
       m_surfacePolys.push_back( PolyList() );
       m_surfaceTags.push_back( 0xffffffff );

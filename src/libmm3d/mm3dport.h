@@ -35,6 +35,21 @@
 #define __attribute__(x)
 #endif
 
+// PORTuSIZE in similar vain as PRIu64, PRIuPTR.
+#ifdef _WIN32
+// msvcrt.dll size_t printf format (%Iu)
+#define PORToSIZE "Io"
+#define PORTuSIZE "Iu"
+#define PORTxSIZE "Ix"
+#define PORTXSIZE "IX"
+#else
+// C99 / C++11 size_t printf format (%zu)
+#define PORToSIZE "zo"
+#define PORTuSIZE "zu"
+#define PORTxSIZE "zx"
+#define PORTXSIZE "zX"
+#endif
+
 struct _PORT_timeval
 {
    unsigned long  tv_sec;  // seconds

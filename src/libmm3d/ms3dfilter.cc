@@ -321,7 +321,7 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
       {
          if ( curTriangle->m_vertexIndices[i] >= numVertices )
          {
-            log_error( "vertex out of range: %d/%d\n", curTriangle->m_vertexIndices[i],
+            log_error( "vertex out of range: %d/%" PORTuSIZE "\n", curTriangle->m_vertexIndices[i],
                   modelVertices.size() );
             return Model::ERROR_BAD_DATA;
          }
@@ -374,7 +374,7 @@ Model::ModelErrorE Ms3dFilter::readFile( Model * model, const char * const filen
          m_src->read( triIndex );
          if ( triIndex >= modelTriangles.size() )
          {
-            log_error( "triangle out of range: %d/%d\n",
+            log_error( "triangle out of range: %d/%" PORTuSIZE "\n",
                   triIndex, modelTriangles.size() );
             return Model::ERROR_BAD_DATA;
          }

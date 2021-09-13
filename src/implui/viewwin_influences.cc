@@ -53,7 +53,7 @@ void ViewWindow::jointAssignSelectedToJoint()
       list<int> pointList;
       m_model->getSelectedPoints( pointList );
 
-      log_debug( "assigning %d vertices and %d points to joints\n", vertList.size(), pointList.size() );
+      log_debug( "assigning %" PORTuSIZE " vertices and %" PORTuSIZE " points to joints\n", vertList.size(), pointList.size() );
       QString str = tr( "Assigning %1 vertices and %2 points to joints").arg(vertList.size()).arg( pointList.size() );
       model_status( m_model, StatusNormal, STATUSTIME_SHORT, "%s", (const char *) str.toUtf8() );
 
@@ -99,7 +99,7 @@ void ViewWindow::jointAutoAssignSelected()
          double sensitivity = ((double) win.getSensitivity() ) / 100.0;
          bool selected = win.getSelected();
 
-         log_debug( "auto-assigning %p vertices and points to joints\n", p.size() );
+         log_debug( "auto-assigning %" PORTuSIZE " vertices and points to joints\n", p.size() );
 
          for ( pit = p.begin(); pit != p.end(); pit++ )
          {

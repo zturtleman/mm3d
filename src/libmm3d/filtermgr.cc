@@ -40,7 +40,7 @@ FilterManager::FilterManager()
 
 FilterManager::~FilterManager()
 {
-   log_debug( "FilterManager releasing %d filters\n", m_filters.size() );
+   log_debug( "FilterManager releasing %" PORTuSIZE " filters\n", m_filters.size() );
    FilterList::iterator it = m_filters.begin();
    while ( it != m_filters.end() )
    {

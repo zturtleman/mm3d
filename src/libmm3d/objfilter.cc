@@ -517,7 +517,7 @@ bool ObjFilter::writeGroups()
 
    if ( tris.size() )
    {
-      writeLine( "# %d Ungrouped triangles", tris.size() );
+      writeLine( "# %" PORTuSIZE " Ungrouped triangles", tris.size() );
       writeLine( "" );
 
       writeLine( "o ungrouped" );
@@ -565,7 +565,7 @@ bool ObjFilter::writeGroups()
             }
          }
 
-         writeLine( "# %s, %d grouped triangles", grpStr, tris.size() );
+         writeLine( "# %s, %" PORTuSIZE " grouped triangles", grpStr, tris.size() );
          writeLine( "" );
 
          int matId = m_model->getGroupTextureId( g );

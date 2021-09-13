@@ -71,7 +71,7 @@ bool DuplicateCommand::activated( int arg, Model * model )
          model->getSelectedVertices( vert );
 
          // Duplicated vertices
-         log_debug( "Duplicating %d vertices\n", vert.size() );
+         log_debug( "Duplicating %" PORTuSIZE " vertices\n", vert.size() );
          for ( lit = vert.begin(); lit != vert.end(); lit++ )
          {
             double coords[3];
@@ -87,7 +87,7 @@ bool DuplicateCommand::activated( int arg, Model * model )
          }
 
          // Duplicate faces
-         log_debug( "Duplicating %d faces\n", tri.size() );
+         log_debug( "Duplicating %" PORTuSIZE " faces\n", tri.size() );
          for ( lit = tri.begin(); lit != tri.end(); lit++ )
          {
             unsigned v[3];
@@ -102,7 +102,7 @@ bool DuplicateCommand::activated( int arg, Model * model )
          }
 
          // Duplicate texture coords
-         log_debug( "Duplicating %d face texture coordinates\n", tri.size() );
+         log_debug( "Duplicating %" PORTuSIZE " face texture coordinates\n", tri.size() );
          for ( lit = tri.begin(); lit != tri.end(); lit++ )
          {
             float s;
@@ -118,7 +118,7 @@ bool DuplicateCommand::activated( int arg, Model * model )
          if ( model->getGroupCount() )
          {
             // Set groups
-            log_debug( "Setting %d triangle groups\n", tri.size() );
+            log_debug( "Setting %" PORTuSIZE " triangle groups\n", tri.size() );
             for ( lit = tri.begin(); lit != tri.end(); lit++ )
             {
                // This works, even if triangle group == -1
@@ -136,7 +136,7 @@ bool DuplicateCommand::activated( int arg, Model * model )
       {
 
          // Duplicated joints
-         log_debug( "Duplicating %d joints\n", joints.size() );
+         log_debug( "Duplicating %" PORTuSIZE " joints\n", joints.size() );
          for ( lit = joints.begin(); lit != joints.end(); lit++ )
          {
             int parent = model->getBoneJointParent( *lit );
@@ -179,7 +179,7 @@ bool DuplicateCommand::activated( int arg, Model * model )
       if ( !points.empty() )
       {
          // Duplicated points
-         log_debug( "Duplicating %d points\n", points.size() );
+         log_debug( "Duplicating %" PORTuSIZE " points\n", points.size() );
          for ( lit = points.begin(); lit != points.end(); lit++ )
          {
             int parent = model->getPointBoneJoint( *lit );

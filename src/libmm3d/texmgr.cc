@@ -144,7 +144,7 @@ TextureManager::TextureManager()
 
 TextureManager::~TextureManager()
 {
-   log_debug( "TextureManager releasing %d textures and %d filters\n", 
+   log_debug( "TextureManager releasing %" PORTuSIZE " textures and %" PORTuSIZE " filters\n", 
          m_textures.size(), m_filters.size() );
 
    TextureList::iterator texIt = m_textures.begin();
@@ -554,7 +554,7 @@ list<string> TextureManager::getAllReadTypes()
    list<string> rval;
    TextureFilterList::iterator filterIt = m_filters.begin();
 
-   log_debug( "have %d filters\n", m_filters.size() );
+   log_debug( "have %" PORTuSIZE " filters\n", m_filters.size() );
 
    while ( filterIt != m_filters.end() )
    {

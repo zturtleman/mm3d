@@ -352,7 +352,7 @@ bool Model::equivalent( const Model * model, double tolerance ) const
 
       if ( gtris.size() != rgtris.size() )
       {
-         log_warning( "lhs group %d triangles = %d, rhs = %d (not fatal)\n",
+         log_warning( "lhs group %d triangles = %" PORTuSIZE ", rhs = %" PORTuSIZE " (not fatal)\n",
                g, gtris.size(), rgtris.size() );
       }
 
@@ -763,7 +763,7 @@ bool Model::propEqual( const Model * model, int partBits, int propBits,
    {
       if (numVertices != model->m_vertices.size())
       {
-         log_warning( "match failed at vertex count %d != %d\n",
+         log_warning( "match failed at vertex count %d != %" PORTuSIZE "\n",
                numVertices, model->m_vertices.size() );
          return false;
       }
@@ -786,7 +786,7 @@ bool Model::propEqual( const Model * model, int partBits, int propBits,
    {
       if (numTriangles != model->m_triangles.size())
       {
-         log_warning( "match failed at triangle count %d != %d\n",
+         log_warning( "match failed at triangle count %d != %" PORTuSIZE "\n",
                numTriangles, model->m_triangles.size() );
          return false;
       }
@@ -809,7 +809,7 @@ bool Model::propEqual( const Model * model, int partBits, int propBits,
    {
       if ( numGroups != (unsigned) model->getGroupCount() )
       {
-         log_warning( "match failed at group count %d != %d\n",
+         log_warning( "match failed at group count %d != %" PORTuSIZE "\n",
                numGroups, model->m_groups.size() );
          return false;
       }
@@ -832,7 +832,7 @@ bool Model::propEqual( const Model * model, int partBits, int propBits,
    {
       if ( numJoints != model->m_joints.size() )
       {
-         log_warning( "match failed at joint count %d != %d\n",
+         log_warning( "match failed at joint count %d != %" PORTuSIZE "\n",
                numJoints, model->m_joints.size() );
          return false;
       }
@@ -855,7 +855,7 @@ bool Model::propEqual( const Model * model, int partBits, int propBits,
    {
       if ( numPoints != model->m_points.size() )
       {
-         log_warning( "match failed at point count %d != %d\n",
+         log_warning( "match failed at point count %d != %" PORTuSIZE "\n",
                numPoints, model->m_points.size() );
          return false;
       }
@@ -878,7 +878,7 @@ bool Model::propEqual( const Model * model, int partBits, int propBits,
    {
       if (numTextures != model->m_materials.size())
       {
-         log_warning( "match failed at material count %d != %d\n",
+         log_warning( "match failed at material count %d != %" PORTuSIZE "\n",
                numTextures, model->m_materials.size() );
          return false;
       }
@@ -902,7 +902,7 @@ bool Model::propEqual( const Model * model, int partBits, int propBits,
    {
       if ( numProjections != model->m_projections.size() )
       {
-         log_warning( "match failed at projection count %d != %d\n",
+         log_warning( "match failed at projection count %d != %" PORTuSIZE "\n",
                numVertices, model->m_vertices.size() );
          return false;
       }
@@ -928,7 +928,7 @@ bool Model::propEqual( const Model * model, int partBits, int propBits,
    {
       if ( numSkelAnims != model->m_skelAnims.size() )
       {
-         log_warning( "match failed at skel anim count %d != %d\n",
+         log_warning( "match failed at skel anim count %d != %" PORTuSIZE "\n",
                numSkelAnims, model->m_skelAnims.size() );
          return false;
       }
@@ -947,7 +947,7 @@ bool Model::propEqual( const Model * model, int partBits, int propBits,
    {
       if ( numFrameAnims != model->m_frameAnims.size() )
       {
-         log_warning( "match failed at frameAnim count %d != %d\n",
+         log_warning( "match failed at frameAnim count %d != %" PORTuSIZE "\n",
                numFrameAnims, model->m_frameAnims.size() );
          return false;
       }
