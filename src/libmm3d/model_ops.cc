@@ -1118,7 +1118,7 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
 
    Matrix pointOffset;
 
-   if ( point >= 0 && point < m_points.size() )
+   if ( point >= 0 && (unsigned int)point < m_points.size() )
    {
       pointOffset = mat;
 
