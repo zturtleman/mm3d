@@ -207,7 +207,7 @@ class ModelViewport : public QOpenGLWidget, public Tool::Parent
       Model * m_model;
 
       MouseOperationE m_operation;
-      int m_activeButton;
+      Qt::MouseButton m_activeButton;
 
       ViewDirectionE m_viewDirection;
 
