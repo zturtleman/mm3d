@@ -49,7 +49,6 @@ class MemDataSource : public DataSource
    private:
       const uint8_t * m_buf;
       size_t m_bufSize;
-      size_t m_bufOffset;
 };
 
 #endif // MEMDATASOURCE_INC_H__
