@@ -57,7 +57,7 @@ bool FaceOutCommand::activated( int arg, Model * model )
       }
    }
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Normals Face Out" ).toUtf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Command", "Normals Face Out" ).toUtf8().data() );
 
    return true;
 }

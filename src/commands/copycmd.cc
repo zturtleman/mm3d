@@ -57,7 +57,7 @@ bool CopyCommand::activated( int arg, Model * model )
          && model->getSelectedPointCount() == 0
          && model->getSelectedProjectionCount() == 0 )
    {
-      model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have at least 1 face, joint, or point selected to Copy" ).toUtf8() );
+      model_status( model, StatusError, STATUSTIME_LONG, "%s", qApp->translate( "Command", "You must have at least 1 face, joint, or point selected to Copy" ).toUtf8().data() );
       return false;
    }
 
@@ -66,7 +66,7 @@ bool CopyCommand::activated( int arg, Model * model )
    if ( !m ) 
       return false;
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Selected primitives copied" ).toUtf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Command", "Selected primitives copied" ).toUtf8().data() );
    std::string clipfile = getMm3dHomeDirectory();
 
    clipfile += "/clipboard";

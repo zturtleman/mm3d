@@ -1332,7 +1332,7 @@ void ModelViewport::zoomIn()
       m_unitWidth = getUnitWidth();
       char str[80];
       PORT_snprintf( str, sizeof(str), "Units: %g", m_unitWidth );
-      model_status( m_model, StatusNormal, STATUSTIME_NONE, str );
+      model_status( m_model, StatusNormal, STATUSTIME_NONE, "%s", str );
 
       QString zoomStr;
       zoomStr.sprintf( "%f", m_zoomLevel );
@@ -1355,7 +1355,7 @@ void ModelViewport::zoomOut()
       m_unitWidth = getUnitWidth();
       char str[80];
       PORT_snprintf( str, sizeof(str), "Units: %g", m_unitWidth );
-      model_status( m_model, StatusNormal, STATUSTIME_NONE, str );
+      model_status( m_model, StatusNormal, STATUSTIME_NONE, "%s", str );
 
       QString zoomStr;
       zoomStr.sprintf( "%f", m_zoomLevel );
@@ -1610,7 +1610,7 @@ void ModelViewport::mouseReleaseEvent( QMouseEvent * e )
          m_overlayButton = ScrollButtonMAX;
          m_scrollTimer->stop();
 
-         model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Use the middle mouse button to drag/pan the viewport").toUtf8() );
+         model_status( m_model, StatusNormal, STATUSTIME_SHORT, "%s", tr("Use the middle mouse button to drag/pan the viewport").toUtf8().data() );
       }
       m_activeButton = Qt::NoButton;
       m_operation    = MO_None;
@@ -1656,7 +1656,7 @@ void ModelViewport::mouseMoveEvent( QMouseEvent * e )
       char str[80];
       PORT_snprintf( str, sizeof(str), "Units: %g  (%g, %g, %g)",
             m_unitWidth, pos[0], pos[1], pos[2] );
-      model_status( m_model, StatusNormal, STATUSTIME_NONE, str );
+      model_status( m_model, StatusNormal, STATUSTIME_NONE, "%s", str );
    }
    else
    {
@@ -3043,25 +3043,25 @@ void ModelViewport::checkGlErrors()
       switch ( error )
       {
          case GL_INVALID_VALUE:
-            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Invalid Value").toUtf8() );
+            model_status( m_model, StatusNormal, STATUSTIME_NONE, "%s", tr("OpenGL error = Invalid Value").toUtf8().data() );
             break;
          case GL_INVALID_ENUM:
-            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Invalid Enum").toUtf8() );
+            model_status( m_model, StatusNormal, STATUSTIME_NONE, "%s", tr("OpenGL error = Invalid Enum").toUtf8().data() );
             break;
          case GL_INVALID_OPERATION:
-            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Invalid Operation").toUtf8() );
+            model_status( m_model, StatusNormal, STATUSTIME_NONE, "%s", tr("OpenGL error = Invalid Operation").toUtf8().data() );
             break;
          case GL_STACK_OVERFLOW:
-            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Stack Overflow").toUtf8() );
+            model_status( m_model, StatusNormal, STATUSTIME_NONE, "%s", tr("OpenGL error = Stack Overflow").toUtf8().data() );
             break;
          case GL_STACK_UNDERFLOW:
-            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Stack Underflow").toUtf8() );
+            model_status( m_model, StatusNormal, STATUSTIME_NONE, "%s", tr("OpenGL error = Stack Underflow").toUtf8().data() );
             break;
          case GL_OUT_OF_MEMORY:
-            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Out Of Memory").toUtf8() );
+            model_status( m_model, StatusNormal, STATUSTIME_NONE, "%s", tr("OpenGL error = Out Of Memory").toUtf8().data() );
             break;
          default:
-            model_status( m_model, StatusNormal, STATUSTIME_NONE, tr("OpenGL error = Unknown").toUtf8() );
+            model_status( m_model, StatusNormal, STATUSTIME_NONE, "%s", tr("OpenGL error = Unknown").toUtf8().data() );
             break;
       }
    }

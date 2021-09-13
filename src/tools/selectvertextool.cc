@@ -89,7 +89,7 @@ void SelectVertexTool::mouseButtonDown( Parent * parent, int buttonState, int x,
    }
 
    parent->updateAllViews();
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Starting selection" ).toUtf8() );
+   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Starting selection" ).toUtf8().data() );
 }
 
 void SelectVertexTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
@@ -136,7 +136,7 @@ void SelectVertexTool::mouseButtonUp( Parent * parent, int buttonState, int x, i
       m_boundingBox = NULL;
 
       parent->updateAllViews();
-      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Selection complete" ).toUtf8() );
+      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Selection complete" ).toUtf8().data() );
    }
 }
 

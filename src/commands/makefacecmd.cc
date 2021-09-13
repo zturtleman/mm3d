@@ -72,7 +72,7 @@ bool MakeFaceCommand::activated( int arg, Model * model )
          model->getSelectedVertices( verts );
          if ( verts.size() == 3 )
          {
-            model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Face created" ).toUtf8() );
+            model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Command", "Face created" ).toUtf8().data() );
             int v1, v2, v3;
             std::list<int>::iterator it = verts.begin();
 
@@ -87,7 +87,7 @@ bool MakeFaceCommand::activated( int arg, Model * model )
          }
          else
          {
-            model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "Must select exactly 3 vertices" ).toUtf8() );
+            model_status( model, StatusError, STATUSTIME_LONG, "%s", qApp->translate( "Command", "Must select exactly 3 vertices" ).toUtf8().data() );
          }
       }
    }

@@ -143,8 +143,8 @@ void CommandWidget::activateCommand( bool )
 {
    if ( !(*m_canEdit) )
    {
-      model_status( m_model, StatusError, STATUSTIME_LONG,
-            tr("You are in animation mode, but there are no animations").toUtf8() );
+      model_status( m_model, StatusError, STATUSTIME_LONG, "%s",
+            tr("You are in animation mode, but there are no animations").toUtf8().data() );
       return;
    }
 
@@ -965,7 +965,7 @@ void ViewWindow::exportSelectedEvent()
          && m_model->getSelectedPointCount() == 0
          && m_model->getSelectedProjectionCount() == 0 )
    {
-      model_status( m_model, StatusError, STATUSTIME_LONG, tr( "You must have at least 1 face, joint, or point selected to Export Selected" ).toUtf8() );
+      model_status( m_model, StatusError, STATUSTIME_LONG, "%s", tr( "You must have at least 1 face, joint, or point selected to Export Selected" ).toUtf8().data() );
       return;
    }
 
@@ -1736,7 +1736,7 @@ void ViewWindow::undoRequest()
    }
    else
    {
-      model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Nothing to undo").toUtf8() );
+      model_status( m_model, StatusNormal, STATUSTIME_SHORT, "%s", tr("Nothing to undo").toUtf8().data() );
    }
 }
 
@@ -1781,7 +1781,7 @@ void ViewWindow::redoRequest()
    }
    else
    {
-      model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Nothing to redo").toUtf8() );
+      model_status( m_model, StatusNormal, STATUSTIME_SHORT, "%s", tr("Nothing to redo").toUtf8().data() );
    }
 }
 

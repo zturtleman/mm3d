@@ -83,17 +83,17 @@ bool HideCommand::activated( int arg, Model * model )
    switch ( arg )
    {
       case 2:
-         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Selected primitives hidden" ).toUtf8() );
+         model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Command", "Selected primitives hidden" ).toUtf8().data() );
          model->hideSelected();
          return true;
          break;
       case 3:
-         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Primitives unhidden" ).toUtf8() );
+         model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Command", "Primitives unhidden" ).toUtf8().data() );
          model->unhideAll();
          return true;
          break;
       default:
-         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Unselected primitives hidden" ).toUtf8() );
+         model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Command", "Unselected primitives hidden" ).toUtf8().data() );
          model->hideUnselected();
          return true;
          break;

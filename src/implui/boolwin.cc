@@ -141,11 +141,11 @@ void BoolWin::doOperationEvent()
    {
       if ( bl.empty() )
       {
-         model_status( m_model, StatusError, STATUSTIME_LONG, tr("You must have at least once face selected").toUtf8() );
+         model_status( m_model, StatusError, STATUSTIME_LONG, "%s", tr("You must have at least once face selected").toUtf8().data() );
       }
       else
       {
-         model_status( m_model, StatusError, STATUSTIME_LONG, tr("Object A triangles are still selected").toUtf8() );
+         model_status( m_model, StatusError, STATUSTIME_LONG, "%s", tr("Object A triangles are still selected").toUtf8().data() );
       }
    }
 }

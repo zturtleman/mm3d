@@ -80,7 +80,7 @@ void ViewWindow::jointAssignSelectedToJoint()
    }
    else
    {
-      model_status( m_model, StatusError, STATUSTIME_LONG, tr("You must have at least one bone joint selected.").toUtf8() );
+      model_status( m_model, StatusError, STATUSTIME_LONG, "%s", tr("You must have at least one bone joint selected.").toUtf8().data() );
    }
 }
 
@@ -112,7 +112,7 @@ void ViewWindow::jointAutoAssignSelected()
    }
    else
    {
-      model_status( m_model, StatusError, STATUSTIME_LONG, tr("You must have at least one vertex or point selected.").toUtf8() );
+      model_status( m_model, StatusError, STATUSTIME_LONG, "%s", tr("You must have at least one vertex or point selected.").toUtf8().data() );
    }
 }
 

@@ -992,7 +992,7 @@ void DxfFilter::writeGroups()
         writeLine( "0" );
         writeLine( "LAYER" );
         writeLine( "2" );
-        writeLine( m_model->getGroupName(g) );
+        writeLine( "%s", m_model->getGroupName(g) );
         writeLine( "70" );
         writeLine( "0" );
         writeLine( "62" );
@@ -1025,7 +1025,7 @@ void DxfFilter::writeFaces()
 
         if ( g >= 0 )
         {
-            writeLine( m_model->getGroupName(g) );
+            writeLine( "%s", m_model->getGroupName(g) );
 
             int mat = m_model->getGroupTextureId( g );
             if ( mat >= 0 )

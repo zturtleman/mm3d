@@ -83,7 +83,7 @@ bool FlipCommand::activated( int arg, Model * model )
 
    if ( posList.empty() )
    {
-      model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "Need at least 1 vertex, joint, point, or face selected" ).toUtf8() );
+      model_status( model, StatusError, STATUSTIME_LONG, "%s", qApp->translate( "Command", "Need at least 1 vertex, joint, point, or face selected" ).toUtf8().data() );
       return false;
    }
 
@@ -109,7 +109,7 @@ bool FlipCommand::activated( int arg, Model * model )
        }
    }
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Selected primitives flipped" ).toUtf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Command", "Selected primitives flipped" ).toUtf8().data() );
 
    return true;
 }

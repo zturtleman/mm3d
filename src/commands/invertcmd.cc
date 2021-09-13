@@ -43,7 +43,7 @@ bool InvertSelectionCommand::activated( int arg, Model * model )
    if ( model )
    {
       model->invertSelection();
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Selection inverted" ).toUtf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Command", "Selection inverted" ).toUtf8().data() );
       return true;
    }
    else

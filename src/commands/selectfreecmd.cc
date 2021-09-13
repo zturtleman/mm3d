@@ -61,7 +61,7 @@ bool SelectFreeCommand::activated( int arg, Model * model )
    if ( model )
    {
       model->selectFreeVertices();
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Free-floating vertices selected" ).toUtf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Command", "Free-floating vertices selected" ).toUtf8().data() );
       return true;
    }
    else

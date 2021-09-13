@@ -65,13 +65,13 @@ bool PasteCommand::activated( int arg, Model * model )
       {
          model->mergeModels( m, true, Model::AM_NONE, false );
 
-         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Paste complete" ).toUtf8() );
+         model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Command", "Paste complete" ).toUtf8().data() );
       }
       else
       {
          if ( err == Model::ERROR_NO_FILE )
          {
-            model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Nothing to paste" ).toUtf8() );
+            model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Command", "Nothing to paste" ).toUtf8().data() );
          }
          else if ( Model::operationFailed( err ) )
          {

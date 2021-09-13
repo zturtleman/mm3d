@@ -539,7 +539,7 @@ Model::ModelErrorE Cal3dFilter::readSubFile( const char * filename )
       errStr += ": ";
       errStr += Model::errorToString( err );
 
-      model_status( m_model, StatusError, STATUSTIME_LONG, errStr.c_str() );
+      model_status( m_model, StatusError, STATUSTIME_LONG, "%s", errStr.c_str() );
    }
 
    return err;

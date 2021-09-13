@@ -85,7 +85,7 @@ void PointTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y 
 
    parent->updateAllViews();
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Point created" ).toUtf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Point created" ).toUtf8().data() );
 }
 
 void PointTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )

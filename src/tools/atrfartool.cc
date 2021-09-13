@@ -100,7 +100,7 @@ void AttractFarTool::mouseButtonDown( Parent * parent, int buttonState, int x, i
    m_startX = curX;
    m_startY = curY;
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Attracting far selected primitives" ).toUtf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Attracting far selected primitives" ).toUtf8().data() );
 }
 
 void AttractFarTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )
@@ -142,7 +142,7 @@ void AttractFarTool::mouseButtonMove( Parent * parent, int buttonState, int x, i
 
 void AttractFarTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
 {
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Attract far complete" ).toUtf8() );
+   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Attract far complete" ).toUtf8().data() );
 }
 
 const char ** AttractFarTool::getPixmap()

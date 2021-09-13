@@ -97,12 +97,12 @@ bool RotateTextureCommand::activated( int arg, Model * model )
                model->setTextureCoords( *it, 0, oldS, oldT );
             }
 
-            model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Texture coordinates rotated" ).toUtf8() );
+            model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Command", "Texture coordinates rotated" ).toUtf8().data() );
             return true;
          }
          else
          {
-            model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "Must select faces" ).toUtf8() );
+            model_status( model, StatusError, STATUSTIME_LONG, "%s", qApp->translate( "Command", "Must select faces" ).toUtf8().data() );
          }
       }
    }
@@ -142,12 +142,12 @@ bool RotateTextureCommand::activated( int arg, Model * model )
 
             }
 
-            model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Texture coordinates rotated" ).toUtf8() );
+            model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Command", "Texture coordinates rotated" ).toUtf8().data() );
             return true;
          }
          else
          {
-            model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "Must select faces" ).toUtf8() );
+            model_status( model, StatusError, STATUSTIME_LONG, "%s", qApp->translate( "Command", "Must select faces" ).toUtf8().data() );
          }
       }
    }

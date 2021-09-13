@@ -149,7 +149,7 @@ void TorusTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y 
 
    parent->updateAllViews();
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Torus created" ).toUtf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Torus created" ).toUtf8().data() );
 }
 
 void TorusTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )

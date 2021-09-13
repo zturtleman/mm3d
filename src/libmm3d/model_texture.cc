@@ -64,7 +64,7 @@ bool Model::loadTextures( ContextT context )
 #ifdef MM3D_EDIT
             std::string msg = transll( QT_TRANSLATE_NOOP("LowLevel", "Could not load texture") );
             msg += std::string(" ") + m_materials[t]->m_filename;
-            model_status( this, StatusError, STATUSTIME_LONG, msg.c_str() );
+            model_status( this, StatusError, STATUSTIME_LONG, "%s", msg.c_str() );
 #endif // MM3D_EDIT
             tex = TextureManager::getInstance()->getDefaultTexture( m_materials[t]->m_filename.c_str() );
          }

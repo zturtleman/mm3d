@@ -88,7 +88,7 @@ bool DeleteCommand::activated( int arg, Model * model )
 
       if ( doDelete )
       {
-         model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Primitives deleted" ).toUtf8() );
+         model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Command", "Primitives deleted" ).toUtf8().data() );
          model->deleteSelected();
       }
       return doDelete;

@@ -80,7 +80,7 @@ void RectangleTool::mouseButtonDown( Parent * parent, int buttonState, int x, in
 
       parent->updateAllViews();
 
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Rectangle created" ).toUtf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Rectangle created" ).toUtf8().data() );
    }
 }
 

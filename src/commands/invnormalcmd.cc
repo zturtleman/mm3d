@@ -53,7 +53,7 @@ bool InvertNormalCommand::activated( int arg, Model * model )
       model->invertNormals( *it );
    }
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Normals inverted" ).toUtf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Command", "Normals inverted" ).toUtf8().data() );
 
    return true;
 }

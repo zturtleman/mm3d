@@ -56,12 +56,12 @@ bool UnweldCommand::activated( int arg, Model * model )
          int unwelded = 0;
          int welded = 0;
          unweldSelectedVertices( model, unwelded, welded );
-         model_status( model, StatusNormal, STATUSTIME_SHORT, (qApp->translate( "Command", "Unwelded %1 vertices into %2 vertices" ).arg(welded).arg(unwelded)).toUtf8() );
+         model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", (qApp->translate( "Command", "Unwelded %1 vertices into %2 vertices" ).arg(welded).arg(unwelded)).toUtf8().data() );
          return true;
       }
       else
       {
-         model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "You must have 1 or more vertices selected to unweld." ).toUtf8() );
+         model_status( model, StatusError, STATUSTIME_LONG, "%s", qApp->translate( "Command", "You must have 1 or more vertices selected to unweld." ).toUtf8().data() );
       }
    }
    

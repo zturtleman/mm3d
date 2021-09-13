@@ -86,12 +86,12 @@ bool CapCommand::activated( int arg, Model * model )
 
    if ( added != 0 )
    {
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Command", "Cap Holes complete").toUtf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Command", "Cap Holes complete").toUtf8().data() );
       return true;
    }
    else
    {
-      model_status( model, StatusError, STATUSTIME_LONG, qApp->translate( "Command", "Could not find gap in selected region" ).toUtf8() );
+      model_status( model, StatusError, STATUSTIME_LONG, "%s", qApp->translate( "Command", "Could not find gap in selected region" ).toUtf8().data() );
    }
    return false;
 }

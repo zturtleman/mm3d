@@ -139,7 +139,7 @@ Model::ModelErrorE IqeFilter::writeFile( Model * model, const char * const filen
       //
       // Write Header
       //
-      writeLine( dst, IQE_HEADER );
+      writeLine( dst, "%s", IQE_HEADER );
       writeLine( dst, "" );
 
       //

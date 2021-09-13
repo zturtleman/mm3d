@@ -100,7 +100,7 @@ void AttractNearTool::mouseButtonDown( Parent * parent, int buttonState, int x, 
    m_startX = curX;
    m_startY = curY;
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Attracting near selected primitives" ).toUtf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Attracting near selected primitives" ).toUtf8().data() );
 }
 
 void AttractNearTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )
@@ -142,7 +142,7 @@ void AttractNearTool::mouseButtonMove( Parent * parent, int buttonState, int x, 
 
 void AttractNearTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
 {
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Attract near complete" ).toUtf8() );
+   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Attract near complete" ).toUtf8().data() );
 }
 
 const char ** AttractNearTool::getPixmap()

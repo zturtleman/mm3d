@@ -916,7 +916,7 @@ bool Model::deleteBoneJoint( unsigned joint )
          {
             if ( m_joints[j]->m_parent == (int) joint )
             {
-               model_status( this, StatusError, STATUSTIME_LONG, transll( QT_TRANSLATE_NOOP( "LowLevel", "Cannot delete root joint" )).c_str() );
+               model_status( this, StatusError, STATUSTIME_LONG, "%s", transll( QT_TRANSLATE_NOOP( "LowLevel", "Cannot delete root joint" )).c_str() );
                return false;
             }
          }
@@ -3295,7 +3295,7 @@ void Model::sendUndo( Undo * undo, bool listCombine )
 
 void Model::displayFrameAnimPrimitiveError()
 {
-   model_status( this, StatusError, STATUSTIME_LONG, transll(QT_TRANSLATE_NOOP("LowLevel", "Cannot add or delete because you have frame animations.  Try \"Merge...\" instead." )).c_str() );
+   model_status( this, StatusError, STATUSTIME_LONG, "%s", transll(QT_TRANSLATE_NOOP("LowLevel", "Cannot add or delete because you have frame animations.  Try \"Merge...\" instead." )).c_str() );
 }
 
 #endif // MM3D_EDIT

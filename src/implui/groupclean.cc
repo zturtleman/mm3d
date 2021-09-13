@@ -87,8 +87,8 @@ void GroupCleanWin::accept()
       removedGroups = m_model->removeUnusedGroups();
    }
    m_model->operationComplete( tr( "Group Clean-up", "operation complete" ).toUtf8() );
-   model_status( m_model, StatusNormal, STATUSTIME_LONG, (tr( "Merged %1 groups, %2 materials; Removed %3 of %4 groups, %5 of %6 materials" )
-         .arg(mergedGroups).arg(mergedMaterials).arg(removedGroups).arg(previousGroups).arg(removedMaterials).arg(previousMaterials)).toUtf8() );
+   model_status( m_model, StatusNormal, STATUSTIME_LONG, "%s", (tr( "Merged %1 groups, %2 materials; Removed %3 of %4 groups, %5 of %6 materials" )
+         .arg(mergedGroups).arg(mergedMaterials).arg(removedGroups).arg(previousGroups).arg(removedMaterials).arg(previousMaterials)).toUtf8().data() );
    QDialog::accept();
 }
 

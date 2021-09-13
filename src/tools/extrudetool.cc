@@ -72,7 +72,7 @@ void ExtrudeTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y 
    */
    parent->updateAllViews();
 
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Extrude complete" ).toUtf8() );
+   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Extrude complete" ).toUtf8().data() );
 }
 
 void ExtrudeTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )
@@ -133,7 +133,7 @@ const char ** ExtrudeTool::getPixmap()
 
 void ExtrudeTool::activated( int argc, Model * model, QMainWindow * mainwin )
 {
-   model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Tip: Hold shift to restrict movement to one dimension" ).toUtf8() );
+   model_status( model, StatusNormal, STATUSTIME_NONE, "%s", qApp->translate( "Tool", "Tip: Hold shift to restrict movement to one dimension" ).toUtf8().data() );
 }
 
 const char * ExtrudeTool::getName( int arg )
@@ -148,7 +148,7 @@ void ExtrudeTool::extrudeEvent()
    m_sides.clear();
    m_evMap.clear();
 
-   model_status( m_model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Extrude complete").toUtf8() );
+   model_status( m_model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Extrude complete").toUtf8().data() );
 
    list<int> faces;
    m_model->getSelectedTriangles( faces );
@@ -156,7 +156,7 @@ void ExtrudeTool::extrudeEvent()
    m_model->getSelectedVertices( vertices );
    if ( faces.empty() )
    {
-      model_status( m_model, StatusError, STATUSTIME_LONG, qApp->translate( "Tool", "Must have faces selected to extrude" ).toUtf8() );
+      model_status( m_model, StatusError, STATUSTIME_LONG, "%s", qApp->translate( "Tool", "Must have faces selected to extrude" ).toUtf8().data() );
    }
    else
    {
@@ -254,7 +254,7 @@ void ExtrudeTool::extrudeEvent()
       }
 
       m_model->deleteOrphanedVertices();
-      model_status( m_model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Extruding selected faces" ).toUtf8() );
+      model_status( m_model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Extruding selected faces" ).toUtf8().data() );
    }
 }
 

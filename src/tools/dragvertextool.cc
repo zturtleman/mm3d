@@ -110,12 +110,12 @@ void DragVertexTool::mouseButtonDown( Parent * parent, int buttonState, int x, i
          }
       }
 
-      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Dragging selected vertex" ).toUtf8() );
+      model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Dragging selected vertex" ).toUtf8().data() );
    }
    else
    {
       m_vertId = -1;
-      model_status( parent->getModel(), StatusError, STATUSTIME_LONG, qApp->translate( "Tool", "Must a vertex selected" ).toUtf8() );
+      model_status( parent->getModel(), StatusError, STATUSTIME_LONG, "%s", qApp->translate( "Tool", "Must a vertex selected" ).toUtf8().data() );
    }
 }
 
@@ -123,7 +123,7 @@ void DragVertexTool::mouseButtonUp( Parent * parent, int buttonState, int x, int
 {
    parent->updateAllViews();
 
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Drag complete" ).toUtf8() );
+   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Drag complete" ).toUtf8().data() );
 }
 
 void DragVertexTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )
@@ -211,7 +211,7 @@ const char ** DragVertexTool::getPixmap()
 
 void DragVertexTool::activated( int argc, Model * model, QMainWindow * mainwin )
 {
-   //model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Tip: Hold shift to restrict movement to one dimension" ).toUtf8() );
+   //model_status( model, StatusNormal, STATUSTIME_NONE, "%s", qApp->translate( "Tool", "Tip: Hold shift to restrict movement to one dimension" ).toUtf8().data() );
 }
 
 const char * DragVertexTool::getName( int arg )

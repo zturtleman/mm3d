@@ -74,7 +74,7 @@ void AlignWin::alignX()
    log_debug( "aligning x on %f\n", val );
    alignSelectedX( m_model, m_atX, val );
    DecalManager::getInstance()->modelUpdated( m_model );
-   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align X").toUtf8() );
+   model_status( m_model, StatusNormal, STATUSTIME_SHORT, "%s", tr("Align X").toUtf8().data() );
 }
 
 void AlignWin::alignY()
@@ -83,7 +83,7 @@ void AlignWin::alignY()
    log_debug( "aligning y on %f\n", val );
    alignSelectedY( m_model, m_atY, val );
    DecalManager::getInstance()->modelUpdated( m_model );
-   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align Y").toUtf8() );
+   model_status( m_model, StatusNormal, STATUSTIME_SHORT, "%s", tr("Align Y").toUtf8().data() );
 }
 
 void AlignWin::alignZ()
@@ -92,7 +92,7 @@ void AlignWin::alignZ()
    log_debug( "aligning z on %f\n", val );
    alignSelectedZ( m_model, m_atZ, val );
    DecalManager::getInstance()->modelUpdated( m_model );
-   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Align Z").toUtf8() );
+   model_status( m_model, StatusNormal, STATUSTIME_SHORT, "%s", tr("Align Z").toUtf8().data() );
 }
 
 void AlignWin::selectedXCenter()

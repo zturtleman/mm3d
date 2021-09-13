@@ -72,11 +72,11 @@ void BgMoveTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y
       parent->getYValue( x, y, &m_lastY );
       parent->getZValue( x, y, &m_lastZ );
 
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Moving background image" ).toUtf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Moving background image" ).toUtf8().data() );
    }
    else
    {
-      model_status( model, StatusError, STATUSTIME_SHORT, qApp->translate( "Tool", "Cannot move background from 3D view" ).toUtf8() );
+      model_status( model, StatusError, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Cannot move background from 3D view" ).toUtf8().data() );
    }
 }
 
@@ -118,7 +118,7 @@ void BgMoveTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y
 
 void BgMoveTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
 {
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Background move complete" ).toUtf8() );
+   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Background move complete" ).toUtf8().data() );
 }
 
 const char ** BgMoveTool::getPixmap()
@@ -128,7 +128,7 @@ const char ** BgMoveTool::getPixmap()
 
 void BgMoveTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
-   model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Move background image" ).toUtf8() );
+   model_status( model, StatusNormal, STATUSTIME_NONE, "%s", qApp->translate( "Tool", "Move background image" ).toUtf8().data() );
 }
 
 void BgMoveTool::deactivated()

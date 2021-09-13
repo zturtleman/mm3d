@@ -60,7 +60,7 @@ void VertexTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y
 
    parent->updateAllViews();
 
-   model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Vertex created" ).toUtf8() );
+   model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Vertex created" ).toUtf8().data() );
 }
 
 void VertexTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )

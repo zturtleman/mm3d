@@ -183,7 +183,7 @@ void ShearTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y 
    m_startLengthX = distance( m_far, 0, curX, 0 );
    m_startLengthY = distance( m_far, 0, curY, 0 );
 
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Starting shear on selected primitives" ).toUtf8() );
+   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Starting shear on selected primitives" ).toUtf8().data() );
 }
 
 void ShearTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y )
@@ -229,7 +229,7 @@ void ShearTool::mouseButtonMove( Parent * parent, int buttonState, int x, int y 
 
 void ShearTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
 {
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Shear complete" ).toUtf8() );
+   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Shear complete" ).toUtf8().data() );
 }
 
 const char ** ShearTool::getPixmap()

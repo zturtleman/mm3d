@@ -76,7 +76,7 @@ void ExtrudeWin::absoluteExtrudeEvent()
    m_sides.clear();
    m_evMap.clear();
 
-   model_status( m_model, StatusNormal, STATUSTIME_SHORT, tr("Extrude complete").toUtf8() );
+   model_status( m_model, StatusNormal, STATUSTIME_SHORT, "%s", tr("Extrude complete").toUtf8().data() );
 
    // get extrude arguments
    double x = m_xEdit->text().toDouble();

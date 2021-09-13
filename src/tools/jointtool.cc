@@ -108,11 +108,11 @@ void JointTool::mouseButtonDown( Parent * parent, int buttonState, int x, int y 
 
    if ( p >= 0 )
    {
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Joint created" ).toUtf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Joint created" ).toUtf8().data() );
    }
    else
    {
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Root joint created" ).toUtf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Root joint created" ).toUtf8().data() );
    }
 }
 

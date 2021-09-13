@@ -93,11 +93,11 @@ void BgScaleTool::mouseButtonDown( Parent * parent, int buttonState, int x, int 
       log_debug( "starting background scale with length %f, scale %f\n", 
             m_startLength, m_startScale );
 
-      model_status( model, StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Scaling background image" ).toUtf8() );
+      model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Scaling background image" ).toUtf8().data() );
    }
    else
    {
-      model_status( model, StatusError, STATUSTIME_SHORT, qApp->translate( "Tool", "Cannot scale background from 3D view" ).toUtf8() );
+      model_status( model, StatusError, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Cannot scale background from 3D view" ).toUtf8().data() );
    }
 }
 
@@ -142,7 +142,7 @@ void BgScaleTool::mouseButtonMove( Parent * parent, int buttonState, int x, int 
 
 void BgScaleTool::mouseButtonUp( Parent * parent, int buttonState, int x, int y )
 {
-   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, qApp->translate( "Tool", "Background scale complete" ).toUtf8() );
+   model_status( parent->getModel(), StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Tool", "Background scale complete" ).toUtf8().data() );
 }
 
 const char ** BgScaleTool::getPixmap()
@@ -152,7 +152,7 @@ const char ** BgScaleTool::getPixmap()
 
 void BgScaleTool::activated( int arg, Model * model, QMainWindow * mainwin )
 {
-   model_status( model, StatusNormal, STATUSTIME_NONE, qApp->translate( "Tool", "Scale background image" ).toUtf8() );
+   model_status( model, StatusNormal, STATUSTIME_NONE, "%s", qApp->translate( "Tool", "Scale background image" ).toUtf8().data() );
 }
 
 void BgScaleTool::deactivated()
