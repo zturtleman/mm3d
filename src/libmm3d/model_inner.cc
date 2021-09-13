@@ -54,7 +54,7 @@ list<Model::FrameAnim *> Model::FrameAnim::s_recycle;
 list<Model::FrameAnimVertex *> Model::FrameAnimVertex::s_recycle;
 list<Model::FrameAnimPoint *> Model::FrameAnimPoint::s_recycle;
 
-const double EQ_TOLERANCE = 0.00001;
+extern const double EQ_TOLERANCE;
 
 template<typename T>
 bool floatCompareVector( T * lhs, T * rhs, size_t len, double tolerance = EQ_TOLERANCE )
