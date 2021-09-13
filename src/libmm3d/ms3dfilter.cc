@@ -70,7 +70,7 @@ struct MS3DVertex
 	uint8_t m_refCount;
 };
 
-const size_t FILE_VERTEX_SIZE = 15;
+//const size_t FILE_VERTEX_SIZE = 15;
 
 // Triangle information
 struct MS3DTriangle
@@ -101,7 +101,7 @@ struct MS3DMaterial
     char m_alphamap[128];
 };
 
-const size_t FILE_MATERIAL_SIZE = 361;
+//const size_t FILE_MATERIAL_SIZE = 361;
 
 //	Joint information
 struct MS3DJoint
@@ -115,7 +115,7 @@ struct MS3DJoint
 	uint16_t m_numTranslationKeyframes;
 };
 
-const size_t FILE_JOINT_SIZE = 93;
+//const size_t FILE_JOINT_SIZE = 93;
 
 // Keyframe data
 struct MS3DKeyframe
