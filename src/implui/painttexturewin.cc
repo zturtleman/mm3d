@@ -217,7 +217,7 @@ void PaintTextureWin::saveEvent()
                case 'N':
                   again = true;
 
-                  // We want to fall through here
+                  /* fall-through */
 
                case 'C':
                   save = false;

@@ -150,6 +150,7 @@ Model * Model::copySelected() const
                break;
             default:
                log_error( "Unknown material type %d in duplicate\n", this->getMaterialType(t) );
+               /* fall-through */
             case Model::Material::MATTYPE_BLANK:
                m->addColorMaterial( this->getTextureName( t ) );
                break;
