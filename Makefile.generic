@@ -1017,7 +1017,9 @@ else
 endif
 
 installer: mm3d
+ifdef MINGW
 	makensis mm3d-win32-installer.nsi
+endif
 
 ${B}/%.o: src/%.c
 	$(DO_CC)
