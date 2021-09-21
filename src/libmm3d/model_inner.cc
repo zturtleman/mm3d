@@ -1313,7 +1313,7 @@ bool Model::FrameAnim::propEqual(const FrameAnim & rhs, int propBits, double tol
       {
          if ( !(*lhs_it)->propEqual( **rhs_it, propBits, tolerance ) )
          {
-            log_warning( "match failed at frame %d\n", lhs_it - m_frameData.begin() );
+            log_warning( "match failed at frame %" PORTdDIFF "\n", lhs_it - m_frameData.begin() );
             return false;
          }
       }
@@ -1523,7 +1523,7 @@ bool Model::FrameAnimData::propEqual(const FrameAnimData & rhs, int propBits, do
       {
          if ( !(*lv)->propEqual( **rv, propBits, tolerance ) )
          {
-            log_warning( "anim frame vertex mismatch at %d\n",
+            log_warning( "anim frame vertex mismatch at %" PORTdDIFF "\n",
                   lv - m_frameVertices->begin() );
             return false;
          }
@@ -1536,7 +1536,7 @@ bool Model::FrameAnimData::propEqual(const FrameAnimData & rhs, int propBits, do
       {
          if ( !(*lp)->propEqual( **rp, propBits, tolerance ) )
          {
-            log_warning( "anim frame point mismatch at %d\n",
+            log_warning( "anim frame point mismatch at %" PORTdDIFF "\n",
                   lp - m_framePoints->begin() );
             return false;
          }

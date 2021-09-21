@@ -43,12 +43,24 @@
 #define PORTuSIZE "Iu"
 #define PORTxSIZE "Ix"
 #define PORTXSIZE "IX"
+
+// msvcrt.dll ptrdiff_t printf format (%Id)
+#define PORToDIFF "Io"
+#define PORTdDIFF "Id"
+#define PORTxDIFF "Ix"
+#define PORTXDIFF "IX"
 #else
 // C99 / C++11 size_t printf format (%zu)
 #define PORToSIZE "zo"
 #define PORTuSIZE "zu"
 #define PORTxSIZE "zx"
 #define PORTXSIZE "zX"
+
+// C99 / C++11 ptrdiff_t printf format (%td)
+#define PORToDIFF "to"
+#define PORTdDIFF "td"
+#define PORTxDIFF "tx"
+#define PORTXDIFF "tX"
 #endif
 
 struct _PORT_timeval
