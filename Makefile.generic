@@ -354,6 +354,9 @@ endif
 
 BASE_FLAGS+=-fno-math-errno -I${QT_INCLUDE_DIR} -DMM3D_EDIT -I. -I./src -I./src/libmm3d -I./src/mm3dcore -I./src/depui -I./src/qtui -I./src/implui -I./src/commands -I./src/tools -I${B}/depui -I${B}/qtui -I${B}/implui -I${B}/commands
 
+# Generate dependencies (create .d files by the .o files)
+BASE_FLAGS+=-MMD -MP
+
 # Use debug or release cflags
 #BUILD_FLAGS+=-Wall -Wextra -Wno-unused-parameter -Wno-format-zero-length -g -ggdb
 #STRIP=
@@ -1038,7 +1041,13 @@ ${B}/translations/%.qm: translations/%.ts
 ${B}/doc/html/%.html: doc/html/%.page doc/html/%.htm doc/html/template.htm ${B}/util/hpagemake${BINEXT}
 	$(DO_HTML)
 
+# Include build dependencies (.d files).
+OBJ=${LIB_OBJ} ${MM3D_OBJ} ${MM3D_MOC_OBJ}
+OBJ_D_FILES=$(filter %.d,$(OBJ:%.o=%.d))
+-include $(OBJ_D_FILES)
+
 clean:
+	$(Q)rm -f ${OBJ_D_FILES}
 	$(Q)rm -f ${LIB_OBJ}
 	$(Q)rm -f ${MM3D_UI}
 	$(Q)rm -f ${MM3D_MOC}
