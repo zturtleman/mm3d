@@ -2037,7 +2037,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    }
 
    // FRAMES
-   log_debug( "writing frames at %d/%d\n", offsetFrames, m_dst->offset() );
+   log_debug( "writing frames at %d/%d\n", offsetFrames, (int)m_dst->offset() );
    unsigned a;
 
    for ( a = 0; a < animCount; a++ )
@@ -2136,7 +2136,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    m_model->setNoAnimation();
 
    //TAGS
-   log_debug( "writing tags at %d/%d\n", offsetTags, m_dst->offset() );
+   log_debug( "writing tags at %d/%d\n", offsetTags, (int)m_dst->offset() );
 
    for ( a = 0; a < animCount; a++ )
    {
@@ -2230,7 +2230,7 @@ Model::ModelErrorE Md3Filter::writeSectionFile( const char * filename, Md3Filter
    vector<Model::Material *> & modelMaterials = getMaterialList( m_model );
 
    // MESHES
-   log_debug( "writing meshes at %d/%d\n", offsetMeshes, m_dst->offset() );
+   log_debug( "writing meshes at %d/%d\n", offsetMeshes, (int)m_dst->offset() );
 
    for ( mlit = meshes.begin(); mlit != meshes.end(); mlit++ )
    {
