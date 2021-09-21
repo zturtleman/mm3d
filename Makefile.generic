@@ -80,6 +80,9 @@ bin_path=$(shell which $(1) 2> /dev/null)
 BUILDSUB=${PLATFORM}-${ARCH}
 B=${BUILD}/${BUILDSUB}
 
+BUILDSUB_TOOLS=${COMPILE_PLATFORM}-${COMPILE_ARCH}
+B_TOOLS=${BUILD}/${BUILDSUB_TOOLS}
+
 INSTALL=install
 ifdef MINGW32_MAKE
   MKDIR=mkdir
@@ -365,6 +368,14 @@ STRIP=strip
 
 CCFLAGS=-std=c99 ${BUILD_FLAGS} ${BASE_FLAGS}
 CXXFLAGS=-std=c++11 ${BUILD_FLAGS} ${BASE_FLAGS}
+
+# Use a native compiler for compiling build tools.
+ifeq ($(CROSS_COMPILING),1)
+	TOOLS_CC=cc
+else
+	TOOLS_CC=${CC}
+endif
+TOOLS_CCFLAGS=-std=c99 ${BUILD_FLAGS}
 
 DEFS=
 
@@ -837,6 +848,11 @@ $(echo_cmd) "CC $<"
 $(Q)${CC} ${DEFS} -c $< -o $@ ${CCFLAGS}
 endef
 
+define DO_TOOLS_CC
+$(echo_cmd) "TOOLS CC $<"
+$(Q)${TOOLS_CC} -c $< -o $@ ${TOOLS_CCFLAGS}
+endef
+
 define DO_CXX
 $(echo_cmd) "CXX $<"
 $(Q)${CXX} ${DEFS} -c $< -o $@ ${CXXFLAGS}
@@ -859,7 +875,7 @@ endef
 
 define DO_HTML
 $(echo_cmd) "HTML $<"
-$(Q)${B}/util/hpagemake${BINEXT} $< > $@
+$(Q)${B_TOOLS}/util/hpagemake${BINEXT} $< > $@
 endef
 
 .PHONY: all makedirs mm3d_ui mm3d_moc mm3d qmfiles hpagemake docs install deploy installer clean
@@ -879,9 +895,10 @@ ifdef MINGW32_MAKE
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\mm3dcore" ${MKDIR} "${BUILD}\${BUILDSUB}\mm3dcore"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\commands" ${MKDIR} "${BUILD}\${BUILDSUB}\commands"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\translations" ${MKDIR} "${BUILD}\${BUILDSUB}\translations"
-	@IF NOT EXIST "${BUILD}\${BUILDSUB}\util" ${MKDIR} "${BUILD}\${BUILDSUB}\util"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\doc" ${MKDIR} "${BUILD}\${BUILDSUB}\doc"
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\doc\html" ${MKDIR} "${BUILD}\${BUILDSUB}\doc\html"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB_TOOLS}" ${MKDIR} "${BUILD}\${BUILDSUB_TOOLS}"
+	@IF NOT EXIST "${BUILD}\${BUILDSUB_TOOLS}\util" ${MKDIR} "${BUILD}\${BUILDSUB_TOOLS}\util"
 else
 	@${MKDIR} "${B}"
 	@${MKDIR} "${B}/src"
@@ -893,9 +910,10 @@ else
 	@${MKDIR} "${B}/mm3dcore"
 	@${MKDIR} "${B}/commands"
 	@${MKDIR} "${B}/translations"
-	@${MKDIR} "${B}/util"
 	@${MKDIR} "${B}/doc"
 	@${MKDIR} "${B}/doc/html"
+	@${MKDIR} "${B_TOOLS}"
+	@${MKDIR} "${B_TOOLS}/util"
 endif
 
 mm3d_ui: ${MM3D_UI}
@@ -904,10 +922,10 @@ mm3d_moc: ${MM3D_MOC}
 
 qmfiles: ${QMFILES}
 
-${B}/util/hpagemake${BINEXT}: ${B}/util/hpagemake.o
-	$(Q)${CC} ${CCFLAGS} ${DEFS} -o ${B}/util/hpagemake${BINEXT} ${B}/util/hpagemake.o
+${B_TOOLS}/util/hpagemake${BINEXT}: ${B_TOOLS}/util/hpagemake.o
+	$(Q)${TOOLS_CC} ${TOOLS_CCFLAGS} -o ${B_TOOLS}/util/hpagemake${BINEXT} ${B_TOOLS}/util/hpagemake.o
 
-hpagemake: ${B}/util/hpagemake${BINEXT}
+hpagemake: ${B_TOOLS}/util/hpagemake${BINEXT}
 
 docs: hpagemake ${MM3D_HTML}
 
@@ -1004,8 +1022,8 @@ installer: mm3d
 ${B}/%.o: src/%.c
 	$(DO_CC)
 
-${B}/util/%.o: util/%.c
-	$(DO_CC)
+${B_TOOLS}/util/%.o: util/%.c
+	$(DO_TOOLS_CC)
 
 ${B}/%.o: src/%.cc
 	$(DO_CXX)
@@ -1038,7 +1056,7 @@ ${B}/qtui/resources.o: ${B}/qtui/resources.cpp
 ${B}/translations/%.qm: translations/%.ts
 	$(DO_LRELEASE)
 
-${B}/doc/html/%.html: doc/html/%.page doc/html/%.htm doc/html/template.htm ${B}/util/hpagemake${BINEXT}
+${B}/doc/html/%.html: doc/html/%.page doc/html/%.htm doc/html/template.htm ${B_TOOLS}/util/hpagemake${BINEXT}
 	$(DO_HTML)
 
 # Include build dependencies (.d files).
