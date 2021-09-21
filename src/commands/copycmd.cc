@@ -73,7 +73,7 @@ bool CopyCommand::activated( int arg, Model * model )
    mkpath( clipfile.c_str(), 0755 );
    clipfile += "/clipboard.mm3d";
 
-   FilterManager::getInstance()->writeFile( m, clipfile.c_str(), FilterManager::WO_ModelNoPrompt );
+   FilterManager::getInstance()->writeFile( m, clipfile.c_str(), false, FilterManager::WO_ModelNoPrompt );
 
    delete m;
 
