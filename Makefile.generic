@@ -168,7 +168,7 @@ ifdef MINGW
     endif
 
     ifndef CXX
-      CC=g++
+      CXX=g++
     endif
 
     ifndef WINDRES
