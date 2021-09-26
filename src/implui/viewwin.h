@@ -172,6 +172,8 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       void animExportWindowEvent();
       void animSetRotEvent();
       void animSetTransEvent();
+      void animClearRotEvent();
+      void animClearTransEvent();
 
       void animCopyFrameEvent();
       void animPasteFrameEvent();
@@ -309,6 +311,8 @@ class ViewWindow : public QMainWindow, public ContextPanelObserver
       QAction *     m_animExportItem;
       QAction *     m_animSetRotItem;
       QAction *     m_animSetTransItem;
+      QAction *     m_animClearRotItem;
+      QAction *     m_animClearTransItem;
       QAction *     m_animCopyFrame;
       QAction *     m_animPasteFrame;
       QAction *     m_animCopySelected;

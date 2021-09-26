@@ -671,10 +671,15 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent )
    m_animMenu->addSeparator();
    m_animSetRotItem    = m_animMenu->addAction( tr("Set Rotation Keyframe", "Animation|Set Rotation Keyframe"), this, SLOT(animSetRotEvent()), g_keyConfig.getKey( "viewwin_anim_set_rotation" ) );
    m_animSetTransItem  = m_animMenu->addAction( tr("Set Translation Keyframe", "Animation|Set Translation Keyframe"), this, SLOT(animSetTransEvent()), g_keyConfig.getKey( "viewwin_anim_set_translation" ) );
+   m_animClearRotItem    = m_animMenu->addAction( tr("Clear Rotation Keyframe", "Animation|Clear Rotation Keyframe"), this, SLOT(animClearRotEvent()), g_keyConfig.getKey( "viewwin_anim_clear_rotation" ) );
+   m_animClearTransItem  = m_animMenu->addAction( tr("Clear Translation Keyframe", "Animation|Clear Translation Keyframe"), this, SLOT(animClearTransEvent()), g_keyConfig.getKey( "viewwin_anim_clear_translation" ) );
+
 
    m_stopAnimItem->setEnabled( false );
    m_animSetRotItem->setEnabled( false );
    m_animSetTransItem->setEnabled( false );
+   m_animClearRotItem->setEnabled( false );
+   m_animClearTransItem->setEnabled( false );
 
    m_animCopyFrame->setEnabled( false );
    m_animPasteFrame->setEnabled( false );
@@ -1852,6 +1857,42 @@ void ViewWindow::animSetTransEvent()
    m_model->operationComplete( tr("Set translation keframe").toUtf8() );
 }
 
+void ViewWindow::animClearRotEvent()
+{
+   if ( m_model->getAnimationMode() == Model::ANIMMODE_SKELETAL )
+   {
+      bool isRotation = true;
+      list<int> joints;
+      m_model->getSelectedBoneJoints( joints );
+      for ( list<int>::iterator it = joints.begin(); it != joints.end(); it++ )
+      {
+         m_model->deleteSkelAnimKeyframe( m_model->getCurrentAnimation(),
+                                          m_model->getCurrentAnimationFrame(),
+                                          *it, isRotation );
+      }
+   }
+
+   m_model->operationComplete( tr("Clear rotation keframe").toUtf8() );
+}
+
+void ViewWindow::animClearTransEvent()
+{
+   if ( m_model->getAnimationMode() == Model::ANIMMODE_SKELETAL )
+   {
+      bool isRotation = false;
+      list<int> joints;
+      m_model->getSelectedBoneJoints( joints );
+      for ( list<int>::iterator it = joints.begin(); it != joints.end(); it++ )
+      {
+         m_model->deleteSkelAnimKeyframe( m_model->getCurrentAnimation(),
+                                          m_model->getCurrentAnimationFrame(),
+                                          *it, isRotation );
+      }
+   }
+
+   m_model->operationComplete( tr("Clear translation keframe").toUtf8() );
+}
+
 void ViewWindow::animCopyFrameEvent()
 {
    if ( m_animWin->isVisible() )
@@ -1922,6 +1963,8 @@ void ViewWindow::animationModeOn()
    m_stopAnimItem->setEnabled(  true  );
    m_animSetRotItem->setEnabled(  true  );
    m_animSetTransItem->setEnabled(  true  );
+   m_animClearRotItem->setEnabled(  true  );
+   m_animClearTransItem->setEnabled(  true  );
    m_animCopyFrame->setEnabled(  true  );
    m_animPasteFrame->setEnabled(  false  ); // Disabled until copy occurs
    m_animClearFrame->setEnabled(  true  );
@@ -1939,6 +1982,8 @@ void ViewWindow::animationModeOff()
    m_stopAnimItem->setEnabled(  false  );
    m_animSetRotItem->setEnabled(  false  );
    m_animSetTransItem->setEnabled(  false  );
+   m_animClearRotItem->setEnabled(  false  );
+   m_animClearTransItem->setEnabled(  false  );
    m_animCopyFrame->setEnabled(  false  );
    m_animPasteFrame->setEnabled(  false  );
    m_animClearFrame->setEnabled(  false  );

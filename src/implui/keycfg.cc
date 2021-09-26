@@ -491,6 +491,8 @@ void keycfg_set_defaults()
    g_keyConfig.setDefaultKey( "viewwin_anim_selected_paste", 0 );
    g_keyConfig.setDefaultKey( "viewwin_anim_set_rotation", 0 );
    g_keyConfig.setDefaultKey( "viewwin_anim_set_translation", 0 );
+   g_keyConfig.setDefaultKey( "viewwin_anim_clear_rotation", 0 );
+   g_keyConfig.setDefaultKey( "viewwin_anim_clear_translation", 0 );
    g_keyConfig.setDefaultKey( "viewwin_help_contents", 0 );
    g_keyConfig.setDefaultKey( "viewwin_help_license", 0 );
    g_keyConfig.setDefaultKey( "viewwin_help_about", 0 );
