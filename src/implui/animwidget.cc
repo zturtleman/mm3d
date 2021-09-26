@@ -479,22 +479,31 @@ void AnimWidget::pasteFrame()
          return;
       }
 
+      m_model->unselectAll();
+      m_model->beginSelectionDifference();
+
       FrameCopyList::iterator it;
       FramePointCopyList::iterator pit;
 
       for ( it = m_frameCopyList.begin(); it != m_frameCopyList.end(); it++ )
       {
+         m_model->selectVertex( (*it).vertex );
+
          m_model->setFrameAnimVertexCoords( m_currentAnim, m_currentFrame, (*it).vertex,
                (*it).x, (*it).y, (*it).z );
       }
 
       for ( pit = m_framePointCopyList.begin(); pit != m_framePointCopyList.end(); pit++ )
       {
+         m_model->selectPoint( (*pit).point );
+
          m_model->setFrameAnimPointCoords( m_currentAnim, m_currentFrame, (*pit).point,
                (*pit).x, (*pit).y, (*pit).z );
          m_model->setFrameAnimPointRotation( m_currentAnim, m_currentFrame, (*pit).point,
                (*pit).rx, (*pit).ry, (*pit).rz );
       }
+
+      m_model->endSelectionDifference();
 
       m_model->operationComplete( tr( "Paste frame", "paste frame animation position, operation complete" ).toUtf8() );
 
@@ -510,6 +519,9 @@ void AnimWidget::pasteFrame()
          return;
       }
 
+      m_model->unselectAll();
+      m_model->beginSelectionDifference();
+
       bool loop = m_model->getAnimLooping( Model::ANIMMODE_SKELETAL, m_currentAnim );
 
       for ( it = m_keyframeCopyList.begin(); it != m_keyframeCopyList.end(); it++ )
@@ -521,10 +533,15 @@ void AnimWidget::pasteFrame()
 
          if ( !floatCompareVector( currentVec, pasteVec, 3 ) )
          {
+            m_model->selectBoneJoint( (*it).joint );
+
             m_model->setSkelAnimKeyframe( m_currentAnim, m_currentFrame, (*it).joint, (*it).isRotation,
                   (*it).x, (*it).y, (*it).z );
          }
       }
+
+      m_model->endSelectionDifference();
+
       m_model->operationComplete( tr( "Paste keyframe", "Paste keyframe animation data complete" ).toUtf8() );
 
       m_model->setCurrentAnimationFrame( m_currentFrame );  // Force refresh of joints
