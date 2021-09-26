@@ -143,7 +143,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="m_frameCount">
+      <widget class="MyQSpinBox" name="m_frameCount">
        <property name="maximum">
         <number>999</number>
        </property>
@@ -189,6 +189,16 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>MyQSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>miscwidgets.h</header>
+  </customwidget>
+ </customwidgets>
+ <includes>
+  <include location="local">miscwidgets.h</include>
+ </includes>
  <resources/>
  <connections>
   <connection>
@@ -276,6 +286,38 @@
    <signal>valueChanged(int)</signal>
    <receiver>AnimWidgetBase</receiver>
    <slot>changeFrameCount()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_frameCount</sender>
+   <signal>focusIn()</signal>
+   <receiver>AnimWidgetBase</receiver>
+   <slot>changeFrameCountFocusIn()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_frameCount</sender>
+   <signal>focusOut()</signal>
+   <receiver>AnimWidgetBase</receiver>
+   <slot>changeFrameCountFocusOut()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>

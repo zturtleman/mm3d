@@ -59,6 +59,8 @@ class AnimWidget : public QWidget, public Ui::AnimWidgetBase
       void setCurrentFrame(int);
       void changeFPS();
       void changeFrameCount();
+      void changeFrameCountFocusIn();
+      void changeFrameCountFocusOut();
 
       void timeElapsed();
 
@@ -136,6 +138,9 @@ class AnimWidget : public QWidget, public Ui::AnimWidgetBase
       FramePointCopyList    m_framePointCopyList;
 
       QTimer * m_animTimer;
+
+      bool m_changeFrameFocused;
+      bool m_changeFrameDeferred;
 };
 
 #endif // __ANIMWIDGET_H
