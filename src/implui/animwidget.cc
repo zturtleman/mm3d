@@ -432,11 +432,13 @@ bool AnimWidget::copyFrame( bool selected )
       copy.z = 0;
       copy.isRotation = false;
 
+      bool loop = m_model->getAnimLooping( Model::ANIMMODE_SKELETAL, m_currentAnim );
+
       for ( j = 0; j < numJoints; j++ )
       {
          if ( !selected || m_model->isBoneJointSelected(j) )
          {
-            if ( m_model->getSkelAnimKeyframe( m_currentAnim, m_currentFrame, j, false, copy.x, copy.y, copy.z ) )
+            if ( m_model->interpSkelAnimKeyframe( m_currentAnim, m_currentFrame, loop, j, false, copy.x, copy.y, copy.z ) )
             {
                copy.joint = j;
                copy.isRotation = false;
@@ -450,7 +452,7 @@ bool AnimWidget::copyFrame( bool selected )
       {
          if ( !selected || m_model->isBoneJointSelected(j) )
          {
-            if ( m_model->getSkelAnimKeyframe( m_currentAnim, m_currentFrame, j, true, copy.x, copy.y, copy.z ) )
+            if ( m_model->interpSkelAnimKeyframe( m_currentAnim, m_currentFrame, loop, j, true, copy.x, copy.y, copy.z ) )
             {
                copy.joint = j;
                copy.isRotation = true;
@@ -508,10 +510,20 @@ void AnimWidget::pasteFrame()
          return;
       }
 
+      bool loop = m_model->getAnimLooping( Model::ANIMMODE_SKELETAL, m_currentAnim );
+
       for ( it = m_keyframeCopyList.begin(); it != m_keyframeCopyList.end(); it++ )
       {
-         m_model->setSkelAnimKeyframe( m_currentAnim, m_currentFrame, (*it).joint, (*it).isRotation,
-               (*it).x, (*it).y, (*it).z );
+         double pasteVec[3] = { (*it).x, (*it).y, (*it).z };
+         double currentVec[3];
+
+         m_model->interpSkelAnimKeyframe( m_currentAnim, m_currentFrame, loop, (*it).joint, (*it).isRotation, currentVec[0], currentVec[1], currentVec[2] );
+
+         if ( !floatCompareVector( currentVec, pasteVec, 3 ) )
+         {
+            m_model->setSkelAnimKeyframe( m_currentAnim, m_currentFrame, (*it).joint, (*it).isRotation,
+                  (*it).x, (*it).y, (*it).z );
+         }
       }
       m_model->operationComplete( tr( "Paste keyframe", "Paste keyframe animation data complete" ).toUtf8() );
 
