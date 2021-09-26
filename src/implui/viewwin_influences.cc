@@ -315,7 +315,7 @@ void ViewWindow::jointSelectInfluencedPoints()
    list< int > jointList;
    list< int >::iterator it;
 
-   unsigned pcount = m_model->getBoneJointCount();
+   unsigned pcount = m_model->getPointCount();
 
    m_model->getSelectedBoneJoints( jointList );
    for ( it = jointList.begin(); it != jointList.end(); it++ )
