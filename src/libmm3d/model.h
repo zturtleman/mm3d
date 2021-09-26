@@ -1189,7 +1189,13 @@ class Model
       // Interpolate what a keyframe for this joint would be at the specified time.
       bool interpSkelAnimKeyframeTime( unsigned anim, double frameTime,
             bool loop, unsigned joint,
-            Matrix & relativeFinal ) const;
+            Matrix & relativeFinal,
+            double minFrameTime = -1.0, double maxFrameTime = -1.0 ) const;
+
+      // Create keyframes needed to match pose at 'sourceAnim' 'sourceFrame'.
+      // This allows split or tracated animation to keep the same animation pose.
+      void copyInterpSkelAnimKeyframes( unsigned destAnim, unsigned destFrame, bool destLoop, unsigned destLastFrame,
+            unsigned sourceAnim, unsigned sourceFrame, bool sourceLoop );
 
       // Animation set operations
       int  copyAnimation( AnimationModeE mode, unsigned anim, const char * newName );

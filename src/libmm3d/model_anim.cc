@@ -30,6 +30,7 @@
 #include "log.h"
 #include "glmath.h"
 #include <math.h>
+#include <limits.h>
 
 #ifdef MM3D_EDIT
 
@@ -699,8 +700,12 @@ int Model::splitAnimation( AnimationModeE mode, unsigned anim, const char * newN
             num = addAnimation( mode, newName );
             if ( num >= 0 )
             {
+               bool loop = getAnimLooping( mode, anim );
+               bool newloop = loop;
+
                setAnimFrameCount( mode, num, getAnimFrameCount( mode, anim ) - frame );
                setAnimFPS( mode, num, getAnimFPS( mode, anim ) );
+               setAnimLooping( mode, num, newloop );
 
                SkelAnim * sa = m_skelAnims[anim];
 
@@ -716,6 +721,24 @@ int Model::splitAnimation( AnimationModeE mode, unsigned anim, const char * newN
                               kf->m_parameter[0], kf->m_parameter[1], kf->m_parameter[2] );
                      }
                   }
+               }
+
+               // create keyframes at the split point if needed
+               copyInterpSkelAnimKeyframes( anim, frame - 1, loop, frame - 1,
+                                            anim, frame - 1, loop );
+               copyInterpSkelAnimKeyframes( num,  0,         newloop, UINT_MAX,
+                                            anim, frame,     loop );
+
+               // create keyframes at the other ends if needed
+               if ( loop )
+               {
+                  copyInterpSkelAnimKeyframes( anim, 0, loop, frame - 1,
+                                               anim, 0, loop );
+               }
+               if ( newloop )
+               {
+                  copyInterpSkelAnimKeyframes( num,  getAnimFrameCount( mode, num ) - 1, newloop, UINT_MAX,
+                                               anim, getAnimFrameCount( mode, anim ) - 1, loop );
                }
 
                setAnimFrameCount( mode, anim, frame );
@@ -736,6 +759,7 @@ int Model::splitAnimation( AnimationModeE mode, unsigned anim, const char * newN
             {
                setAnimFrameCount( mode, num, getAnimFrameCount( mode, anim ) - frame );
                setAnimFPS( mode, num, getAnimFPS( mode, anim ) );
+               setAnimLooping( mode, num, getAnimLooping( mode, anim ) );
 
                FrameAnim * fa = m_frameAnims[anim];
 
@@ -771,6 +795,57 @@ int Model::splitAnimation( AnimationModeE mode, unsigned anim, const char * newN
    }
 
    return num;
+}
+
+void Model::copyInterpSkelAnimKeyframes( unsigned destAnim, unsigned destFrame, bool destLoop, unsigned destLastFrame, unsigned sourceAnim, unsigned sourceFrame, bool sourceLoop )
+{
+   if ( destAnim < m_skelAnims.size()
+         && destFrame < m_skelAnims[destAnim]->m_frameCount
+         && sourceAnim < m_skelAnims.size()
+         && sourceFrame < m_skelAnims[sourceAnim]->m_frameCount )
+   {
+      SkelAnim * souceSA = m_skelAnims[sourceAnim];
+      double sourceTotalTime = souceSA->m_spf * souceSA->m_frameCount;
+      double sourceFrameTime = (double) sourceFrame / (double) souceSA->m_frameCount
+                      * sourceTotalTime;
+
+      SkelAnim * destSA = m_skelAnims[destAnim];
+      double destTotalTime = destSA->m_spf * destSA->m_frameCount;
+      double destFrameTime = (double) destFrame / (double) destSA->m_frameCount
+                      * destTotalTime;
+      double destLastFrameTime = ( destLastFrame == UINT_MAX ) ? -1.0 :
+                               ( (double) destLastFrame / (double) destSA->m_frameCount
+                      * destTotalTime );
+
+      for ( size_t j = 0; j < m_joints.size(); j++ )
+      {
+         Matrix sourceMatrix;
+         double sourceTrans[3];
+         double sourceRot[3];
+
+         interpSkelAnimKeyframeTime( sourceAnim, sourceFrameTime, sourceLoop, j, sourceMatrix );
+         sourceMatrix.getTranslation( sourceTrans[0], sourceTrans[1], sourceTrans[2] );
+         sourceMatrix.getRotation( sourceRot[0], sourceRot[1], sourceRot[2] );
+
+         Matrix destMatrix;
+         double destTrans[3];
+         double destRot[3];
+
+         interpSkelAnimKeyframeTime( destAnim, destFrameTime, destLoop, j, destMatrix, -1.0, destLastFrameTime );
+         destMatrix.getTranslation( destTrans[0], destTrans[1], destTrans[2] );
+         destMatrix.getRotation( destRot[0], destRot[1], destRot[2] );
+
+         if ( !floatCompareVector( destTrans, sourceTrans, 3 ) )
+         {
+            setSkelAnimKeyframe( destAnim, destFrame, j, false, sourceTrans[0], sourceTrans[1], sourceTrans[2] );
+         }
+
+         if ( !floatCompareVector( destRot, sourceRot, 3 ) )
+         {
+            setSkelAnimKeyframe( destAnim, destFrame, j, true, sourceRot[0], sourceRot[1], sourceRot[2] );
+         }
+      }
+   }
 }
 
 bool Model::joinAnimations( AnimationModeE mode, unsigned anim1, unsigned anim2 )
@@ -2484,7 +2559,7 @@ bool Model::interpSkelAnimKeyframe( unsigned anim, unsigned frame,
 }
 
 bool Model::interpSkelAnimKeyframeTime( unsigned anim, double frameTime,
-      bool loop, unsigned j, Matrix & transform ) const
+      bool loop, unsigned j, Matrix & transform, double minFrameTime, double maxFrameTime ) const
 {
    if ( anim < m_skelAnims.size() && j < m_joints.size() )
    {
@@ -2513,6 +2588,15 @@ bool Model::interpSkelAnimKeyframeTime( unsigned anim, double frameTime,
          int tran = -1;
          for ( unsigned k = 0; k < sa->m_jointKeyframes[j].size(); k++ )
          {
+            if ( minFrameTime > 0.0 && sa->m_jointKeyframes[j][k]->m_time < minFrameTime )
+            {
+               continue;
+            }
+            if ( maxFrameTime > 0.0 && sa->m_jointKeyframes[j][k]->m_time > maxFrameTime )
+            {
+               continue;
+            }
+
             if ( sa->m_jointKeyframes[j][k]->m_isRotation )
             {
                if ( firstRot == -1 )
