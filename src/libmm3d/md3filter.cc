@@ -184,6 +184,11 @@ void Md3Filter::Md3Options::setOptionsFromModel( Model * model, const char * con
          m_saveAnimationCfg = false;
       }
    }
+
+   if ( model->getMetaData( "MD3_animationcfg", value, sizeof( value ) ) )
+   {
+      m_saveAnimationCfg = !!atoi( value );
+   }
 }
 
 Md3Filter::Md3Filter()
@@ -1845,6 +1850,10 @@ Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filen
          {
             writeAnimations( true, NULL );
          }
+         else
+         {
+            model->addMetaData( "MD3_animationcfg", "0" );
+         }
 
          model->addMetaData( "MD3_composite", "1" );
          model->operationComplete( transll( QT_TRANSLATE_NOOP( "LowLevel", "Set meta data for MD3 export" ) ).c_str() );
@@ -1862,9 +1871,17 @@ Model::ModelErrorE Md3Filter::writeFile( Model * model, const char * const filen
             writeAnimations( false, filename );
          }
 
-         if ( m_options->m_playerSupported )
+         if ( m_options->m_saveAnimationCfg || m_options->m_playerSupported )
          {
-            model->addMetaData( "MD3_composite", "0" );
+            if ( m_options->m_playerSupported )
+            {
+               model->addMetaData( "MD3_composite", "0" );
+            }
+            if ( m_options->m_saveAnimationCfg )
+            {
+               model->addMetaData( "MD3_animationcfg", "1" );
+            }
+
             model->operationComplete( transll( QT_TRANSLATE_NOOP( "LowLevel", "Set meta data for MD3 export" ) ).c_str() );
          }
 
