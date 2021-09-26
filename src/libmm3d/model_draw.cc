@@ -1039,12 +1039,14 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                         {
                            glColor3f( 1.0, 0.0, 0.0 );
                         }
+
                         glEnd();
                         glDisable( GL_LIGHT0 );
                         glEnable( GL_LIGHT1 );
                         glBegin( GL_TRIANGLES );
+
+                        colorSelected = true;
                      }
-                     colorSelected = true;
                   }
                   else
                   {
@@ -1054,12 +1056,14 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                         {
                            glColor3f( 0.9, 0.9, 0.9 );
                         }
+
+                        glEnd();
+                        glDisable( GL_LIGHT1 );
+                        glEnable( GL_LIGHT0 );
+                        glBegin( GL_TRIANGLES );
+
+                        colorSelected = false;
                      }
-                     glEnd();
-                     glDisable( GL_LIGHT1 );
-                     glEnable( GL_LIGHT0 );
-                     glBegin( GL_TRIANGLES );
-                     colorSelected = false;
                   }
 
                   for ( int v = 0; v < 3; v++ )
@@ -1101,24 +1105,28 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                         if ( colorSelected == false )
                         {
                            glColor3f( 1.0, 0.0, 0.0 );
+
+                           glEnd();
+                           glDisable( GL_LIGHT0 );
+                           glEnable( GL_LIGHT1 );
+                           glBegin( GL_TRIANGLES );
+
+                           colorSelected = true;
                         }
-                        glEnd();
-                        glDisable( GL_LIGHT0 );
-                        glEnable( GL_LIGHT1 );
-                        glBegin( GL_TRIANGLES );
-                        colorSelected = true;
                      }
                      else
                      {
                         if ( colorSelected == true )
                         {
                            glColor3f( 0.9, 0.9, 0.9 );
+
+                           glEnd();
+                           glDisable( GL_LIGHT1 );
+                           glEnable( GL_LIGHT0 );
+                           glBegin( GL_TRIANGLES );
+
+                           colorSelected = false;
                         }
-                        glEnd();
-                        glDisable( GL_LIGHT1 );
-                        glEnable( GL_LIGHT0 );
-                        glBegin( GL_TRIANGLES );
-                        colorSelected = false;
                      }
 
                      for ( int v = 0; v < 3; v++ )
