@@ -670,11 +670,12 @@ class MU_DeletePoint : public ModelUndo
 
       unsigned size();
 
-      void deletePoint( unsigned pointNum, Model::Point * point );
+      void deletePoint( unsigned pointNum, Model::Point * point, vector<Model::FrameAnimPoint *> * pointAnimFrames );
 
    private:
       unsigned       m_pointNum;
       Model::Point * m_point;
+      vector<Model::FrameAnimPoint *> * m_pointAnimFrames;
 };
 
 class MU_DeleteProjection : public ModelUndo

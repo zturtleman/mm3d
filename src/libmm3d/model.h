@@ -1593,7 +1593,7 @@ class Model
       void insertInfluence( const Position & pos, unsigned index, const InfluenceT & influence );
       void removeInfluence( const Position & pos, unsigned index );
 
-      void insertPoint( unsigned index, Point * point );
+      void insertPoint( unsigned index, Point * point, vector<FrameAnimPoint *> * pointAnimFrames = NULL );
       void removePoint( unsigned index );
 
       void insertProjection( unsigned index, TextureProjection * proj );

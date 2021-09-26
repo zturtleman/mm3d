@@ -705,11 +705,6 @@ int Model::addPoint( const char * name, double x, double y, double z,
    {
       return -1;
    }
-   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
-   {
-      displayFrameAnimPrimitiveError();
-      return -1;
-   }
 
    m_changeBits |= AddOther;
 
@@ -984,11 +979,6 @@ bool Model::deletePoint( unsigned point )
    {
       return false;
    }
-   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
-   {
-      displayFrameAnimPrimitiveError();
-      return false;
-   }
 
    if ( point >= m_points.size() )
    {
@@ -996,10 +986,32 @@ bool Model::deletePoint( unsigned point )
    }
 
    Point * ptr = m_points[point];
+   vector<FrameAnimPoint *> *pointAnimFrames = new vector<FrameAnimPoint *>;
+
+   vector<FrameAnim *>::iterator ait;
+   for ( ait = m_frameAnims.begin(); ait != m_frameAnims.end(); ait++ )
+   {
+      FrameAnimDataList::iterator fit;
+      for ( fit = (*ait)->m_frameData.begin(); fit != (*ait)->m_frameData.end(); fit++ )
+      {
+         unsigned count;
+         FrameAnimPointList::iterator pit;
+         for ( count = 0, pit = (*fit)->m_framePoints->begin(); pit != (*fit)->m_framePoints->end(); pit++ )
+         {
+            if ( count == point )
+            {
+               pointAnimFrames->push_back( *pit );
+               break;
+            }
+            count++;
+         }
+      }
+   }
+
    removePoint( point );
 
    MU_DeletePoint * undo = new MU_DeletePoint();
-   undo->deletePoint( point, ptr );
+   undo->deletePoint( point, ptr, pointAnimFrames );
    sendUndo( undo );
 
    setupJoints();

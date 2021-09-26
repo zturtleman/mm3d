@@ -4295,7 +4295,7 @@ MU_DeletePoint::~MU_DeletePoint()
 void MU_DeletePoint::undo( Model * model )
 {
    log_debug( "undo delete point\n" );
-   model->insertPoint( m_pointNum, m_point );
+   model->insertPoint( m_pointNum, m_point, m_pointAnimFrames );
 }
 
 void MU_DeletePoint::redo( Model * model )
@@ -4312,17 +4312,28 @@ bool MU_DeletePoint::combine( Undo * u )
 void MU_DeletePoint::undoRelease()
 {
    m_point->release();
+
+   if ( m_pointAnimFrames )
+   {
+      vector<Model::FrameAnimPoint *>::iterator it;
+      for ( it = m_pointAnimFrames->begin(); it != m_pointAnimFrames->end(); it++ )
+      {
+         (*it)->release();
+      }
+      delete m_pointAnimFrames;
+   }
 }
 
 unsigned MU_DeletePoint::size()
 {
-   return sizeof(MU_DeletePoint) + sizeof(Model::Point);
+   return sizeof(MU_DeletePoint) + sizeof(Model::Point) + sizeof( vector<Model::FrameAnimPoint *> ) + ( m_pointAnimFrames ? m_pointAnimFrames->size() : 0 ) * sizeof( Model::FrameAnimPoint );
 }
 
-void MU_DeletePoint::deletePoint( unsigned pointNum, Model::Point * point )
+void MU_DeletePoint::deletePoint( unsigned pointNum, Model::Point * point, vector<Model::FrameAnimPoint *> * pointAnimFrames )
 {
    m_pointNum = pointNum;
    m_point    = point;
+   m_pointAnimFrames = pointAnimFrames;
 }
 
 MU_DeleteProjection::MU_DeleteProjection()

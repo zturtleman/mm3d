@@ -544,7 +544,7 @@ void Model::removeInfluence( const Position & pos, unsigned index )
    }
 }
 
-void Model::insertPoint( unsigned index, Model::Point * point )
+void Model::insertPoint( unsigned index, Model::Point * point, vector<Model::FrameAnimPoint *> * pointAnimFrames )
 {
    if ( m_animationMode )
    {
@@ -553,9 +553,46 @@ void Model::insertPoint( unsigned index, Model::Point * point )
 
    m_changeBits |= AddOther;
 
+   vector<Model::FrameAnimPoint *>::iterator fap;
+   if ( pointAnimFrames )
+   {
+      fap = pointAnimFrames->begin();
+   }
+
    if ( index == m_points.size() )
    {
       m_points.push_back( point );
+
+      vector<FrameAnim *>::iterator ait;
+      for ( ait = m_frameAnims.begin(); ait != m_frameAnims.end(); ait++ )
+      {
+         FrameAnimDataList::iterator fit;
+         for ( fit = (*ait)->m_frameData.begin(); fit != (*ait)->m_frameData.end(); fit++ )
+         {
+            FrameAnimPoint * add;
+
+            if ( pointAnimFrames )
+            {
+               add = *fap;
+               fap++;
+               if ( fap == pointAnimFrames->end() )
+               {
+                  pointAnimFrames = NULL;
+               }
+            }
+            else
+            {
+               add = FrameAnimPoint::get();
+               for ( unsigned v = 0; v < 3; v++ )
+               {
+                  add->m_trans[v] = point->m_trans[v];
+                  add->m_rot[v] = point->m_rot[v];
+               }
+            }
+
+            (*fit)->m_framePoints->push_back( add );
+         }
+      }
    }
    else if ( index < m_points.size() )
    {
@@ -569,6 +606,46 @@ void Model::insertPoint( unsigned index, Model::Point * point )
             break;
          }
          count++;
+      }
+
+      vector<FrameAnim *>::iterator ait;
+      for ( ait = m_frameAnims.begin(); ait != m_frameAnims.end(); ait++ )
+      {
+         FrameAnimDataList::iterator fit;
+         for ( fit = (*ait)->m_frameData.begin(); fit != (*ait)->m_frameData.end(); fit++ )
+         {
+            FrameAnimPointList::iterator pit;
+            for ( count = 0, pit = (*fit)->m_framePoints->begin(); pit != (*fit)->m_framePoints->end(); pit++ )
+            {
+               if ( count == index )
+               {
+                  FrameAnimPoint * add;
+
+                  if ( pointAnimFrames )
+                  {
+                     add = *fap;
+                     fap++;
+                     if ( fap == pointAnimFrames->end() )
+                     {
+                        pointAnimFrames = NULL;
+                     }
+                  }
+                  else
+                  {
+                     add = FrameAnimPoint::get();
+                     for ( unsigned v = 0; v < 3; v++ )
+                     {
+                        add->m_trans[v] = point->m_trans[v];
+                        add->m_rot[v] = point->m_rot[v];
+                     }
+                  }
+
+                  (*fit)->m_framePoints->insert( pit, add );
+                  break;
+               }
+               count++;
+            }
+         }
       }
    }
    else
@@ -600,6 +677,25 @@ void Model::removePoint( unsigned point )
             break;
          }
          count++;
+      }
+
+      vector<FrameAnim *>::iterator ait;
+      for ( ait = m_frameAnims.begin(); ait != m_frameAnims.end(); ait++ )
+      {
+         FrameAnimDataList::iterator fit;
+         for ( fit = (*ait)->m_frameData.begin(); fit != (*ait)->m_frameData.end(); fit++ )
+         {
+            FrameAnimPointList::iterator pit;
+            for ( count = 0, pit = (*fit)->m_framePoints->begin(); pit != (*fit)->m_framePoints->end(); pit++ )
+            {
+               if ( count == point )
+               {
+                  (*fit)->m_framePoints->erase( pit );
+                  break;
+               }
+               count++;
+            }
+         }
       }
    }
    else
