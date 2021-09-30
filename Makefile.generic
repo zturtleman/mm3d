@@ -147,11 +147,22 @@ ifdef MINGW
       MINGW_PREFIXES=i686-w64-mingw32 i586-mingw32msvc i686-pc-mingw32
     endif
 
+    # Prefer POSIX thread model (as opposed to win32) to use the same
+    # libgcc and libstdc++ run-time as Qt. Debian has separate binaries
+    # with -posix and -win32 suffix. "$(MINGW_PREFIX)-gcc" could be either.
+    ifndef CC
+      CC=$(strip $(foreach MINGW_PREFIX, $(MINGW_PREFIXES), \
+         $(call bin_path, $(MINGW_PREFIX)-gcc-posix)))
+    endif
     ifndef CC
       CC=$(strip $(foreach MINGW_PREFIX, $(MINGW_PREFIXES), \
          $(call bin_path, $(MINGW_PREFIX)-gcc)))
     endif
 
+    ifndef CXX
+      CXX=$(strip $(foreach MINGW_PREFIX, $(MINGW_PREFIXES), \
+         $(call bin_path, $(MINGW_PREFIX)-g++-posix)))
+    endif
     ifndef CXX
       CXX=$(strip $(foreach MINGW_PREFIX, $(MINGW_PREFIXES), \
          $(call bin_path, $(MINGW_PREFIX)-g++)))
@@ -196,7 +207,12 @@ ifdef MINGW
     QT_LIBS=-lQt5Core -lQt5Gui -lQt5Widgets
   endif
 
-  LINK=-L${QT_LIB_DIR} ${QT_LIBS} -mwindows -lshlwapi -lopengl32 -lglu32 -static-libgcc -static-libstdc++
+  LINK=-L${QT_LIB_DIR} ${QT_LIBS} -mwindows -lshlwapi -lopengl32 -lglu32
+
+  # NOTE: If building using gcc/g++ with win32 thread model or a different
+  #       toolchain than Qt was built with you may want to use static libgcc
+  #       and libstdc++.
+  #LINK+= -static-libgcc -static-libstdc++
 
   BASE_FLAGS+=-DWIN32
 
