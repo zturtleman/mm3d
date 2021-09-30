@@ -23,6 +23,89 @@ Optionally you may choose to enable file assciations with
 Maverick Model 3D.  By default only .mm3d is associated.
 
 
+Building in MSYS2
+=================
+
+This is an easy way to build for your own personal use however making
+releases is not supported. MSYS2 has Qt depend on various libraries and
+they aren't copied to the install directory by windeployqt and would not
+be added to the MM3D NSIS installer.
+
+1. Install MSYS2 and follow the guide for updating packages at
+   <https://www.msys2.org>. You don't need to install the recommended
+   base-devel or mingw toolchain packages though.
+
+2. Open "MSYS2 MSYS" from the start menu and run the following command
+   to install the necessary packages:
+
+   pacman -S --needed git make mingw-w64-x86_64-{gcc,gdb} mingw-w64-x86_64-qt5-{base,imageformats,svg,tools,translations}
+
+If you need to debug the application, you may want these as well:
+
+   pacman -S --needed mingw-w64-x86_64-qt5-{base,imageformats,svg,tools}-debug
+
+3. Open "MSYS2 MinGW 64-Bit" and run the following commands. They change
+   to the Desktop folder, download Maverick from GitHub, build using the
+   generic config.h and Makefile, and then "install" into
+   Desktop/mm3d/build/mingw64-x86_64/install. (Feel free to use a folder
+   besides Desktop.)
+
+   cd /c/Users/$USERNAME/Desktop
+   git clone https://github.com/zturtleman/mm3d.git
+   cd mm3d
+   cp config.h.generic config.h
+   cp Makefile.generic Makefile
+   echo "QTDIR=/mingw64" > Makefile.local
+   make
+   make install
+
+4. Still in "MSYS2 MinGW 64-Bit" run the following to launch Maverick:
+
+   PATH=/mingw64/bin:$PATH build/mingw64-x86_64/install/mm3d.x86_64.exe
+
+If you edit the Makefile or it's failing to build after updating
+packages do a fresh build using the following:
+
+   make clean
+   make
+
+Attempting to run build/mingw64-x86_64/install/mm3d.x86_64.exe without
+setting PATH enviornment variable (or copying to another PC without
+MSYS2) will report errors about missing DLLs. Copy them using Windows
+Explorer from C:\msys64\mingw64\bin\ or using "MSYS2 MinGW 64-Bit"
+from /mingw64/bin/ :
+
+   cd build/mingw64-x86_64/install
+
+   cp /mingw64/bin/libbrotilcommon.dll .
+   cp /mingw64/bin/libbrotildec.dll .
+   cp /mingw64/bin/libbz2-1.dll .
+   cp /mingw64/bin/libdouble-conversion.dll .
+   cp /mingw64/bin/libfreetype-6.dll .
+   cp /mingw64/bin/libglib-2-0-0.dll .
+   cp /mingw64/bin/libgraphite2.dll .
+   cp /mingw64/bin/libharfbuzz-0.dll .
+   cp /mingw64/bin/libiconv-2.dll .
+   cp /mingw64/bin/libicudt*.dll .
+   cp /mingw64/bin/libicuin*.dll .
+   cp /mingw64/bin/libicuuc*.dll .
+   cp /mingw64/bin/libintl-8 .
+   cp /mingw64/bin/libmd4c.dll .
+   cp /mingw64/bin/libpcre-1.dll .
+   cp /mingw64/bin/libpng16-16.dll .
+   cp /mingw64/bin/libzstd.dll .
+   cp /mingw64/bin/pcre2-16-0.dll .
+   cp /mingw64/bin/zlib1.dll .
+
+   cd ../../..
+
+
+
+Below are directions for building using the official Qt installer.
+Though it has not been tested with recent Qt 5 versions.
+
+
+
 Prerequisites
 =============
 
