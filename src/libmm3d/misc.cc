@@ -839,7 +839,17 @@ std::wstring utf8PathToWin32API( const char *filename )
      }
    }
 
-   return wideString;
+   // Resolve "." and "..".
+   // FindFirstFileW() fails with error ERROR_INVALID_NAME if there is a ".." directory.
+   DWORD realpathSize = GetFullPathNameW( &wideString[0], 0, NULL, NULL );
+   std::wstring realpath( realpathSize, '\0' );
+   if ( GetFullPathNameW( &wideString[0], realpathSize, &realpath[0], NULL ) == 0 )
+   {
+      // GetLastError()
+      return wideString;
+   }
+
+   return realpath;
 }
 
 std::string widePathToUtf8( const wchar_t *filename )
