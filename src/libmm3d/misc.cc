@@ -132,7 +132,7 @@ bool pathIsAbsolute( const char * path )
 {
 #if 0 //#ifdef WIN32
    // FIXME?: PathIsRelativeW() returns FALSE for files without path.
-   std::wstring widePath = utf8PathToWide( path );
+   std::wstring widePath = utf8PathToWin32API( path );
    if ( widePath.empty() )
       return false;
    return ( PathIsRelativeW( &widePath[0] ) == FALSE );
@@ -502,10 +502,10 @@ void getFileList( std::list<std::string> & l, const char * const path, const cha
    }
    searchPath += '*';
 
-   std::wstring wideSearch = utf8PathToWide( searchPath.c_str() );
+   std::wstring wideSearch = utf8PathToWin32API( searchPath.c_str() );
    if ( wideSearch.empty() )
    {
-      log_warning( "getFileList(%s): utf8PathToWide() failed\n", path );
+      log_warning( "getFileList(%s): utf8PathToWin32API() failed\n", path );
       return;
    }
 
@@ -564,7 +564,7 @@ bool file_modifiedtime( const char * filename, time_t * modifiedtime )
 #ifdef WIN32
    *modifiedtime = 0;
 
-   std::wstring wideString = utf8PathToWide( filename );
+   std::wstring wideString = utf8PathToWin32API( filename );
    if ( wideString.empty() )
       return false;
 
@@ -607,7 +607,7 @@ bool file_modifiedtime( const char * filename, time_t * modifiedtime )
 bool file_exists( const char * filename )
 {
 #ifdef WIN32
-   std::wstring wideString = utf8PathToWide( filename );
+   std::wstring wideString = utf8PathToWin32API( filename );
    if ( wideString.empty() )
       return false;
 
@@ -629,7 +629,7 @@ bool file_exists( const char * filename )
 bool is_directory( const char * filename )
 {
 #ifdef WIN32
-   std::wstring wideString = utf8PathToWide( filename );
+   std::wstring wideString = utf8PathToWin32API( filename );
    if ( wideString.empty() )
       return false;
 
@@ -810,7 +810,7 @@ void utf8chrtrunc( std::string & str, size_t len )
 }
 
 #ifdef WIN32
-std::wstring utf8PathToWide( const char *filename )
+std::wstring utf8PathToWin32API( const char *filename )
 {
    size_t wideSize = MultiByteToWideChar( CP_UTF8, MB_ERR_INVALID_CHARS, filename, -1, NULL, 0 );
    if ( wideSize == 0 )
@@ -820,7 +820,7 @@ std::wstring utf8PathToWide( const char *filename )
       return std::wstring();
    }
 
-   // Use \\?\ prefix to tell Windows API to use more than MAX_PATH (260) characters.
+   // Use \\?\ UNC prefix to tell Windows API to use more than MAX_PATH (260) characters.
    std::wstring wideString( wideSize + 4, '\0' );
    wcscpy( &wideString[0], L"\\\\?\\" );
    if ( MultiByteToWideChar( CP_UTF8, MB_ERR_INVALID_CHARS, filename, -1, &wideString[4], wideSize ) == 0 )

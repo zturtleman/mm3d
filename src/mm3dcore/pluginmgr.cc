@@ -344,10 +344,10 @@ bool PluginManager::loadPluginDir( const char * pluginDir )
       }
       searchPath += '*';
 
-      std::wstring wideSearch = utf8PathToWide( searchPath.c_str() );
+      std::wstring wideSearch = utf8PathToWin32API( searchPath.c_str() );
       if ( wideSearch.empty() )
       {
-         log_warning( "loadPluginDir(%s): utf8PathToWide() failed\n", pluginDir );
+         log_warning( "loadPluginDir(%s): utf8PathToWin32API() failed\n", pluginDir );
          return false;
       }
 

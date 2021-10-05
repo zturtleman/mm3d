@@ -145,7 +145,7 @@ char * PORT_realpath( const char * path, char * resolved_path, size_t len )
 {
 #ifdef WIN32
    char * rval = NULL;
-   std::wstring widePath = utf8PathToWide( path );
+   std::wstring widePath = utf8PathToWin32API( path );
    if ( !widePath.empty() )
    {
       DWORD requiredSize = GetFullPathNameW( &widePath[0], 0, NULL, NULL );
@@ -153,7 +153,7 @@ char * PORT_realpath( const char * path, char * resolved_path, size_t len )
       if ( GetFullPathNameW( &widePath[0], requiredSize, &realpath[0], NULL ) != 0 )
       {
          if ( WideCharToMultiByte( CP_UTF8, WC_ERR_INVALID_CHARS, &realpath[0], -1, resolved_path, len, NULL, NULL ) != 0 ) {
-            // \\?\ is added by utf8PathToWide() for Windows API but don't return it.
+            // \\?\ is added by utf8PathToWin32API() for Windows API but don't return it.
             if ( strncmp( resolved_path, "\\\\?\\", 4 ) == 0 )
             {
                memmove( &resolved_path[0], &resolved_path[4], strlen( &resolved_path[4] ) + 1 );
@@ -290,7 +290,7 @@ int PORT_symlink( const char * oldpath, const char * newpath )
 int PORT_mkdir( const char * pathname, mode_t mode )
 {
 #ifdef WIN32
-   std::wstring widePath = utf8PathToWide( pathname );
+   std::wstring widePath = utf8PathToWin32API( pathname );
    if ( widePath.empty() )
    {
       errno = EINVAL;

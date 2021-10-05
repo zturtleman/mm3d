@@ -78,8 +78,7 @@ extern void utf8chrtrunc( char * str, size_t len );
 extern void utf8chrtrunc( std::string & str, size_t len );
 
 #ifdef WIN32
-// TODO: utf8PathToWide() should be utf8PathToWin32API() since it adds UNC prefix.
-std::wstring utf8PathToWide( const char *filename );
+std::wstring utf8PathToWin32API( const char *filename );
 std::string widePathToUtf8( const wchar_t *filename );
 #endif // WIN32
 

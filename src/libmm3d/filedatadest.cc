@@ -43,7 +43,7 @@ FileDataDest::FileDataDest( const char * filename )
       return;
    }
 
-   std::wstring wideString = utf8PathToWide( filename );
+   std::wstring wideString = utf8PathToWin32API( filename );
    if ( wideString.empty() )
    {
       setErrno( EINVAL );
