@@ -27,9 +27,15 @@
 #include <stdio.h>
 #include <cstring>
 #include <shlobj.h>
+#include <shlwapi.h>
 #include <string>
 #include <string.h>
 #include <stdlib.h>
+
+#if defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR)
+#include <initguid.h>
+#include <knownfolders.h>
+#endif
 
 #elif defined(__APPLE__)
 
@@ -42,6 +48,7 @@
 #include "sysconf.h"
 #include "mm3dconfig.h"
 #include "mm3dport.h"
+#include "misc.h"
 #include "log.h"
 #include "version.h"
 
@@ -63,26 +70,89 @@ static std::string s_configFile;
 static std::string getExecutablePath()
 {
    std::string rval = "";
-   char execpath[MAX_PATH];
-   DWORD length;
+   WCHAR *wexecpath;
+   DWORD length, maxLength;
 
-   length = GetModuleFileNameA( NULL, execpath, sizeof( execpath ) );
+   maxLength = MAX_PATH;
+   wexecpath = (WCHAR *)malloc( maxLength * sizeof( WCHAR ) );
 
-   if ( length >= sizeof( execpath ) ) {
-      log_debug( "getExecutablePath: Execuable path too long\n" );
-   } else if ( length == 0 ) {
-      log_debug( "getExecutablePath: GetModuleFileNameA() failed: 0x%x\n", GetLastError() );
-   } else {
-      char *ptr = strrchr( execpath, '\\' );
+   while ( 1 )
+   {
+      length = GetModuleFileNameW( NULL, wexecpath, maxLength );
 
-      if ( ptr )
+      if ( length >= maxLength )
       {
-         ptr[0] = '\0';
+         maxLength *= 2;
+         wexecpath = (WCHAR *)realloc( wexecpath, maxLength * sizeof( WCHAR ) );
+      }
+      else
+      {
+         break;
+      }
+   }
+
+   if ( length == 0 )
+   {
+      log_debug( "getExecutablePath: GetModuleFileNameW() failed: 0x%x\n", GetLastError() );
+   }
+   else
+   {
+      std::string execpath = widePathToUtf8( wexecpath );
+      std::string::size_type pathsep = execpath.rfind( '\\' );
+
+      if ( pathsep != std::string::npos )
+      {
+         execpath.resize( pathsep );
          rval = execpath;
       }
    }
 
+   free( wexecpath );
+
    return rval;
+}
+
+static std::string getAppDataPath()
+{
+   std::string utf8Path;
+#if defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR)
+   HMODULE libShell32 = LoadLibraryW( L"Shell32.dll" );
+
+   if ( libShell32 ) {
+      typedef HRESULT ( APIENTRY *pfnSHGetKnownFolderPath )( REFKNOWNFOLDERID, DWORD, HANDLE, PWSTR * );
+      // Use union to avoid function cast warning.
+      union {
+         FARPROC generic;
+         pfnSHGetKnownFolderPath proc;
+      } procTypeCast;
+      pfnSHGetKnownFolderPath qSHGetKnownFolderPath;
+      WCHAR *knownWidePath = NULL;
+
+      procTypeCast.generic = GetProcAddress( libShell32, "SHGetKnownFolderPath" );
+      qSHGetKnownFolderPath = procTypeCast.proc;
+
+      // Windows Vista or later
+      // (KF_FLAG_CREATE requires _WIN32_WINNT 0x0600)
+      if ( qSHGetKnownFolderPath && qSHGetKnownFolderPath( FOLDERID_RoamingAppData, 0x00008000 /*KF_FLAG_CREATE*/, NULL, &knownWidePath ) == S_OK ) {
+         utf8Path = widePathToUtf8( knownWidePath );
+         CoTaskMemFree( knownWidePath );
+      }
+
+      FreeLibrary( libShell32 );
+   }
+#else
+#warning "Missing FOLDERID_RoamingAppData required for long path support for AppData"
+#endif
+
+   if ( utf8Path.empty() ) {
+      // Windows 2000 Professional or later
+      wchar_t appdata[MAX_PATH];
+      if ( SHGetFolderPathW( NULL, CSIDL_APPDATA|CSIDL_FLAG_CREATE, NULL, 0, appdata ) == S_OK ) {
+         utf8Path = widePathToUtf8( appdata );
+      }
+   }
+
+   return utf8Path;
 }
 
 #elif defined(__APPLE__)
@@ -153,17 +223,19 @@ void init_sysconf()
    if ( path.length() == 0 )
    {
       // Fall back to current directory
-      char cwd[PATH_MAX];
+      char *cwd = PORT_get_current_dir_name();
 
-      if ( GetCurrentDirectoryA( sizeof(cwd), cwd ) > 0 ) {
+      if ( cwd ) {
          path = cwd;
+
+         free( cwd );
       } else {
          path = ".";
       }
    }
 
-   char appdata[MAX_PATH];
-   if ( SHGetFolderPathA( NULL, CSIDL_APPDATA|CSIDL_FLAG_CREATE, NULL, 0, appdata ) == S_OK ) {
+   std::string appdata = getAppDataPath();
+   if ( !appdata.empty() ) {
       s_mm3dHomeDir  = appdata;
       s_mm3dHomeDir += HOME_MM3D;
    } else {

@@ -207,7 +207,7 @@ ifdef MINGW
     QT_LIBS=-lQt5Core -lQt5Gui -lQt5Widgets
   endif
 
-  LINK=-L${QT_LIB_DIR} ${QT_LIBS} -mwindows -lshlwapi -lopengl32 -lglu32
+  LINK=-L${QT_LIB_DIR} ${QT_LIBS} -mwindows -lshlwapi -lole32 -lopengl32 -lglu32
 
   # NOTE: If building using gcc/g++ with win32 thread model or a different
   #       toolchain than Qt was built with you may want to use static libgcc

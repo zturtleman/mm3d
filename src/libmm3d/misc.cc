@@ -841,5 +841,32 @@ std::wstring utf8PathToWide( const char *filename )
 
    return wideString;
 }
+
+std::string widePathToUtf8( const wchar_t *filename )
+{
+   size_t utf8Size = WideCharToMultiByte( CP_UTF8, WC_ERR_INVALID_CHARS, filename, -1, NULL, 0, NULL, NULL );
+   if ( utf8Size == 0 )
+   {
+      // GetLastError()
+      // empty string
+      return std::string();
+   }
+
+   std::string utf8String( utf8Size, '\0' );
+   if ( WideCharToMultiByte( CP_UTF8, WC_ERR_INVALID_CHARS, filename, -1, &utf8String[0], utf8Size, NULL, NULL ) == 0 )
+   {
+      // GetLastError()
+      // empty string
+      return std::string();
+   }
+
+   if ( utf8Size > 0 && utf8String[utf8Size - 1] == '\0' )
+   {
+      utf8String.resize( utf8Size - 1 );
+      utf8Size -= 1;
+   }
+
+   return utf8String;
+}
 #endif
 
