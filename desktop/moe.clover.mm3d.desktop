@@ -8,4 +8,4 @@ Terminal=false
 Name=Maverick Model 3D
 MimeType=model/x-mm3d;
 Categories=Qt;Graphics;3DGraphics;
-X-Flatpak-RenamedFrom=mm3d.desktop;moe.clover.mm3d.desktop;
+X-Flatpak-RenamedFrom=mm3d.desktop;
