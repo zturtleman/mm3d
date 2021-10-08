@@ -190,7 +190,7 @@ void TextureCoord::initWindow()
    list<int>::iterator it;
    for ( it = trilist.begin(); !foundTexture && it != trilist.end(); it++ )
    {
-      int g = m_model->getTriangleGroup( trilist.front() );
+      int g = m_model->getTriangleGroup( *it );
       int m = m_model->getGroupTextureId( g );
       if ( m >= 0 )
       {
