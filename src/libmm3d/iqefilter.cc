@@ -52,7 +52,6 @@ static const char *IQE_HEADER = "# Inter-Quake Export";
 IqeFilter::IqeOptions::IqeOptions()
    : m_saveMeshes( true ),
      m_savePointsJoint( true ),
-     m_savePointsAnim( true ),
      m_saveSkeleton( true ),
      m_saveAnimations( true ),
      m_animations()
@@ -89,7 +88,7 @@ Model::ModelErrorE IqeFilter::writeFile( Model * model, const char * const filen
          m_options = freeOptions.get();
       }
 
-      if ( !m_options->m_saveMeshes && !m_options->m_savePointsJoint && !m_options->m_saveSkeleton && !m_options->m_saveAnimations )
+      if ( !m_options->m_saveMeshes && !m_options->m_saveSkeleton && !m_options->m_saveAnimations )
       {
          model->setFilterSpecificError( transll( QT_TRANSLATE_NOOP( "LowLevel", "No data marked for saving as IQE." ) ).c_str() );
          return Model::ERROR_FILTER_SPECIFIC;
@@ -108,7 +107,7 @@ Model::ModelErrorE IqeFilter::writeFile( Model * model, const char * const filen
          }
       }
 
-      if ( m_options->m_savePointsJoint || m_options->m_savePointsAnim )
+      if ( m_options->m_savePointsJoint && ( m_options->m_saveSkeleton || m_options->m_saveAnimations ) )
       {
          unsigned pcount = model->getPointCount();
          for ( unsigned p = 0; p < pcount; ++p )
@@ -197,7 +196,7 @@ Model::ModelErrorE IqeFilter::writeFile( Model * model, const char * const filen
       // Write Points as Joints
       //
       int pointCount = model->getPointCount();
-      if ( m_options->m_savePointsJoint && pointCount > 0 )
+      if ( m_options->m_saveSkeleton && m_options->m_savePointsJoint && pointCount > 0 )
       {
          writeLine( dst, "# Points" );
 
@@ -458,9 +457,8 @@ Model::ModelErrorE IqeFilter::writeFile( Model * model, const char * const filen
                }
 
                // This is the same as point joint matricies. There is
-               // no animation. It's only useful for compatibility with
-               // programs that require all joints to be animated.
-               if ( m_options->m_savePointsAnim && pointCount > 0 )
+               // no animation.
+               if ( m_options->m_savePointsJoint && pointCount > 0 )
                {
                   for ( int point = 0; point < pointCount; point++ )
                   {

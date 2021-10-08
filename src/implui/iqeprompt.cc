@@ -49,7 +49,6 @@ void IqePrompt::setOptions( IqeFilter::IqeOptions * opts, Model * model )
 {
    m_saveMeshes->setChecked( opts->m_saveMeshes );
    m_savePointsJoint->setChecked( opts->m_savePointsJoint );
-   m_savePointsAnim->setChecked( opts->m_savePointsAnim );
    m_saveSkeleton->setChecked( opts->m_saveSkeleton );
    m_saveAnimations->setChecked( opts->m_saveAnimations );
    m_animList->clear();
@@ -66,7 +65,6 @@ void IqePrompt::getOptions( IqeFilter::IqeOptions * opts )
 {
    opts->m_saveMeshes     = m_saveMeshes->isChecked();
    opts->m_savePointsJoint= m_savePointsJoint->isChecked();
-   opts->m_savePointsAnim = m_savePointsAnim->isChecked();
    opts->m_saveSkeleton   = m_saveSkeleton->isChecked();
    opts->m_saveAnimations = m_saveAnimations->isChecked();
    opts->m_animations.clear();

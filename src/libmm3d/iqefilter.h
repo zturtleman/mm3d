@@ -42,7 +42,6 @@ class IqeFilter : public ModelFilter
 
             bool m_saveMeshes;
             bool m_savePointsJoint;
-            bool m_savePointsAnim;
             bool m_saveSkeleton;
             bool m_saveAnimations;
             std::vector<unsigned int> m_animations;

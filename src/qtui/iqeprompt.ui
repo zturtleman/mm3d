@@ -35,16 +35,6 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="m_savePointsAnim">
-     <property name="text">
-      <string>Save Points in Animations</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QCheckBox" name="m_saveSkeleton">
      <property name="text">
       <string>Save Skeleton</string>
@@ -136,7 +126,6 @@
  <tabstops>
   <tabstop>m_saveMeshes</tabstop>
   <tabstop>m_savePointsJoint</tabstop>
-  <tabstop>m_savePointsAnim</tabstop>
   <tabstop>m_saveSkeleton</tabstop>
   <tabstop>m_saveAnimations</tabstop>
   <tabstop>m_animList</tabstop>
