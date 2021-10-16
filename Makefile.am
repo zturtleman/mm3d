@@ -137,7 +137,7 @@ define INFOPLIST
 endef
 export INFOPLIST
 
-$(PACKAGE).app:
+appbundle:
 	${INSTALL} -d      "$(MAC_APP)/Contents/MacOS/"
 	${INSTALL} -d      "$(MAC_APP)/Contents/Resources/"
 	${INSTALL} -d      "$(MAC_APP)/Contents/PlugIns/mm3d/1.3"
