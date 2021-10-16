@@ -970,7 +970,7 @@ mm3d: $(BIN)/mm3d${BINEXT}
 # make install doesn't work for mingw32-make.exe because it's case insenitive and autotools requires INSTALL file.
 install: deploy
 
-deploy:
+deploy: all
 ifdef MINGW
 ifdef MINGW32_MAKE
 	@IF NOT EXIST "${BUILD}\${BUILDSUB}\install" ${MKDIR} "${BUILD}\${BUILDSUB}\install"
@@ -1035,7 +1035,7 @@ else
 	${INSTALL} -m 0644 doc/html/olh_images/tools/*.jpg "$(PREFIX)/share/doc/mm3d/html/olh_images/tools/"
 endif
 
-installer: mm3d
+installer: deploy
 ifdef MINGW
 	makensis mm3d-win32-installer.nsi
 endif
