@@ -92,7 +92,7 @@ static bool loadTranslationFile( QTranslator * xlat, const QString & localeFile 
    for ( std::list<std::string>::iterator it = path_list.begin(); it != path_list.end(); ++it )
    {
       log_debug( "attempting to load translation %s from %s\n", (const char *) localeFile.toUtf8(), (const char *) it->c_str() );
-      if ( s_qtXlat->load( localeFile, it->c_str() ) )
+      if ( xlat->load( localeFile, it->c_str() ) )
       {
          log_debug( "  loaded.\n" );
          return true;
