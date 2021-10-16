@@ -988,7 +988,7 @@ ifdef MINGW32_MAKE
 	@copy "doc\html\olh_images\tools\*.png" "$(BUILD)\$(BUILDSUB)\install\doc\html\olh_images\tools"
 	@copy "doc\html\olh_images\tools\*.jpg" "$(BUILD)\$(BUILDSUB)\install\doc\html\olh_images\tools"
 	@copy "$(BUILD)\$(BUILDSUB)\translations\*.qm" "$(BUILD)\$(BUILDSUB)\install\translations"
-	@$(WINDEPLOYQT) --compiler-runtime "$(BUILD)\$(BUILDSUB)\install"
+	@$(WINDEPLOYQT) "$(BUILD)\$(BUILDSUB)\install"
 else
 	@$(MKDIR) "$(B)/install"
 	@$(MKDIR) "$(B)/install/doc/html"
@@ -1002,7 +1002,7 @@ else
 	@cp doc/html/olh_images/screencaps/*.png "$(B)/install/doc/html/olh_images/screencaps"
 	@cp doc/html/olh_images/tools/*.png "$(B)/install/doc/html/olh_images/tools"
 	@cp doc/html/olh_images/tools/*.jpg "$(B)/install/doc/html/olh_images/tools"
-	@$(WINDEPLOYQT) --compiler-runtime "$(B)/install"
+	@$(WINDEPLOYQT) "$(B)/install"
 endif
 else
 	$(INSTALL) -d "$(PREFIX)/bin"
