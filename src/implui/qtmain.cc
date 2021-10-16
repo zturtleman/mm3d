@@ -30,6 +30,7 @@
 #include <QtCore/QtGlobal>
 #include <QtCore/QLocale>
 #include <QtCore/QTranslator>
+#include <QtCore/QLibraryInfo>
 #include <QtWidgets/QApplication>
 #include <QtGui/QFileOpenEvent>
 #include <QtGui/QSurfaceFormat>
@@ -87,6 +88,7 @@ static bool loadTranslationFile( QTranslator * xlat, const QString & localeFile 
    path_list.push_back( "." );
    path_list.push_back( "../translations" );
    path_list.push_back( getTranslationsDirectory() );
+   path_list.push_back( QLibraryInfo::location( QLibraryInfo::TranslationsPath ).toUtf8().data() );
 
    // try current directory first (for override), then mm3d system directory
    for ( std::list<std::string>::iterator it = path_list.begin(); it != path_list.end(); ++it )
