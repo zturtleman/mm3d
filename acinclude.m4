@@ -1489,7 +1489,15 @@ AC_DEFUN([KSW_IS_OSX],
 
   AC_CACHE_CHECK([for OS X], ksw_cv_is_osx,
   [
-    if test -e /System/Library/Frameworks/Carbon.framework; then
+    cat > ksw_is_osx_test.c << EOF
+#include <Carbon/Carbon.h>
+
+int main( int argc, char **argv )
+{
+   return 0;
+}
+EOF
+    if ${CC} -c ksw_is_osx_test.c -framework Carbon 2> /dev/null > /dev/null; then
        is_osx=yes
     else
        is_osx=no

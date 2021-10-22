@@ -51,9 +51,19 @@ AC_FUNC_ERROR_AT_LINE
 AC_FUNC_FORK
 AC_FUNC_LSTAT
 AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
+
+if test "$cross_compiling" = yes; then
+# Assume the platform provides a working malloc() when cross-compiling.
+# Otherwise autotools would set HAVE_MALLOC and HAVE_REALLOC to 0 and
+# defines malloc and realloc to (non-existant) rpl_malloc and rpl_realloc.
+AC_DEFINE_UNQUOTED( [HAVE_MALLOC], [1] )
+AC_DEFINE_UNQUOTED( [HAVE_REALLOC], [1] )
+else
 AC_FUNC_MALLOC
-AC_FUNC_MEMCMP
 AC_FUNC_REALLOC
+fi
+
+AC_FUNC_MEMCMP
 AC_TYPE_SIGNAL
 AC_FUNC_STAT
 AC_FUNC_VPRINTF
@@ -73,6 +83,25 @@ AC_DEFINE_UNQUOTED( [PREFIX], ["$prefix"], [Define installation prefix] )
 else
 AC_DEFINE_UNQUOTED( [PREFIX], ["$ac_default_prefix"], [Define installation prefix] )
 fi
+
+# for cross-compiling
+# CC_FOR_BUILD is used for compiling build utils that run on the build host
+if test x"${AR}" = x; then
+AR=ar
+fi
+if test x"${RANLIB}" = x; then
+RANLIB=ranlib
+fi
+AC_SUBST(AR)
+AC_SUBST(RANLIB)
+if test x"${CC_FOR_BUILD}" = x; then
+CC_FOR_BUILD=${CC}
+CFLAGS_FOR_BUILD=${CFLAGS}
+LDFLAGS_FOR_BUILD=${LDFLAGS}
+fi
+AC_SUBST(CC_FOR_BUILD)
+AC_SUBST(CFLAGS_FOR_BUILD)
+AC_SUBST(LDFLAGS_FOR_BUILD)
 
 AC_SUBST(QT_LIBS)
 AC_SUBST(QT_CXXFLAGS)
