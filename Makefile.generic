@@ -117,6 +117,9 @@ ifdef MINGW
     ifndef QT_LIB_DIR
       QT_LIB_DIR=${QTDIR}/lib
     endif
+    ifndef QT_TRANSLATIONS_DIR
+      QT_TRANSLATIONS_DIR=${QTDIR}/translations
+    endif
   endif
 
   ifndef QT_BIN_DIR
@@ -128,6 +131,10 @@ ifdef MINGW
   ifndef QT_LIB_DIR
     $(error Need to specify QT_LIB_DIR with MinGW Qt5 libs)
   endif
+  # not required, it's only used on macOS right now
+  #ifndef QT_TRANSLATIONS_DIR
+  #  $(error Need to specify QT_TRANSLATIONS_DIR with MinGW Qt5 translations)
+  #endif
 
   ifeq ($(CROSS_COMPILING),1)
     # If CC is already set to something generic, we probably want to use
@@ -245,6 +252,9 @@ ifeq ($(PLATFORM),darwin)
   ifndef QT_FRAMEWORKS_DIR
     QT_FRAMEWORKS_DIR=${QTDIR}/lib
   endif
+  ifndef QT_TRANSLATIONS_DIR
+    QT_TRANSLATIONS_DIR=${QTDIR}/translations
+  endif
 
   ifndef QT_LIBS
     QT_LIBS=
@@ -298,6 +308,9 @@ else # ifeq darwin
     ifndef QT_LIB_DIR
       QT_LIB_DIR=${QTDIR}/lib
     endif
+    ifndef QT_TRANSLATIONS_DIR
+      QT_TRANSLATIONS_DIR=${QTDIR}/translations
+    endif
   else
     ifndef QT_BIN_DIR
       ifeq ($(ARCH),x86)
@@ -319,6 +332,9 @@ else # ifeq darwin
       else
         QT_LIB_DIR=/usr/lib/$(ARCH)-linux-gnu
       endif
+    endif
+    ifndef QT_TRANSLATIONS_DIR
+      QT_TRANSLATIONS_DIR=/usr/share/qt5/translations/
     endif
   endif
 
@@ -363,6 +379,9 @@ ifndef RCC
 endif
 ifndef LRELEASE
   LRELEASE=${QT_BIN_DIR}/lrelease${TOOLS_BINEXT}
+endif
+ifndef LCONVERT
+  LCONVERT=${QT_BIN_DIR}/lconvert${TOOLS_BINEXT}
 endif
 ifndef WINDEPLOYQT
   WINDEPLOYQT=${QT_BIN_DIR}/windeployqt${TOOLS_BINEXT}
@@ -1173,6 +1192,24 @@ define INFOPLIST
 endef
 export INFOPLIST
 
+define LOCVERSIONPLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>LprojCompatibleVersion</key>
+    <string>123</string>
+    <key>LprojLocale</key>
+    <string>XXLANGXX</string>
+    <key>LprojRevisionLevel</key>
+    <string>1</string>
+    <key>LprojVersion</key>
+    <string>123</string>
+</dict>
+</plist>
+endef
+export LOCVERSIONPLIST
+
 appbundle: all
 	${INSTALL} -d      "$(MAC_APP)/Contents/MacOS/"
 	${INSTALL} -d      "$(MAC_APP)/Contents/Resources/"
@@ -1191,6 +1228,19 @@ appbundle: all
 	@echo "$$INFOPLIST" > "$(MAC_APP)/Contents/Info.plist"
 	@echo "Wrote \"$(MAC_APP)/Contents/Info.plist\""
 	$(MACDEPLOYQT) "$(MAC_APP)"
+	@# Add translations of Qt itself
+	$(LCONVERT) -o "$(MAC_APP)/Contents/SharedSupport/mm3d/translations/qt_de.qm" "$(QT_TRANSLATIONS_DIR)/qtbase_de.qm"
+	$(LCONVERT) -o "$(MAC_APP)/Contents/SharedSupport/mm3d/translations/qt_fr.qm" "$(QT_TRANSLATIONS_DIR)/qtbase_fr.qm"
+	$(LCONVERT) -o "$(MAC_APP)/Contents/SharedSupport/mm3d/translations/qt_sk.qm" "$(QT_TRANSLATIONS_DIR)/qtbase_sk.qm"
+	@# Tell macOS to translate builtin dialogs (i.e., file chooser)
+	${INSTALL} -d      "$(MAC_APP)/Contents/Resources/en.lproj"
+	${INSTALL} -d      "$(MAC_APP)/Contents/Resources/de.lproj"
+	${INSTALL} -d      "$(MAC_APP)/Contents/Resources/fr.lproj"
+	${INSTALL} -d      "$(MAC_APP)/Contents/Resources/sk.lproj"
+	@echo "$$LOCVERSIONPLIST" | sed "s/XXLANGXX/en/g" > "$(MAC_APP)/Contents/Resources/en.lproj/locversion.plist"
+	@echo "$$LOCVERSIONPLIST" | sed "s/XXLANGXX/de/g" > "$(MAC_APP)/Contents/Resources/de.lproj/locversion.plist"
+	@echo "$$LOCVERSIONPLIST" | sed "s/XXLANGXX/fr/g" > "$(MAC_APP)/Contents/Resources/fr.lproj/locversion.plist"
+	@echo "$$LOCVERSIONPLIST" | sed "s/XXLANGXX/sk/g" > "$(MAC_APP)/Contents/Resources/sk.lproj/locversion.plist"
 
 
 
