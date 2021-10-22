@@ -53,6 +53,7 @@ modules:
       - "--with-Qt-bin-dir=/bin"
       - "--with-Qt-include-dir=/include"
       - "--with-Qt-lib-dir=/lib"
+      - "--with-Qt-translations-dir=/translations"
     sources:
       - type: dir
         path: .

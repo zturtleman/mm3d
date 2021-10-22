@@ -453,7 +453,8 @@ AC_DEFUN([BNV_HAVE_QT],
     [  --with-Qt-dir=DIR       DIR is equal to \$QTDIR if you have followed the
                           installation instructions of Trolltech. Header
                           files are in DIR/include, binary utilities are
-                          in DIR/bin and the library is in DIR/lib])
+                          in DIR/bin, the library is in DIR/lib, and the
+                          translations are in DIR/translations])
   AC_ARG_WITH([Qt-include-dir],
     [  --with-Qt-include-dir=DIR
                           Qt header files are in DIR])
@@ -461,6 +462,8 @@ AC_DEFUN([BNV_HAVE_QT],
     [  --with-Qt-bin-dir=DIR   Qt utilities such as moc and uic are in DIR])
   AC_ARG_WITH([Qt-lib-dir],
     [  --with-Qt-lib-dir=DIR   The Qt library is in DIR])
+  AC_ARG_WITH([Qt-translations-dir],
+    [  --with-Qt-translations-dir=DIR   The Qt translations are in DIR])
 
   bnv_is_qt5=no
   if test x"$is_osx" = xyes; then
@@ -471,7 +474,8 @@ AC_DEFUN([BNV_HAVE_QT],
   if test x"$with_Qt_dir" = x"no" ||
      test x"$with_Qt_include_dir" = x"no" ||
      test x"$with_Qt_bin_dir" = x"no" ||
-     test x"$with_Qt_lib_dir" = x"no"; then
+     test x"$with_Qt_lib_dir" = x"no" ||
+     test x"$with_Qt_translations_dir" = x"no"; then
     # user disabled Qt. Leave cache alone.
     have_qt="User disabled Qt."
   else
@@ -488,6 +492,9 @@ AC_DEFUN([BNV_HAVE_QT],
     if test x"$with_Qt_lib_dir" = xyes; then
       with_Qt_lib_dir=
     fi
+    if test x"$with_Qt_translations_dir" = xyes; then
+      with_Qt_translations_dir=
+    fi
     # No Qt unless we discover otherwise
     have_qt=no
     # Check whether we were supplied with an answer already
@@ -501,6 +508,7 @@ AC_DEFUN([BNV_HAVE_QT],
       else
         bnv_qt_lib_dir="$with_Qt_dir/lib"
       fi
+      bnv_qt_translations_dir="$with_Qt_dir/translations"
       if test x"$is_osx" = xyes; then
         bnv_qt_LIBS="-F$bnv_qt_dir/lib -L$bnv_qt_lib_dir $bnv_qt5_libs "
       else
@@ -515,10 +523,12 @@ AC_DEFUN([BNV_HAVE_QT],
         bnv_qt_dir=NO
         bnv_qt_include_dir=NO
         bnv_qt_lib_dir=NO
+        bnv_qt_translations_dir=NO
         BNV_PATH_QT_DIRECT
         if test "$bnv_qt_dir" = NO ||
            test "$bnv_qt_include_dir" = NO ||
-           test "$bnv_qt_lib_dir" = NO; then
+           test "$bnv_qt_lib_dir" = NO ||
+           test "$bnv_qt_translations_dir" = NO; then
           # Problem with finding complete Qt.  Cache the known absence of Qt.
           bnv_cv_have_qt="have_qt=no"
         else
@@ -527,6 +537,7 @@ AC_DEFUN([BNV_HAVE_QT],
                        bnv_qt_dir=$bnv_qt_dir          \
                bnv_qt_include_dir=$bnv_qt_include_dir  \
                    bnv_qt_bin_dir=$bnv_qt_bin_dir      \
+          bnv_qt_translations_dir=$bnv_qt_translations_dir \
                    bnv_is_qt5=$bnv_is_qt5              \
                       bnv_qt_LIBS=\"$bnv_qt_LIBS\""
         fi
@@ -541,6 +552,7 @@ AC_DEFUN([BNV_HAVE_QT],
       QT_CXXFLAGS="-I$bnv_qt_include_dir"
     fi
     QT_DIR="$bnv_qt_dir"
+    QT_TRANSLATIONS_DIR="$bnv_qt_translations_dir"
     QT_LIBS="$bnv_qt_LIBS"
     if test x"$bnv_qt_bin_dir" != x; then
       # We were told where to look for the utilities?
@@ -559,6 +571,10 @@ AC_DEFUN([BNV_HAVE_QT],
       # LRELEASE detection
       if test -x "$bnv_qt_bin_dir/lrelease"; then
         QT_LRELEASE="$bnv_qt_bin_dir/lrelease"
+      fi
+      # LCONVERT detection
+      if test -x "$bnv_qt_bin_dir/lconvert"; then
+        QT_LCONVERT="$bnv_qt_bin_dir/lconvert"
       fi
       # MACDEPLOYQT detection
       if test -x "$bnv_qt_bin_dir/macdeployqt"; then
@@ -582,6 +598,10 @@ AC_DEFUN([BNV_HAVE_QT],
       # LRELEASE detection
       if test -x "$bnv_qt_dir/bin/lrelease"; then
         QT_LRELEASE="$bnv_qt_dir/bin/lrelease"
+      fi
+      # LCONVERT detection
+      if test -x "$bnv_qt_dir/bin/lconvert"; then
+        QT_LCONVERT="$bnv_qt_dir/bin/lconvert"
       fi
       # MACDEPLOYQT detection
       if test -x "$bnv_qt_dir/bin/macdeployqt"; then
@@ -620,6 +640,12 @@ AC_DEFUN([BNV_HAVE_QT],
         QT_LRELEASE="/usr/lib/$bnv_qt_lib_host/qt5/bin/lrelease"
       fi
     fi
+    if test x"$QT_LCONVERT" = x; then
+      # LCONVERT detection
+      if test -x "/usr/lib/$bnv_qt_lib_host/qt5/bin/lconvert"; then
+        QT_LCONVERT="/usr/lib/$bnv_qt_lib_host/qt5/bin/lconvert"
+      fi
+    fi
     if test x"$QT_MACDEPLOYQT" = x; then
       # MACDEPLOYQT detection
       if test -x "/usr/lib/$bnv_qt_lib_host/qt5/bin/macdeployqt"; then
@@ -650,6 +676,12 @@ AC_DEFUN([BNV_HAVE_QT],
       # LRELEASE detection
       if test `which lrelease-qt5 2> /dev/null`; then
         QT_LRELEASE="lrelease-qt5"
+      fi
+    fi
+    if test x"$QT_LCONVERT" = x; then
+      # LCONVERT detection
+      if test `which lconvert-qt5 2> /dev/null`; then
+        QT_LCONVERT="lconvert-qt5"
       fi
     fi
     if test x"$QT_MACDEPLOYQT" = x; then
@@ -693,6 +725,12 @@ AC_DEFUN([BNV_HAVE_QT],
           QT_LRELEASE="$qtchoosertoolsdir/lrelease"
         fi
       fi
+      if test x"$QT_LCONVERT" = x; then
+        # LCONVERT detection
+        if test -x "$qtchoosertoolsdir/lconvert"; then
+          QT_LCONVERT="$qtchoosertoolsdir/lconvert"
+        fi
+      fi
       if test x"$QT_MACDEPLOYQT" = x; then
         # MACDEPLOYQT detection
         if test -x "$qtchoosertoolsdir/macdeployqt"; then
@@ -726,6 +764,12 @@ AC_DEFUN([BNV_HAVE_QT],
         QT_LRELEASE=`which lrelease`
       fi
     fi
+    if test x"$QT_LCONVERT" = x; then
+      # LCONVERT detection
+      if test `which lconvert 2> /dev/null`; then
+        QT_LCONVERT=`which lconvert`
+      fi
+    fi
     if test x"$QT_MACDEPLOYQT" = x; then
       # MACDEPLOYQT detection
       if test `which macdeployqt 2> /dev/null`; then
@@ -751,6 +795,10 @@ AC_DEFUN([BNV_HAVE_QT],
       have_qt=no
       QT_MISSING_TOOLS="$QT_MISSING_TOOLS lrelease"
     fi
+    if test x"$QT_LCONVERT" = x; then
+      have_qt=no
+      QT_MISSING_TOOLS="$QT_MISSING_TOOLS lconvert"
+    fi
     # Allow macdeployqt to be absent
     if test x"$QT_MACDEPLOYQT" = x; then
       QT_MACDEPLOYQT="macdeployqt"
@@ -760,11 +808,13 @@ AC_DEFUN([BNV_HAVE_QT],
     AC_MSG_RESULT([$have_qt:
     QT_CXXFLAGS=$QT_CXXFLAGS
     QT_DIR=$QT_DIR
+    QT_TRANSLATIONS_DIR=$QT_TRANSLATIONS_DIR
     QT_LIBS=$QT_LIBS
     QT_UIC=$QT_UIC
     QT_MOC=$QT_MOC
     QT_RCC=$QT_RCC
     QT_LRELEASE=$QT_LRELEASE
+    QT_LCONVERT=$QT_LCONVERT
     QT_MACDEPLOYQT=$QT_MACDEPLOYQT])
 
     if test x"$QT_MISSING_TOOLS" != x; then
@@ -775,11 +825,13 @@ AC_DEFUN([BNV_HAVE_QT],
     # Qt was not found
     QT_CXXFLAGS=
     QT_DIR=
+    QT_TRANSLATIONS_DIR=
     QT_LIBS=
     QT_UIC=
     QT_MOC=
     QT_RCC=
     QT_LRELEASE=
+    QT_LCONVERT=
     QT_MACDEPLOYQT=
     AC_MSG_RESULT($have_qt)
   fi
@@ -790,11 +842,13 @@ AC_DEFUN([BNV_HAVE_QT],
   fi
   AC_SUBST(QT_CXXFLAGS)
   AC_SUBST(QT_DIR)
+  AC_SUBST(QT_TRANSLATIONS_DIR)
   AC_SUBST(QT_LIBS)
   AC_SUBST(QT_UIC)
   AC_SUBST(QT_MOC)
   AC_SUBST(QT_RCC)
   AC_SUBST(QT_LRELEASE)
+  AC_SUBST(QT_LCONVERT)
   AC_SUBST(QT_MACDEPLOYQT)
 
 
@@ -980,6 +1034,7 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
     else
       bnv_qt_lib_dir="$bnv_qt_dir/lib"
     fi
+    bnv_qt_translations_dir="$bnv_qt_dir/translations"
     if test x"$is_osx" = xyes; then
       bnv_qt_LIBS="-F$bnv_qt_dir/lib -L$bnv_qt_lib_dir $bnv_qt5_libs"
     else
@@ -1054,6 +1109,24 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
       CXXFLAGS="$bnv_save_CXXFLAGS"
 
     fi dnl $with_Qt_lib_dir was not given
+
+    ## Look for Qt translations ##
+    if test x"$with_Qt_translations_dir" != x; then
+      bnv_qt_translations_dir="$with_Qt_translations_dir"
+    else
+      # Look for Qt translations in a standard set of common directories.
+      bnv_dir_list="
+        `echo $bnv_qt_include_dir | sed "s|/include|/translations|"`
+        /usr/share/qt5/translations
+        /usr/local/share/qt5/translations
+      "
+      for bnv_dir in $bnv_dir_list; do
+        if ls $bnv_dir/qt_*.qm > /dev/null 2> /dev/null ; then
+          bnv_qt_translations_dir="$bnv_dir"
+          break
+        fi
+      done
+    fi dnl $with_Qt_translations_dir was not given
 
   fi dnl Done setting up for non-traditional Trolltech installation
 

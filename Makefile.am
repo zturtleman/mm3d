@@ -137,6 +137,24 @@ define INFOPLIST
 endef
 export INFOPLIST
 
+define LOCVERSIONPLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>LprojCompatibleVersion</key>
+    <string>123</string>
+    <key>LprojLocale</key>
+    <string>XXLANGXX</string>
+    <key>LprojRevisionLevel</key>
+    <string>1</string>
+    <key>LprojVersion</key>
+    <string>123</string>
+</dict>
+</plist>
+endef
+export LOCVERSIONPLIST
+
 appbundle:
 	${INSTALL} -d      "$(MAC_APP)/Contents/MacOS/"
 	${INSTALL} -d      "$(MAC_APP)/Contents/Resources/"
@@ -155,4 +173,17 @@ appbundle:
 	@echo "$$INFOPLIST" > "$(MAC_APP)/Contents/Info.plist"
 	@echo "Wrote \"$(MAC_APP)/Contents/Info.plist\""
 	$(QT_MACDEPLOYQT) "$(MAC_APP)"
+	@# Add translations of Qt itself
+	$(LCONVERT) -o "$(MAC_APP)/Contents/SharedSupport/mm3d/translations/qt_de.qm" "$(QT_TRANSLATIONS_DIR)/qtbase_de.qm"
+	$(LCONVERT) -o "$(MAC_APP)/Contents/SharedSupport/mm3d/translations/qt_fr.qm" "$(QT_TRANSLATIONS_DIR)/qtbase_fr.qm"
+	$(LCONVERT) -o "$(MAC_APP)/Contents/SharedSupport/mm3d/translations/qt_sk.qm" "$(QT_TRANSLATIONS_DIR)/qtbase_sk.qm"
+	@# Tell macOS to translate builtin dialogs (i.e., file chooser)
+	${INSTALL} -d      "$(MAC_APP)/Contents/Resources/en.lproj"
+	${INSTALL} -d      "$(MAC_APP)/Contents/Resources/de.lproj"
+	${INSTALL} -d      "$(MAC_APP)/Contents/Resources/fr.lproj"
+	${INSTALL} -d      "$(MAC_APP)/Contents/Resources/sk.lproj"
+	@echo "$$LOCVERSIONPLIST" | sed "s/XXLANGXX/en/g" > "$(MAC_APP)/Contents/Resources/en.lproj/locversion.plist"
+	@echo "$$LOCVERSIONPLIST" | sed "s/XXLANGXX/de/g" > "$(MAC_APP)/Contents/Resources/de.lproj/locversion.plist"
+	@echo "$$LOCVERSIONPLIST" | sed "s/XXLANGXX/fr/g" > "$(MAC_APP)/Contents/Resources/fr.lproj/locversion.plist"
+	@echo "$$LOCVERSIONPLIST" | sed "s/XXLANGXX/sk/g" > "$(MAC_APP)/Contents/Resources/sk.lproj/locversion.plist"
 
