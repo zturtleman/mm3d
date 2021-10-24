@@ -26,7 +26,6 @@ finish-args:
   - --socket=wayland
   # X11 + XShm access
   - --share=ipc
-  - --socket=x11
   - --socket=fallback-x11
   # File access
   - --filesystem=host
