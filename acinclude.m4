@@ -523,12 +523,11 @@ AC_DEFUN([BNV_HAVE_QT],
         bnv_qt_dir=NO
         bnv_qt_include_dir=NO
         bnv_qt_lib_dir=NO
-        bnv_qt_translations_dir=NO
+        bnv_qt_translations_dir=
         BNV_PATH_QT_DIRECT
         if test "$bnv_qt_dir" = NO ||
            test "$bnv_qt_include_dir" = NO ||
-           test "$bnv_qt_lib_dir" = NO ||
-           test "$bnv_qt_translations_dir" = NO; then
+           test "$bnv_qt_lib_dir" = NO; then
           # Problem with finding complete Qt.  Cache the known absence of Qt.
           bnv_cv_have_qt="have_qt=no"
         else
