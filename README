@@ -37,17 +37,23 @@ Build dependencies:
 
     sudo apt install autoconf automake make gcc g++ qtbase5-dev qtbase5-dev-tools qttools5-dev-tools libgl1-mesa-dev
 
+qttranslations5-l10n can be used at run-time.
+
 ## Fedora
 
 Build dependencies:
 
     sudo dnf install autoconf automake make gcc gcc-c++ qt5-qtbase-devel qt5-linguist mesa-libGLU-devel
 
+qt5-qttranslations can be used at run-time.
+
 ## Arch Linux
 
 Build dependencies:
 
     sudo pacman -S autoconf automake make gcc qt5-base qt5-tools glu
+
+qt5-translations can be used at run-time.
 
 ## macOS
 
