@@ -218,7 +218,7 @@ string getRelativePath( const char * b, const char * p )
             base += "/";
          }
 
-         int lastSlash = 0;
+         int lastSlash = -1;
 
          int t = 0;
          int len = (int) (base.size() < path.size()) ? base.size() : path.size();
@@ -235,6 +235,12 @@ string getRelativePath( const char * b, const char * p )
                   lastSlash = t;
                }
             }
+         }
+
+         // There is no way to make the path relative if there are different Windows drive letters
+         if ( lastSlash == -1 )
+         {
+            return path;
          }
 
          // Back up to lastSlash and prepend "../" for each '/' remaining in base
