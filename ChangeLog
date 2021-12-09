@@ -1,3 +1,66 @@
+Maverick Model 3D releases published by Zack Middleton.
+
+Changes for 1.3.13 (YYYY-MM-DD)
+   General
+      Add GameMaker Studio .d3d model import/export
+      Add Clear Rotation/Translation Keyframes to Animation menu
+      Add Base Point to Model Merge
+      Add filename to Plugins window
+      Allow removing vertexes from models with frame animations
+      Allow adding/removing groups and points from models with frame animations
+      Make splitting skeleton animation keep overall pose
+      Make copy/paste skeleton animation frame copy interpolated keyframes
+      Make paste animation frame select what was paste
+      Make new animations default to non-looping
+      Switch from QGLWidget to QOpenGLWidget (needed for Wayland on Linux, breaks Windows with OpenGL 1.1)
+      Generate HTML manual using C instead of Perl with HTML::Template module
+      Fix merged points in frame animations
+      Fix crash if merging model when existing has a 0-frame animation
+      Fix undo event for Merge Animations
+      Fix model filter read/write to always use decimal point regardless of system locale
+      Fix truncating frames when changing frame count in animation mode
+      Fix Animation Sets -> Split to be start frame num
+      Fix horizontal scroll events being treated as scroll down
+      Fix texture coord window to check all selected triangles for a texture
+      Fix select joint influenced points
+      Fix Qt translations (qt_xx.qm) not being used
+      Fix hundreds of compiler warnings
+   Model Formats
+      iqe
+         Remove option to disable saving points in animations (IQM SDK would use identity, not bind pose)
+      md2
+         Fix vertex normals orientation
+      md3
+         Add export dialog with option to write animation.cfg for non-player models
+         Don't allow saving as a player if there are groups that would not be saved in any player segment
+      mm3d
+         Deduplicate written external textures list
+         Fix writing external texture count (it use to be material count which may be too high)
+         Fix saving with long background filename causing out-of-bounds write
+      ms3d
+         Fix loading model with all zero vertex bone weights
+      obj
+         Fix crash if some MTL keywords are before newmtl
+         Fix crash for out of bounds texcoord index
+   Linux
+      Add AppStream metadata and install icons into modern file path
+      Add ability to build as a Flatpak
+      Don't create 'shared' plugins symlink anymore (to allow multiple install paths)
+      Rename mimetype from application/x-mm3d to model/x-mm3d
+      Fix locating Qt translations on Linux
+   Windows
+      Support UTF-16 paths for install path and appdata on Windows
+      Make building using MinGW on Debian use POSIX thread model so it uses the same GCC run-time as Qt
+      Fix writing image filenames in models on a separate Windows drive than the images
+      Fix listing files on Windows with ".." directory in path
+   macOS
+      Add system and Qt translations to macOS AppBundle
+      Add `make appbundle` to Makefile.generic
+      Add support for cross-compiling from Linux using osxcross
+      Renamed macOS configure `make mm3d.app` target to `make appbundle`
+   Build Note
+      Moved autosetup.sh to autogen.sh to match defacto naming convention
+
 Changes for 1.3.12 (2019-10-07)
    Add shift key behavior to Texture Coord editor for move/rotate/scale
    Make Convert To Frame window convert multiple animations at once
