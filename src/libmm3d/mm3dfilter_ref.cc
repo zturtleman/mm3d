@@ -1064,6 +1064,7 @@ Model::ModelErrorE MisfitFilterRef::readFile( Model * model, const char * const 
    {
       bool     variable = _offsetIsVariable( MDT_ExtTextures, offsetList );
       uint32_t offset   = _offsetGet( MDT_ExtTextures, offsetList );
+      uint32_t texcoordsOffset = _offsetGet( MDT_TexCoords, offsetList );
 
       m_bufPos     = &fileBuf[offset];
       m_readLength = fileLength - offset;
@@ -1081,6 +1082,14 @@ Model::ModelErrorE MisfitFilterRef::readFile( Model * model, const char * const 
 
       for ( unsigned t = 0; t < count; t++ )
       {
+         // Before Maverick Model 3D 1.3.13, MM3D wrote external texture count as material count.
+         // It may be higher than the number of textures written to the file.
+         if ( texcoordsOffset >= offset && (uint32_t)( m_bufPos - fileBuf ) >= texcoordsOffset )
+         {
+            log_debug( "invalid external texture count (should be %d instead of %d)\n", t, count );
+            break;
+         }
+
          log_debug( "reading external texture %d/%d\n", t, count );
          if ( variable )
          {
