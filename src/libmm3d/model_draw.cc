@@ -1019,6 +1019,8 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                _defaultMaterial();
             }
 
+            glEnable( GL_LIGHT0 );
+            glDisable( GL_LIGHT1 );
             colorSelected = false;
 
             glBegin( GL_TRIANGLES );
@@ -1085,6 +1087,11 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
             }
             glEnd();
          }
+
+         glColor3f( 0.9, 0.9, 0.9 );
+         glEnable( GL_LIGHT0 );
+         glDisable( GL_LIGHT1 );
+         colorSelected = false;
 
          // Draw ungrouped triangles
          {
