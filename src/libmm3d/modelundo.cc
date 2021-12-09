@@ -1644,7 +1644,7 @@ void MU_DeleteVertex::undoRelease()
 
 unsigned MU_DeleteVertex::size()
 {
-   return sizeof(MU_DeleteVertex) + m_list.size() * (sizeof(DeleteVertexT) + sizeof(Model::Vertex) + sizeof( vector<Model::FrameAnimPoint *> ) + ( ( !m_list.empty() && m_list.begin()->vertexAnimFrames ) ? m_list.begin()->vertexAnimFrames->size() : 0 ) * sizeof( Model::FrameAnimPoint ));
+   return sizeof(MU_DeleteVertex) + m_list.size() * (sizeof(DeleteVertexT) + sizeof(Model::Vertex) + sizeof( vector<Model::FrameAnimVertex *> ) + ( ( !m_list.empty() && m_list.begin()->vertexAnimFrames ) ? m_list.begin()->vertexAnimFrames->size() : 0 ) * sizeof( Model::FrameAnimVertex ));
 }
 
 void MU_DeleteVertex::deleteVertex( unsigned vertexNum, Model::Vertex * vertex, vector<Model::FrameAnimVertex *> * vertexAnimFrames )
