@@ -396,7 +396,7 @@
         <translation>Animácia musí mať viac ako 0 sekúnd</translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+58"/>
         <source>Could not write file: </source>
         <translation>Nemôžem zapísať súbor: </translation>
     </message>
@@ -575,12 +575,12 @@ počet rámcov sa líši.</translation>
 <context>
     <name>AnimWidget</name>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="+649"/>
+        <location filename="../src/implui/animwidget.cc" line="+708"/>
         <source>&lt;New Animation&gt;</source>
         <translation>&lt;Nová animácia&gt;</translation>
     </message>
     <message>
-        <location line="-473"/>
+        <location line="-530"/>
         <source>Start animation mode</source>
         <comment>operation complete</comment>
         <translation>Spusti režim animácie</translation>
@@ -597,31 +597,31 @@ počet rámcov sa líši.</translation>
         <translation>Rámec: </translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+48"/>
         <source>Set FPS</source>
         <comment>Frames per second, operation complete</comment>
         <translation>Nastav FPS</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+25"/>
         <source>Change Frame Count</source>
         <comment>operation complete</comment>
         <translation>Zmeniť počet rámcov</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+37"/>
         <source>Clear frame</source>
         <comment>Remove animation data from frame, operation complete</comment>
         <translation>Vymazať rámec</translation>
     </message>
     <message>
-        <location line="+134"/>
+        <location line="+145"/>
         <source>Paste frame</source>
         <comment>paste frame animation position, operation complete</comment>
         <translation>Vložiť rámec</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+37"/>
         <source>Paste keyframe</source>
         <comment>Paste keyframe animation data complete</comment>
         <translation>Vložiť kľúčový rámec</translation>
@@ -639,7 +639,7 @@ počet rámcov sa líši.</translation>
         <translation>Ukončiť režim animácie</translation>
     </message>
     <message>
-        <location line="-513"/>
+        <location line="-571"/>
         <source>Frame: n/a</source>
         <translation>Rámec: nie je</translation>
     </message>
@@ -661,12 +661,12 @@ počet rámcov sa líši.</translation>
         <translation>Vymazať animáciu</translation>
     </message>
     <message>
-        <location line="+157"/>
+        <location line="+188"/>
         <source>No frame animation data to paste</source>
         <translation>V schránke nie sú dáta rámcovej animácie</translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+40"/>
         <source>No skeletal animation data to paste</source>
         <translation>V schránke nie sú dáta kostrovej animácie</translation>
     </message>
@@ -992,7 +992,7 @@ počet rámcov sa líši.</translation>
         <translation>Trojúholníky objektu A sú stále vybrané</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+36"/>
         <source>Union With Selected</source>
         <comment>boolean operation</comment>
         <translation>Zjednotiť s vybranými</translation>
@@ -2306,13 +2306,13 @@ Chcete pokračovať?</translation>
     </message>
     <message>
         <location line="+1"/>
-        <location line="+41"/>
+        <location line="+40"/>
         <source>Bad group name</source>
         <comment>window title</comment>
         <translation>Zlé meno skupiny</translation>
     </message>
     <message>
-        <location line="-22"/>
+        <location line="-21"/>
         <source>Cannot change</source>
         <comment>cannot change group name, window title</comment>
         <translation>Nemožno zmeniť</translation>
@@ -2323,17 +2323,17 @@ Chcete pokračovať?</translation>
         <translation>Nemožno zmeniť predvolné meno skupiny</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="+69"/>
         <source>Smoothness: </source>
         <translation>Hladkosť: </translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+10"/>
         <source>Max Angle: </source>
         <translation>Max. uhol: </translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+59"/>
         <source>Group changes</source>
         <comment>operation complete</comment>
         <translation>Zmeny skupiny</translation>
@@ -2391,11 +2391,6 @@ Chcete pokračovať?</translation>
     <message>
         <location line="+10"/>
         <source>Save Points as Bone Joints</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>Save Points in Animations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2808,12 +2803,12 @@ Chcete pokračovať?</translation>
         <translation>Nesprávny chybový kód</translation>
     </message>
     <message>
-        <location line="+498"/>
+        <location line="+493"/>
         <source>Cannot delete root joint</source>
         <translation>Nemožno zmazať hlavný kĺb</translation>
     </message>
     <message>
-        <location line="+2379"/>
+        <location line="+2396"/>
         <source>Cannot add or delete because you have frame animations.  Try &quot;Merge...&quot; instead.</source>
         <translation>Nemožno pridať alebo zmazať lebo máte rámcovú animáciu. Skúste namiesto toho &quot;Zlúčiť...&quot;.</translation>
     </message>
@@ -2857,7 +2852,7 @@ Pozrite Pomoc-&gt;O programe na kontakt s vývojármi</translation>
         <translation>Kostry modelu sa nezhodujú</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="+241"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="+252"/>
         <source>This looks like a player model.
 Do you want to load all sections?</source>
         <translation>Toto vyzerá ako model hráča.
@@ -2869,7 +2864,7 @@ Chcete načítať všetky sekcie?</translation>
         <translation>Nemožno načítať textúry</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/model.cc" line="-2891"/>
+        <location filename="../src/libmm3d/model.cc" line="-2903"/>
         <source>Write not supported, try &quot;Export...&quot;</source>
         <translation>Zápis nie je podporovaný, skúste &quot;Export...&quot;</translation>
     </message>
@@ -2894,7 +2889,7 @@ Chcete načítať všetky sekcie?</translation>
         <translation>MD3 export  vyžaduje aby všetky plochy boli v nejakej skupine.</translation>
     </message>
     <message>
-        <location line="+130"/>
+        <location line="+142"/>
         <source>MD3_PATH+filename is to long.</source>
         <translation>MD3_PATH+meno súboru je príliž dlhé.</translation>
     </message>
@@ -2919,8 +2914,8 @@ Chcete načítať všetky sekcie?</translation>
         <translation type="vanished">Príliš veľa vrcholov v jednej skupine pre MD3 export</translation>
     </message>
     <message>
-        <location line="-81"/>
-        <location line="+18"/>
+        <location line="-89"/>
+        <location line="+26"/>
         <source>Set meta data for MD3 export</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2955,7 +2950,7 @@ Chcete načítať všetky sekcie?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/iqefilter.cc" line="+94"/>
+        <location filename="../src/libmm3d/iqefilter.cc" line="+93"/>
         <source>No data marked for saving as IQE.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3010,7 +3005,7 @@ Chcete načítať všetky sekcie?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+456"/>
+        <location line="+446"/>
         <source>Set meta data for MS3D export</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3030,7 +3025,7 @@ Chcete načítať všetky sekcie?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/d3dfilter.cc" line="+94"/>
+        <location filename="../src/libmm3d/d3dfilter.cc" line="+96"/>
         <source>Unsupported D3D version.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3414,17 +3409,17 @@ Chcete načítať všetky sekcie?</translation>
 <context>
     <name>ModelViewport</name>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="+1131"/>
+        <location filename="../src/depui/modelviewport.cc" line="+1127"/>
         <source>Could not load background %1</source>
         <translation>Nemožno načítať pozadie %1</translation>
     </message>
     <message>
-        <location line="+486"/>
+        <location line="+484"/>
         <source>Use the middle mouse button to drag/pan the viewport</source>
         <translation>Použite stredné tlačidlo myši na posunutie/naklonenie výrezu</translation>
     </message>
     <message>
-        <location line="+1433"/>
+        <location line="+1431"/>
         <source>OpenGL error = Invalid Value</source>
         <translation>Chyba OpenGL = Chybná hodnota</translation>
     </message>
@@ -3811,7 +3806,12 @@ Chcete načítať všetky sekcie?</translation>
         <translation>Pluginy</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+48"/>
+        <source>Filename</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
         <source>Press F1 for help</source>
         <translation>Stlač F1 pre pomoc</translation>
     </message>
@@ -4597,7 +4597,7 @@ Chcete načítať všetky sekcie?</translation>
         <translation>Červená</translation>
     </message>
     <message>
-        <location line="+132"/>
+        <location line="+128"/>
         <source>Change texture...</source>
         <comment>Change material&apos;s texture file</comment>
         <translation>Zmeniť textúru...</translation>
@@ -4609,7 +4609,7 @@ Chcete načítať všetky sekcie?</translation>
         <translation>Nastaviť textúru...</translation>
     </message>
     <message>
-        <location line="-491"/>
+        <location line="-487"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>
@@ -5545,13 +5545,13 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+1474"/>
+        <location line="+1519"/>
         <source>Show Properties</source>
         <comment>View|Show Properties</comment>
         <translation>Ukázať parametre</translation>
     </message>
     <message>
-        <location line="-1472"/>
+        <location line="-1517"/>
         <source>Render Options</source>
         <comment>View|Render Options</comment>
         <translation>Parametre kreslenia</translation>
@@ -5837,7 +5837,7 @@ Chcete načítať všetky sekcie?</translation>
         <translation>Nastaviť kľúčový rámec posunutia</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+18"/>
         <source>Contents...</source>
         <comment>Help|Contents</comment>
         <translation>Obsah...</translation>
@@ -5914,13 +5914,13 @@ Chcete načítať všetky sekcie?</translation>
         <location line="+94"/>
         <location line="+89"/>
         <location line="+49"/>
-        <location line="+1079"/>
+        <location line="+1119"/>
         <location line="+120"/>
         <source>All Files (*)</source>
         <translation>Všetky súbory (*)</translation>
     </message>
     <message>
-        <location line="-1424"/>
+        <location line="-1464"/>
         <source>Save model file as</source>
         <translation>Uložiť model ako</translation>
     </message>
@@ -5937,13 +5937,13 @@ Chcete načítať všetky sekcie?</translation>
         <location line="+89"/>
         <location line="+89"/>
         <location line="+49"/>
-        <location line="+1079"/>
+        <location line="+1119"/>
         <location line="+120"/>
         <source>Open model file</source>
         <translation>Otvoriť súbor modelu</translation>
     </message>
     <message>
-        <location line="-1299"/>
+        <location line="-1339"/>
         <source>Merge models</source>
         <translation>Zlúčiť modely</translation>
     </message>
@@ -5967,20 +5967,20 @@ Chcete načítať všetky sekcie?</translation>
     </message>
     <message>
         <location line="+23"/>
-        <location line="+1036"/>
+        <location line="+1076"/>
         <source>Save first?</source>
         <translation>Uložiť prvý?</translation>
     </message>
     <message>
-        <location line="-1036"/>
-        <location line="+1036"/>
+        <location line="-1076"/>
+        <location line="+1076"/>
         <source>Model has been modified
 Do you want to save before closing?</source>
         <translation>Model bol zmenený
 Chcete ho uložiť pred zatvorením?</translation>
     </message>
     <message>
-        <location line="-1017"/>
+        <location line="-1057"/>
         <source>Unknown response: %1, Canceling close request</source>
         <translation>Neznáma odpoveď: %1, Prerušujem zatvorenie </translation>
     </message>
@@ -6061,7 +6061,7 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
         <translation>Nastaviť kĺučový rámec posunutia</translation>
     </message>
     <message>
-        <location line="+537"/>
+        <location line="+577"/>
         <source>Unknown response: Canceling operation</source>
         <translation>Neznáma odozva: Ruším operáciu</translation>
     </message>
@@ -6127,7 +6127,7 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
         <translation>Zvoliť body pôsobenia</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="-1947"/>
+        <location filename="../src/implui/viewwin.cc" line="-1992"/>
         <source>Auto-Assign Selected...</source>
         <comment>Joints|Auto-Assign Selected</comment>
         <translation>Automaticky priradiť zvolené...</translation>
@@ -6257,6 +6257,18 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
         <translation>Vložiť zvolené kľúčové rámce</translation>
     </message>
     <message>
+        <location line="+4"/>
+        <source>Clear Rotation Keyframe</source>
+        <comment>Animation|Clear Rotation Keyframe</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Clear Translation Keyframe</source>
+        <comment>Animation|Clear Translation Keyframe</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+27"/>
         <source>&amp;Model</source>
         <comment>menu bar</comment>
@@ -6296,13 +6308,23 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1079"/>
+        <location line="+637"/>
+        <source>Clear rotation keframe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>Clear translation keframe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+464"/>
         <location line="+120"/>
         <source>All Supported Formats</source>
         <translation>Všetky podporované formáty</translation>
     </message>
     <message>
-        <location line="-2129"/>
+        <location line="-2174"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>
@@ -6314,7 +6336,7 @@ Použite náztroj &apos;Označiť plochu&apos;.</translation>
         <translation>Exportovať zvolené...</translation>
     </message>
     <message>
-        <location line="+598"/>
+        <location line="+603"/>
         <source>You must have at least 1 face, joint, or point selected to Export Selected</source>
         <translation>Musíte zvoliť aspoň 1 plochu alebo bod na Exportovanie zvoleného</translation>
     </message>

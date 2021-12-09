@@ -392,7 +392,7 @@
         <translation>Es müssen mehr als 0 Sekunden Animation sein</translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+58"/>
         <source>Could not write file: </source>
         <translation>Konnte Datei nicht speichern:</translation>
     </message>
@@ -571,12 +571,12 @@ Frame Anzahl ist unterschiedlich.</translation>
 <context>
     <name>AnimWidget</name>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="+649"/>
+        <location filename="../src/implui/animwidget.cc" line="+708"/>
         <source>&lt;New Animation&gt;</source>
         <translation>&lt;Neue Animation&gt;</translation>
     </message>
     <message>
-        <location line="-473"/>
+        <location line="-530"/>
         <source>Start animation mode</source>
         <comment>operation complete</comment>
         <translation>Starte Animations Modus</translation>
@@ -593,31 +593,31 @@ Frame Anzahl ist unterschiedlich.</translation>
         <translation>Frame: </translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+48"/>
         <source>Set FPS</source>
         <comment>Frames per second, operation complete</comment>
         <translation>Setze FPS</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+25"/>
         <source>Change Frame Count</source>
         <comment>operation complete</comment>
         <translation>Ändere Frame Anzahl</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+37"/>
         <source>Clear frame</source>
         <comment>Remove animation data from frame, operation complete</comment>
         <translation>Frame zurücksetzen</translation>
     </message>
     <message>
-        <location line="+134"/>
+        <location line="+145"/>
         <source>Paste frame</source>
         <comment>paste frame animation position, operation complete</comment>
         <translation>Frame einfügen</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+37"/>
         <source>Paste keyframe</source>
         <comment>Paste keyframe animation data complete</comment>
         <translation>KeyFrame einfügen</translation>
@@ -635,7 +635,7 @@ Frame Anzahl ist unterschiedlich.</translation>
         <translation>Beende Animationsmodus</translation>
     </message>
     <message>
-        <location line="-513"/>
+        <location line="-571"/>
         <source>Frame: n/a</source>
         <translation>Frame: -kein-</translation>
     </message>
@@ -657,12 +657,12 @@ Frame Anzahl ist unterschiedlich.</translation>
         <translation>Lösche Animation</translation>
     </message>
     <message>
-        <location line="+157"/>
+        <location line="+188"/>
         <source>No frame animation data to paste</source>
         <translation>Keine Frame Animationsdaten zum Einfügen</translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+40"/>
         <source>No skeletal animation data to paste</source>
         <translation>Keine Skelett Animationsdaten zum Einfügen</translation>
     </message>
@@ -904,7 +904,7 @@ Frame Anzahl ist unterschiedlich.</translation>
         <translation>Dreiecke von Objekt A sind noch ausgewählt</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+36"/>
         <source>Union With Selected</source>
         <comment>boolean operation</comment>
         <translation>Einheit mit Ausgewählten</translation>
@@ -2178,13 +2178,13 @@ Wollen sie fortfahren?</translation>
     </message>
     <message>
         <location line="+1"/>
-        <location line="+41"/>
+        <location line="+40"/>
         <source>Bad group name</source>
         <comment>window title</comment>
         <translation>Ungültiger Gruppenname</translation>
     </message>
     <message>
-        <location line="-22"/>
+        <location line="-21"/>
         <source>Cannot change</source>
         <comment>cannot change group name, window title</comment>
         <translation>Ändern nicht möglich</translation>
@@ -2195,17 +2195,17 @@ Wollen sie fortfahren?</translation>
         <translation>Sie können den standard Gruppenname nicht ändern</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="+69"/>
         <source>Smoothness: </source>
         <translation>Glätte: </translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+10"/>
         <source>Max Angle: </source>
         <translation>Maximaler Winkel: </translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+59"/>
         <source>Group changes</source>
         <comment>operation complete</comment>
         <translation>Gruppen Änderungen</translation>
@@ -2263,11 +2263,6 @@ Wollen sie fortfahren?</translation>
     <message>
         <location line="+10"/>
         <source>Save Points as Bone Joints</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>Save Points in Animations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2589,17 +2584,17 @@ Wollen sie fortfahren?</translation>
 <context>
     <name>LowLevel</name>
     <message>
-        <location filename="../src/libmm3d/model.cc" line="+919"/>
+        <location filename="../src/libmm3d/model.cc" line="+914"/>
         <source>Cannot delete root joint</source>
         <translation>Kann dieses Wurzelgelenk nicht löschen</translation>
     </message>
     <message>
-        <location line="+2379"/>
+        <location line="+2396"/>
         <source>Cannot add or delete because you have frame animations.  Try &quot;Merge...&quot; instead.</source>
         <translation>Hinzufügen oder löschen nicht möglich, da sie Frame Animationen haben.  Versuchen Sie &quot;Zusammenfügen...&quot; stattdessen.</translation>
     </message>
     <message>
-        <location line="-2917"/>
+        <location line="-2929"/>
         <location filename="../src/libmm3d/texture.cc" line="+128"/>
         <source>Success</source>
         <translation>Erfolgreich</translation>
@@ -2720,7 +2715,7 @@ Bitte sehen sie unter Hilfe-&gt;Über... nach, um die Entwickler zu kontaktieren
         <translation>Modell Skelette passen nicht zusammen</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="+241"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="+252"/>
         <source>This looks like a player model.
 Do you want to load all sections?</source>
         <translation>Dies sieht wie Spieler-Modell aus.
@@ -2757,7 +2752,7 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>MD3 Export erfordert, dass alle Flächen einer Gruppe zugeordnet sind.</translation>
     </message>
     <message>
-        <location line="+130"/>
+        <location line="+142"/>
         <source>MD3_PATH+filename is to long.</source>
         <translation>MD3_PATH+Dateiname ist zu lang.</translation>
     </message>
@@ -2782,8 +2777,8 @@ Wollen sie alle Sektionen laden?</translation>
         <translation type="vanished">Zu viele Vertizes in einzelner Gruppe für MD3 export</translation>
     </message>
     <message>
-        <location line="-81"/>
-        <location line="+18"/>
+        <location line="-89"/>
+        <location line="+26"/>
         <source>Set meta data for MD3 export</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2818,7 +2813,7 @@ Wollen sie alle Sektionen laden?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/iqefilter.cc" line="+94"/>
+        <location filename="../src/libmm3d/iqefilter.cc" line="+93"/>
         <source>No data marked for saving as IQE.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2873,7 +2868,7 @@ Wollen sie alle Sektionen laden?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+456"/>
+        <location line="+446"/>
         <source>Set meta data for MS3D export</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2893,7 +2888,7 @@ Wollen sie alle Sektionen laden?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/d3dfilter.cc" line="+94"/>
+        <location filename="../src/libmm3d/d3dfilter.cc" line="+96"/>
         <source>Unsupported D3D version.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3277,17 +3272,17 @@ Wollen sie alle Sektionen laden?</translation>
 <context>
     <name>ModelViewport</name>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="+1131"/>
+        <location filename="../src/depui/modelviewport.cc" line="+1127"/>
         <source>Could not load background %1</source>
         <translation>Konnte Hintergrund nicht laden %1</translation>
     </message>
     <message>
-        <location line="+486"/>
+        <location line="+484"/>
         <source>Use the middle mouse button to drag/pan the viewport</source>
         <translation>Benutzen Sie den mittleren Mausknopf um die Ansicht zu bewegen</translation>
     </message>
     <message>
-        <location line="+1433"/>
+        <location line="+1431"/>
         <source>OpenGL error = Invalid Value</source>
         <translation>OpenGL Fehler = Ungültiger Wert</translation>
     </message>
@@ -3674,7 +3669,12 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>Plugins</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+48"/>
+        <source>Filename</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
         <source>Press F1 for help</source>
         <translation>Drücken Sie F1 um zur Hilfe zu gelangen</translation>
     </message>
@@ -4452,7 +4452,7 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>Rot</translation>
     </message>
     <message>
-        <location line="+132"/>
+        <location line="+128"/>
         <source>Change texture...</source>
         <comment>Change material&apos;s texture file</comment>
         <translation>Textur ändern...</translation>
@@ -4464,7 +4464,7 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>Setze Textur...</translation>
     </message>
     <message>
-        <location line="-491"/>
+        <location line="-487"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>
@@ -5367,13 +5367,13 @@ Wollen sie alle Sektionen laden?</translation>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+1474"/>
+        <location line="+1519"/>
         <source>Show Properties</source>
         <comment>View|Show Properties</comment>
         <translation>Zeige Eigenschaften</translation>
     </message>
     <message>
-        <location line="-1472"/>
+        <location line="-1517"/>
         <source>Render Options</source>
         <comment>View|Render Options</comment>
         <translation>Render Optionen</translation>
@@ -5639,7 +5639,19 @@ Wollen sie alle Sektionen laden?</translation>
         <translation>Setze Translations Keyframe</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+1"/>
+        <source>Clear Rotation Keyframe</source>
+        <comment>Animation|Clear Rotation Keyframe</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Clear Translation Keyframe</source>
+        <comment>Animation|Clear Translation Keyframe</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+16"/>
         <source>Contents...</source>
         <comment>Help|Contents</comment>
         <translation>Inhalt...</translation>
@@ -5697,13 +5709,13 @@ Wollen sie alle Sektionen laden?</translation>
         <location line="+94"/>
         <location line="+89"/>
         <location line="+49"/>
-        <location line="+1079"/>
+        <location line="+1119"/>
         <location line="+120"/>
         <source>All Files (*)</source>
         <translation>Alle Dateien (*)</translation>
     </message>
     <message>
-        <location line="-1424"/>
+        <location line="-1464"/>
         <source>Save model file as</source>
         <translation>Speichere Modell Datei als</translation>
     </message>
@@ -5711,13 +5723,13 @@ Wollen sie alle Sektionen laden?</translation>
         <location line="+89"/>
         <location line="+89"/>
         <location line="+49"/>
-        <location line="+1079"/>
+        <location line="+1119"/>
         <location line="+120"/>
         <source>Open model file</source>
         <translation>Öffne Modell Datei</translation>
     </message>
     <message>
-        <location line="-1299"/>
+        <location line="-1339"/>
         <source>Merge models</source>
         <translation>Modelle zusammenfügen</translation>
     </message>
@@ -5746,20 +5758,20 @@ Wollen sie alle Sektionen laden?</translation>
     </message>
     <message>
         <location line="+23"/>
-        <location line="+1036"/>
+        <location line="+1076"/>
         <source>Save first?</source>
         <translation>Zuerst speichern?</translation>
     </message>
     <message>
-        <location line="-1036"/>
-        <location line="+1036"/>
+        <location line="-1076"/>
+        <location line="+1076"/>
         <source>Model has been modified
 Do you want to save before closing?</source>
         <translation>Modell wurde geändert
 Wollen Sie speichern bevor sie schließen?</translation>
     </message>
     <message>
-        <location line="-1017"/>
+        <location line="-1057"/>
         <source>Unknown response: %1, Canceling close request</source>
         <translation>Unbekannte Antwort: %1, Abbruch der Close-Anweisung</translation>
     </message>
@@ -5835,7 +5847,17 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
         <translation>Setzte Translations Keyframe</translation>
     </message>
     <message>
-        <location line="+537"/>
+        <location line="+18"/>
+        <source>Clear rotation keframe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>Clear translation keframe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+541"/>
         <source>Unknown response: Canceling operation</source>
         <translation>Unbekannte Anwort: Breche Operation ab</translation>
     </message>
@@ -5901,7 +5923,7 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
         <translation>Wähle beeinflusste Punkte</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="-1947"/>
+        <location filename="../src/implui/viewwin.cc" line="-1992"/>
         <source>Auto-Assign Selected...</source>
         <comment>Joints|Auto-Assign Selected</comment>
         <translation>Auswahl Automatisch zuweisen... </translation>
@@ -6031,7 +6053,7 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
         <translation>Füge Ausgewählte Keyframes ein</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+32"/>
         <source>&amp;Model</source>
         <comment>menu bar</comment>
         <translation>&amp;Modell</translation>
@@ -6071,13 +6093,13 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
         <translation>Alle unterstützten Formate</translation>
     </message>
     <message>
-        <location line="+1123"/>
+        <location line="+1163"/>
         <location line="+120"/>
         <source>All Supported Formats</source>
         <translation>Alle unterstützten Formate</translation>
     </message>
     <message>
-        <location line="-2129"/>
+        <location line="-2174"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>
@@ -6089,7 +6111,7 @@ Benutzen sie das &apos;Wähle Flächen&apos; Werkzeug.</translation>
         <translation>Exportiere Auswahl...</translation>
     </message>
     <message>
-        <location line="+598"/>
+        <location line="+603"/>
         <source>You must have at least 1 face, joint, or point selected to Export Selected</source>
         <translation>Sie müssen mindestens eine Fläche, ein Gelenk oder einen Punkt zum Exportieren auswählen</translation>
     </message>

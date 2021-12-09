@@ -400,7 +400,7 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+58"/>
         <source>Could not write file: </source>
         <translation>Bork!</translation>
     </message>
@@ -583,12 +583,12 @@
         <translation type="obsolete">Bork!</translation>
     </message>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="+649"/>
+        <location filename="../src/implui/animwidget.cc" line="+708"/>
         <source>&lt;New Animation&gt;</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-473"/>
+        <location line="-530"/>
         <source>Start animation mode</source>
         <comment>operation complete</comment>
         <translation>Bork!</translation>
@@ -605,31 +605,31 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+48"/>
         <source>Set FPS</source>
         <comment>Frames per second, operation complete</comment>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+25"/>
         <source>Change Frame Count</source>
         <comment>operation complete</comment>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+37"/>
         <source>Clear frame</source>
         <comment>Remove animation data from frame, operation complete</comment>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+134"/>
+        <location line="+145"/>
         <source>Paste frame</source>
         <comment>paste frame animation position, operation complete</comment>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+37"/>
         <source>Paste keyframe</source>
         <comment>Paste keyframe animation data complete</comment>
         <translation>Bork!</translation>
@@ -647,7 +647,7 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-513"/>
+        <location line="-571"/>
         <source>Frame: n/a</source>
         <translation>Bork!</translation>
     </message>
@@ -669,12 +669,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+157"/>
+        <location line="+188"/>
         <source>No frame animation data to paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+40"/>
         <source>No skeletal animation data to paste</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1008,7 +1008,7 @@
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+36"/>
         <source>Union With Selected</source>
         <comment>boolean operation</comment>
         <translation>Bork!</translation>
@@ -2316,13 +2316,13 @@ Do you wish to continue?</source>
     </message>
     <message>
         <location line="+1"/>
-        <location line="+41"/>
+        <location line="+40"/>
         <source>Bad group name</source>
         <comment>window title</comment>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-22"/>
+        <location line="-21"/>
         <source>Cannot change</source>
         <comment>cannot change group name, window title</comment>
         <translation>Bork!</translation>
@@ -2333,17 +2333,17 @@ Do you wish to continue?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="+69"/>
         <source>Smoothness: </source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+10"/>
         <source>Max Angle: </source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+59"/>
         <source>Group changes</source>
         <comment>operation complete</comment>
         <translation>Bork!</translation>
@@ -2401,11 +2401,6 @@ Do you wish to continue?</source>
     <message>
         <location line="+10"/>
         <source>Save Points as Bone Joints</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>Save Points in Animations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2732,17 +2727,17 @@ Do you wish to continue?</source>
 <context>
     <name>LowLevel</name>
     <message>
-        <location filename="../src/libmm3d/model.cc" line="+919"/>
+        <location filename="../src/libmm3d/model.cc" line="+914"/>
         <source>Cannot delete root joint</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+2379"/>
+        <location line="+2396"/>
         <source>Cannot add or delete because you have frame animations.  Try &quot;Merge...&quot; instead.</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-2917"/>
+        <location line="-2929"/>
         <location filename="../src/libmm3d/texture.cc" line="+128"/>
         <source>Success</source>
         <translation>Bork!</translation>
@@ -2866,7 +2861,7 @@ See Help-&gt;About to contact the developers</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/md3filter.cc" line="+241"/>
+        <location filename="../src/libmm3d/md3filter.cc" line="+252"/>
         <source>This looks like a player model.
 Do you want to load all sections?</source>
         <translation>Bork!</translation>
@@ -2902,13 +2897,13 @@ Do you want to load all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+130"/>
+        <location line="+142"/>
         <source>MD3_PATH+filename is to long.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-81"/>
-        <location line="+18"/>
+        <location line="-89"/>
+        <location line="+26"/>
         <source>Set meta data for MD3 export</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2943,7 +2938,7 @@ Do you want to load all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/iqefilter.cc" line="+94"/>
+        <location filename="../src/libmm3d/iqefilter.cc" line="+93"/>
         <source>No data marked for saving as IQE.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2998,7 +2993,7 @@ Do you want to load all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+456"/>
+        <location line="+446"/>
         <source>Set meta data for MS3D export</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3018,7 +3013,7 @@ Do you want to load all sections?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/d3dfilter.cc" line="+94"/>
+        <location filename="../src/libmm3d/d3dfilter.cc" line="+96"/>
         <source>Unsupported D3D version.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3402,17 +3397,17 @@ Do you want to load all sections?</source>
 <context>
     <name>ModelViewport</name>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="+1131"/>
+        <location filename="../src/depui/modelviewport.cc" line="+1127"/>
         <source>Could not load background %1</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+486"/>
+        <location line="+484"/>
         <source>Use the middle mouse button to drag/pan the viewport</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+1433"/>
+        <location line="+1431"/>
         <source>OpenGL error = Invalid Value</source>
         <translation>Bork!</translation>
     </message>
@@ -3799,7 +3794,12 @@ Do you want to load all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+48"/>
+        <source>Filename</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
         <source>Press F1 for help</source>
         <translation>Bork!</translation>
     </message>
@@ -4611,7 +4611,7 @@ Do you want to load all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+132"/>
+        <location line="+128"/>
         <source>Change texture...</source>
         <comment>Change material&apos;s texture file</comment>
         <translation>Bork!</translation>
@@ -4623,7 +4623,7 @@ Do you want to load all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-491"/>
+        <location line="-487"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation type="unfinished">Bork!</translation>
@@ -5559,13 +5559,13 @@ Do you want to load all sections?</source>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+1474"/>
+        <location line="+1519"/>
         <source>Show Properties</source>
         <comment>View|Show Properties</comment>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-1472"/>
+        <location line="-1517"/>
         <source>Render Options</source>
         <comment>View|Render Options</comment>
         <translation>Bork!</translation>
@@ -5851,7 +5851,7 @@ Do you want to load all sections?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+18"/>
         <source>Contents...</source>
         <comment>Help|Contents</comment>
         <translation>Bork!</translation>
@@ -5927,13 +5927,13 @@ Do you want to load all sections?</source>
         <location line="+94"/>
         <location line="+89"/>
         <location line="+49"/>
-        <location line="+1079"/>
+        <location line="+1119"/>
         <location line="+120"/>
         <source>All Files (*)</source>
         <translation>All Bork! (*)</translation>
     </message>
     <message>
-        <location line="-1424"/>
+        <location line="-1464"/>
         <source>Save model file as</source>
         <translation>Bork!</translation>
     </message>
@@ -5950,13 +5950,13 @@ Do you want to load all sections?</source>
         <location line="+89"/>
         <location line="+89"/>
         <location line="+49"/>
-        <location line="+1079"/>
+        <location line="+1119"/>
         <location line="+120"/>
         <source>Open model file</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-1299"/>
+        <location line="-1339"/>
         <source>Merge models</source>
         <translation>Bork!</translation>
     </message>
@@ -5979,19 +5979,19 @@ Do you want to load all sections?</source>
     </message>
     <message>
         <location line="+23"/>
-        <location line="+1036"/>
+        <location line="+1076"/>
         <source>Save first?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-1036"/>
-        <location line="+1036"/>
+        <location line="-1076"/>
+        <location line="+1076"/>
         <source>Model has been modified
 Do you want to save before closing?</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-1017"/>
+        <location line="-1057"/>
         <source>Unknown response: %1, Canceling close request</source>
         <translation>Bork!</translation>
     </message>
@@ -6070,7 +6070,7 @@ Use the &apos;Select Faces&apos; tool.</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="+537"/>
+        <location line="+577"/>
         <source>Unknown response: Canceling operation</source>
         <translation>Bork!</translation>
     </message>
@@ -6136,7 +6136,7 @@ Use the &apos;Select Faces&apos; tool.</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location filename="../src/implui/viewwin.cc" line="-1947"/>
+        <location filename="../src/implui/viewwin.cc" line="-1992"/>
         <source>Auto-Assign Selected...</source>
         <comment>Joints|Auto-Assign Selected</comment>
         <translation>Bork!</translation>
@@ -6266,6 +6266,18 @@ Use the &apos;Select Faces&apos; tool.</source>
         <translation>Bork!</translation>
     </message>
     <message>
+        <location line="+4"/>
+        <source>Clear Rotation Keyframe</source>
+        <comment>Animation|Clear Rotation Keyframe</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Clear Translation Keyframe</source>
+        <comment>Animation|Clear Translation Keyframe</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+27"/>
         <source>&amp;Model</source>
         <comment>menu bar</comment>
@@ -6311,13 +6323,23 @@ Use the &apos;Select Faces&apos; tool.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1079"/>
+        <location line="+637"/>
+        <source>Clear rotation keframe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>Clear translation keframe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+464"/>
         <location line="+120"/>
         <source>All Supported Formats</source>
         <translation>Bork!</translation>
     </message>
     <message>
-        <location line="-2129"/>
+        <location line="-2174"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation type="unfinished">Bork!</translation>
@@ -6329,7 +6351,7 @@ Use the &apos;Select Faces&apos; tool.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+598"/>
+        <location line="+603"/>
         <source>You must have at least 1 face, joint, or point selected to Export Selected</source>
         <translation type="unfinished"></translation>
     </message>
