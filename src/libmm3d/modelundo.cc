@@ -1586,7 +1586,7 @@ void MU_DeleteVertex::undo( Model * model )
 
    for ( it = m_list.rbegin(); it != m_list.rend(); it++ )
    {
-      model->insertVertex( (*it).vertexNum, (*it).vertex );
+      model->insertVertex( (*it).vertexNum, (*it).vertex, (*it).vertexAnimFrames );
    }
 }
 
@@ -1604,12 +1604,15 @@ bool MU_DeleteVertex::combine( Undo * u )
 {
    MU_DeleteVertex * undo = dynamic_cast<MU_DeleteVertex *>( u );
 
-   if ( undo )
+   if ( undo && ( undo->m_list.empty() || m_list.empty()
+     || ( !!undo->m_list.begin()->vertexAnimFrames == !!m_list.begin()->vertexAnimFrames
+       && ( !undo->m_list.begin()->vertexAnimFrames
+         || undo->m_list.begin()->vertexAnimFrames->size() == m_list.begin()->vertexAnimFrames->size() ) ) ) )
    {
       DeleteVertexList::iterator it;
       for ( it = undo->m_list.begin(); it != undo->m_list.end(); it++ )
       {
-         deleteVertex( (*it).vertexNum, (*it).vertex );
+         deleteVertex( (*it).vertexNum, (*it).vertex, (*it).vertexAnimFrames );
       }
 
       return true;
@@ -1626,20 +1629,31 @@ void MU_DeleteVertex::undoRelease()
    for ( it = m_list.begin(); it != m_list.end(); it++ )
    {
       (*it).vertex->release();
+
+      if ( (*it).vertexAnimFrames )
+      {
+         vector<Model::FrameAnimVertex *>::iterator fav;
+         for ( fav = (*it).vertexAnimFrames->begin(); fav != (*it).vertexAnimFrames->end(); fav++ )
+         {
+            (*fav)->release();
+         }
+         delete (*it).vertexAnimFrames;
+      }
    }
 }
 
 unsigned MU_DeleteVertex::size()
 {
-   return sizeof(MU_DeleteVertex) + m_list.size() * (sizeof(DeleteVertexT) + sizeof(Model::Vertex));
+   return sizeof(MU_DeleteVertex) + m_list.size() * (sizeof(DeleteVertexT) + sizeof(Model::Vertex) + sizeof( vector<Model::FrameAnimPoint *> ) + ( ( !m_list.empty() && m_list.begin()->vertexAnimFrames ) ? m_list.begin()->vertexAnimFrames->size() : 0 ) * sizeof( Model::FrameAnimPoint ));
 }
 
-void MU_DeleteVertex::deleteVertex( unsigned vertexNum, Model::Vertex * vertex )
+void MU_DeleteVertex::deleteVertex( unsigned vertexNum, Model::Vertex * vertex, vector<Model::FrameAnimVertex *> * vertexAnimFrames )
 {
    DeleteVertexT del;
 
    del.vertexNum = vertexNum;
    del.vertex    = vertex;
+   del.vertexAnimFrames = vertexAnimFrames;
 
    m_list.push_back( del );
 }

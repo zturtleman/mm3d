@@ -622,13 +622,14 @@ class MU_DeleteVertex : public ModelUndo
 
       unsigned size();
 
-      void deleteVertex( unsigned vertexNum, Model::Vertex * vertex );
+      void deleteVertex( unsigned vertexNum, Model::Vertex * vertex, vector<Model::FrameAnimVertex *> * vertexAnimFrames );
 
    private:
       typedef struct _DeleteVertex_t
       {
          unsigned vertexNum;
          Model::Vertex * vertex;
+         vector<Model::FrameAnimVertex *> * vertexAnimFrames;
       } DeleteVertexT;
       typedef list<DeleteVertexT> DeleteVertexList;
 

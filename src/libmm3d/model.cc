@@ -557,6 +557,7 @@ int Model::addVertex( double x, double y, double z )
    {
       return -1;
    }
+   // FIXME: Adding vertexes works with frame animations but tools don't update frame animations to final position.
    if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
    {
       displayFrameAnimPrimitiveError();
@@ -573,7 +574,8 @@ int Model::addVertex( double x, double y, double z )
    vertex->m_coord[1] = y;
    vertex->m_coord[2] = z;
    vertex->m_free = false;
-   m_vertices.push_back( vertex );
+
+   insertVertex( num, vertex );
 
    MU_AddVertex * undo = new MU_AddVertex();
    undo->addVertex( num, vertex );
@@ -603,11 +605,6 @@ int Model::addTriangle( unsigned v1, unsigned v2, unsigned v3 )
 {
    if ( m_animationMode )
    {
-      return -1;
-   }
-   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
-   {
-      displayFrameAnimPrimitiveError();
       return -1;
    }
 
@@ -836,19 +833,37 @@ bool Model::deleteVertex( unsigned vertexNum )
    {
       return false;
    }
-   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
-   {
-      displayFrameAnimPrimitiveError();
-      return false;
-   }
 
    if ( vertexNum >= m_vertices.size() )
    {
       return false;
    }
 
+   Vertex * ptr = m_vertices[vertexNum];
+   vector<FrameAnimVertex *> *vertexAnimFrames = new vector<FrameAnimVertex *>;
+
+   vector<FrameAnim *>::iterator ait;
+   for ( ait = m_frameAnims.begin(); ait != m_frameAnims.end(); ait++ )
+   {
+      FrameAnimDataList::iterator fit;
+      for ( fit = (*ait)->m_frameData.begin(); fit != (*ait)->m_frameData.end(); fit++ )
+      {
+         unsigned count;
+         FrameAnimVertexList::iterator vit;
+         for ( count = 0, vit = (*fit)->m_frameVertices->begin(); vit != (*fit)->m_frameVertices->end(); vit++ )
+         {
+            if ( count == vertexNum )
+            {
+               vertexAnimFrames->push_back( *vit );
+               break;
+            }
+            count++;
+         }
+      }
+   }
+
    MU_DeleteVertex * undo = new MU_DeleteVertex();
-   undo->deleteVertex( vertexNum, m_vertices[vertexNum] );
+   undo->deleteVertex( vertexNum, ptr, vertexAnimFrames );
    sendUndo( undo );
 
    removeVertex( vertexNum );
@@ -860,11 +875,6 @@ bool Model::deleteTriangle( unsigned triangleNum )
    LOG_PROFILE();
    if ( m_animationMode )
    {
-      return false;
-   }
-   if ( m_frameAnims.size() > 0 && !m_forceAddOrDelete)
-   {
-      displayFrameAnimPrimitiveError();
       return false;
    }
 
@@ -3307,7 +3317,7 @@ void Model::sendUndo( Undo * undo, bool listCombine )
 
 void Model::displayFrameAnimPrimitiveError()
 {
-   model_status( this, StatusError, STATUSTIME_LONG, "%s", transll(QT_TRANSLATE_NOOP("LowLevel", "Cannot add or delete because you have frame animations.  Try \"Merge...\" instead." )).c_str() );
+   model_status( this, StatusError, STATUSTIME_LONG, "%s", transll(QT_TRANSLATE_NOOP("LowLevel", "Cannot add because you have frame animations.  Try \"Merge...\" instead." )).c_str() );
 }
 
 #endif // MM3D_EDIT

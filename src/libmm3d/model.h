@@ -1584,7 +1584,7 @@ class Model
 
       // These functions are for undo and features such as this.
       // Don't use them unless you are me.
-      void insertVertex( unsigned index, Vertex * vertex );
+      void insertVertex( unsigned index, Vertex * vertex, vector<FrameAnimVertex *> * vertexAnimFrames = NULL );
       void removeVertex( unsigned index );
 
       void insertTriangle( unsigned index, Triangle * triangle );

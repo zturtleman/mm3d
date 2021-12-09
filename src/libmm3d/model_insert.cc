@@ -26,7 +26,7 @@
 
 #ifdef MM3D_EDIT
 
-void Model::insertVertex( unsigned index, Model::Vertex * vertex )
+void Model::insertVertex( unsigned index, Model::Vertex * vertex, vector<Model::FrameAnimVertex *> * vertexAnimFrames )
 {
    if ( m_animationMode )
    {
@@ -37,9 +37,47 @@ void Model::insertVertex( unsigned index, Model::Vertex * vertex )
 
    invalidateNormals();
 
+   vector<Model::FrameAnimVertex *>::iterator fav;
+   if ( vertexAnimFrames )
+   {
+      fav = vertexAnimFrames->begin();
+   }
+
    if ( index == m_vertices.size() )
    {
       m_vertices.push_back( vertex );
+
+      vector<FrameAnim *>::iterator ait;
+      for ( ait = m_frameAnims.begin(); ait != m_frameAnims.end(); ait++ )
+      {
+         FrameAnimDataList::iterator fit;
+         int frameNum = 0;
+         for ( fit = (*ait)->m_frameData.begin(); fit != (*ait)->m_frameData.end(); fit++, frameNum++ )
+         {
+            FrameAnimVertex * add;
+
+            if ( vertexAnimFrames )
+            {
+               add = *fav;
+               fav++;
+               if ( fav == vertexAnimFrames->end() )
+               {
+                  vertexAnimFrames = NULL;
+               }
+            }
+            else
+            {
+               add = FrameAnimVertex::get();
+               for ( unsigned v = 0; v < 3; v++ )
+               {
+                  add->m_coord[v] = vertex->m_coord[v];
+                  add->m_normal[v] = 0;
+               }
+            }
+
+            (*fit)->m_frameVertices->push_back( add );
+         }
+      }
    }
    else if ( index < m_vertices.size() )
    {
@@ -54,6 +92,47 @@ void Model::insertVertex( unsigned index, Model::Vertex * vertex )
             break;
          }
          count++;
+      }
+
+      vector<FrameAnim *>::iterator ait;
+      for ( ait = m_frameAnims.begin(); ait != m_frameAnims.end(); ait++ )
+      {
+         FrameAnimDataList::iterator fit;
+         int frameNum = 0;
+         for ( fit = (*ait)->m_frameData.begin(); fit != (*ait)->m_frameData.end(); fit++, frameNum++ )
+         {
+            FrameAnimVertexList::iterator pit;
+            for ( count = 0, pit = (*fit)->m_frameVertices->begin(); pit != (*fit)->m_frameVertices->end(); pit++ )
+            {
+               if ( count == index )
+               {
+                  FrameAnimVertex * add;
+
+                  if ( vertexAnimFrames )
+                  {
+                     add = *fav;
+                     fav++;
+                     if ( fav == vertexAnimFrames->end() )
+                     {
+                        vertexAnimFrames = NULL;
+                     }
+                  }
+                  else
+                  {
+                     add = FrameAnimVertex::get();
+                     for ( unsigned v = 0; v < 3; v++ )
+                     {
+                        add->m_coord[v] = vertex->m_coord[v];
+                        add->m_normal[v] = 0;
+                     }
+                  }
+
+                  (*fit)->m_frameVertices->insert( pit, add );
+                  break;
+               }
+               count++;
+            }
+         }
       }
    }
    else
@@ -75,9 +154,9 @@ void Model::removeVertex( unsigned index )
 
    if ( index < m_vertices.size() )
    {
-      unsigned count = 0;
+      unsigned count;
       vector<Vertex *>::iterator it;
-      for ( it = m_vertices.begin(); it != m_vertices.end(); it++ )
+      for ( count = 0, it = m_vertices.begin(); it != m_vertices.end(); it++ )
       {
          if ( count == index )
          {
@@ -86,6 +165,25 @@ void Model::removeVertex( unsigned index )
             break;
          }
          count++;
+      }
+
+      vector<FrameAnim *>::iterator ait;
+      for ( ait = m_frameAnims.begin(); ait != m_frameAnims.end(); ait++ )
+      {
+         FrameAnimDataList::iterator fit;
+         for ( fit = (*ait)->m_frameData.begin(); fit != (*ait)->m_frameData.end(); fit++ )
+         {
+            FrameAnimVertexList::iterator vit;
+            for ( count = 0, vit = (*fit)->m_frameVertices->begin(); vit != (*fit)->m_frameVertices->end(); vit++ )
+            {
+               if ( count == index )
+               {
+                  (*fit)->m_frameVertices->erase( vit );
+                  break;
+               }
+               count++;
+            }
+         }
       }
    }
    else
