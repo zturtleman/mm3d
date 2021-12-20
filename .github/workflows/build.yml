@@ -69,7 +69,10 @@ jobs:
         flatpak install --user -y org.kde.Platform//5.15 flathub org.kde.Sdk//5.15
     - name: Set version for the Flatpak
       run: |
-        sed -i "s|<releases>|<releases>\n    <release version=\"$(git describe|sed 's/^v\([0-9]\)/\1/')\" date=\"$(git show -s --pretty=format:%ad --date=short)\" />|" desktop/moe.clover.mm3d.metainfo.xml
+        # if not a tag, add version
+        if [ $(git describe) != $(git describe --abbrev=0) ]; then
+          sed -i "s|<releases>|<releases>\n    <release version=\"$(git describe|sed 's/^v\([0-9]\)/\1/')\" date=\"$(git show -s --pretty=format:%ad --date=short)\" />|" desktop/moe.clover.mm3d.metainfo.xml
+        fi
         cat desktop/moe.clover.mm3d.metainfo.xml
     - name: flatpak-builder
       run: flatpak-builder --repo=flatpak-repo --state-dir=flatpak-state flatpak-build mm3d-flatpak.yaml
