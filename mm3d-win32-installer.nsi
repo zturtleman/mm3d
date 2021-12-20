@@ -32,6 +32,7 @@ UninstallIcon mm3d.ico
 BrandingText "Maverick Model 3D"
 CRCCheck on
 XPStyle on
+Unicode true
 
 InstallDir "$PROGRAMFILES\Maverick Model 3D"
 InstallDirRegKey HKCU "Software\MaverickModel\Maverick Model 3D" "INSTDIR"
