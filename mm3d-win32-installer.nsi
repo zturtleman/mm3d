@@ -109,15 +109,10 @@ Section "Maverick Model 3D"
 
 SectionEnd
 
-Section "Start Menu Shortcuts"
+Section "Start Menu Shortcut"
 
     ; SetShellVarContext all
-    CreateDirectory "$SMPROGRAMS\Maverick Model 3D"
-    CreateShortcut "$SMPROGRAMS\Maverick Model 3D\Maverick Model 3D.lnk"    "$INSTDIR\mm3d.x86.exe"
-    CreateShortcut "$SMPROGRAMS\Maverick Model 3D\Help Documentation.lnk" "$INSTDIR\doc\html\olh_index.html"
-    CreateShortcut "$SMPROGRAMS\Maverick Model 3D\License.lnk"            "$INSTDIR\doc\html\olh_license.html"
-    CreateShortcut "$SMPROGRAMS\Maverick Model 3D\MM3D Web Page.lnk"      "https://clover.moe/mm3d"
-    CreateShortcut "$SMPROGRAMS\Maverick Model 3D\Uninstall.lnk"          "$INSTDIR\Uninstall.exe"
+    CreateShortcut "$SMPROGRAMS\Maverick Model 3D.lnk" "$INSTDIR\mm3d.x86.exe"
 
 SectionEnd
 
