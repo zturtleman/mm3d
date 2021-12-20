@@ -4,11 +4,12 @@ dnl If you change the version, also change the following files
 dnl    src/mm3dcore/version.h (for x.x.x)
 dnl    src/win_resource.rc (for x.x.x)
 dnl    mm3d-win32-installer.nsi (for x.x.x)
+dnl    desktop/moe.clover.mm3d.metainfo.xml (for x.x.x)
+dnl    Makefile.generic (for x.x.x)
 dnl    Makefile.am (for Contents/PlugIns/mm3d/x.x)
-dnl    Makefile.generic (for plugins/x.x)
 dnl    plugins/Makefile.am (for plugins/x.x)
 
-AC_INIT([mm3d], [1.3.12])
+AC_INIT([mm3d], [1.3.13])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADERS([config.h])
