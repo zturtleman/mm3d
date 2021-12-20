@@ -5,15 +5,32 @@
       </p>
 
       <p>
-      Plugins are located in a directory on your hard drive.  On Unix-like systems,
-      Maverick Model 3D will try
-      <code>$HOME/.mm3d/plugins</code>.  If that directory does not exist
-      it will try in a shared directory (defaults to 
-      <code>/usr/local/share/mm3d/plugins</code>, although this can be changed at
-      install time).
-      Maverick Model 3D will descend into subdirectories and follow symbolic links.
-      On Windows, Maverick Model 3D uses the <code>plugins</code> subdirectory
-      where Maverick Model 3D was installed.
+      Plugins can add support for additional features, see
+      <a href="olh_develop.html#plugins">Development &sect; Plugins</a>
+      for details.
+      </p>
+
+      <p>
+      Plugins are located in a directory on your hard drive.
+      Plugins can be in subdirectories or symbolic links.
+      <ul>
+      <li>
+      Using the Flatpak on Linux, Maverick Model 3D uses
+      <code>$HOME/.var/app/moe.clover.mm3d/data/mm3d/plugins/1.3</code>.
+      </li>
+      <li>
+      On macOS, Maverick Model 3D uses <code>$HOME/Library/Application Support/Maverick Model 3D/plugins/1.3</code>.
+      </li>
+      <li>
+      On other Unix-like systems, Maverick Model 3D uses <code>$HOME/.mm3d/plugins/1.3</code>
+      and <code>/usr/local/share/mm3d/plugins/1.3</code>, although the shared path can
+      be changed at compile time.
+      </li>
+      <li>
+      On Windows, Maverick Model 3D uses <code>%APPDATA%\Maverick Model 3D\plugins\1.3</code>
+      and the <code>plugins\1.3</code> subdirectory where Maverick Model 3D was installed.
+      </li>
+      </ul>
       </p>
 
 
