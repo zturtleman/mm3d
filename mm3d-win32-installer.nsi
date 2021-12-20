@@ -99,11 +99,11 @@ Section "Maverick Model 3D"
     File build\mingw32-x86\install\libstdc++-6.dll
     File build\mingw32-x86\install\libwinpthread-1.dll
 
-    ; Additional dlls used by Qt
-    File build\mingw32-x86\install\D3Dcompiler_47.dll
-    File build\mingw32-x86\install\libEGL.dll
-    File build\mingw32-x86\install\libGLESV2.dll
-    File build\mingw32-x86\install\opengl32sw.dll
+    ; Additional dlls used by Qt (mm3d requires desktop OpenGL so they aren't useful)
+    ;File build\mingw32-x86\install\D3Dcompiler_47.dll
+    ;File build\mingw32-x86\install\libEGL.dll
+    ;File build\mingw32-x86\install\libGLESV2.dll
+    ;File build\mingw32-x86\install\opengl32sw.dll
 
     WriteUninstaller "Uninstall.exe"
 
@@ -186,10 +186,10 @@ Section "Uninstall"
     Delete "$INSTDIR\libwinpthread-1.dll"
 
     ; Additional dlls used by Qt
-    Delete "$INSTDIR\D3Dcompiler_47.dll"
-    Delete "$INSTDIR\libEGL.dll"
-    Delete "$INSTDIR\libGLESV2.dll"
-    Delete "$INSTDIR\opengl32sw.dll"
+    ;Delete "$INSTDIR\D3Dcompiler_47.dll"
+    ;Delete "$INSTDIR\libEGL.dll"
+    ;Delete "$INSTDIR\libGLESV2.dll"
+    ;Delete "$INSTDIR\opengl32sw.dll"
 
     Delete "$INSTDIR\Uninstall.exe"
 
