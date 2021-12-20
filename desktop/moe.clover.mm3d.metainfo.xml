@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2021 Zack Middleton <zack@cloemail.com> -->
 <component type="desktop-application">
   <id>moe.clover.mm3d</id>
 
   <name>Maverick Model 3D</name>
   <summary>3D model editor and animator for games</summary>
 
-  <metadata_license>FSFAP</metadata_license>
+  <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0-or-later</project_license>
 
   <description>
     <p>
-      Maverick Model 3D is a 3D model editor that supports skeletal and vertex frame animations.
+      Maverick Model 3D is a triangle-based 3D model editor that supports a variety of geometry manipulation tools, texturing, and skeletal and vertex frame animations. There is a help manual included.
     </p>
     <p>
-      It supports several 3D model formats; Misfit Model 3D .MM3D, Wavefront .OBJ, Milkshape .MS3D, and Quake engine formats .MD2 and .MD3. There is export-only support for GoldSrc/Source .SMD and Inter-Quake Export .IQE.
+      It supports several 3D model formats; Misfit Model 3D .MM3D, Wavefront .OBJ, Milkshape .MS3D, Quake engine formats .MD2 and .MD3, and GameMaker .D3D. There is export-only support for GoldSrc/Source .SMD and Inter-Quake Export .IQE. There is unmaintained support for LightWave 3D Object (lwo), Caligari trueSpace (cob), and AutoCAD (dxf).
     </p>
   </description>
 
   <launchable type="desktop-id">moe.clover.mm3d.desktop</launchable>
 
   <url type="homepage">https://clover.moe/mm3d</url>
-  <update_contact>zack@cloemail.com</update_contact>
+  <update_contact>zturtleman@gmail.com</update_contact>
 
   <provides>
     <binary>mm3d</binary>
