@@ -131,6 +131,10 @@ SubSection /e "Associate file types"
         WriteRegStr HKCR ".cob" "" "MaverickModel.Mm3dModelFile"
     SectionEnd
 
+    Section /o "D3D (GameMaker)"
+        WriteRegStr HKCR ".d3d" "" "MaverickModel.Mm3dModelFile"
+    SectionEnd
+
     Section /o "DXF (Autocad DXF)"
         WriteRegStr HKCR ".dxf" "" "MaverickModel.Mm3dModelFile"
     SectionEnd
