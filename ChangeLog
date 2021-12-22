@@ -2,7 +2,6 @@ Maverick Model 3D releases published by Zack Middleton.
 
 Changes for 1.3.13 (2021-12-20)
    General
-      Add GameMaker Studio .d3d model import/export
       Add Clear Rotation/Translation Keyframes to Animation menu
       Add Base Point to Model Merge
       Add filename to Plugins window
@@ -12,7 +11,7 @@ Changes for 1.3.13 (2021-12-20)
       Make copy/paste skeleton animation frame copy interpolated keyframes
       Make paste animation frame select what was paste
       Make new animations default to non-looping
-      Switch from QGLWidget to QOpenGLWidget (needed for Wayland on Linux, breaks Windows with OpenGL 1.1)
+      Switch from QGLWidget to QOpenGLWidget (needed for Wayland on GNU/Linux, breaks Windows with OpenGL 1.1)
       Generate HTML manual using C instead of Perl with HTML::Template module
       Fix merged points in frame animations
       Fix crash if merging model when existing has a 0-frame animation
@@ -26,6 +25,8 @@ Changes for 1.3.13 (2021-12-20)
       Fix Qt translations (qt_xx.qm) not being used
       Fix hundreds of compiler warnings
    Model Formats
+      d3d (new)
+         Add GameMaker Studio .d3d model import/export
       iqe
          Remove option to disable saving points in animations (IQM SDK would use identity, not bind pose)
       md2
@@ -42,12 +43,12 @@ Changes for 1.3.13 (2021-12-20)
       obj
          Fix crash if some MTL keywords are before newmtl
          Fix crash for out of bounds texcoord index
-   Linux
+   GNU/Linux
       Add AppStream metadata and install icons into modern file path
       Add ability to build as a Flatpak
       Don't create 'shared' plugins symlink anymore (to allow multiple install paths)
       Rename mimetype from application/x-mm3d to model/x-mm3d
-      Fix locating Qt translations on Linux
+      Fix locating Qt translations on GNU/Linux
    Windows
       Support UTF-16 paths for install path and appdata on Windows
       Make building using MinGW on Debian use POSIX thread model so it uses the same GCC run-time as Qt
@@ -56,7 +57,7 @@ Changes for 1.3.13 (2021-12-20)
    macOS
       Add system and Qt translations to macOS AppBundle
       Add `make appbundle` to Makefile.generic
-      Add support for cross-compiling from Linux using osxcross
+      Add support for cross-compiling from GNU/Linux using osxcross
       Renamed macOS configure `make mm3d.app` target to `make appbundle`
    Build Note
       Moved autosetup.sh to autogen.sh to match defacto naming convention
