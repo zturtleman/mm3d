@@ -337,8 +337,12 @@ Model::ModelErrorE Cal3dFilter::writeFile( Model * model, const char * const fil
          // Assume XML file
          return Model::ERROR_UNSUPPORTED_VERSION;
       }
-
-      // Assume Cal3D master file
+	  else if ( strcasecmp( ext, "cfg" ) == 0 )
+      {
+         // Assume Cal3D master file
+         return writeCfgFile( filename, model, o );
+	  }
+	  
       return writeCal3dFile( filename, model, o );
    }
    else
@@ -1971,6 +1975,196 @@ std::string Cal3dFilter::readXElement( const char * tag )
 
 //------------------------------------------------------------------
 // Format write functions
+Model::ModelErrorE Cal3dFilter::writeCfgFile( const char * filename, Model * model, ModelFilter::Options * o )
+{
+   Model::ModelErrorE err = Model::ERROR_NONE;
+   m_dst = openOutput( filename, err );
+   DestCloser fc( m_dst );
+
+   if ( err != Model::ERROR_NONE )
+      return err;
+
+   std::string base = m_modelPath + "/";
+
+   // Use dynamic cast to determine if the object is of the proper type
+   // If not, create new one that we will delete later.
+   //
+   // We need to create one to make sure that the default options we
+   // use in the filter match the default options presented to the
+   // user in the dialog box.
+   m_options = dynamic_cast< Cal3dOptions *>( o );
+   release_ptr<Cal3dOptions> freeOptions = NULL;
+   if ( !m_options )
+   {
+      freeOptions = static_cast<Cal3dOptions *>( getDefaultOptions() );
+      m_options = freeOptions.get();
+   }
+
+   m_model->updateMetaData( "cal3d_single_mesh_file",
+         m_options->m_singleMeshFile ? "1" : "0" );
+   m_model->updateMetaData( "cal3d_xml_material",
+         m_options->m_xmlMatFile ? "1" : "0" );
+
+   m_dst->writeString( "#\n# cal3d model configuration file\n#\n" );
+
+   m_dst->writeString( "# File written by Maverick Model 3D\n" );
+   m_dst->writeString( "# https://clover.com/mm3d\n\n" );
+
+   char value[64];
+   if ( m_model->getMetaData( "cal3d_path", value, sizeof(value) ) )
+   {
+      m_dst->writePrintf( "path=%s\n", value );
+   }
+   if ( m_model->getMetaData( "cal3d_scale", value, sizeof(value) ) )
+   {
+      m_dst->writePrintf( "scale=%s\n", value );
+   }
+   if ( m_model->getMetaData( "cal3d_rotate", value, sizeof(value) ) )
+   {
+      m_dst->writePrintf( "rotate=%s\n", value );
+   }
+
+   m_dst->writeString( "\n# --- Skeleton ---\n" );
+   std::string skelFile = replaceExtension( m_modelBaseName.c_str(), "csf" );
+   m_dst->writePrintf( "skeleton = %s\n\n", skelFile.c_str() );
+   writeSkeletonFile( (base + skelFile).c_str(), model );
+
+   // To write animations:
+   //
+   // * Make a map of filenames written (case-sensitive)
+   // and map of animations written.
+   //
+   // * Run through meta data and write file if not already
+   // in map. 
+   //
+   // * Run through animations. If any not written, write them
+   // and create an animation line in the Cal3D file.
+
+   typedef std::map<std::string, bool> AnimFileMap;
+   AnimFileMap fileWritten;
+   std::vector<bool> animWritten;
+
+   animWritten.resize( model->getAnimCount( MODE ) );
+
+   m_dst->writePrintf( "# --- Animations ---\n" );
+   std::string animFile;
+
+   char keyStr[PATH_MAX];
+   char valueStr[PATH_MAX];
+   unsigned int mtcount = model->getMetaDataCount();
+   for ( unsigned int mt = 0; mt < mtcount; mt++ )
+   {
+      model->getMetaData( mt, keyStr, PATH_MAX, valueStr, PATH_MAX );
+      if ( strncmp(keyStr, "animation_", 10 ) == 0 )
+      {
+         animFile = valueStr;
+         std::string animName = removeExtension( valueStr );
+         int a = findAnimation( animName );
+         if ( a >= 0 && fileWritten.find(animFile) == fileWritten.end() )
+         {
+            writeAnimationFile( (base + animFile).c_str(), model, a );
+            animWritten[a] = true;
+            fileWritten[animFile] = true;
+         }
+         m_dst->writePrintf( "animation = %s\n", animFile.c_str() );
+      }
+   }
+
+   unsigned int acount = model->getAnimCount( MODE );
+   for ( unsigned int a = 0; a < acount; a++ )
+   {
+      if ( animWritten[a] == 0 )
+      {
+         const char * animName = model->getAnimName( MODE, a );
+         animFile = animName;
+         animFile = addExtension( animFile, "caf" );
+         m_dst->writePrintf( "animation = %s\n", animFile.c_str() );
+         writeAnimationFile( (base + animFile).c_str(), model, a );
+         animWritten[a] = 1;
+      }
+   }
+   m_dst->writeString( "\n" );
+
+   // Create meshes split on groups, with UVs and 
+   // normals unique to each vertex
+   MeshList ml;
+   mesh_create_list( ml, model );
+
+   m_dst->writeString( "# --- Meshes ---\n" );
+   if ( (m_options == NULL) || m_options->m_singleMeshFile )
+   {
+      std::string meshFile = replaceExtension( m_modelBaseName.c_str(), "cmf" );
+      m_dst->writePrintf( "mesh_file = %s\n", meshFile.c_str() );
+      writeMeshListFile( (base + meshFile).c_str(), model, ml );
+   }
+   else
+   {
+      std::string meshName;
+      std::string meshFile;
+
+      unsigned int meshCount = ml.size();
+      unsigned int meshNum;
+
+      typedef std::map<string, MeshList> FileMeshMap;
+      FileMeshMap fmm;
+
+      string groupName;
+      for ( meshNum = 0; meshNum < meshCount; meshNum++ )
+      {
+         groupName = m_model->getGroupName(ml[meshNum].group);
+         _strtolower( groupName );
+         fmm[ groupName ].push_back( ml[meshNum] );
+      }
+
+      // Write the meshes for each group
+      for ( FileMeshMap::const_iterator fmm_it = fmm.begin();
+            fmm_it != fmm.end(); fmm_it++ )
+      {
+         // Get a count of how many meshes make up this group
+         // (probably 1, but you never know)
+         string groupName = fmm_it->first;
+         const MeshList & groupMeshList = fmm_it->second;
+
+         // Create mesh name and filename strings
+         string meshName  = groupName;
+         string meshFile  = groupName + ".cmf";
+
+         _escapeCal3dName(meshName);
+         _escapeFileName(meshFile);
+
+         // Write mesh file
+         m_dst->writePrintf( "mesh = %s\n", meshName.c_str(), meshFile.c_str() );
+         writeMeshListFile( (base + meshFile).c_str(), model, groupMeshList );
+      }
+   }
+
+   m_dst->writeString( "\n# --- Materials ---\n" );
+   std::string matFile;
+   unsigned int mcount = model->getTextureCount();
+   for ( unsigned int m = 0; m < mcount; m++ )
+   {
+      const char * matName = model->getTextureName( m );
+      matFile = matName;
+      if ( m_options && !m_options->m_xmlMatFile )
+      {
+         matFile += ".crf";
+         writeMaterialFile( (base + matFile).c_str(), model, m );
+      }
+      else 
+      {
+         matFile += ".xrf";
+         writeXMaterialFile( (base + matFile).c_str(), model, m );
+      }
+      m_dst->writePrintf( "material = %s\n", matName, matFile.c_str() );
+   }
+   m_dst->writeString( "\n" );
+
+   m_options = NULL;
+
+   model->operationComplete( transll( QT_TRANSLATE_NOOP( "LowLevel", "Set meta data for Cal3D export" ) ).c_str() );
+
+   return err;
+}
 
 Model::ModelErrorE Cal3dFilter::writeCal3dFile( const char * filename, Model * model, ModelFilter::Options * o )
 {

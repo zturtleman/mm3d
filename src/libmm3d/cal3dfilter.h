@@ -146,6 +146,7 @@ class Cal3dFilter : public ModelFilter
       std::string readLineFile( const char * str );
 
       // binary sub file writes
+	  Model::ModelErrorE writeCfgFile( const char * filename, Model * model, ModelFilter::Options * o );
       Model::ModelErrorE writeCal3dFile( const char * filename, Model * model, ModelFilter::Options * o );
       Model::ModelErrorE writeSkeletonFile( const char * filename, Model * model );
       Model::ModelErrorE writeMeshFile( const char * filename, Model * model );
