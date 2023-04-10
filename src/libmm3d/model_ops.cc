@@ -1492,6 +1492,7 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
 
             unsigned index = addAnimation( ANIMMODE_FRAME, model->getAnimName( ANIMMODE_FRAME, n ) );
             setAnimFrameCount( ANIMMODE_FRAME, index, framecount );
+            setAnimFPS( ANIMMODE_FRAME, index, model->getAnimFPS( ANIMMODE_FRAME, n ) );
 
             unsigned f;
 
