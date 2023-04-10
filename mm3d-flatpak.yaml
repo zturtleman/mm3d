@@ -13,6 +13,13 @@
 #
 #    flatpak uninstall --user moe.clover.mm3d
 #
+#
+# Releases are built labeled as "stable" branch using the following:
+#
+#    flatpak-builder --default-branch=stable --force-clean --repo=flatpak-repo --state-dir=flatpak-state flatpak-build mm3d-flatpak.yaml
+#    flatpak build-bundle flatpak-repo moe.clover.mm3d-$(git describe|sed 's/^v\([0-9]\)/\1/').flatpak moe.clover.mm3d stable
+#
+#
 
 app-id: moe.clover.mm3d
 runtime: org.kde.Platform
