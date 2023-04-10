@@ -1029,7 +1029,6 @@ bool Model::mergeAnimations( Model * model )
    }
 
    unsigned count = model->getAnimCount( ANIMMODE_SKELETAL );
-   unsigned ac1 = getAnimCount( ANIMMODE_SKELETAL );
 
    if ( count == 0 )
    {
@@ -1078,7 +1077,7 @@ bool Model::mergeAnimations( Model * model )
             {
                Keyframe * kf = sa->m_jointKeyframes[j][k];
 
-               setSkelAnimKeyframe( ac1 + n, kf->m_frame, j, kf->m_isRotation,
+               setSkelAnimKeyframe( index, kf->m_frame, j, kf->m_isRotation,
                      kf->m_parameter[0], kf->m_parameter[1], kf->m_parameter[2] );
             }
          }
@@ -1611,7 +1610,7 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
                {
                   Keyframe * kf = sa->m_jointKeyframes[j][k];
 
-                  setSkelAnimKeyframe( ac1 + n, kf->m_frame, j + jointbase, kf->m_isRotation,
+                  setSkelAnimKeyframe( index, kf->m_frame, j + jointbase, kf->m_isRotation,
                         kf->m_parameter[0], kf->m_parameter[1], kf->m_parameter[2] );
                }
             }
