@@ -69,7 +69,6 @@ jobs:
         sudo apt update
         sudo apt install flatpak flatpak-builder
         flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-        flatpak install --user -y org.kde.Platform//5.15 flathub org.kde.Sdk//5.15
     - name: Set version for the Flatpak
       run: |
         # if not a tag, add version
@@ -78,7 +77,7 @@ jobs:
         fi
         cat desktop/moe.clover.mm3d.metainfo.xml
     - name: flatpak-builder
-      run: flatpak-builder --repo=flatpak-repo --state-dir=flatpak-state flatpak-build mm3d-flatpak.yaml
+      run: flatpak-builder --user --install-deps-from=flathub --repo=flatpak-repo --state-dir=flatpak-state flatpak-build mm3d-flatpak.yaml
     - name: flatpak build-bundle
       run: flatpak build-bundle flatpak-repo moe.clover.mm3d-$(git describe|sed 's/^v\([0-9]\)/\1/').flatpak moe.clover.mm3d
     - name: flatpak install

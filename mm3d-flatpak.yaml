@@ -1,9 +1,13 @@
 #
 # Flatpak manifest
 #
+# For building the flatpak, first ensure flathub repo is added for installing the KDE runtime.
+#
+#    flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+#
 # To build and install the Flatpak (requires flatpak and flatpak-builder programs):
 #
-#    flatpak-builder --user --install --force-clean --state-dir=flatpak-state flatpak-build mm3d-flatpak.yaml
+#    flatpak-builder --user --install --install-deps-from=flathub --force-clean --state-dir=flatpak-state flatpak-build mm3d-flatpak.yaml
 #
 # After it's installed you can remove "flatpak-state" and "flatpak-build" directories.
 #
@@ -16,14 +20,20 @@
 #
 # Releases are built labeled as "stable" branch using the following:
 #
-#    flatpak-builder --default-branch=stable --force-clean --repo=flatpak-repo --state-dir=flatpak-state flatpak-build mm3d-flatpak.yaml
+#    flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+#    flatpak-builder --default-branch=stable --user --install-deps-from=flathub --force-clean --repo=flatpak-repo --state-dir=flatpak-state flatpak-build mm3d-flatpak.yaml
 #    flatpak build-bundle flatpak-repo moe.clover.mm3d-$(git describe|sed 's/^v\([0-9]\)/\1/').flatpak moe.clover.mm3d stable
+#
+# The release can be installed using:
+#
+#    flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+#    flatpak install --user -y moe.clover.mm3d-*.flatpak
 #
 #
 
 app-id: moe.clover.mm3d
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: '5.15-22.08'
 sdk: org.kde.Sdk
 command: mm3d
 finish-args:
@@ -43,8 +53,8 @@ modules:
       - "--disable-static"
     sources:
     - type: archive
-      url: https://mesa.freedesktop.org/archive/glu/glu-9.0.1.tar.xz
-      sha256: fb5a4c2dd6ba6d1c21ab7c05129b0769544e1d68e1e3b0ffecb18e73c93055bc
+      url: https://mesa.freedesktop.org/archive/glu/glu-9.0.2.tar.xz
+      sha256: 6e7280ff585c6a1d9dfcdf2fca489251634b3377bfc33c29e4002466a38d02d4
     cleanup:
       - "/include"
       - "/lib/*.a"
