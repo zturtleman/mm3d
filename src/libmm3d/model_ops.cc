@@ -1068,6 +1068,7 @@ bool Model::mergeAnimations( Model * model )
          unsigned index = addAnimation( ANIMMODE_SKELETAL, model->getAnimName( ANIMMODE_SKELETAL, n ) );
          setAnimFrameCount( ANIMMODE_SKELETAL, index, framecount );
          setAnimFPS( ANIMMODE_SKELETAL, index, model->getAnimFPS( ANIMMODE_SKELETAL, n ) );
+         setAnimLooping( ANIMMODE_SKELETAL, index, model->getAnimLooping( ANIMMODE_SKELETAL, n ) );
 
          SkelAnim * sa = model->m_skelAnims[n];
 
@@ -1493,6 +1494,7 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
             unsigned index = addAnimation( ANIMMODE_FRAME, model->getAnimName( ANIMMODE_FRAME, n ) );
             setAnimFrameCount( ANIMMODE_FRAME, index, framecount );
             setAnimFPS( ANIMMODE_FRAME, index, model->getAnimFPS( ANIMMODE_FRAME, n ) );
+            setAnimLooping( ANIMMODE_FRAME, index, model->getAnimLooping( ANIMMODE_FRAME, n ) );
 
             unsigned f;
 
@@ -1602,6 +1604,7 @@ bool Model::mergeModels( Model * model, bool textures, AnimationMergeE animation
             unsigned index = addAnimation( ANIMMODE_SKELETAL, model->getAnimName( ANIMMODE_SKELETAL, n ) );
             setAnimFrameCount( ANIMMODE_SKELETAL, index, framecount );
             setAnimFPS( ANIMMODE_SKELETAL, index, model->getAnimFPS( ANIMMODE_SKELETAL, n ) );
+            setAnimLooping( ANIMMODE_SKELETAL, index, model->getAnimLooping( ANIMMODE_SKELETAL, n ) );
 
             SkelAnim * sa = model->m_skelAnims[n];
 
