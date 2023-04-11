@@ -416,45 +416,44 @@
          <property name="title">
           <string>Map Scheme</string>
          </property>
-         <widget class="QRadioButton" name="m_triangleButton">
-          <property name="geometry">
-           <rect>
-            <x>11</x>
-            <y>20</y>
-            <width>91</width>
-            <height>21</height>
-           </rect>
+         <layout class="QVBoxLayout">
+          <property name="spacing">
+           <number>6</number>
           </property>
-          <property name="text">
-           <string>Triangle</string>
+          <property name="leftMargin">
+           <number>6</number>
           </property>
-         </widget>
-         <widget class="QRadioButton" name="m_quadButton">
-          <property name="geometry">
-           <rect>
-            <x>11</x>
-            <y>47</y>
-            <width>91</width>
-            <height>21</height>
-           </rect>
+          <property name="topMargin">
+           <number>6</number>
           </property>
-          <property name="text">
-           <string>Quad</string>
+          <property name="rightMargin">
+           <number>6</number>
           </property>
-         </widget>
-         <widget class="QRadioButton" name="m_groupButton">
-          <property name="geometry">
-           <rect>
-            <x>11</x>
-            <y>74</y>
-            <width>91</width>
-            <height>21</height>
-           </rect>
+          <property name="bottomMargin">
+           <number>6</number>
           </property>
-          <property name="text">
-           <string>Group</string>
-          </property>
-         </widget>
+          <item>
+           <widget class="QRadioButton" name="m_triangleButton">
+            <property name="text">
+             <string>Triangle</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="m_quadButton">
+            <property name="text">
+             <string>Quad</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="m_groupButton">
+            <property name="text">
+             <string>Group</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
