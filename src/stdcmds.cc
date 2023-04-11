@@ -41,6 +41,7 @@
 #include "invnormalcmd.h"
 #include "subdividecmd.h"
 #include "makefacecmd.h"
+#include "offsetcmd.h"
 #include "rotatetexcmd.h"
 #include "weldcmd.h"
 #include "unweldcmd.h"
@@ -83,6 +84,9 @@ int init_std_cmds( CommandManager * cmdMgr )
    cmdMgr->registerCommand( cmd );
 
    cmd = new SelectFreeCommand();
+   cmdMgr->registerCommand( cmd );
+
+   cmd = new OffsetCommand();
    cmdMgr->registerCommand( cmd );
 
    // Faces

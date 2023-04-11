@@ -16,6 +16,7 @@ libcommands_HFILES = \
 	invertcmd.h \
 	invnormalcmd.h \
 	makefacecmd.h \
+	offsetcmd.h \
 	pastecmd.h \
 	rotatetexcmd.h \
 	selectfreecmd.h \
@@ -43,6 +44,7 @@ libcommands_a_SOURCES = \
 	invertcmd.cc \
 	invnormalcmd.cc \
 	makefacecmd.cc \
+	offsetcmd.cc \
 	pastecmd.cc \
 	rotatetexcmd.cc \
 	selectfreecmd.cc \

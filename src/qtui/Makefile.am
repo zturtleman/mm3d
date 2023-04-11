@@ -24,6 +24,7 @@ libqtui_UIFILES = alignwin.ui \
 	helpwin.ui \
 	iqeprompt.ui \
 	jointwin.ui \
+	offsetwin.ui \
 	pointwin.ui \
 	painttexturewin.ui \
 	projectionwin.ui \
@@ -81,6 +82,7 @@ libqtui_UIHEADERS = \
 	ms3dprompt.base.h \
 	newanim.base.h    \
 	objprompt.base.h \
+	offsetwin.base.h \
 	pluginwin.base.h    \
 	smdprompt.base.h    \
 	statusbar.base.h    \

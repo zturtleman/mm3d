@@ -40,6 +40,7 @@ libimplui_HFILES = \
 	mview.h \
 	newanim.h \
 	objprompt.h \
+	offsetwin.h \
 	painttexturewin.h \
 	paintwidget.h \
 	pluginwin.h \
@@ -98,6 +99,7 @@ libimplui_MOC = \
 	mview.moc.cc \
 	newanim.moc.cc \
 	objprompt.moc.cc \
+	offsetwin.moc.cc \
 	pluginwin.moc.cc \
 	smdprompt.moc.cc \
 	spherifywin.moc.cc \
@@ -152,6 +154,7 @@ libimplui_a_SOURCES = \
 	mview.cc \
 	newanim.cc \
 	objprompt.cc \
+	offsetwin.cc \
 	painttexturewin.cc \
 	paintwidget.cc \
 	pluginwin.cc \

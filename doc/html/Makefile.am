@@ -42,6 +42,7 @@ SPAGES =  \
 	olh_iqeprompt.htm \
 	olh_quakemd3prompt.htm \
 	olh_smdprompt.htm \
+	olh_offsetwin.htm \
 	olh_painttexturewin.htm \
 	olh_pointwin.htm \
 	olh_pluginwin.htm \
@@ -100,6 +101,7 @@ PAGES =  \
 	olh_iqeprompt.html \
 	olh_quakemd3prompt.html \
 	olh_smdprompt.html \
+	olh_offsetwin.html \
 	olh_painttexturewin.html \
 	olh_pointwin.html \
 	olh_pluginwin.html \

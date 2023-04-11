@@ -519,6 +519,7 @@ MM3D_UI= \
 	${B}/qtui/ms3dprompt.base.h \
 	${B}/qtui/objprompt.base.h \
 	${B}/qtui/smdprompt.base.h \
+	${B}/qtui/offsetwin.base.h \
 	${B}/qtui/pluginwin.base.h \
 	${B}/qtui/statusbar.base.h \
 	${B}/qtui/texturecoord.base.h \
@@ -575,6 +576,7 @@ MM3D_MOC= \
 	${B}/implui/ms3dprompt.moc.cc \
 	${B}/implui/objprompt.moc.cc \
 	${B}/implui/smdprompt.moc.cc \
+	${B}/implui/offsetwin.moc.cc \
 	${B}/implui/pluginwin.moc.cc \
 	${B}/tools/polytoolwidget.moc.cc \
 	${B}/tools/projtoolwidget.moc.cc \
@@ -642,6 +644,7 @@ MM3D_MOC_OBJ= \
 	${B}/implui/ms3dprompt.moc.o \
 	${B}/implui/objprompt.moc.o \
 	${B}/implui/smdprompt.moc.o \
+	${B}/implui/offsetwin.moc.o \
 	${B}/implui/pluginwin.moc.o \
 	${B}/tools/polytoolwidget.moc.o \
 	${B}/tools/projtoolwidget.moc.o \
@@ -752,6 +755,8 @@ MM3D_OBJ= \
 	${B}/implui/objprompt.o \
 	${B}/implui/smdprompt.o \
 	${B}/implui/pluginwin.o \
+	${B}/commands/offsetcmd.o \
+	${B}/implui/offsetwin.o \
 	${B}/tools/polytool.o \
 	${B}/tools/polytoolwidget.o \
 	${B}/tools/projtoolwidget.o \
@@ -862,6 +867,7 @@ MM3D_HTML = \
 	${B}/doc/html/olh_iqeprompt.html \
 	${B}/doc/html/olh_quakemd3prompt.html \
 	${B}/doc/html/olh_smdprompt.html \
+	${B}/doc/html/olh_offsetwin.html \
 	${B}/doc/html/olh_painttexturewin.html \
 	${B}/doc/html/olh_pointwin.html \
 	${B}/doc/html/olh_pluginwin.html \
