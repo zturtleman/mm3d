@@ -56,7 +56,10 @@ jobs:
 
   linux-flatpak:
     name: Flatpak (Linux, GCC)
-    runs-on: ubuntu-latest
+    # flatpak-builder fails to download glu on ubuntu-22.04
+    # (glu specified in mm3d-flatpak.yml)
+    # see https://github.com/flatpak/flatpak-builder/issues/468
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
       with:
