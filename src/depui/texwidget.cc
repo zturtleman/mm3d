@@ -186,8 +186,13 @@ void TextureWidget::resizeGL( int w, int h )
    if ( h == 0 )
       h = 1;
 
-   m_viewportWidth  = w;
-   m_viewportHeight = h;
+   // FIXME?: I think Qt 5.6 (or later) changed resizeGL() behavior from
+   // always being pixels to points that need to be scaled but I don't
+   // have convient access to test old Qt versions. So using w and h or
+   // scaling them should potentially have a Qt version check.
+
+   m_viewportWidth  = w * devicePixelRatioF();
+   m_viewportHeight = h * devicePixelRatioF();
 
    updateViewport();
 }
