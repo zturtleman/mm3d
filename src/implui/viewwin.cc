@@ -315,7 +315,6 @@ ViewWindow::ViewWindow( Model * model, QWidget * parent )
    m_statusBar = new StatusBar( m_model, mainWidget );
    mainWidget->addWidgetToLayout( m_statusBar );
    m_statusBar->setText( tr( "Press F1 for help using any window" ).toUtf8() );
-   m_statusBar->setMaximumHeight( 30 );
 
    m_animWin = new AnimWindow( m_model, false, this );
    m_animWin->setObjectName( "mainwin_animwin" );
