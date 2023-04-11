@@ -1028,39 +1028,45 @@ bool Model::mergeAnimations( Model * model )
       return false;
    }
 
-   unsigned count = model->getAnimCount( ANIMMODE_SKELETAL );
-
-   if ( count == 0 )
+   if ( model->getAnimCount( ANIMMODE_SKELETAL ) == 0 && model->getAnimCount( ANIMMODE_FRAME ) == 0 )
    {
-      msg_warning( transll( QT_TRANSLATE_NOOP( "LowLevel", "Model contains no skeletal animations")).c_str() );
+      msg_warning( transll( QT_TRANSLATE_NOOP( "LowLevel", "Model contains no animations")).c_str() );
       return false;
-   }
-
-   unsigned j1 = getBoneJointCount();
-   unsigned j2 = model->getBoneJointCount();
-
-
-   std::string mismatchWarn = transll( QT_TRANSLATE_NOOP( "LowLevel", "Model skeletons do not match" ));
-   if ( j1 != j2 )
-   {
-      msg_warning( mismatchWarn.c_str() );
-      return false;
-   }
-
-   for ( unsigned j = 0; j < j1; j++ )
-   {
-      if ( m_joints[ j ]->m_parent != model->m_joints[j]->m_parent )
-      {
-         msg_warning( mismatchWarn.c_str() );
-         return false;
-      }
    }
 
    bool canAdd = canAddOrDelete();
    forceAddOrDelete( true );
 
-   // Do skeletal add
+   unsigned j1 = getBoneJointCount();
+   unsigned j2 = model->getBoneJointCount();
+
+   std::string skelMismatch = transll( QT_TRANSLATE_NOOP( "LowLevel", "Model skeletons do not match" ));
+   bool mergeSkeletal = model->getAnimCount( ANIMMODE_SKELETAL ) > 0;
+   if ( mergeSkeletal )
    {
+      if ( j1 != j2 )
+      {
+         msg_warning( skelMismatch.c_str() );
+         mergeSkeletal = false;
+      }
+      else
+      {
+         for ( unsigned j = 0; j < j1; j++ )
+         {
+            if ( m_joints[ j ]->m_parent != model->m_joints[j]->m_parent )
+            {
+               msg_warning( skelMismatch.c_str() );
+               mergeSkeletal = false;
+            }
+         }
+      }
+   }
+
+   // Do skeletal add
+   if ( mergeSkeletal )
+   {
+      unsigned count = model->getAnimCount( ANIMMODE_SKELETAL );
+
       for ( unsigned n = 0; n < count; n++ )
       {
          unsigned framecount = model->getAnimFrameCount( ANIMMODE_SKELETAL, n );
@@ -1080,6 +1086,70 @@ bool Model::mergeAnimations( Model * model )
 
                setSkelAnimKeyframe( index, kf->m_frame, j, kf->m_isRotation,
                      kf->m_parameter[0], kf->m_parameter[1], kf->m_parameter[2] );
+            }
+         }
+      }
+   }
+
+   unsigned v1 = getVertexCount();
+   unsigned v2 = model->getVertexCount();
+
+   unsigned p1 = getPointCount();
+   unsigned p2 = model->getPointCount();
+
+   bool mergeFrame = model->getAnimCount( ANIMMODE_FRAME ) > 0;
+
+   if ( mergeFrame )
+   {
+      if ( v1 != v2 )
+      {
+         msg_warning( transll( QT_TRANSLATE_NOOP( "LowLevel", "Model vertex counts do not match" )).c_str() );
+         mergeFrame = false;
+      }
+      else if ( p1 != p2 )
+      {
+         msg_warning( transll( QT_TRANSLATE_NOOP( "LowLevel", "Model point counts do not match" )).c_str() );
+         mergeFrame = false;
+      }
+   }
+
+   if ( mergeFrame )
+   {
+      unsigned count = model->getAnimCount( ANIMMODE_FRAME );
+      unsigned vertexcount = model->getVertexCount();
+      unsigned pointcount = model->getPointCount();
+
+      for ( unsigned n = 0; n < count; n++ )
+      {
+         unsigned framecount = model->getAnimFrameCount( ANIMMODE_FRAME, n );
+
+         unsigned index = addAnimation( ANIMMODE_FRAME, model->getAnimName( ANIMMODE_FRAME, n ) );
+         setAnimFrameCount( ANIMMODE_FRAME, index, framecount );
+         setAnimFPS( ANIMMODE_FRAME, index, model->getAnimFPS( ANIMMODE_FRAME, n ) );
+         setAnimLooping( ANIMMODE_FRAME, index, model->getAnimLooping( ANIMMODE_FRAME, n ) );
+
+         for ( unsigned j = 0; j < framecount; j++ )
+         {
+            for ( unsigned k = 0; k < vertexcount; k++ )
+            {
+               double parameter[3];
+
+               model->getFrameAnimVertexCoords( n, j, k,
+                     parameter[0], parameter[1], parameter[2] );
+
+               setFrameAnimVertexCoords( index, j, k,
+                     parameter[0], parameter[1], parameter[2] );
+            }
+
+            for ( unsigned k = 0; k < pointcount; k++ )
+            {
+               double parameter[3];
+
+               model->getFrameAnimPointCoords( n, j, k,
+                     parameter[0], parameter[1], parameter[2] );
+
+               setFrameAnimPointCoords( index, j, k,
+                     parameter[0], parameter[1], parameter[2] );
             }
          }
       }
