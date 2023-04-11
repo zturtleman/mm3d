@@ -292,6 +292,7 @@ class Model
             void sprint( std::string & dest );
 
             double m_coord[3];     // Absolute vertex location
+            double m_normal[3];    // Average normal without group smoothing/maxAngle
             double m_kfCoord[3];   // Animated position
             bool   m_selected;
             bool   m_visible;
@@ -1237,6 +1238,9 @@ class Model
       bool getNormal( unsigned triangleNum, unsigned vertexIndex, float *normal ) const;
       bool getFlatNormal( unsigned triangleNum, float *normal ) const;
       float cosToPoint( unsigned triangleNum, double * point ) const;
+
+      // This does not apply the group smoothing/maxAngle, for those get triangle vertex normals.
+      bool getAverageNormal( unsigned vertexIndex, float *normal ) const;
 
       void calculateNormals();
       void calculateSkelNormals();

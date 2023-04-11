@@ -4020,6 +4020,22 @@ float Model::cosToPoint( unsigned t, double * point ) const
    }
 }
 
+bool Model::getAverageNormal( unsigned v, float *normal ) const
+{
+   if ( v < m_vertices.size() )
+   {
+      normal[0] = m_vertices[v]->m_normal[0];
+      normal[1] = m_vertices[v]->m_normal[1];
+      normal[2] = m_vertices[v]->m_normal[2];
+
+      return true;
+   }
+   else
+   {
+      return false;
+   }
+}
+
 bool Model::getBoneVector( unsigned joint, double * vec, const double * coord ) const
 {
    if ( joint >= m_joints.size() )
@@ -4083,6 +4099,15 @@ void Model::calculateNormals()
 {
    LOG_PROFILE();
 
+   std::vector<Vertex *>::iterator vert_it;
+   for ( vert_it = m_vertices.begin(); vert_it != m_vertices.end(); ++vert_it )
+   {
+      Vertex * vert = *vert_it;
+      vert->m_normal[0] = 0.0;
+      vert->m_normal[1] = 0.0;
+      vert->m_normal[2] = 0.0;
+   }
+
    vector< vector<NormAngleAccum> > acl_normmap;
    acl_normmap.resize( m_vertices.size() );
 
@@ -4118,6 +4143,16 @@ void Model::calculateNormals()
       tri->m_flatNormals[0] = A;
       tri->m_flatNormals[1] = B;
       tri->m_flatNormals[2] = C;
+
+      m_vertices[tri->m_vertexIndices[0]]->m_normal[0] += tri->m_flatNormals[0];
+      m_vertices[tri->m_vertexIndices[0]]->m_normal[1] += tri->m_flatNormals[1];
+      m_vertices[tri->m_vertexIndices[0]]->m_normal[2] += tri->m_flatNormals[2];
+      m_vertices[tri->m_vertexIndices[1]]->m_normal[0] += tri->m_flatNormals[0];
+      m_vertices[tri->m_vertexIndices[1]]->m_normal[1] += tri->m_flatNormals[1];
+      m_vertices[tri->m_vertexIndices[1]]->m_normal[2] += tri->m_flatNormals[2];
+      m_vertices[tri->m_vertexIndices[2]]->m_normal[0] += tri->m_flatNormals[0];
+      m_vertices[tri->m_vertexIndices[2]]->m_normal[1] += tri->m_flatNormals[1];
+      m_vertices[tri->m_vertexIndices[2]]->m_normal[2] += tri->m_flatNormals[2];
 
       // Accumulate for smooth normal, weighted by face angle
       for ( int vert = 0; vert < 3; vert++ )
@@ -4175,6 +4210,33 @@ void Model::calculateNormals()
 
          acl.push_back( aacc );
       }
+   }
+
+   for ( vert_it = m_vertices.begin(); vert_it != m_vertices.end(); ++vert_it )
+   {
+      Vertex * vert = *vert_it;
+      double A = vert->m_normal[0];
+      double B = vert->m_normal[1];
+      double C = vert->m_normal[2];
+      double len = sqrt((A * A) + (B * B) + (C * C));
+
+      if ( len > 0 )
+      {
+         A = A / len;
+         B = B / len;
+         C = C / len;
+      }
+      else
+      {
+         // vertex not connected to triangle
+         A = 0.0;
+         B = 0.0;
+         C = 0.0;
+      }
+
+      vert->m_normal[0] = A;
+      vert->m_normal[1] = B;
+      vert->m_normal[2] = C;
    }
 
    // Apply accumulated normals to triangles
