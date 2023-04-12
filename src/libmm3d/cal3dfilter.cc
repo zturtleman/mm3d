@@ -337,12 +337,12 @@ Model::ModelErrorE Cal3dFilter::writeFile( Model * model, const char * const fil
          // Assume XML file
          return Model::ERROR_UNSUPPORTED_VERSION;
       }
-	  else if ( strcasecmp( ext, "cfg" ) == 0 )
+      else if ( strcasecmp( ext, "cfg" ) == 0 )
       {
-         // Assume Cal3D master file
          return writeCfgFile( filename, model, o );
-	  }
-	  
+      }
+
+      // Assume Cal3D master file
       return writeCal3dFile( filename, model, o );
    }
    else
@@ -2133,7 +2133,7 @@ Model::ModelErrorE Cal3dFilter::writeCfgFile( const char * filename, Model * mod
          _escapeFileName(meshFile);
 
          // Write mesh file
-         m_dst->writePrintf( "mesh = %s\n", meshName.c_str(), meshFile.c_str() );
+         m_dst->writePrintf( "mesh = %s\n", meshFile.c_str() );
          writeMeshListFile( (base + meshFile).c_str(), model, groupMeshList );
       }
    }
@@ -2155,7 +2155,7 @@ Model::ModelErrorE Cal3dFilter::writeCfgFile( const char * filename, Model * mod
          matFile += ".xrf";
          writeXMaterialFile( (base + matFile).c_str(), model, m );
       }
-      m_dst->writePrintf( "material = %s\n", matName, matFile.c_str() );
+      m_dst->writePrintf( "material = %s\n", matFile.c_str() );
    }
    m_dst->writeString( "\n" );
 
