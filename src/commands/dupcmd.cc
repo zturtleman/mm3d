@@ -64,6 +64,38 @@ bool DuplicateCommand::activated( int arg, Model * model )
 
       list<int>::iterator lit;
 
+      if ( !joints.empty() )
+      {
+         // Duplicated joints
+         log_debug( "Duplicating %" PORTuSIZE " joints\n", joints.size() );
+         for ( lit = joints.begin(); lit != joints.end(); lit++ )
+         {
+            int parent = model->getBoneJointParent( *lit );
+
+            // TODO this will not work if parent joint comes after child
+            // joint.  That shouldn't happen... but...
+            if ( model->isBoneJointSelected( parent ) )
+            {
+               parent = jointMap[ parent ];
+            }
+
+            // If joint is root joint, assign duplicated joint to be child
+            // of original
+            if ( parent == -1 )
+            {
+               parent = 0;
+            }
+
+            double coord[3];
+            double rot[3] = { 0, 0, 0 };
+            model->getBoneJointCoords( *lit, coord );
+
+            int nj = model->addBoneJoint( model->getBoneJointName( *lit ),
+                     coord[0], coord[1], coord[2], rot[0], rot[1], rot[2], parent );
+            jointMap[ *lit ] = nj;
+         }
+      }
+
       if ( !tri.empty() )
       {
          model_status( model, StatusNormal, STATUSTIME_SHORT, "%s", qApp->translate( "Command", "Selected primitives duplicated" ).toUtf8().data() );
@@ -81,6 +113,22 @@ bool DuplicateCommand::activated( int arg, Model * model )
             if ( model->isVertexFree( *lit ) )
             {
                model->setVertexFree( nv, true );
+            }
+
+            Model::InfluenceList il;
+            Model::InfluenceList::iterator it;
+            model->getVertexInfluences( *lit, il );
+
+            for ( it = il.begin(); it != il.end(); it++ )
+            {
+               int joint = it->m_boneId;
+
+               if ( model->isBoneJointSelected( joint ) )
+               {
+                  joint = jointMap[ joint ];
+               }
+
+               model->addVertexInfluence( nv, joint, it->m_type, it->m_weight );
             }
 
             vertMap[ *lit ] = nv;
@@ -132,70 +180,36 @@ bool DuplicateCommand::activated( int arg, Model * model )
 
       }
 
-      if ( !joints.empty() )
-      {
-
-         // Duplicated joints
-         log_debug( "Duplicating %" PORTuSIZE " joints\n", joints.size() );
-         for ( lit = joints.begin(); lit != joints.end(); lit++ )
-         {
-            int parent = model->getBoneJointParent( *lit );
-
-            // TODO this will not work if parent joint comes after child
-            // joint.  That shouldn't happen... but...
-            if ( model->isBoneJointSelected( parent ) )
-            {
-               parent = jointMap[ parent ];
-            }
-
-            // If joint is root joint, assign duplicated joint to be child
-            // of original
-            if ( parent == -1 )
-            {
-               parent = 0;
-            }
-
-            double coord[3];
-            double rot[3] = { 0, 0, 0 };
-            model->getBoneJointCoords( *lit, coord );
-
-            int nj = model->addBoneJoint( model->getBoneJointName( *lit ),
-                     coord[0], coord[1], coord[2], rot[0], rot[1], rot[2], parent );
-            jointMap[ *lit ] = nj;
-
-            // Assign duplicated vertices to duplicated bone joints
-            list<int> vertlist = model->getBoneJointVertices( *lit );
-            list<int>::iterator vit;
-            for ( vit = vertlist.begin(); vit != vertlist.end(); vit++ )
-            {
-               if ( model->isVertexSelected( *vit ) )
-               {
-                  model->setVertexBoneJoint( vertMap[ *vit ], nj );
-               }
-            }
-         }
-      }
-
       if ( !points.empty() )
       {
          // Duplicated points
          log_debug( "Duplicating %" PORTuSIZE " points\n", points.size() );
          for ( lit = points.begin(); lit != points.end(); lit++ )
          {
-            int parent = model->getPointBoneJoint( *lit );
-
-            if ( model->isBoneJointSelected( parent ) )
-            {
-               parent = jointMap[ parent ];
-            }
-
             double coord[3];
             double rot[3] = { 0, 0, 0 };
             model->getPointCoords( *lit, coord );
             model->getPointRotation( *lit, rot );
 
             int np = model->addPoint( model->getPointName( *lit ),
-                     coord[0], coord[1], coord[2], rot[0], rot[1], rot[2], parent );
+                     coord[0], coord[1], coord[2], rot[0], rot[1], rot[2], -1 );
+
+            Model::InfluenceList il;
+            Model::InfluenceList::iterator it;
+            model->getPointInfluences( *lit, il );
+
+            for ( it = il.begin(); it != il.end(); it++ )
+            {
+               int joint = it->m_boneId;
+
+               if ( model->isBoneJointSelected( joint ) )
+               {
+                  joint = jointMap[ joint ];
+               }
+
+               model->addPointInfluence( np, joint, it->m_type, it->m_weight );
+            }
+
             pointMap[ *lit ] = np;
          }
       }
