@@ -208,6 +208,7 @@ void TextureCoord::initWindow()
    if ( !foundTexture )
    {
       log_error( "no group selected\n" );
+      m_textureFrame->textureChangedEvent( 0 );
    }
 
    useGroupCoordinates();
