@@ -356,7 +356,7 @@ void TextureCoord::updateTextureCoordsEvent()
       float s[3];
       float t[3];
 
-      if ( m_currentMapScheme == 2 )
+      if ( m_currentMapScheme == MapSchemeGroup )
       {
          list<int>::iterator it;
          for( it = trilist.begin(); it != trilist.end(); it++ )
