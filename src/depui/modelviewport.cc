@@ -865,6 +865,7 @@ void ModelViewport::drawBackground()
          glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
          glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
          glEnable( GL_TEXTURE_2D );
+         glEnable( GL_BLEND );
 
          glBegin( GL_QUADS );
 
@@ -960,6 +961,8 @@ void ModelViewport::drawBackground()
          }
 
          glEnd();
+
+         glDisable( GL_BLEND );
       }
    }
 }
