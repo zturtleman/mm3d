@@ -108,7 +108,7 @@ bool EdgeDivideCommand::activated( int arg, Model * model )
             int newTri = model->addTriangle( vert[0], vert[1], vert[2] );
             if ( g >= 0 )
             {
-               model->addTriangleToGroup( newTri, g );
+               model->addTriangleToGroup( g, newTri );
             }
 
             vert[ a ] = tv[a];
