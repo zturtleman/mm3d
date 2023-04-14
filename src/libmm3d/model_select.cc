@@ -451,6 +451,12 @@ bool Model::selectVerticesInVolumeMatrix( bool select, const Matrix & viewMat, d
 
    Vector vert;
 
+   unsigned i;
+   for ( i = 0; i < m_vertices.size(); i++ )
+   {
+      m_vertices[i]->m_marked2 = false;
+   }
+
    for ( unsigned v = 0; v < m_vertices.size(); v++ )
    {
       if ( m_vertices[v]->m_selected != select )
@@ -471,13 +477,56 @@ bool Model::selectVerticesInVolumeMatrix( bool select, const Matrix & viewMat, d
                && vert[0] >= x1 && vert[0] <= x2 
                && vert[1] >= y1 && vert[1] <= y2 )
          {
-            if ( test )
-               m_vertices[v]->m_selected = test->shouldSelect( m_vertices[v] ) ? select : m_vertices[v]->m_selected;
-            else
+            if ( !test || test->shouldSelect( m_vertices[v] ) )
+            {
                m_vertices[v]->m_selected = select;
+               m_vertices[v]->m_marked2 = true;
+            }
          }
       }
    }
+
+   for ( unsigned t = 0; t < m_triangles.size(); t++ )
+   {
+      if ( m_triangles[t]->m_visible )
+      {
+         bool vertexChanged = false;
+         int count = 0;
+
+         for ( int v = 0; v < 3; v++ )
+         {
+            if ( m_vertices[ m_triangles[t]->m_vertexIndices[v] ]->m_marked2 ) {
+               vertexChanged = true;
+            }
+
+            if ( m_vertices[ m_triangles[t]->m_vertexIndices[v] ]->m_selected )
+            {
+               count++;
+            }
+         }
+
+         if ( !vertexChanged )
+         {
+            continue;
+         }
+
+         if ( select )
+         {
+            if ( count == 3 )
+            {
+               m_triangles[t]->m_selected = true;
+            }
+         }
+         else
+         {
+            if ( count != 3 )
+            {
+               m_triangles[t]->m_selected = false;
+            }
+         }
+      }
+   }
+
    endSelectionDifference();
 
    return true;
