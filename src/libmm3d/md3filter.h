@@ -39,7 +39,6 @@
 #define MD3_MAX_TRIANGLES 8192
 #define MD3_XYZ_SCALE (1.0/64)
 #define DBL_MAX 1e+37
-#define DBL_MIN -1e+37
 
 #include "modelfilter.h"
 #include "mesh.h"
