@@ -53,7 +53,7 @@ TextureCoord::TextureCoord( Model * model, QWidget * parent )
      m_inUndo( false ),
      m_ignoreChange( false ),
      m_currentDirection( 0 ),
-     m_currentMapScheme( 2 ) // if you change this, change the setChecked line below also
+     m_currentMapScheme( 0 )
 {
    setupUi( this );
 
@@ -102,8 +102,6 @@ TextureCoord::TextureCoord( Model * model, QWidget * parent )
 
    m_selectButton->setChecked( true );
    m_textureWidget->setMouseOperation( TextureWidget::MouseSelect );
-
-   m_groupButton->setChecked( true );  // if you change this, change m_currentMapScheme also
 
    g_prefs.setDefault( "ui_texcoord_lines_color", 0xffffff );
    g_prefs.setDefault( "ui_texcoord_selection_color", 0xff0000 );
@@ -180,6 +178,12 @@ void TextureCoord::show()
 
 void TextureCoord::initWindow()
 {
+   m_currentMapScheme = MapSchemeGroup;
+   m_currentDirection = 0;
+   m_triangleButton->setChecked( false );
+   m_quadButton->setChecked( false );
+   m_groupButton->setChecked( true );
+
    m_textureWidget->clearCoordinates();
 
    bool foundTexture = false;
