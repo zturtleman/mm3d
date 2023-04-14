@@ -1009,14 +1009,14 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                else
                {
                   _defaultMaterial();
-
                   glDisable( GL_TEXTURE_2D );
-                  glColor3f( 0.9, 0.9, 0.9 );
                }
             }
             else
             {
                _defaultMaterial();
+               glDisable( GL_TEXTURE_2D );
+               glColor3f( 0.9, 0.9, 0.9 );
             }
 
             glEnable( GL_LIGHT0 );
