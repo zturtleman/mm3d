@@ -28,6 +28,7 @@
 
 #include <QtWidgets/QDialog>
 
+class ViewPanel;
 class Model;
 class BackgroundSelect;
 
@@ -36,7 +37,7 @@ class BackgroundWin : public QDialog, public Ui::BackgroundWinBase
    Q_OBJECT
 
    public:
-      BackgroundWin( Model *, QWidget * parent = NULL );
+      BackgroundWin( Model *, ViewPanel * viewPanel, QWidget * parent = NULL );
       virtual ~BackgroundWin();
 
    public slots:
@@ -48,6 +49,7 @@ class BackgroundWin : public QDialog, public Ui::BackgroundWinBase
 
    protected:
       Model * m_model;
+      ViewPanel * m_viewPanel;
       BackgroundSelect * m_bgSelect[6];
 };
 

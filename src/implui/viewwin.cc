@@ -2550,15 +2550,15 @@ void ViewWindow::quitEvent()
 
 void ViewWindow::pluginWindowEvent()
 {
-   // pluginWin will delete itself view WDestructiveClose
+   // PluginWindow will delete itself
    PluginWindow * pluginWin = new PluginWindow();
    pluginWin->show();
 }
 
 void ViewWindow::backgroundWindowEvent()
 {
-   // pluginWin will delete itself view WDestructiveClose
-   BackgroundWin * win = new BackgroundWin( m_model );  
+   // BackgroundWin will delete itself
+   BackgroundWin * win = new BackgroundWin( m_model, m_viewPanel );
    win->show();
 }
 

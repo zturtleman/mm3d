@@ -24,6 +24,7 @@
 #include "backgroundwin.h"
 #include "backgroundselect.h"
 
+#include "viewpanel.h"
 #include "model.h"
 #include "log.h"
 #include "decalmgr.h"
@@ -41,9 +42,10 @@
 using std::list;
 using std::map;
 
-BackgroundWin::BackgroundWin( Model * model, QWidget * parent )
+BackgroundWin::BackgroundWin( Model * model, ViewPanel * viewPanel, QWidget * parent )
    : QDialog( parent ),
-     m_model( model )
+     m_model( model ),
+     m_viewPanel( viewPanel )
 {
    setAttribute( Qt::WA_DeleteOnClose );
    setupUi( this );
@@ -79,6 +81,10 @@ void BackgroundWin::selectedPageEvent( int index )
 
 void BackgroundWin::accept()
 {
+   if ( m_viewPanel ) {
+      m_viewPanel->modelUpdatedEvent();
+   }
+
    m_model->operationComplete( tr( "Background Image", "operation complete" ).toUtf8() );
    QDialog::accept();
 }
