@@ -1175,6 +1175,9 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
          }
       }
 
+#ifdef MM3D_EDIT
+      glDisable( GL_CULL_FACE );
+#endif
       glDisable( GL_TEXTURE_2D );
    }
 }
