@@ -82,7 +82,9 @@ bool MakeFaceCommand::activated( int arg, Model * model )
             it++;
             v3 = *it;
 
-            model->addTriangle( v1, v2, v3 );
+            int tri = model->addTriangle( v1, v2, v3 );
+            model->selectTriangle( tri );
+
             return true;
          }
          else
