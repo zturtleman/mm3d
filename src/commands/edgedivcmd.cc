@@ -98,6 +98,12 @@ bool EdgeDivideCommand::activated( int arg, Model * model )
                newVertex = model->addVertex( coord1[0], coord1[1], coord1[2] );
             }
 
+            float oldST[3][2];
+            for ( int i = 0; i < 3; i++ )
+            {
+               model->getTextureCoords( tri, i, oldST[i][0], oldST[i][1] );
+            }
+
             int g = model->getTriangleGroup( tri );
 
             int vert[3];
@@ -115,6 +121,32 @@ bool EdgeDivideCommand::activated( int arg, Model * model )
             vert[ b ] = newVertex;
             vert[ c ] = tv[c];
             model->setTriangleVertices( tri, vert[0], vert[1], vert[2] );
+
+            float st[3][2];
+            for ( int i = 0; i < 2; i++ )
+            {
+               st[a][i] = ( oldST[a][i] + oldST[b][i] ) / 2.0f;
+               st[b][i] = oldST[b][i];
+               st[c][i] = oldST[c][i];
+            }
+
+            for ( int i = 0; i < 3; i++ )
+            {
+               model->setTextureCoords( newTri, i, st[i][0], st[i][1] );
+            }
+
+            for ( int i = 0; i < 2; i++ )
+            {
+               st[a][i] = oldST[a][i];
+               st[b][i] = ( oldST[a][i] + oldST[b][i] ) / 2.0f;
+               st[c][i] = oldST[c][i];
+            }
+
+            for ( int i = 0; i < 3; i++ )
+            {
+               model->setTextureCoords( tri, i, st[i][0], st[i][1] );
+            }
+
             split++;
          }
       }
