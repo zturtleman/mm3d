@@ -10,7 +10,7 @@ dnl    Makefile.am (for Contents/PlugIns/mm3d/x.x)
 dnl    plugins/Makefile.am (for plugins/x.x)
 
 AC_INIT([mm3d], [1.3.13])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADERS([config.h])
 
