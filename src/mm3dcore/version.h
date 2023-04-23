@@ -37,12 +37,12 @@
 //   plugins/Makefile.am (for plugins/x.x)
 
 #ifndef VERSION
-#define VERSION "1.3.13"
+#define VERSION "1.3.14"
 #endif
 
 #define VERSION_MAJOR 1
 #define VERSION_MINOR 3
-#define VERSION_PATCH 13
+#define VERSION_PATCH 14
 
 // Set to 0 for stable releases (even minor version) and 1 for
 // development versions (odd minor version)

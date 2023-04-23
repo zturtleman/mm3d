@@ -1,5 +1,33 @@
 Maverick Model 3D releases published by Zack Middleton.
 
+Changes for 1.3.14 (2023-04-23)
+   General
+      Enable Qt HiDPI support by default and fix a few layout issues
+      Add Offset by Normal command to move vertex along averge normal
+      Make Duplicate command keep all joint influences
+      Make Edge Divide command set group and texture coords
+      Make Select Vertex tool automatically select and unselect triangles
+      Select new face made by Make Face From Vertices
+      Make texture coord window to reset map scheme on selection change
+      Fix texture coord window displaying last texture if no triangle has a texture
+   Merge Model / Import Animations
+      Add support for frame animations to Import Animations
+      Make Merge Model copy frame animation FPS
+      Make Merge Model and Import Animations copy looping setting
+      Fix Merge Model and Import Animations to set skeletal animation FPS on the correct animation
+   Background Image
+      Fix model using background image with Canvas mode Flat
+      Fix model viewports not updating immediately after setting background image
+      Fix drawing left/right brackground image in some cases
+      Fix background image not blending in some cases
+   Model Formats
+      cal3d
+         Add support for exporting cal3d .cfg files
+      mm3d
+         Fix writing background image filename
+   GNU/Linux
+      Update Flatpak runtime to org.kde.Platform 5.15-22.08
+
 Changes for 1.3.13 (2021-12-20)
    General
       Add Clear Rotation/Translation Keyframes to Animation menu
