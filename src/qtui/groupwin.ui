@@ -304,7 +304,7 @@
      <item>
       <widget class="QGroupBox" name="m_textureGroupBox">
        <property name="title">
-        <string>Texture</string>
+        <string>Material</string>
        </property>
        <layout class="QVBoxLayout">
         <property name="spacing">
@@ -326,7 +326,7 @@
          <widget class="QComboBox" name="m_textureComboBox">
           <item>
            <property name="text">
-            <string>No texture</string>
+            <string>No material</string>
            </property>
           </item>
          </widget>
