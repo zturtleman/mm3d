@@ -54,6 +54,14 @@ Build dependencies:
 
 qt5-translations can be used at run-time.
 
+## OpenSUSE
+
+Build dependencies:
+
+    sudo zypper install autoconf automake make gcc libqt5-qtbase-devel libqt5-qttools glu-devel
+
+libqt5-qttranslations can be used at run-time.
+
 ## macOS
 
 To build a "Maverick Model 3D.app" AppBundle on macOS 10.14+,
