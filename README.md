@@ -54,7 +54,7 @@ Build dependencies:
 
 qt5-translations can be used at run-time.
 
-## OpenSUSE
+## openSUSE
 
 Build dependencies:
 
