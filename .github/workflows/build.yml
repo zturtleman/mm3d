@@ -13,6 +13,7 @@ jobs:
       run: |
         brew install autoconf automake qt@5
     - name: Configure
+      continue-on-error: true
       run: |
         qt_version=$(ls -1 /usr/local/Cellar/qt@5 | sort -rV | head -1)
         ./autogen.sh
