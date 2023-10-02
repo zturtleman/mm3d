@@ -17,7 +17,7 @@ jobs:
       run: |
         qt_version=$(ls -1 /usr/local/Cellar/qt@5 | sort -rV | head -1)
         ./autogen.sh
-        CFLAGS="-Wno-unused-command-line-argument" ./configure --with-Qt-dir=/usr/local/Cellar/qt@5/${qt_version} || true
+        CXXFLAGS="-Wno-unused-command-line-argument" ./configure --with-Qt-dir=/usr/local/Cellar/qt@5/${qt_version} || true
         # TODO --with-macosx-version-min=10.13
         echo "Qt: ${qt_version}"
         echo "print /usr/local/Cellar/qt@5"
