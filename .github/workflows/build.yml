@@ -6,7 +6,7 @@ jobs:
     name: GCC (Linux)
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Install Dependencies
       run: |
         sudo apt update
@@ -24,7 +24,7 @@ jobs:
     name: Clang (Linux)
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Install Dependencies
       run: |
         sudo apt update
@@ -42,7 +42,7 @@ jobs:
     name: Makefile.generic (Linux, GCC)
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Install Dependencies
       run: |
         sudo apt update
@@ -61,7 +61,7 @@ jobs:
     # see https://github.com/flatpak/flatpak-builder/issues/468
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0 # This is needed for "git describe" to work.
     - name: Install Dependencies
