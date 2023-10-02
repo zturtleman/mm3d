@@ -88,3 +88,40 @@ jobs:
       with:
         name: Flatpak Bundle
         path: ./*.flatpak
+
+  macOS:
+    name: macOS
+    runs-on: macOS-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 # This is needed for "git describe" to work.
+    - name: Install Dependencies
+      run: |
+        brew install autoconf automake qt@5
+    - name: Configure
+      run: |
+        qt_version=$(ls -1 /usr/local/Cellar/qt@5 | sort -rV | head -1)
+        # Get version from line "QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.13"
+        macosx_version_min=$(grep QMAKE_MACOSX_DEPLOYMENT_TARGET /usr/local/Cellar/qt@5/${qt_version}/mkspecs/common/macx.conf | cut -d' ' -f3)
+        echo "Qt version: ${qt_version}, minimum macOS version: ${macosx_version_min}"
+        if [ -z "${qt_version}" -o -z "${macosx_version_min}" ]; then
+          exit 1
+        fi
+        ./autogen.sh
+        ./configure --with-Qt-dir=/usr/local/Cellar/qt@5/${qt_version} --with-macosx-version-min=${macosx_version_min}
+    - name: make
+      run: make
+    - name: make appbundle
+      run: make appbundle
+    - name: Create DMG
+      run: |
+        mm3d_version=$(git describe|sed 's/^v\([0-9]\)/\1/')
+        mm3d_longname="Maverick Model 3D ${mm3d_version}"
+        mkdir "${mm3d_longname}"
+        mv "Maverick Model 3D.app" "${mm3d_longname}/."
+        hdiutil create -srcfolder "${mm3d_longname}" mm3d-${mm3d_version}.dmg
+    - uses: actions/upload-artifact@v3
+      with:
+        name: MacOS App
+        path: ./*.dmg
