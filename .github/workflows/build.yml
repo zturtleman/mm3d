@@ -84,7 +84,7 @@ jobs:
       run: |
         flatpak install --user -y moe.clover.mm3d-$(git describe|sed 's/^v\([0-9]\)/\1/').flatpak
         flatpak list
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: Flatpak Bundle
         path: ./*.flatpak
