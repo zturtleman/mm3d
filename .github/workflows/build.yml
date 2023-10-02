@@ -15,30 +15,26 @@ jobs:
     - name: Configure
       run: |
         qt_version=$(ls -1 /usr/local/Cellar/qt@5 | sort -rV | head -1)
+        # Get version from line "QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.13"
+        macosx_version_min=$(grep QMAKE_MACOSX_DEPLOYMENT_TARGET /usr/local/Cellar/qt@5/${qt_version}/mkspecs/common/macx.conf | cut -d' ' -f3)
+        echo "Qt version: ${qt_version}, minimum macOS version: ${macosx_version_min}"
+        if [ -z "${qt_version}" -o -z "${macosx_version_min}" ]; then
+          exit 1
+        fi
         ./autogen.sh
-        ./configure --with-Qt-dir=/usr/local/Cellar/qt@5/${qt_version}
-        cat /usr/local/Cellar/qt@5/${qt_version}/mkspecs/macx-clang/qmake.conf
-        grep -rin VERSION /usr/local/Cellar/qt@5/${qt_version}/mkspecs/
-        exit 1
-        # TODO --with-macosx-version-min=10.13
-        echo "Qt: ${qt_version}"
-        echo "print /usr/local/Cellar/qt@5"
-        ls -l /usr/local/Cellar/qt@5
-        echo "print /usr/local/Cellar/qt@5/${qt_version}"
-        ls -l /usr/local/Cellar/qt@5/${qt_version}
-        echo "print /usr/local/Cellar/qt@5/${qt_version}/*"
-        ls -l /usr/local/Cellar/qt@5/${qt_version}/*
-        echo "print config.log"
-        cat config.log
+        ./configure --with-Qt-dir=/usr/local/Cellar/qt@5/${qt_version} --with-macosx-version-min=${macosx_version_min}
     - name: make
       run: make
     - name: make appbundle
       run: make appbundle
-    - name: Zip
+    - name: Create DMG
       run: |
-        zip -yr mm3d-$(git describe|sed 's/^v\([0-9]\)/\1/')-macos.zip "Maverick Model 3D.app"
-        ls -l
+        mm3d_version=$(git describe|sed 's/^v\([0-9]\)/\1/')
+        mm3d_longname="Maverick Model 3D ${mm3d_version}"
+        mkdir "${mm3d_longname}"
+        mv "Maverick Model 3D.app" "${mm3d_longname}/."
+        hdiutil create -srcfolder "${mm3d_longname}" mm3d-${mm3d_version}.dmg
     - uses: actions/upload-artifact@v3
       with:
         name: MacOS App
-        path: ./mm3d-*-macos.zip
+        path: ./*.dmg
