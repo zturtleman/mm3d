@@ -282,8 +282,7 @@ ifeq ($(PLATFORM),darwin)
 
   MACOSX_DEPLOYMENT_TARGET=$(MACOSX_VERSION_MIN)
 
-  # Frameworks may contain header files so they need to be specified for compiling as well.
-  BASE_FLAGS += -F${QT_FRAMEWORKS_DIR} ${FRAMEWORKS}
+  BASE_FLAGS += -F${QT_FRAMEWORKS_DIR}
 
   BINEXT=.${ARCH}
   TOOLS_BINEXT=
