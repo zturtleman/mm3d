@@ -546,7 +546,7 @@ AC_DEFUN([BNV_HAVE_QT],
   fi   # $have_qt reflects the system status
   if test x"$have_qt" = xyes; then
     if test x"$is_osx" = xyes; then
-      QT_CXXFLAGS="-I$bnv_qt_include_dir -F$bnv_qt_dir/lib $bnv_qt5_libs "
+      QT_CXXFLAGS="-I$bnv_qt_include_dir -F$bnv_qt_dir/lib"
     else
       QT_CXXFLAGS="-I$bnv_qt_include_dir"
     fi
