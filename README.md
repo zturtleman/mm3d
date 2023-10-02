@@ -72,9 +72,10 @@ macOS 10.11 and Qt 5.12+ no longer supports it.)
 
     brew install autoconf automake qt@5
     ./autogen.sh
-    ./configure --with-Qt-dir=/usr/local/Cellar/qt/5.15.2 --with-macosx-version-min=10.13
+    ./configure --with-Qt-dir=/usr/local/Cellar/qt@5/5.15.10_1 --with-macosx-version-min=10.13
     make
     make appbundle
 
---with-macosx-version-min should be set to the value in
-/usr/local/Cellar/qt/5.15.2/mkspecs/macx-clang/qmake.conf
+--with-macosx-version-min should be set to the value of
+`QMAKE_MACOSX_DEPLOYMENT_TARGET` in
+/usr/local/Cellar/qt@5/5.15.10_1/mkspecs/common/macx.conf
