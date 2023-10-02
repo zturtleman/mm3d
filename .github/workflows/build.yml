@@ -35,7 +35,8 @@ jobs:
     - name: Zip
       run: |
         zip -yr mm3d-$(git describe|sed 's/^v\([0-9]\)/\1/')-macos.zip "Maverick Model 3D.app"
-    - uses: actions/upload-artifact@v2
+        ls -l
+    - uses: actions/upload-artifact@v3
       with:
         name: MacOS App
-        path: ./mm3d-$(git describe|sed 's/^v\([0-9]\)/\1/')-macos.zip
+        path: ./mm3d-*-macos.zip

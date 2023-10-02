@@ -28,6 +28,9 @@
 #define GL_GLEXT_LEGACY
 
 #ifdef IS_OSX
+// Disable OpenGL deprecation warnings on macOS 10.14+
+#define GL_SILENCE_DEPRECATION
+
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #else
