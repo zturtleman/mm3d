@@ -546,7 +546,7 @@ AC_DEFUN([BNV_HAVE_QT],
   fi   # $have_qt reflects the system status
   if test x"$have_qt" = xyes; then
     if test x"$is_osx" = xyes; then
-      QT_CXXFLAGS="-I$bnv_qt_include_dir -F$bnv_qt_dir/lib $bnv_qt5_libs "
+      QT_CXXFLAGS="-I$bnv_qt_include_dir -F$bnv_qt_dir/lib"
     else
       QT_CXXFLAGS="-I$bnv_qt_include_dir"
     fi
@@ -895,7 +895,8 @@ EOF
         echo "configure: could not run $QT_MOC on:" >&AC_FD_CC
         cat bnv_qt_test.h >&AC_FD_CC
       else
-        bnv_try_2="$CXX $QT_CXXFLAGS -c $CXXFLAGS -Wno-non-virtual-dtor -Wno-unused-command-line-argument -o moc_bnv_qt_test.o moc_bnv_qt_test.$ac_ext >/dev/null 2>bnv_qt_test_2.out"
+        # -Wno-unused-command-line-argument
+        bnv_try_2="$CXX $QT_CXXFLAGS -c $CXXFLAGS -Wno-non-virtual-dtor -o moc_bnv_qt_test.o moc_bnv_qt_test.$ac_ext >/dev/null 2>bnv_qt_test_2.out"
         AC_TRY_EVAL(bnv_try_2)
         bnv_err_2=`grep -v '^ *+' bnv_qt_test_2.out | grep -v "^moc_bnv_qt_test.${ac_ext}\$" | grep -v "^${ignore_warning}\$"`
         if test x"$bnv_err_2" != x; then
@@ -903,7 +904,8 @@ EOF
           echo "configure: could not compile:" >&AC_FD_CC
           cat moc_bnv_qt_test.$ac_ext >&AC_FD_CC
         else
-          bnv_try_3="$CXX $QT_CXXFLAGS -c $CXXFLAGS -Wno-unused-command-line-argument -o bnv_qt_main.o bnv_qt_main.$ac_ext >/dev/null 2>bnv_qt_test_3.out"
+          # -Wno-unused-command-line-argument
+          bnv_try_3="$CXX $QT_CXXFLAGS -c $CXXFLAGS -o bnv_qt_main.o bnv_qt_main.$ac_ext >/dev/null 2>bnv_qt_test_3.out"
           AC_TRY_EVAL(bnv_try_3)
           bnv_err_3=`grep -v '^ *+' bnv_qt_test_3.out | grep -v "^bnv_qt_main.${ac_ext}\$" | grep -v "^${ignore_warning}\$"`
           if test x"$bnv_err_3" != x; then
