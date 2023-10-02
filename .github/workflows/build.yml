@@ -18,6 +18,15 @@ jobs:
         ./autogen.sh
         ./configure --with-Qt-dir=/usr/local/Cellar/qt@5/${qt_version}
         # TODO --with-macosx-version-min=10.13
+        echo "Qt: $(qt_version)"
+        echo "print /usr/local/Cellar/qt@5"
+        ls -l /usr/local/Cellar/qt@5
+        echo "print /usr/local/Cellar/qt@5/$(qt_version)"
+        ls -l /usr/local/Cellar/qt@5/$(qt_version)
+        echo "print /usr/local/Cellar/qt@5/$(qt_version)/*"
+        ls -l /usr/local/Cellar/qt@5/$(qt_version)/*
+        echo "print config.log"
+        cat config.log
     - name: make
       run: make
     - name: make appbundle
