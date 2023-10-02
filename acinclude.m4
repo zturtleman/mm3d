@@ -903,7 +903,7 @@ EOF
           echo "configure: could not compile:" >&AC_FD_CC
           cat moc_bnv_qt_test.$ac_ext >&AC_FD_CC
         else
-          bnv_try_3="$CXX $QT_CXXFLAGS -c $CXXFLAGS -o bnv_qt_main.o bnv_qt_main.$ac_ext >/dev/null 2>bnv_qt_test_3.out"
+          bnv_try_3="$CXX $QT_CXXFLAGS -c $CXXFLAGS -Wno-unused-command-line-argument -o bnv_qt_main.o bnv_qt_main.$ac_ext >/dev/null 2>bnv_qt_test_3.out"
           AC_TRY_EVAL(bnv_try_3)
           bnv_err_3=`grep -v '^ *+' bnv_qt_test_3.out | grep -v "^bnv_qt_main.${ac_ext}\$" | grep -v "^${ignore_warning}\$"`
           if test x"$bnv_err_3" != x; then
