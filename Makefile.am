@@ -174,9 +174,9 @@ appbundle:
 	@echo "Wrote \"$(MAC_APP)/Contents/Info.plist\""
 	$(QT_MACDEPLOYQT) "$(MAC_APP)"
 	@# Add translations of Qt itself
-	$(LCONVERT) -o "$(MAC_APP)/Contents/SharedSupport/mm3d/translations/qt_de.qm" "$(QT_TRANSLATIONS_DIR)/qtbase_de.qm"
-	$(LCONVERT) -o "$(MAC_APP)/Contents/SharedSupport/mm3d/translations/qt_fr.qm" "$(QT_TRANSLATIONS_DIR)/qtbase_fr.qm"
-	$(LCONVERT) -o "$(MAC_APP)/Contents/SharedSupport/mm3d/translations/qt_sk.qm" "$(QT_TRANSLATIONS_DIR)/qtbase_sk.qm"
+	$(QT_LCONVERT) -o "$(MAC_APP)/Contents/SharedSupport/mm3d/translations/qt_de.qm" "$(QT_TRANSLATIONS_DIR)/qtbase_de.qm"
+	$(QT_LCONVERT) -o "$(MAC_APP)/Contents/SharedSupport/mm3d/translations/qt_fr.qm" "$(QT_TRANSLATIONS_DIR)/qtbase_fr.qm"
+	$(QT_LCONVERT) -o "$(MAC_APP)/Contents/SharedSupport/mm3d/translations/qt_sk.qm" "$(QT_TRANSLATIONS_DIR)/qtbase_sk.qm"
 	@# Tell macOS to translate builtin dialogs (i.e., file chooser)
 	${INSTALL} -d      "$(MAC_APP)/Contents/Resources/en.lproj"
 	${INSTALL} -d      "$(MAC_APP)/Contents/Resources/de.lproj"
