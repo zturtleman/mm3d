@@ -18,6 +18,7 @@ jobs:
         ./autogen.sh
         ./configure --with-Qt-dir=/usr/local/Cellar/qt@5/${qt_version}
         cat /usr/local/Cellar/qt@5/${qt_version}/mkspecs/macx-clang/qmake.conf
+        grep -rin VERSION /usr/local/Cellar/qt@5/${qt_version}/mkspecs/
         exit 1
         # TODO --with-macosx-version-min=10.13
         echo "Qt: ${qt_version}"
