@@ -13,11 +13,12 @@ jobs:
       run: |
         brew install autoconf automake qt@5
     - name: Configure
-      continue-on-error: true
       run: |
         qt_version=$(ls -1 /usr/local/Cellar/qt@5 | sort -rV | head -1)
         ./autogen.sh
-        CXXFLAGS="-Wno-unused-command-line-argument" ./configure --with-Qt-dir=/usr/local/Cellar/qt@5/${qt_version} || true
+        ./configure --with-Qt-dir=/usr/local/Cellar/qt@5/${qt_version}
+        cat /usr/local/Cellar/qt@5/${qt_version}/mkspecs/macx-clang/qmake.conf
+        exit 1
         # TODO --with-macosx-version-min=10.13
         echo "Qt: ${qt_version}"
         echo "print /usr/local/Cellar/qt@5"
