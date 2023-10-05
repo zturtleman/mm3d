@@ -46,15 +46,17 @@ AC_DEFUN([KSW_IS_DEBUG],
   if test x"$enable_debug" = xyes; then
     COVFLAGS=""
     COVLFLAGS=""
-    CFLAGS="-g -fPIC"
-    CXXFLAGS="-std=c++11 ${CFLAGS}"
-    LDFLAGS=""
+    COMMONFLAGS="-g -fPIC"
+    CFLAGS="${COMMONFLAGS} ${CFLAGS}"
+    CXXFLAGS="${COMMONFLAGS} -std=c++11 ${CXXFLAGS}"
+    LDFLAGS="${LDFLAGS}"
   elif test x"$enable_debug" = xcov; then
     COVFLAGS="-coverage"
     COVLFLAGS="-lgcov"
-    CFLAGS="-g -fPIC"
-    CXXFLAGS="-std=c++11 ${CFLAGS}"
-    LDFLAGS=""
+    COMMONFLAGS="-g -fPIC"
+    CFLAGS="${COMMONFLAGS} ${CFLAGS}"
+    CXXFLAGS="${COMMONFLAGS} -std=c++11 ${CXXFLAGS}"
+    LDFLAGS="${LDFLAGS}"
     is_debug=coverage
   else
     omit_frame=
@@ -64,9 +66,10 @@ AC_DEFUN([KSW_IS_DEBUG],
     #fi
     COVFLAGS=""
     COVLFLAGS=""
-    CFLAGS="-O2 ${omit_frame} -fno-math-errno -fPIC"
-    CXXFLAGS="-std=c++11 ${CFLAGS}"
-    LDFLAGS="${omit_frame} -fno-math-errno"
+    COMMONFLAGS="-O2 ${omit_frame} -fno-math-errno -fPIC"
+    CFLAGS="${COMMONFLAGS} ${CFLAGS}"
+    CXXFLAGS="${COMMONFLAGS} -std=c++11 ${CXXFLAGS}"
+    LDFLAGS="${omit_frame} -fno-math-errno ${LDFLAGS}"
   fi
 
    AC_TRY_LINK([#include <stdio.h>], , [
