@@ -120,7 +120,7 @@ jobs:
         mm3d_longname="Maverick Model 3D ${mm3d_version}"
         mkdir "${mm3d_longname}"
         mv "Maverick Model 3D.app" "${mm3d_longname}/."
-        hdiutil create -srcfolder "${mm3d_longname}" mm3d-${mm3d_version}.dmg
+        hdiutil create -fs HFS+ -srcfolder "${mm3d_longname}" mm3d-${mm3d_version}.dmg
     - uses: actions/upload-artifact@v3
       with:
         name: MacOS App
