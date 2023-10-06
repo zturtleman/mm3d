@@ -39,6 +39,12 @@
 #include <time.h>
 #include <limits.h>
 
+// GNU Hurd doesn't define this.
+// TODO: Technically max path length should be dynamically allocated.
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
+
 #define LAZY_LOAD // Referenced files (e.g., SECLEFT=<secleft.htm) are only loaded if they are used.
 
 typedef struct strpair_s {

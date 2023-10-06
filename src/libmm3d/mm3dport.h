@@ -31,6 +31,12 @@
 #include <inttypes.h>
 #include "config.h"
 
+// GNU Hurd doesn't define this.
+// TODO: Technically max path length should be dynamically allocated.
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
+
 // GCC attribute
 #ifndef __GNUC__
 #define __attribute__(x)
