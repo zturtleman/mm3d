@@ -8,6 +8,29 @@
       </p>
 
       <p>
+      The <b>Save as a Quake 3 Player</b> checkbox allows you indicate
+      if you want to export as a Quake 3 composite player model
+      (head.iqe, upper.iqe, and lower.iqe models).
+      If it is grayed out, see the list of requirements for export on the <a href="olh_quakemd3.html">MD3</a> page.
+      </p>
+
+      <p>
+      For exporting as a Quake 3 player, there must be a root joint with a desendent torso joint and desendent (of torso joint) head joint. There must be a "tag_torso" point at the exact location of the torso joint and attached to the torso joint. Same for "tag_head" at exact location of head joint and attached to it. The point names must be "tag_torso" and "tag_head", the joint names can be anything. Do not make the root joint be the torso joint; everything will be a desendent of it and there cannot be leg joints.
+      </p>
+
+      <p>
+      Joints/points that are not a desendents of torso joint are exported in lower.iqe. Torso joint and desendent joints/points to (and including) head joint and "tag_head" point are exported to upper.iqe. Head joint and desendent joints/points are exported to head.iqe.
+      </p>
+
+      <p>
+      The <b>Save Quake 3 animation.cfg</b> checkbox allows you to indicate
+      if you want to write "animation.cfg" file along side the model.
+      This file contains a list of animations with looping and frames
+      per-second information and can contain other arbitry data from
+      MD3_CFG_* meta data. See the <a href="olh_quakemd3.html">MD3</a> page for details.
+      </p>
+
+      <p>
       The <b>Save Meshes</b> checkbox allows you indicate if you want
       the meshes saved in the file or not.
       </p>

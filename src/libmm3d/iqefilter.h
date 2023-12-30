@@ -40,11 +40,18 @@ class IqeFilter : public ModelFilter
 
             virtual void release() { delete this; };
 
+            bool m_playerSupported;
+
+            bool m_saveAsPlayer;
+            bool m_saveAnimationCfg;
+
             bool m_saveMeshes;
             bool m_savePointsJoint;
             bool m_saveSkeleton;
             bool m_saveAnimations;
             std::vector<unsigned int> m_animations;
+
+            void setOptionsFromModel( Model * m, const char * const filename );
 
          protected:
             virtual ~IqeOptions(); // Use release() instead
@@ -69,9 +76,41 @@ class IqeFilter : public ModelFilter
 
    protected:
 
+      typedef enum _MeshSection_e
+      {
+         MS_Lower = 0,
+         MS_Upper,
+         MS_Head,
+         MS_MAX
+      } MeshSectionE;
+
+      // the order is important, used for writing continue frames by type
+      typedef enum _MeshAnimationType_e
+      {
+         MA_All,
+         MA_Both,
+         MA_Torso,
+         MA_Legs,
+         // NOTE: Team Arena has extra torso animations after legs
+         MA_Head,
+         MA_MAX
+      } MeshAnimationTypeE;
+
       IqeOptions  * m_options;
+      Model       * m_model;
+      std::string   m_modelPath;
 
       bool writeLine( DataDest *dst, const char * line, ... ) __attribute__ ((format (printf, 3, 4)));
+
+      Model::ModelErrorE writeSectionFile( Model *model, const char * filename );
+
+      bool     writeAnimations( bool playerModel, const char * filename );
+      std::string getSafeName( unsigned int anim );
+      bool     animSyncWarning(std::string name);
+      MeshAnimationTypeE getAnimationType( bool playerModel, const std::string & animName );
+      bool     animInSection( std::string animName, MeshSectionE section );
+      bool getExportAnimData( bool playerModel, int modelAnim,
+            int & fileFrame, int & frameCount, int & fps );
 };
 
 #endif // __IQEFILTER_H

@@ -47,6 +47,9 @@ IqePrompt::~IqePrompt()
 
 void IqePrompt::setOptions( IqeFilter::IqeOptions * opts, Model * model )
 {
+   m_saveAsPlayer->setEnabled( opts->m_playerSupported );
+   m_saveAsPlayer->setChecked( opts->m_saveAsPlayer );
+   m_saveAnimationCfg->setChecked( opts->m_saveAnimationCfg );
    m_saveMeshes->setChecked( opts->m_saveMeshes );
    m_savePointsJoint->setChecked( opts->m_savePointsJoint );
    m_saveSkeleton->setChecked( opts->m_saveSkeleton );
@@ -63,6 +66,8 @@ void IqePrompt::setOptions( IqeFilter::IqeOptions * opts, Model * model )
 
 void IqePrompt::getOptions( IqeFilter::IqeOptions * opts )
 {
+   opts->m_saveAsPlayer     = m_saveAsPlayer->isChecked();
+   opts->m_saveAnimationCfg = m_saveAnimationCfg->isChecked();
    opts->m_saveMeshes     = m_saveMeshes->isChecked();
    opts->m_savePointsJoint= m_savePointsJoint->isChecked();
    opts->m_saveSkeleton   = m_saveSkeleton->isChecked();
@@ -93,6 +98,7 @@ bool iqeprompt_show( Model * model, const char * const filename, ModelFilter::Op
    IqeFilter::IqeOptions * opts = dynamic_cast< IqeFilter::IqeOptions * >( o );
    if ( opts )
    {
+      opts->setOptionsFromModel( model, filename );
       p.setOptions( opts, model );
 
       if ( p.exec() )

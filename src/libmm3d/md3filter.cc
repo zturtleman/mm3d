@@ -100,7 +100,7 @@ const char s_animNames[ MD3_ANIMATIONS ][16] =
    "legs_turn",
 };
 
-const char *s_animSyncWarning[] =
+static const char *s_animSyncWarning[] =
 {
    "torso_attack",
    "torso_attack2",
