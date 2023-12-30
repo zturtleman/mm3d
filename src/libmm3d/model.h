@@ -1307,7 +1307,23 @@ class Model
       void booleanOperation( BooleanOpE op, 
             std::list<int> & listA, std::list<int> & listB );
 
+      Model * copySpecified( int rootPoint, const std::list<int> & tri,
+            const std::list<int> & vert, const std::list<int> & groups,
+            const std::list<int> & materials, const std::list<int> & joints,
+            const std::list<int> & points, const std::list<int> & proj,
+            const std::list<int> & skelAnims, const std::list<int> & frameAnims ) const;
       Model * copySelected() const;
+
+      typedef enum _MeshSection_e
+      {
+         MS_Lower = 0,
+         MS_Upper,
+         MS_Head,
+         MS_MAX
+      } MeshSectionE;
+
+      // This is currently only used for skeletal animation as copying frame animations is extermly slow.
+      Model * copyQuake3PlayerSection( MeshSectionE section, AnimationModeE mode ) const;
 
       // A BSP tree is calculated for triangles that have textures with an alpha
       // channel (transparency). It is used to determine in what order triangles
