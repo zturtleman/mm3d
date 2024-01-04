@@ -17,9 +17,18 @@
     </p>
   </description>
 
+  <screenshots>
+    <screenshot type="default">
+      <image type="source">https://raw.githubusercontent.com/clover-moe/screenshots/main/mm3d/1.png</image>
+    </screenshot>
+  </screenshots>
+
   <launchable type="desktop-id">moe.clover.mm3d.desktop</launchable>
 
   <url type="homepage">https://clover.moe/mm3d</url>
+  <url type="bugtracker">https://github.com/zturtleman/mm3d/issues</url>
+  <url type="vcs-browser">https://github.com/zturtleman/mm3d</url>
+  <developer_name>zturtleman</developer_name>
   <update_contact>zturtleman@gmail.com</update_contact>
 
   <provides>
