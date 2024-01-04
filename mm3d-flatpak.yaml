@@ -27,13 +27,14 @@
 # The release can be installed using:
 #
 #    flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+#    flatpak install --user flathub org.kde.Platform/x86_64/5.15-23.08
 #    flatpak install --user -y moe.clover.mm3d-*.flatpak
 #
 #
 
 app-id: moe.clover.mm3d
 runtime: org.kde.Platform
-runtime-version: '5.15-22.08'
+runtime-version: '5.15-23.08'
 sdk: org.kde.Sdk
 command: mm3d
 finish-args:
@@ -43,19 +44,17 @@ finish-args:
   - --socket=wayland
   # X11 + XShm access
   - --share=ipc
-  - --socket=x11
   - --socket=fallback-x11
   # File access
   - --filesystem=host
 modules:
   # glu from flathub/shared-modules
   - name: glu
-    config-opts:
-      - "--disable-static"
+    buildsystem: meson
     sources:
     - type: archive
-      url: https://mesa.freedesktop.org/archive/glu/glu-9.0.2.tar.xz
-      sha256: 6e7280ff585c6a1d9dfcdf2fca489251634b3377bfc33c29e4002466a38d02d4
+      url: https://archive.mesa3d.org/glu/glu-9.0.3.tar.xz
+      sha256: bd43fe12f374b1192eb15fe20e45ff456b9bc26ab57f0eee919f96ca0f8a330f
     cleanup:
       - "/include"
       - "/lib/*.a"
