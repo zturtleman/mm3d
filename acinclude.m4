@@ -970,9 +970,11 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
       /usr/include/qt5
       /usr/include/qt
       /usr/qt5/include
+      /usr/include
       /usr/local/include/$bnv_qt_host/qt5
       /usr/local/include/qt5
       /usr/local/qt5/include
+      /usr/local/include
       `ls -dr /usr/local/Cellar/qt/5*/include 2>/dev/null`
     "
     # Now look for the newest in this list
