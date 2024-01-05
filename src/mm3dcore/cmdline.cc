@@ -123,7 +123,7 @@ static void _print_sysinfo()
       {
          printf( "%s", input );
       }
-      fclose( fp );
+      pclose( fp );
    }
    else
    {
@@ -138,7 +138,7 @@ static void _print_sysinfo()
       {
          printf( "%s", input );
       }
-      fclose( fp );
+      pclose( fp );
    }
    else
    {
