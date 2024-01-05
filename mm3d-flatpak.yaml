@@ -65,11 +65,6 @@ modules:
       # specify where GLU was just installed to
       # NOTE: "-L/app/lib" is set in LDFLAGS by flatpak-builder but mm3d configure doesn't use it for testing GL LIBS.
       - "--with-GL-cflags=-L/app/lib"
-      # specify where Qt is in the SDK
-      - "--with-Qt-bin-dir=/bin"
-      - "--with-Qt-include-dir=/include"
-      - "--with-Qt-lib-dir=/lib"
-      - "--with-Qt-translations-dir=/translations"
     sources:
       - type: dir
         path: .
