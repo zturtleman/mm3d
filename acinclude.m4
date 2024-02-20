@@ -255,7 +255,6 @@ EOF
         else
          ksw_cv_lua_test_result="success"
         fi
-      fi
     ])dnl AC_CACHE_VAL ksw_cv_lua_test_result
     AC_MSG_RESULT([$ksw_cv_lua_test_result]);
     if test x"$ksw_cv_lua_test_result" = "xfailure"; then
@@ -267,6 +266,7 @@ EOF
     rm -f ksw_lua_test.h \
           ksw_lua_test.c ksw_lua_test.o ksw_lua_test \
           ksw_lua_test_1.out
+  fi
 ])
 
 dnl for lualib (KSW was here)
@@ -424,7 +424,6 @@ EOF
         else
          ksw_cv_lualib_test_result="success"
         fi
-      fi
     ])dnl AC_CACHE_VAL ksw_cv_lualib_test_result
     AC_MSG_RESULT([$ksw_cv_lualib_test_result]);
     if test x"$ksw_cv_lualib_test_result" = "xfailure"; then
@@ -436,7 +435,8 @@ EOF
     rm -f ksw_lualib_test.h \
           ksw_lualib_test.c ksw_lualib_test.o ksw_lualib_test \
           ksw_lualib_test_1.out
-    fi
+  fi
+  fi
 ])
 
 dnl for Qt (KSW was here)
