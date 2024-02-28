@@ -6,7 +6,7 @@ jobs:
     name: GCC (Linux)
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install Dependencies
       run: |
         sudo apt update
@@ -24,7 +24,7 @@ jobs:
     name: Clang (Linux)
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install Dependencies
       run: |
         sudo apt update
@@ -42,7 +42,7 @@ jobs:
     name: Makefile.generic (Linux, GCC)
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install Dependencies
       run: |
         sudo apt update
@@ -61,7 +61,7 @@ jobs:
     # see https://github.com/flatpak/flatpak-builder/issues/468
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0 # This is needed for "git describe" to work.
     - name: Install Dependencies
@@ -84,7 +84,7 @@ jobs:
       run: |
         flatpak install --user -y moe.clover.mm3d-$(git describe|sed 's/^v\([0-9]\)/\1/').flatpak
         flatpak list
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: Flatpak Bundle
         path: ./*.flatpak
@@ -93,7 +93,7 @@ jobs:
     name: macOS
     runs-on: macOS-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0 # This is needed for "git describe" to work.
     - name: Install Dependencies
@@ -121,7 +121,7 @@ jobs:
         mkdir "${mm3d_longname}"
         mv "Maverick Model 3D.app" "${mm3d_longname}/."
         hdiutil create -fs HFS+ -srcfolder "${mm3d_longname}" mm3d-${mm3d_version}.dmg
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: MacOS App
         path: ./*.dmg
