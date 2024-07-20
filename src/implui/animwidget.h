@@ -55,6 +55,7 @@ class AnimWidget : public QWidget, public Ui::AnimWidgetBase
 
    public slots:
       void nameSelected(int);
+      void editClicked();
       void deleteClicked();
       void setCurrentFrame(int);
       void changeFPS();

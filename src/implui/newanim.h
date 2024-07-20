@@ -39,12 +39,17 @@ class NewAnim : public QDialog, public Ui::NewAnimBase
       NewAnim( QWidget * parent );
       virtual ~NewAnim();
 
+      void    editMode();
       QString getAnimName();
+      void    setAnimName( const QString &name );
       bool    isSkeletal();
       void    setSkeletal( bool o );
       unsigned getAnimFrameCount();
+      void     setAnimFrameCount( unsigned value );
       double  getAnimFPS();
+      void    setAnimFPS( double fps );
       bool    getAnimLooping();
+      void    setAnimLooping( bool loop );
 
    public slots:
       void nameChangedEvent();

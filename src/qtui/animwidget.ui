@@ -66,12 +66,22 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="m_editButton">
+       <property name="toolTip">
+        <string>Edit Animation</string>
+       </property>
+       <property name="text">
+        <string>Edit</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="m_deleteButton">
        <property name="toolTip">
         <string>Delete Animation</string>
        </property>
        <property name="text">
-        <string>X</string>
+        <string>Delete</string>
        </property>
       </widget>
      </item>
@@ -334,6 +344,22 @@
    <signal>valueChanged(int)</signal>
    <receiver>AnimWidgetBase</receiver>
    <slot>setCurrentFrame(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_editButton</sender>
+   <signal>clicked()</signal>
+   <receiver>AnimWidgetBase</receiver>
+   <slot>editClicked()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>

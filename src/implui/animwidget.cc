@@ -272,6 +272,37 @@ void AnimWidget::setCurrentFrame( int frame )
    DecalManager::getInstance()->modelUpdated( m_model );
 }
 
+void AnimWidget::editClicked()
+{
+   NewAnim win( this );
+   win.editMode();
+   win.setSkeletal( m_mode == Model::ANIMMODE_SKELETAL );
+
+   win.setAnimName( m_model->getAnimName( m_mode, m_currentAnim ) );
+   win.setAnimFrameCount( m_model->getAnimFrameCount( m_mode, m_currentAnim ) );
+   win.setAnimFPS( m_model->getAnimFPS( m_mode, m_currentAnim ) );
+   win.setAnimLooping( m_model->getAnimLooping( m_mode, m_currentAnim ) );
+
+   if ( win.exec() )
+   {
+     QString name = win.getAnimName();
+     unsigned frameCount = win.getAnimFrameCount();
+     double fps = win.getAnimFPS();
+     bool loop = win.getAnimLooping();
+
+     m_model->setAnimName( m_mode, m_currentAnim, name.toUtf8() );
+     m_model->setAnimFrameCount( m_mode, m_currentAnim, frameCount );
+     m_model->setAnimFPS( m_mode, m_currentAnim, fps );
+     m_model->setAnimLooping( m_mode, m_currentAnim, loop );
+
+     m_model->operationComplete( tr( "Edit Animation", "operation complete" ).toUtf8() );
+
+     refreshPage();
+
+     return;
+  }
+}
+
 void AnimWidget::deleteClicked()
 {
    int index = m_animName->currentIndex();
@@ -732,6 +763,7 @@ void AnimWidget::refreshPage()
          Model::AnimationModeE mode = indexToMode( index );
          index = indexToAnim( index );
 
+         m_editButton->setEnabled( true );
          m_deleteButton->setEnabled( true );
          if ( m_playing )
          {
@@ -768,6 +800,7 @@ void AnimWidget::refreshPage()
       }
       else
       {
+         m_editButton->setEnabled( false );
          m_deleteButton->setEnabled( false );
          m_frameCount->setEnabled( false );
          m_fps->setEnabled( false );

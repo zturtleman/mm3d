@@ -40,9 +40,22 @@ NewAnim::~NewAnim()
 {
 }
 
+void NewAnim::editMode()
+{
+   setWindowTitle( tr( "Edit Animation" ) );
+
+   m_skeletal->setEnabled( false );
+   m_frame->setEnabled( false );
+}
+
 QString NewAnim::getAnimName()
 {
    return m_name->text();
+}
+
+void NewAnim::setAnimName( const QString &name )
+{
+   m_name->setText( name );
 }
 
 bool NewAnim::isSkeletal()
@@ -75,9 +88,19 @@ unsigned NewAnim::getAnimFrameCount()
 	return m_frames->value();
 }
 
+void NewAnim::setAnimFrameCount( unsigned value )
+{
+   m_frames->setValue( value );
+}
+
 double NewAnim::getAnimFPS()
 {
    return m_fps->text().toDouble();
+}
+
+void NewAnim::setAnimFPS( double fps )
+{
+    m_fps->setText( QString::number( fps ) );
 }
 
 bool NewAnim::getAnimLooping()
@@ -85,3 +108,7 @@ bool NewAnim::getAnimLooping()
    return m_loop->isChecked();
 }
 
+void NewAnim::setAnimLooping( bool loop )
+{
+   m_loop->setChecked( loop );
+}
