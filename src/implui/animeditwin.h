@@ -59,8 +59,6 @@ class AnimEditWindow : public QDialog, public Ui::AnimEditWinBase
       void setAnimationData( Model * model, Model::AnimationModeE mode, const std::list<unsigned> & animIndicies );
 
    public slots:
-      void helpNowEvent();
-
       void okClicked();
       void cancelClicked();
 

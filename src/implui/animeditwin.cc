@@ -89,9 +89,6 @@ AnimEditWindow::AnimEditWindow( QWidget * parent )
    setupUi( this );
    setModal( true );
 
-   QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
-   connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
-
    m_frameCountDelegate = new AnimEditFrameCountDelegate();
    m_animTable->setItemDelegateForColumn( COLUMN_FRAMECOUNT, m_frameCountDelegate );
    m_animTable->horizontalHeader()->resizeSection( COLUMN_NAME, 300 );
@@ -200,11 +197,3 @@ void AnimEditWindow::cancelClicked()
 {
    reject();
 }
-
-void AnimEditWindow::helpNowEvent()
-{
-   // ### FIXME: this doesn't exist yet
-   HelpWin * win = new HelpWin( "olh_animeditwin.html", true );
-   win->show();
-}
-
