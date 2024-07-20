@@ -27,7 +27,9 @@
 #include "decalmgr.h"
 #include "log.h"
 #include "msg.h"
+#include "3dmprefs.h"
 #include "helpwin.h"
+#include "newanim.h"
 
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QComboBox>
@@ -241,19 +243,49 @@ void AnimSetWindow::downClicked()
 
 void AnimSetWindow::newClicked()
 {
-   bool ok = false;
-
-   QString name = QInputDialog::getText( this,
-         tr( "New Animation" ),
-         tr( "New name:" ),
-         QLineEdit::Normal, QString(""), &ok );
-
-   if ( ok && !name.isEmpty() )
+   NewAnim win( this );
+   g_prefs.setDefault( "ui_new_anim_type", 0 );
+   win.setSkeletal( g_prefs( "ui_new_anim_type" ).intValue() == 0 );
+   if ( win.exec() )
    {
-      int num = m_model->addAnimation( indexToMode( m_animType->currentIndex() ), name.toUtf8() );
+      g_prefs( "ui_new_anim_type" ) = win.isSkeletal() ? 0 : 1;
+      QString name = win.getAnimName();
+      Model::AnimationModeE mode = win.isSkeletal()
+         ? Model::ANIMMODE_SKELETAL
+         : Model::ANIMMODE_FRAME;
+      unsigned frameCount = win.getAnimFrameCount();
+      double fps = win.getAnimFPS();
+      bool loop = win.getAnimLooping();
+
+      int anim = m_model->addAnimation( mode, name.toUtf8() );
+      m_model->setAnimFrameCount( mode, anim, frameCount );
+      m_model->setAnimFPS( mode, anim, fps );
+      m_model->setAnimLooping( mode, anim, loop );
+      m_model->setCurrentAnimation( mode, anim );
+
+      if ( mode == Model::ANIMMODE_SKELETAL )
+      {
+         m_animType->setCurrentIndex(0);
+      }
+      else if ( mode == Model::ANIMMODE_FRAME )
+      {
+         m_animType->setCurrentIndex(1);
+      }
+      else if ( mode == Model::ANIMMODE_FRAMERELATIVE )
+      {
+         m_animType->setCurrentIndex(2);
+      }
+      else
+      {
+         m_animType->setCurrentIndex(0);
+      }
+
+      animModeSelected( m_animType->currentIndex() );
+
+      int num = m_animList->count() - 1;
+
       if ( num >= 0 )
       {
-         m_animList->insertItem( num, name );
          m_animList->setCurrentItem(m_animList->item(num));
 
          m_animList->clearSelection();
