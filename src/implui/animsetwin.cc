@@ -75,7 +75,6 @@ AnimSetWindow::AnimSetWindow( Model * model, QWidget * parent )
       m_animType->setCurrentIndex(0);
    }
 
-   fillAnimationList();
    animModeSelected( m_animType->currentIndex() );
 
    //Model::AnimationModeE mode = indexToMode( m_animType->currentIndex() );
