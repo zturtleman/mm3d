@@ -65,6 +65,8 @@ class AnimWidget : public QWidget, public Ui::AnimWidgetBase
 
       void timeElapsed();
 
+      void previousClicked();
+      void nextClicked();
       void playClicked();
       void stopClicked();
       void loopToggled(bool);

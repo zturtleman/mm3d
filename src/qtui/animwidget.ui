@@ -181,6 +181,20 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="m_previous">
+       <property name="text">
+        <string>Previous</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_next">
+       <property name="text">
+        <string>Next</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="m_play">
        <property name="text">
         <string>Play</string>
@@ -248,6 +262,38 @@
    <signal>toggled(bool)</signal>
    <receiver>AnimWidgetBase</receiver>
    <slot>loopToggled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_previous</sender>
+   <signal>clicked()</signal>
+   <receiver>AnimWidgetBase</receiver>
+   <slot>previousClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_next</sender>
+   <signal>clicked()</signal>
+   <receiver>AnimWidgetBase</receiver>
+   <slot>nextClicked()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>

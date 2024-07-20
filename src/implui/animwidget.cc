@@ -591,6 +591,32 @@ void AnimWidget::pasteFrame()
    }
 }
 
+void AnimWidget::previousClicked()
+{
+   unsigned count = m_model->getAnimFrameCount( m_mode, m_currentAnim );
+
+   if ( m_currentFrame == 0 ) {
+      m_currentFrame = count - 1;
+   } else {
+      m_currentFrame--;
+   }
+
+   refreshPage();
+}
+
+void AnimWidget::nextClicked()
+{
+   unsigned count = m_model->getAnimFrameCount( m_mode, m_currentAnim );
+
+   if ( m_currentFrame >= count - 1 ) {
+      m_currentFrame = 0;
+   } else {
+      m_currentFrame++;
+   }
+
+   refreshPage();
+}
+
 void AnimWidget::playClicked()
 {
    if ( m_playing )
@@ -609,6 +635,8 @@ void AnimWidget::stopClicked()
    m_currentTime = 0;
    m_stop->setEnabled( false );
    m_play->setEnabled(true);
+   m_previous->setEnabled(true);
+   m_next->setEnabled(true);
    m_frameCount->setEnabled(true);
    m_countSlider->setEnabled(true);
    m_playing = false;
@@ -638,6 +666,8 @@ void AnimWidget::doPlay()
       return;
    }
    m_play->setEnabled(false);
+   m_previous->setEnabled(false);
+   m_next->setEnabled(false);
    m_frameCount->setEnabled(false);
    m_countSlider->setEnabled(false);
 
@@ -767,11 +797,15 @@ void AnimWidget::refreshPage()
          m_deleteButton->setEnabled( true );
          if ( m_playing )
          {
+            m_previous->setEnabled( false );
+            m_next->setEnabled( false );
             m_frameCount->setEnabled( false );
             m_countSlider->setEnabled( false );
          }
          else
          {
+            m_previous->setEnabled( true );
+            m_next->setEnabled( true );
             m_frameCount->setEnabled( true );
             m_countSlider->setEnabled( true );
          }
@@ -805,6 +839,8 @@ void AnimWidget::refreshPage()
          m_frameCount->setEnabled( false );
          m_fps->setEnabled( false );
          m_countSlider->setEnabled( false );
+         m_previous->setEnabled( false );
+         m_next->setEnabled( false );
          m_play->setEnabled( false );
          m_stop->setEnabled( false );
          m_loop->setEnabled( false );
@@ -829,11 +865,15 @@ void AnimWidget::refreshPage()
          m_animName->setEnabled( true );
          if ( m_playing )
          {
+            m_previous->setEnabled( false );
+            m_next->setEnabled( false );
             m_frameCount->setEnabled( false );
             m_countSlider->setEnabled( false );
          }
          else
          {
+            m_previous->setEnabled( true );
+            m_next->setEnabled( true );
             m_frameCount->setEnabled( true );
             m_countSlider->setEnabled( true );
          }
@@ -848,6 +888,8 @@ void AnimWidget::refreshPage()
          m_frameCount->setEnabled( false );
          m_fps->setEnabled( false );
          m_countSlider->setEnabled( false );
+         m_previous->setEnabled( false );
+         m_next->setEnabled( false );
          m_play->setEnabled( false );
          m_stop->setEnabled( false );
          m_loop->setEnabled( false );
