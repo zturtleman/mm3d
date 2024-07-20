@@ -202,6 +202,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="m_repeat">
+       <property name="text">
+        <string>Repeat</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="m_stop">
        <property name="text">
         <string>Stop</string>
@@ -310,6 +317,22 @@
    <signal>clicked()</signal>
    <receiver>AnimWidgetBase</receiver>
    <slot>playClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_repeat</sender>
+   <signal>clicked()</signal>
+   <receiver>AnimWidgetBase</receiver>
+   <slot>repeatClicked()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>

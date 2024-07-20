@@ -619,6 +619,21 @@ void AnimWidget::nextClicked()
 
 void AnimWidget::playClicked()
 {
+   m_repeating = false;
+   if ( m_playing )
+   {
+      doPause();
+   }
+   else
+   {
+      doPlay();
+   }
+   m_stop->setEnabled( true );
+}
+
+void AnimWidget::repeatClicked()
+{
+   m_repeating = true;
    if ( m_playing )
    {
       doPause();
@@ -635,6 +650,7 @@ void AnimWidget::stopClicked()
    m_currentTime = 0;
    m_stop->setEnabled( false );
    m_play->setEnabled(true);
+   m_repeat->setEnabled(true);
    m_previous->setEnabled(true);
    m_next->setEnabled(true);
    m_frameCount->setEnabled(true);
@@ -666,6 +682,7 @@ void AnimWidget::doPlay()
       return;
    }
    m_play->setEnabled(false);
+   m_repeat->setEnabled(false);
    m_previous->setEnabled(false);
    m_next->setEnabled(false);
    m_frameCount->setEnabled(false);
@@ -687,6 +704,7 @@ void AnimWidget::doPause()
 {
    m_playing = false;
    m_play->setEnabled(true);
+   m_repeat->setEnabled(true);
    m_animTimer->stop();
 }
 
@@ -697,7 +715,7 @@ void AnimWidget::timeElapsed()
    unsigned t = (tv.tv_sec - m_startTime.tv_sec) * 1000 + (tv.tv_msec - m_startTime.tv_msec);
 
    m_currentTime = ((double) t) / 1000.0;
-   if ( m_model->setCurrentAnimationTime( m_currentTime ) )
+   if ( m_model->setCurrentAnimationTime( m_currentTime ) || m_repeating )
    {
       //log_debug( "animation time: %f (%d)\n", m_currentTime, t );
    }
@@ -812,6 +830,7 @@ void AnimWidget::refreshPage()
          m_fps->setEnabled( true );
          m_animName->setEnabled( true );
          m_play->setEnabled( true );
+         m_repeat->setEnabled( true );
          m_loop->setEnabled( true );
 
          unsigned count = m_model->getAnimFrameCount( mode, index );
@@ -842,6 +861,7 @@ void AnimWidget::refreshPage()
          m_previous->setEnabled( false );
          m_next->setEnabled( false );
          m_play->setEnabled( false );
+         m_repeat->setEnabled( false );
          m_stop->setEnabled( false );
          m_loop->setEnabled( false );
 
@@ -879,6 +899,7 @@ void AnimWidget::refreshPage()
          }
          m_fps->setEnabled( true );
          m_play->setEnabled( true );
+         m_repeat->setEnabled( true );
          m_stop->setEnabled( true );
          m_loop->setEnabled( true );
       }
@@ -891,6 +912,7 @@ void AnimWidget::refreshPage()
          m_previous->setEnabled( false );
          m_next->setEnabled( false );
          m_play->setEnabled( false );
+         m_repeat->setEnabled( false );
          m_stop->setEnabled( false );
          m_loop->setEnabled( false );
 

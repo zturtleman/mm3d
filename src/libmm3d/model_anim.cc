@@ -1832,6 +1832,7 @@ bool Model::setCurrentAnimationTime( double frameTime )
       }
 
       size_t totalFrames = m_frameAnims[m_currentAnim]->m_frameData.size();
+      bool rtnval = true;
 
       if ( totalFrames > 0 )
       {
@@ -1839,10 +1840,7 @@ bool Model::setCurrentAnimationTime( double frameTime )
          double totalTime = spf * m_frameAnims[m_currentAnim]->m_frameData.size();
          while ( frameTime >= totalTime )
          {
-            if ( !m_frameAnims[m_currentAnim]->m_loop )
-            {
-               return false;
-            }
+            rtnval = false;
             frameTime -= totalTime;
          }
          m_currentFrame = (unsigned) (frameTime / spf);
@@ -1856,11 +1854,13 @@ bool Model::setCurrentAnimationTime( double frameTime )
       m_currentTime = frameTime;
 
       updateObservers();
-      return true;
+      return rtnval;
    }
    else if ( m_animationMode == ANIMMODE_SKELETAL && m_currentAnim < m_skelAnims.size() && m_skelAnims[m_currentAnim]->m_frameCount > 0 )
    {
       LOG_PROFILE();
+
+      bool rtnval = true;
 
       SkelAnim * sa = m_skelAnims[m_currentAnim];
       if ( sa->m_frameCount > 0 )
@@ -1868,10 +1868,7 @@ bool Model::setCurrentAnimationTime( double frameTime )
          double totalTime = sa->m_spf * sa->m_frameCount;
          while ( frameTime > totalTime )
          {
-            if ( !sa->m_loop )
-            {
-               return false;
-            }
+            rtnval = false;
             frameTime -= totalTime;
          }
       }
@@ -2161,7 +2158,7 @@ bool Model::setCurrentAnimationTime( double frameTime )
       }
 
       updateObservers();
-      return true;
+      return rtnval;
    }
    else
    {
