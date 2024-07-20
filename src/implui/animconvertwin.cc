@@ -46,7 +46,7 @@ QWidget *AnimConvertFrameCountDelegate::createEditor( QWidget *parent,
    QSpinBox *editor = new QSpinBox( parent );
    editor->setFrame( false );
    editor->setMinimum( 0 );
-   editor->setMaximum( 99 );
+   editor->setMaximum( 9999 );
 
    return editor;
 }

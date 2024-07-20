@@ -98,7 +98,7 @@
      <item>
       <widget class="MyQSpinBox" name="m_frameCount">
        <property name="maximum">
-        <number>999</number>
+        <number>9999</number>
        </property>
       </widget>
      </item>
