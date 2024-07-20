@@ -4,6 +4,7 @@ noinst_LIBRARIES = libqtui.a
 
 libqtui_UIFILES = alignwin.ui \
 	animconvertwin.ui \
+	animeditwin.ui \
 	animexportwin.ui \
 	animsetwin.ui \
 	animwidget.ui \
@@ -50,6 +51,7 @@ libqtui_UIFILES = alignwin.ui \
 libqtui_UIHEADERS = \
    alignwin.base.h \
    animconvertwin.base.h \
+   animeditwin.base.h \
    animexportwin.base.h \
 	animsetwin.base.h   \
 	animwidget.base.h      \

@@ -485,6 +485,7 @@ LIB_OBJ= \
 MM3D_UI= \
 	${B}/qtui/alignwin.base.h \
 	${B}/qtui/animconvertwin.base.h \
+	${B}/qtui/animeditwin.base.h \
 	${B}/qtui/animexportwin.base.h \
 	${B}/qtui/animsetwin.base.h \
 	${B}/qtui/animwidget.base.h \
@@ -534,6 +535,7 @@ MM3D_MOC= \
 	${B}/implui/alignwin.moc.cc \
 	${B}/implui/aboutwin.moc.cc \
 	${B}/implui/animconvertwin.moc.cc \
+	${B}/implui/animeditwin.moc.cc \
 	${B}/implui/animexportwin.moc.cc \
 	${B}/implui/animsetwin.moc.cc \
 	${B}/implui/animwidget.moc.cc \
@@ -597,6 +599,7 @@ MM3D_MOC_OBJ= \
 	${B}/implui/alignwin.moc.o \
 	${B}/implui/aboutwin.moc.o \
 	${B}/implui/animconvertwin.moc.o \
+	${B}/implui/animeditwin.moc.o \
 	${B}/implui/animexportwin.moc.o \
 	${B}/implui/animsetwin.moc.o \
 	${B}/implui/animwidget.moc.o \
@@ -670,6 +673,7 @@ MM3D_OBJ= \
 	${B}/implui/alignwin.o \
 	${B}/mm3dcore/allocstats.o \
 	${B}/implui/animconvertwin.o \
+	${B}/implui/animeditwin.o \
 	${B}/implui/animexportwin.o \
 	${B}/implui/animsetwin.o \
 	${B}/implui/animwidget.o \

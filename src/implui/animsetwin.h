@@ -45,7 +45,7 @@ class AnimSetWindow : public QDialog, public Ui::AnimSetWinBase
       void downClicked();
 
       void newClicked();
-      void renameClicked();
+      void editClicked();
       void deleteClicked();
 
       void copyClicked();

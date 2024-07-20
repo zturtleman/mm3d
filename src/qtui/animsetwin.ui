@@ -113,9 +113,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="m_renameButton">
+      <widget class="QPushButton" name="m_editButton">
        <property name="text">
-        <string>&amp;Rename</string>
+        <string>Edit</string>
        </property>
       </widget>
      </item>
@@ -343,10 +343,10 @@
    </hints>
   </connection>
   <connection>
-   <sender>m_renameButton</sender>
+   <sender>m_editButton</sender>
    <signal>clicked()</signal>
    <receiver>AnimSetWinBase</receiver>
-   <slot>renameClicked()</slot>
+   <slot>editClicked()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>

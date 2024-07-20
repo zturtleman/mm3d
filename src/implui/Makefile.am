@@ -5,6 +5,7 @@ libimplui_HFILES = \
 	aboutwin.h \
 	alignwin.h \
 	animconvertwin.h \
+	animeditwin.h \
 	animexportwin.h \
 	animsetwin.h \
 	animwidget.h \
@@ -64,6 +65,7 @@ libimplui_MOC = \
 	aboutwin.moc.cc \
 	alignwin.moc.cc \
 	animconvertwin.moc.cc \
+	animeditwin.moc.cc \
 	animexportwin.moc.cc \
 	animsetwin.moc.cc \
 	animwidget.moc.cc \
@@ -119,6 +121,7 @@ libimplui_a_SOURCES = \
 	aboutwin.cc \
 	alignwin.cc \
 	animconvertwin.cc \
+	animeditwin.cc \
 	animexportwin.cc \
 	animsetwin.cc \
 	animwidget.cc \

@@ -24,6 +24,7 @@
 #include "animsetwin.h"
 
 #include "animconvertwin.h"
+#include "animeditwin.h"
 #include "decalmgr.h"
 #include "log.h"
 #include "msg.h"
@@ -293,42 +294,41 @@ void AnimSetWindow::newClicked()
    }
 }
 
-void AnimSetWindow::renameClicked()
+void AnimSetWindow::editClicked()
 {
-   bool isSelection = false;
-   unsigned firstSelection = 0;
-
+   Model::AnimationModeE mode = indexToMode( m_animType->currentIndex() );
    unsigned count = m_animList->count();
-   for ( firstSelection = 0; firstSelection < count; firstSelection++ )
+   std::list<unsigned> animIndicies;
+
+   for ( unsigned t = 0; t < count; t++ )
    {
-      if ( m_animList->item(firstSelection)->isSelected() )
+      if ( m_animList->item(t)->isSelected() )
       {
-         isSelection = true;
-         break;
+         animIndicies.push_back( t );
       }
    }
 
-   if ( isSelection )
+   AnimEditWindow aew( this );
+
+   aew.setAnimationData( m_model, mode, animIndicies );
+   aew.exec();
+
+   if ( !animIndicies.empty() )
    {
-      bool ok = false;
+      fillAnimationList();
 
-      QString name = QInputDialog::getText( this,
-            tr( "Rename Animation" ),
-            tr( "New name:" ),
-            QLineEdit::Normal, m_animList->item( firstSelection )->text(), &ok );
+      list<unsigned>::iterator it;
 
-      if ( ok && !name.isEmpty() )
+      m_animList->setCurrentItem(m_animList->item(animIndicies.back()));
+
+      count = m_animList->count();
+      for ( unsigned int t = 0; t < count; ++t )
       {
-         Model::AnimationModeE mode = indexToMode( m_animType->currentIndex() );
-
-         for ( unsigned t = 0; t < count; t++ )
-         {
-            if ( m_animList->item(t)->isSelected() )
-            {
-               m_model->setAnimName( mode, t, name.toUtf8() );
-               m_animList->item(t)->setText( name );
-            }
-         }
+         m_animList->item(t)->setSelected( false );
+      }
+      for ( it = animIndicies.begin(); it != animIndicies.end(); it++ )
+      {
+         m_animList->item( *it )->setSelected( true );
       }
    }
 }
