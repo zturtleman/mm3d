@@ -161,17 +161,22 @@ void AnimWidget::initialize( Model * model, bool isUndo )
    }
    else
    {
+      m_currentAnim = 0;
+      m_currentFrame = 0;
       m_mode = Model::ANIMMODE_SKELETAL;
+
       if ( m_skelAnimCount > 0 )
       {
-         m_model->setCurrentAnimation( m_mode, indexToAnim( m_animName->currentIndex() ) );
+         m_currentAnim = indexToAnim( m_animName->currentIndex() );
+         m_model->setCurrentAnimation( m_mode, m_currentAnim );
       }
       else if ( m_frameAnimCount > 0 )
       {
          m_mode = Model::ANIMMODE_FRAME;
-         m_model->setCurrentAnimation( m_mode, indexToAnim( m_animName->currentIndex() ) );
+         m_currentAnim = indexToAnim( m_animName->currentIndex() );
+         m_model->setCurrentAnimation( m_mode, m_currentAnim );
       }
-      m_model->setCurrentAnimationFrame( 0 );
+      m_model->setCurrentAnimationFrame( m_currentFrame );
 
       refreshPage();
 
