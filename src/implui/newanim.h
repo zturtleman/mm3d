@@ -42,6 +42,9 @@ class NewAnim : public QDialog, public Ui::NewAnimBase
       QString getAnimName();
       bool    isSkeletal();
       void    setSkeletal( bool o );
+      unsigned getAnimFrameCount();
+      double  getAnimFPS();
+      bool    getAnimLooping();
 
    public slots:
       void nameChangedEvent();

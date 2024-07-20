@@ -70,3 +70,18 @@ void NewAnim::nameChangedEvent()
    }
 }
 
+unsigned NewAnim::getAnimFrameCount()
+{
+	return m_frames->value();
+}
+
+double NewAnim::getAnimFPS()
+{
+   return m_fps->text().toDouble();
+}
+
+bool NewAnim::getAnimLooping()
+{
+   return m_loop->isChecked();
+}
+

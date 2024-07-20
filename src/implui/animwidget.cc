@@ -204,8 +204,14 @@ void AnimWidget::nameSelected( int index )
          Model::AnimationModeE mode = win.isSkeletal() 
             ? Model::ANIMMODE_SKELETAL
             : Model::ANIMMODE_FRAME;
+         unsigned frameCount = win.getAnimFrameCount();
+         double fps = win.getAnimFPS();
+         bool loop = win.getAnimLooping();
 
          int anim = m_model->addAnimation( mode, name.toUtf8() );
+         m_model->setAnimFrameCount( mode, anim, frameCount );
+         m_model->setAnimFPS( mode, anim, fps );
+         m_model->setAnimLooping( mode, anim, loop );
          m_model->setCurrentAnimation( mode, anim );
          m_model->operationComplete( tr( "New Animation", "operation complete" ).toUtf8() );
          initialize( m_model, true );
