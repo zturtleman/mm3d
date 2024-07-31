@@ -30,6 +30,36 @@
     <number>9</number>
    </property>
    <item>
+    <widget class="QGroupBox" name="groupBox3">
+     <property name="title">
+      <string>Color Scheme</string>
+     </property>
+     <layout class="QVBoxLayout">
+      <item>
+       <widget class="QRadioButton" name="m_colorsAuto">
+        <property name="text">
+         <string>Automatic</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="m_colorsLight">
+        <property name="text">
+         <string>Light</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="m_colorsDark">
+        <property name="text">
+         <string>Dark</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox1">
      <property name="title">
       <string>Canvas Grid</string>

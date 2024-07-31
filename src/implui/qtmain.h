@@ -27,6 +27,7 @@
 class QApplication;
 
 extern QApplication * ui_getapp();
+extern bool ui_getdarkmode();
 
 extern int ui_prep( int & argc, char * argv[] );
 extern int ui_init( int & argc, char * argv[] );

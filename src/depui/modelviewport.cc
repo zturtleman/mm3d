@@ -21,6 +21,7 @@
  */
 
 
+#include "../implui/qtmain.h"
 #include "model.h"
 #include "toolbox.h"
 #include "tool.h"
@@ -84,6 +85,12 @@ static ScrollButtonT s_buttons[ ModelViewport::ScrollButtonMAX ] =
 
 static Matrix s_mat;
 
+static bool useDarkBackground( void ) {
+	int color_scheme = g_prefs( "ui_colorscheme_type" ).intValue();
+
+	return ( color_scheme == 2 || ( color_scheme == 0 && ui_getdarkmode() ) );
+}
+
 ModelViewport::ModelViewport( QWidget * parent )
    : QOpenGLWidget( parent ),
      m_model( NULL ),
@@ -117,6 +124,8 @@ ModelViewport::ModelViewport( QWidget * parent )
 
    m_scrollTimer->setSingleShot( true );
 
+   g_prefs.setDefault( "ui_colorscheme_type", 0 );
+
    g_prefs.setDefault( "ui_grid_inc", 4.0 );
 
    g_prefs.setDefault( "ui_3dgrid_inc", 4.0 );
@@ -132,7 +141,11 @@ ModelViewport::ModelViewport( QWidget * parent )
    double rot[3] = { 45 * PIOVER180, 0, 0 };
    s_mat.setRotation( rot );
 
-   m_backColor.setRgb( 130, 200, 200 );
+   if ( useDarkBackground() ) {
+      m_backColor.setRgb( 130 / 2, 200 / 2, 200 / 2 );
+   } else {
+      m_backColor.setRgb( 130, 200, 200 );
+   }
 
    //setAcceptDrops( true ); // Drag and drop is not implemented, see ModelViewport::dragEnterEvent.
    setMouseTracking( true );
@@ -2356,7 +2369,11 @@ void ModelViewport::focusInEvent( QFocusEvent * e )
 {
    if ( !isValid() )
       return;
-   m_backColor.setRgb( 150, 210, 210 );
+   if ( useDarkBackground() ) {
+      m_backColor.setRgb( 150 / 2, 210 / 2, 210 / 2 );
+   } else {
+      m_backColor.setRgb( 150, 210, 210 );
+   }
    makeCurrent();
    glClearColor( m_backColor.red() / 256.0, 
          m_backColor.green() / 256.0, 
@@ -2368,7 +2385,11 @@ void ModelViewport::focusOutEvent( QFocusEvent * e )
 {
    if ( !isValid() )
       return;
-   m_backColor.setRgb( 130, 200, 200 );
+   if ( useDarkBackground() ) {
+      m_backColor.setRgb( 130 / 2, 200 / 2, 200 / 2 );
+   } else {
+      m_backColor.setRgb( 130, 200, 200 );
+   }
    makeCurrent();
    glClearColor( m_backColor.red() / 256.0, 
          m_backColor.green() / 256.0, 

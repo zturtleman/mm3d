@@ -40,6 +40,20 @@ ViewportSettings::ViewportSettings( QWidget * parent )
    QShortcut * help = new QShortcut( QKeySequence( tr("F1", "Help Shortcut")), this );
    connect( help, SIGNAL(activated()), this, SLOT(helpNowEvent()) );
 
+   switch ( g_prefs( "ui_colorscheme_type" ).intValue() )
+   {
+      default:
+      case 0:
+         m_colorsAuto->setChecked( true );
+         break;
+      case 1:
+         m_colorsLight->setChecked( true );
+         break;
+      case 2:
+         m_colorsDark->setChecked( true );
+         break;
+   }
+
    QString temp;
 
    m_gridUnit->setText( QString( g_prefs( "ui_grid_inc" ).stringValue().c_str() ) );
@@ -71,6 +85,15 @@ ViewportSettings::~ViewportSettings()
 
 void ViewportSettings::accept()
 {
+   int color_scheme = 0;
+
+   if ( m_colorsLight->isChecked() )
+      color_scheme = 1;
+   else if ( m_colorsDark->isChecked() )
+      color_scheme = 2;
+
+   g_prefs( "ui_colorscheme_type" ) = color_scheme;
+
    g_prefs( "ui_grid_inc" )     = (const char *) m_gridUnit->text().toLatin1();
    g_prefs( "ui_3dgrid_inc" )   = (const char *) m_3dGridUnit->text().toLatin1();
    g_prefs( "ui_3dgrid_count" ) = (const char *) m_3dGridLines->text().toLatin1();

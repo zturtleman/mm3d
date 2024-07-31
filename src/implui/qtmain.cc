@@ -56,8 +56,10 @@ class ModelApp : public QApplication
 {
 public:
    ModelApp(int &argc, char **argv)
-       : QApplication(argc, argv)
+       : QApplication(argc, argv),
+         m_darkMode(false)
    {
+      checkDarkMode();
    }
 
    bool event(QEvent *event)
@@ -67,9 +69,26 @@ public:
 
          ViewWindow::openModelInEmptyWindow( openEvent->file().toUtf8() );
       }
+      else if ( event->type() == QEvent::ApplicationPaletteChange )
+      {
+         checkDarkMode();
+      }
 
       return QApplication::event(event);
    }
+
+   void checkDarkMode()
+   {
+      m_darkMode = this->palette().window().color().value() < this->palette().windowText().color().value();
+   }
+
+   bool getDarkMode()
+   {
+      return m_darkMode;
+   }
+
+   protected:
+      bool m_darkMode;
 };
 
 static ModelApp     * s_app = NULL;
@@ -108,6 +127,11 @@ static bool loadTranslationFile( QTranslator * xlat, const QString & localeFile 
 QApplication * ui_getapp()
 {
    return s_app;
+}
+
+bool ui_getdarkmode()
+{
+   return ( s_app && s_app->getDarkMode() );
 }
 
 int ui_prep( int & argc, char * argv[] )
