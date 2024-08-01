@@ -566,10 +566,16 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                         continue;
                      }
 
+                     float diffuse[4];
+                     diffuse[0] = m_materials[ index ]->m_diffuse[0];
+                     diffuse[1] = m_materials[ index ]->m_diffuse[1];
+                     diffuse[2] = m_materials[ index ]->m_diffuse[2];
+                     diffuse[3] = 1.0f;
+
                      glMaterialfv( GL_FRONT, GL_AMBIENT,
                            m_materials[ index ]->m_ambient );
                      glMaterialfv( GL_FRONT, GL_DIFFUSE,
-                           m_materials[ index ]->m_diffuse );
+                           diffuse );
                      glMaterialfv( GL_FRONT, GL_SPECULAR,
                            m_materials[ index ]->m_specular );
                      glMaterialfv( GL_FRONT, GL_EMISSION,
@@ -770,10 +776,16 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                            continue;
                         }
 
+                        float diffuse[4];
+                        diffuse[0] = m_materials[ index ]->m_diffuse[0];
+                        diffuse[1] = m_materials[ index ]->m_diffuse[1];
+                        diffuse[2] = m_materials[ index ]->m_diffuse[2];
+                        diffuse[3] = 1.0f;
+
                         glMaterialfv( GL_FRONT, GL_AMBIENT,
                               m_materials[ index ]->m_ambient );
                         glMaterialfv( GL_FRONT, GL_DIFFUSE,
-                              m_materials[ index ]->m_diffuse );
+                              diffuse );
                         glMaterialfv( GL_FRONT, GL_SPECULAR,
                               m_materials[ index ]->m_specular );
                         glMaterialfv( GL_FRONT, GL_EMISSION,
@@ -969,10 +981,16 @@ void Model::draw( unsigned drawOptions, ContextT context, float * viewPoint )
                      continue;
                   }
 
+                  float diffuse[4];
+                  diffuse[0] = m_materials[ index ]->m_diffuse[0];
+                  diffuse[1] = m_materials[ index ]->m_diffuse[1];
+                  diffuse[2] = m_materials[ index ]->m_diffuse[2];
+                  diffuse[3] = 1.0f;
+
                   glMaterialfv( GL_FRONT, GL_AMBIENT,
                         m_materials[ index ]->m_ambient );
                   glMaterialfv( GL_FRONT, GL_DIFFUSE,
-                        m_materials[ index ]->m_diffuse );
+                        diffuse );
                   glMaterialfv( GL_FRONT, GL_SPECULAR,
                         m_materials[ index ]->m_specular );
                   glMaterialfv( GL_FRONT, GL_EMISSION,

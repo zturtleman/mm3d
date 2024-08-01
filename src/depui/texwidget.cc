@@ -265,6 +265,7 @@ void TextureWidget::paintInternal()
          glMaterialfv( GL_FRONT, GL_AMBIENT,
                fval );
          m_model->getTextureDiffuse( m_materialId, fval );
+         fval[3] = 1.0f;
          glMaterialfv( GL_FRONT, GL_DIFFUSE,
                fval );
          m_model->getTextureSpecular( m_materialId, fval );

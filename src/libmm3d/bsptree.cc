@@ -74,10 +74,16 @@ bool float_equiv( float rhs, float lhs )
 
 static void _setMaterial( DrawingContext * context, int texture, Model::Material * material )
 {
+   float diffuse[4];
+   diffuse[0] = material->m_diffuse[0];
+   diffuse[1] = material->m_diffuse[1];
+   diffuse[2] = material->m_diffuse[2];
+   diffuse[3] = 1.0f;
+
    glMaterialfv( GL_FRONT, GL_AMBIENT,
          material->m_ambient );
    glMaterialfv( GL_FRONT, GL_DIFFUSE,
-         material->m_diffuse );
+         diffuse );
    glMaterialfv( GL_FRONT, GL_SPECULAR,
          material->m_specular );
    glMaterialfv( GL_FRONT, GL_EMISSION,
