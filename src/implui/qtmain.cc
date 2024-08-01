@@ -136,6 +136,15 @@ bool ui_getdarkmode()
 
 int ui_prep( int & argc, char * argv[] )
 {
+#if defined Q_OS_UNIX && !defined Q_OS_MAC
+   // Don't use Wayland unless requested (QT_QPA_PLATFORM=wayland)
+   char *platform = getenv( "QT_QPA_PLATFORM" );
+   if ( !platform || !*platform )
+   {
+      setenv( "QT_QPA_PLATFORM", "xcb", 1 );
+   }
+#endif
+
    // Don't use OpenGL ES (ANGLE, software) on Windows
    // (It must be set before QApplication is created)
    QCoreApplication::setAttribute( Qt::AA_UseDesktopOpenGL );
