@@ -245,7 +245,7 @@ void TextureWidget::paintInternal()
    if ( m_solidBackground )
    {
       glColor3f( 0.0f, 0.0f, 0.0f );
-      float fval[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+      float fval[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
       glMaterialfv( GL_FRONT, GL_AMBIENT, fval );
       glMaterialfv( GL_FRONT, GL_DIFFUSE, fval );
