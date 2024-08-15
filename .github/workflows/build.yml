@@ -118,9 +118,16 @@ jobs:
       run: |
         mm3d_version=$(git describe|sed 's/^v\([0-9]\)/\1/')
         mm3d_longname="Maverick Model 3D ${mm3d_version}"
+        # Sign .app
+        rmdir "Maverick Model 3D.app/Contents/PlugIns/mm3d/1.3"
+        codesign --deep --force --sign - "Maverick Model 3D.app"
+        mkdir "Maverick Model 3D.app/Contents/PlugIns/mm3d/1.3"
+        # Create .dmg
         mkdir "${mm3d_longname}"
         mv "Maverick Model 3D.app" "${mm3d_longname}/."
         hdiutil create -fs HFS+ -srcfolder "${mm3d_longname}" mm3d-${mm3d_version}.dmg
+        # Sign .dmg
+        codesign -s - mm3d-${mm3d_version}.dmg
     - uses: actions/upload-artifact@v4
       with:
         name: MacOS App
