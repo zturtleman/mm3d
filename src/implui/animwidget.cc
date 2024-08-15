@@ -92,6 +92,13 @@ AnimWidget::AnimWidget( Model * model, bool isUndo, QWidget * parent )
 {
    setupUi( this );
 
+   // Don't allow text editing in the frame count QSpinBox. It updates
+   // the frame count immediately. 9 -> 10 will truncate to 1 frame and
+   // then add empty frames.
+   QLineEdit *lineEdit = m_frameCount->findChild<QLineEdit*>();
+   lineEdit->setReadOnly( true );
+   lineEdit->setFocusPolicy( Qt::NoFocus );
+
    log_debug( "AnimWidget constructor\n" );
 
    m_animTimer = new QTimer( this );
