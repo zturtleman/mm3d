@@ -65,10 +65,7 @@ class AnimWidget : public QWidget, public Ui::AnimWidgetBase
 
       void timeElapsed();
 
-      void previousClicked();
-      void nextClicked();
       void playClicked();
-      void repeatClicked();
       void stopClicked();
       void loopToggled(bool);
 
@@ -91,7 +88,6 @@ class AnimWidget : public QWidget, public Ui::AnimWidgetBase
 
       Model  * m_model;
       bool     m_playing;
-      bool     m_repeating;
       double   m_timeInterval;
       double   m_currentTime;
       unsigned m_skelAnimCount;

@@ -122,15 +122,11 @@
       <h3> Loop Checkbox </h3>
 
       <p>
-      The <b>Loop Checkbox</b> is used to mark that the animation is intend to repeat
-      and to interpolate skeletal joints around ends of the animation.
-      However it does not affect playing the animation in Maverick.
-      The <b> Repeat </b> button is used to view the animation playing continuously.
-      </p>
-
-      <p>
-      Animations with <b>loop</b> checked are marked as repeating when exported to
-      MD3 animations.cfg and IQE format.
+      The <b>Loop Checkbox</b> will change whether the current animation loops when it
+      completes or not.  If the animation completes and the <b>Loop Checkbox</b>
+      is checked, the animation will restart from the first frame.  If the animation
+      completes and the <b>Loop Checkbox</b> is not checked, the animation
+      will stop.
       </p>
 
       <p>
@@ -149,25 +145,10 @@
       You can copy one keyframe to another using the Animation menu.
       </p>
 
-      <h3> Next </h3>
-
-      <p>
-      The <b>Next</b> button will change to the next animation frame.
-      When it reaches the end of the animation it will start from the
-      first frame.
-      </p>
-
-      <h3> Previous </h3>
-
-      <p>
-      The <b>Previous</b> button will change to the previous animation frame.
-      It will wrap around to the last frame after reaching the beginning.
-      </p>
-
       <h3> Play / Pause </h3>
 
       <p>
-      The <b>Play</b> button runs the current animation once at its specified
+      The <b>Play</b> button runs the current animation at its specified
       frame rate.  The <b>Play</b> button becomes a <b>Pause</b> during
       playback so that you can pause an animation and resume it later.
       Paused animations resume from the time at which they were paused.
@@ -175,18 +156,14 @@
 
       <p>
       Use the <b>Stop</b> button to stop an animation completely.
+      Use the <b>Loop Checkbox</b> to control whether the animation should
+      start from the beginning again when it completes.
       </p>
 
       <p>
       Animation playback is only rendered in perspective viewports.
       Orthographic viewports will not animate.  This is for performance
       reasons, and may become a configurable option at a later time.
-      </p>
-
-      <h3> Repeat </h3>
-
-      <p>
-      The <b>Repeat</b> button will play the animation and continuously repeat it.
       </p>
 
       <h3> Stop </h3>
