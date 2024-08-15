@@ -115,7 +115,7 @@
      <item>
       <widget class="QPushButton" name="m_editButton">
        <property name="text">
-        <string>Edit</string>
+        <string>Ed&amp;it</string>
        </property>
       </widget>
      </item>
