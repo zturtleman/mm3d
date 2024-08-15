@@ -88,9 +88,7 @@ AnimWidget::AnimWidget( Model * model, bool isUndo, QWidget * parent )
      m_model( model ),
      m_playing( false ),
      m_undoing( isUndo ),
-     m_ignoreChange( false ),
-     m_changeFrameFocused( false ),
-     m_changeFrameDeferred( false )
+     m_ignoreChange( false )
 {
    setupUi( this );
 
@@ -344,22 +342,8 @@ void AnimWidget::changeFPS()
    }
 }
 
-void AnimWidget::changeFrameCountFocusIn()
-{
-   m_changeFrameFocused = true;
-
-   // Loose focus when clicking outside of frame count widget.
-   setFocusPolicy( Qt::ClickFocus );
-}
-
 void AnimWidget::changeFrameCount()
 {
-   if ( m_changeFrameFocused )
-   {
-      m_changeFrameDeferred = true;
-      return;
-   }
-
    if ( !m_ignoreChange )
    {
       if ( m_animCount > 0 )
@@ -373,21 +357,6 @@ void AnimWidget::changeFrameCount()
          m_countSlider->setMaximum( m_frameCount->value() );
          m_countSlider->update();
          DecalManager::getInstance()->modelAnimate( m_model );
-      }
-   }
-}
-
-void AnimWidget::changeFrameCountFocusOut()
-{
-   if ( m_changeFrameFocused )
-   {
-      m_changeFrameFocused = false;
-      setFocusPolicy( Qt::NoFocus );
-
-      if ( m_changeFrameDeferred )
-      {
-         m_changeFrameDeferred = true;
-         changeFrameCount();
       }
    }
 }

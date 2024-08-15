@@ -568,7 +568,6 @@ MM3D_MOC= \
 	${B}/implui/mergewin.moc.cc \
 	${B}/implui/metawin.moc.cc \
 	${B}/implui/mview.moc.cc \
-	${B}/depui/miscwidgets.moc.cc \
 	${B}/depui/modelviewport.moc.cc \
 	${B}/implui/newanim.moc.cc \
 	${B}/implui/cal3dprompt.moc.cc \
@@ -637,7 +636,6 @@ MM3D_MOC_OBJ= \
 	${B}/implui/mergewin.moc.o \
 	${B}/implui/metawin.moc.o \
 	${B}/implui/mview.moc.o \
-	${B}/depui/miscwidgets.moc.o \
 	${B}/depui/modelviewport.moc.o \
 	${B}/implui/newanim.moc.o \
 	${B}/implui/cal3dprompt.moc.o \
@@ -746,7 +744,6 @@ MM3D_OBJ= \
 	${B}/tools/movetool.o \
 	${B}/implui/msgqt.o \
 	${B}/implui/mview.o \
-	${B}/depui/miscwidgets.o \
 	${B}/depui/modelviewport.o \
 	${B}/commands/pastecmd.o \
 	${B}/mm3dcore/pluginmgr.o \

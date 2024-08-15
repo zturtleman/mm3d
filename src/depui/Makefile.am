@@ -1,25 +1,22 @@
 noinst_LIBRARIES = libdepui.a
 
 libdepui_HFILES = \
-	errorobj.h \
-	miscwidgets.h \
-	modelviewport.h \
-	textureframe.h \
-	texwidget.h
+   errorobj.h \
+   modelviewport.h \
+   textureframe.h \
+	texwidget.h 
 
 libdepui_MOC = \
 	errorobj.moc.cc \
-	miscwidgets.moc.cc \
 	modelviewport.moc.cc \
-	textureframe.moc.cc \
-	texwidget.moc.cc
+   textureframe.moc.cc \
+   texwidget.moc.cc 
 
 libdepui_a_SOURCES = \
 	errorobj.cc \
-	miscwidgets.cc \
 	modelviewport.cc \
 	textureframe.cc \
-	texwidget.cc \
+   texwidget.cc \
 	$(libdepui_MOC) \
 	$(libdepui_HFILES)
 
