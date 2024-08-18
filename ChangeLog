@@ -1,5 +1,37 @@
 Maverick Model 3D releases published by Zack Middleton.
 
+Changes for 1.3.15 (2024-08-18)
+   This adds Quake 3 player export to IQE format, fixes Linux Dark Mode and issues on 2023 Flatpak runtime,
+   and fixes not updating frame count in animation mode until focus changes.
+
+   General
+      Add dark mode color scheme for model background
+      Add frames, FPS, and loop to New Animation window
+      Add Edit to animation mode for changing the same fields as New Animation window
+      Make Animation Sets window use New Animation dialog
+      Replace Rename in Animation Sets window with Edit for name, frames, FPS, and loop
+      Rename texture to material in Edit Groups window
+      Change max frames for an animation to 9999 (previously 999 but convert to frame animation was limited to 99)
+      Fix not updating frame count in animation mode until focus changes, text editing is disabled now
+      Fix 'paste animation frame' without selecting an animation
+      Fix misplaced "fi"s for configure
+      Fix ignoring user CXXFLAGS in configure
+      Fix compiling on GNU Hurd
+   Documentation
+       Add dark mode support for web browsers
+       Fix viewing in-app help in dark mode
+   Model Formats
+      iqe
+         Add Quake 3 player export for IQE
+   GNU/Linux
+      Add changelog to Linux appstream metadata
+      Update Flatpak runtime to org.kde.Platform 5.15-23.08
+      Don't use Wayland unless requested (environment variable QT_QPA_PLATFORM=wayland)
+      Fix finding Qt translations in Flatpak
+   macOS
+      Fix configure failure on newer macOS
+      Fix installing Qt translation in the appbundle
+
 Changes for 1.3.14 (2023-04-23)
    General
       Enable Qt HiDPI support by default and fix a few layout issues
