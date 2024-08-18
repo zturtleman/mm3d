@@ -130,5 +130,49 @@ jobs:
         codesign -s - mm3d-${mm3d_version}.dmg
     - uses: actions/upload-artifact@v4
       with:
-        name: MacOS App
+        name: MacOS App (x86_64)
+        path: ./*.dmg
+
+  macOS_arm64:
+    name: macOS (ARM64)
+    runs-on: macOS-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # This is needed for "git describe" to work.
+    - name: Install Dependencies
+      run: |
+        brew install autoconf automake qt@5
+    - name: Configure
+      run: |
+        qt_version=$(ls -1 /opt/homebrew/Cellar/qt@5 | sort -rV | head -1)
+        # Get version from line "QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.13"
+        macosx_version_min=$(grep QMAKE_MACOSX_DEPLOYMENT_TARGET /opt/homebrew/Cellar/qt@5/${qt_version}/mkspecs/common/macx.conf | cut -d' ' -f3)
+        echo "Qt version: ${qt_version}, minimum macOS version: ${macosx_version_min}"
+        if [ -z "${qt_version}" -o -z "${macosx_version_min}" ]; then
+          exit 1
+        fi
+        ./autogen.sh
+        ./configure --with-Qt-dir=/opt/homebrew/Cellar/qt@5/${qt_version} --with-macosx-version-min=${macosx_version_min}
+    - name: make
+      run: make
+    - name: make appbundle
+      run: make appbundle
+    - name: Create DMG
+      run: |
+        mm3d_version=$(git describe|sed 's/^v\([0-9]\)/\1/')
+        mm3d_longname="Maverick Model 3D ${mm3d_version}"
+        # Sign .app
+        rmdir "Maverick Model 3D.app/Contents/PlugIns/mm3d/1.3"
+        codesign --deep --force --sign - "Maverick Model 3D.app"
+        mkdir "Maverick Model 3D.app/Contents/PlugIns/mm3d/1.3"
+        # Create .dmg
+        mkdir "${mm3d_longname}"
+        mv "Maverick Model 3D.app" "${mm3d_longname}/."
+        hdiutil create -fs HFS+ -srcfolder "${mm3d_longname}" mm3d-${mm3d_version}.dmg
+        # Sign .dmg
+        codesign -s - mm3d-${mm3d_version}.dmg
+    - uses: actions/upload-artifact@v4
+      with:
+        name: MacOS App (ARM64)
         path: ./*.dmg
