@@ -253,6 +253,93 @@
     </message>
 </context>
 <context>
+    <name>AnimEditWinBase</name>
+    <message>
+        <location filename="../src/qtui/animeditwin.ui" line="+14"/>
+        <source>Edit Animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Editing Skeletal animations:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>example</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Name</source>
+        <translation type="unfinished">Nom</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Frame Count</source>
+        <translation type="unfinished">Nombre de poses (Morph frames)</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>FPS</source>
+        <translation type="unfinished">Images Par Seconde</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Loop</source>
+        <translation type="unfinished">Boucle</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>TORSO_IDLE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <location line="+10"/>
+        <source>1</source>
+        <translation type="unfinished">1</translation>
+    </message>
+    <message>
+        <location line="-5"/>
+        <source>10</source>
+        <translation type="unfinished">10</translation>
+    </message>
+    <message>
+        <location line="+43"/>
+        <source>Ok</source>
+        <translation type="unfinished">Ok</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Annuler</translation>
+    </message>
+</context>
+<context>
+    <name>AnimEditWindow</name>
+    <message>
+        <location filename="../src/implui/animeditwin.cc" line="+115"/>
+        <source>Editing Skeletal animations:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Editing Frame animations:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Editing Frame Relative animations:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Editing Unknown Type animations:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>AnimExportWinBase</name>
     <message>
         <location filename="../src/qtui/animexportwin.ui" line="+14"/>
@@ -425,9 +512,13 @@
         <translation>&amp;Nouveau</translation>
     </message>
     <message>
-        <location line="+7"/>
         <source>&amp;Rename</source>
-        <translation>&amp;Renommer</translation>
+        <translation type="vanished">&amp;Renommer</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Ed&amp;it</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+7"/>
@@ -478,7 +569,7 @@
 <context>
     <name>AnimSetWindow</name>
     <message>
-        <location filename="../src/implui/animsetwin.cc" line="+49"/>
+        <location filename="../src/implui/animsetwin.cc" line="+52"/>
         <source>Skeletal Animation</source>
         <translation>Animation par squelette</translation>
     </message>
@@ -494,23 +585,15 @@
         <translation></translation>
     </message>
     <message>
-        <location line="+195"/>
         <source>New Animation</source>
-        <translation>Nouvelle Animation</translation>
+        <translation type="vanished">Nouvelle Animation</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <location line="+38"/>
         <source>New name:</source>
-        <translation>Nouveau Nom :</translation>
+        <translation type="vanished">Nouveau Nom :</translation>
     </message>
     <message>
-        <location line="-1"/>
-        <source>Rename Animation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+122"/>
+        <location line="+383"/>
         <source>Split at frame</source>
         <comment>Split animation frame window title</comment>
         <translation>Séparer l&apos;animation à cette image</translation>
@@ -576,18 +659,18 @@ Le nombre d&apos;images diffère.</translation>
         <translation type="obsolete">F1</translation>
     </message>
     <message>
-        <location filename="../src/implui/animwidget.cc" line="+708"/>
+        <location filename="../src/implui/animwidget.cc" line="+726"/>
         <source>&lt;New Animation&gt;</source>
         <translation>&lt;Nouvelle Animation&gt;</translation>
     </message>
     <message>
-        <location line="-530"/>
+        <location line="-538"/>
         <source>Start animation mode</source>
         <comment>operation complete</comment>
         <translation>Entrer en mode Animation</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+33"/>
         <source>New Animation</source>
         <comment>operation complete</comment>
         <translation>Nouvelle Animation</translation>
@@ -598,19 +681,25 @@ Le nombre d&apos;images diffère.</translation>
         <translation>Image: </translation>
     </message>
     <message>
-        <location line="+48"/>
+        <location line="+34"/>
+        <source>Edit Animation</source>
+        <comment>operation complete</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+45"/>
         <source>Set FPS</source>
         <comment>Frames per second, operation complete</comment>
         <translation>Choisir le nombre d&apos;image par secondes</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="+11"/>
         <source>Change Frame Count</source>
         <comment>operation complete</comment>
         <translation>Changer le nombre d&apos;images</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+22"/>
         <source>Clear frame</source>
         <comment>Remove animation data from frame, operation complete</comment>
         <translation>Effacer l&apos;image</translation>
@@ -634,18 +723,18 @@ Le nombre d&apos;images diffère.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+246"/>
+        <location line="+248"/>
         <source>End animation mode</source>
         <comment>operation complete</comment>
         <translation>Sortir du mode d&apos;animation</translation>
     </message>
     <message>
-        <location line="-571"/>
+        <location line="-575"/>
         <source>Frame: n/a</source>
         <translation>Image: n/a</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+41"/>
         <source>Delete Animation?</source>
         <comment>window title</comment>
         <translation>Effacer l&apos;animation ?</translation>
@@ -662,7 +751,7 @@ Le nombre d&apos;images diffère.</translation>
         <translation>Effacer l&apos;animation</translation>
     </message>
     <message>
-        <location line="+188"/>
+        <location line="+159"/>
         <source>No frame animation data to paste</source>
         <translation>Pas de données d&apos;animation de pose (images)</translation>
     </message>
@@ -680,7 +769,22 @@ Le nombre d&apos;images diffère.</translation>
         <translation>Animation</translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+51"/>
+        <source>Edit Animation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Delete</source>
+        <translation type="unfinished">Effacer</translation>
+    </message>
+    <message>
+        <location line="+7"/>
         <source>FPS</source>
         <translation>Images Par Seconde</translation>
     </message>
@@ -705,12 +809,11 @@ Le nombre d&apos;images diffère.</translation>
         <translation>Images</translation>
     </message>
     <message>
-        <location line="-64"/>
         <source>X</source>
-        <translation>X</translation>
+        <translation type="vanished">X</translation>
     </message>
     <message>
-        <location line="-3"/>
+        <location line="-67"/>
         <source>Delete Animation</source>
         <translation>Effacer l&apos;animation</translation>
     </message>
@@ -808,13 +911,13 @@ Le nombre d&apos;images diffère.</translation>
 <context>
     <name>BackgroundWin</name>
     <message>
-        <location filename="../src/implui/backgroundwin.cc" line="+60"/>
+        <location filename="../src/implui/backgroundwin.cc" line="+62"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+26"/>
         <source>Background Image</source>
         <comment>operation complete</comment>
         <translation>Image de fond</translation>
@@ -1107,12 +1210,12 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Primitives effacées</translation>
     </message>
     <message>
-        <location filename="../src/commands/dupcmd.cc" line="+69"/>
+        <location filename="../src/commands/dupcmd.cc" line="+101"/>
         <source>Selected primitives duplicated</source>
         <translation>Selectionner les primitives dupliquées</translation>
     </message>
     <message>
-        <location line="+164"/>
+        <location line="+146"/>
         <source>You must have at least 1 face, joint, or point selected to Duplicate</source>
         <translation>Vous devez avoir au moins 1 face, joint, ou point selectionné à dupliquer</translation>
     </message>
@@ -1127,7 +1230,7 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Dupliquer</translation>
     </message>
     <message>
-        <location filename="../src/commands/edgedivcmd.cc" line="+128"/>
+        <location filename="../src/commands/edgedivcmd.cc" line="+160"/>
         <source>Edge Divide complete</source>
         <translation>Division des bords terminée</translation>
     </message>
@@ -1283,7 +1386,7 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Face Crée</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+17"/>
         <source>Must select exactly 3 vertices</source>
         <translation>Il faut selectionner exactement 3 vertex</translation>
     </message>
@@ -1449,6 +1552,11 @@ Etes vous sûr de vouloir continuer?</translation>
         <location line="+1"/>
         <source>Faces</source>
         <translation>Faces</translation>
+    </message>
+    <message>
+        <location filename="../src/commands/offsetcmd.cc" line="+55"/>
+        <source>Offset by Normal...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2139,13 +2247,21 @@ Etes vous sûr de vouloir continuer?</translation>
     </message>
     <message>
         <location line="+10"/>
-        <source>Texture</source>
-        <translation>Texture</translation>
+        <source>Material</source>
+        <translation type="unfinished">Matériau</translation>
     </message>
     <message>
         <location line="+22"/>
+        <source>No material</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Texture</source>
+        <translation type="vanished">Texture</translation>
+    </message>
+    <message>
         <source>No texture</source>
-        <translation>Pas de Texture</translation>
+        <translation type="vanished">Pas de Texture</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -2270,6 +2386,16 @@ Etes vous sûr de vouloir continuer?</translation>
     </message>
     <message>
         <location line="+6"/>
+        <source>Save as a Quake 3 Player (head.iqe, upper.iqe, lower.iqe)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Save Quake 3 animation.cfg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Save Meshes</source>
         <translation type="unfinished">Sauvegarder les Meshes</translation>
     </message>
@@ -2602,17 +2728,16 @@ Etes vous sûr de vouloir continuer?</translation>
 <context>
     <name>LowLevel</name>
     <message>
-        <location filename="../src/libmm3d/model.cc" line="+914"/>
+        <location filename="../src/libmm3d/model.cc" line="+924"/>
         <source>Cannot delete root joint</source>
         <translation>Impossible d&apos;effacer le joint racine</translation>
     </message>
     <message>
-        <location line="+2396"/>
         <source>Cannot add or delete because you have frame animations.  Try &quot;Merge...&quot; instead.</source>
-        <translation>Impossible d&apos;ajouter ou d&apos;effacer puisque vous avez des Animations de Pose.  Essayer &quot;Fusionner...&quot; à la place.</translation>
+        <translation type="vanished">Impossible d&apos;ajouter ou d&apos;effacer puisque vous avez des Animations de Pose.  Essayer &quot;Fusionner...&quot; à la place.</translation>
     </message>
     <message>
-        <location line="-2929"/>
+        <location line="-543"/>
         <location filename="../src/libmm3d/texture.cc" line="+128"/>
         <source>Success</source>
         <translation>Succès</translation>
@@ -2694,6 +2819,11 @@ Etes vous sûr de vouloir continuer?</translation>
         <translation>Code d&apos;erreur Invalide</translation>
     </message>
     <message>
+        <location line="+2899"/>
+        <source>Cannot add because you have frame animations.  Try &quot;Merge...&quot; instead.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/libmm3d/texture.cc" line="-18"/>
         <source>Could not write file</source>
         <translation>Impossible d&apos;ecrire le fichier</translation>
@@ -2705,7 +2835,7 @@ Etes vous sûr de vouloir continuer?</translation>
     </message>
     <message>
         <location filename="../src/libmm3d/mm3dfilter.cc" line="+684"/>
-        <location line="+1406"/>
+        <location line="+1415"/>
         <location filename="../src/libmm3d/mm3dfilter_ref.cc" line="+635"/>
         <source>MM3D encountered an unexpected data size problem
 See Help-&gt;About to contact the developers</source>
@@ -2723,14 +2853,28 @@ Voir &quot;Aide-&gt;A Propos&quot; pour contacter les développeurs</translation
         <translation>Impossible de charger</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/model_ops.cc" line="+1036"/>
         <source>Model contains no skeletal animations</source>
-        <translation>Le modèle ne contient pas de données d&apos;animation de squelette</translation>
+        <translation type="vanished">Le modèle ne contient pas de données d&apos;animation de squelette</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location filename="../src/libmm3d/model_ops.cc" line="+1033"/>
+        <source>Model contains no animations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Model skeletons do not match</source>
         <translation>Les squelettes des modèle ne correspondent pas</translation>
+    </message>
+    <message>
+        <location line="+63"/>
+        <source>Model vertex counts do not match</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Model point counts do not match</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/libmm3d/md3filter.cc" line="+252"/>
@@ -2745,7 +2889,7 @@ Voulez-vous charger toutes les sections ?</translation>
         <translation>Impossible de charger la texture</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/model.cc" line="-14"/>
+        <location filename="../src/libmm3d/model.cc" line="-2913"/>
         <source>Write not supported, try &quot;Export...&quot;</source>
         <translation>Ecriture non supportée, essayer &quot;Exporter...&quot;</translation>
     </message>
@@ -2755,7 +2899,7 @@ Voulez-vous charger toutes les sections ?</translation>
         <translation>Extension de fichier inconnue (type inconnu)</translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/cal3dfilter.cc" line="+778"/>
+        <location filename="../src/libmm3d/cal3dfilter.cc" line="+782"/>
         <source>MM3D does not support CAL3D files in XML format</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2765,7 +2909,8 @@ Voulez-vous charger toutes les sections ?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1382"/>
+        <location line="+1379"/>
+        <location line="+193"/>
         <source>Set meta data for Cal3D export</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2811,7 +2956,7 @@ Voulez-vous charger toutes les sections ?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/libmm3d/iqefilter.cc" line="+93"/>
+        <location filename="../src/libmm3d/iqefilter.cc" line="+176"/>
         <source>No data marked for saving as IQE.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2823,6 +2968,12 @@ Voulez-vous charger toutes les sections ?</translation>
     <message>
         <location line="+16"/>
         <source>IQE requires points to only have one bone influence.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+58"/>
+        <location line="+26"/>
+        <source>Set meta data for IQE export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3032,12 +3183,12 @@ Voulez-vous charger toutes les sections ?</translation>
     </message>
     <message>
         <location line="+6"/>
-        <source>Save as a Player Model (head.md3, upper.md3, lower.md3)</source>
+        <source>Save as a Quake 3 Player (head.md3, upper.md3, lower.md3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+10"/>
-        <source>Save animation.cfg</source>
+        <source>Save Quake 3 animation.cfg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3271,7 +3422,7 @@ Opération Terminée</translation>
 <context>
     <name>ModelViewport</name>
     <message>
-        <location filename="../src/depui/modelviewport.cc" line="+1127"/>
+        <location filename="../src/depui/modelviewport.cc" line="+1148"/>
         <source>Could not load background %1</source>
         <translation>Impossible de charger l&apos;image de fond %1</translation>
     </message>
@@ -3281,7 +3432,7 @@ Opération Terminée</translation>
         <translation>Utiliser le boutoun du milieu de la souris pour faire glisser la visualisation</translation>
     </message>
     <message>
-        <location line="+1431"/>
+        <location line="+1439"/>
         <source>OpenGL error = Invalid Value</source>
         <translation>Erreur OpenGL = Valeur Invalide</translation>
     </message>
@@ -3389,6 +3540,14 @@ Opération Terminée</translation>
     </message>
 </context>
 <context>
+    <name>NewAnim</name>
+    <message>
+        <location filename="../src/implui/newanim.cc" line="+45"/>
+        <source>Edit Animation</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>NewAnimBase</name>
     <message>
         <location filename="../src/qtui/newanim.ui" line="+14"/>
@@ -3426,7 +3585,27 @@ Opération Terminée</translation>
         <translation>Atl+F</translation>
     </message>
     <message>
-        <location line="+40"/>
+        <location line="+30"/>
+        <source>Frames</source>
+        <translation type="unfinished">Images</translation>
+    </message>
+    <message>
+        <location line="+64"/>
+        <source>Frames Per-Second</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+32"/>
+        <source>10</source>
+        <translation type="unfinished">10</translation>
+    </message>
+    <message>
+        <location line="+32"/>
+        <source>Loop (interpolate between the first and last frame)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+68"/>
         <source>&amp;Ok</source>
         <translation>&amp;Ok</translation>
     </message>
@@ -3505,6 +3684,48 @@ Opération Terminée</translation>
         <location line="+10"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
+    </message>
+</context>
+<context>
+    <name>OffsetWin</name>
+    <message>
+        <location filename="../src/implui/offsetwin.cc" line="+137"/>
+        <source>Offset by Normal</source>
+        <comment>operation complete</comment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OffsetWinBase</name>
+    <message>
+        <location filename="../src/qtui/offsetwin.ui" line="+14"/>
+        <source>Offset by Normal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+38"/>
+        <source>Max Distance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+42"/>
+        <source>Percent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+68"/>
+        <source>Press F1 for help</source>
+        <translation type="unfinished">Appuyer sur F1 pour l&apos;aide</translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>Ok</source>
+        <translation type="unfinished">Ok</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Annuler</translation>
     </message>
 </context>
 <context>
@@ -4184,7 +4405,7 @@ Opération Terminée</translation>
 <context>
     <name>TextureCoord</name>
     <message>
-        <location filename="../src/implui/texturecoord.cc" line="+314"/>
+        <location filename="../src/implui/texturecoord.cc" line="+319"/>
         <source>Reset coordinates?</source>
         <comment>window title</comment>
         <translation>Remettre les coordonnées à zéro ?</translation>
@@ -4200,7 +4421,7 @@ Opération Terminée</translation>
         <translation>Bouger les Coordonnées de texture</translation>
     </message>
     <message>
-        <location line="-271"/>
+        <location line="-276"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>
@@ -4218,7 +4439,7 @@ Opération Terminée</translation>
         <translation></translation>
     </message>
     <message>
-        <location line="+272"/>
+        <location line="+277"/>
         <source>Select texture coordinates</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4276,22 +4497,22 @@ Opération Terminée</translation>
         <translation>Type de projection</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Triangle</source>
         <translation>Triangle</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+7"/>
         <source>Quad</source>
         <translation>Quad</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+7"/>
         <source>Group</source>
         <translation>Groupe</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+10"/>
         <source>Reset Coordinates</source>
         <translation>Remettre les coordonnées à zéro</translation>
     </message>
@@ -4306,7 +4527,7 @@ Opération Terminée</translation>
         <translation>Fermer</translation>
     </message>
     <message>
-        <location line="-155"/>
+        <location line="-154"/>
         <source>Rotate</source>
         <translation>Rotation</translation>
     </message>
@@ -5251,7 +5472,7 @@ bouton</translation>
         <translation type="obsolete">Animations</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+14"/>
         <source>Properties</source>
         <translation>Propriétés</translation>
     </message>
@@ -6124,13 +6345,13 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
         <translation>Tous les formats supportés</translation>
     </message>
     <message>
-        <location line="-2174"/>
+        <location line="-2173"/>
         <source>F1</source>
         <comment>Help Shortcut</comment>
         <translation></translation>
     </message>
     <message>
-        <location line="+67"/>
+        <location line="+66"/>
         <source>Export Selected...</source>
         <comment>File|Export Selected</comment>
         <translation type="unfinished"></translation>
@@ -6159,6 +6380,26 @@ Utiliser l&apos;outil de &quot;Selection des Faces&quot;.</translation>
     </message>
     <message>
         <location line="+21"/>
+        <source>Color Scheme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Automatic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Light</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Dark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Canvas Grid</source>
         <translation>Grille de la zone de dessin</translation>
     </message>
