@@ -170,21 +170,25 @@ bool SnapCommand::activated( int arg, Model * model )
 
          for ( sel_iter = selection.begin(); sel_iter != selection.end(); sel_iter++ )
          {
-            list<int>::iterator it = excludelist.begin();
-            while ( it != excludelist.end() && *it != *sel_iter )
+            if ( !excludelist.empty() )
             {
-               it++;
+               list<int>::iterator it = excludelist.begin();
+               while ( it != excludelist.end() && *it != *sel_iter )
+               {
+                  it++;
+               }
+               if ( *it == *sel_iter )
+               {
+                  continue;
+               }
             }
 
-            if ( *it != *sel_iter )
+            int nearest_vertex= find_nearest_vertex(model, *sel_iter, selection, excludelist);
+            if ( nearest_vertex != -1 )
             {
-               int nearest_vertex= find_nearest_vertex(model, *sel_iter, selection, excludelist);
-               if ( nearest_vertex != -1 )
-               {
-                  snap_together_two( model, *sel_iter, nearest_vertex );
-                  excludelist.push_back(*sel_iter);
-                  excludelist.push_back(nearest_vertex);
-               }
+               snap_together_two( model, *sel_iter, nearest_vertex );
+               excludelist.push_back(*sel_iter);
+               excludelist.push_back(nearest_vertex);
             }
          }
       }
